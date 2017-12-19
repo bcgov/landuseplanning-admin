@@ -20,7 +20,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     // If we're not logged in, redirect.
-    if (!this.api.ensureLoggedIn()) return false;
+    if (!this.api.ensureLoggedIn()) {
+      return false;
+    }
     this.applicationService.getAll().subscribe(
       data => { this.numProjects = data ? data.length : 0; },
       error => {

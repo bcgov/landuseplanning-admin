@@ -29,7 +29,10 @@ export class ApplicationListComponent implements OnInit {
               private api: Api) { }
 
   ngOnInit() {
-    if (!this.api.ensureLoggedIn()) return false;
+    // If we're not logged in, redirect.
+    if (!this.api.ensureLoggedIn()) {
+      return false;
+    }
     this.loading = true;
     this.applicationService.getAll().subscribe(
       data => {

@@ -31,7 +31,9 @@ export class ProjectListComponent implements OnInit {
 
   ngOnInit() {
     // If we're not logged in, redirect.
-    if (!this.api.ensureLoggedIn()) return false;
+    if (!this.api.ensureLoggedIn()) {
+      return false;
+    }
     this.loading = true;
     this.applicationService.getAll().subscribe(
       data => {
