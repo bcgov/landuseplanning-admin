@@ -38,7 +38,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         this.application = data.application;
 
         // application not found --> navigate back to application list
-        if (!this.application || !this.application.code) {
+        if (!this.application || !this.application._id) {
           console.log('Application not found!');
           this.gotoApplicationList();
         }
@@ -61,7 +61,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   gotoMap(): void {
     // pass along the id of the current application if available
     // so that the map component can show the popup for it.
-    const applicationId = this.application ? this.application.code : null;
+    const applicationId = this.application ? this.application._id : null;
     this.router.navigate(['/map', { application: applicationId }]);
   }
 }

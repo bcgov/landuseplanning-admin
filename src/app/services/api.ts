@@ -61,12 +61,14 @@ export class Api {
     return this.getApps('application', { headers: headers});
   }
 
-  getApplicationByCode(code: string) {
-    return this.getApps('public/application/code/' + code);
+  getApplicationById(_id: string) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.getApps('application/' + _id, { headers: headers});
   }
 
   getDocuments(id: string) {
-    return this.get(this.pathAPI, 'public/documents/' + id);
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, 'documents/' + id, { headers: headers});
   }
 
   // Methods

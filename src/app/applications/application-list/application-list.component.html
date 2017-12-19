@@ -46,7 +46,7 @@
                   <i class="material-icons close-icon">remove</i>
                 </a>
                 <span class="accordion__collapse-header--column">
-                  <a [routerLink]="['/a', item.code]">{{item.code}}</a>
+                  <a [routerLink]="['/a', item._id]">{{item.code}}</a>
                 </span>
                 <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose}} / {{item.subpurpose}}</span>
                 <!-- TODO: create filter 'unknown' for null/blank region -->
@@ -76,11 +76,11 @@
                       </li>
                     </ul>
                     <div class="application-table__application-details--links">
-                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item.code]">
+                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item._id]">
                         <i class="material-icons">info_outline</i>
                         <span>Show Details</span>
                       </a>
-                      <a class="btn content-btn slide-l-btn btn-sm" href="/map" [routerLink]="['/map', { application: item.code }]">
+                      <a class="btn content-btn slide-l-btn btn-sm" href="/map" [routerLink]="['/map', { application: item._id }]">
                         <i class="material-icons">location_on</i>
                         <span>Show on Map</span>
                       </a>
