@@ -1,4 +1,4 @@
-# nrts-prc-public
+# nrts-prc-admin
 
 # Prerequisites
 
@@ -148,8 +148,8 @@ ng new my-app --routing --style scss
 
 # Build and Deployment
 
-For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/nrts-prc-public/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using nginx.
+For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/nrts-prc-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using nginx.
 
 # How to Contribute
 
-Feel free to create pull requests from the default "master" branch, click here to create one automatically: https://github.com/bcgov/nrts-prc-public/pull/new/master
+Feel free to create pull requests from the default "master" branch, click here to create one automatically: https://github.com/bcgov/nrts-prc-admin/pull/new/master

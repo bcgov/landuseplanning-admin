@@ -4,35 +4,35 @@ pipeline {
         nodejs 'NodeJS-V8.x'
     }
     stages {
-        stage('build angular-builder'){
+        stage('build admin-angular-builder'){
             steps {
                 notifyBuild('STARTED')
-                openshiftBuild(bldCfg: 'angular-builder', showBuildLogs: 'true')
+                openshiftBuild(bldCfg: 'admin-angular-builder', showBuildLogs: 'true')
             }
         }
-        stage('tag angular-builder'){
+        stage('tag admin-angular-builder'){
             steps {
-                openshiftTag(srcStream: 'angular-builder', srcTag: 'latest', destStream: 'angular-builder', destTag: 'dev')
+                openshiftTag(srcStream: 'admin-angular-builder', srcTag: 'latest', destStream: 'admin-angular-builder', destTag: 'dev')
             }
         }
-        stage('build nginx-runtime'){
+        stage('build admin-nginx-runtime'){
             steps {
-                openshiftBuild(bldCfg: 'nginx-runtime', showBuildLogs: 'true')
+                openshiftBuild(bldCfg: 'admin-nginx-runtime', showBuildLogs: 'true')
             }
         }
-        stage('tag nginx-runtime'){
+        stage('tag admin-nginx-runtime'){
             steps {
-                openshiftTag(srcStream: 'nginx-runtime', srcTag: 'latest', destStream: 'nginx-runtime', destTag: 'dev')
+                openshiftTag(srcStream: 'admin-nginx-runtime', srcTag: 'latest', destStream: 'admin-nginx-runtime', destTag: 'dev')
             }
         }
-        stage('build and package angular-on-nginx'){
+        stage('build and package admin-angular-on-nginx'){
             steps {
-                openshiftBuild(bldCfg: 'angular-on-nginx-build', showBuildLogs: 'true')
+                openshiftBuild(bldCfg: 'admin-angular-on-nginx-build', showBuildLogs: 'true')
             }
         }
         stage('tag and deploy to dev') {
             steps {
-                openshiftTag(srcStream: 'angular-on-nginx', srcTag: 'latest', destStream: 'angular-on-nginx', destTag: 'dev')
+                openshiftTag(srcStream: 'admin-angular-on-nginx', srcTag: 'latest', destStream: 'admin-angular-on-nginx', destTag: 'dev')
                 notifyBuild('DEPLOYED:DEV')
             }
         }
@@ -42,7 +42,7 @@ pipeline {
                     try {
                         timeout(time: 2, unit: 'MINUTES') {
                           input "Deploy to TEST?"
-                          openshiftTag(srcStream: 'angular-on-nginx', srcTag: 'dev', destStream: 'angular-on-nginx', destTag: 'test')
+                          openshiftTag(srcStream: 'admin-angular-on-nginx', srcTag: 'dev', destStream: 'admin-angular-on-nginx', destTag: 'test')
                           notifyBuild('DEPLOYED:TEST')
                         }
                     } catch (err) {
@@ -57,7 +57,7 @@ pipeline {
                     try {
                         timeout(time: 2, unit: 'MINUTES') {
                           input "Deploy to PROD?"
-                          openshiftTag(srcStream: 'angular-on-nginx', srcTag: 'test', destStream: 'angular-on-nginx', destTag: 'prod')
+                          openshiftTag(srcStream: 'admin-angular-on-nginx', srcTag: 'test', destStream: 'admin-angular-on-nginx', destTag: 'prod')
                           notifyBuild('DEPLOYED:PROD')
                         }
                     } catch (err) {

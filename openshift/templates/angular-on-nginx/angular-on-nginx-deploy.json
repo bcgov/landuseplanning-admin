@@ -6,7 +6,7 @@
       "description": "Deployment template for a angular on nginx",
       "tags": "angular,nginx"
     },
-    "name": "angular-on-nginx"
+    "name": "admin-angular-on-nginx"
   },
   "objects": [
     {
@@ -223,7 +223,7 @@
       "displayName": "Name",
       "name": "NAME",
       "required": true,
-      "value": "angular-scaffold"
+      "value": "admin-angular-on-nginx"
     },
     {
       "description": "The namespace where to get the above image name",
@@ -254,7 +254,7 @@
       "description": "The exposed hostname that will route to the service, e.g., myappname.pathfinder.gov.bc.ca, if left blank a value will be defaulted.",
       "displayName": "Application Hostname",
       "name": "APPLICATION_DOMAIN",
-      "value": "nrts-prc-public.pathfinder.gov.bc.ca"
+      "value": "nrts-prc-admin.pathfinder.gov.bc.ca"
     },
     {
       "description": "The TAG name for this environment, e.g., dev, test, prod",

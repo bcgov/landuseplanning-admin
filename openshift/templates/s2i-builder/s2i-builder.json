@@ -28,7 +28,7 @@
         "source": {
           "type": "Git",
           "git": {
-            "uri": "https://github.com/bcgov/angular-scaffold"
+            "uri": "https://github.com/bcgov/nrts-prc-admin"
           }
         },
         "strategy": {
@@ -36,11 +36,11 @@
           "sourceStrategy": {
             "from": {
                 "kind": "ImageStreamTag",
-                "name": "angular-builder:latest"
+                "name": "admin-angular-builder:latest"
             },
             "runtimeImage": {
               "kind": "ImageStreamTag",
-              "name": "nginx-runtime:latest"
+              "name": "admin-nginx-runtime:latest"
             },
             "runtimeArtifacts": [{
               "sourcePath": "/tmp/src",
