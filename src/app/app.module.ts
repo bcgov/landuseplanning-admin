@@ -23,10 +23,12 @@ import { WaterQualityComponent } from './water-quality/water-quality.component';
 import { TailingsManagementComponent } from './tailings-management/tailings-management.component';
 import { ReclamationComponent } from './reclamation/reclamation.component';
 import { SearchComponent } from './search/search.component';
+import { LoginComponent } from './login/login.component';
 
 // services
 import { ProponentService } from './services/proponent.service';
 import { ApplicationService } from './services/application.service';
+import { AuthenticationService } from './services/authentication.service';
 
 // feature modules
 import { MapModule } from './map/map.module';
@@ -51,7 +53,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     WaterQualityComponent,
     TailingsManagementComponent,
     ReclamationComponent,
-    SearchComponent
+    SearchComponent,
+    LoginComponent
   ],
   imports: [
     TagInputModule,
@@ -67,7 +70,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     Ng2PageScrollModule.forRoot(),
     MapModule
   ],
-  providers: [ProponentService, ApplicationService, CookieService],
+  providers: [ProponentService, AuthenticationService, ApplicationService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

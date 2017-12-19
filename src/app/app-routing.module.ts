@@ -13,8 +13,13 @@ import { TopicsOfInterestComponent } from 'app/topics-of-interest/topics-of-inte
 import { WaterQualityComponent } from 'app/water-quality/water-quality.component';
 import { MainMapComponent } from 'app/map/main-map/main-map.component';
 import { SearchComponent } from 'app/search/search.component';
+import { LoginComponent } from 'app/login/login.component';
 
 const routes: Routes = [
+  {
+    path: 'login',
+    component: LoginComponent
+  },
   {
     path: 'authorizations',
     component: AuthorizationsComponent
