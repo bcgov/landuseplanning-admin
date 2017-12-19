@@ -4,6 +4,7 @@ import { PaginationInstance } from 'ngx-pagination';
 import { Project } from '../../models/project';
 import { ProjectService } from '../../services/project.service';
 import { ApplicationService } from '../../services/application.service';
+import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-project-list',
@@ -24,9 +25,13 @@ export class ProjectListComponent implements OnInit {
     currentPage: 1
   };
 
-  constructor(private applicationService: ApplicationService, private _changeDetectionRef: ChangeDetectorRef) { }
+  constructor(private applicationService: ApplicationService,
+              private _changeDetectionRef: ChangeDetectorRef,
+              private api: Api) { }
 
   ngOnInit() {
+    // If we're not logged in, redirect.
+    if (!this.api.ensureLoggedIn()) return false;
     this.loading = true;
     this.applicationService.getAll().subscribe(
       data => {

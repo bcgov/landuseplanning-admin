@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
-import { Params } from '@angular/router';
+import { Params, Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -14,7 +14,7 @@ export class Api {
   params: Params;
   env: 'local' | 'dev' | 'test' | 'prod';
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private router: Router) {
     const { hostname } = window.location;
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
@@ -42,6 +42,16 @@ export class Api {
         this.pathAPI = 'https://';
         this.env = 'prod';
     };
+  }
+
+  ensureLoggedIn() {
+    if (!this.token) {
+      console.log('not logged in, redirecting');
+      this.router.navigate(['/login']);
+      return false;
+    } else {
+      return true;
+    }
   }
 
   // Applications
