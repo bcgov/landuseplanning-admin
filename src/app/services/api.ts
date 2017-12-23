@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
+import * as _ from 'lodash';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -56,14 +57,56 @@ export class Api {
 
   // Applications
   getApplications() {
+    const fields = ['name',
+                    'type',
+                    'subtype',
+                    'purpose',
+                    'subpurpose',
+                    'proponent',
+                    'latitude',
+                    'longitude',
+                    'location',
+                    'region',
+                    'description',
+                    'legalDescription',
+                    'businessUnit',
+                    'cl_files',
+                    'commodityType',
+                    'commodity',
+                    'commodities'];
+    let queryString = 'application?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     // let options = new RequestOptions({ headers: headers });
-    return this.getApps('application', { headers: headers});
+    return this.getApps(queryString, { headers: headers});
   }
 
-  getApplicationById(_id: string) {
+  getApplicationById(id: string) {
+    const fields = ['name',
+                    'type',
+                    'subtype',
+                    'purpose',
+                    'subpurpose',
+                    'proponent',
+                    'latitude',
+                    'longitude',
+                    'location',
+                    'region',
+                    'description',
+                    'legalDescription',
+                    'businessUnit',
+                    'cl_files',
+                    'commodityType',
+                    'commodity',
+                    'commodities'];
+    let queryString = 'application/'  + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.getApps('application/' + _id, { headers: headers});
+    return this.getApps(queryString, { headers: headers});
   }
 
   getDocuments(id: string) {
