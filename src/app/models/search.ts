@@ -4,10 +4,12 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 export class Search {
   _id: string;
-  displayName: string;
-  description: string;
+  totalFeatures: number;
+  features: {
+    id: string;
+  }[];
   date: Date;
-  parentType: string;
+  crs: string;
   type: string;
   status: string;
   hostname: string;
@@ -15,13 +17,20 @@ export class Search {
 
   constructor(search?: any, hostname?: any) {
     this._id         = search && search._id         || null;
-    this.displayName = search && search.displayName || null;
-    this.parentType  = search && search.parentType  || null;
+    this.totalFeatures = search && search.totalFeatures || null;
+    this.crs  = search && search.crs  || null;
     this.type        = search && search.type        || null;
     this.date        = search && search.date        || null;
     this.status      = search && search.status      || null;
     this.project     = search && search.project     || null;
     this.hostname    = hostname;
+
+    this.features = [];
+    if (search && search.features) {
+      search.features.forEach(feature => {
+        this.features.push(feature);
+      });
+    }
   }
 }
 
@@ -53,6 +62,7 @@ export class SearchArray {
 
 export class SearchTerms {
   keywords: string;
+  clfiles: string;
   projects: Array<Project>;
   proponents: Array<Proponent>;
   ownerships: Array<Proponent>;
@@ -61,6 +71,7 @@ export class SearchTerms {
 
   constructor() {
     this.keywords   = '';
+    this.clfiles     = '';
     this.projects   = [];
     this.proponents = [];
     this.ownerships = [];
@@ -73,6 +84,10 @@ export class SearchTerms {
 
     if (this.keywords) {
       params['keywords'] = this.keywords.split(' ').join(',');
+    }
+
+    if (this.clfiles) {
+      params['clfiles'] = this.clfiles.split(' ').join(',');
     }
 
     if (this.projects.length) {

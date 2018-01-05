@@ -17,6 +17,7 @@ import { LoginComponent } from './login/login.component';
 
 // services
 import { ProponentService } from './services/proponent.service';
+import { SearchService } from './services/search.service';
 import { ApplicationService } from './services/application.service';
 import { AuthenticationService } from './services/authentication.service';
 
@@ -50,7 +51,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     Ng2PageScrollModule.forRoot(),
     MapModule
   ],
-  providers: [ProponentService, AuthenticationService, ApplicationService, CookieService],
+  providers: [SearchService, ProponentService, AuthenticationService, ApplicationService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

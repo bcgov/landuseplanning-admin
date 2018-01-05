@@ -113,9 +113,25 @@ export class Api {
     return this.getApps(queryString, { headers: headers});
   }
 
+  getBCGWCrownLandsById(id: string) {
+    const fields = ['name'];
+    let queryString = 'public/search/bcgw/crownLandsId/'  + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.getBCGWCrownLands(queryString, { headers: headers});
+  }
+
   getDocuments(id: string) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, 'documents/' + id, { headers: headers});
+  }
+
+  getBCGWCrownLands(apiRoute: string, options?: Object) {
+    return this.get(this.pathAPI, apiRoute, options);
   }
 
   // Methods

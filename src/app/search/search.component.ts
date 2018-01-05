@@ -9,6 +9,7 @@ import { Search, SearchTerms } from '../models/search';
 import { Proponent } from '../models/proponent';
 import { ProjectService } from '../services/project.service';
 import { ProponentService } from '../services/proponent.service';
+import { SearchService } from '../services/search.service';
 import { Api } from '../services/api';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
@@ -32,7 +33,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class SearchComponent implements OnInit {
-  results: Search[];
+  results: Search;
   page: number;
   limit: number;
   count: number;
@@ -54,6 +55,7 @@ export class SearchComponent implements OnInit {
               private documentService: DocumentService,
               private projectService: ProjectService,
               private proponentService: ProponentService,
+              private searchService: SearchService,
               private _changeDetectionRef: ChangeDetectorRef,
               private router: Router,
               private route: ActivatedRoute,
@@ -62,95 +64,31 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.noMoreResults      = true;
-    // this.ranSearch          = false;
-    // this.showAdvancedFields = false;
-    // this.loading            = false;
+    this.noMoreResults      = true;
+    this.ranSearch          = false;
+    this.showAdvancedFields = false;
+    this.loading            = false;
 
-    // this.route.params.subscribe((params: Params) => {
-    //   /*
-    //     TBD: Deal with meta search terms?
-    //       this.params.type
-    //       this.params.page
-    //       this.params.limit
-    //   */
-    //   this.params = params;
-    //   this.terms  = new SearchTerms();
+    this.route.params.subscribe((params: Params) => {
+      /*
+        TBD: Deal with meta search terms?
+          this.params.type
+          this.params.page
+          this.params.limit
+      */
+      this.params = params;
+      this.terms  = new SearchTerms();
 
-    //   // Get the proponents
-    //   this.proponentService.getAll().subscribe(
-    //     proponents => {
-    //       this.proponents = proponents;
+      if (this.params.clfiles) {
+        this.terms.clfiles = this.params.clfiles.split(',').join(' ');
+      }
 
-    //       // Grab any terms that were passed in through the URL
-    //       if (this.params.proponents) {
-    //         const operatorIds = this.params.proponents.split(',');
-    //         this.terms.proponents = this.proponents.filter(proponent => operatorIds.indexOf(proponent._id) !== -1);
-    //         this.showAdvancedFields = true;
-    //       }
+      this._changeDetectionRef.detectChanges();
 
-    //       if (this.params.ownerships) {
-    //         const ownerIds = this.params.ownerships.split(',');
-    //         this.terms.ownerships = this.proponents.filter(proponent => ownerIds.indexOf(proponent._id) !== -1);
-    //         this.showAdvancedFields = true;
-    //       }
-
-    //       // Needed in development mode - not required in prod.
-    //       this._changeDetectionRef.detectChanges();
-
-    //       // Get the projects
-    //       this.projectService.getAll().subscribe(
-    //         projects => {
-    //           this.projects = projects;
-    //           this.projectArray = [];
-    //           this.projects.forEach((project, index) => {
-    //             this.projectArray.push(project._id);
-    //           });
-
-    //           // Grab any terms that were passed in through the URL
-    //           if (this.params.projects) {
-    //             const projectIds = this.params.projects.split(',');
-    //             this.terms.projects = this.projects.filter(project => projectIds.indexOf(project._id) !== -1);
-    //             this.showAdvancedFields = true;
-    //           }
-
-    //           if (this.params.keywords) {
-    //             this.terms.keywords = this.params.keywords.split(',').join(' ');
-    //           }
-
-    //           if (this.params.datestart && Date.parse(this.params.datestart)) {
-    //             const dateStart = new Date(this.params.datestart);
-    //             this.terms.dateStart = {
-    //               day: dateStart.getUTCDate(),
-    //               month: dateStart.getUTCMonth() + 1,
-    //               year: dateStart.getUTCFullYear()
-    //             };
-    //             this.showAdvancedFields = true;
-    //           }
-
-    //           if (this.params.dateend && Date.parse(this.params.dateend)) {
-    //             const dateEnd = new Date(this.params.dateend);
-    //             this.terms.dateEnd = {
-    //               day: dateEnd.getUTCDate(),
-    //               month: dateEnd.getUTCMonth() + 1,
-    //               year: dateEnd.getUTCFullYear()
-    //             };
-    //             this.showAdvancedFields = true;
-    //           }
-
-    //           // Needed in development mode - not required in prod.
-    //           this._changeDetectionRef.detectChanges();
-
-    //           if (!_.isEmpty(this.terms.getParams())) {
-    //             this.doSearch(true);
-    //           }
-    //         },
-    //         error => console.log(error)
-    //       );
-    //     },
-    //     error => console.log(error)
-    //   );
-    // });
+      if (!_.isEmpty(this.terms.getParams())) {
+        this.doSearch(true);
+      }
+    });
   }
 
   toggleAdvancedSearch() {
@@ -164,33 +102,22 @@ export class SearchComponent implements OnInit {
     if (firstSearch) {
       this.page = 0;
       this.count = 0;
-      this.results = [];
+      this.results = null;
       this.noMoreResults = false;
     } else {
       this.page += 1;
     }
 
-    this.documentService.get(this.terms, this.projects, this.proponents, this.page, this.limit).subscribe(
+    this.searchService.getByCLFile(this.terms.clfiles).subscribe(
       data => {
         this.loading = false;
 
-        // Push in 1st call
-        if (data[0].results) {
-          data[0].results.forEach(i => {
-            this.results.push(i);
-          });
+        // This outputs the value of data to the web console.
+        this.results = data;
+
+        if (data && data.totalFeatures) {
+          this.count = data.totalFeatures;
         }
-
-        // Push in 2nd call
-        if (data[1].results) {
-          data[1].results.forEach(i => {
-            this.results.push(i);
-          });
-        }
-
-        this.count = (data[0].count || 0) + (data[1].count || 0);
-
-        this.noMoreResults = (this.results.length === this.count) || (data[0].results.length === 0 && data[1].results.length === 0);
 
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();
