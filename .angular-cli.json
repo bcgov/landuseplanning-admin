@@ -60,7 +60,7 @@
     "styleExt": "scss",
     "component": {},
     "serve": {
-      "port": 4300
+      "port": 4200
     }    
   }
 }
