@@ -78,6 +78,8 @@ export class Api {
     _.each(fields, function (f) {
       queryString += f + '|';
     });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     // let options = new RequestOptions({ headers: headers });
     return this.getApps(queryString, { headers: headers});
@@ -105,6 +107,8 @@ export class Api {
     _.each(fields, function (f) {
       queryString += f + '|';
     });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.getApps(queryString, { headers: headers});
   }
