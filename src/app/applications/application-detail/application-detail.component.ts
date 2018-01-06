@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Application } from '../../models/application';
-import { CollectionsArray } from '../../models/collection';
+// import { CollectionsArray } from '.  ./../models/collection';
 // import { DocumentService } from '../../services/document.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   // public properties
   loading: boolean;
   application: Application;
-  collections: CollectionsArray;
+  // collections: CollectionsArray;
 
   // private fields
   private sub: Subscription;

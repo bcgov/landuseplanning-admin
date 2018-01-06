@@ -29,13 +29,15 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
-  getByCode(_id: string): Observable<Application> {
+  getById(id: string): Observable<Application> {
     // return this.application = null;
 
     // Grab the application data first
-    return this.api.getApplicationById(_id)
+    return this.api.getApplicationById(id)
       .map((res: Response) => {
-        return res.text() ? new Application(res.json()) : null;
+        const applications = res.text() ? res.json() : [];
+        return applications.length > 0 ? applications[0] : null;
+        // return res.text() ? new Application(res.json()) : null;
       })
       .map((application: Application) => {
         if (!application) { return; }

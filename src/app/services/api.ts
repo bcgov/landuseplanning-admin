@@ -82,7 +82,7 @@ export class Api {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     // let options = new RequestOptions({ headers: headers });
-    return this.getApps(queryString, { headers: headers});
+    return this.get(this.pathAPI, queryString, { headers: headers});
   }
 
   getApplicationById(id: string) {
@@ -110,7 +110,7 @@ export class Api {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.getApps(queryString, { headers: headers});
+    return this.get(this.pathAPI, queryString, { headers: headers});
   }
 
   getBCGWCrownLandsById(id: string) {
@@ -122,7 +122,7 @@ export class Api {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.getBCGWCrownLands(queryString, { headers: headers});
+    return this.get(this.pathAPI, queryString, { headers: headers});
   }
 
   getDocuments(id: string) {
@@ -130,18 +130,18 @@ export class Api {
     return this.get(this.pathAPI, 'documents/' + id, { headers: headers});
   }
 
-  getBCGWCrownLands(apiRoute: string, options?: Object) {
-    return this.get(this.pathAPI, apiRoute, options);
-  }
+  // getBCGWCrownLands(apiRoute: string, options?: Object) {
+  //   return this.get(this.pathAPI, apiRoute, options);
+  // }
 
   // Methods
-  getApps(apiRoute: string, options?: Object) {
-    return this.get(this.pathAPI, apiRoute, options);
-  }
+  // getApps(apiRoute: string, options?: Object) {
+  //   return this.get(this.pathAPI, apiRoute, options);
+  // }
 
-  putApps(apiRoute: string, body?: Object, options?: Object) {
-    return this.put(this.pathAPI, apiRoute, body, options);
-  }
+  // putApps(apiRoute: string, body?: Object, options?: Object) {
+  //   return this.put(this.pathAPI, apiRoute, body, options);
+  // }
 
   login(username: string, password: string): Observable<boolean> {
       return this.http.post(`${ this.pathAPI }/login/token`, { username: username, password: password })

@@ -12,13 +12,13 @@ const routes: Routes = [
     component: ApplicationListComponent
   },
   {
-    path: 'a/:code',
+    path: 'a/:id',
     component: ApplicationDetailComponent,
     resolve: {
       application: ApplicationDetailResolver
     },
     // each tab within the page navigates to a separate route
-    // e.g. /a/:code/(overview|authorizations|compliance|docs)
+    // e.g. /a/:id/(overview|authorizations|compliance|docs)
     children: TAB_NAV_ROUTES
   }
 ];
