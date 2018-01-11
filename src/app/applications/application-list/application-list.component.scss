@@ -74,7 +74,11 @@
         }
         &__date-col {
             width: 7.5rem;
-            text-align: right;
+            // text-align: right;
+        }
+        &__status-col {
+            width: 7.5rem;
+            // text-align: right;
         }
         &__application-details {
             &--links {
@@ -98,8 +102,12 @@
             width: 20%;
         }
         &__date-col {
-            width: 20%;
-            text-align: left;
+            width: 10%;
+            // text-align: left;
+        }
+        &__status-col {
+            width: 10%;
+            // text-align: left;
         }
         &__application-details {
             font-size: 0.9375rem;
