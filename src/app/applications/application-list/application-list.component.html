@@ -34,12 +34,16 @@
               <i class="sort" [ngClass]="{'sort-asc': (column == 'projectDate' && isDesc), 'sort-desc': (column == 'projectDate' && !isDesc) }"
                 aria-hidden="true"></i>
             </th>
+            <th class="application-table__status-col sortable" (click)="sort('status')">Status
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'status' && isDesc), 'sort-desc': (column == 'status' && !isDesc) }"
+                aria-hidden="true"></i>
+            </th>
           </tr>
         </thead>
 
         <tbody class="application-table__content">
           <tr *ngFor="let item of applications | orderBy: {property: column, direction: direction} | paginate: config">
-            <td class="accordion__collapse-item p-0" colspan="4">
+            <td class="accordion__collapse-item p-0" colspan="5">
               <div class="accordion__collapse-header" id="accordHead" role="tab">
                 <a class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item.code}}">
                   <i class="material-icons open-icon">add</i>
@@ -52,6 +56,7 @@
                 <!-- TODO: create filter 'unknown' for null/blank region -->
                 <span class="accordion__collapse-header--column application-table__region-col">{{item.region}}</span>
                 <span class="accordion__collapse-header--column application-table__date-col">{{item.projectDate | date}}</span>
+                <span class="accordion__collapse-header--column application-table__status-col">{{item.status || '-'}}</span>
               </div>
               <div class="collapse" id="accordCollapse{{item.code}}" role="tabpanel">
                 <div class="accordion__collapse-body">
