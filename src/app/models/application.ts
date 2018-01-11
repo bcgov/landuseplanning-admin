@@ -18,8 +18,8 @@ export class Application {
   code: string;
   name: string;
   description: string;
-  interestID: string; // should be number?
-  internalID: string; // should be number?
+  interestID: number;
+  internalID: number;
   isPublished: boolean;
   legalDescription: string;
   location: string;
@@ -28,13 +28,13 @@ export class Application {
   mapsheet: string;
   postID: number;
   projectDate: Date;
-  // proponent: string; // objectid -> Organization
+  proponent: string; // should be objectid -> Organization?
   purpose: string;
   subpurpose: string;
   region: string;
   stageCode: string;
   status: string;
-  tantalisID: string; // should be number?
+  tantalisID: number;
   type: string;
   subtype: string;
 
@@ -46,7 +46,7 @@ export class Application {
     html: string;
   }[];
 
-  client: string;
+  // client: string;
 
   constructor(obj?: any) {
     this._id                     = obj && obj._id                     || null;
@@ -65,8 +65,8 @@ export class Application {
     this.code                    = obj && obj.code                    || null;
     this.name                    = obj && obj.name                    || null;
     this.description             = obj && obj.description             || null;
-    this.interestID              = obj && obj.interestID              || null;
-    this.internalID              = obj && obj.internalID              || null;
+    this.interestID              = obj && obj.interestID              || 0;
+    this.internalID              = obj && obj.internalID              || 0;
     this.isPublished             = obj && obj.isPublished             || null;
     this.legalDescription        = obj && obj.legalDescription        || null;
     this.location                = obj && obj.location                || null;
@@ -75,13 +75,13 @@ export class Application {
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
     this.projectDate             = obj && obj.projectDate             || null;
-    // this.proponent               = obj && obj.proponent               || null;
+    this.proponent               = obj && obj.proponent               || null;
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;
     this.stageCode               = obj && obj.stageCode               || null;
     this.status                  = obj && obj.status                  || null;
-    this.tantalisID              = obj && obj.tantalisID              || null;
+    this.tantalisID              = obj && obj.tantalisID              || 0;
     this.type                    = obj && obj.type                    || null;
     this.subtype                 = obj && obj.subtype                 || null;
 
@@ -89,7 +89,7 @@ export class Application {
     this.content                 = obj && obj.content                 || [];
 
     // get the client from the proponent
-    this.client = (obj && obj.proponent && obj.proponent.name) ? obj.proponent.name : 'unknown';
+    // this.client = (obj && obj.proponent && obj.proponent.name) ? obj.proponent.name : 'unknown';
   }
 
   getContent(page: string, type: string): string {
