@@ -61,7 +61,7 @@
                 border-top: none;
                 padding-left: 0.75rem;
                 padding-right: 0.75rem;
-                &.application-table__code-col {
+                &.application-table__name-col {
                     @include flex(1 1 auto);
                 }
             }
