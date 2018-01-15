@@ -121,6 +121,26 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  getCommentPeriodByAppId(id: string) {
+    const fields = [
+      'addedBy',
+      'application',
+      'name',
+      'startDate',
+      'endDate',
+      'description',
+      'internalNotes'
+    ];
+    let queryString = 'commentperiod/' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
   getBCGWCrownLandsById(id: string) {
     const fields = ['name'];
     let queryString = 'public/search/bcgw/crownLandsId/' + id + '?fields=';
@@ -155,7 +175,7 @@ export class ApiService {
     return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
-        console.log('token:', response.json());
+        // console.log('token:', response.json());
         const token = response.json() && response.json().accessToken;
         if (token) {
           // set token property

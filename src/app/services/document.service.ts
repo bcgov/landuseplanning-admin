@@ -9,7 +9,6 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
-
 import { Search, SearchArray, SearchTerms } from '../models/search';
 import { Application } from '../models/application';
 import { Document } from '../models/document';

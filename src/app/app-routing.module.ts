@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { HomeComponent } from 'app/home/home.component';
-import { MainMapComponent } from 'app/map/main-map/main-map.component';
-import { SearchComponent } from 'app/search/search.component';
-import { LoginComponent } from 'app/login/login.component';
+import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home/home.component';
+import { MainMapComponent } from './map/main-map/main-map.component';
+import { SearchComponent } from './search/search.component';
+import { CommentPeriodComponent } from './comment-period/comment-period.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'search',
     component: SearchComponent
+  },
+  {
+    path: 'period',
+    component: CommentPeriodComponent
   }
 ];
 
@@ -28,4 +33,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
+
 export class AppRoutingModule { }
