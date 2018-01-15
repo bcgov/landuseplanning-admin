@@ -2,7 +2,10 @@
 	<div class="container">
 		<div class="container__inner-container">
 			<div class="hero-banner__content">
-				<h1 id="pgTitle"><i class="material-icons">security</i><span> Authenticated Access</span> <span> NRTS Public Review & Comment</span> <span class="badge" id="alpha" title="What is this?">BETA</span></h1>
+				<h1 id="pgTitle">
+					<i class="material-icons">security</i> <span>Authenticated Access</span><br />
+					<span>NRTS Public Review & Comment</span> <span class="badge" id="alpha" title="What is this?">BETA</span>
+				</h1>
 				<p>This is for authenticated access to NRTS PRC only.</p>
 				<div class="hero-banner__content--cta-btns">
 					<strong>Find Applications in British Columbia...</strong>
@@ -37,8 +40,8 @@
 				<div class="col-md-4">
 					<div class="feature-block">
 						<h3>Find Applications in B.C.</h3>
-						<p>The NRTS PRC website currently profiles {{numProjects}} application</p>
-						<a class="btn inverted" href="/projects" [routerLink]="['/projects']">View List</a>
+						<p>The NRTS PRC website currently profiles {{numApplications}} application</p>
+						<a class="btn inverted" href="/applications" [routerLink]="['/applications']">View List</a>
 						<span>&nbsp;</span>
 						<a class="btn inverted" href="/map" [routerLink]="['/map']">View Map</a>
 					</div>

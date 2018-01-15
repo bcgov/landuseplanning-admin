@@ -8,10 +8,8 @@ import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
-import { Api } from './api';
-
+import { ApiService } from './api';
 import { Search, SearchArray, SearchTerms } from '../models/search';
-import { Project } from '../models/project';
 import { Application } from '../models/application';
 import { Document } from '../models/document';
 import { Proponent } from '../models/proponent';
@@ -20,7 +18,7 @@ import { Proponent } from '../models/proponent';
 export class DocumentService {
   // searchResult: SearchArray;
 
-  constructor(private api: Api) { }
+  constructor(private api: ApiService) { }
 
   getDocuments(appId: string) {
     this.api.getDocuments(appId)
@@ -41,7 +39,7 @@ export class DocumentService {
     return Observable.throw(msg);
   }
 
-  get(terms: SearchTerms, projects: Array<Project>, proponents: Array<Proponent>, page: number, limit: number) {
+  get(terms: SearchTerms, applications: Array<Application>, proponents: Array<Proponent>, page: number, limit: number) {
     return null;
     // this.searchResult = new SearchArray();
 
@@ -60,22 +58,22 @@ export class DocumentService {
     // }
 
     // // We change the way we query epic because the only thing we're currently in
-    // // for api/projects/major is the epicCode.  In future we'll be able to change
+    // // for api/applications/major is the epicCode.  In future we'll be able to change
     // // this to reference project= in epic.
-    // if (params['projects']) {
+    // if (params['applications']) {
     //   const epicQuery = [];
-    //   terms.projects.forEach(p => {
+    //   terms.applications.forEach(p => {
     //     p.epicProjectCodes.forEach(c => {
     //       epicQuery.push(c);
     //     });
     //   });
-    //   memProjectQuery += '&project=' + params['projects'];
+    //   memProjectQuery += '&project=' + params['applications'];
     //   epicProjectQuery += '&projectcode=' + epicQuery;
     // } else {
-    //   // Make sure we query all the projects by default
+    //   // Make sure we query all the applications by default
     //   const projectQuery = [];
     //   const epicQuery = [];
-    //   projects.forEach(p => {
+    //   applications.forEach(p => {
     //     projectQuery.push(p._id);
     //     p.epicProjectCodes.forEach(c => {
     //       epicQuery.push(c);
@@ -147,7 +145,7 @@ export class DocumentService {
     // }
 
     // // Field selection
-    // query += '&fields=_id project displayName documentDate description datePosted \
+    // query += '&fields=_id application displayName documentDate description datePosted \
     // documentCategories collections keywords inspectionReport';
     // const mem = this.api.getMEM(`v2/${query}${memProjectQuery}`)
     //   .map((res: Response) => {

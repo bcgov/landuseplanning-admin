@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 // import { CommonModule } from '@angular/common';
-
 import { OrderByPipe } from '../pipes/order-by.pipe';
 import { NewlinesPipe } from '../pipes/newlines.pipe';
 
@@ -17,4 +16,5 @@ import { NewlinesPipe } from '../pipes/newlines.pipe';
     NewlinesPipe
   ]
 })
+
 export class SharedModule { }

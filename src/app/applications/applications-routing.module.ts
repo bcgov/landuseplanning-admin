@@ -28,4 +28,5 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [ApplicationDetailResolver]
 })
+
 export class ApplicationsRoutingModule { }

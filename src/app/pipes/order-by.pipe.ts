@@ -5,14 +5,12 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 
 export class OrderByPipe implements PipeTransform {
-
     transform(records: Array<any>, args: any): any {
-
         if (!args.property || !args.direction) {
             return records;
         }
 
-        return records.sort(function(a, b) {
+        return records.sort(function (a, b) {
             if (!args) {
                 return 0;
             }

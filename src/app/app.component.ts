@@ -1,30 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+// import { Router } from '@angular/router';
 import { PageScrollConfig } from 'ng2-page-scroll';
 import { CookieService } from 'ngx-cookie-service';
 import { Subscription } from 'rxjs/Subscription';
 
-import { HomeComponent } from './home/home.component';
 import { DocumentService } from './services/document.service';
-import { SearchComponent } from './search/search.component';
-
-import { News } from './models/news';
-import { Api } from './services/api';
+import { ApiService } from './services/api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [ DocumentService]
+  providers: [DocumentService]
 })
 export class AppComponent implements OnInit {
   loggedIn: String;
   hostname: String;
   private sub: Subscription;
-  constructor(private _router: Router,
-              private cookieService: CookieService,
-              private api: Api) {
-    // Used for sharing links.
+  constructor(
+    // private _router: Router,
+    private cookieService: CookieService,
+    private api: ApiService
+  ) {
+    // used for sharing links
     this.hostname = api.pathAPI; // TODO: Wrong
 
     PageScrollConfig.defaultScrollOffset = 50;

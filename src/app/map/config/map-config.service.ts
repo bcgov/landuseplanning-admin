@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Api } from 'app/services/api';
+import { ApiService } from '../../services/api';
 import { MapConfig } from './map-config.interface';
 
 const webmaps = {
@@ -12,7 +12,7 @@ const webmaps = {
 @Injectable()
 export class MapConfigService {
 
-  constructor(private api: Api) { }
+  constructor(private api: ApiService) { }
 
   public get(): MapConfig {
     const webmapId = this.webmapForEnv(this.api.env);

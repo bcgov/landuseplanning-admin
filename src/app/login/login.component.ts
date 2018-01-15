@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Api } from '../services/api';
+import { ApiService } from '../services/api';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,10 @@ export class LoginComponent implements OnInit {
     loading = false;
     error = '';
 
-    constructor(private router: Router, private api: Api) { }
+    constructor(
+        private router: Router,
+        private api: ApiService
+    ) { }
 
     ngOnInit() {
         // reset login status

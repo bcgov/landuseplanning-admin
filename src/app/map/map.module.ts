@@ -5,7 +5,6 @@ import { EsriLoaderModule } from 'angular-esri-loader';
 
 import { EsriMapComponent } from './esri-map/esri-map.component';
 import { MainMapComponent } from './main-map/main-map.component';
-import { ProjectMapComponent } from './project-map/project-map.component';
 import { ApplicationMapComponent } from './application-map/application-map.component';
 import { MapLoaderService } from './map-loader.service';
 
@@ -18,13 +17,11 @@ import { MapLoaderService } from './map-loader.service';
   declarations: [
     EsriMapComponent,
     MainMapComponent,
-    ProjectMapComponent,
     ApplicationMapComponent
   ],
   exports: [
     EsriMapComponent,
     MainMapComponent,
-    ProjectMapComponent,
     ApplicationMapComponent
   ],
   providers: [

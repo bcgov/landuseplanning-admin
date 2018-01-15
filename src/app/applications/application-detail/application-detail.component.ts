@@ -11,6 +11,7 @@ import { Application } from '../../models/application';
   templateUrl: './application-detail.component.html',
   styleUrls: ['./application-detail.component.scss']
 })
+
 export class ApplicationDetailComponent implements OnInit, OnDestroy {
   // public properties
   loading: boolean;

@@ -3,7 +3,7 @@ export class Document {
   keywords: string[];
   displayName: string;
   directoryID: number;
-  project: string;
+  application: string;
   description: string;
   dateReceived: string;
   documentDate: string;
@@ -17,7 +17,7 @@ export class Document {
     this.keywords = obj && obj.keywords || [];
     this.displayName = obj && obj.displayName || null;
     this.directoryID = obj && obj.directoryID || null;
-    this.project = obj && obj.project || null;
+    this.application = obj && obj.application || null;
     this.dateReceived = obj && obj.dateReceived || null;
     this.documentDate = obj && obj.documentDate || null;
     this.datePosted = obj && obj.datePosted || null;
