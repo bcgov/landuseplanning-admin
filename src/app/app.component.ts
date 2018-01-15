@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+// import { Router } from '@angular/router';
 import { PageScrollConfig } from 'ng2-page-scroll';
 import { CookieService } from 'ngx-cookie-service';
 import { Subscription } from 'rxjs/Subscription';
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   hostname: String;
   private sub: Subscription;
   constructor(
-    private _router: Router,
+    // private _router: Router,
     private cookieService: CookieService,
     private api: ApiService
   ) {

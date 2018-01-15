@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ApiService } from 'app/services/api';
+import { ApiService } from '../../services/api';
 import { MapConfig } from './map-config.interface';
 
 const webmaps = {

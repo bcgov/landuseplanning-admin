@@ -2,7 +2,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import * as _ from 'lodash';
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentService } from '../services/document.service';
 import { Application } from '../models/application';
 import { Search, SearchTerms } from '../models/search';
@@ -10,7 +10,7 @@ import { Proponent } from '../models/proponent';
 import { ApplicationService } from '../services/application.service';
 import { ProponentService } from '../services/proponent.service';
 import { SearchService } from '../services/search.service';
-import { ApiService } from '../services/api';
+// import { ApiService } from '../services/api';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
@@ -23,10 +23,10 @@ import 'rxjs/add/operator/map';
   animations: [
     trigger('visibility', [
       transition(':enter', [   // :enter is alias to 'void => *'
-        animate('0.2s 0s', style({opacity: 1}))
+        animate('0.2s 0s', style({ opacity: 1 }))
       ]),
       transition(':leave', [   // :leave is alias to '* => void'
-        animate('0.2s 0.75s', style({opacity: 0}))
+        animate('0.2s 0.75s', style({ opacity: 0 }))
       ])
     ])
   ]
@@ -51,23 +51,25 @@ export class SearchComponent implements OnInit {
 
   myApplications: Array<any>;
 
-  constructor(calender: NgbCalendar,
-              private documentService: DocumentService,
-              private applicationService: ApplicationService,
-              private proponentService: ProponentService,
-              private searchService: SearchService,
-              private _changeDetectionRef: ChangeDetectorRef,
-              private router: Router,
-              private route: ActivatedRoute,
-              private api: ApiService) {
+  constructor(
+    // calendar: NgbCalendar,
+    private documentService: DocumentService,
+    private applicationService: ApplicationService,
+    private proponentService: ProponentService,
+    private searchService: SearchService,
+    // private api: ApiService,
+    private _changeDetectionRef: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.limit = 15;
   }
 
   ngOnInit() {
-    this.noMoreResults      = true;
-    this.ranSearch          = false;
+    this.noMoreResults = true;
+    this.ranSearch = false;
     this.showAdvancedFields = false;
-    this.loading            = false;
+    this.loading = false;
 
     this.route.params.subscribe((params: Params) => {
       /*
@@ -77,7 +79,7 @@ export class SearchComponent implements OnInit {
           this.params.limit
       */
       this.params = params;
-      this.terms  = new SearchTerms();
+      this.terms = new SearchTerms();
 
       if (this.params.clfiles) {
         this.terms.clfiles = this.params.clfiles.split(',').join(' ');
