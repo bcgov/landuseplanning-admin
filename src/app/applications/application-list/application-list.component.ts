@@ -3,7 +3,7 @@ import { PaginationInstance } from 'ngx-pagination';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
-import { Api } from '../../services/api';
+import { ApiService } from '../../services/api';
 
 @Component({
   selector: 'app-application-list',
@@ -24,9 +24,11 @@ export class ApplicationListComponent implements OnInit {
     currentPage: 1
   };
 
-  constructor(private applicationService: ApplicationService,
-              private _changeDetectionRef: ChangeDetectorRef,
-              private api: Api) { }
+  constructor(
+    private applicationService: ApplicationService,
+    private _changeDetectionRef: ChangeDetectorRef,
+    private api: ApiService
+  ) { }
 
   ngOnInit() {
     // If we're not logged in, redirect.

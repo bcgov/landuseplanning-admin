@@ -23,7 +23,6 @@ import { AuthenticationService } from './services/authentication.service';
 
 // feature modules
 import { MapModule } from './map/map.module';
-import { ProjectsModule } from './projects/projects.module';
 import { ApplicationsModule } from './applications/applications.module';
 
 import { TagInputModule } from 'ngx-chips';
@@ -43,8 +42,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserModule,
     FormsModule,
     HttpModule,
-    ProjectsModule,  // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
-    ApplicationsModule,
+    ApplicationsModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     AppRoutingModule,
     NgbModule.forRoot(),
     NgxPaginationModule,
@@ -54,4 +52,5 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   providers: [SearchService, ProponentService, AuthenticationService, ApplicationService, CookieService],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

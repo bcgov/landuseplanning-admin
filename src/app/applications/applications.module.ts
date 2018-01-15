@@ -15,7 +15,7 @@ import { OrderByPipe } from '../pipes/order-by.pipe';
 import { NewlinesPipe } from '../pipes/newlines.pipe';
 
 // services
-import { Api } from '../services/api';
+import { ApiService } from '../services/api';
 import { ApplicationService } from '../services/application.service';
 // import { DocumentService } from '../services/document.service';
 
@@ -37,7 +37,7 @@ import { ApplicationService } from '../services/application.service';
     ApplicationDetailComponent
   ],
   providers: [
-    Api,
+    ApiService,
     ApplicationService
     // ,DocumentService
   ]

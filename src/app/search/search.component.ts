@@ -10,7 +10,7 @@ import { Proponent } from '../models/proponent';
 import { ApplicationService } from '../services/application.service';
 import { ProponentService } from '../services/proponent.service';
 import { SearchService } from '../services/search.service';
-import { Api } from '../services/api';
+import { ApiService } from '../services/api';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
@@ -59,7 +59,7 @@ export class SearchComponent implements OnInit {
               private _changeDetectionRef: ChangeDetectorRef,
               private router: Router,
               private route: ActivatedRoute,
-              private api: Api) {
+              private api: ApiService) {
     this.limit = 15;
   }
 

@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
-export class Api {
+export class ApiService {
   public token: string;
   pathAPI: string;
   params: Params;
@@ -57,25 +57,27 @@ export class Api {
 
   // Applications
   getApplications() {
-    const fields = ['name',
-                    'type',
-                    'subtype',
-                    'purpose',
-                    'subpurpose',
-                    'proponent',
-                    'latitude',
-                    'longitude',
-                    'location',
-                    'region',
-                    'description',
-                    'legalDescription',
-                    'status',
-                    'projectDate',
-                    'businessUnit',
-                    'cl_files',
-                    'commodityType',
-                    'commodity',
-                    'commodities'];
+    const fields = [
+      'name',
+      'type',
+      'subtype',
+      'purpose',
+      'subpurpose',
+      'proponent',
+      'latitude',
+      'longitude',
+      'location',
+      'region',
+      'description',
+      'legalDescription',
+      'status',
+      'projectDate',
+      'businessUnit',
+      'cl_files',
+      'commodityType',
+      'commodity',
+      'commodities'
+    ];
     let queryString = 'application?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -84,54 +86,56 @@ export class Api {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     // let options = new RequestOptions({ headers: headers });
-    return this.get(this.pathAPI, queryString, { headers: headers});
+    return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   getApplicationById(id: string) {
-    const fields = ['name',
-                    'type',
-                    'subtype',
-                    'purpose',
-                    'subpurpose',
-                    'proponent',
-                    'latitude',
-                    'longitude',
-                    'location',
-                    'region',
-                    'description',
-                    'legalDescription',
-                    'status',
-                    'projectDate',
-                    'businessUnit',
-                    'cl_files',
-                    'commodityType',
-                    'commodity',
-                    'commodities'];
-    let queryString = 'application/'  + id + '?fields=';
+    const fields = [
+      'name',
+      'type',
+      'subtype',
+      'purpose',
+      'subpurpose',
+      'proponent',
+      'latitude',
+      'longitude',
+      'location',
+      'region',
+      'description',
+      'legalDescription',
+      'status',
+      'projectDate',
+      'businessUnit',
+      'cl_files',
+      'commodityType',
+      'commodity',
+      'commodities'
+    ];
+    let queryString = 'application/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers});
+    return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   getBCGWCrownLandsById(id: string) {
     const fields = ['name'];
-    let queryString = 'public/search/bcgw/crownLandsId/'  + id + '?fields=';
+    let queryString = 'public/search/bcgw/crownLandsId/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers});
+    return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   getDocuments(id: string) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, 'documents/' + id, { headers: headers});
+    return this.get(this.pathAPI, 'documents/' + id, { headers: headers });
   }
 
   // getBCGWCrownLands(apiRoute: string, options?: Object) {
@@ -148,31 +152,31 @@ export class Api {
   // }
 
   login(username: string, password: string): Observable<boolean> {
-      return this.http.post(`${ this.pathAPI }/login/token`, { username: username, password: password })
+    return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
       .map((response: Response) => {
-              // login successful if there's a jwt token in the response
-              console.log('token:', response.json());
-              const token = response.json() && response.json().accessToken;
-              if (token) {
-                  // set token property
-                  this.token = token;
+        // login successful if there's a jwt token in the response
+        console.log('token:', response.json());
+        const token = response.json() && response.json().accessToken;
+        if (token) {
+          // set token property
+          this.token = token;
 
-                  // store username and jwt token in local storage to keep user logged in between page refreshes
-                  localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
+          // store username and jwt token in local storage to keep user logged in between page refreshes
+          localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
 
-                  // return true to indicate successful login
-                  return true;
-              } else {
-                  // return false to indicate failed login
-                  return false;
-              }
-          });
+          // return true to indicate successful login
+          return true;
+        } else {
+          // return false to indicate failed login
+          return false;
+        }
+      });
   }
 
   logout(): void {
-      // clear token remove user from local storage to log user out
-      this.token = null;
-      localStorage.removeItem('currentUser');
+    // clear token remove user from local storage to log user out
+    this.token = null;
+    localStorage.removeItem('currentUser');
   }
 
   handleError(error: any) {
@@ -184,15 +188,15 @@ export class Api {
   // Private
 
   private get(apiPath: string, apiRoute: string, options?: Object) {
-    return this.http.get(`${ apiPath }/${ apiRoute }`, options || null);
+    return this.http.get(`${apiPath}/${apiRoute}`, options || null);
   }
 
   private put(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
-    return this.http.put(`${ apiPath }/${ apiRoute }`, body || null, options || null);
+    return this.http.put(`${apiPath}/${apiRoute}`, body || null, options || null);
   }
 
   private post(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
     // console.log('THIS:', `${ apiPath }/${ apiRoute }`, body || null, options || null);
-    return this.http.post(`${ apiPath }/${ apiRoute }`, body || null, options || null);
+    return this.http.post(`${apiPath}/${apiRoute}`, body || null, options || null);
   }
 }

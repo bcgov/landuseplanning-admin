@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Project} from './models/project';
+import { Application } from './models/application';
 
 @Pipe({
-  name: 'objectFilter'
+    name: 'objectFilter'
 })
 export class ObjectFilterPipe implements PipeTransform {
 
-    transform(value: Project[], q: string) {
+    transform(value: Application[], q: string) {
         if (!q || q === '') {
             return value;
         }

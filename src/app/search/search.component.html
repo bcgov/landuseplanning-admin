@@ -120,12 +120,12 @@
     <!-- SEARCH RESULTS TEMPLATE -->
     <section class="add-spacer" *ngIf="ranSearch">
       <h2 class="search-results__title" *ngIf="ranSearch && results && count > 0">Showing {{count}} Feature<span *ngIf="count != 1">s</span></h2>
-      <ul class="search-results list-group">
+      <!-- <ul class="search-results list-group">
         <li *ngFor="let item of results.features" class="list-group-item search-results-item">
-          <h3 class="search-results-item__project-name"
+          <h3 class="search-results-item__application-name"
             *ngIf="item.id">{{item.id}}
           </h3>
-          <!-- <div class="search-results-item__description mt-1">{{item.properties.CODE_CHR_STAGE}}</div>
+          <div class="search-results-item__description mt-1">{{item.properties.CODE_CHR_STAGE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.CROWN_LANDS_FILE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.DISPOSITION_TRANSACTION_SID}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div>
@@ -137,7 +137,7 @@
           <div class="search-results-item__description mt-3">{{item.properties.TENURE_SUBPURPOSE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.TENURE_SUBTYPE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.TENURE_TYPE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div> -->
+          <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div>
         </li>
       </ul>
 
@@ -154,7 +154,7 @@
         <button class="btn content-btn-alt" (click)="loadMore()">Show More</button>
       </div>
 
-      <h2 class="search-results__title" *ngIf="ranSearch && results && results.length > 0">Showing {{results.length}} out of {{count}} Document<span *ngIf="count != 1">s</span></h2>
+      <h2 class="search-results__title" *ngIf="ranSearch && results && results.length > 0">Showing {{results.length}} out of {{count}} Document<span *ngIf="count != 1">s</span></h2> -->
     </section>
 
     <section>
