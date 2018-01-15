@@ -17,22 +17,22 @@
             </div>
           </div>
 
-          <!-- <div class="search-form__advanced-search-fields mt-4" id="advancedSearchFields" [hidden]="!showAdvancedFields">
+          <div class="search-form__advanced-search-fields mt-4" id="advancedSearchFields" [hidden]="!showAdvancedFields">
             <div class="form-group mb-4">
-              <label for="projects">Project</label>
-              <tag-input class="form-control" name='projectInput'
-                [secondaryPlaceholder]="'Enter a Project Name'"
+              <label for="applications">Application</label>
+              <tag-input class="form-control" name='applicationInput'
+                [secondaryPlaceholder]="'Enter an Application Name'"
                 [identifyBy]="'_id'"
                 [displayBy]="'name'"
-                [(ngModel)]="terms.projects">
+                [(ngModel)]="terms.applications">
                    <tag-input-dropdown
                     [identifyBy]="'_id'"
                     [displayBy]="'name'"
-                    [autocompleteItems]="projects">
+                    [autocompleteItems]="applications">
                    </tag-input-dropdown>
               </tag-input>
             </div>
-            <div class="form-group mb-4">
+            <!-- <div class="form-group mb-4">
               <label for="operatorInput">Operator</label>
               <tag-input class="form-control" name='operatorInput'
                 [secondaryPlaceholder]="'Enter an Operator Name'"
@@ -45,8 +45,8 @@
                     [autocompleteItems]="proponents">
                    </tag-input-dropdown>
               </tag-input>
-            </div>
-            <div class="form-group mb-4">
+            </div> -->
+            <!-- <div class="form-group mb-4">
               <label for="ownerInput">Owner</label>
               <tag-input class="form-control" name='ownerInput'
                 [secondaryPlaceholder]="'Enter an Owner Name'"
@@ -59,7 +59,7 @@
                     [autocompleteItems]="proponents">
                    </tag-input-dropdown>
               </tag-input>
-            </div>
+            </div> -->
             <div class="form-group mb-0">
               <label>Date Range</label>
               <div class="form-inline">
@@ -82,7 +82,7 @@
                   [(ngModel)]="terms.dateEnd"/>
               </div>
             </div>
-          </div> -->
+          </div>
 
           <div class="search-form__btn-container">
             <button class="search-form__search-btn btn btn-primary slide-l-btn"
@@ -125,7 +125,7 @@
           <h3 class="search-results-item__project-name"
             *ngIf="item.id">{{item.id}}
           </h3>
-          <div class="search-results-item__description mt-1">{{item.properties.CODE_CHR_STAGE}}</div>
+          <!-- <div class="search-results-item__description mt-1">{{item.properties.CODE_CHR_STAGE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.CROWN_LANDS_FILE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.DISPOSITION_TRANSACTION_SID}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div>
@@ -137,7 +137,7 @@
           <div class="search-results-item__description mt-3">{{item.properties.TENURE_SUBPURPOSE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.TENURE_SUBTYPE}}</div>
           <div class="search-results-item__description mt-3">{{item.properties.TENURE_TYPE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div>
+          <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div> -->
         </li>
       </ul>
 

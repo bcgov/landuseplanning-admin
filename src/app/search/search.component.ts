@@ -4,10 +4,10 @@ import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentService } from '../services/document.service';
-import { Project } from '../models/project';
+import { Application } from '../models/application';
 import { Search, SearchTerms } from '../models/search';
 import { Proponent } from '../models/proponent';
-import { ProjectService } from '../services/project.service';
+import { ApplicationService } from '../services/application.service';
 import { ProponentService } from '../services/proponent.service';
 import { SearchService } from '../services/search.service';
 import { Api } from '../services/api';
@@ -39,9 +39,9 @@ export class SearchComponent implements OnInit {
   count: number;
   noMoreResults: boolean;
   ranSearch: boolean;
-  projects: Array<Project>;
+  applications: Array<Application>;
   proponents: Array<Proponent>;
-  projectArray: Array<string>;
+  applicationArray: Array<string>;
   protoSearchActive: boolean;
   showAdvancedFields: boolean;
   public loading: boolean;
@@ -49,11 +49,11 @@ export class SearchComponent implements OnInit {
   params: Params;
   terms: SearchTerms;
 
-  myProjects: Array<any>;
+  myApplications: Array<any>;
 
   constructor(calender: NgbCalendar,
               private documentService: DocumentService,
-              private projectService: ProjectService,
+              private applicationService: ApplicationService,
               private proponentService: ProponentService,
               private searchService: SearchService,
               private _changeDetectionRef: ChangeDetectorRef,
