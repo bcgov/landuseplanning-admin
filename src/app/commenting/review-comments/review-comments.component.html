@@ -1,0 +1,33 @@
+<div class="hero-banner">
+  <div class="container">
+    <div class="container__inner-container">
+      <div class="hero-banner__content">
+        <h1 id="pgTitle">Review Comments page</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="anchor-point">
+  <div class="row">
+    <main class="col-lg-12">
+      <!-- TODO: show basic comment info + status + link to details -->
+      <p>Comment Period ... Dec 1, 2017 - Dec 31, 2017</p>
+      <ul>
+        <li>Comment 1</li>
+        <li>Comment 2</li>
+        <li>Comment 3</li>
+      </ul>
+      <p>Comment Period ... Jan 1, 2018 - Jan 31, 2018</p>
+      <ul>
+        <li>Comment 4</li>
+        <li>Comment 5</li>
+        <li>Comment 6</li>
+      </ul>
+      <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: 0 }]">
+        <i class="material-icons">assessment</i>
+        <span>Manage Comment Periods</span>
+      </a>
+    </main>
+  </div>
+</div>

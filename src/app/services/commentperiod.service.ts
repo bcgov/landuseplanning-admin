@@ -6,7 +6,6 @@ import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
 import { CommentPeriod } from '../models/commentperiod';
-// import { CollectionsList } from '../models/collection';
 
 @Injectable()
 export class CommentPeriodService {
@@ -14,21 +13,17 @@ export class CommentPeriodService {
 
   constructor(private api: ApiService) { }
 
-  getById(id: string): Observable<CommentPeriod> {
-    return this.api.getCommentPeriodByAppId(id)
+  // get all comment periods for the specified application id
+  getAll(id: string) {
+    return this.api.getCommentPeriodsByAppId(id)
       .map((res: Response) => {
         const commentperiods = res.text() ? res.json() : [];
-        return commentperiods.length > 0 ? commentperiods[0] : null;
-        // return res.text() ? new CommentPeriod(res.json()) : null;
-      })
-      .map((commentperiod: CommentPeriod) => {
-        if (!commentperiod) { return; }
 
-        this.commentperiod = commentperiod;
+        commentperiods.forEach((commentperiod, index) => {
+          commentperiods[index] = new CommentPeriod(commentperiod);
+        });
 
-        //  this.application.collections = new CollectionsList();
-
-        return this.commentperiod;
+        return commentperiods;
       })
       .catch(this.api.handleError);
   }

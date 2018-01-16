@@ -1,0 +1,25 @@
+<div class="hero-banner">
+  <div class="container">
+    <div class="container__inner-container">
+      <div class="hero-banner__content">
+        <h1 id="pgTitle">Manage Comment Periods page</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="anchor-point">
+  <div class="row">
+    <main class="col-lg-12">
+      <!-- TODO: show basic comment info + status + link to details -->
+      <ul>
+        <li>Comment Period ... Dec 1, 2017 - Dec 31, 2017 ... CLOSED</li>
+        <li>Comment Period ... Jan 1, 2018 - Jan 31, 2018 ... OPEN ... EDIT</li>
+      </ul>
+      <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: 0 }]">
+        <i class="material-icons">assessment</i>
+        <span>Review Comments</span>
+      </a>
+    </main>
+  </div>
+</div>
