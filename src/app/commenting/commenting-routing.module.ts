@@ -8,11 +8,11 @@ import { CommentDetailResolver } from './comment-detail-resolver.service';
 
 const routes: Routes = [
   {
-    path: 'periods/:appId',
+    path: 'periods',
     component: ManageCommentPeriodsComponent
   },
   {
-    path: 'comments/:periodId',
+    path: 'comments',
     component: ReviewCommentsComponent
   },
   {

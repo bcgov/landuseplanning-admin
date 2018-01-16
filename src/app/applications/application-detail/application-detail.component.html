@@ -2,20 +2,20 @@
   <div class="container">
     <div class="container__inner-container">
       <div class="hero-banner__content">
-        <h1 id="pgTitle">Application # {{application.name}}</h1>
+        <h1 id="pgTitle">{{application.proponent}}</h1>
         <p class="mb-2">{{application.purpose}} / {{application.subpurpose}}</p>
-        <p class="mb-2">{{application.proponent}}</p>
+
         <div class="application-links">
-            <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: application._id }]">
-              <i class="material-icons">date_range</i>
-              <span>Manage Comment Periods</span>
-            </a>
-            <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: application._id }]">
-              <i class="material-icons">message</i>
-              <span>Review Comments</span>
-            </a>
-          </div>
-          </div>
+          <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: application._id }]">
+            <i class="material-icons">date_range</i>
+            <span>Manage Comment Periods</span>
+          </a>
+          <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: application._id }]">
+            <i class="material-icons">message</i>
+            <span>Review Comments</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

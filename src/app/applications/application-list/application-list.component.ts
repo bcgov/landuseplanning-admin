@@ -19,7 +19,7 @@ export class ApplicationListComponent implements OnInit {
   public column: string;
   public direction: number;
   public loading: boolean;
-  public mineCount: number;
+  public appCount: number;
   public config: PaginationInstance = {
     id: 'custom',
     itemsPerPage: 25,
@@ -42,7 +42,7 @@ export class ApplicationListComponent implements OnInit {
     this.applicationService.getAll().subscribe(
       data => {
         this.applications = data;
-        this.mineCount = data ? data.length : 0;
+        this.appCount = data ? data.length : 0;
         this.loading = false;
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();

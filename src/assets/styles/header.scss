@@ -1,5 +1,4 @@
 @import "~assets/styles/base.scss";
-
 header {
     &.app-header {
         @include clearfix;
@@ -36,22 +35,18 @@ header {
     font-size: 1rem;
     font-weight: 600;
     outline: none; // Override user agent stylesheet default
-    
     &:hover {
         cursor: pointer;
     }
-
     &.collapsed {
         border: 2px solid transparent;
         color: #FFF;
     }
-
     i {
         float: left;
         margin-top: -0.25rem;
         margin-bottom: -0.25rem;
-
-        + span {
+        +span {
             display: none;
             margin-top: 2px;
             margin-left: 0.25rem;
@@ -65,7 +60,7 @@ header {
 @media (min-width: 400px) {
     .navbar-toggler {
         i {
-            + span {
+            +span {
                 display: inline-block;
             }
         }
@@ -76,10 +71,8 @@ header {
     padding: 0;
     background-color: $header-bg;
     z-index: 1000;
-
     .navbar-nav {
         margin-top: 0.5rem;
-
         .nav-link {
             position: relative;
             z-index: 1001; // +1 to keep above dropdown menus
@@ -92,7 +85,6 @@ header {
             font-weight: 700;
             cursor: pointer;
         }
-
         .dropdown {
             &.show {
                 .dropdown-toggle {
@@ -100,41 +92,34 @@ header {
                 }
             }
         }
-
         .dropdown-menu {
             margin-top: -0.4rem;
             padding-top: 0;
             border: none;
             border-radius: 0;
             background-color: transparent;
-
             .dropdown-item {
                 padding: 0.5rem 1rem;
                 color: $mn-color;
                 font-size: $mn-dropdown-menu-size;
                 white-space: normal;
                 cursor: pointer;
-
                 strong {
                     font-weight: 600;
                     transition: color 0.2s ease-out;
                 }
-
                 .dd-item-desc {
                     display: block;
                     font-size: 0.75rem;
                     opacity: 0.5;
                     transition: opacity 0.2s ease-out;
                 }
-
                 &:focus,
                 &:hover {
                     background: transparent;
-
                     strong {
                         color: $mn-hover-color;
                     }
-
                     .dd-item-desc {
                         opacity: 1;
                     }
@@ -146,6 +131,9 @@ header {
 
 // same as @screen-md-min
 @media (min-width: 992px) {
+    body {
+        padding-top: 4rem; // to push other divs below fixed header
+    }
     header {
         &.app-header {
             position: fixed;
@@ -159,7 +147,6 @@ header {
             // border-bottom-color: rgba(#5475a7, 0.25);
             // background-color: transparent;
             transition: all linear 0.2s;
-
             &.dark {
                 border-bottom-width: 4px;
                 border-bottom-color: $gold;
@@ -167,73 +154,59 @@ header {
             }
         }
     }
-
     .brand-container {
         float: left;
     }
-
     .brand {
         width: 270px; // Using PX dimensions here to ensure exact match to image
         height: 4rem;
     }
-
     .main-nav {
         float: right;
         background: transparent;
-
         .navbar-nav {
             margin-top: 0;
-
             .nav-link {
                 height: 4rem; //60px to match the branding height
                 padding: 0.5rem 0.75rem !important;
                 border-top: none;
-
                 span {
                     margin-top: 0.9rem;
                     display: inline-block;
                 }
-
                 &:hover {
                     background-color: #002663;
                 }
             }
-
-            > li {
+            >li {
                 .dropdown-menu {
                     margin: 0;
                     padding: 0.5rem;
                     min-width: 16rem;
                     background-color: #002663;
-
                     &.dm-sm {
                         min-width: 12rem;
                     }
-
                     .dropdown-item {
                         padding: 0.5rem;
                     }
                 }
-
                 &.dropdown {
-                    &.show  {
+                    &.show {
                         .dropdown-toggle {
                             color: $mn-color;
                         }
-
                         .dropdown-menu {
                             display: none;
                         }
                     }
-
                     &:hover {
-                        > a,
-                        > a:hover,
-                        > a:focus {
+                        >a,
+                        >a:hover,
+                        >a:focus {
                             background-color: #002663;
                             border: none;
                         }
-
                         .dropdown-menu {
                             display: block;
                         }
