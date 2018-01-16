@@ -10,8 +10,8 @@ export class ApplicationDetailResolver implements Resolve<Application> {
   constructor(private applicationService: ApplicationService, private router: Router) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Application | Observable<Application> | Promise<Application> {
-    const id = route.paramMap.get('id');
-    return this.applicationService.getById(id)
+    const appId = route.paramMap.get('appId');
+    return this.applicationService.getById(appId)
       .catch(err => {
         return Observable.throw(err);
       });

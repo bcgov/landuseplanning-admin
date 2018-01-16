@@ -28,8 +28,8 @@ import { ApplicationService } from './services/application.service';
 
 // feature modules
 import { ApplicationsModule } from './applications/applications.module';
+import { CommentingModule } from './commenting/commenting.module';
 import { MapModule } from './map/map.module';
-
 
 @NgModule({
   declarations: [
@@ -48,6 +48,7 @@ import { MapModule } from './map/map.module';
     HttpModule,
     SharedModule,
     ApplicationsModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
+    CommentingModule,
     AppRoutingModule,
     NgbModule.forRoot(),
     NgxPaginationModule,

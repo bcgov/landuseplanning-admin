@@ -20,10 +20,10 @@ export class DocumentService {
 
   constructor(private api: ApiService) { }
 
-  getDocuments(appId: string) {
-    this.api.getDocuments(appId)
-      .map((response: Response) => <Document[]>response.json().data)
-      .catch(this.handleError);
+  getDocuments(id: string) {
+    // this.api.getDocumentsByAppId(id)
+    //   .map((response: Response) => <Document[]>response.json().data)
+    //   .catch(this.handleError);
 
     return [
       new Document({ _id: 1, displayName: 'first' }),

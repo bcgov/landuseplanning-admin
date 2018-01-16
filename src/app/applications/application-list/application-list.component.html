@@ -81,9 +81,13 @@
                       </li>
                     </ul>
                     <div class="application-table__application-details--links">
-                      <a class="btn content-btn slide-l-btn btn-sm" href="/period" [routerLink]="['/period', { application: item._id }]">
-                        <i class="material-icons">assessment</i>
-                        <span>Comment Period</span>
+                      <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: item._id }]">
+                        <i class="material-icons">date_range</i>
+                        <span>Manage Comment Periods</span>
+                      </a>
+                      <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: item._id }]">
+                        <i class="material-icons">message</i>
+                        <span>Review Comments</span>
                       </a>
                       <a class="btn content-btn slide-l-btn btn-sm float-right" href="/map" [routerLink]="['/map', { application: item._id }]">
                         <i class="material-icons">location_on</i>

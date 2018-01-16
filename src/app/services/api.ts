@@ -55,7 +55,9 @@ export class ApiService {
     }
   }
 
+  //
   // Applications
+  //
   getApplications() {
     const fields = [
       'name',
@@ -89,7 +91,7 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getApplicationById(id: string) {
+  getApplication(id: string) {
     const fields = [
       'name',
       'type',
@@ -121,17 +123,21 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getCommentPeriodByAppId(id: string) {
+  //
+  // Comment Periods
+  //
+  getCommentPeriodsByAppId(id: string) {
     const fields = [
-      'addedBy',
-      'application',
+      '_addedBy',
+      '_application',
       'name',
       'startDate',
       'endDate',
       'description',
-      'internalNotes'
+      'internal',
+      'isDeleted'
     ];
-    let queryString = 'commentperiod/' + id + '?fields=';
+    let queryString = 'commentperiod?application=' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -141,6 +147,73 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  getCommentsByPeriodId(id: string) {
+    const fields = [
+      '_addedBy',
+      '_commentPeriod',
+      'name',
+      'commentNumber',
+      'comment',
+      'commentAuthor',
+      '_documents',
+      'review',
+      'dateAdded',
+      'commentStatus',
+      'isDeleted'
+    ];
+    let queryString = 'comment?commentPeriod=' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  //
+  // Comments
+  //
+  getComment(id: string) {
+    const fields = [
+      '_addedBy',
+      '_commentPeriod',
+      'name',
+      'commentNumber',
+      'comment',
+      'commentAuthor',
+      '_documents',
+      'review',
+      'dateAdded',
+      'commentStatus',
+      'isDeleted'
+    ];
+    let queryString = 'comment/' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  //
+  // Documents // TODO: which documents -- application? comment?
+  //
+  getDocumentsByAppId(id: string) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, 'document?application=' + id, { headers: headers });
+  }
+
+  getDocument(id: string) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, 'document/' + id, { headers: headers });
+  }
+
+  //
+  // Crown Lands file
+  //
   getBCGWCrownLandsById(id: string) {
     const fields = ['name'];
     let queryString = 'public/search/bcgw/crownLandsId/' + id + '?fields=';
@@ -153,16 +226,6 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getDocuments(id: string) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, 'documents/' + id, { headers: headers });
-  }
-
-  // getBCGWCrownLands(apiRoute: string, options?: Object) {
-  //   return this.get(this.pathAPI, apiRoute, options);
-  // }
-
-  // Methods
   // getApps(apiRoute: string, options?: Object) {
   //   return this.get(this.pathAPI, apiRoute, options);
   // }

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Application } from '../../models/application';
-// import { CollectionsArray } from '.  ./../models/collection';
+// import { CollectionsArray } from '../../models/collection';
 // import { DocumentService } from '../../services/document.service';
 
 @Component({
@@ -13,6 +13,7 @@ import { Application } from '../../models/application';
 })
 
 export class ApplicationDetailComponent implements OnInit, OnDestroy {
+
   // public properties
   loading: boolean;
   application: Application;
@@ -65,4 +66,5 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     const applicationId = this.application ? this.application._id : null;
     this.router.navigate(['/map', { application: applicationId }]);
   }
+
 }

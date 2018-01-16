@@ -11,7 +11,9 @@ import { ApiService } from '../../services/api';
   styleUrls: ['./application-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class ApplicationListComponent implements OnInit {
+
   applications: Array<Application>;
   public isDesc: boolean;
   public column: string;
@@ -35,6 +37,7 @@ export class ApplicationListComponent implements OnInit {
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
+
     this.loading = true;
     this.applicationService.getAll().subscribe(
       data => {
@@ -53,4 +56,5 @@ export class ApplicationListComponent implements OnInit {
     this.column = property;
     this.direction = this.isDesc ? 1 : -1;
   }
+
 }
