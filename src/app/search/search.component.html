@@ -120,7 +120,7 @@
     <!-- SEARCH RESULTS TEMPLATE -->
     <section class="add-spacer" *ngIf="ranSearch">
       <h2 class="search-results__title" *ngIf="ranSearch && results && count > 0">Showing {{count}} Feature<span *ngIf="count != 1">s</span></h2>
-      <!-- <ul class="search-results list-group">
+      <ul class="search-results list-group">
         <li *ngFor="let item of results.features" class="list-group-item search-results-item">
           <h3 class="search-results-item__application-name"
             *ngIf="item.id">{{item.id}}
@@ -154,7 +154,7 @@
         <button class="btn content-btn-alt" (click)="loadMore()">Show More</button>
       </div>
 
-      <h2 class="search-results__title" *ngIf="ranSearch && results && results.length > 0">Showing {{results.length}} out of {{count}} Document<span *ngIf="count != 1">s</span></h2> -->
+      <h2 class="search-results__title" *ngIf="ranSearch && results && results.length > 0">Showing {{results.length}} out of {{count}} Document<span *ngIf="count != 1">s</span></h2>
     </section>
 
     <section>
