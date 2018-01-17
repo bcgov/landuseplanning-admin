@@ -22,9 +22,9 @@ export class ApiService {
     switch (hostname) {
       case 'localhost':
       // Local
-      // this.pathAPI = 'http://localhost:3000/api';
-      // this.env = 'local';
-      // break;
+      this.pathAPI = 'http://localhost:3000/api';
+      this.env = 'local';
+      break;
 
       case 'nrts-prc-admin-dev.pathfinder.gov.bc.ca':
         // Dev
