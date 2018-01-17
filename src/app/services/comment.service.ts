@@ -6,7 +6,6 @@ import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
 import { Comment } from '../models/comment';
-// import { CollectionsList } from '../models/collection';
 
 @Injectable()
 export class CommentService {
@@ -34,8 +33,6 @@ export class CommentService {
     return this.api.getComment(id)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
-
-        // TODO: return array of comments
         return comments.length > 0 ? comments[0] : null;
         // return res.text() ? new Comment(res.json()) : null;
       })
@@ -43,8 +40,6 @@ export class CommentService {
         if (!comment) { return; }
 
         this.comment = comment;
-
-        // this.comment.collections = new CollectionsList(); // TODO: documents?
 
         return this.comment;
       })

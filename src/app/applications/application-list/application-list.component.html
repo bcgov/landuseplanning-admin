@@ -61,11 +61,10 @@
               <div class="collapse" id="accordCollapse{{item._id}}" role="tabpanel">
                 <div class="accordion__collapse-body">
                   <div class="application-table__application-details">
-                    <!-- <div class="application-table__application-details--description pt-0" [innerHTML]="item.description | newlines"></div> -->
                     <ul class="application-table__application-details--list list-group">
                       <li class="list-group-item p-0">
                         <span class="name">Client:</span>
-                        <span class="value">{{item.client}}</span>
+                        <span class="value">{{item.proponent}}</span>
                       </li>
                       <li class="list-group-item p-0">
                         <span class="name">Type / Subtype:</span>
@@ -75,11 +74,15 @@
                         <span class="name">Location:</span>
                         <span class="value">{{item.location}}</span>
                       </li>
-                      <li class="list-group-item p-0">
+                      <!-- <li class="list-group-item p-0">
                         <span class="name">Legal Description:</span>
                         <span class="value">{{item.legalDescription}}</span>
-                      </li>
-                    </ul>
+                      </li> -->
+                      <li class="list-group-item p-0">
+                          <span class="name">Description:</span>
+                          <span class="value" [innerHTML]="item.description | newlines"></span>
+                        </li>
+                      </ul>
                     <div class="application-table__application-details--links">
                       <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: item._id }]">
                         <i class="material-icons">date_range</i>

@@ -21,10 +21,10 @@ export class ApiService {
     this.token = currentUser && currentUser.token;
     switch (hostname) {
       case 'localhost':
-        // Local
-        this.pathAPI = 'http://localhost:3000/api';
-        this.env = 'local';
-        break;
+      // Local
+      // this.pathAPI = 'http://localhost:3000/api';
+      // this.env = 'local';
+      // break;
 
       case 'nrts-prc-admin-dev.pathfinder.gov.bc.ca':
         // Dev
@@ -144,7 +144,8 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.getApplications(); // FOR DEBUGGING
+    // return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   getCommentsByPeriodId(id: string) {
@@ -168,7 +169,8 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.getApplications(); // FOR DEBUGGING
+    // return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   //

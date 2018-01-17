@@ -1,9 +1,21 @@
-<div class="hero-banner">
-  <div class="container">
-    <div class="container__inner-container">
-      <div class="hero-banner__content">
-        <h1 id="pgTitle">Review Comments page</h1>
-      </div>
+<div class="spinner-container full-screen" *ngIf="loading" [@visibility]>
+  <div class="spinner-new rotating"></div>
+</div>
+
+<div class="container">
+  <div class="container__inner-container">
+    <h1 id="pgTitle">Review Comments</h1>
+    <p class="mb-2" *ngIf="application">{{application.proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>
+
+    <div class="review-comments-links">
+      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', appId]">
+        <i class="material-icons">info_outline</i>
+        <span>Application Details</span>
+      </a>
+      <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: appId }]">
+        <i class="material-icons">date_range</i>
+        <span>Manage Comment Periods</span>
+      </a>
     </div>
   </div>
 </div>
@@ -11,23 +23,43 @@
 <div class="container" id="anchor-point">
   <div class="row">
     <main class="col-lg-12">
-      <!-- TODO: show basic comment info + status + link to details -->
-      <p>Comment Period ... Dec 1, 2017 - Dec 31, 2017</p>
-      <ul>
-        <li>Comment 1</li>
-        <li>Comment 2</li>
-        <li>Comment 3</li>
-      </ul>
-      <p>Comment Period ... Jan 1, 2018 - Jan 31, 2018</p>
-      <ul>
-        <li>Comment 4</li>
-        <li>Comment 5</li>
-        <li>Comment 6</li>
-      </ul>
-      <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: 0 }]">
-        <i class="material-icons">assessment</i>
-        <span>Manage Comment Periods</span>
-      </a>
+      <section>
+        <!-- <div class="list-group" *ngFor="let item of comments">
+          <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{item.author?.contactName}}</h5>
+              <small>{{item.dateAdded || 'date'}}</small>
+            </div>
+            <p class="mb-1">{{item.comment || 'comment'}}</p>
+            <small>some small text</small>
+          </a>
+        </div> -->
+        <table class="table review-comments-table" id="tableTop">
+          <tbody class="review-comments-table__content">
+            <tr *ngFor="let item of comments">
+              <td>
+                <div class="review-comments-table__review-comment-details">
+                  <h5 class="review-comments-table__review-comment-details--heading">Comment # {{item.commentNumber}}</h5>
+                    <ul class="review-comments-table__review-comment-details--list list-group">
+                      <li class="list-group-item p-0">
+                        <span class="name">Date Range:</span>
+                        <span class="value">{{(item.startDate | date) || 'unknown'}} to {{(item.endDate | date) || 'unknown'}}</span>
+                      </li>
+                      <li class="list-group-item p-0">
+                        <span class="name">Description:</span>
+                        <span class="value">{{item.description}}</span>
+                      </li>
+                      <li class="list-group-item p-0">
+                        <span class="name">Internal Notes:</span>
+                        <span class="value">{{item.internalNotes}}</span>
+                      </li>
+                    </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </main>
   </div>
 </div>
