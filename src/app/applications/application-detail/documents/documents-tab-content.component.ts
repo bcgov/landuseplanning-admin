@@ -10,19 +10,21 @@ import { CollectionsArray } from '../../../models/collection';
   templateUrl: './documents-tab-content.component.html',
   styleUrls: ['./documents-tab-content.component.scss']
 })
-export class DocumentsTabContentComponent implements OnInit, OnDestroy {
-  // public properties
-  loading: boolean;
-  application: Application;
-  collections: CollectionsArray;
 
-  // private fields
+export class DocumentsTabContentComponent implements OnInit, OnDestroy {
+  public loading: boolean;
+  public application: Application;
+  public collections: CollectionsArray;
+
   private sub: Subscription;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
     this.loading = true;
+
     this.sub = this.route.parent.data.subscribe(
       (data: { application: Application }) => {
         if (data.application && data.application.collections) {
@@ -31,12 +33,17 @@ export class DocumentsTabContentComponent implements OnInit, OnDestroy {
           this.collections.sort();
         }
       },
-      error => console.log(error),
-      () => this.loading = false
+      error => {
+        console.log(error);
+      },
+      () => {
+        this.loading = false;
+      }
     );
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
+
 }

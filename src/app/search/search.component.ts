@@ -1,8 +1,10 @@
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import * as _ from 'lodash';
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+import { Subscription } from 'rxjs/Subscription';
 // import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+
 import { DocumentService } from '../services/document.service';
 import { Application } from '../models/application';
 import { Search, SearchTerms } from '../models/search';
@@ -11,6 +13,7 @@ import { ApplicationService } from '../services/application.service';
 import { ProponentService } from '../services/proponent.service';
 import { SearchService } from '../services/search.service';
 // import { ApiService } from '../services/api';
+
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
@@ -32,7 +35,7 @@ import 'rxjs/add/operator/map';
   ]
 })
 
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   results: Search;
   page: number;
   limit: number;
@@ -45,11 +48,10 @@ export class SearchComponent implements OnInit {
   protoSearchActive: boolean;
   showAdvancedFields: boolean;
   public loading: boolean;
-
   params: Params;
   terms: SearchTerms;
-
   myApplications: Array<any>;
+  private sub: Subscription;
 
   constructor(
     // calendar: NgbCalendar,
@@ -71,26 +73,32 @@ export class SearchComponent implements OnInit {
     this.showAdvancedFields = false;
     this.loading = false;
 
-    this.route.params.subscribe((params: Params) => {
-      /*
-        TBD: Deal with meta search terms?
-          this.params.type
-          this.params.page
-          this.params.limit
-      */
-      this.params = params;
-      this.terms = new SearchTerms();
+    this.sub = this.route.params.subscribe(
+      (params: Params) => {
+        /*
+          TBD: Deal with meta search terms?
+            this.params.type
+            this.params.page
+            this.params.limit
+        */
+        this.params = params;
+        this.terms = new SearchTerms();
 
-      if (this.params.clfiles) {
-        this.terms.clfiles = this.params.clfiles.split(',').join(' ');
+        if (this.params.clfiles) {
+          this.terms.clfiles = this.params.clfiles.split(',').join(' ');
+        }
+
+        this._changeDetectionRef.detectChanges();
+
+        if (!_.isEmpty(this.terms.getParams())) {
+          this.doSearch(true);
+        }
       }
+    );
+  }
 
-      this._changeDetectionRef.detectChanges();
-
-      if (!_.isEmpty(this.terms.getParams())) {
-        this.doSearch(true);
-      }
-    });
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
   toggleAdvancedSearch() {
@@ -110,10 +118,11 @@ export class SearchComponent implements OnInit {
       this.page += 1;
     }
 
-    this.searchService.getByCLFile(this.terms.clfiles).subscribe(
+    this.searchService.getByCLFile(this.terms.clfiles)
+      // .finally(() => this.loading = false) // TODO: make this work
+      .subscribe(
       data => {
         this.loading = false;
-
         // This outputs the value of data to the web console.
         this.results = data;
 
@@ -124,8 +133,10 @@ export class SearchComponent implements OnInit {
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();
       },
-      error => console.log(error)
-    );
+      error => {
+        this.loading = false;
+        console.log(error);
+      });
   }
 
   onSubmit() {
@@ -135,4 +146,5 @@ export class SearchComponent implements OnInit {
   loadMore() {
     this.doSearch(false);
   }
+
 }

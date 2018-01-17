@@ -14,8 +14,8 @@ import { CommentDetailComponent } from './comment-detail/comment-detail.componen
 // import { ApiService } from '../services/api';
 // import { DocumentService } from '../services/document.service';
 // import { ApplicationService } from '../services/application.service';
-// import { CommentPeriodService } from '../services/commentperiod.service';
-// import { CommentService } from '../services/comment.service';
+//  import { CommentPeriodService } from '../services/commentperiod.service';
+//  import { CommentService } from '../services/comment.service';
 
 @NgModule({
   imports: [
@@ -36,7 +36,9 @@ import { CommentDetailComponent } from './comment-detail/comment-detail.componen
   providers: [
     // ApiService,
     // DocumentService,
-    // ApplicationService
+    // ApplicationService,
+    // CommentPeriodService,
+    // CommentService,
   ]
 })
 
