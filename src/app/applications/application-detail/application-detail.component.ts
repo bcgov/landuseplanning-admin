@@ -38,8 +38,11 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     // this.collections = [new Collection(this.documentService.getDocuments())];
 
     // wait for the resolver to retrieve the application details from back-end
-    this.sub = this.route.data.subscribe(
+    this.sub = this.route.data
+      // .finally(() => this.loading = false) // TODO: make this work
+      .subscribe(
       (data: { application: Application }) => {
+        this.loading = false;
         this.application = data.application;
 
         // application not found --> navigate back to application list
@@ -52,17 +55,14 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         // this.collections.sort();
       },
       error => {
+        this.loading = false;
         // If 403, redir to /login.
         if (error.startsWith('403')) {
           this.router.navigate(['/login']);
         }
         alert('Error loading application');
         // console.log(error); // already displayed by handleError()
-      },
-      () => {
-        this.loading = false;
-      }
-    );
+      });
   }
 
   ngOnDestroy(): void {
