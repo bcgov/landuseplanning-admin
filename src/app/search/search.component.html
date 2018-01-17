@@ -12,13 +12,13 @@
 
           <div class="search-form__basic-search-fields">
             <div class="form-group mb-0">
-              <input class="form-control" type="text" placeholder="Enter Crown Lands File..." name="keywordInput" id="keywordInput"
-                [disabled]="protoSearchActive" [(ngModel)]="terms.clfiles"/>
+              <input class="form-control" type="text" placeholder="Enter Disposition Trasaction ID..." name="keywordInput" id="keywordInput"
+                [disabled]="protoSearchActive" [(ngModel)]="terms.dtid"/>
             </div>
           </div>
 
           <div class="search-form__advanced-search-fields mt-4" id="advancedSearchFields" [hidden]="!showAdvancedFields">
-            <div class="form-group mb-4">
+            <!-- <div class="form-group mb-4">
               <label for="applications">Application</label>
               <tag-input class="form-control" name='applicationInput'
                 [secondaryPlaceholder]="'Enter an Application Name'"
@@ -31,7 +31,21 @@
                     [autocompleteItems]="applications">
                    </tag-input-dropdown>
               </tag-input>
-            </div>
+            </div> -->
+            <!-- <div class="form-group mb-4">
+              <label for="dtid">Disposition Trasaction ID</label>
+              <tag-input class="form-control" name='dtidInput'
+                [secondaryPlaceholder]="'Enter an Internal Interest ID'"
+                [identifyBy]="'_id'"
+                [displayBy]="'name'"
+                [(ngModel)]="terms.dtid">
+                   <tag-input-dropdown
+                    [identifyBy]="'_id'"
+                    [displayBy]="'name'"
+                    [autocompleteItems]="dtid">
+                   </tag-input-dropdown>
+              </tag-input>
+            </div>  -->           
             <!-- <div class="form-group mb-4">
               <label for="operatorInput">Operator</label>
               <tag-input class="form-control" name='operatorInput'
@@ -120,30 +134,46 @@
     <!-- SEARCH RESULTS TEMPLATE -->
     <section class="add-spacer" *ngIf="ranSearch">
       <h2 class="search-results__title" *ngIf="ranSearch && results && count > 0">Showing {{count}} Feature<span *ngIf="count != 1">s</span></h2>
-      <ul class="search-results list-group">
-        <li *ngFor="let item of results.features" class="list-group-item search-results-item">
-          <h3 class="search-results-item__application-name"
-            *ngIf="item.id">{{item.id}}
-          </h3>
-          <div class="search-results-item__description mt-1">{{item.properties.CODE_CHR_STAGE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.CROWN_LANDS_FILE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.DISPOSITION_TRANSACTION_SID}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.OBJECTID}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.RESPONSIBLE_BUSINESS_UNIT}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.TENURE_LOCATION}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.TENURE_PURPOSE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.TENURE_STATUS}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.TENURE_SUBPURPOSE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.TENURE_SUBTYPE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.TENURE_TYPE}}</div>
-          <div class="search-results-item__description mt-3">{{item.properties.INTRID_SID}}</div>
-        </li>
-      </ul>
+      <section class="card">
+        <table class="table">
+          <thead>
+            <tr>
+               <th>Import?</th>
+               <th>Purpose</th>
+               <th>SubPurpose</th>
+               <th>CL File</th>
+               <th>DIP</th>
+               <th>OID</th>
+               <th>RBI</th>
+               <th>Location</th>
+               <th>Status</th>
+               <th>Type</th>
+               <th>SubType</th>
+               <th>INTID</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="results && results.features">
+            <tr *ngFor="let item of results.features">
+              <td><a href=""><i class="material-icons">input</i></a></td>
+              <td>{{item.properties.TENURE_PURPOSE}}</td>
+              <td>{{item.properties.TENURE_SUBPURPOSE}}</td>
+              <td>{{item.properties.CROWN_LANDS_FILE}}</td>
+              <td>{{item.properties.DISPOSITION_TRANSACTION_SID}}</td>
+              <td>{{item.properties.OBJECTID}}</td>
+              <td>{{item.properties.RESPONSIBLE_BUSINESS_UNIT}}</td>
+              <td>{{item.properties.TENURE_LOCATION}}</td>
+              <td>{{item.properties.TENURE_STATUS}}</td>
+              <td>{{item.properties.TENURE_TYPE}}</td>
+              <td>{{item.properties.TENURE_SUBTYPE}}</td>
+              <td>{{item.properties.INTRID_SID}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
       <section class="search-results__no-results" *ngIf="results && results.length < 1" >
         <h2>No Applications Found</h2>
-        <p class="mb-0">Sorry, we were unable to locate any documents matching your search criteria.</p>
+        <p class="mb-0">Sorry, we were unable to locate any applications matching your search criteria.</p>
       </section>
 
       <div class="search-results__footer mt-3" *ngIf="ranSearch && noMoreResults">

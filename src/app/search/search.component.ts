@@ -84,8 +84,8 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.params = params;
         this.terms = new SearchTerms();
 
-        if (this.params.clfiles) {
-          this.terms.clfiles = this.params.clfiles.split(',').join(' ');
+        if (this.params.dtid) {
+          this.terms.dtid = this.params.dtid.split(',').join(' ');
         }
 
         this._changeDetectionRef.detectChanges();
@@ -118,7 +118,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.page += 1;
     }
 
-    this.searchService.getByCLFile(this.terms.clfiles)
+    this.searchService.getByDTID(this.terms.dtid)
       // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
       data => {

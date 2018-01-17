@@ -228,6 +228,17 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  getBCGWDispositionTransactionId(id: string) {
+    const fields = ['name'];
+    let queryString = 'public/search/bcgw/dispositionTransactionId/' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
   // getApps(apiRoute: string, options?: Object) {
   //   return this.get(this.pathAPI, apiRoute, options);
   // }
