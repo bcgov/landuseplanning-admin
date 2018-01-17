@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Application } from '../../models/application';
 // import { CollectionsArray } from '../../models/collection';
 // import { DocumentService } from '../../services/document.service';
+import { ApiService } from '../../services/api';
 
 @Component({
   selector: 'app-application-detail',
@@ -13,22 +14,25 @@ import { Application } from '../../models/application';
 })
 
 export class ApplicationDetailComponent implements OnInit, OnDestroy {
+  public loading: boolean;
+  public application: Application;
+  // public collections: CollectionsArray;
 
-  // public properties
-  loading: boolean;
-  application: Application;
-  // collections: CollectionsArray;
-
-  // private fields
   private sub: Subscription;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
-    // ,private documentService: DocumentService
+    private router: Router,
+    // private documentService: DocumentService,
+    private api: ApiService
   ) { }
 
   ngOnInit(): void {
+    // If we're not logged in, redirect.
+    if (!this.api.ensureLoggedIn()) {
+      return; // return false;
+    }
+
     this.loading = true;
 
     // this.collections = [new Collection(this.documentService.getDocuments())];
@@ -36,7 +40,6 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     // wait for the resolver to retrieve the application details from back-end
     this.sub = this.route.data.subscribe(
       (data: { application: Application }) => {
-        this.loading = false;
         this.application = data.application;
 
         // application not found --> navigate back to application list
@@ -48,7 +51,17 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         // this.collections = data.application.collections.documents;
         // this.collections.sort();
       },
-      error => console.log(error)
+      error => {
+        // If 403, redir to /login.
+        if (error.startsWith('403')) {
+          this.router.navigate(['/login']);
+        }
+        alert('Error loading application');
+        // console.log(error); // already displayed by handleError()
+      },
+      () => {
+        this.loading = false;
+      }
     );
   }
 

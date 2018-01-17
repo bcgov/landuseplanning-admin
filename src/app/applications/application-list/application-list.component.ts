@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { PaginationInstance } from 'ngx-pagination';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
@@ -12,9 +14,8 @@ import { ApiService } from '../../services/api';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class ApplicationListComponent implements OnInit {
-
-  applications: Array<Application>;
+export class ApplicationListComponent implements OnInit, OnDestroy {
+  public applications: Array<Application>;
   public isDesc: boolean;
   public column: string;
   public direction: number;
@@ -26,7 +27,10 @@ export class ApplicationListComponent implements OnInit {
     currentPage: 1
   };
 
+  private sub: Subscription;
+
   constructor(
+    private router: Router,
     private applicationService: ApplicationService,
     private _changeDetectionRef: ChangeDetectorRef,
     private api: ApiService
@@ -39,16 +43,30 @@ export class ApplicationListComponent implements OnInit {
     }
 
     this.loading = true;
-    this.applicationService.getAll().subscribe(
+
+    this.sub = this.applicationService.getAll().subscribe(
       data => {
         this.applications = data;
         this.appCount = data ? data.length : 0;
-        this.loading = false;
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();
       },
-      error => console.log(error)
+      error => {
+        // If 403, redir to /login.
+        if (error.startsWith('403')) {
+          this.router.navigate(['/login']);
+        }
+        alert('Error loading applications');
+        // console.log(error); // already displayed by handleError()
+      },
+      () => {
+        this.loading = false;
+      }
     );
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
   sort(property) {
