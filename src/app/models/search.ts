@@ -63,6 +63,7 @@ export class SearchArray {
 export class SearchTerms {
   keywords: string;
   clfiles: string;
+  dtid: string;
   applications: Array<Application>;
   proponents: Array<Proponent>;
   ownerships: Array<Proponent>;
@@ -72,6 +73,7 @@ export class SearchTerms {
   constructor() {
     this.keywords     = '';
     this.clfiles      = '';
+    this.dtid      = '';
     this.applications = [];
     this.proponents   = [];
     this.ownerships   = [];
@@ -88,6 +90,10 @@ export class SearchTerms {
 
     if (this.clfiles) {
       params['clfiles'] = this.clfiles.split(' ').join(',');
+    }
+
+    if (this.dtid) {
+      params['dtid'] = this.dtid.split(' ').join(',');
     }
 
     if (this.applications.length) {

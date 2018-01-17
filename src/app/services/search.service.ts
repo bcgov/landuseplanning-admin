@@ -18,4 +18,10 @@ export class SearchService {
         return res.text() ? new Search(res.json()) : null;
     });
   }
+  getByDTID(dtid: string): Observable<Search> {
+    return this.api.getBCGWDispositionTransactionId(dtid)
+    .map((res: Response) => {
+        return res.text() ? new Search(res.json()) : null;
+    });
+  }
 }
