@@ -137,7 +137,7 @@ export class ApiService {
       'internal',
       'isDeleted'
     ];
-    let queryString = 'commentperiod?application=' + id + '?fields=';
+    let queryString = 'commentperiod?_application=' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -205,7 +205,7 @@ export class ApiService {
   //
   getDocumentsByAppId(id: string) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, 'document?application=' + id, { headers: headers });
+    return this.get(this.pathAPI, 'document?_application=' + id, { headers: headers });
   }
 
   getDocument(id: string) {
