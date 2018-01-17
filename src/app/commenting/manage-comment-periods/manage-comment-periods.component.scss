@@ -1,0 +1,58 @@
+@import "~assets/styles/base.scss";
+.comment-periods-links {
+    padding-top: 1rem;
+}
+
+.comment-periods-table {
+    tbody {
+        tr {
+            background: transparent;
+            .accordion__collapse-header {
+                background: $table-row-bg;
+            }
+            &:nth-child(even) {
+                .accordion__collapse-header {
+                    background: $table-alt-row-bg;
+                }
+            }
+        }
+    }
+    &__comment-period-details {
+        font-size: 0.85rem;
+        &--links {
+            padding-top: 1.5rem;
+        }
+        &--description {
+            margin-bottom: 1.25rem;
+            &::ng-deep {
+                p {
+                    margin: 0;
+                    line-height: calc(0.85rem * 1.5);
+                    font-size: 0.85rem;
+                }
+            }
+        }
+        &--list {
+            li {
+                @include align-items(start);
+                +li {
+                    border-top: 1px solid #fff;
+                }
+            }
+            .name,
+            .value {
+                margin: 0;
+                padding: 0.5rem 0.75rem;
+                width: 50%;
+            }
+        }
+    }
+}
+
+@media (max-width: 567px) {}
+
+@media (min-width: 760px) {}
+
+@media (min-width: 992px) {}
+
+@media (min-width: 1200px) {}

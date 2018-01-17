@@ -1,0 +1,60 @@
+<div class="spinner-container full-screen" *ngIf="loading" [@visibility]>
+  <div class="spinner-new rotating"></div>
+</div>
+
+<div class="container">
+  <div class="container__inner-container">
+    <h1 id="pgTitle">Manage Comment Periods</h1>
+    <p class="mb-2" *ngIf="application">{{application.proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>
+
+    <div class="comment-periods-links">
+      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', appId]">
+        <i class="material-icons">info_outline</i>
+        <span>Application Details</span>
+      </a>
+      <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: appId }]">
+        <i class="material-icons">message</i>
+        <span>Review Comments</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="anchor-point">
+  <div class="row">
+    <main class="col-lg-12">
+      <section>
+        <!-- TODO: handle zero comment periods; also handle actions -->
+        <table class="table comment-periods-table" id="tableTop">
+          <tbody class="comment-periods-table__content">
+            <tr *ngFor="let item of commentPeriods">
+              <td>
+                <div class="comment-periods-table__comment-period-details">
+                  <h5 class="comment-periods-table__comment-period-details--heading">Comment Period</h5>
+                  <ul class="comment-periods-table__comment-period-details--list list-group">
+                    <li class="list-group-item p-0">
+                      <span class="name">Status:</span>
+                      <span class="value">{{getStatus(item.startDate, item.endDate)}}</span>
+                    </li>
+                    <li class="list-group-item p-0">
+                      <span class="name">Date Range:</span>
+                      <span class="value">{{(item.startDate | date) || 'unknown'}} to {{(item.endDate | date) || 'unknown'}}</span>
+                    </li>
+                    <li class="list-group-item p-0">
+                      <span class="name">Description:</span>
+                      <span class="value">{{item.description}}</span>
+                    </li>
+                    <li class="list-group-item p-0">
+                      <span class="name">Internal Notes:</span>
+                      <span class="value">{{item.internalNotes}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</div>

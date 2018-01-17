@@ -13,10 +13,12 @@ import { ApiService } from './services/api';
   styleUrls: ['./app.component.scss'],
   providers: [DocumentService]
 })
+
 export class AppComponent implements OnInit {
   loggedIn: String;
   hostname: String;
   private sub: Subscription;
+
   constructor(
     // private _router: Router,
     private cookieService: CookieService,

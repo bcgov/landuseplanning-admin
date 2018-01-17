@@ -13,7 +13,7 @@ import { ApiService } from '../services/api';
 
 export class HomeComponent implements OnInit {
   results: Array<Home>;
-  numApplications: Number;
+  numApplications: number;
   constructor(
     private router: Router,
     private applicationService: ApplicationService,

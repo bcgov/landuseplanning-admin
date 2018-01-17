@@ -1,6 +1,6 @@
 @import "~assets/styles/base.scss";
-.commentperiod-description,
-commentperiod-internalnotes {
+.commentdetail-comment,
+commentdetail-internalnotes {
     p {
         margin: 0;
         padding: 0.5rem 0.75rem;
@@ -10,7 +10,7 @@ commentperiod-internalnotes {
 @media (max-width: 567px) {}
 
 @media (min-width: 760px) {
-    .commentperiod-details {
+    .commentdetail-details {
         &--list {
             .name {
                 margin: 0;

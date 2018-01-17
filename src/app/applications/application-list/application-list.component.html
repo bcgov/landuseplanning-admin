@@ -1,4 +1,4 @@
-<div class="hero-banner">
+<!-- <div class="hero-banner">
   <div class="container">
     <div class="container__inner-container">
       <div class="hero-banner__content">
@@ -7,7 +7,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <div class="container" id="anchor-point">
   <main>
@@ -25,7 +25,8 @@
               <i class="sort" [ngClass]="{'sort-asc': (column == 'name' && isDesc), 'sort-desc': (column == 'name' && !isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && isDesc), 'sort-desc': (column == 'purpose' && !isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && isDesc), 'sort-desc': (column == 'purpose' && !isDesc) }"
+                aria-hidden="true"></i>
             </th>
             <th class="application-table__region-col sortable" (click)="sort('region')">Region
               <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && isDesc), 'sort-desc': (column == 'region' && !isDesc) }" aria-hidden="true"></i>
@@ -35,8 +36,7 @@
                 aria-hidden="true"></i>
             </th>
             <th class="application-table__status-col sortable" (click)="sort('status')">Status
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'status' && isDesc), 'sort-desc': (column == 'status' && !isDesc) }"
-                aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'status' && isDesc), 'sort-desc': (column == 'status' && !isDesc) }" aria-hidden="true"></i>
             </th>
           </tr>
         </thead>
@@ -61,11 +61,10 @@
               <div class="collapse" id="accordCollapse{{item._id}}" role="tabpanel">
                 <div class="accordion__collapse-body">
                   <div class="application-table__application-details">
-                    <!-- <div class="application-table__application-details--description pt-0" [innerHTML]="item.description | newlines"></div> -->
                     <ul class="application-table__application-details--list list-group">
                       <li class="list-group-item p-0">
                         <span class="name">Client:</span>
-                        <span class="value">{{item.client}}</span>
+                        <span class="value">{{item.proponent}}</span>
                       </li>
                       <li class="list-group-item p-0">
                         <span class="name">Type / Subtype:</span>
@@ -75,15 +74,23 @@
                         <span class="name">Location:</span>
                         <span class="value">{{item.location}}</span>
                       </li>
-                      <li class="list-group-item p-0">
+                      <!-- <li class="list-group-item p-0">
                         <span class="name">Legal Description:</span>
                         <span class="value">{{item.legalDescription}}</span>
-                      </li>
-                    </ul>
+                      </li> -->
+                      <li class="list-group-item p-0">
+                          <span class="name">Description:</span>
+                          <span class="value" [innerHTML]="item.description | newlines"></span>
+                        </li>
+                      </ul>
                     <div class="application-table__application-details--links">
-                      <a class="btn content-btn slide-l-btn btn-sm" href="/period" [routerLink]="['/period', { application: item._id }]">
-                        <i class="material-icons">assessment</i>
-                        <span>Comment Period</span>
+                      <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: item._id }]">
+                        <i class="material-icons">date_range</i>
+                        <span>Manage Comment Periods</span>
+                      </a>
+                      <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: item._id }]">
+                        <i class="material-icons">message</i>
+                        <span>Review Comments</span>
                       </a>
                       <a class="btn content-btn slide-l-btn btn-sm float-right" href="/map" [routerLink]="['/map', { application: item._id }]">
                         <i class="material-icons">location_on</i>
@@ -101,7 +108,6 @@
           </tr>
         </tbody>
       </table>
-
     </section>
   </main>
 </div>

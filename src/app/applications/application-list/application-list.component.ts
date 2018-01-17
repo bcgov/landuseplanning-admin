@@ -11,13 +11,15 @@ import { ApiService } from '../../services/api';
   styleUrls: ['./application-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class ApplicationListComponent implements OnInit {
+
   applications: Array<Application>;
   public isDesc: boolean;
   public column: string;
   public direction: number;
   public loading: boolean;
-  public mineCount: number;
+  public appCount: number;
   public config: PaginationInstance = {
     id: 'custom',
     itemsPerPage: 25,
@@ -35,11 +37,12 @@ export class ApplicationListComponent implements OnInit {
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
+
     this.loading = true;
     this.applicationService.getAll().subscribe(
       data => {
         this.applications = data;
-        this.mineCount = data ? data.length : 0;
+        this.appCount = data ? data.length : 0;
         this.loading = false;
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();
@@ -53,4 +56,5 @@ export class ApplicationListComponent implements OnInit {
     this.column = property;
     this.direction = this.isDesc ? 1 : -1;
   }
+
 }

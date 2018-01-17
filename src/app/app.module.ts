@@ -18,18 +18,19 @@ import { HomeComponent } from './home/home.component';
 import { ObjectFilterPipe } from './object-filter.pipe';
 import { SearchComponent } from './search/search.component';
 import { LoginComponent } from './login/login.component';
-import { CommentPeriodComponent } from './comment-period/comment-period.component';
 
 // services
 import { SearchService } from './services/search.service';
 import { ProponentService } from './services/proponent.service';
 import { AuthenticationService } from './services/authentication.service';
 import { ApplicationService } from './services/application.service';
+import { CommentPeriodService } from './services/commentperiod.service';
+import { CommentService } from './services/comment.service';
 
 // feature modules
 import { ApplicationsModule } from './applications/applications.module';
+import { CommentingModule } from './commenting/commenting.module';
 import { MapModule } from './map/map.module';
-
 
 @NgModule({
   declarations: [
@@ -37,8 +38,7 @@ import { MapModule } from './map/map.module';
     HomeComponent,
     ObjectFilterPipe,
     SearchComponent,
-    LoginComponent,
-    CommentPeriodComponent
+    LoginComponent
   ],
   imports: [
     TagInputModule,
@@ -48,6 +48,7 @@ import { MapModule } from './map/map.module';
     HttpModule,
     SharedModule,
     ApplicationsModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
+    CommentingModule,
     AppRoutingModule,
     NgbModule.forRoot(),
     NgxPaginationModule,
@@ -59,7 +60,9 @@ import { MapModule } from './map/map.module';
     SearchService,
     ProponentService,
     AuthenticationService,
-    ApplicationService
+    ApplicationService,
+    CommentPeriodService,
+    CommentService
   ],
   bootstrap: [AppComponent]
 })

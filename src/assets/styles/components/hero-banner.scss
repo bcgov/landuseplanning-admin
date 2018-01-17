@@ -98,7 +98,7 @@
     .hero-banner {
         height: 24rem;
         background-position: 0 0;
-        background-size: 130%;
+        background-size: 125%;
         &__content {
             margin-bottom: 1rem;
             padding-right: 4rem;
@@ -126,8 +126,7 @@
     .hero-banner {
         height: 28rem;
         background-position: 0 0;
-        background-size: 120%;
-        padding-top: 3rem; // due to sticky header
+        background-size: 115%;
     }
     &__content {
         margin: 0;
@@ -170,7 +169,6 @@
 //         background-size: 120%;
 //     }
 // }
-
 // @media (min-width: 1600px) and (min-height: 900px) {
 //     .hero-banner {
 //         background-position: center -4rem;

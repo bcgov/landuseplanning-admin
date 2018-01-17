@@ -12,7 +12,7 @@ const routes: Routes = [
     component: ApplicationListComponent
   },
   {
-    path: 'a/:id',
+    path: 'a/:appId',
     component: ApplicationDetailComponent,
     resolve: {
       application: ApplicationDetailResolver
