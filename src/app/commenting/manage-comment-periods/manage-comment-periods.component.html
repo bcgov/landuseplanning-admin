@@ -3,6 +3,10 @@
 </div>
 
 <div class="container">
+  <div *ngFor="let alert of alerts">
+    <div class="alert alert-danger">{{alert}}</div>
+  </div>
+
   <div class="container__inner-container">
     <h1 id="pgTitle">Manage Comment Periods</h1>
     <p class="mb-2" *ngIf="application">{{application.proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>

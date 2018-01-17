@@ -44,25 +44,25 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    this.sub = this.applicationService.getAll().subscribe(
+    this.sub = this.applicationService.getAll()
+      // .finally(() => this.loading = false) // TODO: make this work
+      .subscribe(
       data => {
+        this.loading = false;
         this.applications = data;
         this.appCount = data ? data.length : 0;
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();
       },
       error => {
+        this.loading = false;
         // If 403, redir to /login.
         if (error.startsWith('403')) {
           this.router.navigate(['/login']);
         }
         alert('Error loading applications');
         // console.log(error); // already displayed by handleError()
-      },
-      () => {
-        this.loading = false;
-      }
-    );
+      });
   }
 
   ngOnDestroy(): void {

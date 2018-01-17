@@ -118,8 +118,11 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.page += 1;
     }
 
-    this.searchService.getByCLFile(this.terms.clfiles).subscribe(
+    this.searchService.getByCLFile(this.terms.clfiles)
+      // .finally(() => this.loading = false) // TODO: make this work
+      .subscribe(
       data => {
+        this.loading = false;
         // This outputs the value of data to the web console.
         this.results = data;
 
@@ -131,12 +134,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         this._changeDetectionRef.detectChanges();
       },
       error => {
-        console.log(error);
-      },
-      () => {
         this.loading = false;
-      }
-    );
+        console.log(error);
+      });
   }
 
   onSubmit() {
