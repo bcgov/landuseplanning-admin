@@ -144,8 +144,8 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.getApplications(); // FOR DEBUGGING
-    // return this.get(this.pathAPI, queryString, { headers: headers });
+    // return this.getApplications(); // FOR DEBUGGING
+    return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   getCommentsByPeriodId(id: string) {
@@ -169,8 +169,8 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.getApplications(); // FOR DEBUGGING
-    // return this.get(this.pathAPI, queryString, { headers: headers });
+    // return this.getApplications(); // FOR DEBUGGING
+    return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   //
