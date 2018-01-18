@@ -108,6 +108,11 @@ header {
                     font-weight: 600;
                     transition: color 0.2s ease-out;
                 }
+                i {
+                   margin-top: -0.2rem;
+                   margin-left: 0.5rem;
+                   vertical-align: middle;
+                }
                 .dd-item-desc {
                     display: block;
                     font-size: 0.75rem;
