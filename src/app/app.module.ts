@@ -31,6 +31,9 @@ import { CommentService } from './services/comment.service';
 import { ApplicationsModule } from './applications/applications.module';
 import { CommentingModule } from './commenting/commenting.module';
 import { MapModule } from './map/map.module';
+import { HeaderComponent } from './header/header.component';
+import { AdministrationComponent } from './administration/administration.component';
+import { UsersComponent } from './administration/users/users.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,10 @@ import { MapModule } from './map/map.module';
     HomeComponent,
     ObjectFilterPipe,
     SearchComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent,
+    AdministrationComponent,
+    UsersComponent
   ],
   imports: [
     TagInputModule,
