@@ -137,7 +137,7 @@ export class ApiService {
       'internal',
       'isDeleted'
     ];
-    let queryString = 'commentperiod?_application=' + id + '?fields=';
+    let queryString = 'commentperiod?_application=' + id + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
