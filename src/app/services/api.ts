@@ -239,6 +239,18 @@ export class ApiService {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
+
+  getAllUsers() {
+    const fields = ['displayName', 'username', 'firstName', 'lastName'];
+    let queryString = 'user?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
   // getApps(apiRoute: string, options?: Object) {
   //   return this.get(this.pathAPI, apiRoute, options);
   // }

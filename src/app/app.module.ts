@@ -26,6 +26,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { ApplicationService } from './services/application.service';
 import { CommentPeriodService } from './services/commentperiod.service';
 import { CommentService } from './services/comment.service';
+import { UserService } from './services/user.service';
 
 // feature modules
 import { ApplicationsModule } from './applications/applications.module';
@@ -68,7 +69,8 @@ import { UsersComponent } from './administration/users/users.component';
     AuthenticationService,
     ApplicationService,
     CommentPeriodService,
-    CommentService
+    CommentService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })
