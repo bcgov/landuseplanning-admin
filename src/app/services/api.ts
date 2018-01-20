@@ -21,10 +21,10 @@ export class ApiService {
     this.token = currentUser && currentUser.token;
     switch (hostname) {
       case 'localhost':
-      // Local
-      this.pathAPI = 'http://localhost:3000/api';
-      this.env = 'local';
-      break;
+        // Local
+        this.pathAPI = 'http://localhost:3000/api';
+        this.env = 'local';
+        break;
 
       case 'nrts-prc-admin-dev.pathfinder.gov.bc.ca':
         // Dev
@@ -50,9 +50,8 @@ export class ApiService {
       console.log('not logged in, redirecting');
       this.router.navigate(['/login']);
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   //
@@ -87,7 +86,6 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // let options = new RequestOptions({ headers: headers });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
@@ -124,6 +122,25 @@ export class ApiService {
   }
 
   //
+  // Organizations
+  //
+  getOrganization(id: string) {
+    const fields = [
+      '_addedBy',
+      'code',
+      'name'
+    ];
+    let queryString = 'organization/' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  //
   // Comment Periods
   //
   getCommentPeriodsByAppId(id: string) {
@@ -144,7 +161,6 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // return this.getApplications(); // FOR DEBUGGING
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
@@ -156,20 +172,19 @@ export class ApiService {
       'commentNumber',
       'comment',
       'commentAuthor',
-      '_documents',
+      'documents', // TODO: should be _documents; see also model
       'review',
       'dateAdded',
       'commentStatus',
       'isDeleted'
     ];
-    let queryString = 'comment?commentPeriod=' + id + '?fields=';
+    let queryString = 'comment?_commentPeriod=' + id + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // return this.getApplications(); // FOR DEBUGGING
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
@@ -251,9 +266,6 @@ export class ApiService {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
-  // getApps(apiRoute: string, options?: Object) {
-  //   return this.get(this.pathAPI, apiRoute, options);
-  // }
 
   // putApps(apiRoute: string, body?: Object, options?: Object) {
   //   return this.put(this.pathAPI, apiRoute, body, options);
@@ -272,12 +284,9 @@ export class ApiService {
           // store username and jwt token in local storage to keep user logged in between page refreshes
           localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
 
-          // return true to indicate successful login
-          return true;
-        } else {
-          // return false to indicate failed login
-          return false;
+          return true; // successful login
         }
+        return false; // failed login
       });
   }
 
@@ -293,8 +302,9 @@ export class ApiService {
     return Observable.throw(reason);
   }
 
+  //
   // Private
-
+  //
   private get(apiPath: string, apiRoute: string, options?: Object) {
     return this.http.get(`${apiPath}/${apiRoute}`, options || null);
   }

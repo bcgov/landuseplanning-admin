@@ -3,6 +3,17 @@
     padding-top: 1rem;
 }
 
+// see lists.scss and default.scss
+.list-group-item {
+    border: none;
+    &:nth-child(odd) {
+        background: #eee;
+    }
+    &:nth-child(even) {
+        background: #ddd;
+    }
+}
+
 .review-comments-table {
     tbody {
         tr {
@@ -49,10 +60,14 @@
     }
 }
 
-@media (max-width: 567px) {}
+// @include media-breakpoint-up(sm) {}
+@media (max-width: 576px) {}
 
-@media (min-width: 760px) {}
+// @include media-breakpoint-up(md) {}
+@media (min-width: 768px) {}
 
+// @include media-breakpoint-up(lg) {}
 @media (min-width: 992px) {}
 
+// @include media-breakpoint-up(xl) {}
 @media (min-width: 1200px) {}

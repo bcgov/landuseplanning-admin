@@ -12,6 +12,7 @@ import * as _ from 'lodash';
   styleUrls: ['./users.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class UsersComponent implements OnInit, OnDestroy {
   public users: Array<User>;
   public loading: boolean;
@@ -20,9 +21,11 @@ export class UsersComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
   constructor(private userService: UserService,
-              private router: Router,
-              private _changeDetectionRef: ChangeDetectorRef,
-              private api: ApiService) { }
+    private router: Router,
+    private _changeDetectionRef: ChangeDetectorRef,
+
+    private api: ApiService) { }
+
   ngOnInit() {
     // If we're not logged in, redirect.
     if (!this.api.ensureLoggedIn()) {
@@ -39,8 +42,8 @@ export class UsersComponent implements OnInit, OnDestroy {
       data => {
         this.loading = false;
         this.users = data;
-        var self = this;
-console.log('roles:', data);
+        const self = this;
+        console.log('roles:', data);
         _.each(data, function (i) {
           if (_.some(i.roles, _.method('includes', 'sysadmin'))) {
             self.sysadmins.push(i);

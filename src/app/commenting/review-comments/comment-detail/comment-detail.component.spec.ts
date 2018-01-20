@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommentDetailComponent } from './comment-detail.component';
 
-describe('CommentDetailsComponent', () => {
+describe('CommentDetailComponent', () => {
   let component: CommentDetailComponent;
   let fixture: ComponentFixture<CommentDetailComponent>;
 
