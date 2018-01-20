@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
+import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
@@ -31,8 +32,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   public application: Application;
   public commentPeriods: Array<CommentPeriod>;
   public alerts: Array<string>;
+  public closeResult: string;
 
-  private subParams: Subscription;
   private subAppl: Subscription;
   private subPeriod: Subscription;
 
@@ -41,7 +42,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     private router: Router,
     private applicationService: ApplicationService,
     private commentPeriodService: CommentPeriodService,
-    private api: ApiService
+    private api: ApiService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit() {
@@ -55,7 +57,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.commentPeriods = [];
     this.alerts = [];
 
-    this.subParams = this.route.params.subscribe(
+    this.route.params.subscribe(
       (params: Params) => { this.appId = params.application || '0'; }
     );
 
@@ -81,7 +83,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       data => {
         this.loading = false;
         this.commentPeriods = data;
-        // FUTURE: display buttons (or enable them) conditionally based on status
+        // TODO: calculate and store status for easier UI
       },
       error => {
         this.loading = false;
@@ -95,19 +97,38 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subParams.unsubscribe();
     this.subAppl.unsubscribe();
     this.subPeriod.unsubscribe();
   }
 
-  private getStatus(startDate: Date, endDate: Date) {
+  open(content) {
+    const options: NgbModalOptions = { backdrop: 'static', size: 'lg' };
+
+    this.modalService.open(content, options).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+  private getStatus(item: CommentPeriod) {
     const today = new Date();
 
-    if (!startDate || !endDate) {
+    if (!item.startDate || !item.endDate) {
       return 'unknown';
-    } else if (today < startDate) {
+    } else if (today < item.startDate) {
       return 'FUTURE';
-    } else if (today > endDate) {
+    } else if (today > item.endDate) {
       return 'PAST';
     } else {
       return 'CURRENT';

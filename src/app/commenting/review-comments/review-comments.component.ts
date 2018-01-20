@@ -36,9 +36,9 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   public comments: Array<Comment>;
   public alerts: Array<string>;
 
-  // another way to help unsubscribe from observables:
-  // https://www.npmjs.com/package/ng2-rx-componentdestroyed
-  private subParams: Subscription;
+  // see official solution:
+  // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
+  // or http://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
   private subAppl: Subscription;
   private subPeriod: Subscription;
   private subComment: Subscription;
@@ -65,7 +65,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     this.comments = [];
     this.alerts = [];
 
-    this.subParams = this.route.params.subscribe(
+    this.route.params.subscribe(
       (params: Params) => { this.appId = params.application || '0'; }
     );
 
@@ -124,10 +124,19 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subParams.unsubscribe();
     this.subAppl.unsubscribe();
     this.subPeriod.unsubscribe();
     this.subComment.unsubscribe();
+  }
+
+  private getStatus(item: Comment) {
+    if (item.commentStatus === 'Accepted') {
+      return 'badge-success';
+    } else if (item.commentStatus === 'Rejected') {
+      return 'badge-danger';
+    } else {
+      return 'badge-secondary';
+    }
   }
 
 }

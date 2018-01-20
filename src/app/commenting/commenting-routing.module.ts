@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ManageCommentPeriodsComponent } from './manage-comment-periods/manage-comment-periods.component';
 import { ReviewCommentsComponent } from './review-comments/review-comments.component';
-import { CommentDetailComponent } from './comment-detail/comment-detail.component';
+import { CommentDetailComponent } from './review-comments/comment-detail/comment-detail.component';
 import { CommentDetailResolver } from './comment-detail-resolver.service';
 
 const routes: Routes = [

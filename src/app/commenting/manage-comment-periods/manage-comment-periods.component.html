@@ -3,9 +3,7 @@
 </div>
 
 <div class="container">
-  <div *ngFor="let alert of alerts">
-    <div class="alert alert-danger">{{alert}}</div>
-  </div>
+  <ngb-alert type="danger" [dismissible]="false" *ngFor="let alert of alerts">{{alert}}</ngb-alert>
 
   <div class="container__inner-container">
     <h1 id="pgTitle">Manage Comment Periods</h1>
@@ -20,29 +18,57 @@
         <i class="material-icons">message</i>
         <span>Review Comments</span>
       </a>
+      <button class="btn content-btn slide-l-btn btm-sm" (click)="open(content)">
+        <i class="material-icons">add_box</i>
+        <span>Add New Comment Period</span>
+      </button>
     </div>
+
+    <!-- <div class="clickable" (click)="open(content)">Add New Comment Period</div> -->
+    <!-- <pre>{{closeResult}}</pre> -->
   </div>
 </div>
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Add Comment Period</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Date</p>
+    <p>Description</p>
+    <textarea></textarea>
+    <p>Internal Notes</p>
+    <textarea></textarea>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('Cancel click')">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="c('Save click')">Save</button>
+  </div>
+</ng-template>
 
 <div class="container" id="anchor-point">
   <div class="row">
     <main class="col-lg-12">
       <section>
-        <!-- TODO: handle zero comment periods; also handle actions -->
+        <p *ngIf="commentPeriods.length == 0">This application has no comment periods.</p>
+
         <table class="table comment-periods-table" id="tableTop">
           <tbody class="comment-periods-table__content">
             <tr *ngFor="let item of commentPeriods">
               <td>
                 <div class="comment-periods-table__comment-period-details">
-                  <h5 class="comment-periods-table__comment-period-details--heading">Comment Period</h5>
+                  <h4 class="comment-periods-table__comment-period-details--heading">Comment Period</h4>
                   <ul class="comment-periods-table__comment-period-details--list list-group">
                     <li class="list-group-item p-0">
                       <span class="name">Status:</span>
-                      <span class="value">{{getStatus(item.startDate, item.endDate)}}</span>
+                      <span class="value">{{getStatus(item)}}</span>
                     </li>
                     <li class="list-group-item p-0">
                       <span class="name">Date Range:</span>
-                      <span class="value">{{(item.startDate | date) || 'unknown'}} to {{(item.endDate | date) || 'unknown'}}</span>
+                      <span class="value">{{(item.startDate | date) || 'start'}} to {{(item.endDate | date) || 'end'}}</span>
                     </li>
                     <li class="list-group-item p-0">
                       <span class="name">Description:</span>
@@ -50,9 +76,17 @@
                     </li>
                     <li class="list-group-item p-0">
                       <span class="name">Internal Notes:</span>
-                      <span class="value">{{item.internalNotes}}</span>
+                      <span class="value">{{item.internal?.notes}}</span>
                     </li>
                   </ul>
+                  <!-- FUTURE: display/enable buttons conditionally based on status -->
+                  <button class="comment-periods__edit-btn btn btn-primary float-right" (click)="open(content)">
+                    <i class="material-icons">mode_edit</i>
+                  </button>
+                  <!-- TODO: confirmation dialog -->
+                  <button class="comment-periods__delete-btn btn btn-primary float-right">
+                    <i class="material-icons">delete</i>
+                  </button>
                 </div>
               </td>
             </tr>
