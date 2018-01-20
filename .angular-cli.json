@@ -25,6 +25,7 @@
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/tether/dist/js/tether.js",
+        "../node_modules/popper.js/dist/umd/popper.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "assets/js/utils.js"
       ],
@@ -61,6 +62,6 @@
     "component": {},
     "serve": {
       "port": 4200
-    }    
+    }
   }
 }
