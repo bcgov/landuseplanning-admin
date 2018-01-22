@@ -47,7 +47,7 @@
           <tr *ngFor="let item of applications | orderBy: {property: column, direction: direction} | paginate: config">
             <td class="accordion__collapse-item p-0" colspan="5">
               <div class="accordion__collapse-header" id="accordHead" role="tab">
-                <a class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item._id}}">
+                <a role="button" class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item._id}}">
                   <i class="material-icons open-icon">arrow_drop_down</i>
                   <i class="material-icons close-icon">arrow_drop_up</i>
                 </a>

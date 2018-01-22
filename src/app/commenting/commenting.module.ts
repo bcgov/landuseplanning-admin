@@ -7,8 +7,10 @@ import { CommentingRoutingModule } from './commenting-routing.module';
 
 // components
 import { ManageCommentPeriodsComponent } from './manage-comment-periods/manage-comment-periods.component';
+import { AddEditCommentPeriodComponent } from './manage-comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 import { ReviewCommentsComponent } from './review-comments/review-comments.component';
 import { CommentDetailComponent } from './review-comments/comment-detail/comment-detail.component';
+import { AddCommentComponent } from './review-comments/add-comment/add-comment.component';
 
 // services
 // import { ApiService } from '../services/api';
@@ -26,13 +28,17 @@ import { CommentDetailComponent } from './review-comments/comment-detail/comment
   ],
   declarations: [
     ManageCommentPeriodsComponent,
+    AddEditCommentPeriodComponent,
     ReviewCommentsComponent,
-    CommentDetailComponent
+    CommentDetailComponent,
+    AddCommentComponent
   ],
   exports: [
     ManageCommentPeriodsComponent,
+    AddEditCommentPeriodComponent,
     ReviewCommentsComponent,
-    CommentDetailComponent
+    CommentDetailComponent,
+    AddCommentComponent
   ],
   providers: [
     // ApiService,
@@ -40,6 +46,10 @@ import { CommentDetailComponent } from './review-comments/comment-detail/comment
     // ApplicationService,
     // CommentPeriodService,
     // CommentService,
+  ],
+  entryComponents: [
+    AddEditCommentPeriodComponent,
+    AddCommentComponent
   ]
 })
 

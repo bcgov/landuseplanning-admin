@@ -1,14 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { Subscription } from 'rxjs/Subscription';
-import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
+import { DialogService } from 'ng2-bootstrap-modal';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
 import { CommentPeriod } from '../../models/commentperiod';
 import { CommentPeriodService } from '../../services/commentperiod.service';
 import { ApiService } from '../../services/api';
+import { AddEditCommentPeriodComponent } from './add-edit-comment-period/add-edit-comment-period.component';
+import { ConfirmComponent } from '../../confirm/confirm.component';
 
 @Component({
   selector: 'app-manage-comment-periods',
@@ -34,8 +37,10 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   public alerts: Array<string>;
   public closeResult: string;
 
-  private subAppl: Subscription;
-  private subPeriod: Subscription;
+  // see official solution:
+  // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
+  // or http://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +48,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private commentPeriodService: CommentPeriodService,
     private api: ApiService,
-    private modalService: NgbModal
+    private dialogService: DialogService
   ) { }
 
   ngOnInit() {
@@ -62,7 +67,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     );
 
     // get application
-    this.subAppl = this.applicationService.getById(this.appId)
+    this.applicationService.getById(this.appId)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
       data => {
         this.application = data;
@@ -77,8 +83,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       });
 
     // get comment periods
-    this.subPeriod = this.commentPeriodService.getAll(this.appId)
-      // .finally(() => this.loading = false) // TODO: make this work
+    this.commentPeriodService.getAll(this.appId)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
       data => {
         this.loading = false;
@@ -96,32 +102,81 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       });
   }
 
+  addClick() {
+    this.dialogService.addDialog(AddEditCommentPeriodComponent,
+      {
+        title: 'Add Comment Period',
+        message: 'Save'
+      }, {
+        // index: 0,
+        // autoCloseTimeout: 10000,
+        // closeByClickingOutside: true,
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isConfirmed) => {
+        // we get dialog result
+        if (isConfirmed) {
+          // TODO: reload page (if not observable binding)?
+          console.log('saved');
+        } else {
+          console.log('canceled');
+        }
+      });
+  }
+
+  updateClick() {
+    this.dialogService.addDialog(AddEditCommentPeriodComponent,
+      {
+        title: 'Update Comment Period',
+        message: 'Update'
+      }, {
+        // index: 0,
+        // autoCloseTimeout: 10000,
+        // closeByClickingOutside: true,
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isConfirmed) => {
+        // we get dialog result
+        if (isConfirmed) {
+          // TODO: reload page (if not observable binding)?
+          console.log('updated');
+        } else {
+          console.log('canceled');
+        }
+      });
+  }
+
+  deleteClick() {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Confirm deletion',
+        message: 'Do you really want to delete this comment period?'
+      }, {
+        // index: 0,
+        // autoCloseTimeout: 10000,
+        // closeByClickingOutside: true,
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isConfirmed) => {
+        // we get dialog result
+        if (isConfirmed) {
+          // TODO: reload page (if not observable binding)?
+          console.log('accepted');
+        } else {
+          console.log('declined');
+        }
+      });
+  }
+
   ngOnDestroy(): void {
-    this.subAppl.unsubscribe();
-    this.subPeriod.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
-  open(content) {
-    const options: NgbModalOptions = { backdrop: 'static', size: 'lg' };
-
-    this.modalService.open(content, options).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
-  private getStatus(item: CommentPeriod) {
+  getStatus(item: CommentPeriod) {
     const today = new Date();
 
     if (!item.startDate || !item.endDate) {

@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2PageScrollModule } from 'ng2-page-scroll';
+import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { CookieService } from 'ngx-cookie-service';
 import { TagInputModule } from 'ngx-chips';
 
@@ -18,6 +19,7 @@ import { HomeComponent } from './home/home.component';
 import { ObjectFilterPipe } from './object-filter.pipe';
 import { SearchComponent } from './search/search.component';
 import { LoginComponent } from './login/login.component';
+import { ConfirmComponent } from './confirm/confirm.component';
 
 // services
 import { SearchService } from './services/search.service';
@@ -43,6 +45,7 @@ import { UsersComponent } from './administration/users/users.component';
     ObjectFilterPipe,
     SearchComponent,
     LoginComponent,
+    ConfirmComponent,
     HeaderComponent,
     AdministrationComponent,
     UsersComponent
@@ -60,6 +63,7 @@ import { UsersComponent } from './administration/users/users.component';
     NgbModule.forRoot(),
     NgxPaginationModule,
     Ng2PageScrollModule.forRoot(),
+    BootstrapModalModule,
     MapModule
   ],
   providers: [
@@ -71,6 +75,9 @@ import { UsersComponent } from './administration/users/users.component';
     CommentPeriodService,
     CommentService,
     UserService
+  ],
+  entryComponents: [
+    ConfirmComponent
   ],
   bootstrap: [AppComponent]
 })
