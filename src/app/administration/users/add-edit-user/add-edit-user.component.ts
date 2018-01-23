@@ -14,7 +14,7 @@ export interface DataModel {
   styleUrls: ['./add-edit-user.component.scss']
 })
 
-export class AddEditUserComponent extends DialogComponent<DataModel, boolean> implements DataModel {
+export class AddEditUserComponent extends DialogComponent<DataModel, boolean> implements DataModel, OnInit {
   title: string;
   message: string;
   model: User;
@@ -46,7 +46,7 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
 
   save() {
       // console.log('submitted form', this.user);
-      this.networkMsg = "";
+      this.networkMsg = '';
       if (this.isNew) {
         this.api.addUser(this.user).subscribe(
         data => {
