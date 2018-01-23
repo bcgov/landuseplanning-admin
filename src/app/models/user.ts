@@ -4,6 +4,7 @@ export class User {
   displayName: string;
   firstName: string;
   lastName: string;
+  password: string;
   roles: string[][];
 
   constructor(obj?: any) {
@@ -13,6 +14,7 @@ export class User {
     this.displayName = obj && obj.displayName  || null;
     this.firstName   = obj && obj.firstName    || null;
     this.lastName    = obj && obj.lastName     || null;
+    this.password    = obj && obj.password     || null;
     this.roles       = obj && obj.roles        || null;
   }
 }
