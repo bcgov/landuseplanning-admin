@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
 import * as _ from 'lodash';
-import { User } from '../models/User';
+import { User } from '../models/user';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
