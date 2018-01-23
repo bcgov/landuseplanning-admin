@@ -4,7 +4,7 @@ export class User {
   displayName: string;
   firstName: string;
   lastName: string;
-  roles: [string];
+  roles: string[][];
 
   constructor(obj?: any) {
     console.log('o:', obj);
@@ -13,6 +13,6 @@ export class User {
     this.displayName = obj && obj.displayName  || null;
     this.firstName   = obj && obj.firstName    || null;
     this.lastName    = obj && obj.lastName     || null;
-    this.roles       = obj && obj.roles        || [];
+    this.roles       = obj && obj.roles        || null;
   }
 }

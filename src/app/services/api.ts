@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
 import * as _ from 'lodash';
+import { User } from '../models/User';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -267,6 +268,30 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  saveUser(user: User) {
+    console.log('saving');
+    const fields = ['displayName', 'username', 'firstName', 'lastName'];
+    let queryString = 'user/' + user._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, user, { headers: headers });
+  }
+  addUser(user: User) {
+    console.log('adding');
+    const fields = ['displayName', 'username', 'firstName', 'lastName'];
+    let queryString = 'user?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, user, { headers: headers });
+  }
   // putApps(apiRoute: string, body?: Object, options?: Object) {
   //   return this.put(this.pathAPI, apiRoute, body, options);
   // }

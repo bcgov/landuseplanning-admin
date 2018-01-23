@@ -37,6 +37,7 @@ import { MapModule } from './map/map.module';
 import { HeaderComponent } from './header/header.component';
 import { AdministrationComponent } from './administration/administration.component';
 import { UsersComponent } from './administration/users/users.component';
+import { AddEditUserComponent } from './administration/users/add-edit-user/add-edit-user.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { UsersComponent } from './administration/users/users.component';
     ConfirmComponent,
     HeaderComponent,
     AdministrationComponent,
-    UsersComponent
+    UsersComponent,
+    AddEditUserComponent
   ],
   imports: [
     TagInputModule,
@@ -77,7 +79,7 @@ import { UsersComponent } from './administration/users/users.component';
     UserService
   ],
   entryComponents: [
-    ConfirmComponent
+    ConfirmComponent, AddEditUserComponent
   ],
   bootstrap: [AppComponent]
 })

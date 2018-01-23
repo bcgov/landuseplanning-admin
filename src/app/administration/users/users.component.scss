@@ -1,1 +1,10 @@
 @import "~assets/styles/base.scss";
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.create-button {
+    margin-top: 3.5rem;
+    float: right;
+}
