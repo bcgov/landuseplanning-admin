@@ -7,12 +7,38 @@
       </button>
     </div>
     <div class="modal-body">
-        <p>Date</p>
-        <p>Description</p>
-        <textarea></textarea>
-        <p>Internal Notes</p>
-        <textarea></textarea>
+      <!-- <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()"> -->
+        <div class="form-group mb-0">
+          <label>Date Range</label>
+          <div class="form-inline">
+            <label class="sr-only" for="dateRangeStart">Start Date</label>
+            <input class="form-control" type="text" placeholder="Start Date" name="dateRangeStartInput" id="dateRangeStart" #dateRangeStart="ngbDatepicker"
+              ngbDatepicker readonly />
+              <!-- (click)="dateRangeStart.toggle(); dateRangeEnd.close();" /> -->
+              <!-- [(ngModel)]="comment.dateStart" /> -->
+            <span class="date-range__spacer"> &nbsp;&nbsp; - &nbsp;&nbsp; </span>
+            <label class="sr-only" for="dateRangeEnd">End Date</label>
+            <input class="form-control" type="text" placeholder="End Date" name="dateRangeEndInput" id="dateRangeEnd"
+                #dateRangeEnd="ngbDatepicker" ngbDatepicker readonly />
+                <!-- (click)="dateRangeEnd.toggle(); dateRangeStart.close();" -->
+                <!-- [(ngModel)]="comment.dateEnd" /> -->
+          </div>
         </div>
+      <!-- </form> -->
+
+
+
+      <!-- <p>Start Date</p>
+      <input type="date">
+      <p>Duration</p>
+      <input type="number">
+      <p>End Date</p>
+      <input type="date"> -->
+      <p>Description</p>
+      <textarea rows=5></textarea>
+      <p>Internal Notes</p>
+      <textarea rows=5></textarea>
+    </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-primary" (click)="save()">{{message}}</button>
       <button type="button" class="btn btn-default" (click)="close()">Cancel</button>

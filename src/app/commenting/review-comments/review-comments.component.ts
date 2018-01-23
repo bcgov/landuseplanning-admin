@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
+import { DialogService } from 'ng2-bootstrap-modal';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
@@ -10,6 +12,8 @@ import { CommentPeriodService } from '../../services/commentperiod.service';
 import { Comment } from '../../models/comment';
 import { CommentService } from '../../services/comment.service';
 import { ApiService } from '../../services/api';
+import { CommentDetailComponent } from './comment-detail/comment-detail.component';
+import { AddCommentComponent } from './add-comment/add-comment.component';
 
 @Component({
   selector: 'app-review-comments',
@@ -39,9 +43,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   // see official solution:
   // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
   // or http://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
-  private subAppl: Subscription;
-  private subPeriod: Subscription;
-  private subComment: Subscription;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private route: ActivatedRoute,
@@ -49,7 +51,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
-    private api: ApiService
+    private api: ApiService,
+    private dialogService: DialogService
   ) { }
 
   ngOnInit() {
@@ -70,7 +73,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     );
 
     // get application
-    this.subAppl = this.applicationService.getById(this.appId)
+    this.applicationService.getById(this.appId)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
       data => {
         this.application = data;
@@ -85,7 +89,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       });
 
     // get comment periods
-    this.subPeriod = this.commentPeriodService.getAll(this.appId)
+    this.commentPeriodService.getAll(this.appId)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
       data => {
         this.commentPeriods = data;
@@ -105,8 +110,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     // get comments
     // TODO: for now, just get comments for first comment period
     // FUTURE: pass array of comment period ids
-    this.subComment = this.commentService.getAll(this.periodId)
-      // .finally(() => this.loading = false) // TODO: make this work
+    this.commentService.getAll(this.periodId)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
       data => {
         this.loading = false; // TODO: only called on successful completion :()
@@ -123,10 +128,32 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       });
   }
 
+  addClick() {
+    this.dialogService.addDialog(AddCommentComponent,
+      {
+        title: 'Add Comment',
+        message: 'Save'
+      }, {
+        // index: 0,
+        // autoCloseTimeout: 10000,
+        // closeByClickingOutside: true,
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isConfirmed) => {
+        // we get dialog result
+        if (isConfirmed) {
+          // TODO: reload page (if not observable binding)?
+          console.log('saved');
+        } else {
+          console.log('canceled');
+        }
+      });
+  }
+
   ngOnDestroy(): void {
-    this.subAppl.unsubscribe();
-    this.subPeriod.unsubscribe();
-    this.subComment.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   private getStatus(item: Comment) {
