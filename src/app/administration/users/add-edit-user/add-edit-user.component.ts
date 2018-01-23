@@ -28,7 +28,7 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
     super(dialogService);
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     // console.log("this.model:", this.user);
     // TODO: Current is simple method of assigning roles
     this.powers = ['public', 'sysadmin'];
