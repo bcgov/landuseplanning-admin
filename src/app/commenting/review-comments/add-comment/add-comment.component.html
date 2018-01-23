@@ -1,0 +1,96 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Add Comment</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form class="add-comment">
+        <fieldset>
+          <h5>Personal Information</h5>
+          <div class="row">
+            <div class="form-group col-sm-12 col-md-6">
+              <label class="control-label">Name <em>Required</em>
+              </label>
+              <input class="form-control" placeholder="Firstname Lastname" type="text" />
+            </div>
+            <div class="form-group col-sm-12 col-md-6">
+              <label class="control-label">Location <em>Required</em>
+              </label>
+              <input class="form-control" placeholder="City or Postal Code" type="text" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <div class="checkbox">
+                <label><input type="checkbox" /> Make my name and location visible publicly.</label>
+                <div class="help-block">Unchecking this option will hide your name and location on the public site.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-sm-12 col-md-6">
+              <label class="control-label">Email <em>Optional</em> </label>
+              <input class="form-control" placeholder="first.last@email.com" type="email" />
+            </div>
+
+            <div class="form-group col-sm-12 col-md-6">
+              <label class="control-label">Phone <em>Optional</em> </label>
+              <input class="form-control" placeholder="604-123-4567" type="tel" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label class="control-label">Your Comment</label>
+              <textarea class="form-control" rows="10"></textarea>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="upload-attachments form-group no-margin col-sm-12">
+              <label class="control-label">Upload Attachments</label>
+              <ngb-alert type="danger" *ngIf="showAlert" (close)="showAlert=false">
+                  All attachments must be no larger than <strong>5MB</strong>.
+              </ngb-alert>
+
+              <!-- UPLOAD CONTAINER -->
+              <div class="fb-upload-container">
+                <div class="fb-upload-target-container">
+                  <div class="fb-upload-target pcp" id="dropzone" ngf-drop ngf-select ngf-allow-dir="true" ng-model="s.comment.files" ngf-drag-over-class="fb-upload-target-hover"
+                    ngf-multiple="true">
+                    <div class="fb-upload-target-content">
+                      <span class="glyphicon glyphicon-open icon-default"></span>
+                      <span class="fb-upload-target-msg">
+                        <b>Drag &amp; Drop</b> or
+                        <b>browse files</b> to upload.</span>
+                      <span class="fb-upload-req-msg">Size limited to 5MB.</span>
+                    </div>
+                    <div class="fb-upload-target-border"></div>
+                  </div>
+
+                  <!-- UPLOAD STATUS -->
+                  <div class="fb-upload-target-status" ng-if="uploadService.actions.busy || uploadService.actions.completed"></div>
+                </div>
+                <div class="m-t-1" ng-if="s.fileList.length > 0">
+                  <!-- <x-file-upload-listing file-list="s.fileList"></x-file-upload-listing> -->
+                </div>
+              </div>
+              <!-- /UPLOAD CONTAINER -->
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" (click)="close()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="save()">Submit Comment</button>
+    </div>
+  </div>
+</div>

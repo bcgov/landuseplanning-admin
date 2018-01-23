@@ -37,8 +37,10 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   public alerts: Array<string>;
   public closeResult: string;
 
-  // ref: https://alligator.io/angular/takeuntil-rxjs-unsubscribe/
-  private destroy$: Subject<boolean> = new Subject<boolean>();
+  // see official solution:
+  // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
+  // or http://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private route: ActivatedRoute,
@@ -66,8 +68,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
 
     // get application
     this.applicationService.getById(this.appId)
-    .takeUntil(this.destroy$)
-    .subscribe(
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
       data => {
         this.application = data;
       },
@@ -82,8 +84,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
 
     // get comment periods
     this.commentPeriodService.getAll(this.appId)
-    .takeUntil(this.destroy$)
-    .subscribe(
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
       data => {
         this.loading = false;
         this.commentPeriods = data;
@@ -100,7 +102,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       });
   }
 
-  addClick(content) {
+  addClick() {
     this.dialogService.addDialog(AddEditCommentPeriodComponent,
       {
         title: 'Add Comment Period',
@@ -111,10 +113,11 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.destroy$)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {
+          // TODO: reload page (if not observable binding)?
           console.log('saved');
         } else {
           console.log('canceled');
@@ -122,7 +125,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateClick(content) {
+  updateClick() {
     this.dialogService.addDialog(AddEditCommentPeriodComponent,
       {
         title: 'Update Comment Period',
@@ -133,10 +136,11 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.destroy$)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {
+          // TODO: reload page (if not observable binding)?
           console.log('updated');
         } else {
           console.log('canceled');
@@ -155,10 +159,11 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.destroy$)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {
+          // TODO: reload page (if not observable binding)?
           console.log('accepted');
         } else {
           console.log('declined');
@@ -167,11 +172,11 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
-  private getStatus(item: CommentPeriod) {
+  getStatus(item: CommentPeriod) {
     const today = new Date();
 
     if (!item.startDate || !item.endDate) {

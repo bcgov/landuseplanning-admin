@@ -1,31 +1,55 @@
-@import "~assets/styles/base.scss";
-.commentdetail-comment,
-commentdetail-internalnotes {
-    p {
-        margin: 0;
-        padding: 0.5rem 0.75rem;
-    }
-}
-
-@media (max-width: 567px) {}
-
-@media (min-width: 760px) {
-    .commentdetail-details {
-        &--list {
-            .name {
-                margin: 0;
-                padding: 0.5rem 0.75rem;
-                width: 25%;
+        @import "~assets/styles/base.scss";
+        .comment-detail {
+            background-color: #f7f7f7;
+            border: darkgray 1px solid;
+            border-radius: 0.25rem;
+            .row {
+                margin: 2rem 2rem;
             }
-            .value {
-                margin: 0;
-                padding: 0.5rem 0.75rem;
-                width: 75%;
+            &__author {
+                ul {
+                    list-style-type: none !important;
+                    padding: 0;
+                    margin-bottom: 0;
+                }
+            }
+            &__status {
+                position: relative;
+                .badge {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-right: -50%;
+                    transform: translate(-50%, -50%);
+                    width: 5rem;
+                    line-height: 1.5;
+                }
+            }
+            &__documents {
+                ul {
+                    list-style-type: none;
+                    padding: 0;
+                    margin-bottom: 0;
+                }
+            }
+            &__notes {
+                label {
+                    width: 100%;
+                    font-size: larger;
+                    padding-top: 1.5rem;
+                    border-top: 1px darkgray solid;
+                }
+                textarea {
+                    width: 100%;
+                    resize: none;
+                }
             }
         }
-    }
-}
 
-@media (min-width: 992px) {}
+        @media (max-width: 567px) {}
 
-@media (min-width: 1200px) {}
+        @media (min-width: 760px) {}
+
+        @media (min-width: 992px) {}
+
+        @media (min-width: 1200px) {}
