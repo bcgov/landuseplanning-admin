@@ -14,7 +14,7 @@ export interface DataModel {
   styleUrls: ['./add-edit-user.component.scss']
 })
 
-export class AddEditUserComponent extends DialogComponent<DataModel, boolean> implements DataModel, OnInit {
+export class AddEditUserComponent extends DialogComponent<DataModel, boolean> implements DataModel {
   title: string;
   message: string;
   model: User;
