@@ -15,7 +15,7 @@ export class ConfirmComponent extends DialogComponent<DataModel, boolean> implem
   title: string;
   message: string;
 
-  constructor(dialogService: DialogService) {
+  constructor(public dialogService: DialogService) {
     super(dialogService);
   }
 

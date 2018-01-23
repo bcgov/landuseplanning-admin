@@ -3,7 +3,21 @@
     padding-top: 1rem;
 }
 
+.badge {
+    width: 5rem;
+    line-height: 1.5;
+}
+
+nav {
+    margin-bottom: 1rem;
+}
+
 // see lists.scss and default.scss
+.list-group {
+    max-height: 60rem;
+    overflow-y: auto;
+}
+
 .list-group-item {
     border: none;
     &:nth-child(odd) {

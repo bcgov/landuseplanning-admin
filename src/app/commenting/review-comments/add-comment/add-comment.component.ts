@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { CommentPeriod } from '../../../models/commentperiod';
-import { CommentPeriodService } from '../../../services/commentperiod.service';
+import { Comment } from '../../../models/comment';
+import { CommentService } from '../../../services/comment.service';
 import { ApiService } from '../../../services/api';
 
 export interface DataModel {
@@ -10,21 +10,23 @@ export interface DataModel {
 }
 
 @Component({
-  templateUrl: './add-edit-comment-period.component.html',
-  styleUrls: ['./add-edit-comment-period.component.scss']
+  templateUrl: './add-comment.component.html',
+  styleUrls: ['./add-comment.component.scss']
 })
 
-export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, boolean> implements DataModel {
+export class AddCommentComponent extends DialogComponent<DataModel, boolean> implements DataModel {
   public title: string;
   public message: string;
-  public commentPeriod: CommentPeriod;
+  public comment: Comment;
+  public showAlert: boolean;
 
   constructor(
     public dialogService: DialogService,
-    private commentPeriodService: CommentPeriodService,
+    private commentService: CommentService,
     private api: ApiService
   ) {
     super(dialogService);
+    this.showAlert = false;
   }
 
   save() {
@@ -32,10 +34,5 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
     // then we can get dialog result from caller code
     this.result = true;
     this.close();
-  }
-
-  onSubmit() {
-    alert('on submit');
-    // this.router.navigate(['search', this.terms.getParams()]);
   }
 }

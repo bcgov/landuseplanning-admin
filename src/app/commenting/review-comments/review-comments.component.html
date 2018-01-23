@@ -18,6 +18,10 @@
         <i class="material-icons">date_range</i>
         <span>Manage Comment Periods</span>
       </a>
+      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()">
+        <i class="material-icons">add_box</i>
+        <span>Add Comment</span>
+      </button>
     </div>
   </div>
 </div>
@@ -25,8 +29,6 @@
 <div class="container" id="anchor-point">
   <div class="row">
     <nav class="col-lg-4">
-      <!-- <div class="d-flex p-2 bd-highlight">I'm a flexbox container!</div> -->
-
       <div class="list-group">
         <ng-template ngFor let-item [ngForOf]="comments">
           <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
@@ -45,7 +47,7 @@
               <small>{{item.comment}}</small>
             </p>
             <div class="d-flex w-100 justify-content-between">
-              <div class="badge" [ngClass]="getStatus(item)" style="line-height: 1.5;">{{item.commentStatus}}</div>
+              <div class="badge" [ngClass]="getStatus(item)">{{item.commentStatus}}</div>
               <div class="material-icons" *ngIf="item._documents.length > 0">attachment</div>
             </div>
           </a>
@@ -80,9 +82,7 @@
     </nav>
 
     <main class="col-lg-8">
-      <div style="background-color: #eee;">
-        comment sub-component goes here
-      </div>
+      <app-comment-detail></app-comment-detail>
     </main>
   </div>
 </div>

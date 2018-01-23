@@ -1,17 +1,77 @@
-<div class="hero-banner">
-    <div class="container">
-      <div class="container__inner-container">
-        <div class="hero-banner__content">
-          <h1 id="pgTitle">Comment Details page</h1>
-        </div>
-      </div>
+<div class="comment-detail">
+  <div class="row">
+    <div class="col-6 comment-detail__author">
+      <ul>
+        <li class="value">
+          <strong>{{comment?.commentAuthor.contactName}}</strong>
+        </li>
+        <li class="value">{{comment?.commentAuthor.location}}</li>
+        <li class="value">{{comment?.commentAuthor.internal.email}}</li>
+        <li class="value">{{comment?.commentAuthor.internal.phone}}</li>
+      </ul>
+    </div>
+    <div class="col-6 comment-detail__status">
+      <div class="badge" [ngClass]="getStatus(comment)">{{comment?.commentStatus || 'Pending'}}</div>
     </div>
   </div>
-  
-  <div class="container" id="anchor-point">
-    <div class="row">
-      <main class="col-lg-12">
-        <p>comment stuff here...</p>
-      </main>
+
+  <div class="row">
+    <div class="col-12 comment-detail__date">
+      Comment received:
+      <strong>{{comment?.dateAdded | date:'medium'}}</strong>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-12 comment-detail__comment">
+      <span [innerHTML]="comment?.comment | newlines"></span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6 comment-detail__documents">
+      <ul>
+        <!-- TODO: for loop here -->
+        <li>
+          <a [routerLink]="['/document', '123']">
+            <i class="material-icons">attachment</i> Document 1</a>
+        </li>
+        <li>
+          <a [routerLink]="['/document', '456']">
+            <i class="material-icons">attachment</i> Document 2</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-6 comment-detail__accept-reject">
+      <button type="button" class="comment-detail__reject-btn btn btn-danger float-right" (click)="reject(comment)" title="Reject this comment">
+        <i class="material-icons">cancel</i>
+        <span>Reject</span>
+      </button>
+      <button type="button" class="comment-detail__accept-btn btn btn-success float-right" (click)="accept(comment)" title="Accept this comment">
+        <i class="material-icons">check_circle</i>
+        <span>Accept</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 comment-detail__notes">
+      <label for="internalNotes">Internal Notes</label>
+      <textarea id="internalNotes" rows=5></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 comment-detail__accept-reject">
+      <button type="button" class="comment-detail__reject-btn btn btn-danger float-right" (click)="reset(comment)" title="Reset internal notes">
+        <i class="material-icons">cancel</i>
+        <span>Reset</span>
+      </button>
+      <button type="button" class="comment-detail__accept-btn btn btn-success float-right" (click)="save(comment)" title="Save internal notes">
+        <i class="material-icons">check_circle</i>
+        <span>Save</span>
+      </button>
+    </div>
+  </div>
+
+</div>
