@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
-import { Organization } from '../models/organization';
+import { Organization } from 'app/models/organization';
 
 @Injectable()
 export class OrganizationService {
@@ -35,8 +35,8 @@ export class OrganizationService {
     return this.api.getOrganization(id)
       .map((res: Response) => {
         const organizations = res.text() ? res.json() : [];
+        // return just the first (only) organization
         return organizations.length > 0 ? organizations[0] : null;
-        // return res.text() ? new Organization(res.json()) : null;
       })
       .map((organization: Organization) => {
         if (!organization) { return; }

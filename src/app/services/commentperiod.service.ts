@@ -4,25 +4,32 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
-import { CommentPeriod } from '../models/commentperiod';
+import { CommentPeriod } from 'app/models/commentperiod';
 
 @Injectable()
 export class CommentPeriodService {
-  commentperiod: CommentPeriod;
+  // commentperiod: CommentPeriod;
 
   constructor(private api: ApiService) { }
 
-  // get all comment periods for the specified application id
+  // TODO:
+  // update review-comments component to use getByApplicationId()
+  // and then delete getAll()
   getAll(id: string) {
-    return this.api.getCommentPeriodsByAppId(id)
-      .map((res: Response) => {
-        const commentperiods = res.text() ? res.json() : [];
+    return this.getByApplicationId(id);
+  }
 
-        commentperiods.forEach((commentperiod, index) => {
-          commentperiods[index] = new CommentPeriod(commentperiod);
+  // get all comment periods for the specified application id
+  getByApplicationId(appId: string) {
+    return this.api.getPeriodsByAppId(appId)
+      .map((res: Response) => {
+        const periods = res.text() ? res.json() : [];
+
+        periods.forEach((period, index) => {
+          periods[index] = new CommentPeriod(period);
         });
 
-        return commentperiods;
+        return periods;
       })
       .catch(this.api.handleError);
   }

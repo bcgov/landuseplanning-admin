@@ -28,6 +28,7 @@
 
 <div class="comment-periods-body container" id="anchor-point">
   <!-- <div *ngIf="commentPeriods.length == 0" class="clickable" (click)="addClick()">Click here to add a comment period.</div> -->
+  <p *ngIf="commentPeriods.length == 0"><em>This application has no comment periods.</em></p>
 
   <table class="table comment-periods-table">
     <tbody class="comment-periods-table__content">

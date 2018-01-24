@@ -47,10 +47,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.sub = this.applicationService.getAll()
       // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
-      data => {
+      applications => {
         this.loading = false;
-        this.applications = data;
-        this.appCount = data ? data.length : 0;
+        this.applications = applications;
+        this.appCount = applications ? applications.length : 0;
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();
       },

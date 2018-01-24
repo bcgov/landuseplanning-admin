@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
-import { Search } from '../models/search';
+import { Search } from 'app/models/search';
 
 @Injectable()
 export class SearchService {
@@ -14,14 +14,15 @@ export class SearchService {
 
   getByCLFile(clfile: string): Observable<Search> {
     return this.api.getBCGWCrownLandsById(clfile)
-    .map((res: Response) => {
+      .map((res: Response) => {
         return res.text() ? new Search(res.json()) : null;
-    });
+      });
   }
+
   getByDTID(dtid: string): Observable<Search> {
     return this.api.getBCGWDispositionTransactionId(dtid)
-    .map((res: Response) => {
+      .map((res: Response) => {
         return res.text() ? new Search(res.json()) : null;
-    });
+      });
   }
 }
