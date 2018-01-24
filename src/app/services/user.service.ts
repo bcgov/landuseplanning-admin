@@ -9,7 +9,6 @@ import { User } from '../models/user';
 
 @Injectable()
 export class UserService {
-  user: User;
 
   constructor(private api: ApiService) { }
 
@@ -22,6 +21,24 @@ export class UserService {
           users[index] = new User(user);
         });
 
+        return users;
+      })
+      .catch(this.api.handleError);
+  }
+
+  saveUser(user: User) {
+    return this.api.saveUser(user)
+      .map((res: Response) => {
+        const users = res.text() ? res.json() : [];
+        return users;
+      })
+      .catch(this.api.handleError);
+  }
+
+  addUser(user: User) {
+    return this.api.addUser(user)
+      .map((res: Response) => {
+        const users = res.text() ? res.json() : [];
         return users;
       })
       .catch(this.api.handleError);
