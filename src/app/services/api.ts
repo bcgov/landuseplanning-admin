@@ -3,6 +3,7 @@ import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
 import * as _ from 'lodash';
 import { User } from '../models/user';
+import { CommentPeriod } from '../models/commentperiod';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -281,7 +282,7 @@ export class ApiService {
     return this.put(this.pathAPI, queryString, user, { headers: headers });
   }
   addUser(user: User) {
-    console.log('adding');
+    console.log('addUser');
     const fields = ['displayName', 'username', 'firstName', 'lastName'];
     let queryString = 'user?fields=';
     _.each(fields, function (f) {
@@ -291,6 +292,42 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, queryString, user, { headers: headers });
+  }
+  saveCommentPeriod(cp: CommentPeriod) {
+    console.log('saveCommentPeriod');
+    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
+    let queryString = 'commentperiod/' + cp._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, cp, { headers: headers });
+  }
+  addCommentPeriod(cp: CommentPeriod) {
+    console.log('addCommentPeriod');
+    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
+    let queryString = 'commentperiod?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, cp, { headers: headers });
+  }
+  deleteCommentPeriod(cp: CommentPeriod) {
+    console.log('deleteCommentPeriod');
+    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
+    let queryString = 'commentperiod/' + cp._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.delete(this.pathAPI, queryString, cp, { headers: headers });
   }
   // putApps(apiRoute: string, body?: Object, options?: Object) {
   //   return this.put(this.pathAPI, apiRoute, body, options);
@@ -341,5 +378,9 @@ export class ApiService {
   private post(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
     // console.log('THIS:', `${ apiPath }/${ apiRoute }`, body || null, options || null);
     return this.http.post(`${apiPath}/${apiRoute}`, body || null, options || null);
+  }
+  private delete(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
+    // console.log('THIS:', `${ apiPath }/${ apiRoute }`, body || null, options || null);
+    return this.http.delete(`${apiPath}/${apiRoute}`, options || null);
   }
 }
