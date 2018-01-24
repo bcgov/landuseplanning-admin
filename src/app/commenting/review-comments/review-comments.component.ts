@@ -92,11 +92,38 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     this.commentPeriodService.getAll(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      data => {
-        this.commentPeriods = data;
+      commentPeriods => {
+        this.commentPeriods = commentPeriods;
         // TODO: for now, just save first comment period id
         // FUTURE: create array of comment period ids
-        this.periodId = data.length > 0 ? data[0]._id : '0';
+        this.periodId = commentPeriods.length > 0 ? commentPeriods[0]._id : '0';
+
+        //
+        // TODO: chaining
+        // see mmti-public
+        //
+
+        if (this.periodId) {
+          // get comments
+          // TODO: for now, just get comments for first comment period
+          // FUTURE: pass array of comment period ids
+          this.commentService.getAll(this.periodId)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe(
+            comments => {
+              this.loading = false; // TODO: only called on successful completion :()
+              this.comments = comments;
+            },
+            error => {
+              this.loading = false; // TODO: only called on successful completion :()
+              // If 403, redir to /login.
+              if (error.startsWith('403')) {
+                this.router.navigate(['/login']);
+              }
+              this.alerts.push('Error loading comments');
+              // console.log(error); // already displayed by handleError()
+            });
+        }
       },
       error => {
         // If 403, redir to /login.
@@ -104,26 +131,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         this.alerts.push('Error loading comment periods');
-        // console.log(error); // already displayed by handleError()
-      });
-
-    // get comments
-    // TODO: for now, just get comments for first comment period
-    // FUTURE: pass array of comment period ids
-    this.commentService.getAll(this.periodId)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-      data => {
-        this.loading = false; // TODO: only called on successful completion :()
-        this.comments = data;
-      },
-      error => {
-        this.loading = false; // TODO: only called on successful completion :()
-        // If 403, redir to /login.
-        if (error.startsWith('403')) {
-          this.router.navigate(['/login']);
-        }
-        this.alerts.push('Error loading comments');
         // console.log(error); // already displayed by handleError()
       });
   }
@@ -161,8 +168,10 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       return 'badge-success';
     } else if (item.commentStatus === 'Rejected') {
       return 'badge-danger';
-    } else {
+    } else if (item.commentStatus === 'Pending') {
       return 'badge-secondary';
+    } else {
+      return 'badge-light';
     }
   }
 
