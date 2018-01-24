@@ -38,7 +38,7 @@ export class Comment {
     this.commentNumber  = obj && obj.commentNumber  || 0;
     this.comment        = obj && obj.comment        || null;
     this.commentAuthor  = obj && obj.commentAuthor  || {};
-    this._documents     = obj && obj.documents      || []; // TODO: should be obj._documents
+    this._documents     = obj && obj._documents     || [];
     this.review         = obj && obj.review         || {};
     this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;

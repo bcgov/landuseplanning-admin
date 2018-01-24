@@ -9,10 +9,10 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
-import { Search, SearchArray, SearchTerms } from '../models/search';
-import { Application } from '../models/application';
-import { Document } from '../models/document';
-import { Proponent } from '../models/proponent';
+import { Search, SearchArray, SearchTerms } from 'app/models/search';
+import { Application } from 'app/models/application';
+import { Document } from 'app/models/document';
+import { Proponent } from 'app/models/proponent';
 
 @Injectable()
 export class DocumentService {
@@ -168,6 +168,7 @@ export class DocumentService {
     //     return data;
     //   });
 
+    // // execute in parallel
     // return Observable.forkJoin([mem, epic]);
   }
 }

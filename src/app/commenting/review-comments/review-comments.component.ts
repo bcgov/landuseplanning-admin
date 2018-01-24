@@ -7,8 +7,6 @@ import { DialogService } from 'ng2-bootstrap-modal';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
-import { CommentPeriod } from '../../models/commentperiod';
-import { CommentPeriodService } from '../../services/commentperiod.service';
 import { Comment } from '../../models/comment';
 import { CommentService } from '../../services/comment.service';
 import { ApiService } from '../../services/api';
@@ -34,9 +32,7 @@ import { AddCommentComponent } from './add-comment/add-comment.component';
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
   public loading: boolean;
   public appId: string;
-  public application: Application;
-  public commentPeriods: Array<CommentPeriod>;
-  public periodId: string;
+  public application: Application; // used for display app info
   public comments: Array<Comment>;
   public alerts: Array<string>;
 
@@ -49,7 +45,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private applicationService: ApplicationService,
-    private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
     private api: ApiService,
     private dialogService: DialogService
@@ -63,8 +58,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.appId = '0';
-    this.commentPeriods = [];
-    this.periodId = '0';
     this.comments = [];
     this.alerts = [];
 
@@ -73,11 +66,12 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     );
 
     // get application
+    // this is independent of comment periods data
     this.applicationService.getById(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      data => {
-        this.application = data;
+      application => {
+        this.application = application;
       },
       error => {
         // If 403, redir to /login.
@@ -88,49 +82,22 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
         // console.log(error); // already displayed by handleError()
       });
 
-    // get comment periods
-    this.commentPeriodService.getAll(this.appId)
+    // get comments
+    // this is independent of application data
+    this.commentService.getByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      commentPeriods => {
-        this.commentPeriods = commentPeriods;
-        // TODO: for now, just save first comment period id
-        // FUTURE: create array of comment period ids
-        this.periodId = commentPeriods.length > 0 ? commentPeriods[0]._id : '0';
-
-        //
-        // TODO: chaining
-        // see mmti-public
-        //
-
-        if (this.periodId) {
-          // get comments
-          // TODO: for now, just get comments for first comment period
-          // FUTURE: pass array of comment period ids
-          this.commentService.getAll(this.periodId)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-            comments => {
-              this.loading = false; // TODO: only called on successful completion :()
-              this.comments = comments;
-            },
-            error => {
-              this.loading = false; // TODO: only called on successful completion :()
-              // If 403, redir to /login.
-              if (error.startsWith('403')) {
-                this.router.navigate(['/login']);
-              }
-              this.alerts.push('Error loading comments');
-              // console.log(error); // already displayed by handleError()
-            });
-        }
+      comments => {
+        this.loading = false;
+        this.comments = comments;
       },
       error => {
+        this.loading = false;
         // If 403, redir to /login.
         if (error.startsWith('403')) {
           this.router.navigate(['/login']);
         }
-        this.alerts.push('Error loading comment periods');
+        this.alerts.push('Error loading comments');
         // console.log(error); // already displayed by handleError()
       });
   }

@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
-import { Proponent } from '../models/proponent';
+import { Proponent } from 'app/models/proponent';
 
 @Injectable()
 export class ProponentService {
@@ -35,8 +35,8 @@ export class ProponentService {
     // return this.api.getProponent(id)
     //   .map((res: Response) => {
     //     const proponents = res.text() ? res.json() : [];
+    //     // return just the first (only) proponent
     //     return proponents.length > 0 ? proponents[0] : null;
-    //     // return res.text() ? new Proponent(res.json()) : null;
     //   })
     //   .map((proponent: Proponent) => {
     //     if (!proponent) { return; }
