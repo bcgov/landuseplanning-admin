@@ -1,74 +1,41 @@
 @import "~assets/styles/base.scss";
 .review-comments-links {
     padding-top: 1rem;
-}
-
-.badge {
-    width: 5rem;
-    line-height: 1.5;
-}
-
-nav {
-    margin-bottom: 1rem;
-}
-
-// see lists.scss and default.scss
-.list-group {
-    max-height: 60rem;
-    overflow-y: auto;
-}
-
-.list-group-item {
-    border: none;
-    &:nth-child(odd) {
-        background: #eee;
-    }
-    &:nth-child(even) {
-        background: #ddd;
+    button {
+        cursor: pointer;
     }
 }
 
-.review-comments-table {
-    tbody {
-        tr {
-            background: transparent;
-            .accordion__collapse-header {
-                background: $table-row-bg;
+.review-comments-body {
+    padding-top: 0;
+    nav {
+        margin-bottom: 1rem;
+        .list-group {
+            max-height: 60rem;
+            overflow-y: auto;
+        }
+        .list-group-item {
+            cursor: pointer;
+            margin: 0;
+            &:nth-child(odd) {
+                border: #f0f0f0 2px solid;
+                background: #f0f0f0;
             }
             &:nth-child(even) {
-                .accordion__collapse-header {
-                    background: $table-alt-row-bg;
-                }
+                border: #e7e7e7 2px solid;
+                background: #e7e7e7;
             }
-        }
-    }
-    &__review-comment-details {
-        font-size: 0.85rem;
-        &--links {
-            padding-top: 1.5rem;
-        }
-        &--description {
-            margin-bottom: 1.25rem;
-            &::ng-deep {
-                p {
-                    margin: 0;
-                    line-height: calc(0.85rem * 1.5);
-                    font-size: 0.85rem;
-                }
+            &:active,
+            &:focus,
+            &:hover {
+                border-color: #38598a;
+                // background: $gold;
+                text-transform: uppercase;
+                font-weight: 700;
             }
-        }
-        &--list {
-            li {
-                @include align-items(start);
-                +li {
-                    border-top: 1px solid #fff;
-                }
-            }
-            .name,
-            .value {
-                margin: 0;
-                padding: 0.5rem 0.75rem;
-                width: 50%;
+            .badge {
+                width: 5rem;
+                line-height: 1.5;
             }
         }
     }

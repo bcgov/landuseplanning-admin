@@ -1,50 +1,55 @@
 @import "~assets/styles/base.scss";
-.comment-periods-links {
-    padding-top: 1rem;
-    padding-bottom: 2rem;
+.comment-periods-header {
+    &__links {
+        padding-top: 1rem;
+        button {
+            cursor: pointer;
+        }
+    }
+}
+
+.comment-periods-body {
+    padding-top: 0;
 }
 
 .comment-periods-table {
-    tbody {
-        tr {
-            background: transparent;
-            .accordion__collapse-header {
-                background: $table-row-bg;
-            }
-            &:nth-child(even) {
-                .accordion__collapse-header {
-                    background: $table-alt-row-bg;
-                }
-            }
-        }
+    tr {
+        background: transparent;
     }
-    &__comment-period-details {
-        font-size: 0.85rem;
-        &--links {
-            padding-top: 1.5rem;
-        }
-        &--description {
-            margin-bottom: 1.25rem;
-            &::ng-deep {
-                p {
-                    margin: 0;
-                    line-height: calc(0.85rem * 1.5);
-                    font-size: 0.85rem;
-                }
-            }
-        }
-        &--list {
+    td {
+       padding: 0; 
+    }
+    &__item {
+        ul {
             li {
                 @include align-items(start);
                 +li {
                     border-top: 1px solid #fff;
                 }
             }
-            .name,
+            .name {
+                margin: 0;
+                padding: 0.5rem 0.75rem;
+                width: 25%;
+            }
             .value {
                 margin: 0;
                 padding: 0.5rem 0.75rem;
-                width: 50%;
+                width: 75%;
+            }
+        }
+        &--buttons {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            >:not(:last-of-type) {
+                margin-right: 0.25rem;
+            }
+            >:not(:first-of-type) {
+                margin-left: 0.25rem;
+            }
+            button {
+                cursor: pointer;
             }
         }
     }

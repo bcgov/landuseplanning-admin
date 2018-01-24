@@ -13,8 +13,17 @@ export class CommentService {
 
   constructor(private api: ApiService) { }
 
+  //
+  // TODO
+  // getApplicationComments(appId)
+  // getPeriodComments(periodId)
+  //
+
   // get all comments for the specified comment period id
   getAll(id: string) {
+    // if (!id) {
+    //   return null;
+    // }
     return this.api.getCommentsByPeriodId(id)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
@@ -30,6 +39,9 @@ export class CommentService {
 
   // get a specific comment by its id
   getById(id: string): Observable<Comment> {
+    // if (!id) {
+    //   return null;
+    // }
     return this.api.getComment(id)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];

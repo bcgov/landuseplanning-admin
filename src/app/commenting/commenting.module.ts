@@ -1,5 +1,6 @@
 // modules
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -21,6 +22,7 @@ import { AddCommentComponent } from './review-comments/add-comment/add-comment.c
 
 @NgModule({
   imports: [
+    FormsModule,
     CommonModule,
     SharedModule,
     NgbModule.forRoot(),

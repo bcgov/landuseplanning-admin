@@ -2,7 +2,7 @@
   <div class="spinner-new rotating"></div>
 </div>
 
-<div class="container">
+<div class="review-comments-header container">
   <ngb-alert type="danger" [dismissible]="false" *ngFor="let alert of alerts">{{alert}}</ngb-alert>
 
   <div class="container__inner-container">
@@ -26,11 +26,11 @@
   </div>
 </div>
 
-<div class="container" id="anchor-point">
+<div class="review-comments-body container" id="anchor-point">
   <div class="row">
     <nav class="col-lg-4">
-      <div class="list-group">
-        <ng-template ngFor let-item [ngForOf]="comments">
+      <div class="review-comments-list list-group">
+        <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
           <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
               <div>
@@ -53,32 +53,6 @@
           </a>
         </ng-template>
       </div>
-
-      <!--<table class="table review-comments-table" id="tableTop">
-          <tbody class="review-comments-table__content">
-            <tr *ngFor="let item of comments">
-              <td>
-                <div class="review-comments-table__review-comment-details">
-                  <h5 class="review-comments-table__review-comment-details--heading">Comment # {{item.commentNumber}}</h5>
-                  <ul class="review-comments-table__review-comment-details--list list-group">
-                    <li class="list-group-item p-0">
-                      <span class="name">Date Range:</span>
-                      <span class="value">{{(item.startDate | date) || 'start'}} to {{(item.endDate | date) || 'end'}}</span>
-                    </li>
-                    <li class="list-group-item p-0">
-                      <span class="name">Description:</span>
-                      <span class="value">{{item.description}}</span>
-                    </li>
-                    <li class="list-group-item p-0">
-                      <span class="name">Internal Notes:</span>
-                      <span class="value">{{item.internalNotes}}</span>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>-->
     </nav>
 
     <main class="col-lg-8">

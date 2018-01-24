@@ -8,10 +8,43 @@
         <li class="value">{{comment?.commentAuthor.location}}</li>
         <li class="value">{{comment?.commentAuthor.internal.email}}</li>
         <li class="value">{{comment?.commentAuthor.internal.phone}}</li>
+        <p>commentStatus: {{comment?.commentStatus || 'null'}}</p>
       </ul>
     </div>
     <div class="col-6 comment-detail__status">
-      <div class="badge" [ngClass]="getStatus(comment)">{{comment?.commentStatus || 'Pending'}}</div>
+      <!-- <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="model">
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" [value]="1"> Left (pre-checked)
+        </label>
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" value="middle"> Middle
+        </label>
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" [value]="false"> Right
+        </label>
+      </div>
+      <hr>
+      <p>{{model}}</p>
+    </div> -->
+      <div class="col-6 comment-detail__status">
+        <div class="btn-group btn-group-toggle" ngbRadioGroup [(ngModel)]="comment.commentStatus" (click)="changeStatus(comment)">
+          <label ngbButtonLabel class="comment-detail__accept-btn btn-success">
+            <input ngbButton type="radio" (click)="accept(comment)" value="Accepted">
+            <i class="material-icons">check_circle</i>
+            <span>Accepted</span>
+          </label>
+          <label ngbButtonLabel class="comment-detail__pending-btn btn-secondary">
+            <input ngbButton type="radio" (click)="pend(comment)" value="Pending">
+            <i class="material-icons">error</i>
+            <span>Pending</span>
+          </label>
+          <label ngbButtonLabel class="comment-detail__reject-btn btn-danger">
+            <input ngbButton type="radio" (click)="reject(comment)" value="Rejected">
+            <i class="material-icons">cancel</i>
+            <span>Rejected</span>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -24,54 +57,44 @@
 
   <div class="row">
     <div class="col-12 comment-detail__comment">
-      <span [innerHTML]="comment?.comment | newlines"></span>
+      <p [innerHTML]="comment?.comment | newlines"></p>
     </div>
   </div>
 
   <div class="row">
     <div class="col-6 comment-detail__documents">
-      <ul>
-        <!-- TODO: for loop here -->
-        <li>
-          <a [routerLink]="['/document', '123']">
-            <i class="material-icons">attachment</i> Document 1</a>
-        </li>
-        <li>
-          <a [routerLink]="['/document', '456']">
-            <i class="material-icons">attachment</i> Document 2</a>
-        </li>
-      </ul>
+      <a [routerLink]="['/document', '123']">
+        <i class="material-icons">attachment</i> Document 1</a>
     </div>
-    <div class="col-6 comment-detail__accept-reject">
-      <button type="button" class="comment-detail__reject-btn btn btn-danger float-right" (click)="reject(comment)" title="Reject this comment">
-        <i class="material-icons">cancel</i>
-        <span>Reject</span>
-      </button>
-      <button type="button" class="comment-detail__accept-btn btn btn-success float-right" (click)="accept(comment)" title="Accept this comment">
-        <i class="material-icons">check_circle</i>
-        <span>Accept</span>
-      </button>
+    <div class="col-6 comment-detail__documents">
+      <a [routerLink]="['/document', '456']">
+        <i class="material-icons">attachment</i> Document 2</a>
+    </div>
+    <div class="col-6 comment-detail__documents">
+      <a [routerLink]="['/document', '789']">
+        <i class="material-icons">attachment</i> Document 3</a>
     </div>
   </div>
+</div>
 
+<div class="comment-notes">
+  <h5>Internal Notes</h5>
   <div class="row">
-    <div class="col-12 comment-detail__notes">
-      <label for="internalNotes">Internal Notes</label>
+    <div class="col-12 comment-notes__notes">
       <textarea id="internalNotes" rows=5></textarea>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-12 comment-detail__accept-reject">
-      <button type="button" class="comment-detail__reject-btn btn btn-danger float-right" (click)="reset(comment)" title="Reset internal notes">
-        <i class="material-icons">cancel</i>
-        <span>Reset</span>
-      </button>
-      <button type="button" class="comment-detail__accept-btn btn btn-success float-right" (click)="save(comment)" title="Save internal notes">
+    <div class="col-12 comment-notes__save-reset">
+      <button type="button" class="comment-notes__save-btn btn btn-primary" (click)="save(comment)" title="Save internal notes">
         <i class="material-icons">check_circle</i>
         <span>Save</span>
       </button>
+      <button type="button" class="comment-notes__reset-btn btn btn-secondary" (click)="reset(comment)" title="Reset internal notes">
+        <i class="material-icons">cancel</i>
+        <span>Reset</span>
+      </button>
     </div>
   </div>
-
 </div>
