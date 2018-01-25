@@ -162,7 +162,7 @@ export class ApiService {
       'internal',
       // 'isDeleted'
     ];
-    let queryString = 'commentperiod?_application=' + appId + '&fields=';
+    let queryString = 'commentperiod?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -193,9 +193,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  addPeriod(period: CommentPeriod) {
-    // console.log('adding');
-    const fields = ['startDate', 'endDate', 'description', 'internal'];
+  addCommentPeriod(period: CommentPeriod) {
+    console.log('addCommentPeriod');
+    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
     let queryString = 'commentperiod?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -206,9 +206,9 @@ export class ApiService {
     return this.post(this.pathAPI, queryString, period, { headers: headers });
   }
 
-  savePeriod(period: CommentPeriod) {
-    // console.log('saving');
-    const fields = ['startDate', 'endDate', 'description', 'internal'];
+  saveCommentPeriod(period: CommentPeriod) {
+    console.log('saveCommentPeriod');
+    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -219,9 +219,9 @@ export class ApiService {
     return this.put(this.pathAPI, queryString, period, { headers: headers });
   }
 
-  deletePeriod(period: CommentPeriod) {
-    // console.log('saving');
-    const fields = ['isDeleted'];
+  deleteCommentPeriod(period: CommentPeriod) {
+    console.log('deleteCommentPeriod');
+    const fields = ['isDeleted', '_application', 'startDate', 'endDate', 'description', 'name'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -229,7 +229,7 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, period, { headers: headers });
+    return this.delete(this.pathAPI, queryString, period, { headers: headers });
   }
 
   //
@@ -249,7 +249,7 @@ export class ApiService {
       'commentStatus',
       'isDeleted'
     ];
-    let queryString = 'comment?_commentPeriod=' + periodId + '&fields=';
+    let queryString = 'comment?isDeleted=false|_commentPeriod=' + periodId + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -383,7 +383,7 @@ export class ApiService {
   }
 
   addUser(user: User) {
-    console.log('adding');
+    console.log('addUser');
     const fields = ['displayName', 'username', 'firstName', 'lastName'];
     let queryString = 'user?fields=';
     _.each(fields, function (f) {
@@ -440,5 +440,9 @@ export class ApiService {
   private post(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
     // console.log('THIS:', `${ apiPath }/${ apiRoute }`, body || null, options || null);
     return this.http.post(`${apiPath}/${apiRoute}`, body || null, options || null);
+  }
+  private delete(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
+    // console.log('THIS:', `${ apiPath }/${ apiRoute }`, body || null, options || null);
+    return this.http.delete(`${apiPath}/${apiRoute}`, options || null);
   }
 }
