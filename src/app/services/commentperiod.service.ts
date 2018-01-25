@@ -33,4 +33,22 @@ export class CommentPeriodService {
       })
       .catch(this.api.handleError);
   }
+
+  add(commentperiod: CommentPeriod) {
+    return this.api.addCommentPeriod(commentperiod)
+      .map((res: Response) => {
+        const users = res.text() ? res.json() : [];
+        return users;
+      })
+      .catch(this.api.handleError);
+  }
+
+  save(commentperiod: CommentPeriod) {
+    return this.api.saveCommentPeriod(commentperiod)
+      .map((res: Response) => {
+        const users = res.text() ? res.json() : [];
+        return users;
+      })
+      .catch(this.api.handleError);
+  }
 }

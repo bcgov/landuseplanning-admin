@@ -77,7 +77,7 @@ export class CommentService {
       .catch(this.api.handleError);
   }
 
-  addComment(comment: Comment) {
+  add(comment: Comment) {
     return this.api.addComment(comment)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
@@ -86,7 +86,7 @@ export class CommentService {
       .catch(this.api.handleError);
   }
 
-  saveComment(comment: Comment) {
+  save(comment: Comment) {
     return this.api.saveComment(comment)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { CommentPeriod } from '../../../models/commentperiod';
-import { CommentPeriodService } from '../../../services/commentperiod.service';
-import { ApiService } from '../../../services/api';
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import * as moment from 'moment-timezone';
+
+import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 export interface DataModel {
   title: string;
@@ -32,8 +32,7 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
 
   constructor(
     public dialogService: DialogService,
-    private commentPeriodService: CommentPeriodService,
-    private api: ApiService
+    private commentPeriodService: CommentPeriodService
   ) {
     super(dialogService);
   }
@@ -73,28 +72,24 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
       + '-' + this.endDate.day, 'YYYY-MM-DD').utc().format();
 
     if (this.isNew) {
-      this.api.addCommentPeriod(this.comm).subscribe(
+      this.commentPeriodService.add(this.comm).subscribe(
         data => {
-          console.log('data', data);
           this.result = true;
           this.isNew = false;
           this.close();
         },
         error => {
-          console.log('error', error.json().message);
-          this.networkMsg = error.json().message;
+          this.networkMsg = error;
         });
     } else {
-      this.api.saveCommentPeriod(this.comm).subscribe(
+      this.commentPeriodService.save(this.comm).subscribe(
         data => {
-          console.log('data', data);
           this.result = true;
           this.isNew = false;
           this.close();
         },
         error => {
-          console.log('error', error.json().message);
-          this.networkMsg = error.json().message;
+          this.networkMsg = error;
         });
     }
 

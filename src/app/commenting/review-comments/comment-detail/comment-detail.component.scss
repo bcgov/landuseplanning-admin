@@ -82,6 +82,11 @@
             resize: none;
         }
     }
+    &__info {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
     &__buttons {
         display: flex;
         justify-content: flex-end;

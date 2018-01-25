@@ -34,14 +34,14 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly pending = 'Pending';
   readonly rejected = 'Rejected';
 
-  readonly orders = ['Ordinal', 'Name', 'Date', 'Status'];
+  readonly sortKeys = ['Ordinal', 'Name', 'Date', 'Status'];
 
   public loading: boolean;
   public appId: string;
   public application: Application; // used for display app info
   public comments: Array<Comment>;
   public alerts: Array<string>;
-  public currentComment: Comment;
+  public currentComment: number;
 
   // see official solution:
   // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
@@ -98,11 +98,11 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       comments => {
         this.loading = false;
         this.comments = comments;
-        this.sort(this.orders[0]); // initial order
+        this.sort(this.sortKeys[0]); // initial order
 
         // pre-select first comment
         if (this.comments.length > 0) {
-          this.currentComment = this.comments[0];
+          this.currentComment = 0;
         }
       },
       error => {
@@ -116,9 +116,14 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       });
   }
 
-  sort(order: string) {
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  private sort(key: string) {
     return this.comments.sort(function (a: Comment, b: Comment) {
-      switch (order) {
+      switch (key) {
         case 'Ordinal': return (a.commentNumber > b.commentNumber) ? 1 : -1;
         case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
         case 'Date': return (a.dateAdded > b.dateAdded) ? 1 : -1;
@@ -128,7 +133,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     });
   }
 
-  addClick() {
+  private addClick() {
     this.dialogService.addDialog(AddCommentComponent,
       {
         title: 'Add Comment',
@@ -143,17 +148,12 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {
-          // TODO: reload page (if not observable binding)?
+          // TODO: reload page?
           console.log('saved');
         } else {
           console.log('canceled');
         }
       });
-  }
-
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 
   private getStatus(item: Comment) {

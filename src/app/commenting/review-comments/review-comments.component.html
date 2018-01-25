@@ -31,18 +31,18 @@
     <em>This application has no comments.</em>
   </p>
 
-  <div class="row">
+  <div class="row" *ngIf="comments.length > 0">
     <nav class="col-lg-4">
       <div class="review-comments-sort">
         <label>Order by</label>
         <select #t (change)="sort(t.value)">
-          <option *ngFor="let order of orders" [value]="order">{{order}}</option>
+          <option *ngFor="let sortKey of sortKeys" [value]="sortKey">{{sortKey}}</option>
         </select>
       </div>
 
       <div class="review-comments-list list-group">
-        <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
-          <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="currentComment == item" (click)="currentComment = item">
+        <ng-template ngFor let-item [ngForOf]="comments" let-i="index" class="review-comments-list-item">
+          <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="currentComment == i" (click)="currentComment = i">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
               <div>
                 {{item.commentNumber || '-'}}
@@ -66,8 +66,8 @@
       </div>
     </nav>
 
-    <main *ngIf="comments.length > 0" class="col-lg-8">
-      <app-comment-detail [comment]="currentComment"></app-comment-detail>
+    <main class="col-lg-8">
+      <app-comment-detail [(comment)]="comments[currentComment]"></app-comment-detail>
     </main>
   </div>
 </div>

@@ -154,7 +154,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         // we get dialog result
         if (isConfirmed) {
           // TODO: reload page (if not observable binding)?
-          console.log('saved');
+          // console.log('saved');
           this.refreshUsersUI();
         } else {
           console.log('canceled');
