@@ -33,9 +33,16 @@
 
   <div class="row">
     <nav class="col-lg-4">
+      <div class="review-comments-sort">
+        <label>Order by</label>
+        <select #t (change)="sort(t.value)">
+          <option *ngFor="let order of orders" [value]="order">{{order}}</option>
+        </select>
+      </div>
+
       <div class="review-comments-list list-group">
         <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
-          <button class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="currentComment == item" (click)="currentComment = item">
+          <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="currentComment == item" (click)="currentComment = item">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
               <div>
                 {{item.commentNumber || '-'}}
@@ -54,7 +61,7 @@
               <div class="badge" [ngClass]="getStatus(item)">{{item.commentStatus}}</div>
               <div class="material-icons" *ngIf="item._documents.length > 0">attachment</div>
             </div>
-          </button>
+          </a>
         </ng-template>
       </div>
     </nav>

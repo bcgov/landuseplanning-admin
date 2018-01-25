@@ -34,6 +34,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly pending = 'Pending';
   readonly rejected = 'Rejected';
 
+  readonly orders = ['Ordinal', 'Name', 'Date', 'Status'];
+
   public loading: boolean;
   public appId: string;
   public application: Application; // used for display app info
@@ -96,6 +98,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       comments => {
         this.loading = false;
         this.comments = comments;
+        this.sort(this.orders[0]); // initial order
 
         // pre-select first comment
         if (this.comments.length > 0) {
@@ -111,6 +114,18 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
         this.alerts.push('Error loading comments');
         // console.log(error); // already displayed by handleError()
       });
+  }
+
+  sort(order: string) {
+    return this.comments.sort(function (a: Comment, b: Comment) {
+      switch (order) {
+        case 'Ordinal': return (a.commentNumber > b.commentNumber) ? 1 : -1;
+        case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
+        case 'Date': return (a.dateAdded > b.dateAdded) ? 1 : -1;
+        case 'Status': return (a.commentStatus > b.commentStatus) ? 1 : -1;
+        default: return 0;
+      }
+    });
   }
 
   addClick() {
