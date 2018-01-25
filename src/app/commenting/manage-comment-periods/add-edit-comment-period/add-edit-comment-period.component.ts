@@ -46,6 +46,7 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
     } else {
       this.isNew = false;
     }
+    this.comm._application = this.application;
     this.comm.startDate = new Date();
     this.comm.endDate = new Date();
     const startD = new Date(this.comm.startDate);
