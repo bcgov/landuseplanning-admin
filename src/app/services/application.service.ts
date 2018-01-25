@@ -5,8 +5,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
-import { Application } from '../models/application';
-// import { CollectionsList } from '../models/collection';
+import { Application } from 'app/models/application';
+// import { CollectionsList } from 'app/models/collection';
 
 @Injectable()
 export class ApplicationService {
@@ -31,12 +31,12 @@ export class ApplicationService {
   getById(id: string): Observable<Application> {
     // return this.application = null;
 
-    // Grab the application data first
+    // first grab the application data
     return this.api.getApplication(id)
       .map((res: Response) => {
         const applications = res.text() ? res.json() : [];
+        // return just the first (only) application
         return applications.length > 0 ? applications[0] : null;
-        // return res.text() ? new Application(res.json()) : null;
       })
       .map((application: Application) => {
         if (!application) { return; }

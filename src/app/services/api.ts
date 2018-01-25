@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
 import * as _ from 'lodash';
-import { User } from '../models/user';
-import { CommentPeriod } from '../models/commentperiod';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+
+import { Application } from 'app/models/application';
+import { CommentPeriod } from 'app/models/commentperiod';
+import { Comment } from 'app/models/comment';
+import { Document } from 'app/models/document';
+import { User } from 'app/models/user';
 
 @Injectable()
 export class ApiService {
@@ -123,6 +127,8 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  // TODO: addApplication() and saveApplication()
+
   //
   // Organizations
   //
@@ -145,7 +151,7 @@ export class ApiService {
   //
   // Comment Periods
   //
-  getCommentPeriodsByAppId(id: string) {
+  getPeriodsByAppId(appId: string) {
     const fields = [
       '_addedBy',
       '_application',
@@ -156,7 +162,7 @@ export class ApiService {
       'internal',
       'isDeleted'
     ];
-    let queryString = 'commentperiod?_application=' + id + '&fields=';
+    let queryString = 'commentperiod?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -166,21 +172,18 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getCommentsByPeriodId(id: string) {
+  getPeriod(id: string) {
     const fields = [
       '_addedBy',
-      '_commentPeriod',
+      '_application',
       'name',
-      'commentNumber',
-      'comment',
-      'commentAuthor',
-      'documents', // TODO: should be _documents; see also model
-      'review',
-      'dateAdded',
-      'commentStatus',
-      'isDeleted'
+      'startDate',
+      'endDate',
+      'description',
+      'internal',
+      'isDeleted' // not needed?
     ];
-    let queryString = 'comment?_commentPeriod=' + id + '&fields=';
+    let queryString = 'commentperiod/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -188,12 +191,51 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  addCommentPeriod(period: CommentPeriod) {
+    console.log('addCommentPeriod');
+    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
+    let queryString = 'commentperiod?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, period, { headers: headers });
+  }
+
+  saveCommentPeriod(period: CommentPeriod) {
+    console.log('saveCommentPeriod');
+    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
+    let queryString = 'commentperiod/' + period._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, period, { headers: headers });
+  }
+
+  deleteCommentPeriod(period: CommentPeriod) {
+    console.log('deleteCommentPeriod');
+    const fields = ['isDeleted', '_application', 'startDate', 'endDate', 'description', 'name'];
+    let queryString = 'commentperiod/' + period._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.delete(this.pathAPI, queryString, period, { headers: headers });
   }
 
   //
   // Comments
   //
-  getComment(id: string) {
+  getCommentsByPeriodId(periodId: string) {
     const fields = [
       '_addedBy',
       '_commentPeriod',
@@ -207,6 +249,30 @@ export class ApiService {
       'commentStatus',
       'isDeleted'
     ];
+    let queryString = 'comment?isDeleted=false|_commentPeriod=' + periodId + '&fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  getComment(id: string) {
+    const fields = [
+      '_addedBy',
+      '_commentPeriod',
+      'name',
+      'commentNumber',
+      'comment',
+      'commentAuthor',
+      '_documents',
+      'review',
+      'dateAdded',
+      'commentStatus',
+      'isDeleted' // not needed?
+    ];
     let queryString = 'comment/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -217,18 +283,49 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  //
-  // Documents // TODO: which documents -- application? comment?
-  //
-  getDocumentsByAppId(id: string) {
+  addComment(comment: Comment) {
+    // console.log('adding');
+
+    // TODO: add comment documents
+
+    const fields = ['comment', 'commentAuthor'];
+    let queryString = 'comment?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, 'document?_application=' + id, { headers: headers });
+    return this.post(this.pathAPI, queryString, comment, { headers: headers });
+  }
+
+  saveComment(comment: Comment) {
+    // console.log('saving');
+    const fields = ['review', 'commentStatus'];
+    let queryString = 'comment/' + comment._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, comment, { headers: headers });
+  }
+
+  //
+  // Documents
+  //
+  getDocumentsByAppId(appId: string) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, 'document?_application=' + appId, { headers: headers });
   }
 
   getDocument(id: string) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, 'document/' + id, { headers: headers });
   }
+
+  // TODO: saveDocument()
 
   //
   // Crown Lands file
@@ -257,6 +354,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  //
+  // Users
+  //
   getAllUsers() {
     const fields = ['displayName', 'username', 'firstName', 'lastName'];
     let queryString = 'user?fields=';
@@ -281,6 +381,7 @@ export class ApiService {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.put(this.pathAPI, queryString, user, { headers: headers });
   }
+
   addUser(user: User) {
     console.log('addUser');
     const fields = ['displayName', 'username', 'firstName', 'lastName'];
@@ -293,45 +394,6 @@ export class ApiService {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, queryString, user, { headers: headers });
   }
-  saveCommentPeriod(cp: CommentPeriod) {
-    console.log('saveCommentPeriod');
-    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
-    let queryString = 'commentperiod/' + cp._id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, cp, { headers: headers });
-  }
-  addCommentPeriod(cp: CommentPeriod) {
-    console.log('addCommentPeriod');
-    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
-    let queryString = 'commentperiod?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, cp, { headers: headers });
-  }
-  deleteCommentPeriod(cp: CommentPeriod) {
-    console.log('deleteCommentPeriod');
-    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
-    let queryString = 'commentperiod/' + cp._id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, queryString, cp, { headers: headers });
-  }
-  // putApps(apiRoute: string, body?: Object, options?: Object) {
-  //   return this.put(this.pathAPI, apiRoute, body, options);
-  // }
 
   login(username: string, password: string): Observable<boolean> {
     return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })

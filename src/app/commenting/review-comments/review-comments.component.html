@@ -27,6 +27,8 @@
 </div>
 
 <div class="review-comments-body container" id="anchor-point">
+  <p *ngIf="comments.length == 0"><em>This application has no comments.</em></p>
+
   <div class="row">
     <nav class="col-lg-4">
       <div class="review-comments-list list-group">
