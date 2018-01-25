@@ -11,7 +11,7 @@
     nav {
         margin-bottom: 1rem;
         .list-group {
-            max-height: 60rem;
+            max-height: 50rem;
             overflow-y: auto;
         }
         .list-group-item {
@@ -28,9 +28,14 @@
             &:active,
             &:focus,
             &:hover {
-                border-color: #38598a;
-                // background: $gold;
-                text-transform: uppercase;
+                color: #495057;
+                border-color: $primary;
+                font-weight: 700;
+            }
+            &.active {
+                color: #495057;
+                border-color: $primary;
+                border-right: $gold 10px solid;
                 font-weight: 700;
             }
             .badge {

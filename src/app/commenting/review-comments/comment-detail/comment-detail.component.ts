@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, Input } from '@angular/core';
+// import { ChangeDetectorRef } from '@angular/core';
 
-import { Comment } from '../../../models/comment';
-import { CommentService } from '../../../services/comment.service';
+import { Comment } from 'app/models/comment';
+import { CommentService } from 'app/services/comment.service';
 
 @Component({
   selector: 'app-comment-detail',
@@ -9,73 +10,83 @@ import { CommentService } from '../../../services/comment.service';
   styleUrls: ['./comment-detail.component.scss']
 })
 
-export class CommentDetailComponent implements OnInit {
-  public comment: Comment;
+export class CommentDetailComponent implements OnChanges {
+  @Input() comment: Comment;
 
-  constructor() { }
+  readonly accepted = 'Accepted';
+  readonly pending = 'Pending';
+  readonly rejected = 'Rejected';
 
-  ngOnInit() {
-    this.comment = new Comment();
-    this.comment.comment = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore 
-    magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
-    irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non 
-    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\\n\\n
-    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab 
-    illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur 
-    aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui 
-    dolorem  ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore 
-    magnam aliquam quaerat voluptatem.`;
-    this.comment.commentAuthor = {
-      _userId: null,
-      orgName: 'Organization Name',
-      contactName: 'Contact Name',
-      location: 'Location',
-      requestedAnonymous: true,
-      internal: {
-        email: 'john.doe@email.com',
-        phone: '604-123-4567'
-      }
-    };
-    // ref: https://momentjs.com/
-    // this.comment.dateAdded = moment('2017-12-31T03:45:00Z').tz('America/Vancouver');
-    this.comment.dateAdded = new Date();
-    this.comment.commentStatus = 'Pending';
+  public internalNotes: string; // working version
+  public networkMsg: string;
+
+  constructor(
+    // private _changeDetectionRef: ChangeDetectorRef,
+    private commentService: CommentService
+  ) { }
+
+  ngOnChanges() {
+    this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  getStatus(comment: Comment) {
-    if (comment && comment.commentStatus === 'Accepted') {
-      return 'badge-success';
-    } else if (comment && comment.commentStatus === 'Rejected') {
-      return 'badge-danger';
-    } else if (comment && comment.commentStatus === 'Pending') {
-      return 'badge-secondary';
-    } else {
-      return 'badge-light';
+  getBadgeClass() {
+    switch (this.comment.commentStatus) {
+      case this.accepted: return 'badge-success';
+      case this.pending: return 'badge-secondary';
+      case this.rejected: return 'badge-danger';
+      default: return 'badge-light'; // error
     }
   }
 
-  changeStatus(comment: Comment) {
-    console.log('commentStatus:', comment.commentStatus);
+  isAccepted() { return (this.comment.commentStatus === this.accepted); }
+
+  isPending() { return (this.comment.commentStatus === this.pending); }
+
+  isRejected() { return (this.comment.commentStatus === this.rejected); }
+
+  accept() {
+    const newComment = new Comment(this.comment);
+    newComment.commentStatus = this.accepted;
+    this.save(newComment);
+    // this._changeDetectionRef.detectChanges();
   }
 
-  accept(comment: Comment) {
-    console.log('accept');
+  pend() {
+    const newComment = new Comment(this.comment);
+    newComment.commentStatus = this.pending;
+    this.save(newComment);
+    // this._changeDetectionRef.detectChanges();
   }
 
-  pend(comment: Comment) {
-    console.log('pend');
+  reject() {
+    const newComment = new Comment(this.comment);
+    newComment.commentStatus = this.rejected;
+    this.save(newComment);
+    // this._changeDetectionRef.detectChanges();
   }
 
-  reject(comment: Comment) {
-    console.log('reject');
+  saveNotes() {
+    const newComment = new Comment(this.comment);
+    newComment.review.reviewerNotes = this.internalNotes;
+    this.save(newComment);
   }
 
-  save(comment: Comment) {
-    console.log('save');
+  resetNotes() {
+    this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  reset(comment: Comment) {
-    console.log('reset');
+  private save(newComment: Comment) {
+    this.comment.review.reviewerDate = new Date();
+    this.networkMsg = null;
+    this.commentService.saveComment(newComment)
+      // .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+      comments => {
+        this.comment = newComment; // TODO: or comments[0] ???
+      },
+      error => {
+        this.networkMsg = error;
+        // console.log(error); // already displayed by handleError()
+      });
   }
-
 }

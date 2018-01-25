@@ -7,7 +7,7 @@
 
   <div class="container__inner-container">
     <h1 id="pgTitle">Manage Comment Periods</h1>
-    <p class="mb-2" *ngIf="application">{{application.proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>
+    <p class="mb-2" *ngIf="application">{{application._proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>
 
     <div class="comment-periods-header__links">
       <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', appId]">
@@ -40,10 +40,6 @@
               <span class="name">Status:</span>
               <span class="value">{{getStatus(item)}}</span>
             </li>
-            <!-- <li>
-              <span class="name">Date Range:</span>
-              <span class="value">{{(item.startDate | date) || 'start'}} to {{(item.endDate | date) || 'end'}}</span>
-            </li> -->
             <li>
               <span class="name">Description:</span>
               <span class="value" [innerHTML]="item.description | newlines"></span>

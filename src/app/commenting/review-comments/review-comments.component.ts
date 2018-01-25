@@ -30,11 +30,18 @@ import { AddCommentComponent } from './add-comment/add-comment.component';
 })
 
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
+  readonly accepted = 'Accepted';
+  readonly pending = 'Pending';
+  readonly rejected = 'Rejected';
+
+  readonly orders = ['Ordinal', 'Name', 'Date', 'Status'];
+
   public loading: boolean;
   public appId: string;
   public application: Application; // used for display app info
   public comments: Array<Comment>;
   public alerts: Array<string>;
+  public currentComment: Comment;
 
   // see official solution:
   // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
@@ -57,9 +64,10 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this.appId = '0';
+    this.appId = null;
     this.comments = [];
     this.alerts = [];
+    this.currentComment = null;
 
     this.route.params.subscribe(
       (params: Params) => { this.appId = params.application || '0'; }
@@ -90,6 +98,12 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       comments => {
         this.loading = false;
         this.comments = comments;
+        this.sort(this.orders[0]); // initial order
+
+        // pre-select first comment
+        if (this.comments.length > 0) {
+          this.currentComment = this.comments[0];
+        }
       },
       error => {
         this.loading = false;
@@ -100,6 +114,18 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
         this.alerts.push('Error loading comments');
         // console.log(error); // already displayed by handleError()
       });
+  }
+
+  sort(order: string) {
+    return this.comments.sort(function (a: Comment, b: Comment) {
+      switch (order) {
+        case 'Ordinal': return (a.commentNumber > b.commentNumber) ? 1 : -1;
+        case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
+        case 'Date': return (a.dateAdded > b.dateAdded) ? 1 : -1;
+        case 'Status': return (a.commentStatus > b.commentStatus) ? 1 : -1;
+        default: return 0;
+      }
+    });
   }
 
   addClick() {
@@ -131,15 +157,11 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   }
 
   private getStatus(item: Comment) {
-    if (item.commentStatus === 'Accepted') {
-      return 'badge-success';
-    } else if (item.commentStatus === 'Rejected') {
-      return 'badge-danger';
-    } else if (item.commentStatus === 'Pending') {
-      return 'badge-secondary';
-    } else {
-      return 'badge-light';
+    switch (item.commentStatus) {
+      case this.accepted: return 'badge-success';
+      case this.pending: return 'badge-secondary';
+      case this.rejected: return 'badge-danger';
+      default: return 'badge-light'; // error
     }
   }
-
 }

@@ -64,7 +64,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this.appId = '0';
+    this.appId = null;
     this.commentPeriods = [];
     this.alerts = [];
 

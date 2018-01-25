@@ -6,8 +6,8 @@ export class Application {
   _schemaName: string;
   id: string; // objectid
 
-  addedBy: string; // objectid -> User
-  updatedBy: string; // objectid -> User
+  _addedBy: string; // objectid -> User
+  _updatedBy: string; // FUTURE
   dateAdded: Date;
   dateUpdated: Date;
 
@@ -28,7 +28,7 @@ export class Application {
   mapsheet: string;
   postID: number;
   projectDate: Date;
-  proponent: string; // should be objectid -> Organization?
+  _proponent: string; // objectid -> Organization
   purpose: string;
   subpurpose: string;
   region: string;
@@ -53,8 +53,8 @@ export class Application {
     this._schemaName             = obj && obj._schemaName             || null;
     this.id                      = obj && obj.id                      || null;
 
-    this.addedBy                 = obj && obj.addedBy                 || null;
-    this.updatedBy               = obj && obj.updatedBy               || null;
+    this._addedBy                = obj && obj._addedBy                || null;
+    this._updatedBy              = obj && obj._updatedBy              || null;
     this.dateAdded               = obj && obj.dateAdded               || null;
     this.dateUpdated             = obj && obj.dateUpdated             || null;
 
@@ -75,7 +75,7 @@ export class Application {
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
     this.projectDate             = obj && obj.projectDate             || null;
-    this.proponent               = obj && obj.proponent               || null;
+    this._proponent              = obj && obj._proponent              || null;
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;
