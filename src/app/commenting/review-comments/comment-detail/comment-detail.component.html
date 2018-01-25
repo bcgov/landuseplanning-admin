@@ -84,6 +84,10 @@
     </div>
   </div>
 
+  <div class="comment-alert" *ngIf="networkMsg">
+    <ngb-alert type="danger" (close)="networkMsg = null">Error: {{networkMsg}}</ngb-alert>
+  </div>
+
   <div class="comment-notes">
     <h5>Internal Notes</h5>
     <div class="row">
@@ -104,10 +108,6 @@
           <i class="material-icons">cancel</i>
           <span>Reset</span>
         </button>
-
-        <ngb-alert type="danger" [hidden]="!networkMsg">
-          Error: {{networkMsg}}
-        </ngb-alert>
       </div>
     </div>
   </div>

@@ -1,8 +1,8 @@
 import { Component, OnChanges, Input } from '@angular/core';
+// import { ChangeDetectorRef } from '@angular/core';
 
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
-// import { ApiService } from 'app/services/api';
 
 @Component({
   selector: 'app-comment-detail',
@@ -21,7 +21,7 @@ export class CommentDetailComponent implements OnChanges {
   public networkMsg: string;
 
   constructor(
-    // private api: ApiService,
+    // private _changeDetectionRef: ChangeDetectorRef,
     private commentService: CommentService
   ) { }
 
@@ -45,46 +45,45 @@ export class CommentDetailComponent implements OnChanges {
   isRejected() { return (this.comment.commentStatus === this.rejected); }
 
   accept() {
-    this.comment.commentStatus = this.accepted;
-    this.save();
+    const newComment = new Comment(this.comment);
+    newComment.commentStatus = this.accepted;
+    this.save(newComment);
+    // this._changeDetectionRef.detectChanges();
   }
 
   pend() {
-    this.comment.commentStatus = this.pending;
-    this.save();
+    const newComment = new Comment(this.comment);
+    newComment.commentStatus = this.pending;
+    this.save(newComment);
+    // this._changeDetectionRef.detectChanges();
   }
 
   reject() {
-    this.comment.commentStatus = this.rejected;
-    this.save();
+    const newComment = new Comment(this.comment);
+    newComment.commentStatus = this.rejected;
+    this.save(newComment);
+    // this._changeDetectionRef.detectChanges();
   }
 
   saveNotes() {
-    this.comment.review.reviewerNotes = this.internalNotes;
-    this.save();
+    const newComment = new Comment(this.comment);
+    newComment.review.reviewerNotes = this.internalNotes;
+    this.save(newComment);
   }
 
   resetNotes() {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  private save() {
+  private save(newComment: Comment) {
     this.comment.review.reviewerDate = new Date();
-
     this.networkMsg = null;
-    // this.api.saveComment(this.comment).subscribe(
-    //   data => {
-    //     console.log('data', data);
-    //   },
-    //   error => {
-    //     console.log('error', error.json().message);
-    //     this.networkMsg = error.json().message;
-    //   });
-
-    this.commentService.saveComment(this.comment)
+    this.commentService.saveComment(newComment)
       // .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      comments => { },
+      comments => {
+        this.comment = newComment; // TODO: or comments[0] ???
+      },
       error => {
         this.networkMsg = error;
         // console.log(error); // already displayed by handleError()

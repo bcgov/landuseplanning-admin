@@ -4,7 +4,7 @@
     border: darkgray 1px solid;
     border-radius: 0.25rem;
     .row {
-        margin: 1rem;
+        margin: 1rem 0.5rem;
     }
     &__author {
         ul {
@@ -50,7 +50,11 @@
         button {
             cursor: pointer;
         }
+    }
 }
+
+.comment-alert {
+    margin-top: 1em;
 }
 
 .comment-notes {
@@ -64,7 +68,7 @@
         padding-right: 15px;
     }
     .row {
-        margin: 1rem;
+        margin: 1rem 0.5rem;
     }
     &__notes {
         label {
