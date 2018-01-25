@@ -76,7 +76,7 @@ export class CommentDetailComponent implements OnChanges {
   }
 
   private save(newComment: Comment) {
-    this.comment.review.reviewerDate = new Date();
+    newComment.review.reviewerDate = new Date();
     this.networkMsg = null;
     this.commentService.saveComment(newComment)
       // .takeUntil(this.ngUnsubscribe)
