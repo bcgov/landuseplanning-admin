@@ -155,12 +155,10 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_application',
-      // 'name',
       'startDate',
       'endDate',
       'description',
-      'internal',
-      // 'isDeleted'
+      'internal'
     ];
     let queryString = 'commentperiod?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
@@ -176,12 +174,10 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_application',
-      // 'name',
       'startDate',
       'endDate',
       'description',
-      'internal',
-      // 'isDeleted'
+      'internal'
     ];
     let queryString = 'commentperiod/' + id + '?fields=';
     _.each(fields, function (f) {
@@ -195,7 +191,7 @@ export class ApiService {
 
   addCommentPeriod(period: CommentPeriod) {
     console.log('addCommentPeriod');
-    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
+    const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -208,7 +204,7 @@ export class ApiService {
 
   saveCommentPeriod(period: CommentPeriod) {
     console.log('saveCommentPeriod');
-    const fields = ['_application', 'startDate', 'endDate', 'description', 'name'];
+    const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -221,7 +217,7 @@ export class ApiService {
 
   deleteCommentPeriod(period: CommentPeriod) {
     console.log('deleteCommentPeriod');
-    const fields = ['isDeleted', '_application', 'startDate', 'endDate', 'description', 'name'];
+    const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -239,17 +235,15 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_commentPeriod',
-      'name',
       'commentNumber',
       'comment',
       'commentAuthor',
       '_documents',
       'review',
       'dateAdded',
-      'commentStatus',
-      'isDeleted'
+      'commentStatus'
     ];
-    let queryString = 'comment?isDeleted=false|_commentPeriod=' + periodId + '&fields=';
+    let queryString = 'comment?isDeleted=false&_commentPeriod=' + periodId + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -263,15 +257,13 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_commentPeriod',
-      'name',
       'commentNumber',
       'comment',
       'commentAuthor',
       '_documents',
       'review',
       'dateAdded',
-      'commentStatus',
-      'isDeleted' // not needed?
+      'commentStatus'
     ];
     let queryString = 'comment/' + id + '?fields=';
     _.each(fields, function (f) {
