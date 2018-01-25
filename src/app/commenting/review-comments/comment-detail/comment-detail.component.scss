@@ -14,21 +14,15 @@
         }
     }
     &__status {
-        //     position: relative;
-        //     .badge {
-        //         position: absolute;
-        //         top: 50%;
-        //         left: 50%;
-        //         margin-right: -50%;
-        //         transform: translate(-50%, -50%);
-        //         width: 5rem;
-        //         line-height: 1.5;
-        //     }
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        [ngbButtonLabel] {
-            cursor: pointer;
+        .badge {
+            position: absolute;
+            top: 25%;
+            left: 60%;
+            margin-right: -40%;
+            transform: translate(-25%, -60%);
+            width: 10rem;
+            line-height: 1.5;
+            font-size: larger;
         }
     }
     &__comment {
@@ -36,6 +30,27 @@
             margin-bottom: 0;
         }
     }
+    &__documents {
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+    }
+    &__buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        >:not(:last-of-type) {
+            margin-right: 0.25rem;
+        }
+        >:not(:first-of-type) {
+            margin-left: 0.25rem;
+        }
+        button {
+            cursor: pointer;
+        }
+}
 }
 
 .comment-notes {
@@ -63,7 +78,7 @@
             resize: none;
         }
     }
-    &__save-reset {
+    &__buttons {
         display: flex;
         justify-content: flex-end;
         align-items: center;

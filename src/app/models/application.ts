@@ -28,7 +28,7 @@ export class Application {
   mapsheet: string;
   postID: number;
   projectDate: Date;
-  proponent: string; // should be objectid -> Organization?
+  _proponent: string; // objectid -> Organization
   purpose: string;
   subpurpose: string;
   region: string;
@@ -75,7 +75,7 @@ export class Application {
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
     this.projectDate             = obj && obj.projectDate             || null;
-    this.proponent               = obj && obj.proponent               || null;
+    this._proponent              = obj && obj._proponent              || null;
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;

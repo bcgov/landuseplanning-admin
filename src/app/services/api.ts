@@ -70,7 +70,7 @@ export class ApiService {
       'subtype',
       'purpose',
       'subpurpose',
-      'proponent',
+      '_proponent',
       'latitude',
       'longitude',
       'location',
@@ -102,7 +102,7 @@ export class ApiService {
       'subtype',
       'purpose',
       'subpurpose',
-      'proponent',
+      '_proponent',
       'latitude',
       'longitude',
       'location',
@@ -155,12 +155,12 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_application',
-      'name',
+      // 'name',
       'startDate',
       'endDate',
       'description',
       'internal',
-      'isDeleted'
+      // 'isDeleted'
     ];
     let queryString = 'commentperiod?_application=' + appId + '&fields=';
     _.each(fields, function (f) {
@@ -176,12 +176,12 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_application',
-      'name',
+      // 'name',
       'startDate',
       'endDate',
       'description',
       'internal',
-      'isDeleted' // not needed?
+      // 'isDeleted'
     ];
     let queryString = 'commentperiod/' + id + '?fields=';
     _.each(fields, function (f) {

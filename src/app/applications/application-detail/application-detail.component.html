@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container__inner-container">
       <div class="hero-banner__content">
-        <h1 id="pgTitle">{{application.proponent}}</h1>
+        <h1 id="pgTitle">{{application._proponent}}</h1>
         <p class="mb-2">{{application.purpose}} / {{application.subpurpose}}</p>
 
         <div class="application-links">
@@ -30,10 +30,6 @@
       <section class="application-details card">
         <h4 class="card-header">Application Details</h4>
         <ul class="nv-list application-details--list">
-          <!-- <li>
-            <span class="name">Client</span>
-            <span class="value">{{application.proponent || 'unknown'}}</span>
-          </li> -->
           <li>
             <span class="name">Type / Subtype</span>
             <span class="value">{{application.type || 'unknown'}} / {{application.subtype || 'unknown'}}</span>

@@ -7,7 +7,7 @@
 
   <div class="container__inner-container">
     <h1 id="pgTitle">Review Comments</h1>
-    <p class="mb-2" *ngIf="application">{{application.proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>
+    <p class="mb-2" *ngIf="application">{{application._proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>
 
     <div class="review-comments-links">
       <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', appId]">
@@ -27,13 +27,15 @@
 </div>
 
 <div class="review-comments-body container" id="anchor-point">
-  <p *ngIf="comments.length == 0"><em>This application has no comments.</em></p>
+  <p *ngIf="comments.length == 0">
+    <em>This application has no comments.</em>
+  </p>
 
   <div class="row">
     <nav class="col-lg-4">
       <div class="review-comments-list list-group">
         <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
-          <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+          <button class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="currentComment == item" (click)="currentComment = item">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
               <div>
                 {{item.commentNumber || '-'}}
@@ -52,13 +54,13 @@
               <div class="badge" [ngClass]="getStatus(item)">{{item.commentStatus}}</div>
               <div class="material-icons" *ngIf="item._documents.length > 0">attachment</div>
             </div>
-          </a>
+          </button>
         </ng-template>
       </div>
     </nav>
 
-    <main class="col-lg-8">
-      <app-comment-detail></app-comment-detail>
+    <main *ngIf="comments.length > 0" class="col-lg-8">
+      <app-comment-detail [comment]="currentComment"></app-comment-detail>
     </main>
   </div>
 </div>

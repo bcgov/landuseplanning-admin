@@ -1,100 +1,114 @@
-<div class="comment-detail">
-  <div class="row">
-    <div class="col-6 comment-detail__author">
-      <ul>
-        <li class="value">
-          <strong>{{comment?.commentAuthor.contactName}}</strong>
-        </li>
-        <li class="value">{{comment?.commentAuthor.location}}</li>
-        <li class="value">{{comment?.commentAuthor.internal.email}}</li>
-        <li class="value">{{comment?.commentAuthor.internal.phone}}</li>
-        <p>commentStatus: {{comment?.commentStatus || 'null'}}</p>
-      </ul>
-    </div>
-    <div class="col-6 comment-detail__status">
-      <!-- <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="model">
-        <label ngbButtonLabel class="btn-primary">
-          <input ngbButton type="radio" [value]="1"> Left (pre-checked)
-        </label>
-        <label ngbButtonLabel class="btn-primary">
-          <input ngbButton type="radio" value="middle"> Middle
-        </label>
-        <label ngbButtonLabel class="btn-primary">
-          <input ngbButton type="radio" [value]="false"> Right
-        </label>
+<div *ngIf="comment">
+  <div class="comment-detail">
+    <div class="row">
+      <div class="col-6 comment-detail__author">
+        <ul>
+          <li class="value">
+            <strong>{{comment.commentAuthor.contactName}}</strong>
+          </li>
+          <li class="value">{{comment.commentAuthor.location}}</li>
+          <li class="value">{{comment.commentAuthor.internal.email}}</li>
+          <li class="value">{{comment.commentAuthor.internal.phone}}</li>
+        </ul>
       </div>
-      <hr>
-      <p>{{model}}</p>
-    </div> -->
       <div class="col-6 comment-detail__status">
-        <div class="btn-group btn-group-toggle" ngbRadioGroup [(ngModel)]="comment.commentStatus" (click)="changeStatus(comment)">
-          <label ngbButtonLabel class="comment-detail__accept-btn btn-success">
-            <input ngbButton type="radio" (click)="accept(comment)" value="Accepted">
-            <i class="material-icons">check_circle</i>
-            <span>Accepted</span>
-          </label>
-          <label ngbButtonLabel class="comment-detail__pending-btn btn-secondary">
-            <input ngbButton type="radio" (click)="pend(comment)" value="Pending">
-            <i class="material-icons">error</i>
-            <span>Pending</span>
-          </label>
-          <label ngbButtonLabel class="comment-detail__reject-btn btn-danger">
-            <input ngbButton type="radio" (click)="reject(comment)" value="Rejected">
-            <i class="material-icons">cancel</i>
-            <span>Rejected</span>
-          </label>
-        </div>
+        <div class="badge" [ngClass]="getBadgeClass()">{{comment.commentStatus}}</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 comment-detail__date">
+        Comment received:
+        <strong>{{comment.dateAdded | date:'medium'}}</strong>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 comment-detail__comment">
+        <p [innerHTML]="comment.comment | newlines"></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6 comment-detail__documents">
+        <ul>
+          <li>
+            <a [routerLink]="['/document', '123']">
+              <i class="material-icons">attachment</i> Document 1</a>
+          </li>
+          <li>
+            <a [routerLink]="['/document', '456']">
+              <i class="material-icons">attachment</i> Document 2</a>
+          </li>
+          <li>
+            <a [routerLink]="['/document', '789']">
+              <i class="material-icons">attachment</i> Document 3</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-6 comment-detail__buttons">
+        <!-- ngbRadioGroup doesn't work in NGB 1.0.0-alpha.31 / Angular 4.4.6 -->
+        <!-- <div class="btn-group btn-group-toggle" ngbRadioGroup [(ngModel)]="comment.commentStatus">
+        <label ngbButtonLabel class="comment-detail__accept-btn btn-success">
+          <input ngbButton type="radio" (click)="accept()" value="Accepted">
+          <i class="material-icons">check_circle</i>
+          <span>Accepted</span>
+        </label>
+        <label ngbButtonLabel class="comment-detail__pending-btn btn-secondary">
+          <input ngbButton type="radio" (click)="pend()" value="Pending">
+          <i class="material-icons">error</i>
+          <span>Pending</span>
+        </label>
+        <label ngbButtonLabel class="comment-detail__reject-btn btn-danger">
+          <input ngbButton type="radio" (click)="reject()" value="Rejected">
+          <i class="material-icons">cancel</i>
+          <span>Rejected</span>
+        </label>
+      </div> -->
+        <button class="btn btn-success" data-toggle="button" [class.active]="isAccepted()" [attr.aria-pressed]="isAccepted()" (click)="accept()"
+          title="Change this comment to Accepted">
+          <i class="material-icons">check_circle</i>
+          <span>Accept</span>
+        </button>
+        <button class="btn btn-secondary" data-toggle="button" [class.active]="isPending()" [attr.aria-pressed]="isPending()" (click)="pend()"
+          title="Change this comment to Pending">
+          <i class="material-icons">error</i>
+          <span>Pend</span>
+        </button>
+        <button class="btn btn-danger" data-toggle="button" [class.active]="isRejected()" [attr.aria-pressed]="isRejected()" (click)="reject()"
+          title="Change this comment to Rejected">
+          <i class="material-icons">cancel</i>
+          <span>Reject</span>
+        </button>
       </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-12 comment-detail__date">
-      Comment received:
-      <strong>{{comment?.dateAdded | date:'medium'}}</strong>
+  <div class="comment-notes">
+    <h5>Internal Notes</h5>
+    <div class="row">
+      <div class="col-12 comment-notes__notes">
+        <form #userForm="ngForm">
+          <textarea class="form-control" id="internalNotes" rows="5" [(ngModel)]="internalNotes" name="internalNotes" #name="ngModel"></textarea>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-12 comment-detail__comment">
-      <p [innerHTML]="comment?.comment | newlines"></p>
-    </div>
-  </div>
+    <div class="row">
+      <div class="col-12 comment-notes__buttons">
+        <button type="button" class="btn btn-primary" (click)="saveNotes(comment)" title="Save internal notes">
+          <i class="material-icons">check_circle</i>
+          <span>Save</span>
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="resetNotes(comment)" title="Reset internal notes">
+          <i class="material-icons">cancel</i>
+          <span>Reset</span>
+        </button>
 
-  <div class="row">
-    <div class="col-6 comment-detail__documents">
-      <a [routerLink]="['/document', '123']">
-        <i class="material-icons">attachment</i> Document 1</a>
-    </div>
-    <div class="col-6 comment-detail__documents">
-      <a [routerLink]="['/document', '456']">
-        <i class="material-icons">attachment</i> Document 2</a>
-    </div>
-    <div class="col-6 comment-detail__documents">
-      <a [routerLink]="['/document', '789']">
-        <i class="material-icons">attachment</i> Document 3</a>
-    </div>
-  </div>
-</div>
-
-<div class="comment-notes">
-  <h5>Internal Notes</h5>
-  <div class="row">
-    <div class="col-12 comment-notes__notes">
-      <textarea id="internalNotes" rows=5></textarea>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-12 comment-notes__save-reset">
-      <button type="button" class="comment-notes__save-btn btn btn-primary" (click)="save(comment)" title="Save internal notes">
-        <i class="material-icons">check_circle</i>
-        <span>Save</span>
-      </button>
-      <button type="button" class="comment-notes__reset-btn btn btn-secondary" (click)="reset(comment)" title="Reset internal notes">
-        <i class="material-icons">cancel</i>
-        <span>Reset</span>
-      </button>
+        <ngb-alert type="danger" [hidden]="!networkMsg">
+          Error: {{networkMsg}}
+        </ngb-alert>
+      </div>
     </div>
   </div>
 </div>
