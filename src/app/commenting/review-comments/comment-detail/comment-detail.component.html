@@ -7,8 +7,12 @@
             <strong>{{comment.commentAuthor.contactName}}</strong>
           </li>
           <li class="value">{{comment.commentAuthor.location}}</li>
-          <li class="value">{{comment.commentAuthor.internal.email}}</li>
-          <li class="value">{{comment.commentAuthor.internal.phone}}</li>
+          <li class="value">
+            <a [href]="'mailto:' + comment.commentAuthor.internal.email">{{comment.commentAuthor.internal.email}}</a>
+          </li>
+          <li class="value">
+            <a [href]="'tel:' + comment.commentAuthor.internal.phone">{{comment.commentAuthor.internal.phone}}</a>
+          </li>
         </ul>
       </div>
       <div class="col-6 comment-detail__status">
@@ -99,7 +103,17 @@
     </div>
 
     <div class="row">
-      <div class="col-12 comment-notes__buttons">
+      <div class="col-6 comment-notes__info">
+        <ul>
+          <li class="value" *ngIf="comment.review.reviewerDate">
+            <small>Last updated: {{comment.review.reviewerDate | date:'medium'}}</small>
+          </li>
+          <li class="value" *ngIf="comment.review._reviewerId">
+            <small>By: {{comment.review._reviewerId}}</small>
+          </li>
+        </ul>
+      </div>
+      <div class="col-6 comment-notes__buttons">
         <button type="button" class="btn btn-primary" (click)="saveNotes(comment)" title="Save internal notes">
           <i class="material-icons">check_circle</i>
           <span>Save</span>

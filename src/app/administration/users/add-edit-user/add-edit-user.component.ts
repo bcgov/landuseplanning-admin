@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { User } from '../../../models/user';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { ApiService } from '../../../services/api';
+
+import { User } from 'app/models/user';
+import { UserService } from 'app/services/user.service';
 
 export interface DataModel {
   title: string;
@@ -24,7 +25,7 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
   networkMsg: string;
 
   constructor(dialogService: DialogService,
-              private api: ApiService) {
+    private userService: UserService) {
     super(dialogService);
   }
 
@@ -45,32 +46,30 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
   }
 
   save() {
-      // console.log('submitted form', this.user);
-      this.networkMsg = '';
-      if (this.isNew) {
-        this.api.addUser(this.user).subscribe(
+    // console.log('submitted form', this.user);
+    this.networkMsg = '';
+    if (this.isNew) {
+      this.userService.addUser(this.user)
+        .subscribe(
         data => {
-          console.log('data', data);
           this.result = true;
           this.isNew = false;
           this.close();
         },
         error => {
-          console.log('error', error.json().message);
-          this.networkMsg = error.json().message;
+          this.networkMsg = error;
         });
-      } else {
-        this.api.saveUser(this.user).subscribe(
+    } else {
+      this.userService.saveUser(this.user)
+        .subscribe(
         data => {
-          console.log('data', data);
           this.result = true;
           this.isNew = false;
           this.close();
         },
         error => {
-          console.log('error', error.json().message);
-          this.networkMsg = error.json().message;
+          this.networkMsg = error;
         });
-      }
+    }
   }
 }

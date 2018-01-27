@@ -190,7 +190,6 @@ export class ApiService {
   }
 
   addCommentPeriod(period: CommentPeriod) {
-    console.log('addCommentPeriod');
     const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod?fields=';
     _.each(fields, function (f) {
@@ -203,7 +202,6 @@ export class ApiService {
   }
 
   saveCommentPeriod(period: CommentPeriod) {
-    console.log('saveCommentPeriod');
     const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
@@ -216,7 +214,6 @@ export class ApiService {
   }
 
   deleteCommentPeriod(period: CommentPeriod) {
-    console.log('deleteCommentPeriod');
     const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
@@ -276,10 +273,7 @@ export class ApiService {
   }
 
   addComment(comment: Comment) {
-    // console.log('adding');
-
     // TODO: add comment documents
-
     const fields = ['comment', 'commentAuthor'];
     let queryString = 'comment?fields=';
     _.each(fields, function (f) {
@@ -292,7 +286,6 @@ export class ApiService {
   }
 
   saveComment(comment: Comment) {
-    // console.log('saving');
     const fields = ['review', 'commentStatus'];
     let queryString = 'comment/' + comment._id + '?fields=';
     _.each(fields, function (f) {
@@ -362,7 +355,6 @@ export class ApiService {
   }
 
   saveUser(user: User) {
-    console.log('saving');
     const fields = ['displayName', 'username', 'firstName', 'lastName'];
     let queryString = 'user/' + user._id + '?fields=';
     _.each(fields, function (f) {
@@ -375,7 +367,6 @@ export class ApiService {
   }
 
   addUser(user: User) {
-    console.log('addUser');
     const fields = ['displayName', 'username', 'firstName', 'lastName'];
     let queryString = 'user?fields=';
     _.each(fields, function (f) {
@@ -391,7 +382,6 @@ export class ApiService {
     return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
-        // console.log('token:', response.json());
         const token = response.json() && response.json().accessToken;
         if (token) {
           // set token property

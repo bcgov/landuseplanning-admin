@@ -4,6 +4,7 @@ import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { DialogService } from 'ng2-bootstrap-modal';
+import * as _ from 'lodash';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
@@ -34,7 +35,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly pending = 'Pending';
   readonly rejected = 'Rejected';
 
-  readonly orders = ['Ordinal', 'Name', 'Date', 'Status'];
+  readonly sortKeys = ['Ordinal', 'Name', 'Date', 'Status'];
 
   public loading: boolean;
   public appId: string;
@@ -98,11 +99,11 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       comments => {
         this.loading = false;
         this.comments = comments;
-        this.sort(this.orders[0]); // initial order
+        this.sort(this.sortKeys[0]); // initial order
 
         // pre-select first comment
         if (this.comments.length > 0) {
-          this.currentComment = this.comments[0];
+          this.setCurrentComment(this.comments[0]);
         }
       },
       error => {
@@ -116,9 +117,14 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       });
   }
 
-  sort(order: string) {
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  private sort(key: string) {
     return this.comments.sort(function (a: Comment, b: Comment) {
-      switch (order) {
+      switch (key) {
         case 'Ordinal': return (a.commentNumber > b.commentNumber) ? 1 : -1;
         case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
         case 'Date': return (a.dateAdded > b.dateAdded) ? 1 : -1;
@@ -128,7 +134,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     });
   }
 
-  addClick() {
+  private addClick() {
     this.dialogService.addDialog(AddCommentComponent,
       {
         title: 'Add Comment',
@@ -143,7 +149,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {
-          // TODO: reload page (if not observable binding)?
+          // TODO: reload page?
           console.log('saved');
         } else {
           console.log('canceled');
@@ -151,12 +157,20 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+  private setCurrentComment(item) {
+    const index = _.findIndex(this.comments, { _id: item._id });
+    if (index >= 0) {
+      this.comments.splice(index, 1, item);
+      this.currentComment = item;
+    }
   }
 
-  private getStatus(item: Comment) {
+  private isCurrentComment(item) {
+    // return _.isMatch(this.currentComment, item);
+    return (item === this.currentComment);
+  }
+
+  private getBadgeClass(item: Comment) {
     switch (item.commentStatus) {
       case this.accepted: return 'badge-success';
       case this.pending: return 'badge-secondary';

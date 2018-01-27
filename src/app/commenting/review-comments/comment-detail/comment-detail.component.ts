@@ -1,5 +1,4 @@
-import { Component, OnChanges, Input } from '@angular/core';
-// import { ChangeDetectorRef } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
@@ -12,6 +11,7 @@ import { CommentService } from 'app/services/comment.service';
 
 export class CommentDetailComponent implements OnChanges {
   @Input() comment: Comment;
+  @Output() commentChange = new EventEmitter<Comment>();
 
   readonly accepted = 'Accepted';
   readonly pending = 'Pending';
@@ -21,7 +21,6 @@ export class CommentDetailComponent implements OnChanges {
   public networkMsg: string;
 
   constructor(
-    // private _changeDetectionRef: ChangeDetectorRef,
     private commentService: CommentService
   ) { }
 
@@ -29,7 +28,7 @@ export class CommentDetailComponent implements OnChanges {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  getBadgeClass() {
+  private getBadgeClass() {
     switch (this.comment.commentStatus) {
       case this.accepted: return 'badge-success';
       case this.pending: return 'badge-secondary';
@@ -38,55 +37,62 @@ export class CommentDetailComponent implements OnChanges {
     }
   }
 
-  isAccepted() { return (this.comment.commentStatus === this.accepted); }
+  private isAccepted() { return (this.comment.commentStatus === this.accepted); }
 
-  isPending() { return (this.comment.commentStatus === this.pending); }
+  private isPending() { return (this.comment.commentStatus === this.pending); }
 
-  isRejected() { return (this.comment.commentStatus === this.rejected); }
+  private isRejected() { return (this.comment.commentStatus === this.rejected); }
 
-  accept() {
-    const newComment = new Comment(this.comment);
-    newComment.commentStatus = this.accepted;
-    this.save(newComment);
-    // this._changeDetectionRef.detectChanges();
+  private accept() {
+    if (this.comment.commentStatus !== this.accepted) {
+      const newComment = new Comment(this.comment);
+      newComment.commentStatus = this.accepted;
+      this.save(newComment);
+    }
   }
 
-  pend() {
-    const newComment = new Comment(this.comment);
-    newComment.commentStatus = this.pending;
-    this.save(newComment);
-    // this._changeDetectionRef.detectChanges();
+  private pend() {
+    if (this.comment.commentStatus !== this.pending) {
+      const newComment = new Comment(this.comment);
+      newComment.commentStatus = this.pending;
+      this.save(newComment);
+    }
   }
 
-  reject() {
-    const newComment = new Comment(this.comment);
-    newComment.commentStatus = this.rejected;
-    this.save(newComment);
-    // this._changeDetectionRef.detectChanges();
+  private reject() {
+    if (this.comment.commentStatus !== this.rejected) {
+      const newComment = new Comment(this.comment);
+      newComment.commentStatus = this.rejected;
+      this.save(newComment);
+    }
   }
 
-  saveNotes() {
-    const newComment = new Comment(this.comment);
-    newComment.review.reviewerNotes = this.internalNotes;
-    this.save(newComment);
+  private saveNotes() {
+    if (this.comment.review.reviewerNotes !== this.internalNotes) {
+      const newComment = new Comment(this.comment);
+      newComment.review.reviewerNotes = this.internalNotes;
+      this.save(newComment);
+    }
   }
 
-  resetNotes() {
+  private resetNotes() {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
   private save(newComment: Comment) {
     newComment.review.reviewerDate = new Date();
+
     this.networkMsg = null;
-    this.commentService.saveComment(newComment)
+    this.commentService.save(newComment)
       // .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      comments => {
-        this.comment = newComment; // TODO: or comments[0] ???
+      comment => {
+        // save succeeded - accept new record
+        this.comment = comment;
+        this.commentChange.emit(this.comment);
       },
       error => {
         this.networkMsg = error;
-        // console.log(error); // already displayed by handleError()
       });
   }
 }
