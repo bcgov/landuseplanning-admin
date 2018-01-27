@@ -38,12 +38,13 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
   }
 
   ngOnInit() {
+    this.comm = new CommentPeriod(this.model);
     if (this.model === null) {
       this.isNew = true;
+      this.comm.internal = { 'notes': '', '_addedBy': ''};
     } else {
       this.isNew = false;
     }
-    this.comm = new CommentPeriod(this.model);
     this.comm._application = this.application;
     this.comm.startDate = new Date();
     this.comm.endDate = new Date();
