@@ -4,6 +4,7 @@ import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { DialogService } from 'ng2-bootstrap-modal';
+import * as _ from 'lodash';
 
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
@@ -41,7 +42,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   public application: Application; // used for display app info
   public comments: Array<Comment>;
   public alerts: Array<string>;
-  public currentComment: number;
+  public currentComment: Comment;
 
   // see official solution:
   // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
@@ -102,7 +103,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
         // pre-select first comment
         if (this.comments.length > 0) {
-          this.currentComment = 0;
+          this.setCurrentComment(this.comments[0]);
         }
       },
       error => {
@@ -156,7 +157,20 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private getStatus(item: Comment) {
+  private setCurrentComment(item) {
+    const index = _.findIndex(this.comments, { _id: item._id });
+    if (index >= 0) {
+      this.comments.splice(index, 1, item);
+      this.currentComment = item;
+    }
+  }
+
+  private isCurrentComment(item) {
+    // return _.isMatch(this.currentComment, item);
+    return (item === this.currentComment);
+  }
+
+  private getBadgeClass(item: Comment) {
     switch (item.commentStatus) {
       case this.accepted: return 'badge-success';
       case this.pending: return 'badge-secondary';

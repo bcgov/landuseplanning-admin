@@ -44,27 +44,35 @@ export class CommentDetailComponent implements OnChanges {
   private isRejected() { return (this.comment.commentStatus === this.rejected); }
 
   private accept() {
-    const newComment = new Comment(this.comment);
-    newComment.commentStatus = this.accepted;
-    this.save(newComment);
+    if (this.comment.commentStatus !== this.accepted) {
+      const newComment = new Comment(this.comment);
+      newComment.commentStatus = this.accepted;
+      this.save(newComment);
+    }
   }
 
   private pend() {
-    const newComment = new Comment(this.comment);
-    newComment.commentStatus = this.pending;
-    this.save(newComment);
+    if (this.comment.commentStatus !== this.pending) {
+      const newComment = new Comment(this.comment);
+      newComment.commentStatus = this.pending;
+      this.save(newComment);
+    }
   }
 
   private reject() {
-    const newComment = new Comment(this.comment);
-    newComment.commentStatus = this.rejected;
-    this.save(newComment);
+    if (this.comment.commentStatus !== this.rejected) {
+      const newComment = new Comment(this.comment);
+      newComment.commentStatus = this.rejected;
+      this.save(newComment);
+    }
   }
 
   private saveNotes() {
-    const newComment = new Comment(this.comment);
-    newComment.review.reviewerNotes = this.internalNotes;
-    this.save(newComment);
+    if (this.comment.review.reviewerNotes !== this.internalNotes) {
+      const newComment = new Comment(this.comment);
+      newComment.review.reviewerNotes = this.internalNotes;
+      this.save(newComment);
+    }
   }
 
   private resetNotes() {
@@ -79,7 +87,7 @@ export class CommentDetailComponent implements OnChanges {
       // .takeUntil(this.ngUnsubscribe)
       .subscribe(
       comment => {
-        // save succeeded; accept new record
+        // save succeeded - accept new record
         this.comment = comment;
         this.commentChange.emit(this.comment);
       },

@@ -8,7 +8,7 @@
     }
     &__author {
         ul {
-            list-style-type: none !important;
+            list-style-type: none;
             padding: 0;
             margin-bottom: 0;
         }
@@ -86,6 +86,11 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 0;
+        }
     }
     &__buttons {
         display: flex;

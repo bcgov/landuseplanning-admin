@@ -2,12 +2,12 @@ import { CollectionsList } from './collection';
 
 export class Comment {
   _id: string;
-  _addedBy: string; // object id
-  _commentPeriod: string; // object id
+  _addedBy: string; // object id -> User
+  _commentPeriod: string; // object id -> CommentPeriod
   commentNumber: number;
   comment: string;
   commentAuthor: {
-    _userId: string; // object id
+    _userId: string; // object id -> User
     orgName: string;
     contactName: string;
     location: string;
@@ -17,7 +17,7 @@ export class Comment {
       phone: string;
     };
   };
-  _documents: string[]; // list of object ids
+  _documents: string[]; // list of object ids -> Document
   review: {
     _reviewerId: string; // object id -> User
     reviewerNotes: string;

@@ -42,7 +42,7 @@
 
       <div class="review-comments-list list-group">
         <ng-template ngFor let-item [ngForOf]="comments" let-i="index" class="review-comments-list-item">
-          <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="currentComment == i" (click)="currentComment = i">
+          <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="isCurrentComment(item)" (click)="setCurrentComment(item)">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
               <div>
                 {{item.commentNumber || '-'}}
@@ -51,14 +51,14 @@
                 {{item.commentAuthor?.contactName || '-'}}
               </div>
               <div>
-                {{(item.dateAdded | date) || 'yyyy/mm/dd'}}
+                {{(item.dateAdded | date) || '-'}}
               </div>
             </div>
             <p class="mb-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
               <small>{{item.comment}}</small>
             </p>
             <div class="d-flex w-100 justify-content-between">
-              <div class="badge" [ngClass]="getStatus(item)">{{item.commentStatus}}</div>
+              <div class="badge" [ngClass]="getBadgeClass(item)">{{item.commentStatus}}</div>
               <div class="material-icons" *ngIf="item._documents.length > 0">attachment</div>
             </div>
           </a>
@@ -67,7 +67,7 @@
     </nav>
 
     <main class="col-lg-8">
-      <app-comment-detail [(comment)]="comments[currentComment]"></app-comment-detail>
+      <app-comment-detail [comment]="currentComment" (commentChange)="setCurrentComment($event)"></app-comment-detail>
     </main>
   </div>
 </div>
