@@ -6,7 +6,9 @@
           <li class="value">
             <strong>{{comment.commentAuthor.contactName}}</strong>
           </li>
+          <li class="value">{{comment.commentAuthor.orgName}}</li>
           <li class="value">{{comment.commentAuthor.location}}</li>
+          <li class="badge badge-warning" *ngIf="comment.commentAuthor.requestedAnonymous">Requested Anonymous</li>
           <li class="value">
             <a [href]="'mailto:' + comment.commentAuthor.internal.email">{{comment.commentAuthor.internal.email}}</a>
           </li>
@@ -114,11 +116,11 @@
         </ul>
       </div>
       <div class="col-6 comment-notes__buttons">
-        <button type="button" class="btn btn-primary" (click)="saveNotes(comment)" title="Save internal notes">
+        <button type="button" class="btn btn-primary" (click)="saveNotes()" title="Save internal notes" [disabled]="isNotesPristine()">
           <i class="material-icons">check_circle</i>
           <span>Save</span>
         </button>
-        <button type="button" class="btn btn-secondary" (click)="resetNotes(comment)" title="Reset internal notes">
+        <button type="button" class="btn btn-secondary" (click)="resetNotes()" title="Reset internal notes" [disabled]="isNotesPristine()">
           <i class="material-icons">cancel</i>
           <span>Reset</span>
         </button>

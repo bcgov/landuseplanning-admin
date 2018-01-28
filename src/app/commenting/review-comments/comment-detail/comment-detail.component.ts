@@ -75,6 +75,11 @@ export class CommentDetailComponent implements OnChanges {
     }
   }
 
+  private isNotesPristine() {
+    // TODO: debounce this?
+    return this.internalNotes === this.comment.review.reviewerNotes;
+  }
+
   private resetNotes() {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
