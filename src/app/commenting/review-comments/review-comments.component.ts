@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -70,9 +70,9 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     this.alerts = [];
     this.currentComment = null;
 
-    this.route.params.subscribe(
-      (params: Params) => { this.appId = params.application || '0'; }
-    );
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.appId = params.get('application') || '0';
+    });
 
     // get application
     // this is independent of comment periods data

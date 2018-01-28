@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -68,9 +68,9 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.commentPeriods = [];
     this.alerts = [];
 
-    this.route.params.subscribe(
-      (params: Params) => { this.appId = params.application || '0'; }
-    );
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.appId = params.get('application') || '0';
+    });
 
     // get application
     this.applicationService.getById(this.appId)

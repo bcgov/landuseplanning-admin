@@ -41,7 +41,7 @@
       </div>
 
       <div class="review-comments-list list-group">
-        <ng-template ngFor let-item [ngForOf]="comments" let-i="index" class="review-comments-list-item">
+        <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
           <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="isCurrentComment(item)" (click)="setCurrentComment(item)">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
               <div>
