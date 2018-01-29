@@ -157,7 +157,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private addClick() {
+  public addClick() {
     this.dialogService.addDialog(AddCommentComponent,
       {
         periodId: this.periodId

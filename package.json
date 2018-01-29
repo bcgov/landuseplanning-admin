@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@angular/cli": "1.5.x",
+    "@angular-devkit/schematics": "0.0.40",
     "@types/arcgis-js-api": "4.5.0",
     "@types/jasmine": "2.5.38",
     "@types/lodash": "4.14.80",

@@ -72,7 +72,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['/applications']);
   }
 
-  private gotoMap(): void {
+  public gotoMap(): void {
     // pass along the id of the current application if available
     // so that the map component can show the popup for it.
     const applicationId = this.application ? this.application._id : null;
