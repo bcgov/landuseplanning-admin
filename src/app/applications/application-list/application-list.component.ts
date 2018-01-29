@@ -68,7 +68,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  private sort(property) {
+  public sort(property) {
     this.isDesc = !this.isDesc;
     this.column = property;
     this.direction = this.isDesc ? 1 : -1;
