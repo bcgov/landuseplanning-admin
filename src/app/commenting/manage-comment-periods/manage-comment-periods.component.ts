@@ -1,15 +1,16 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { DialogService } from 'ng2-bootstrap-modal';
 
-import { Application } from '../../models/application';
-import { ApplicationService } from '../../services/application.service';
-import { CommentPeriod } from '../../models/commentperiod';
-import { CommentPeriodService } from '../../services/commentperiod.service';
-import { ApiService } from '../../services/api';
+import { Application } from 'app/models/application';
+import { ApplicationService } from 'app/services/application.service';
+import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { ApiService } from 'app/services/api';
+
 import { AddEditCommentPeriodComponent } from './add-edit-comment-period/add-edit-comment-period.component';
 import { ConfirmComponent } from '../../confirm/confirm.component';
 
@@ -57,7 +58,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.refreshUsersUI();
   }
 
-  refreshUsersUI() {
+  private refreshUsersUI() {
     // If we're not logged in, redirect.
     if (!this.api.ensureLoggedIn()) {
       return false;
@@ -68,16 +69,16 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.commentPeriods = [];
     this.alerts = [];
 
-    this.route.params.subscribe(
-      (params: Params) => { this.appId = params.application || '0'; }
-    );
+    // get route parameters
+    this.appId = this.route.snapshot.paramMap.get('application') || '0';
 
     // get application
+    // this is independent of comment periods data
     this.applicationService.getById(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      data => {
-        this.application = data;
+      application => {
+        this.application = application;
         this._changeDetectionRef.detectChanges();
       },
       error => {
@@ -90,12 +91,13 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       });
 
     // get comment periods
-    this.commentPeriodService.getAll(this.appId)
+    // this is independent of application data
+    this.commentPeriodService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      data => {
+      periods => {
         this.loading = false;
-        this.commentPeriods = data;
+        this.commentPeriods = periods;
         this._changeDetectionRef.detectChanges();
         // TODO: calculate and store status for easier UI
       },
@@ -110,60 +112,60 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       });
   }
 
-  openCommentPeriod(cp, appId) {
+  private openCommentPeriod(cp, appId) {
     if (cp) {
       console.log('cp:', cp);
       this.dialogService.addDialog(AddEditCommentPeriodComponent,
-      {
-        title: 'Update Comment Period',
-        message: 'Update',
-        model: cp,
-        application: appId
-      }, {
-        // index: 0,
-        // autoCloseTimeout: 10000,
-        // closeByClickingOutside: true,
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed) => {
-        // we get dialog result
-        if (isConfirmed) {
-          // TODO: reload page (if not observable binding)?
-          console.log('updated');
-          this.refreshUsersUI();
-        } else {
-          console.log('canceled');
-        }
-      });
+        {
+          title: 'Update Comment Period',
+          message: 'Update',
+          model: cp,
+          application: appId
+        }, {
+          // index: 0,
+          // autoCloseTimeout: 10000,
+          // closeByClickingOutside: true,
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((isConfirmed) => {
+          // we get dialog result
+          if (isConfirmed) {
+            // TODO: reload page (if not observable binding)?
+            console.log('updated');
+            this.refreshUsersUI();
+          } else {
+            console.log('canceled');
+          }
+        });
     } else {
       this.dialogService.addDialog(AddEditCommentPeriodComponent,
-      {
-        title: 'Add Comment Period',
-        message: 'Save',
-        model: null,
-        application: appId
-      }, {
-        // index: 0,
-        // autoCloseTimeout: 10000,
-        // closeByClickingOutside: true,
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed) => {
-        // we get dialog result
-        if (isConfirmed) {
-          // TODO: reload page (if not observable binding)?
-          // console.log('saved');
-          this.refreshUsersUI();
-        } else {
-          console.log('canceled');
-        }
-      });
+        {
+          title: 'Add Comment Period',
+          message: 'Save',
+          model: null,
+          application: appId
+        }, {
+          // index: 0,
+          // autoCloseTimeout: 10000,
+          // closeByClickingOutside: true,
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((isConfirmed) => {
+          // we get dialog result
+          if (isConfirmed) {
+            // TODO: reload page (if not observable binding)?
+            // console.log('saved');
+            this.refreshUsersUI();
+          } else {
+            console.log('canceled');
+          }
+        });
     }
   }
 
-  deleteCommentPeriod(item, appId) {
+  private deleteCommentPeriod(item, appId) {
     console.log('item:', item);
     console.log('appId:', appId);
     this.dialogService.addDialog(ConfirmComponent,
@@ -181,14 +183,15 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         // we get dialog result
         if (isConfirmed) {
           //  Delete then refresh
+          // TODO: should use service
           this.api.deleteCommentPeriod(item).subscribe(
             data => {
-            console.log('accepted');
-            this.refreshUsersUI();
-          }, error => {
-            // TODO: Add alert
-            console.log('Something bad happened:', error);
-          });
+              console.log('accepted');
+              this.refreshUsersUI();
+            }, error => {
+              // TODO: Add alert
+              console.log('Something bad happened:', error);
+            });
         } else {
           console.log('declined');
         }
@@ -200,7 +203,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  getStatus(item: CommentPeriod) {
+  private getStatus(item: CommentPeriod) {
     const today = new Date();
 
     if (!item.startDate || !item.endDate) {

@@ -17,7 +17,7 @@
                      name="d1" #c2="ngModel" [(ngModel)]="startDate" ngbDatepicker #d1="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
-                  <i class="material-icons">schedule</i>
+                  <i class="material-icons">date_range</i>
                 </button>
               </div>
               <span class="date-range__spacer"> &nbsp;&nbsp; - &nbsp;&nbsp; </span>
@@ -25,7 +25,7 @@
                      name="d2" #c2="ngModel" [(ngModel)]="endDate" ngbDatepicker #d2="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
-                  <i class="material-icons">schedule</i>
+                  <i class="material-icons">date_range</i>
                 </button>
               </div>
             </div>
@@ -49,11 +49,11 @@
                 [(ngModel)]="comm.internal.notes"></textarea>
         </div>
       </div>
+    </div>
 
-      <div>
-        <button type="button" class="btn btn-primary" (click)="save()">{{message}}</button>
-        <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
-      </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="save()">{{message}}</button>
+      <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
     </div>
   </div>
 </div>

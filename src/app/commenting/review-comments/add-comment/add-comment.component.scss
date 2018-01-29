@@ -4,7 +4,17 @@
             cursor: pointer;
         }
     }
-   .modal-footer {
+    .modal-body {
+        .form-group.required .control-label:after {
+            content: "*";
+            color: red;
+        }
+        .fb-upload-container {
+            border: 1px #495057 solid;
+            padding: 1em;
+        }
+    }
+    .modal-footer {
         button {
             cursor: pointer;
         }
