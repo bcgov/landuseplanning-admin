@@ -37,7 +37,6 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   public application: Application;
   public commentPeriods: Array<CommentPeriod>;
   public alerts: Array<string>;
-  public closeResult: string;
 
   // see official solution:
   // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
@@ -66,11 +65,12 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.appId = null;
+    this.application = null;
     this.commentPeriods = [];
     this.alerts = [];
 
     // get route parameters
-    this.appId = this.route.snapshot.paramMap.get('application') || '0';
+    this.appId = this.route.snapshot.queryParamMap.get('application');
 
     // get application
     // this is independent of comment periods data
@@ -87,7 +87,6 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         this.alerts.push('Error loading application');
-        // console.log(error); // already displayed by handleError()
       });
 
     // get comment periods
@@ -108,7 +107,6 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         this.alerts.push('Error loading comment periods');
-        // console.log(error); // already displayed by handleError()
       });
   }
 
@@ -203,7 +201,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  private getStatus(item: CommentPeriod) {
+  private getStatus(item: CommentPeriod): string {
     const today = new Date();
 
     if (!item.startDate || !item.endDate) {

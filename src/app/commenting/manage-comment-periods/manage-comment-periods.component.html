@@ -14,7 +14,7 @@
         <i class="material-icons">info_outline</i>
         <span>Application Details</span>
       </a>
-      <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: appId }]">
+      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments']" [queryParams]="{ application: appId }">
         <i class="material-icons">message</i>
         <span>Review Comments</span>
       </a>

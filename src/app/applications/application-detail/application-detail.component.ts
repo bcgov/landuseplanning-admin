@@ -61,7 +61,6 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         alert('Error loading application');
-        // console.log(error); // already displayed by handleError()
       });
   }
 
@@ -69,11 +68,11 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  gotoApplicationList(): void {
+  private gotoApplicationList(): void {
     this.router.navigate(['/applications']);
   }
 
-  gotoMap(): void {
+  private gotoMap(): void {
     // pass along the id of the current application if available
     // so that the map component can show the popup for it.
     const applicationId = this.application ? this.application._id : null;

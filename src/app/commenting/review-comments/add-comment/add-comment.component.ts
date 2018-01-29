@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 
-import { Application } from 'app/models/application';
-import { CommentPeriod } from 'app/models/commentperiod';
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
 
@@ -11,7 +9,6 @@ export interface DataModel {
   title: string; // not used
   message: string; // not used
   periodId: string;
-  commentNumber: number;
 }
 @Component({
   templateUrl: './add-comment.component.html',
@@ -22,7 +19,6 @@ export class AddCommentComponent extends DialogComponent<DataModel, boolean> imp
   public title: string;
   public message: string;
   public periodId: string;
-  public commentNumber: number;
 
   public comment: Comment;
   public dateAdded: NgbDateStruct;
@@ -38,7 +34,6 @@ export class AddCommentComponent extends DialogComponent<DataModel, boolean> imp
 
   ngOnInit() {
     console.log('period id=', this.periodId);
-    console.log('comment number=', this.commentNumber);
   }
 
   save() {

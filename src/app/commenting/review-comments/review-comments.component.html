@@ -14,11 +14,11 @@
         <i class="material-icons">info_outline</i>
         <span>Application Details</span>
       </a>
-      <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: appId }]">
+      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods']" [queryParams]="{ application: appId }">
         <i class="material-icons">date_range</i>
         <span>Manage Comment Periods</span>
       </a>
-      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()">
+      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()" disabled>
         <i class="material-icons">add_box</i>
         <span>Add Comment</span>
       </button>
