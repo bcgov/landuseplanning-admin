@@ -27,7 +27,7 @@ export class CommentDetailComponent implements OnChanges {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  private getBadgeClass() {
+  private getBadgeClass(): string {
     switch (this.comment.commentStatus) {
       case this.accepted: return 'badge-success';
       case this.pending: return 'badge-secondary';
@@ -36,11 +36,11 @@ export class CommentDetailComponent implements OnChanges {
     }
   }
 
-  private isAccepted() { return (this.comment.commentStatus === this.accepted); }
+  private isAccepted(): boolean { return (this.comment.commentStatus === this.accepted); }
 
-  private isPending() { return (this.comment.commentStatus === this.pending); }
+  private isPending(): boolean { return (this.comment.commentStatus === this.pending); }
 
-  private isRejected() { return (this.comment.commentStatus === this.rejected); }
+  private isRejected(): boolean { return (this.comment.commentStatus === this.rejected); }
 
   private accept() {
     if (this.comment.commentStatus !== this.accepted) {
@@ -74,7 +74,7 @@ export class CommentDetailComponent implements OnChanges {
     }
   }
 
-  private isNotesPristine() {
+  private isNotesPristine(): boolean {
     // TODO: debounce this?
     return (this.comment.review.reviewerNotes === this.internalNotes);
   }

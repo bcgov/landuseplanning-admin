@@ -61,7 +61,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         alert('Error loading applications');
-        // console.log(error); // already displayed by handleError()
       });
   }
 
@@ -69,10 +68,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  sort(property) {
+  private sort(property) {
     this.isDesc = !this.isDesc;
     this.column = property;
     this.direction = this.isDesc ? 1 : -1;
   }
-
 }

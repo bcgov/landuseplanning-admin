@@ -69,7 +69,6 @@ export class UsersComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         alert('Error loading users');
-        // console.log(error); // already displayed by handleError()
       });
   }
 

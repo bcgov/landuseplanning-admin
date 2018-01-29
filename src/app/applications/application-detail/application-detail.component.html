@@ -6,11 +6,11 @@
         <p class="mb-2">{{application.purpose}} / {{application.subpurpose}}</p>
 
         <div class="application-links">
-          <a class="btn content-btn slide-l-btn btn-sm" href="/periods" [routerLink]="['/periods', { application: application._id }]">
+          <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods']" [queryParams]="{ application: application._id }">
             <i class="material-icons">date_range</i>
             <span>Manage Comment Periods</span>
           </a>
-          <a class="btn content-btn slide-l-btn btn-sm" href="/comments" [routerLink]="['/comments', { application: application._id }]">
+          <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments']" [queryParams]="{ application: application._id }">
             <i class="material-icons">message</i>
             <span>Review Comments</span>
           </a>

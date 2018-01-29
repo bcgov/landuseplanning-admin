@@ -68,10 +68,6 @@ export class CommentService {
       .catch(this.api.handleError);
   }
 
-  get(): Comment {
-    return this.comment;
-  }
-
   add(comment: Comment): Observable<Comment> {
     return this.api.addComment(comment)
       .map((res: Response) => {

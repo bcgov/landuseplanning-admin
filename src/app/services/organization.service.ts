@@ -46,8 +46,4 @@ export class OrganizationService {
       })
       .catch(this.api.handleError);
   }
-
-  get(): Organization {
-    return this.organization;
-  }
 }

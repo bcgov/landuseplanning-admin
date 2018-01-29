@@ -29,8 +29,6 @@ export class ApplicationService {
   }
 
   getById(id: string): Observable<Application> {
-    // return this.application = null;
-
     // first grab the application data
     return this.api.getApplication(id)
       .map((res: Response) => {
@@ -72,9 +70,5 @@ export class ApplicationService {
         return this.application;
       })
       .catch(this.api.handleError);
-  }
-
-  get(): Application {
-    return this.application;
   }
 }

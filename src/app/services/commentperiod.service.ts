@@ -47,10 +47,6 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  get(): CommentPeriod {
-    return this.commentperiod;
-  }
-
   add(commentperiod: CommentPeriod): Observable<CommentPeriod> {
     return this.api.addCommentPeriod(commentperiod)
       .map((res: Response) => {

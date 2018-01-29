@@ -8,6 +8,8 @@ import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
 import { ApplicationService } from 'app/services/application.service';
+import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
 import { ApiService } from 'app/services/api';
@@ -41,7 +43,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   public loading: boolean;
   public appId: string;
   public application: Application;
-  public periodId: string; // TODO: need to get this
+  public periodId: string;
   public comments: Array<Comment>;
   public alerts: Array<string>;
   public currentComment: Comment;
@@ -55,6 +57,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private applicationService: ApplicationService,
+    private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
     private api: ApiService,
     private dialogService: DialogService
@@ -68,15 +71,17 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.appId = null;
+    this.application = null;
+    this.periodId = null;
     this.comments = [];
     this.alerts = [];
     this.currentComment = null;
 
     // get route parameters
-    this.appId = this.route.snapshot.paramMap.get('application') || '0';
+    this.appId = this.route.snapshot.queryParamMap.get('application');
 
     // get application
-    // this is independent of comment periods data
+    // this is independent of comment data
     this.applicationService.getById(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
@@ -89,7 +94,25 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         this.alerts.push('Error loading application');
-        // console.log(error); // already displayed by handleError()
+      });
+
+    // get comment periods
+    // this is independent of application data
+    this.commentPeriodService.getAllByApplicationId(this.appId)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+      periods => {
+        if (periods.length > 0) {
+          // for now, pick first comment period
+          this.periodId = periods[0]._id;
+        }
+      },
+      error => {
+        // If 403, redir to /login.
+        if (error.startsWith('403')) {
+          this.router.navigate(['/login']);
+        }
+        this.alerts.push('Error loading comment periods');
       });
 
     // get comments
@@ -114,7 +137,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           this.router.navigate(['/login']);
         }
         this.alerts.push('Error loading comments');
-        // console.log(error); // already displayed by handleError()
       });
   }
 
@@ -123,7 +145,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  private sort(key: string) {
+  private sort(key: string): Comment[] {
     return this.comments.sort(function (a: Comment, b: Comment) {
       switch (key) {
         case 'Ordinal': return (a.commentNumber > b.commentNumber) ? 1 : -1;
@@ -138,8 +160,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   private addClick() {
     this.dialogService.addDialog(AddCommentComponent,
       {
-        periodId: this.periodId,
-        commentNumber: (this.comments.length + 1)
+        periodId: this.periodId
       }, {
         // index: 0,
         // autoCloseTimeout: 10000,
@@ -166,12 +187,12 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isCurrentComment(item) {
+  private isCurrentComment(item): boolean {
     // return _.isMatch(this.currentComment, item);
     return (item === this.currentComment);
   }
 
-  private getBadgeClass(item: Comment) {
+  private getBadgeClass(item: Comment): string {
     switch (item.commentStatus) {
       case this.accepted: return 'badge-success';
       case this.pending: return 'badge-secondary';
