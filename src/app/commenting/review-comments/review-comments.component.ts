@@ -6,11 +6,12 @@ import 'rxjs/add/operator/takeUntil';
 import { DialogService } from 'ng2-bootstrap-modal';
 import * as _ from 'lodash';
 
-import { Application } from '../../models/application';
-import { ApplicationService } from '../../services/application.service';
-import { Comment } from '../../models/comment';
-import { CommentService } from '../../services/comment.service';
-import { ApiService } from '../../services/api';
+import { Application } from 'app/models/application';
+import { ApplicationService } from 'app/services/application.service';
+import { Comment } from 'app/models/comment';
+import { CommentService } from 'app/services/comment.service';
+import { ApiService } from 'app/services/api';
+
 import { CommentDetailComponent } from './comment-detail/comment-detail.component';
 import { AddCommentComponent } from './add-comment/add-comment.component';
 
@@ -39,7 +40,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   public loading: boolean;
   public appId: string;
-  public application: Application; // used for display app info
+  public application: Application;
+  public periodId: string; // TODO: need to get this
   public comments: Array<Comment>;
   public alerts: Array<string>;
   public currentComment: Comment;
@@ -70,9 +72,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     this.alerts = [];
     this.currentComment = null;
 
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.appId = params.get('application') || '0';
-    });
+    // get route parameters
+    this.appId = this.route.snapshot.paramMap.get('application') || '0';
 
     // get application
     // this is independent of comment periods data
@@ -93,7 +94,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
     // get comments
     // this is independent of application data
-    this.commentService.getByApplicationId(this.appId)
+    this.commentService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
       comments => {
@@ -137,8 +138,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   private addClick() {
     this.dialogService.addDialog(AddCommentComponent,
       {
-        title: 'Add Comment',
-        message: 'Save'
+        periodId: this.periodId,
+        commentNumber: (this.comments.length + 1)
       }, {
         // index: 0,
         // autoCloseTimeout: 10000,

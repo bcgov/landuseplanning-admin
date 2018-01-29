@@ -378,7 +378,7 @@ export class ApiService {
     return this.post(this.pathAPI, queryString, user, { headers: headers });
   }
 
-  login(username: string, password: string): Observable<boolean> {
+  public login(username: string, password: string): Observable<boolean> {
     return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
@@ -396,13 +396,13 @@ export class ApiService {
       });
   }
 
-  logout(): void {
+  public logout(): void {
     // clear token remove user from local storage to log user out
     this.token = null;
     localStorage.removeItem('currentUser');
   }
 
-  handleError(error: any) {
+  public handleError(error: any) {
     const reason = error.message ? error.message : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
     console.log(reason);
     return Observable.throw(reason);

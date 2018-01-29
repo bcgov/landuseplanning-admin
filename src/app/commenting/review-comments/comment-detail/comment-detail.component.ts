@@ -1,5 +1,4 @@
 import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
 
@@ -68,7 +67,7 @@ export class CommentDetailComponent implements OnChanges {
   }
 
   private saveNotes() {
-    if (this.comment.review.reviewerNotes !== this.internalNotes) {
+    if (!this.isNotesPristine()) {
       const newComment = new Comment(this.comment);
       newComment.review.reviewerNotes = this.internalNotes;
       this.save(newComment);
@@ -77,7 +76,7 @@ export class CommentDetailComponent implements OnChanges {
 
   private isNotesPristine() {
     // TODO: debounce this?
-    return this.internalNotes === this.comment.review.reviewerNotes;
+    return (this.comment.review.reviewerNotes === this.internalNotes);
   }
 
   private resetNotes() {

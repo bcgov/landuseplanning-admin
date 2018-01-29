@@ -7,45 +7,35 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/of';
 
 import { ApiService } from './api';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriodService } from './commentperiod.service';
 import { Comment } from 'app/models/comment';
 
 @Injectable()
 export class CommentService {
   public comment: Comment;
 
-  constructor(private api: ApiService) { }
+  constructor(
+    private api: ApiService,
+    private commentPeriodService: CommentPeriodService
+  ) { }
 
   // get all comments for the specified application id
-  getByApplicationId(appId: string): Observable<any> {
+  getAllByApplicationId(appId: string): Observable<Comment[]> {
     // first get the comment periods
-    return this.getPeriodsByAppId(appId)
+    return this.commentPeriodService.getAllByApplicationId(appId)
       .mergeMap(periods => {
         if (periods.length === 0) {
           return Observable.of([]);
         }
 
-        // now get the comments for all comment periods
+        // now get the comments
         // TODO: return comments for all periods
-        return this.getCommentsByPeriodId(periods[0]._id);
+        return this.getAllByPeriodId(periods[0]._id);
       });
   }
 
-  private getPeriodsByAppId(appId: string): Observable<any> {
-    return this.api.getPeriodsByAppId(appId)
-      .map((res: Response) => {
-        const periods = res.text() ? res.json() : [];
-
-        periods.forEach((period, index) => {
-          periods[index] = new CommentPeriod(period);
-        });
-
-        return periods;
-      })
-      .catch(this.api.handleError);
-  }
-
-  private getCommentsByPeriodId(periodId: string): Observable<any> {
+  // get all comments for the specified comment period id
+  getAllByPeriodId(periodId: string): Observable<Comment[]> {
     return this.api.getCommentsByPeriodId(periodId)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
@@ -64,12 +54,13 @@ export class CommentService {
     return this.api.getComment(commentId)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
+        // return the first (only) comment
         return comments.length > 0 ? comments[0] : null;
-        // return res.text() ? new Comment(res.json()) : null;
       })
       .map((comment: Comment) => {
-        if (!comment) { return; }
+        // if (!comment) { return; }
 
+        // cache comment
         this.comment = comment;
 
         return this.comment;
@@ -77,20 +68,24 @@ export class CommentService {
       .catch(this.api.handleError);
   }
 
-  add(comment: Comment) {
+  get(): Comment {
+    return this.comment;
+  }
+
+  add(comment: Comment): Observable<Comment> {
     return this.api.addComment(comment)
       .map((res: Response) => {
-        const comments = res.text() ? res.json() : [];
-        return comments;
+        const c = res.text() ? res.json() : null;
+        return c;
       })
       .catch(this.api.handleError);
   }
 
-  save(comment: Comment) {
+  save(comment: Comment): Observable<Comment> {
     return this.api.saveComment(comment)
       .map((res: Response) => {
-        const comments = res.text() ? res.json() : [];
-        return comments;
+        const c = res.text() ? res.json() : null;
+        return c;
       })
       .catch(this.api.handleError);
   }
