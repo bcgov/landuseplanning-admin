@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    tools {
-        nodejs 'NodeJS-V8.x'
-    }
     stages {
         stage('build admin-angular-builder'){
             steps {
@@ -93,5 +90,5 @@ def notifyBuild(String buildStatus = 'STARTED') {
   }
 
   // Send notifications
-  slackSend (color: colorCode, message: summary)
+  //slackSend (color: colorCode, message: summary)
 }
