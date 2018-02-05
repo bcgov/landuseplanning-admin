@@ -37,6 +37,7 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
     super(dialogService);
   }
 
+  // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     this.comm = new CommentPeriod(this.model);
     if (this.model === null) {

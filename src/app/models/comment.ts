@@ -1,4 +1,4 @@
-import { CollectionsList } from './collection';
+import { Document } from './document';
 
 export class Comment {
   _id: string;
@@ -26,7 +26,7 @@ export class Comment {
   dateAdded: Date;
   commentStatus: string;
 
-  collections: CollectionsList; // used for documents
+  documents: Array<Document>;
 
   constructor(obj?: any) {
     this._id            = obj && obj._id            || null;
@@ -39,5 +39,7 @@ export class Comment {
     this.review         = obj && obj.review         || {};
     this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;
+
+    this.documents = new Array<Document>();
   }
 }
