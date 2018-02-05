@@ -79,7 +79,8 @@ import { AddEditUserComponent } from './administration/users/add-edit-user/add-e
     UserService
   ],
   entryComponents: [
-    ConfirmComponent, AddEditUserComponent
+    ConfirmComponent,
+    AddEditUserComponent
   ],
   bootstrap: [AppComponent]
 })

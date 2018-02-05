@@ -29,6 +29,7 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
     super(dialogService);
   }
 
+  // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     // console.log("this.model:", this.user);
     // TODO: Current is simple method of assigning roles

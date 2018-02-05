@@ -10,6 +10,7 @@ export interface DataModel {
   message: string; // not used
   periodId: string;
 }
+
 @Component({
   templateUrl: './add-comment.component.html',
   styleUrls: ['./add-comment.component.scss']
@@ -32,6 +33,7 @@ export class AddCommentComponent extends DialogComponent<DataModel, boolean> imp
     this.showAlert = false;
   }
 
+  // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     console.log('period id=', this.periodId);
   }
