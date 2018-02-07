@@ -127,7 +127,53 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  // TODO: addApplication() and saveApplication()
+  // TODO: addApplication()
+  saveApplication(app: Application) {
+    const fields = [
+      'name',
+      'type',
+      'subtype',
+      'purpose',
+      'subpurpose',
+      '_proponent',
+      'latitude',
+      'longitude',
+      'location',
+      'region',
+      'description',
+      'legalDescription',
+      'status',
+      'projectDate',
+      'businessUnit',
+      'cl_files',
+      'commodityType',
+      'commodity',
+      'commodities'
+    ];
+    let queryString = 'application/' + app._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, app, { headers: headers });
+  }
+
+  uploadDocument(formData) {
+    const fields = ['displayName',
+    'internalURL',
+    'documentFileName',
+    'internalMime'];
+    let queryString = 'document/?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, formData, { headers: headers });
+  }
 
   //
   // Organizations
