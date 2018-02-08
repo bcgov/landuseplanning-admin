@@ -4,6 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
 import { ApplicationDetailResolver } from './application-detail-resolver.service';
+import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
+
 import { TAB_NAV_ROUTES } from './application-detail/routes';
 
 const routes: Routes = [
@@ -20,6 +22,13 @@ const routes: Routes = [
     // each tab within the page navigates to a separate route
     // e.g. /a/:id/(overview|authorizations|compliance|docs)
     children: TAB_NAV_ROUTES
+  },
+  {
+    path: 'a/:appId/edit',
+    component: ApplicationAddEditComponent,
+    resolve: {
+      application: ApplicationDetailResolver
+    }
   }
 ];
 
