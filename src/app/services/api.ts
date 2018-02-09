@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Http, Response, ResponseContentType, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
 import * as _ from 'lodash';
+import * as FileSaver from 'file-saver';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -173,6 +174,18 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, queryString, formData, { headers: headers });
+  }
+
+  downloadDocument(file) {
+    const queryString = 'document/' + file._id + '/download';
+    const headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token});
+    const options = new RequestOptions({responseType: ResponseContentType.Blob, headers });
+    return this.http.get(this.pathAPI + '/' + queryString, options)
+    .map(res => res.blob())
+    .subscribe((obj: any) => {
+      const blob = new Blob([obj], { type: file.internalMime });
+      FileSaver.saveAs(blob, file.displayName);
+    });
   }
 
   //
@@ -347,8 +360,15 @@ export class ApiService {
   // Documents
   //
   getDocumentsByAppId(appId: string) {
+    const fields = ['internalMime', 'displayName', 'documentFileName', '_application'];
+    let queryString = 'document?_application=' + appId + '&fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, 'document?_application=' + appId, { headers: headers });
+    return this.get(this.pathAPI, queryString + appId, { headers: headers });
   }
 
   getDocument(id: string) {

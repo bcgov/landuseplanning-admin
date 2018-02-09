@@ -20,16 +20,18 @@ export class DocumentService {
 
   constructor(private api: ApiService) { }
 
-  getDocuments(id: string) {
-    // this.api.getDocumentsByAppId(id)
-    //   .map((response: Response) => <Document[]>response.json().data)
-    //   .catch(this.handleError);
+  getDocuments(id: string): Observable<Document[]> {
+    return this.api.getDocumentsByAppId(id)
+      .map((res: Response) => {
+        const documents = res.text() ? res.json() : [];
 
-    return [
-      new Document({ _id: 1, displayName: 'first' }),
-      new Document({ _id: 2, displayName: 'second' }),
-      new Document({ _id: 3, displayName: 'third' })
-    ];
+        documents.forEach((document, index) => {
+          documents[index] = new Document(document);
+        });
+
+        return documents;
+      })
+      .catch(this.api.handleError);
   }
 
   private handleError(error: Response) {
