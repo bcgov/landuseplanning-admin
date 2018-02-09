@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { Document } from 'app/models/document';
 import { DocumentService } from 'app/services/document.service';
 import { Constants } from 'app/utils/constants';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -23,7 +24,11 @@ export class ApplicationAddEditComponent implements OnInit {
   public application: Application;
   public applicationDocuments: Document[];
   private sub: Subscription;
-  private CONSTANTS: Constants;
+  public types: string[];
+  public subtypes: {};
+  public purposes: string[];
+  public subpurposes: {};
+  public statuses: string[];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -31,7 +36,11 @@ export class ApplicationAddEditComponent implements OnInit {
     private documentService: DocumentService
   ) {
     this.applicationDocuments = [];
-    this.CONSTANTS = Constants;
+    this.types = Constants.types;
+    this.subtypes = Constants.subtypes;
+    this.purposes = Constants.purposes;
+    this.subpurposes = Constants.subpurposes;
+    this.statuses = Constants.statuses;
   }
 
   typeChange(obj) {
@@ -79,6 +88,10 @@ export class ApplicationAddEditComponent implements OnInit {
     });
   }
 
+  downloadProtectedDocument(file: any) {
+    this.api.downloadDocument(file);
+  }
+
   onChange(event: any, input: any) {
     const files = [].slice.call(event.target.files);
     input.value = files.map(f => f.name).join(', ');
@@ -106,7 +119,10 @@ export class ApplicationAddEditComponent implements OnInit {
           this.gotoApplicationList();
         }
 
-        this.applicationDocuments = this.documentService.getDocuments(this.application._id);
+        this.documentService.getDocuments(this.application._id)
+        .subscribe((docs: Document[]) => {
+          this.applicationDocuments = docs;
+        });
       },
       error => {
         this.loading = false;
