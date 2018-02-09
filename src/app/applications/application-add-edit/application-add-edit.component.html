@@ -48,7 +48,7 @@
                     (change)="typeChange(application.type)"
                     [(ngModel)]="application.type"
                     name="type">
-              <option *ngFor="let type of types"
+              <option *ngFor="let type of CONSTANTS.types"
                       [value]="type">{{type}}</option>
             </select>
           </li>
@@ -60,7 +60,7 @@
                     name="subtype"
                     [(ngModel)]="application.subtype"
                     name="subtype">
-              <option *ngFor="let subtype of subtypes[application.type]"
+              <option *ngFor="let subtype of CONSTANTS.subtypes[application.type]"
                       [value]="subtype">{{subtype}}</option>
             </select>
           </li>
@@ -113,7 +113,7 @@
                     [(ngModel)]="application.purpose"
                     (change)="purposeChange(application.purpose)"
                     name="purpose">
-              <option *ngFor="let purpose of purposes"
+              <option *ngFor="let purpose of CONSTANTS.purposes"
                       [value]="purpose">{{purpose}}</option>
             </select>
           </li>
@@ -125,7 +125,7 @@
                     required
                     [(ngModel)]="application.subpurpose"
                     name="subpurpose">
-              <option *ngFor="let subpurpose of subpurposes[application.purpose]"
+              <option *ngFor="let subpurpose of CONSTANTS.subpurposes[application.purpose]"
                       [value]="subpurpose">{{subpurpose}}</option>
             </select>
           </li>
