@@ -10,7 +10,28 @@
           name="description"
           [(ngModel)]="application.description"
           required></textarea>
-      </section>
+    </section>
+
+    <section class="application-description card">
+      <input type="file"  
+            #fileInput
+            placeholder="Upload file..."
+            (change)="onChange($event, showFileNames)"
+            multiple />
+      <input #showFileNames />
+      <button type="button" (click)="upload()">Upload</button>
+    </section>
+
+    <section class="application-description card">
+      <ul class="nv-list application-details--list">
+        <li>
+          <div *ngFor="let file of applicationDocuments">
+              <span class="name">{{file.displayName}}</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
       <section class="application-legal_description card">
         <h4 class="card-header">Legal Description</h4>
         <p class="mb-2">{{application.legalDescription}}</p>

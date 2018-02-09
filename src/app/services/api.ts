@@ -160,6 +160,21 @@ export class ApiService {
     return this.put(this.pathAPI, queryString, app, { headers: headers });
   }
 
+  uploadDocument(formData) {
+    const fields = ['displayName',
+    'internalURL',
+    'documentFileName',
+    'internalMime'];
+    let queryString = 'document/?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, formData, { headers: headers });
+  }
+
   //
   // Organizations
   //

@@ -6,6 +6,10 @@ import { Subscription } from 'rxjs/Subscription';
 import { AppComponent } from 'app/app.component';
 import { Response } from '@angular/http/src/static_response';
 import * as moment from 'moment-timezone';
+import { ViewChild } from '@angular/core';
+import * as _ from 'lodash';
+import { Document } from 'app/models/document';
+import { DocumentService } from 'app/services/document.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -13,8 +17,10 @@ import * as moment from 'moment-timezone';
   styleUrls: ['./application-add-edit.component.scss']
 })
 export class ApplicationAddEditComponent implements OnInit {
+  @ViewChild('fileInput') fileInput;
   public loading: boolean;
   public application: Application;
+  public applicationDocuments: Document[];
   private sub: Subscription;
   readonly types = [
     'CERTIFICATE OF PURCHASE',
@@ -353,8 +359,10 @@ export class ApplicationAddEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private api: ApiService
+    private api: ApiService,
+    private documentService: DocumentService
   ) {
+    this.applicationDocuments = [];
   }
 
   typeChange(obj) {
@@ -379,6 +387,34 @@ export class ApplicationAddEditComponent implements OnInit {
     });
   }
 
+  upload() {
+    const self = this;
+    const fileBrowser = this.fileInput.nativeElement;
+    console.log('Uploading files:', fileBrowser.files);
+    _.each(fileBrowser.files, function (file) {
+      if (file) {
+        const formData = new FormData();
+        formData.append('_application', self.application._id);
+        formData.append('upfile', file);
+        self.api.uploadDocument(formData)
+        .subscribe(
+          res => {
+          // do stuff w/my uploaded file
+          console.log('RES:', res.json());
+          self.applicationDocuments.push(res.json());
+        },
+        error => {
+          console.log('error:', error);
+        });
+      }
+    });
+  }
+
+  onChange(event: any, input: any) {
+    const files = [].slice.call(event.target.files);
+    input.value = files.map(f => f.name).join(', ');
+  }
+
   ngOnInit(): void {
     // If we're not logged in, redirect.
     if (!this.api.ensureLoggedIn()) {
@@ -386,8 +422,6 @@ export class ApplicationAddEditComponent implements OnInit {
     }
 
     this.loading = true;
-
-    // this.collections = [new Collection(this.documentService.getDocuments())];
 
     // wait for the resolver to retrieve the application details from back-end
     this.sub = this.route.data
@@ -403,8 +437,7 @@ export class ApplicationAddEditComponent implements OnInit {
           this.gotoApplicationList();
         }
 
-        // this.collections = data.application.collections.documents;
-        // this.collections.sort();
+        this.applicationDocuments = this.documentService.getDocuments(this.application._id);
       },
       error => {
         this.loading = false;
