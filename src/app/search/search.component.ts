@@ -17,6 +17,7 @@ import { SearchService } from '../services/search.service';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
+import { AppComponent } from 'app/app.component';
 
 @Component({
   selector: 'app-search',
@@ -99,6 +100,17 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  importProject(item: any) {
+    // console.log('IMPORT:', item);
+
+    // Call the API and create the project, upon success redirect to the edit.
+    this.applicationService.addApplication(item)
+    .subscribe(application => {
+      // console.log('ADDED:', application._id);
+      this.router.navigate(['a/', application._id]);
+    });
   }
 
   toggleAdvancedSearch() {
