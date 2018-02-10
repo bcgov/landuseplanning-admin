@@ -128,7 +128,15 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  // TODO: addApplication()
+  addApplication(app: Application) {
+    // console.log('Adding:', app);
+    let queryString = 'application/';
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, app, { headers: headers });
+  }
+
   saveApplication(app: Application) {
     const fields = [
       'name',
