@@ -30,8 +30,8 @@ export class ApplicationService {
 
   addApplication(item: any): Observable<Application> {
     const app = new Application();
-    app.purpose = item.properties.PURPOSE;
-    app.subpurpose = item.properties.SUBPURPOSE;
+    app.purpose = item.properties.TENURE_PURPOSE;
+    app.subpurpose = item.properties.TENURE_SUBPURPOSE;
     // app.cl_files = ;
     app.type = item.properties.TENURE_TYPE;
     app.subtype = item.properties.TENURE_SUBTYPE;
@@ -46,7 +46,7 @@ export class ApplicationService {
     // app.agency = "Crown Land Allocation";
     // app.mapsheet = "103A.055 103A.064 103A.065 103A.074 103A.075 103A.084";
     // app.description = "SB Central Coast Holdings is submitting an application for an amendment to an investigative licence for activities related to the development of a utility scale wind power generation facility. The purpose of the Aristabazal Island Wind Farm Project will be to supply electricity into the BC grid. The purpose of the investigative phase will be to establish project feasibility and to investigate factors that require consideration in the design and permitting of the project. SB Central Coast Holdings holds two investigative licences on Aristazabal Island.";
-    // app.tantalisID = 926032;
+    app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
     app.stageCode = item.properties.CODE_CHR_STAGE;
     // app.internalID = 120409;
     app.interestID = item.properties.INTRID_SID;

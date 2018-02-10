@@ -112,6 +112,9 @@ export class ApplicationAddEditComponent implements OnInit {
       (data: { application: Application }) => {
         this.loading = false;
         this.application = data.application;
+        if (!this.application.projectDate) {
+          this.application.projectDate = new Date();
+        }
         this.application.projectDate = moment(this.application.projectDate).format();
         // application not found --> navigate back to application list
         if (!this.application || !this.application._id) {
