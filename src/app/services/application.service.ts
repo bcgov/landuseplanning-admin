@@ -42,10 +42,16 @@ export class ApplicationService {
     // app.longitude = item.longitude;
     app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
     // app.areaHectares = 4993;
-    // app.legalDescription = "ALL THAT UNSURVEYED CROWN LAND IN THE VICINITY OF BAKER POINT SITUATED ON NORTH ARISTAZABAL ISLAND, RANGE 3 COAST DISTRICT, CONTAINING 4,993 HECTARES, MORE OR LESS.";
+    // app.legalDescription = 'ALL THAT UNSURVEYED CROWN LAND IN THE VICINITY OF BAKER POINT SITUATED ON NORTH'
+    //   + ' ARISTAZABAL ISLAND, RANGE 3 COAST DISTRICT, CONTAINING 4,993 HECTARES, MORE OR LESS.';
     // app.agency = "Crown Land Allocation";
     // app.mapsheet = "103A.055 103A.064 103A.065 103A.074 103A.075 103A.084";
-    // app.description = "SB Central Coast Holdings is submitting an application for an amendment to an investigative licence for activities related to the development of a utility scale wind power generation facility. The purpose of the Aristabazal Island Wind Farm Project will be to supply electricity into the BC grid. The purpose of the investigative phase will be to establish project feasibility and to investigate factors that require consideration in the design and permitting of the project. SB Central Coast Holdings holds two investigative licences on Aristazabal Island.";
+    // app.description = 'SB Central Coast Holdings is submitting an application for an amendment to an investigative'
+    //   + 'licence for activities related to the development of a utility scale wind power generation facility. The purpose'
+    //   + 'of the Aristabazal Island Wind Farm Project will be to supply electricity into the BC grid. The purpose of the'
+    //   + 'investigative phase will be to establish project feasibility and to investigate factors that require'
+    //   + 'consideration in the design and permitting of the project. SB Central Coast Holdings holds two investigative'
+    //   + 'licences on Aristazabal Island.';
     app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
     app.stageCode = item.properties.CODE_CHR_STAGE;
     // app.internalID = 120409;
@@ -53,12 +59,12 @@ export class ApplicationService {
     // app.postID = 54104;
     delete app._id;
     return this.api.addApplication(app)
-    .map((res: Response) => {
-      const application = res.text() ? res.json() : [];
-      // console.log("application:", application);
-      return new Application(application);
-    })
-    .catch(this.api.handleError);
+      .map((res: Response) => {
+        const application = res.text() ? res.json() : [];
+        // console.log("application:", application);
+        return new Application(application);
+      })
+      .catch(this.api.handleError);
   }
 
   getById(id: string): Observable<Application> {
