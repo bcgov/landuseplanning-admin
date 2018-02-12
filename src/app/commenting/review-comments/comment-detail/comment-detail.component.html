@@ -1,31 +1,30 @@
 <div *ngIf="comment">
   <div class="comment-detail">
     <div class="row">
-      <div class="col-6 comment-detail__author">
+      <div class="col-6 comment-detail__meta">
         <ul>
           <li class="badge badge-warning" *ngIf="comment.commentAuthor.requestedAnonymous">Requested Anonymous</li>
-          <li class="value">
-            <strong>{{comment.commentAuthor.contactName}}</strong>
+          <li class="comment-detail__author">
+            <strong>{{comment.commentAuthor.contactName}}
+              <span *ngIf="comment.commentAuthor.orgName">({{comment.commentAuthor.orgName}})</span>
+              <span>, {{comment.commentAuthor.location}}</span>
+            </strong>
           </li>
-          <li class="value">{{comment.commentAuthor.orgName}}</li>
-          <li class="value">{{comment.commentAuthor.location}}</li>
-          <li class="value">
-            <a [href]="'mailto:' + comment.commentAuthor.internal.email">{{comment.commentAuthor.internal.email}}</a>
+          <li class="comment-detail__email">
+            <a [href]="'mailto:' + comment.commentAuthor.internal.email">
+              <i class="material-icons">email</i>&nbsp;{{comment.commentAuthor.internal.email}}</a>
           </li>
-          <li class="value">
-            <a [href]="'tel:' + comment.commentAuthor.internal.phone">{{comment.commentAuthor.internal.phone}}</a>
+          <li class="comment-detail__phone">
+            <a [href]="'tel:' + comment.commentAuthor.internal.phone">
+              <i class="material-icons">phone</i>&nbsp;{{comment.commentAuthor.internal.phone}}</a>
+          </li>
+          <li class="comment-detail__date">
+            <i class="material-icons">event</i>&nbsp;{{comment.dateAdded | date:'medium'}}
           </li>
         </ul>
       </div>
       <div class="col-6 comment-detail__status">
         <div class="badge" [ngClass]="getBadgeClass()">{{comment.commentStatus}}</div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12 comment-detail__date">
-        Comment received:
-        <strong>{{comment.dateAdded | date:'medium'}}</strong>
       </div>
     </div>
 
@@ -37,20 +36,17 @@
 
     <div class="row">
       <div class="col-6 comment-detail__documents">
-        <ul>
-          <li>
-            <a [routerLink]="['/document', '123']">
-              <i class="material-icons">attachment</i> Document 1</a>
-          </li>
-          <li>
-            <a [routerLink]="['/document', '456']">
-              <i class="material-icons">attachment</i> Document 2</a>
-          </li>
-          <li>
-            <a [routerLink]="['/document', '789']">
-              <i class="material-icons">attachment</i> Document 3</a>
-          </li>
-        </ul>
+        <div *ngIf="comment.documents.length == 0">
+          <em>This comment has no documents.</em>
+        </div>
+
+        <div class="row" *ngIf="comment.documents.length > 0">
+          <div class="col-12" *ngFor="let document of comment.documents">
+            <a [href]="api.getDocumentUrl(document)" target="_blank" [title]="document?.displayName || ''">
+              <i class="material-icons">attachment</i>&nbsp;{{document?.documentFileName}}
+            </a>
+          </div>
+        </div>
       </div>
       <div class="col-6 comment-detail__buttons">
         <!-- ngbRadioGroup doesn't work in NGB 1.0.0-alpha.31 / Angular 4.4.6 -->
