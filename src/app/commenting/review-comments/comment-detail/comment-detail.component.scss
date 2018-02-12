@@ -6,12 +6,20 @@
     .row {
         margin: 1rem 0.5rem;
     }
-    &__author {
+    &__meta {
         ul {
             list-style-type: none;
             padding: 0;
             margin-bottom: 0;
         }
+    }
+    &__author {
+        font-size: larger;
+    }
+    &__email>a,
+    &__phone>a,
+    &__date {
+        display: flex;
     }
     &__status {
         .badge {
@@ -31,11 +39,11 @@
         }
     }
     &__documents {
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-        }
+        //     ul {
+        //         margin: 0;
+        //         padding: 0;
+        //         list-style-type: none;
+        //     }
     }
     &__buttons {
         display: flex;
