@@ -1,0 +1,169 @@
+<div class="container" id="anchor-point">
+    <div class="row">
+    <main class="col-lg-12">
+    <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
+    <section class="application-description card">
+        <h4 class="card-header">Description</h4>
+        <textarea  type="text"
+          class="form-control"
+          id="description"
+          name="description"
+          [(ngModel)]="application.description"
+          required></textarea>
+    </section>
+
+    <section class="application-description card">
+      <input type="file"  
+            #fileInput
+            placeholder="Upload file..."
+            (change)="onChange($event, showFileNames)"
+            multiple />
+      <input #showFileNames />
+      <button type="button" (click)="upload()">Upload</button>
+    </section>
+
+    <section class="application-description card">
+      <ul class="nv-list application-details--list">
+        <li>
+          <div *ngFor="let file of applicationDocuments">
+              <span class="name" (click)="downloadProtectedDocument(file)">{{file.displayName}}</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+      <section class="application-legal_description card">
+        <h4 class="card-header">Legal Description</h4>
+        <p class="mb-2">{{application.legalDescription}}</p>
+      </section>
+      <section class="application-details card">
+        <h4 class="card-header">Application Details</h4>
+        <ul class="nv-list application-details--list">
+          <li>
+            <span class="name">Type</span>
+            <select class="form-control"
+                    id="type"
+                    name="type"
+                    required
+                    (change)="typeChange(application.type)"
+                    [(ngModel)]="application.type"
+                    name="type">
+              <option *ngFor="let type of types"
+                      [value]="type">{{type}}</option>
+            </select>
+          </li>
+          <li>
+            <span class="name">Sub-Type</span>
+            <select class="form-control"
+                    id="subtype"
+                    required
+                    name="subtype"
+                    [(ngModel)]="application.subtype"
+                    name="subtype">
+              <option *ngFor="let subtype of subtypes[application.type]"
+                      [value]="subtype">{{subtype}}</option>
+            </select>
+          </li>
+          <li>
+            <span class="name">Project Date</span>
+            <input type="date"
+                    class="form-control"
+                    id="projectDate"
+                    name="projectData"
+                    [ngModel]="application.projectDate | date:'yyyy-MM-dd'"
+                    (ngModelChange)="application.projectDate = $event"
+                    required useValueAsDate>
+          </li>
+          <li>
+            <span class="name">Status</span>
+            <select class="form-control"
+                    id="status"
+                    required
+                    name="status"
+                    [(ngModel)]="application.status"
+                    name="status">
+              <option *ngFor="let status of statuses"
+                      [value]="status">{{status}}</option>
+            </select>
+          </li>
+          <li>
+            <span class="name">Region</span>
+            <input type="text"
+                    class="form-control"
+                    id="region"
+                    name="region"
+                    [(ngModel)]="application.region"
+                    required>
+          </li>
+          <li>
+            <span class="name">Location</span>
+            <input type="text"
+              class="form-control"
+              id="location"
+              name="location"
+              [(ngModel)]="application.location"
+              required>
+          </li>
+          <li>
+            <label for="purpose">Purpose:</label>
+            <select class="form-control"
+                    id="purpose"
+                    required
+                    name="purpose"
+                    [(ngModel)]="application.purpose"
+                    (change)="purposeChange(application.purpose)"
+                    name="purpose">
+              <option *ngFor="let purpose of purposes"
+                      [value]="purpose">{{purpose}}</option>
+            </select>
+          </li>
+          <li>
+            <label for="purpose">Sub-Purpose:</label>
+            <select class="form-control"
+                    id="subpurpose"
+                    name="subpurpose"
+                    required
+                    [(ngModel)]="application.subpurpose"
+                    name="subpurpose">
+              <option *ngFor="let subpurpose of subpurposes[application.purpose]"
+                      [value]="subpurpose">{{subpurpose}}</option>
+            </select>
+          </li>
+          <!-- <li>
+            <span class="value">{{application.latitude | coordinates:TransformationType.toDegree:Direction.Latitude}},
+            <span class="name">Lat / Lon</span>
+            <geo-coordinates [value]="10"></geo-coordinates>
+              {{application.longitude | coordinates:TransformationType.toDegree:Direction.Longitude}}</span>
+          </li> -->
+          <li>
+            <span class="name">Business Unit</span>
+            <input type="text"
+              class="form-control"
+              id="businessUnit"
+              name="businessUnit"
+              [(ngModel)]="application.businessUnit"
+              required>
+          </li>
+          <li>
+            <span class="name">Crown Land File(s)</span>
+            <input type="text"
+              class="form-control"
+              id="cl_files"
+              name="cl_files"
+              [(ngModel)]="application.cl_files"
+              required>
+          </li>
+          <li>
+            <button type="submit" class="btn btn-success">Submit</button>
+          </li>
+        </ul>
+        <div class="map-section">
+          <div class="map-section__thumbnail">
+            <app-application-map [application]="application" [zoom]="4"></app-application-map>
+          </div>
+        </div>
+      </section>
+      </form>
+    </main>
+  </div>
+</div>

@@ -13,6 +13,10 @@ $search-input-font-size: 0.9375rem;
     }
 }
 
+.import-link {
+    cursor: pointer;
+}
+
 @media (max-width: 567px) {
     .search-form {
         .date-range {

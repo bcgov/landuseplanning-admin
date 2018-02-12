@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { FormsModule } from '@angular/forms';
 
 // modules
 import { SharedModule } from '../shared/shared.module';
@@ -16,6 +17,7 @@ import { DocumentsTabContentComponent } from './application-detail/documents/doc
 import { ApiService } from '../services/api';
 // import { DocumentService } from '../services/document.service';
 import { ApplicationService } from '../services/application.service';
+import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
 
 @NgModule({
   imports: [
@@ -23,12 +25,14 @@ import { ApplicationService } from '../services/application.service';
     NgxPaginationModule,
     SharedModule,
     ApplicationsRoutingModule,
-    MapModule
+    MapModule,
+    FormsModule
   ],
   declarations: [
     ApplicationListComponent,
     ApplicationDetailComponent,
-    DocumentsTabContentComponent
+    DocumentsTabContentComponent,
+    ApplicationAddEditComponent
   ],
   exports: [
     ApplicationListComponent,
