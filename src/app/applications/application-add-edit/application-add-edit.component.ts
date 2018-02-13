@@ -92,6 +92,18 @@ export class ApplicationAddEditComponent implements OnInit {
     this.api.downloadDocument(file);
   }
 
+  removeDocument(file: any) {
+    const self = this;
+    this.api.deleteDocument(file)
+    .subscribe( res => {
+      const doc = res.json();
+      // In-memory removal on successful delete.
+      _.remove(self.applicationDocuments, function (item) {
+        return (item._id === doc._id);
+      });
+    });
+  }
+
   onChange(event: any, input: any) {
     const files = [].slice.call(event.target.files);
     input.value = files.map(f => f.name).join(', ');
