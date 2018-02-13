@@ -27,6 +27,7 @@
         <li>
           <div *ngFor="let file of applicationDocuments">
               <span class="name" (click)="downloadProtectedDocument(file)">{{file.displayName}}</span>
+              <span class="name" (click)="removeDocument(file)"><i class="material-icons">delete</i></span>
           </div>
         </li>
       </ul>
@@ -34,7 +35,12 @@
 
       <section class="application-legal_description card">
         <h4 class="card-header">Legal Description</h4>
-        <p class="mb-2">{{application.legalDescription}}</p>
+        <textarea  type="text"
+        class="form-control"
+        id="legalDescription"
+        name="legalDescription"
+        [(ngModel)]="application.legalDescription"
+        required></textarea>
       </section>
       <section class="application-details card">
         <h4 class="card-header">Application Details</h4>
