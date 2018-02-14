@@ -154,6 +154,14 @@ export class ApiService {
     return this.put(this.pathAPI, queryString, app, { headers: headers });
   }
 
+  deleteApplication(app: Application) {
+    let queryString = 'application/' + app._id;
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.delete(this.pathAPI, queryString, app, { headers: headers });
+  }
+
   saveApplication(app: Application) {
     const fields = [
       'name',

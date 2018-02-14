@@ -114,6 +114,13 @@ export class ApplicationAddEditComponent implements OnInit {
     return this.applicationService.unPublishApplication(app);
   }
 
+  deleteApplication(app) {
+    return this.applicationService.deleteApplication(app)
+    .subscribe(res => {
+      this.router.navigate(['/applications']);
+    });
+  }
+
   onChange(event: any, input: any) {
     const files = [].slice.call(event.target.files);
     input.value = files.map(f => f.name).join(', ');

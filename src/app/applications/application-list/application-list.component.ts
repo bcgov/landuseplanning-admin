@@ -68,6 +68,13 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  createApplication() {
+    this.applicationService.addApplication(new Application())
+    .subscribe(application => {
+      this.router.navigate(['a/', application._id]);
+    });
+  }
+
   public sort(property) {
     this.isDesc = !this.isDesc;
     this.column = property;
