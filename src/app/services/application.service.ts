@@ -48,36 +48,63 @@ export class ApplicationService {
       return;
     });
   }
+  deleteApplication(app) {
+    // console.log("delete app", app);
+    return this.api.deleteApplication(app)
+    .map(res => {
+      return res;
+    })
+    .catch(this.api.handleError);
+  }
 
   addApplication(item: any): Observable<Application> {
     const app = new Application();
-    app.purpose = item.properties.TENURE_PURPOSE;
-    app.subpurpose = item.properties.TENURE_SUBPURPOSE;
-    // app.cl_files = ;
-    app.type = item.properties.TENURE_TYPE;
-    app.subtype = item.properties.TENURE_SUBTYPE;
-    app.status = item.properties.TENURE_STATUS;
-    // app.region = item.region;
-    app.location = item.properties.TENURE_LOCATION;
-    // app.latitude = item.latitude
-    // app.longitude = item.longitude;
-    app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
-    // app.areaHectares = 4993;
-    // app.legalDescription = 'ALL THAT UNSURVEYED CROWN LAND IN THE VICINITY OF BAKER POINT SITUATED ON NORTH'
-    //   + ' ARISTAZABAL ISLAND, RANGE 3 COAST DISTRICT, CONTAINING 4,993 HECTARES, MORE OR LESS.';
-    // app.agency = "Crown Land Allocation";
-    // app.mapsheet = "103A.055 103A.064 103A.065 103A.074 103A.075 103A.084";
-    // app.description = 'SB Central Coast Holdings is submitting an application for an amendment to an investigative'
-    //   + 'licence for activities related to the development of a utility scale wind power generation facility. The purpose'
-    //   + 'of the Aristabazal Island Wind Farm Project will be to supply electricity into the BC grid. The purpose of the'
-    //   + 'investigative phase will be to establish project feasibility and to investigate factors that require'
-    //   + 'consideration in the design and permitting of the project. SB Central Coast Holdings holds two investigative'
-    //   + 'licences on Aristazabal Island.';
-    app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
-    app.stageCode = item.properties.CODE_CHR_STAGE;
-    // app.internalID = 120409;
-    app.interestID = item.properties.INTRID_SID;
-    // app.postID = 54104;
+    if (item && item.properties) {
+      app.purpose = item.properties.TENURE_PURPOSE;
+      app.subpurpose = item.properties.TENURE_SUBPURPOSE;
+      // app.cl_files = ;
+      app.type = item.properties.TENURE_TYPE;
+      app.subtype = item.properties.TENURE_SUBTYPE;
+      app.status = item.properties.TENURE_STATUS;
+      // app.region = item.region;
+      app.location = item.properties.TENURE_LOCATION;
+      // app.latitude = item.latitude
+      // app.longitude = item.longitude;
+      app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
+      // app.areaHectares = 4993;
+      // app.legalDescription = 'ALL THAT UNSURVEYED CROWN LAND IN THE VICINITY OF BAKER POINT SITUATED ON NORTH'
+      //   + ' ARISTAZABAL ISLAND, RANGE 3 COAST DISTRICT, CONTAINING 4,993 HECTARES, MORE OR LESS.';
+      // app.agency = "Crown Land Allocation";
+      // app.mapsheet = "103A.055 103A.064 103A.065 103A.074 103A.075 103A.084";
+      // app.description = 'SB Central Coast Holdings is submitting an application for an amendment to an investigative'
+      //   + 'licence for activities related to the development of a utility scale wind power generation facility. The purpose'
+      //   + 'of the Aristabazal Island Wind Farm Project will be to supply electricity into the BC grid. The purpose of the'
+      //   + 'investigative phase will be to establish project feasibility and to investigate factors that require'
+      //   + 'consideration in the design and permitting of the project. SB Central Coast Holdings holds two investigative'
+      //   + 'licences on Aristazabal Island.';
+      app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
+      app.stageCode = item.properties.CODE_CHR_STAGE;
+      // app.internalID = 120409;
+      app.interestID = item.properties.INTRID_SID;
+      // app.postID = 54104;
+    } else {
+      // Boilerplate
+      app.purpose = 'TENURE_PURPOSE';
+      app.subpurpose = 'TENURE_SUBPURPOSE';
+      app.type = 'TENURE_TYPE';
+      app.subtype = 'TENURE_SUBTYPE';
+      app.status = 'TENURE_STATUS';
+      app.region = 'Skeena';
+      app.location = 'TENURE_LOCATION';
+      app.businessUnit = 'RESPONSIBLE_BUSINESS_UNIT';
+      app.areaHectares = 0;
+      app.legalDescription = 'ALL THAT UNSURVEYED CROWN LAND...';
+      app.agency = 'Crown Land Allocation';
+      app.description = 'Description...';
+      app.stageCode = 'A';
+      app.name = 'New Application';
+      app.interestID = 0;
+    }
     delete app._id;
     return this.api.addApplication(app)
       .map((res: Response) => {

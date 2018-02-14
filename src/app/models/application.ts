@@ -87,14 +87,16 @@ export class Application {
     this.collections             = obj && obj.collections             || null;
     this.content                 = obj && obj.content                 || [];
 
-    var self = this;
-    // Wrap isPublished around the tags we receive for this object.
-    _.each(obj.tags, function (tag) {
-      if (_.includes(tag, 'public')) {
-        self.isPublished = true;
-      }
-    })
+    const self = this;
 
+    if (obj && obj.tags) {
+      // Wrap isPublished around the tags we receive for this object.
+      _.each(obj.tags, function (tag) {
+        if (_.includes(tag, 'public')) {
+          self.isPublished = true;
+        }
+      });
+    }
     // get the client from the proponent
     // this.client = (obj && obj.proponent && obj.proponent.name) ? obj.proponent.name : 'unknown';
   }

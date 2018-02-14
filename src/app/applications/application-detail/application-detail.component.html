@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container__inner-container">
       <div class="hero-banner__content">
-        <h1 id="pgTitle">{{application._proponent}}</h1>
+        <h1 id="pgTitle">{{application.name}}</h1>
         <p class="mb-2">{{application.purpose}} / {{application.subpurpose}}</p>
 
         <div class="application-links">
@@ -27,6 +27,10 @@
 <div class="container" id="anchor-point">
   <div class="row">
     <main class="col-lg-12">
+      <section class="application-description card">
+        <h4 class="card-header">Name</h4>
+        <p class="mb-2" [innerHTML]="application.name"></p>
+      </section>
       <section class="application-description card">
         <h4 class="card-header">Description</h4>
         <p class="mb-2" [innerHTML]="application.description | newlines"></p>
