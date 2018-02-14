@@ -84,6 +84,7 @@ export class ApiService {
       'cl_files',
       'commodityType',
       'commodity',
+      'tags',
       'commodities'
     ];
     let queryString = 'application?fields=';
@@ -135,6 +136,22 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, queryString, app, { headers: headers });
+  }
+
+  publishApplication(app: Application) {
+    let queryString = 'application/' + app._id + '/publish';
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, app, { headers: headers });
+  }
+
+  unPublishApplication(app: Application) {
+    let queryString = 'application/' + app._id + '/unpublish';
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, app, { headers: headers });
   }
 
   saveApplication(app: Application) {

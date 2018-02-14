@@ -10,6 +10,7 @@ import { ViewChild } from '@angular/core';
 import * as _ from 'lodash';
 import { Document } from 'app/models/document';
 import { DocumentService } from 'app/services/document.service';
+import { ApplicationService } from 'app/services/application.service';
 import { Constants } from 'app/utils/constants';
 import * as FileSaver from 'file-saver';
 
@@ -33,7 +34,8 @@ export class ApplicationAddEditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService,
-    private documentService: DocumentService
+    private documentService: DocumentService,
+    private applicationService: ApplicationService
   ) {
     this.applicationDocuments = [];
     this.types = Constants.types;
@@ -102,6 +104,14 @@ export class ApplicationAddEditComponent implements OnInit {
         return (item._id === doc._id);
       });
     });
+  }
+
+  publishApplication(app) {
+    return this.applicationService.publishApplication(app);
+  }
+
+  unPublishApplication(app) {
+    return this.applicationService.unPublishApplication(app);
   }
 
   onChange(event: any, input: any) {
