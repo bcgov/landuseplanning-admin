@@ -28,6 +28,27 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
+  publishApplication(app) {
+    // console.log("publish app", app);
+    this.api.publishApplication(app)
+    .subscribe((res: Response) => {
+      const theApp = res.text() ? res.json() : [];
+      // return the first (only) application
+      app.isPublished = true;
+      return;
+    });
+  }
+  unPublishApplication(app) {
+    // console.log("un publish app", app);
+    this.api.unPublishApplication(app)
+    .subscribe((res: Response) => {
+      const theApp = res.text() ? res.json() : [];
+      // return the first (only) application
+      app.isPublished = false;
+      return;
+    });
+  }
+
   addApplication(item: any): Observable<Application> {
     const app = new Application();
     app.purpose = item.properties.TENURE_PURPOSE;

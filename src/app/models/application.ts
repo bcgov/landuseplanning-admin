@@ -67,7 +67,6 @@ export class Application {
     this.description             = obj && obj.description             || null;
     this.interestID              = obj && obj.interestID              || 0;
     this.internalID              = obj && obj.internalID              || 0;
-    this.isPublished             = obj && obj.isPublished             || null;
     this.legalDescription        = obj && obj.legalDescription        || null;
     this.location                = obj && obj.location                || null;
     this.latitude                = obj && obj.lat                     || 0;
@@ -87,6 +86,14 @@ export class Application {
 
     this.collections             = obj && obj.collections             || null;
     this.content                 = obj && obj.content                 || [];
+
+    var self = this;
+    // Wrap isPublished around the tags we receive for this object.
+    _.each(obj.tags, function (tag) {
+      if (_.includes(tag, 'public')) {
+        self.isPublished = true;
+      }
+    })
 
     // get the client from the proponent
     // this.client = (obj && obj.proponent && obj.proponent.name) ? obj.proponent.name : 'unknown';
