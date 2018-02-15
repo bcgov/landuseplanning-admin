@@ -88,7 +88,7 @@ export class ApiService {
       'tags',
       'commodities'
     ];
-    let queryString = 'application?fields=';
+    let queryString = 'application?isDeleted=false&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -396,7 +396,7 @@ export class ApiService {
   //
   getDocumentsByAppId(appId: string) {
     const fields = ['internalMime', 'displayName', 'documentFileName', '_application'];
-    let queryString = 'document?_application=' + appId + '&fields=';
+    let queryString = 'document?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
