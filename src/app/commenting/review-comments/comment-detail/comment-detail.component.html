@@ -10,11 +10,11 @@
               <span>, {{comment.commentAuthor.location}}</span>
             </strong>
           </li>
-          <li class="comment-detail__email">
+          <li class="comment-detail__email" *ngIf="comment.commentAuthor.internal.email">
             <a [href]="'mailto:' + comment.commentAuthor.internal.email">
               <i class="material-icons">email</i>&nbsp;{{comment.commentAuthor.internal.email}}</a>
           </li>
-          <li class="comment-detail__phone">
+          <li class="comment-detail__phone" *ngIf="comment.commentAuthor.internal.phone">
             <a [href]="'tel:' + comment.commentAuthor.internal.phone">
               <i class="material-icons">phone</i>&nbsp;{{comment.commentAuthor.internal.phone}}</a>
           </li>
