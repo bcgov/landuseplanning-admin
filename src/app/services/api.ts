@@ -88,7 +88,7 @@ export class ApiService {
       'tags',
       'commodities'
     ];
-    let queryString = 'application?fields=';
+    let queryString = 'application?isDeleted=false&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
