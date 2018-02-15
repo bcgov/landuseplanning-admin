@@ -40,6 +40,10 @@ export class Application {
 
   collections: CollectionsList; // used for documents
 
+  internal: {
+    notes: string;
+  };
+
   content: {
     type: string;
     page: string;
@@ -86,6 +90,7 @@ export class Application {
 
     this.collections             = obj && obj.collections             || null;
     this.content                 = obj && obj.content                 || [];
+    this.internal                = obj && obj.internal                || null;
 
     const self = this;
 

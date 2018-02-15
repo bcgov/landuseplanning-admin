@@ -168,18 +168,30 @@
               [(ngModel)]="application.cl_files"
               required>
           </li>
+          <div *ngIf="application.internal" class="form-group">
+            <section class="application-description card">
+              <h4 class="card-header">Internal Notes</h4>
+              <textarea  type="text"
+                class="form-control"
+                id="internal.notes"
+                name="internal.notes"
+                [(ngModel)]="application.internal.notes"
+                required></textarea>
+            </section>
+          </div>
           <li>
-            <button type="submit" class="btn btn-success">Submit</button>
-            <button *ngIf="!application.isPublished" type="button" class="btn btn-success" (click)="publishApplication(application)">Publish</button>
-            <button *ngIf="application.isPublished" type="button" class="btn btn-success" (click)="unPublishApplication(application)">Un-Publish</button>
-            <button *ngIf="!application.isPublished" type="button" class="btn btn-danger" (click)="deleteApplication(application)">Delete</button>
+              <button type="submit" class="btn btn-success">Submit</button>
+              <button *ngIf="!application.isPublished" type="button" class="btn btn-success" (click)="publishApplication(application)">Publish</button>
+              <button *ngIf="application.isPublished" type="button" class="btn btn-success" (click)="unPublishApplication(application)">Un-Publish</button>
+              <button *ngIf="!application.isPublished" type="button" class="btn btn-danger" (click)="deleteApplication(application)">Delete</button>
           </li>
         </ul>
-        <div class="map-section">
+
+        <!-- <div class="map-section">
           <div class="map-section__thumbnail">
             <app-application-map [application]="application" [zoom]="4"></app-application-map>
           </div>
-        </div>
+        </div> -->
       </section>
       </form>
     </main>
