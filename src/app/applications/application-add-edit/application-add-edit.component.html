@@ -3,7 +3,7 @@
     <main class="col-lg-12">
     <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
       <section class="application-description card">
-        <h4 class="card-header">Name</h4>
+        <h4 class="card-header">Client</h4>
           <input type="text"
             class="form-control"
             id="name"
@@ -117,6 +117,20 @@
               id="location"
               name="location"
               [(ngModel)]="application.location"
+              required>
+            <span class="name">Latitude</span>
+            <input type="text"
+              class="form-control"
+              id="latitude"
+              name="latitude"
+              [(ngModel)]="application.latitude"
+              required>
+            <span class="name">Longitude</span>
+            <input type="text"
+              class="form-control"
+              id="longitude"
+              name="longitude"
+              [(ngModel)]="application.longitude"
               required>
           </li>
           <li>
