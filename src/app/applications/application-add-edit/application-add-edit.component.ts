@@ -75,6 +75,7 @@ export class ApplicationAddEditComponent implements OnInit {
       if (file) {
         const formData = new FormData();
         formData.append('_application', self.application._id);
+        formData.append('displayName', file.name);
         formData.append('upfile', file);
         self.api.uploadDocument(formData)
         .subscribe(
