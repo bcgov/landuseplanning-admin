@@ -83,7 +83,6 @@ export class ApplicationService {
       //   + 'consideration in the design and permitting of the project. SB Central Coast Holdings holds two investigative'
       //   + 'licences on Aristazabal Island.';
       app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
-      app.stageCode = item.properties.CODE_CHR_STAGE;
       // app.internalID = 120409;
       app.interestID = item.properties.INTRID_SID;
       // app.postID = 54104;
@@ -101,7 +100,6 @@ export class ApplicationService {
       app.legalDescription = 'ALL THAT UNSURVEYED CROWN LAND...';
       app.agency = 'Crown Land Allocation';
       app.description = 'Description...';
-      app.stageCode = 'A';
       app.name = 'New Application';
       app.interestID = 0;
     }
