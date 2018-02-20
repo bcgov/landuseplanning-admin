@@ -3,6 +3,8 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+// import 'rxjs/add/operator/toPromise';
+// import 'rxjs/add/operator/first';
 import { DialogService } from 'ng2-bootstrap-modal';
 import * as _ from 'lodash';
 
@@ -40,7 +42,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   readonly sortKeys = ['Ordinal', 'Name', 'Date', 'Status'];
 
-  public loading: boolean;
+  public loading = true;
   public appId: string;
   public application: Application;
   public periodId: string;
@@ -69,58 +71,84 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    this.loading = true;
-    this.appId = null;
-    this.application = null;
-    this.periodId = null;
     this.comments = [];
     this.alerts = [];
-    this.currentComment = null;
 
     // get route parameters
     this.appId = this.route.snapshot.queryParamMap.get('application');
 
     // get application
     // this is independent of comment data
+    // TODO: get from route? (see public tabs)
     this.applicationService.getById(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      application => {
-        this.application = application;
-      },
-      error => {
-        if (error.startsWith('403')) { this.router.navigate(['/login']); }
-        this.alerts.push('Error loading application');
-      });
+        application => {
+          this.application = application;
+        },
+        error => {
+          if (error.startsWith('403')) { this.router.navigate(['/login']); }
+          this.alerts.push('Error loading application');
+        });
 
+    // TODO: get current comment period
     // get comment periods
     // this is independent of application data
     this.commentPeriodService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      periods => {
-        if (periods.length > 0) {
-          // for now, pick first comment period
-          this.periodId = periods[0]._id;
-        }
-      },
-      error => {
-        if (error.startsWith('403')) { this.router.navigate(['/login']); }
-        this.alerts.push('Error loading comment periods');
-      });
+        periods => {
+          if (periods.length > 0) {
+            // for now, pick first comment period
+            this.periodId = periods[0]._id;
+          }
+        },
+        error => {
+          if (error.startsWith('403')) { this.router.navigate(['/login']); }
+          this.alerts.push('Error loading comment periods');
+        });
 
     // get comments
     // this is independent of application data
+
+    // this.commentService.getAllByApplicationId(this.appId)
+    //   .first()
+    //   .subscribe(
+    //     comments => {
+    //       this.loading = false;
+    //       this.comments = comments;
+    //       console.log('comments = ', comments);
+    //       console.log('#comments = ', comments.length);
+    //     },
+    //     error => {
+    //       this.loading = false;
+    //       console.log('err =', error);
+    //     });
+
+    // this.commentService.getAllByApplicationId(this.appId)
+    //   .map(comments => {
+    //     this.loading = false;
+    //     this.comments = comments;
+    //     console.log('comments = ', comments);
+    //     console.log('#comments = ', comments.length);
+    //   })
+    //   .toPromise()
+    //   .catch(err => console.log('err =', err));
+
     this.commentService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
       comments => {
         this.loading = false;
         this.comments = comments;
+        console.log ('comments = ', comments);
+        console.log ('#comments = ', comments.length);
         this.sort(this.sortKeys[0]); // initial order
 
         // pre-select first comment
+        // TODO: doesn't work because we don't have comments yet -- need promise instead?
         if (this.comments.length > 0) {
+          console.log('pre-selecting comment =', comments[0]);
           this.setCurrentComment(this.comments[0]);
         }
       },
@@ -149,25 +177,27 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   }
 
   public addClick() {
-    this.dialogService.addDialog(AddCommentComponent,
-      {
-        periodId: this.periodId
-      }, {
-        // index: 0,
-        // autoCloseTimeout: 10000,
-        // closeByClickingOutside: true,
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed) => {
-        // we get dialog result
-        if (isConfirmed) {
-          // TODO: reload page?
-          console.log('saved');
-        } else {
-          console.log('canceled');
-        }
-      });
+    if (this.periodId) {
+      this.dialogService.addDialog(AddCommentComponent,
+        {
+          periodId: this.periodId
+        }, {
+          // index: 0,
+          // autoCloseTimeout: 10000,
+          // closeByClickingOutside: true,
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((isConfirmed) => {
+          // we get dialog result
+          if (isConfirmed) {
+            // TODO: reload page?
+            console.log('saved');
+          } else {
+            console.log('canceled');
+          }
+        });
+    }
   }
 
   private setCurrentComment(item) {

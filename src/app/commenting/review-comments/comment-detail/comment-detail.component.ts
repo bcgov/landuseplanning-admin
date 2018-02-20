@@ -44,21 +44,21 @@ export class CommentDetailComponent implements OnChanges {
 
   private isRejected(): boolean { return (this.comment.commentStatus === this.rejected); }
 
-  private accept() {
+  private doAccept() {
     if (this.comment.commentStatus !== this.accepted) {
       this.comment.commentStatus = this.accepted;
       this.save(this.comment);
     }
   }
 
-  private pend() {
+  private doPending() {
     if (this.comment.commentStatus !== this.pending) {
       this.comment.commentStatus = this.pending;
       this.save(this.comment);
     }
   }
 
-  private reject() {
+  private doReject() {
     if (this.comment.commentStatus !== this.rejected) {
       this.comment.commentStatus = this.rejected;
       this.save(this.comment);
