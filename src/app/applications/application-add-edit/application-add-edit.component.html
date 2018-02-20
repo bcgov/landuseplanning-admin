@@ -213,6 +213,10 @@
           </li>
         </ul>
 
+        <div *ngIf="showMsg">
+          <div *ngIf="error" class="alert alert-danger">{{status}}</div>
+          <div *ngIf="!error" class="alert alert-success">{{status}}</div>
+        </div>
         <!-- <div class="map-section">
           <div class="map-section__thumbnail">
             <app-application-map [application]="application" [zoom]="4"></app-application-map>

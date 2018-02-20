@@ -30,6 +30,9 @@ export class ApplicationAddEditComponent implements OnInit {
   public purposes: string[];
   public subpurposes: {};
   public statuses: string[];
+  private error: boolean;
+  private status: string;
+  private showMsg: boolean;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -43,6 +46,7 @@ export class ApplicationAddEditComponent implements OnInit {
     this.purposes = Constants.purposes;
     this.subpurposes = Constants.subpurposes;
     this.statuses = Constants.statuses;
+    this.showMsg = false;
   }
 
   typeChange(obj) {
@@ -53,17 +57,30 @@ export class ApplicationAddEditComponent implements OnInit {
     this.application.subpurpose = Constants.subpurposes[obj][0];
   }
 
+  showMessage(isError, msg) {
+    this.error = isError;
+    this.showMsg = true;
+    this.status = msg;
+    var self = this;
+    setTimeout(function () {
+      self.showMsg = false;
+    }, 3000);
+  }
+
   onSubmit() {
     // Adjust for current tz
     this.application.projectDate = moment(this.application.projectDate).format();
 
+    var self = this;
     this.api.saveApplication(this.application)
     .subscribe(
       (data: any) => {
-        console.log('Saved application', data);
+        // console.log('Saved application', data);
+        self.showMessage(false, 'Saved Application');
       },
       error => {
         console.log('ERR:', error);
+        self.showMessage(true, 'Error saving application');
     });
   }
 
