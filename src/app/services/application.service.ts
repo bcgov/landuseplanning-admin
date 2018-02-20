@@ -127,33 +127,7 @@ export class ApplicationService {
         // if (!application) { return; }
 
         // cache application
-        this.application = application;
-
-        // this.application.collections = new CollectionsList();
-
-        // // Now grab the MEM collections
-        // this.api.getProjectCollectionsMEM(this.project.code)
-        //   .map((res: Response) => this.processCollections(res))
-        //   .subscribe(memCollections => {
-        //     // Push them into the project
-        //     memCollections.forEach(collection => {
-        //       this.addCollection(this.project.collections, collection);
-        //     });
-        //   });
-
-        // // Get EPIC collections next.
-        // // Note: there may be multiple (or no) EPIC projects associated with this MEM project.
-        // this.project.epicProjectCodes.forEach(epicProjectCode => {
-        //   this.api.getProjectCollectionsEPIC(epicProjectCode)
-        //     .map((res: Response) => this.processCollections(res))
-        //     .subscribe(epicCollections => {
-        //       // Push them into the project
-        //       epicCollections.forEach(collection => {
-        //         this.addCollection(this.project.collections, collection);
-        //       });
-        //     });
-        // });
-
+        this.application = new Application(application);
         return this.application;
       })
       .catch(this.api.handleError);
