@@ -3,7 +3,7 @@
     <main class="col-lg-12">
     <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
       <section class="application-description card">
-        <h4 class="card-header">Name</h4>
+        <h4 class="card-header">Client</h4>
           <input type="text"
             class="form-control"
             id="name"
@@ -36,7 +36,9 @@
         <li>
           <div *ngFor="let file of applicationDocuments">
               <span class="name" (click)="downloadProtectedDocument(file)">{{file.displayName}}</span>
-              <span class="name" (click)="removeDocument(file)"><i class="material-icons">delete</i></span>
+              <button *ngIf="!file.isPublished" type="button" class="btn btn-success"><span class="name" (click)="publishDocument(file)"><i class="material-icons">play_circle_outline</i></span></button>
+              <button *ngIf="file.isPublished" type="button" class="btn btn-warning"><span class="name" (click)="unPublishDocument(file)"><i class="material-icons">pause_circle_outline</i></span></button>
+              <button *ngIf="!file.isPublished" type="button" class="btn btn-danger"><span class="name" (click)="removeDocument(file)"><i class="material-icons">delete</i></span></button>
           </div>
         </li>
       </ul>
@@ -113,10 +115,34 @@
           <li>
             <span class="name">Location</span>
             <input type="text"
+                class="form-control"
+                id="location"
+                name="location"
+                [(ngModel)]="application.location"
+                required>
+            <span class="name">Area (hectares)</span>
+            <input type="number"
               class="form-control"
               id="location"
               name="location"
-              [(ngModel)]="application.location"
+              step="0.01"
+              [(ngModel)]="application.areaHectares"
+              required>
+            <span class="name">Latitude</span>
+            <input type="number"
+              class="form-control"
+              id="latitude"
+              name="latitude"
+              step="0.01"
+              [(ngModel)]="application.latitude"
+              required>
+            <span class="name">Longitude</span>
+            <input type="number"
+              class="form-control"
+              id="longitude"
+              name="longitude"
+              step="0.01"
+              [(ngModel)]="application.longitude"
               required>
           </li>
           <li>
@@ -187,6 +213,10 @@
           </li>
         </ul>
 
+        <div *ngIf="showMsg">
+          <div *ngIf="error" class="alert alert-danger">{{status}}</div>
+          <div *ngIf="!error" class="alert alert-success">{{status}}</div>
+        </div>
         <!-- <div class="map-section">
           <div class="map-section__thumbnail">
             <app-application-map [application]="application" [zoom]="4"></app-application-map>

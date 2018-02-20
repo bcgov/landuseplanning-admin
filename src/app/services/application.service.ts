@@ -5,22 +5,59 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
+import { OrganizationService } from './organization.service';
+import { CommentPeriodService } from './commentperiod.service';
 import { Application } from 'app/models/application';
-// import { CollectionsList } from 'app/models/collection';
 
 @Injectable()
 export class ApplicationService {
-  public application: Application;
+  constructor(
+    private api: ApiService,
+    private organizationService: OrganizationService,
+    private commentPeriodService: CommentPeriodService
+  ) { }
 
-  constructor(private api: ApiService) { }
+  // get count of applications
+  getCount(): Observable<number> {
+    return this.api.getApplications()
+      .map((res: Response) => {
+        const applications = res.text() ? res.json() : [];
+        return applications.length;
+      })
+      .catch(this.api.handleError);
+  }
 
+  // get all applications
   getAll(): Observable<Application[]> {
     return this.api.getApplications()
       .map((res: Response) => {
         const applications = res.text() ? res.json() : [];
-
         applications.forEach((application, index) => {
           applications[index] = new Application(application);
+        });
+        return applications;
+      })
+      .map((applications: Array<Application>) => {
+        if (applications.length === 0) {
+          return Observable.of([]);
+        }
+
+        // now get the proponent for each application
+        applications.forEach((application, i) => {
+          if (applications[i]._proponent) {
+            this.organizationService.getById(applications[i]._proponent).subscribe(
+              organization => application.proponent = organization,
+              error => console.log(error)
+            );
+          }
+        });
+
+        // now get the current comment period for each application
+        applications.forEach((application, i) => {
+          this.commentPeriodService.getAllByApplicationId(applications[i]._id).subscribe(
+            periods => applications[i].currentPeriod = this.commentPeriodService.getCurrent(periods),
+            error => console.log(error)
+          );
         });
 
         return applications;
@@ -31,30 +68,32 @@ export class ApplicationService {
   publishApplication(app) {
     // console.log("publish app", app);
     this.api.publishApplication(app)
-    .subscribe((res: Response) => {
-      const theApp = res.text() ? res.json() : [];
-      // return the first (only) application
-      app.isPublished = true;
-      return;
-    });
+      .subscribe((res: Response) => {
+        const theApp = res.text() ? res.json() : [];
+        // return the first (only) application
+        app.isPublished = true;
+        return;
+      });
   }
+
   unPublishApplication(app) {
     // console.log("un publish app", app);
     this.api.unPublishApplication(app)
-    .subscribe((res: Response) => {
-      const theApp = res.text() ? res.json() : [];
-      // return the first (only) application
-      app.isPublished = false;
-      return;
-    });
+      .subscribe((res: Response) => {
+        const theApp = res.text() ? res.json() : [];
+        // return the first (only) application
+        app.isPublished = false;
+        return;
+      });
   }
+
   deleteApplication(app) {
     // console.log("delete app", app);
     return this.api.deleteApplication(app)
-    .map(res => {
-      return res;
-    })
-    .catch(this.api.handleError);
+      .map(res => {
+        return res;
+      })
+      .catch(this.api.handleError);
   }
 
   addApplication(item: any): Observable<Application> {
@@ -113,46 +152,33 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
+  // get a specific application by its id
   getById(id: string): Observable<Application> {
-    // first grab the application data
+    // first get the application data
     return this.api.getApplication(id)
       .map((res: Response) => {
         const applications = res.text() ? res.json() : [];
         // return the first (only) application
-        return applications.length > 0 ? applications[0] : null;
+        return applications.length > 0 ? new Application(applications[0]) : null;
       })
       .map((application: Application) => {
-        // if (!application) { return; }
+        if (!application) { return; }
 
-        // cache application
-        this.application = application;
+        // get the proponent
+        if (application._proponent) {
+          this.organizationService.getById(application._proponent).subscribe(
+            organization => application.proponent = organization,
+            error => console.log(error)
+          );
+        }
 
-        // this.application.collections = new CollectionsList();
+        // get the current comment period
+        this.commentPeriodService.getAllByApplicationId(application._id).subscribe(
+          periods => application.currentPeriod = this.commentPeriodService.getCurrent(periods),
+          error => console.log(error)
+        );
 
-        // // Now grab the MEM collections
-        // this.api.getProjectCollectionsMEM(this.project.code)
-        //   .map((res: Response) => this.processCollections(res))
-        //   .subscribe(memCollections => {
-        //     // Push them into the project
-        //     memCollections.forEach(collection => {
-        //       this.addCollection(this.project.collections, collection);
-        //     });
-        //   });
-
-        // // Get EPIC collections next.
-        // // Note: there may be multiple (or no) EPIC projects associated with this MEM project.
-        // this.project.epicProjectCodes.forEach(epicProjectCode => {
-        //   this.api.getProjectCollectionsEPIC(epicProjectCode)
-        //     .map((res: Response) => this.processCollections(res))
-        //     .subscribe(epicCollections => {
-        //       // Push them into the project
-        //       epicCollections.forEach(collection => {
-        //         this.addCollection(this.project.collections, collection);
-        //       });
-        //     });
-        // });
-
-        return this.application;
+        return application;
       })
       .catch(this.api.handleError);
   }

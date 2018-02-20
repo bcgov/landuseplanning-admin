@@ -58,12 +58,15 @@
             <span class="name">Location</span>
             <span class="value">{{application.location || 'unknown'}}</span>
           </li>
-          <!-- <li>
-            <span class="value">{{application.latitude | coordinates:TransformationType.toDegree:Direction.Latitude}},
-            <span class="name">Lat / Lon</span>
-            <geo-coordinates [value]="10"></geo-coordinates>
-              {{application.longitude | coordinates:TransformationType.toDegree:Direction.Longitude}}</span>
-          </li> -->
+          <li>
+            <span class="name">Area (hectares)</span>
+            <span class="value">{{application.areaHectares | number:'1.2-2'}}</span>
+          </li>
+          <li>
+            <span class="name">Latitude / Longitude</span>
+            <span class="value">{{application.latitude | number:'1.2-2'}} /
+              {{application.longitude | number:'1.2-2'}}</span>
+          </li>
           <li>
             <span class="name">Business Unit</span>
             <span class="value">{{application.businessUnit || 'unknown'}}</span>

@@ -26,6 +26,7 @@ import { SearchService } from './services/search.service';
 import { ProponentService } from './services/proponent.service';
 import { AuthenticationService } from './services/authentication.service';
 import { ApplicationService } from './services/application.service';
+import { OrganizationService } from './services/organization.service';
 import { CommentPeriodService } from './services/commentperiod.service';
 import { CommentService } from './services/comment.service';
 import { DocumentService } from './services/document.service';
@@ -75,6 +76,7 @@ import { AddEditUserComponent } from './administration/users/add-edit-user/add-e
     ProponentService,
     AuthenticationService,
     ApplicationService,
+    OrganizationService,
     CommentPeriodService,
     CommentService,
     DocumentService,

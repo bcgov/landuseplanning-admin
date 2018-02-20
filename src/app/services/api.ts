@@ -455,6 +455,16 @@ export class ApiService {
     return this.delete(this.pathAPI, 'document/' + file._id, file, { headers: headers });
   }
 
+  publishDocument(file: any) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'document/' + file._id + '/publish', file, { headers: headers });
+  }
+
+  unPublishDocument(file: any) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', file, { headers: headers });
+  }
+
   uploadDocument(formData) {
     const fields = ['documentFileName', 'displayName', 'internalURL', 'internalMime'];
     let queryString = 'document/?fields=';
