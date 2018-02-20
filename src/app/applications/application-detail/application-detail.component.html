@@ -59,9 +59,13 @@
             <span class="value">{{application.location || 'unknown'}}</span>
           </li>
           <li>
+            <span class="name">Area (hectares)</span>
+            <span class="value">{{application.areaHectares | number:'1.2-2'}}</span>
+          </li>
+          <li>
             <span class="name">Latitude / Longitude</span>
-            <span class="value">{{application.latitude}}
-              {{application.longitude}}</span>
+            <span class="value">{{application.latitude | number:'1.2-2'}} /
+              {{application.longitude | number:'1.2-2'}}</span>
           </li>
           <li>
             <span class="name">Business Unit</span>

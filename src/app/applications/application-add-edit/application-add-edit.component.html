@@ -113,23 +113,33 @@
           <li>
             <span class="name">Location</span>
             <input type="text"
+                class="form-control"
+                id="location"
+                name="location"
+                [(ngModel)]="application.location"
+                required>
+            <span class="name">Area (hectares)</span>
+            <input type="number"
               class="form-control"
               id="location"
               name="location"
-              [(ngModel)]="application.location"
+              step="0.01"
+              [(ngModel)]="application.areaHectares"
               required>
             <span class="name">Latitude</span>
-            <input type="text"
+            <input type="number"
               class="form-control"
               id="latitude"
               name="latitude"
+              step="0.01"
               [(ngModel)]="application.latitude"
               required>
             <span class="name">Longitude</span>
-            <input type="text"
+            <input type="number"
               class="form-control"
               id="longitude"
               name="longitude"
+              step="0.01"
               [(ngModel)]="application.longitude"
               required>
           </li>

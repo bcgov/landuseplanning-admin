@@ -73,8 +73,8 @@ export class Application {
     this.internalID              = obj && obj.internalID              || 0;
     this.legalDescription        = obj && obj.legalDescription        || null;
     this.location                = obj && obj.location                || null;
-    this.latitude                = obj && obj.lat                     || 0;
-    this.longitude               = obj && obj.lon                     || 0;
+    this.latitude                = obj && obj.latitude                || 0.00;
+    this.longitude               = obj && obj.longitude               || 0.00;
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
     this.projectDate             = obj && obj.projectDate             || null;
