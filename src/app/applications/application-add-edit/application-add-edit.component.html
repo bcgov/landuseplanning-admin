@@ -186,17 +186,19 @@
               required>
           </li>
           <li>
-            <span class="name">Crown Land File(s):</span>
+            <div class="name">Crown Land File(s):</div>
               <div *ngFor="let clf of application.cl_files">
-                  <div class="name" (click)="removeCLFile(clf)">{{clf}}<i class="material-icons">delete_forever</i></div>
+                  <span><div class="name col-4" (click)="removeCLFile(clf)">{{clf}}<i class="material-icons">delete_forever</i></div></span>
               </div>
-              <input type="number"
-                class="name form-control"
-                id="cl_files"
-                name="cl_files"
-                [(ngModel)]="clFile"
-                required>
-              <button type="button" (click)="addCLFile()">Add CL File</button>
+              <div class="col-12">
+                <input type="number"
+                  class="name form-control col-4"
+                  id="cl_files"
+                  name="cl_files"
+                  [(ngModel)]="clFile"
+                  required>
+                <button type="button pull-right" (click)="addCLFile()">Add CL File</button>
+              </div>
           </li>
           <div *ngIf="application.internal" class="form-group">
             <section class="application-description card">
