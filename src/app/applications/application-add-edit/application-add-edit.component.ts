@@ -48,7 +48,7 @@ export class ApplicationAddEditComponent implements OnInit {
     this.subpurposes = Constants.subpurposes;
     this.statuses = Constants.statuses;
     this.showMsg = false;
-    this.clFile = 0;
+    this.clFile = null;
   }
 
   typeChange(obj) {
@@ -64,6 +64,7 @@ export class ApplicationAddEditComponent implements OnInit {
       this.application.cl_files = [];
     }
     this.application.cl_files.push(this.clFile);
+    this.clFile = null;
   }
 
   removeCLFile(clFile) {
