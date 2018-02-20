@@ -33,6 +33,7 @@ export class ApplicationAddEditComponent implements OnInit {
   private error: boolean;
   private status: string;
   private showMsg: boolean;
+  private clFile: number;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -47,6 +48,7 @@ export class ApplicationAddEditComponent implements OnInit {
     this.subpurposes = Constants.subpurposes;
     this.statuses = Constants.statuses;
     this.showMsg = false;
+    this.clFile = 0;
   }
 
   typeChange(obj) {
@@ -55,6 +57,19 @@ export class ApplicationAddEditComponent implements OnInit {
 
   purposeChange(obj) {
     this.application.subpurpose = Constants.subpurposes[obj][0];
+  }
+
+  addCLFile() {
+    if (this.application.cl_files === null) {
+      this.application.cl_files = [];
+    }
+    this.application.cl_files.push(this.clFile);
+  }
+
+  removeCLFile(clFile) {
+    _.remove(this.application.cl_files, function (item) {
+      return (item === clFile);
+    });
   }
 
   showMessage(isError, msg) {

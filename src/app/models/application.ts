@@ -65,7 +65,7 @@ export class Application {
     this.agency                  = obj && obj.agency                  || null;
     this.areaHectares            = obj && obj.areaHectares            || null;
     this.businessUnit            = obj && obj.businessUnit            || null;
-    this.cl_files                = obj && obj.cl_file                 || null;
+    this.cl_files                = obj && obj.cl_files                || null;
     this.code                    = obj && obj.code                    || null;
     this.name                    = obj && obj.name                    || null;
     this.description             = obj && obj.description             || null;
