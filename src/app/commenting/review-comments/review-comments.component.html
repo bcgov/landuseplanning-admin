@@ -18,7 +18,7 @@
         <i class="material-icons">date_range</i>
         <span>Manage Comment Periods</span>
       </a>
-      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()" disabled>
+      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()" [disabled]="!periodId">
         <i class="material-icons">add_box</i>
         <span>Add Comment</span>
       </button>
@@ -27,7 +27,7 @@
 </div>
 
 <div class="review-comments-body container" id="anchor-point">
-  <p *ngIf="comments.length == 0">
+  <p *ngIf="comments.length === 0">
     <em>This application has no comments.</em>
   </p>
 

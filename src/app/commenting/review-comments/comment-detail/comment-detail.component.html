@@ -1,3 +1,7 @@
+<div *ngIf="!comment">
+  <em>No comment selected.</em>
+</div>
+
 <div *ngIf="comment">
   <div class="comment-detail">
     <div class="row">
@@ -36,7 +40,7 @@
 
     <div class="row">
       <div class="col-6 comment-detail__documents">
-        <div *ngIf="comment.documents.length == 0">
+        <div *ngIf="comment.documents.length === 0">
           <em>This comment has no documents.</em>
         </div>
 
