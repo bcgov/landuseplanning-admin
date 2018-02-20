@@ -28,6 +28,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { ApplicationService } from './services/application.service';
 import { CommentPeriodService } from './services/commentperiod.service';
 import { CommentService } from './services/comment.service';
+import { DocumentService } from './services/document.service';
 import { UserService } from './services/user.service';
 
 // feature modules
@@ -76,6 +77,7 @@ import { AddEditUserComponent } from './administration/users/add-edit-user/add-e
     ApplicationService,
     CommentPeriodService,
     CommentService,
+    DocumentService,
     UserService
   ],
   entryComponents: [

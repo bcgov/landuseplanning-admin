@@ -8,15 +8,15 @@ import 'rxjs/add/observable/of';
 
 import { ApiService } from './api';
 import { CommentPeriodService } from './commentperiod.service';
+import { DocumentService } from './document.service';
 import { Comment } from 'app/models/comment';
 
 @Injectable()
 export class CommentService {
-  public comment: Comment;
-
   constructor(
     private api: ApiService,
-    private commentPeriodService: CommentPeriodService
+    private commentPeriodService: CommentPeriodService,
+    private documentService: DocumentService
   ) { }
 
   // get all comments for the specified application id
@@ -28,9 +28,16 @@ export class CommentService {
           return Observable.of([]);
         }
 
-        // now get the comments
-        // TODO: return comments for all periods
-        return this.getAllByPeriodId(periods[0]._id);
+        // now get the comments for all periods
+        const allComments = [];
+        periods.forEach(period => {
+          this.getAllByPeriodId(period._id).subscribe(
+            comments => comments.forEach(comment => allComments.push(comment)),
+            error => console.log(error)
+          );
+        });
+
+        return Observable.of(allComments);
       });
   }
 
@@ -39,11 +46,9 @@ export class CommentService {
     return this.api.getCommentsByPeriodId(periodId)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
-
         comments.forEach((comment, index) => {
           comments[index] = new Comment(comment);
         });
-
         return comments;
       })
       .catch(this.api.handleError);
@@ -60,10 +65,13 @@ export class CommentService {
       .map((comment: Comment) => {
         // if (!comment) { return; }
 
-        // cache comment
-        this.comment = comment;
+        // now grab the comment documents
+        this.documentService.getAllByCommentId(comment._id).subscribe(
+          documents => comment.documents = documents,
+          error => console.log(error)
+        );
 
-        return this.comment;
+        return comment;
       })
       .catch(this.api.handleError);
   }
@@ -72,7 +80,7 @@ export class CommentService {
     return this.api.addComment(comment)
       .map((res: Response) => {
         const c = res.text() ? res.json() : null;
-        return c;
+        return c ? new Comment(c) : null;
       })
       .catch(this.api.handleError);
   }
@@ -81,7 +89,7 @@ export class CommentService {
     return this.api.saveComment(comment)
       .map((res: Response) => {
         const c = res.text() ? res.json() : null;
-        return c;
+        return c ? new Comment(c) : null;
       })
       .catch(this.api.handleError);
   }

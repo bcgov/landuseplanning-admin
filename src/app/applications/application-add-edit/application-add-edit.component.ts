@@ -152,7 +152,7 @@ export class ApplicationAddEditComponent implements OnInit {
           this.gotoApplicationList();
         }
 
-        this.documentService.getDocuments(this.application._id)
+        this.documentService.getAllByApplicationId(this.application._id)
         .subscribe((docs: Document[]) => {
           this.applicationDocuments = docs;
         });

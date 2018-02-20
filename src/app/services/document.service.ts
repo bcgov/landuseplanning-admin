@@ -10,8 +10,8 @@ import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api';
 import { Search, SearchArray, SearchTerms } from 'app/models/search';
-import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
+import { Application } from 'app/models/application';
 import { Proponent } from 'app/models/proponent';
 
 @Injectable()
@@ -20,25 +20,54 @@ export class DocumentService {
 
   constructor(private api: ApiService) { }
 
-  getDocuments(id: string): Observable<Document[]> {
+  // get all documents for the specified application id
+  getAllByApplicationId(id: string): Observable<Document[]> {
     return this.api.getDocumentsByAppId(id)
       .map((res: Response) => {
         const documents = res.text() ? res.json() : [];
-
         documents.forEach((document, index) => {
           documents[index] = new Document(document);
         });
-
         return documents;
       })
       .catch(this.api.handleError);
   }
 
-  private handleError(error: Response) {
-    const msg = `Status code ${error.status} on url ${error.url}`;
-    console.error(msg);
-    // return Observable.throw(error.json().error || 'Server error');
-    return Observable.throw(msg);
+  // get all documents for the specified comment id
+  getAllByCommentId(commentId: string): Observable<Document[]> {
+    return this.api.getDocumentsByCommentId(commentId)
+      .map((res: Response) => {
+        const documents = res.text() ? res.json() : [];
+        documents.forEach((document, i) => {
+          documents[i] = new Document(document);
+        });
+        return documents;
+      })
+      .catch(this.api.handleError);
+  }
+
+  // get all documents for the specified decision id
+  getAllByDecisionId(decisionId: string): Observable<Document[]> {
+    return this.api.getDocumentsByDecisionId(decisionId)
+      .map((res: Response) => {
+        const documents = res.text() ? res.json() : [];
+        documents.forEach((document, i) => {
+          documents[i] = new Document(document);
+        });
+        return documents;
+      })
+      .catch(this.api.handleError);
+  }
+
+  // get a specific document by its id
+  getById(documentId): Observable<Document> {
+    return this.api.getDocument(documentId)
+      .map((res: Response) => {
+        const document = res.text() ? res.json() : [];
+        // return the first (only) document
+        return document.length > 0 ? new Document(document[0]) : null;
+      })
+      .catch(this.api.handleError);
   }
 
   get(terms: SearchTerms, applications: Array<Application>, proponents: Array<Proponent>, page: number, limit: number) {
