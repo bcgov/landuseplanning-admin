@@ -29,7 +29,7 @@ export class Document {
     this.dateAdded = obj && obj.dateAdded || null;
     this.description = obj && obj.description || null;
 
-    var self = this;
+    const self = this;
     if (obj && obj.tags) {
       // Wrap isPublished around the tags we receive for this object.
       _.each(obj.tags, function (tag) {

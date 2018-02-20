@@ -61,7 +61,7 @@ export class ApplicationAddEditComponent implements OnInit {
     this.error = isError;
     this.showMsg = true;
     this.status = msg;
-    var self = this;
+    const self = this;
     setTimeout(function () {
       self.showMsg = false;
     }, 3000);
@@ -71,7 +71,7 @@ export class ApplicationAddEditComponent implements OnInit {
     // Adjust for current tz
     this.application.projectDate = moment(this.application.projectDate).format();
 
-    var self = this;
+    const self = this;
     this.api.saveApplication(this.application)
     .subscribe(
       (data: any) => {
@@ -130,7 +130,7 @@ export class ApplicationAddEditComponent implements OnInit {
     .subscribe( res => {
       const doc = res.json();
       // In-memory removal on successful delete.
-      var f = _.find(self.applicationDocuments, function (item) {
+      const f = _.find(self.applicationDocuments, function (item) {
         return (item._id === doc._id);
       });
       f.isPublished = true;
@@ -143,7 +143,7 @@ export class ApplicationAddEditComponent implements OnInit {
     .subscribe( res => {
       const doc = res.json();
       // In-memory removal on successful delete.
-      var f = _.find(self.applicationDocuments, function (item) {
+      const f = _.find(self.applicationDocuments, function (item) {
         return (item._id === doc._id);
       });
       f.isPublished = false;
