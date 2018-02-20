@@ -28,7 +28,7 @@
 </div>
 
 <div class="comment-periods-body container" id="anchor-point">
-  <p *ngIf="commentPeriods.length == 0"><em>This application has no comment periods.</em></p>
+  <p *ngIf="commentPeriods.length === 0"><em>This application has no comment periods.</em></p>
   <table class="table comment-periods-table">
     <tbody class="comment-periods-table__content">
       <tr *ngFor="let item of commentPeriods">

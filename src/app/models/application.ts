@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import { CollectionsList } from './collection';
+import { Organization } from './organization';
+import { CommentPeriod } from './commentperiod';
 
 export class Application {
   _id: string;
@@ -32,7 +34,6 @@ export class Application {
   purpose: string;
   subpurpose: string;
   region: string;
-  stageCode: string;
   status: string;
   tantalisID: number;
   type: string;
@@ -49,6 +50,9 @@ export class Application {
     page: string;
     html: string;
   }[];
+
+  proponent: Organization;
+  currentPeriod: CommentPeriod;
 
   // client: string;
 
@@ -82,7 +86,6 @@ export class Application {
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;
-    this.stageCode               = obj && obj.stageCode               || null;
     this.status                  = obj && obj.status                  || null;
     this.tantalisID              = obj && obj.tantalisID              || 0;
     this.type                    = obj && obj.type                    || null;
@@ -102,6 +105,10 @@ export class Application {
         }
       });
     }
+
+    this.proponent = null;
+    this.currentPeriod = null;
+
     // get the client from the proponent
     // this.client = (obj && obj.proponent && obj.proponent.name) ? obj.proponent.name : 'unknown';
   }

@@ -24,7 +24,9 @@ export class CommentDetailComponent implements OnChanges {
   ) { }
 
   ngOnChanges() {
-    this.internalNotes = this.comment.review.reviewerNotes;
+    if (this.comment) {
+      this.internalNotes = this.comment.review.reviewerNotes;
+    }
   }
 
   private getBadgeClass(): string {
@@ -42,35 +44,31 @@ export class CommentDetailComponent implements OnChanges {
 
   private isRejected(): boolean { return (this.comment.commentStatus === this.rejected); }
 
-  private accept() {
+  private doAccept() {
     if (this.comment.commentStatus !== this.accepted) {
-      const newComment = new Comment(this.comment);
-      newComment.commentStatus = this.accepted;
-      this.save(newComment);
+      this.comment.commentStatus = this.accepted;
+      this.save(this.comment);
     }
   }
 
-  private pend() {
+  private doPending() {
     if (this.comment.commentStatus !== this.pending) {
-      const newComment = new Comment(this.comment);
-      newComment.commentStatus = this.pending;
-      this.save(newComment);
+      this.comment.commentStatus = this.pending;
+      this.save(this.comment);
     }
   }
 
-  private reject() {
+  private doReject() {
     if (this.comment.commentStatus !== this.rejected) {
-      const newComment = new Comment(this.comment);
-      newComment.commentStatus = this.rejected;
-      this.save(newComment);
+      this.comment.commentStatus = this.rejected;
+      this.save(this.comment);
     }
   }
 
   private saveNotes() {
     if (!this.isNotesPristine()) {
-      const newComment = new Comment(this.comment);
-      newComment.review.reviewerNotes = this.internalNotes;
-      this.save(newComment);
+      this.comment.review.reviewerNotes = this.internalNotes;
+      this.save(this.comment);
     }
   }
 
@@ -83,20 +81,20 @@ export class CommentDetailComponent implements OnChanges {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  private save(newComment: Comment) {
-    newComment.review.reviewerDate = new Date();
+  private save(comment: Comment) {
+    comment.review.reviewerDate = new Date();
 
     this.networkMsg = null;
-    this.commentService.save(newComment)
+    this.commentService.save(comment)
       // .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      comment => {
-        // save succeeded - accept new record
-        this.comment = comment;
-        this.commentChange.emit(this.comment);
-      },
-      error => {
-        this.networkMsg = error;
-      });
+        value => {
+          // save succeeded - accept new record
+          this.comment = value;
+          this.commentChange.emit(this.comment);
+        },
+        error => {
+          this.networkMsg = error;
+        });
   }
 }

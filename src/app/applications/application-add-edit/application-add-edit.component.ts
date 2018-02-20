@@ -144,7 +144,6 @@ export class ApplicationAddEditComponent implements OnInit {
     this.api.publishDocument(file)
     .subscribe( res => {
       const doc = res.json();
-      // In-memory removal on successful delete.
       const f = _.find(self.applicationDocuments, function (item) {
         return (item._id === doc._id);
       });
@@ -157,7 +156,6 @@ export class ApplicationAddEditComponent implements OnInit {
     this.api.unPublishDocument(file)
     .subscribe( res => {
       const doc = res.json();
-      // In-memory removal on successful delete.
       const f = _.find(self.applicationDocuments, function (item) {
         return (item._id === doc._id);
       });
@@ -210,7 +208,7 @@ export class ApplicationAddEditComponent implements OnInit {
           this.gotoApplicationList();
         }
 
-        this.documentService.getDocuments(this.application._id)
+        this.documentService.getAllByApplicationId(this.application._id)
         .subscribe((docs: Document[]) => {
           this.applicationDocuments = docs;
         });

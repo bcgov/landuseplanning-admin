@@ -196,34 +196,6 @@ export class ApiService {
     return this.put(this.pathAPI, queryString, app, { headers: headers });
   }
 
-  uploadDocument(formData) {
-    const fields = ['displayName',
-    'internalURL',
-    'documentFileName',
-    'tags',
-    'internalMime'];
-    let queryString = 'document/?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, formData, { headers: headers });
-  }
-
-  downloadDocument(file) {
-    const queryString = 'document/' + file._id + '/download';
-    const headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token});
-    const options = new RequestOptions({responseType: ResponseContentType.Blob, headers });
-    return this.http.get(this.pathAPI + '/' + queryString, options)
-    .map(res => res.blob())
-    .subscribe((obj: any) => {
-      const blob = new Blob([obj], { type: file.internalMime });
-      FileSaver.saveAs(blob, file.displayName);
-    });
-  }
-
   //
   // Organizations
   //
@@ -234,6 +206,47 @@ export class ApiService {
       'name'
     ];
     let queryString = 'organization/' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  //
+  // Decisions
+  //
+  getDecisionByAppId(appId: string) {
+    const fields = [
+      '_addedBy',
+      '_application',
+      'code',
+      'name',
+      'decisionDate',
+      'description'
+    ];
+    let queryString = 'decision?_application=' + appId + '&fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  getDecision(id: string) {
+    const fields = [
+      '_addedBy',
+      '_application',
+      'code',
+      'name',
+      'decisionDate',
+      'description'
+    ];
+    let queryString = 'decision/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -396,7 +409,7 @@ export class ApiService {
   // Documents
   //
   getDocumentsByAppId(appId: string) {
-    const fields = ['internalMime', 'displayName', 'documentFileName', '_application', 'tags'];
+    const fields = ['_application', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
     let queryString = 'document?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -404,7 +417,31 @@ export class ApiService {
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString + appId, { headers: headers });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  getDocumentsByCommentId(commentId: string) {
+    const fields = ['_comment', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
+    let queryString = 'document?isDeleted=false&_comment=' + commentId + '&fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  getDocumentsByDecisionId(decisionId: string) {
+    const fields = ['_decision', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
+    let queryString = 'document?isDeleted=false&_decision=' + decisionId + '&fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   getDocument(id: string) {
@@ -417,18 +454,40 @@ export class ApiService {
     // First delete the document, then attempt to save the new version of the application
     return this.delete(this.pathAPI, 'document/' + file._id, file, { headers: headers });
   }
+
   publishDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // First delete the document, then attempt to save the new version of the application
     return this.put(this.pathAPI, 'document/' + file._id + '/publish', file, { headers: headers });
   }
+
   unPublishDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // First delete the document, then attempt to save the new version of the application
     return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', file, { headers: headers });
   }
 
-  // TODO: saveDocument()
+  uploadDocument(formData) {
+    const fields = ['documentFileName', 'displayName', 'internalURL', 'internalMime'];
+    let queryString = 'document/?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, formData, { headers: headers });
+  }
+
+  downloadDocument(file) {
+    const queryString = 'document/' + file._id + '/download';
+    const headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token });
+    const options = new RequestOptions({ responseType: ResponseContentType.Blob, headers });
+    return this.http.get(this.pathAPI + '/' + queryString, options)
+      .map(res => res.blob())
+      .subscribe((obj: any) => {
+        const blob = new Blob([obj], { type: file.internalMime });
+        FileSaver.saveAs(blob, file.displayName);
+      });
+  }
 
   //
   // Crown Lands file

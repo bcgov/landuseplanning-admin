@@ -35,7 +35,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    // this.collections = [new Collection(this.documentService.getDocuments())];
+    // this.collections = [new Collection(this.documentService.getAllByApplicationId())];
 
     // wait for the resolver to retrieve the application details from back-end
     this.sub = this.route.data
