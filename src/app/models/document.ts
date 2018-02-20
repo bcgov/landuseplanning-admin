@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export class Document {
   _id: string;
   keywords: string[];
@@ -11,6 +13,7 @@ export class Document {
   dateUploaded: string;
   dateUpdated: string;
   dateAdded: string;
+  isPublished: boolean;
 
   constructor(obj?: any) {
     this._id = obj && obj._id || null;
@@ -25,5 +28,15 @@ export class Document {
     this.dateUpdated = obj && obj.dateUpdated || null;
     this.dateAdded = obj && obj.dateAdded || null;
     this.description = obj && obj.description || null;
+
+    var self = this;
+    if (obj && obj.tags) {
+      // Wrap isPublished around the tags we receive for this object.
+      _.each(obj.tags, function (tag) {
+        if (_.includes(tag, 'public')) {
+          self.isPublished = true;
+        }
+      });
+    }
   }
 }

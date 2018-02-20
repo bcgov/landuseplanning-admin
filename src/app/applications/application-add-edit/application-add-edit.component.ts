@@ -107,6 +107,32 @@ export class ApplicationAddEditComponent implements OnInit {
     });
   }
 
+  publishDocument(file: any) {
+    const self = this;
+    this.api.publishDocument(file)
+    .subscribe( res => {
+      const doc = res.json();
+      // In-memory removal on successful delete.
+      var f = _.find(self.applicationDocuments, function (item) {
+        return (item._id === doc._id);
+      });
+      f.isPublished = true;
+    });
+  }
+
+  unPublishDocument(file: any) {
+    const self = this;
+    this.api.unPublishDocument(file)
+    .subscribe( res => {
+      const doc = res.json();
+      // In-memory removal on successful delete.
+      var f = _.find(self.applicationDocuments, function (item) {
+        return (item._id === doc._id);
+      });
+      f.isPublished = false;
+    });
+  }
+
   publishApplication(app) {
     return this.applicationService.publishApplication(app);
   }

@@ -36,7 +36,9 @@
         <li>
           <div *ngFor="let file of applicationDocuments">
               <span class="name" (click)="downloadProtectedDocument(file)">{{file.displayName}}</span>
-              <span class="name" (click)="removeDocument(file)"><i class="material-icons">delete</i></span>
+              <button *ngIf="!file.isPublished" type="button" class="btn btn-success"><span class="name" (click)="publishDocument(file)"><i class="material-icons">play_circle_outline</i></span></button>
+              <button *ngIf="file.isPublished" type="button" class="btn btn-warning"><span class="name" (click)="unPublishDocument(file)"><i class="material-icons">pause_circle_outline</i></span></button>
+              <button *ngIf="!file.isPublished" type="button" class="btn btn-danger"><span class="name" (click)="removeDocument(file)"><i class="material-icons">delete</i></span></button>
           </div>
         </li>
       </ul>

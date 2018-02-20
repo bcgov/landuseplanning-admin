@@ -200,6 +200,7 @@ export class ApiService {
     const fields = ['displayName',
     'internalURL',
     'documentFileName',
+    'tags',
     'internalMime'];
     let queryString = 'document/?fields=';
     _.each(fields, function (f) {
@@ -395,7 +396,7 @@ export class ApiService {
   // Documents
   //
   getDocumentsByAppId(appId: string) {
-    const fields = ['internalMime', 'displayName', 'documentFileName', '_application'];
+    const fields = ['internalMime', 'displayName', 'documentFileName', '_application', 'tags'];
     let queryString = 'document?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -415,6 +416,16 @@ export class ApiService {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     // First delete the document, then attempt to save the new version of the application
     return this.delete(this.pathAPI, 'document/' + file._id, file, { headers: headers });
+  }
+  publishDocument(file: any) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    // First delete the document, then attempt to save the new version of the application
+    return this.put(this.pathAPI, 'document/' + file._id + '/publish', file, { headers: headers });
+  }
+  unPublishDocument(file: any) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    // First delete the document, then attempt to save the new version of the application
+    return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', file, { headers: headers });
   }
 
   // TODO: saveDocument()
