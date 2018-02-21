@@ -6,6 +6,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
 import { ApiService } from '../../services/api';
+import { OrganizationService } from 'app/services/organization.service';
+import { Organization } from 'app/models/organization';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-application-list',
@@ -33,7 +36,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private router: Router,
     private applicationService: ApplicationService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private api: ApiService
+    private api: ApiService,
+    private orgService: OrganizationService
   ) { }
 
   ngOnInit() {
@@ -43,7 +47,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-
+    const self = this;
     this.sub = this.applicationService.getAll()
       // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
@@ -51,6 +55,23 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.applications = applications;
         this.appCount = applications ? applications.length : 0;
+        console.log(this.applications);
+        _.each(this.applications, function (a) {
+          self.orgService.getById(a._proponent)
+          .subscribe(
+            data => {
+              const f = _.find(self.applications, function (app) {
+                return (app._proponent === data._id);
+              });
+              if (f) {
+                f.proponent = data;
+                self._changeDetectionRef.detectChanges();
+              }
+            },
+            error => {
+              console.log('error:', error);
+            });
+        });
         // Needed in development mode - not required in prod.
         this._changeDetectionRef.detectChanges();
       },
