@@ -13,6 +13,11 @@ import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
 import { Constants } from 'app/utils/constants';
 import * as FileSaver from 'file-saver';
+import { DialogService } from 'ng2-bootstrap-modal';
+import { Subject } from 'rxjs/Subject';
+import { SelectOrganizationComponent } from '../select-organization/select-organization.component';
+import { OrganizationService } from 'app/services/organization.service';
+import { Organization } from 'app/models/organization';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -34,12 +39,15 @@ export class ApplicationAddEditComponent implements OnInit {
   private status: string;
   private showMsg: boolean;
   private clFile: number;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService,
     private documentService: DocumentService,
-    private applicationService: ApplicationService
+    private orgService: OrganizationService,
+    private applicationService: ApplicationService,
+    private dialogService: DialogService
   ) {
     this.applicationDocuments = [];
     this.types = Constants.types;
@@ -57,6 +65,38 @@ export class ApplicationAddEditComponent implements OnInit {
 
   purposeChange(obj) {
     this.application.subpurpose = Constants.subpurposes[obj][0];
+  }
+
+  selectClient() {
+    const self = this;
+    let orgId = null;
+    if (this.application.proponent) {
+      orgId = this.application.proponent._id;
+    }
+    this.dialogService.addDialog(SelectOrganizationComponent,
+      {
+        selectedOrgId: orgId
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((selectedOrgId) => {
+        if (selectedOrgId) {
+          // Fetch the org from the service, and bind to this instance of an application.
+          self.orgService.getById(selectedOrgId)
+          .subscribe(
+            data => {
+              self.application.proponent = new Organization(data);
+              // Update current reference.
+              self.application._proponent = data._id;
+            },
+            error => {
+              console.log('error:', error);
+            });
+        } else {
+          console.log('org selection cancelled.');
+        }
+      });
   }
 
   addCLFile() {
@@ -191,6 +231,7 @@ export class ApplicationAddEditComponent implements OnInit {
     }
 
     this.loading = true;
+    const self = this;
 
     // wait for the resolver to retrieve the application details from back-end
     this.sub = this.route.data
@@ -213,6 +254,13 @@ export class ApplicationAddEditComponent implements OnInit {
         .subscribe((docs: Document[]) => {
           this.applicationDocuments = docs;
         });
+
+        if (self.application._proponent) {
+          this.orgService.getById(self.application._proponent)
+          .subscribe((o: Organization) => {
+            self.application.proponent = new Organization(o);
+          });
+        }
       },
       error => {
         this.loading = false;

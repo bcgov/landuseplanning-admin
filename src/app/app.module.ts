@@ -40,6 +40,8 @@ import { HeaderComponent } from './header/header.component';
 import { AdministrationComponent } from './administration/administration.component';
 import { UsersComponent } from './administration/users/users.component';
 import { AddEditUserComponent } from './administration/users/add-edit-user/add-edit-user.component';
+import { SelectOrganizationComponent } from './applications/select-organization/select-organization.component';
+
 
 @NgModule({
   declarations: [
@@ -52,7 +54,8 @@ import { AddEditUserComponent } from './administration/users/add-edit-user/add-e
     HeaderComponent,
     AdministrationComponent,
     UsersComponent,
-    AddEditUserComponent
+    AddEditUserComponent,
+    SelectOrganizationComponent
   ],
   imports: [
     TagInputModule,

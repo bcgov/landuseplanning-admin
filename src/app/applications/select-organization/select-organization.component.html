@@ -1,0 +1,38 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Select Organization</h4>
+        <button type="button" class="close" aria-label="Close" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  
+      <div class="modal-body">
+          <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">code</th>
+                  <th scope="col">_id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let o of organizations | paginate: { itemsPerPage: 5, currentPage: page }"
+                    class="clickable-row"
+                    [ngClass]="(selectedOrg !== null && o._id === selectedOrg._id) ? 'active' : ''"
+                    (click)="selectOrganization(o)">
+                  <td scope="row">{{o.name}}</td>
+                  <td>{{o.code}}</td>
+                  <td>{{o._id}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <pagination-controls (pageChange)="page = $event"></pagination-controls>
+      </div>
+  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+        <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
+      </div>
+    </div>
+  </div>

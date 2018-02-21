@@ -18,6 +18,7 @@ import { ApiService } from '../services/api';
 // import { DocumentService } from '../services/document.service';
 import { ApplicationService } from '../services/application.service';
 import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
+import { SelectOrganizationComponent } from './select-organization/select-organization.component';
 
 @NgModule({
   imports: [
@@ -42,6 +43,9 @@ import { ApplicationAddEditComponent } from './application-add-edit/application-
     ApiService,
     // DocumentService,
     ApplicationService
+  ],
+  entryComponents: [
+    SelectOrganizationComponent
   ]
 })
 export class ApplicationsModule { }

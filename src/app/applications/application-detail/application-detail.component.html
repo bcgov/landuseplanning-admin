@@ -28,8 +28,8 @@
   <div class="row">
     <main class="col-lg-12">
       <section class="application-description card">
-        <h4 class="card-header">Name</h4>
-        <p class="mb-2" [innerHTML]="application.name"></p>
+        <h4 class="card-header">Client</h4>
+        <p *ngIf="application.proponent && application.proponent.name" class="mb-2" [innerHTML]="application.proponent.name"></p>
       </section>
       <section class="application-description card">
         <h4 class="card-header">Description</h4>

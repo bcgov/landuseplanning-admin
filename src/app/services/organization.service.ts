@@ -15,18 +15,17 @@ export class OrganizationService {
 
   // get all organizations
   getAll(): Observable<Organization[]> {
-    return null;
-    // return this.api.getOrganizations()
-    //   .map((res: Response) => {
-    //     const organizations = res.text() ? res.json() : [];
+    return this.api.getOrganizations()
+      .map((res: Response) => {
+        const organizations = res.text() ? res.json() : [];
 
-    //     organizations.forEach((org, index) => {
-    //       organizations[index] = new Organization(org);
-    //     });
+        organizations.forEach((org, index) => {
+          organizations[index] = new Organization(org);
+        });
 
-    //     return organizations;
-    //   })
-    //   .catch(this.api.handleError);
+        return organizations;
+      })
+      .catch(this.api.handleError);
   }
 
   // get a specific organization by its id

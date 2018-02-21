@@ -4,13 +4,11 @@
     <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
       <section class="application-description card">
         <h4 class="card-header">Client</h4>
-          <input type="text"
-            class="form-control"
-            id="name"
-            name="name"
-            [(ngModel)]="application.name"
-            required>
-      </section>
+        <span class="">
+          <label *ngIf="application.proponent">{{application.proponent.name}}</label>
+          <button type="button" class="btn btn-success col-2 float-right" (click)="selectClient()">Select Client</button>
+        </span>
+    </section>
     <section class="application-description card">
         <h4 class="card-header">Description</h4>
         <textarea  type="text"
@@ -22,13 +20,14 @@
     </section>
 
     <section class="application-description card">
-      <input type="file"  
-            #fileInput
-            placeholder="Upload file..."
-            (change)="onChange($event, showFileNames)"
-            multiple />
-      <input #showFileNames />
-      <button type="button" class="btn btn-success" (click)="upload()">Upload</button>
+      <span class="col-6">
+        <input type="file"
+              #fileInput
+              placeholder="Upload file..."
+              (change)="onChange($event)"
+              multiple />
+      </span>
+      <button type="button" class="btn btn-success col-2" (click)="upload()">Upload</button>
     </section>
 
     <section class="application-description card">
