@@ -201,6 +201,21 @@ export class ApiService {
   //
   // Organizations
   //
+  getOrganizations() {
+    const fields = [
+      '_addedBy',
+      'code',
+      'name'
+    ];
+    let queryString = 'organization?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
   getOrganization(id: string) {
     const fields = [
       '_addedBy',
@@ -208,6 +223,39 @@ export class ApiService {
       'name'
     ];
     let queryString = 'organization/' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+  //
+  // Proponents
+  //
+  getProponents() {
+    const fields = [
+      '_addedBy',
+      'code',
+      'name'
+    ];
+    let queryString = 'proponent?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+  getProponent(id: string) {
+    const fields = [
+      '_addedBy',
+      'code',
+      'name'
+    ];
+    let queryString = 'proponent/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
