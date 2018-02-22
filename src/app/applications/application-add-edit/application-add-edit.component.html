@@ -4,13 +4,11 @@
     <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
       <section class="application-description card">
         <h4 class="card-header">Client</h4>
-          <input type="text"
-            class="form-control"
-            id="name"
-            name="name"
-            [(ngModel)]="application.name"
-            required>
-      </section>
+        <span class="">
+          <label *ngIf="application.proponent">{{application.proponent.name}}</label>
+          <button type="button" class="btn btn-success col-2 float-right" (click)="selectClient()">Select Client</button>
+        </span>
+    </section>
     <section class="application-description card">
         <h4 class="card-header">Description</h4>
         <textarea  type="text"
@@ -22,13 +20,14 @@
     </section>
 
     <section class="application-description card">
-      <input type="file"  
-            #fileInput
-            placeholder="Upload file..."
-            (change)="onChange($event, showFileNames)"
-            multiple />
-      <input #showFileNames />
-      <button type="button" class="btn btn-success" (click)="upload()">Upload</button>
+      <span class="col-6">
+        <input type="file"
+              #fileInput
+              placeholder="Upload file..."
+              (change)="onChange($event, changedFiles)"
+              multiple />
+      </span>
+      <button type="button" class="btn btn-success col-2" (click)="upload()">Upload</button>
     </section>
 
     <section class="application-description card">
@@ -123,8 +122,8 @@
             <span class="name">Area (hectares)</span>
             <input type="number"
               class="form-control"
-              id="location"
-              name="location"
+              id="areaHectares"
+              name="areaHectares"
               step="0.01"
               [(ngModel)]="application.areaHectares"
               required>
@@ -186,17 +185,19 @@
               required>
           </li>
           <li>
-            <span class="name">Crown Land File(s):</span>
+            <div class="name">Crown Land File(s):</div>
               <div *ngFor="let clf of application.cl_files">
-                  <div class="name" (click)="removeCLFile(clf)">{{clf}}<i class="material-icons">delete_forever</i></div>
+                  <span><div class="name col-4" (click)="removeCLFile(clf)">{{clf}}<i class="material-icons">delete_forever</i></div></span>
               </div>
-              <input type="number"
-                class="name form-control"
-                id="cl_files"
-                name="cl_files"
-                [(ngModel)]="clFile"
-                required>
-              <button type="button" (click)="addCLFile()">Add CL File</button>
+              <div class="col-12">
+                <input type="number"
+                  class="name form-control col-4"
+                  id="cl_files"
+                  name="cl_files"
+                  [(ngModel)]="clFile"
+                  required>
+                <button type="button pull-right" (click)="addCLFile()">Add CL File</button>
+              </div>
           </li>
           <div *ngIf="application.internal" class="form-group">
             <section class="application-description card">

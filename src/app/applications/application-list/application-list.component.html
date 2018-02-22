@@ -65,7 +65,7 @@
                     <ul class="application-table__application-details--list list-group">
                       <li class="list-group-item p-0">
                         <span class="name">Client:</span>
-                        <span class="value">{{item._proponent}}</span>
+                        <span *ngIf="item.proponent && item.proponent.name" class="value">{{item.proponent.name}}</span>
                       </li>
                       <li class="list-group-item p-0">
                         <span class="name">Type / Subtype:</span>

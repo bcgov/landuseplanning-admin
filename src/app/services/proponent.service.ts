@@ -15,36 +15,34 @@ export class ProponentService {
 
   // get all proponents
   getAll() {
-    return null;
-    // return this.api.getProponents()
-    //   .map((res: Response) => {
-    //     const proponents = res.text() ? res.json() : [];
+    return this.api.getProponents()
+      .map((res: Response) => {
+        const proponents = res.text() ? res.json() : [];
 
-    //     proponents.forEach((org, index) => {
-    //       proponents[index] = new Proponent(org);
-    //     });
+        proponents.forEach((org, index) => {
+          proponents[index] = new Proponent(org);
+        });
 
-    //     return proponents;
-    //   })
-    //   .catch(this.api.handleError);
+        return proponents;
+      })
+      .catch(this.api.handleError);
   }
 
   // get a specific proponent by its id
   getById(id: string): Observable<Proponent> {
-    return null;
-    // return this.api.getProponent(id)
-    //   .map((res: Response) => {
-    //     const proponents = res.text() ? res.json() : [];
-    //     // return just the first (only) proponent
-    //     return proponents.length > 0 ? proponents[0] : null;
-    //   })
-    //   .map((proponent: Proponent) => {
-    //     if (!proponent) { return; }
+    return this.api.getProponent(id)
+      .map((res: Response) => {
+        const proponents = res.text() ? res.json() : [];
+        // return just the first (only) proponent
+        return proponents.length > 0 ? proponents[0] : null;
+      })
+      .map((proponent: Proponent) => {
+        if (!proponent) { return; }
 
-    //     this.proponent = proponent;
+        this.proponent = proponent;
 
-    //     return this.proponent;
-    //   })
-    //   .catch(this.api.handleError);
+        return this.proponent;
+      })
+      .catch(this.api.handleError);
   }
 }
