@@ -141,12 +141,12 @@ export class ApiService {
 
   publishApplication(app: Application) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'application/' + app._id + '/publish', { headers: headers });
+    return this.put(this.pathAPI, 'application/' + app._id + '/publish', null, { headers: headers });
   }
 
   unPublishApplication(app: Application) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'application/' + app._id + '/unpublish', { headers: headers });
+    return this.put(this.pathAPI, 'application/' + app._id + '/unpublish', null, { headers: headers });
   }
 
   deleteApplication(app: Application) {
@@ -397,12 +397,12 @@ export class ApiService {
 
   publishComment(comment: Comment) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'comment/' + comment._id + '/publish', { headers: headers });
+    return this.put(this.pathAPI, 'comment/' + comment._id + '/publish', null, { headers: headers });
   }
 
   unPublishComment(comment: Comment) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'comment/' + comment._id + '/unpublish', { headers: headers });
+    return this.put(this.pathAPI, 'comment/' + comment._id + '/unpublish', null, { headers: headers });
   }
 
   //
@@ -457,12 +457,12 @@ export class ApiService {
 
   publishDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'document/' + file._id + '/publish', { headers: headers });
+    return this.put(this.pathAPI, 'document/' + file._id + '/publish', null, { headers: headers });
   }
 
   unPublishDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', { headers: headers });
+    return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', null, { headers: headers });
   }
 
   uploadDocument(formData) {

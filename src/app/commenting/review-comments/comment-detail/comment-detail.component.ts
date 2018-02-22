@@ -80,7 +80,7 @@ export class CommentDetailComponent implements OnChanges {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  private save({ comment, doPublish, doUnpublish }: SaveParameters) {
+  private save({ comment, doPublish = false, doUnpublish = false }: SaveParameters) {
     comment.review.reviewerDate = new Date();
 
     this.networkMsg = null;

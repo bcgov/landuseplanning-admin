@@ -28,8 +28,7 @@
         </ul>
       </div>
       <div class="col-6 comment-detail__status">
-        <p *ngIf="comment.isPublished" style="font-size: small">Published</p>
-        <p *ngIf="!comment.isPublished" style="font-size: small">Not Published</p>
+        <!-- <p style="font-size: small"><span *ngIf="!comment.isPublished">Not </span>Published</p> -->
         <span class="badge" [ngClass]="comment.commentStatus === accepted ? 'badge-success'
         : comment.commentStatus === pending ? 'badge-secondary'
         : comment.commentStatus === rejected ? 'badge-danger'
