@@ -24,7 +24,7 @@
         <input type="file"
               #fileInput
               placeholder="Upload file..."
-              (change)="onChange($event)"
+              (change)="onChange($event, changedFiles)"
               multiple />
       </span>
       <button type="button" class="btn btn-success col-2" (click)="upload()">Upload</button>
