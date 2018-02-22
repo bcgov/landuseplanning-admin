@@ -119,7 +119,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
           // pre-select first comment // doesn't work because we don't have comments yet
           if (this.comments.length > 0) {
-            console.log('pre-selecting comment =', comments[0]);
             this.setCurrentComment(this.comments[0]);
           }
         },
@@ -171,7 +170,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setCurrentComment(item) {
+  private setCurrentComment(item: Comment) {
     const index = _.findIndex(this.comments, { _id: item._id });
     if (index >= 0) {
       this.comments.splice(index, 1, item);
@@ -179,8 +178,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isCurrentComment(item): boolean {
-    // return _.isMatch(this.currentComment, item);
+  private isCurrentComment(item: Comment): boolean {
     return (item === this.currentComment);
   }
 }

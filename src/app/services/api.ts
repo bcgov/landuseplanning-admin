@@ -499,6 +499,10 @@ export class ApiService {
     return this.get(this.pathAPI, 'document/' + id, { headers: headers });
   }
 
+  getDocumentUrl(document: Document): string {
+    return document ? (this.pathAPI + '/public/document/' + document._id + '/download') : '';
+  }
+
   deleteDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     // First delete the document, then attempt to save the new version of the application

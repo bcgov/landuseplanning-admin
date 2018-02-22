@@ -43,20 +43,20 @@
     </div>
 
     <div class="row">
-      <div class="col-6 comment-detail__documents">
-        <div *ngIf="comment.documents.length === 0">
+      <div class="col-12 comment-detail__documents">
+        <div *ngIf="!documents || documents.length === 0">
           <em>This comment has no documents.</em>
         </div>
-
-        <div class="row" *ngIf="comment.documents.length > 0">
-          <div class="col-12" *ngFor="let document of comment.documents">
-            <a [href]="api.getDocumentUrl(document)" target="_blank" [title]="document?.displayName || ''">
-              <i class="material-icons">attachment</i>&nbsp;{{document?.documentFileName}}
-            </a>
-          </div>
+        <div *ngFor="let document of documents">
+          <a [href]="api.getDocumentUrl(document)" target="_blank" [title]="document.displayName || ''">
+            <i class="material-icons">attachment</i>&nbsp;{{document.documentFileName}}
+          </a>
         </div>
       </div>
-      <div class="col-6 comment-detail__buttons">
+    </div>
+
+    <div class="row">
+      <div class="col-12 comment-detail__buttons">
         <!-- ngbRadioGroup doesn't work in NGB 1.0.0-alpha.31 / Angular 4.4.6 -->
         <!-- <div class="btn-group btn-group-toggle" ngbRadioGroup [(ngModel)]="comment.commentStatus">
         <label ngbButtonLabel class="comment-detail__accept-btn btn-success">
