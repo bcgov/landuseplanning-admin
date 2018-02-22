@@ -40,7 +40,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly pending = 'Pending';
   readonly rejected = 'Rejected';
 
-  readonly sortKeys = ['Ordinal', 'Name', 'Date', 'Status'];
+  readonly sortKeys = ['Number', 'Name', 'Date', 'Status'];
 
   public loading = true;
   public appId: string;
@@ -91,7 +91,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           this.alerts.push('Error loading application');
         });
 
-    // TODO: get current comment period
     // get comment periods
     // this is independent of application data
     this.commentPeriodService.getAllByApplicationId(this.appId)
@@ -110,53 +109,25 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
     // get comments
     // this is independent of application data
-
-    // this.commentService.getAllByApplicationId(this.appId)
-    //   .first()
-    //   .subscribe(
-    //     comments => {
-    //       this.loading = false;
-    //       this.comments = comments;
-    //       console.log('comments = ', comments);
-    //       console.log('#comments = ', comments.length);
-    //     },
-    //     error => {
-    //       this.loading = false;
-    //       console.log('err =', error);
-    //     });
-
-    // this.commentService.getAllByApplicationId(this.appId)
-    //   .map(comments => {
-    //     this.loading = false;
-    //     this.comments = comments;
-    //     console.log('comments = ', comments);
-    //     console.log('#comments = ', comments.length);
-    //   })
-    //   .toPromise()
-    //   .catch(err => console.log('err =', err));
-
     this.commentService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      comments => {
-        this.loading = false;
-        this.comments = comments;
-        console.log ('comments = ', comments);
-        console.log ('#comments = ', comments.length);
-        this.sort(this.sortKeys[0]); // initial order
+        comments => {
+          this.loading = false;
+          this.comments = comments;
+          this.sort(this.sortKeys[0]); // initial order // may not work per below
 
-        // pre-select first comment
-        // TODO: doesn't work because we don't have comments yet -- need promise instead?
-        if (this.comments.length > 0) {
-          console.log('pre-selecting comment =', comments[0]);
-          this.setCurrentComment(this.comments[0]);
-        }
-      },
-      error => {
-        this.loading = false;
-        if (error.startsWith('403')) { this.router.navigate(['/login']); }
-        this.alerts.push('Error loading comments');
-      });
+          // pre-select first comment // doesn't work because we don't have comments yet
+          if (this.comments.length > 0) {
+            console.log('pre-selecting comment =', comments[0]);
+            this.setCurrentComment(this.comments[0]);
+          }
+        },
+        error => {
+          this.loading = false;
+          if (error.startsWith('403')) { this.router.navigate(['/login']); }
+          this.alerts.push('Error loading comments');
+        });
   }
 
   ngOnDestroy(): void {
@@ -167,7 +138,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   private sort(key: string): Comment[] {
     return this.comments.sort(function (a: Comment, b: Comment) {
       switch (key) {
-        case 'Ordinal': return (a.commentNumber > b.commentNumber) ? 1 : -1;
+        case 'Number': return (a.commentNumber > b.commentNumber) ? 1 : -1;
         case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
         case 'Date': return (a.dateAdded > b.dateAdded) ? 1 : -1;
         case 'Status': return (a.commentStatus > b.commentStatus) ? 1 : -1;
@@ -211,14 +182,5 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   private isCurrentComment(item): boolean {
     // return _.isMatch(this.currentComment, item);
     return (item === this.currentComment);
-  }
-
-  private getBadgeClass(item: Comment): string {
-    switch (item.commentStatus) {
-      case this.accepted: return 'badge-success';
-      case this.pending: return 'badge-secondary';
-      case this.rejected: return 'badge-danger';
-      default: return 'badge-light'; // error
-    }
   }
 }

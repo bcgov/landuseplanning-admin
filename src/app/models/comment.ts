@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Document } from './document';
 
 class Internal {
@@ -51,8 +52,8 @@ export class Comment {
   review: Review;
   dateAdded: Date;
   commentStatus: string;
-
   documents: Array<Document>;
+  isPublished = false;
 
   constructor(obj?: any) {
     this._id            = obj && obj._id            || null;
@@ -67,5 +68,15 @@ export class Comment {
     this.commentStatus  = obj && obj.commentStatus  || null;
 
     this.documents = new Array<Document>();
+
+    // Wrap isPublished around the tags we receive for this object.
+    if (obj && obj.tags) {
+      const self = this;
+      _.each(obj.tags, function (tag) {
+        if (_.includes(tag, 'public')) {
+          self.isPublished = true;
+        }
+      });
+    }
   }
 }

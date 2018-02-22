@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/of';
+import { Subscription } from 'rxjs/Subscription';
 
 import { ApiService } from './api';
 import { CommentPeriodService } from './commentperiod.service';
@@ -92,5 +93,21 @@ export class CommentService {
         return c ? new Comment(c) : null;
       })
       .catch(this.api.handleError);
+  }
+
+  publish(comment: Comment): Subscription {
+    return this.api.publishComment(comment)
+      .subscribe(
+        value => comment.isPublished = true,
+        error => console.log('publish error =', error)
+      );
+  }
+
+  unPublish(comment: Comment): Subscription {
+    return this.api.unPublishComment(comment)
+      .subscribe(
+        value => comment.isPublished = false,
+        error => console.log('unpublish error =', error)
+      );
   }
 }

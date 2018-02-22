@@ -13,7 +13,7 @@ export class SearchService {
   constructor(private api: ApiService) { }
 
   getByCLFile(clfile: string): Observable<Search> {
-    return this.api.getBCGWCrownLandsById(clfile)
+    return this.api.getBCGWCrownLands(clfile)
       .map((res: Response) => {
         return res.text() ? new Search(res.json()) : null;
       });

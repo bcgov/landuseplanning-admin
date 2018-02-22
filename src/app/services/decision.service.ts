@@ -58,4 +58,40 @@ export class DecisionService {
       })
       .catch(this.api.handleError);
   }
+
+  // add(decision: Decision): Observable<Decision> {
+  //   return this.api.addDecision(decision)
+  //     .map((res: Response) => {
+  //       const c = res.text() ? res.json() : null;
+  //       return c ? new Decision(c) : null;
+  //     })
+  //     .catch(this.api.handleError);
+  // }
+
+  // save(decision: Decision): Observable<Decision> {
+  //   return this.api.saveDecision(decision)
+  //     .map((res: Response) => {
+  //       const c = res.text() ? res.json() : null;
+  //       return c ? new Decision(c) : null;
+  //     })
+  //     .catch(this.api.handleError);
+  // }
+
+  // publish(decision: Decision) {
+  //   console.log('publish decision =', decision);
+  //   this.api.publishDecision(decision)
+  //     .subscribe((res: Response) => {
+  //       decision.isPublished = true;
+  //       return;
+  //     });
+  // }
+
+  // unPublish(decision: Decision) {
+  //   console.log('un publish decision =', decision);
+  //   this.api.unPublishDecision(decision)
+  //     .subscribe((res: Response) => {
+  //       decision.isPublished = false;
+  //       return;
+  //     });
+  // }
 }

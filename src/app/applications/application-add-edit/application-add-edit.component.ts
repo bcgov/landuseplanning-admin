@@ -32,8 +32,8 @@ export class ApplicationAddEditComponent implements OnInit {
   public statuses: string[];
   private error: boolean;
   private status: string;
-  private showMsg: boolean;
-  private clFile: number;
+  public showMsg: boolean;
+  public clFile: number;
   constructor(
     private route: ActivatedRoute,
     private router: Router,

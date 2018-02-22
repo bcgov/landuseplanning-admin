@@ -27,12 +27,11 @@ export class HomeComponent implements OnInit {
       return false;
     }
 
-    this.applicationService.getAll().subscribe(
-      data => { this.numApplications = data ? data.length : 0; },
+    this.applicationService.getCount().subscribe(
+      value => { this.numApplications = value; },
       error => {
-        // If 403, redir to /login.
         this.router.navigate(['/login']);
-        console.log(error);
+        console.log('ERROR =', 'could not count applications');
       }
     );
   }
