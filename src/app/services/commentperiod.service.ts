@@ -81,7 +81,8 @@ export class CommentPeriodService {
       return this.commentStatuses['NOT OPEN'];
     }
 
-    const today = new Date();
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startDate = new Date(period.startDate);
     const endDate = new Date(period.endDate);
 
