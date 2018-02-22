@@ -1,6 +1,14 @@
 import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import 'rxjs/add/operator/toPromise';
+
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
+
+interface SaveParameters {
+  comment: Comment;
+  doPublish?: boolean;
+  doUnpublish?: boolean;
+}
 
 @Component({
   selector: 'app-comment-detail',
@@ -29,15 +37,6 @@ export class CommentDetailComponent implements OnChanges {
     }
   }
 
-  private getBadgeClass(): string {
-    switch (this.comment.commentStatus) {
-      case this.accepted: return 'badge-success';
-      case this.pending: return 'badge-secondary';
-      case this.rejected: return 'badge-danger';
-      default: return 'badge-light'; // error
-    }
-  }
-
   private isAccepted(): boolean { return (this.comment.commentStatus === this.accepted); }
 
   private isPending(): boolean { return (this.comment.commentStatus === this.pending); }
@@ -47,28 +46,28 @@ export class CommentDetailComponent implements OnChanges {
   private doAccept() {
     if (this.comment.commentStatus !== this.accepted) {
       this.comment.commentStatus = this.accepted;
-      this.save(this.comment);
+      this.save({ comment: this.comment, doPublish: true });
     }
   }
 
   private doPending() {
     if (this.comment.commentStatus !== this.pending) {
       this.comment.commentStatus = this.pending;
-      this.save(this.comment);
+      this.save({ comment: this.comment, doUnpublish: true });
     }
   }
 
   private doReject() {
     if (this.comment.commentStatus !== this.rejected) {
       this.comment.commentStatus = this.rejected;
-      this.save(this.comment);
+      this.save({ comment: this.comment, doUnpublish: true });
     }
   }
 
   private saveNotes() {
     if (!this.isNotesPristine()) {
       this.comment.review.reviewerNotes = this.internalNotes;
-      this.save(this.comment);
+      this.save({ comment: this.comment });
     }
   }
 
@@ -81,20 +80,33 @@ export class CommentDetailComponent implements OnChanges {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  private save(comment: Comment) {
+  private save({ comment, doPublish = false, doUnpublish = false }: SaveParameters) {
     comment.review.reviewerDate = new Date();
 
     this.networkMsg = null;
-    this.commentService.save(comment)
-      // .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        value => {
-          // save succeeded - accept new record
-          this.comment = value;
-          this.commentChange.emit(this.comment);
-        },
-        error => {
-          this.networkMsg = error;
-        });
+    this.commentService.save(this.comment)
+      .toPromise()
+      .then(value => {
+        // save succeeded - accept new record
+        this.comment = value;
+        this.commentChange.emit(this.comment);
+      },
+        reason => {
+          this.networkMsg += reason;
+        })
+      .then(value => {
+        if (doPublish && !this.comment.isPublished) {
+          this.commentService.publish(this.comment);
+        }
+        if (doUnpublish && this.comment.isPublished) {
+          this.commentService.unPublish(this.comment);
+        }
+      },
+        reason => {
+          this.networkMsg += reason;
+        })
+      .catch(reason => {
+        this.networkMsg += reason;
+      });
   }
 }

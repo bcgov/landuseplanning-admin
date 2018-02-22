@@ -58,7 +58,10 @@
               <small>{{item.comment}}</small>
             </p>
             <div class="d-flex w-100 justify-content-between">
-              <div class="badge" [ngClass]="getBadgeClass(item)">{{item.commentStatus}}</div>
+              <div class="badge" [ngClass]="item.commentStatus === accepted ? 'badge-success'
+              : item.commentStatus === pending ? 'badge-secondary'
+              : item.commentStatus === rejected ? 'badge-danger'
+              : 'badge-light'">{{item.commentStatus}}</div>
               <div class="material-icons" *ngIf="item._documents.length > 0">attachment</div>
             </div>
           </a>

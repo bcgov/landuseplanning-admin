@@ -18,11 +18,9 @@ export class OrganizationService {
     return this.api.getOrganizations()
       .map((res: Response) => {
         const organizations = res.text() ? res.json() : [];
-
         organizations.forEach((org, index) => {
           organizations[index] = new Organization(org);
         });
-
         return organizations;
       })
       .catch(this.api.handleError);
@@ -34,14 +32,7 @@ export class OrganizationService {
       .map((res: Response) => {
         const organizations = res.text() ? res.json() : [];
         // return the first (only) organization
-        return organizations.length > 0 ? organizations[0] : null;
-      })
-      .map((organization: Organization) => {
-        // if (!organization) { return; }
-
-        this.organization = organization;
-
-        return this.organization;
+        return organizations.length > 0 ? new Organization(organizations[0]) : null;
       })
       .catch(this.api.handleError);
   }

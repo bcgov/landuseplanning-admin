@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { ApiService } from '../../services/api';
 import { Application } from '../../models/application';
@@ -24,7 +24,7 @@ import { Organization } from 'app/models/organization';
   templateUrl: './application-add-edit.component.html',
   styleUrls: ['./application-add-edit.component.scss']
 })
-export class ApplicationAddEditComponent implements OnInit {
+export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInput;
   public loading: boolean;
   public application: Application;
@@ -41,6 +41,7 @@ export class ApplicationAddEditComponent implements OnInit {
   public clFile: number;
   public changedFiles: string;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -85,15 +86,15 @@ export class ApplicationAddEditComponent implements OnInit {
         if (selectedOrgId) {
           // Fetch the org from the service, and bind to this instance of an application.
           self.orgService.getById(selectedOrgId)
-          .subscribe(
-            data => {
-              self.application.proponent = new Organization(data);
-              // Update current reference.
-              self.application._proponent = data._id;
-            },
-            error => {
-              console.log('error:', error);
-            });
+            .subscribe(
+              data => {
+                self.application.proponent = new Organization(data);
+                // Update current reference.
+                self.application._proponent = data._id;
+              },
+              error => {
+                console.log('error:', error);
+              });
         } else {
           console.log('org selection cancelled.');
         }
@@ -130,15 +131,15 @@ export class ApplicationAddEditComponent implements OnInit {
 
     const self = this;
     this.api.saveApplication(this.application)
-    .subscribe(
-      (data: any) => {
-        // console.log('Saved application', data);
-        self.showMessage(false, 'Saved Application');
-      },
-      error => {
-        console.log('ERR:', error);
-        self.showMessage(true, 'Error saving application');
-    });
+      .subscribe(
+        (data: any) => {
+          // console.log('Saved application', data);
+          self.showMessage(false, 'Saved Application');
+        },
+        error => {
+          console.log('ERR:', error);
+          self.showMessage(true, 'Error saving application');
+        });
   }
 
   upload() {
@@ -152,15 +153,15 @@ export class ApplicationAddEditComponent implements OnInit {
         formData.append('displayName', file.name);
         formData.append('upfile', file);
         self.api.uploadDocument(formData)
-        .subscribe(
-          res => {
-          // do stuff w/my uploaded file
-          console.log('RES:', res.json());
-          self.applicationDocuments.push(res.json());
-        },
-        error => {
-          console.log('error:', error);
-        });
+          .subscribe(
+            res => {
+              // do stuff w/my uploaded file
+              console.log('RES:', res.json());
+              self.applicationDocuments.push(res.json());
+            },
+            error => {
+              console.log('error:', error);
+            });
       }
     });
   }
@@ -172,37 +173,37 @@ export class ApplicationAddEditComponent implements OnInit {
   removeDocument(file: any) {
     const self = this;
     this.api.deleteDocument(file)
-    .subscribe( res => {
-      const doc = res.json();
-      // In-memory removal on successful delete.
-      _.remove(self.applicationDocuments, function (item) {
-        return (item._id === doc._id);
+      .subscribe(res => {
+        const doc = res.json();
+        // In-memory removal on successful delete.
+        _.remove(self.applicationDocuments, function (item) {
+          return (item._id === doc._id);
+        });
       });
-    });
   }
 
   publishDocument(file: any) {
     const self = this;
     this.api.publishDocument(file)
-    .subscribe( res => {
-      const doc = res.json();
-      const f = _.find(self.applicationDocuments, function (item) {
-        return (item._id === doc._id);
+      .subscribe(res => {
+        const doc = res.json();
+        const f = _.find(self.applicationDocuments, function (item) {
+          return (item._id === doc._id);
+        });
+        f.isPublished = true;
       });
-      f.isPublished = true;
-    });
   }
 
   unPublishDocument(file: any) {
     const self = this;
     this.api.unPublishDocument(file)
-    .subscribe( res => {
-      const doc = res.json();
-      const f = _.find(self.applicationDocuments, function (item) {
-        return (item._id === doc._id);
+      .subscribe(res => {
+        const doc = res.json();
+        const f = _.find(self.applicationDocuments, function (item) {
+          return (item._id === doc._id);
+        });
+        f.isPublished = false;
       });
-      f.isPublished = false;
-    });
   }
 
   publishApplication(app) {
@@ -215,9 +216,9 @@ export class ApplicationAddEditComponent implements OnInit {
 
   deleteApplication(app) {
     return this.applicationService.deleteApplication(app)
-    .subscribe(res => {
-      this.router.navigate(['/applications']);
-    });
+      .subscribe(res => {
+        this.router.navigate(['/applications']);
+      });
   }
 
   onChange(event: any, input: any) {
@@ -238,41 +239,43 @@ export class ApplicationAddEditComponent implements OnInit {
     this.sub = this.route.data
       // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
-      (data: { application: Application }) => {
-        this.loading = false;
-        this.application = data.application;
-        if (!this.application.projectDate) {
-          this.application.projectDate = new Date();
-        }
-        this.application.projectDate = moment(this.application.projectDate).format();
-        // application not found --> navigate back to application list
-        if (!this.application || !this.application._id) {
-          console.log('Application not found!');
-          this.gotoApplicationList();
-        }
+        (data: { application: Application }) => {
+          this.loading = false;
+          this.application = data.application;
+          if (!this.application.projectDate) {
+            this.application.projectDate = new Date();
+          }
+          this.application.projectDate = moment(this.application.projectDate).format();
+          // application not found --> navigate back to application list
+          if (!this.application || !this.application._id) {
+            console.log('Application not found!');
+            this.router.navigate(['/applications']);
+          }
 
-        this.documentService.getAllByApplicationId(this.application._id)
-        .subscribe((docs: Document[]) => {
-          this.applicationDocuments = docs;
+          this.documentService.getAllByApplicationId(this.application._id)
+            .subscribe((docs: Document[]) => {
+              this.applicationDocuments = docs;
+            });
+
+          if (self.application._proponent) {
+            this.orgService.getById(self.application._proponent)
+              .subscribe((o: Organization) => {
+                self.application.proponent = new Organization(o);
+              });
+          }
+        },
+        error => {
+          this.loading = false;
+          // If 403, redir to /login.
+          if (error.startsWith('403')) {
+            this.router.navigate(['/login']);
+          }
+          alert('Error loading application');
         });
-
-        if (self.application._proponent) {
-          this.orgService.getById(self.application._proponent)
-          .subscribe((o: Organization) => {
-            self.application.proponent = new Organization(o);
-          });
-        }
-      },
-      error => {
-        this.loading = false;
-        // If 403, redir to /login.
-        if (error.startsWith('403')) {
-          this.router.navigate(['/login']);
-        }
-        alert('Error loading application');
-      });
   }
-  private gotoApplicationList(): void {
-    this.router.navigate(['/applications']);
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

@@ -22,7 +22,6 @@ export class Application {
   description: string;
   interestID: number;
   internalID: number;
-  isPublished: boolean;
   legalDescription: string;
   location: string;
   latitude: number;
@@ -41,15 +40,17 @@ export class Application {
 
   collections: CollectionsList; // used for documents
 
-  internal: {
-    notes: string;
-  };
-
   content: {
     type: string;
     page: string;
     html: string;
   }[];
+
+  internal: {
+    notes: string;
+  };
+
+  isPublished = false;
 
   proponent: Organization;
   currentPeriod: CommentPeriod;
@@ -95,10 +96,9 @@ export class Application {
     this.content                 = obj && obj.content                 || [];
     this.internal                = obj && obj.internal                || null;
 
-    const self = this;
-
+    // Wrap isPublished around the tags we receive for this object.
     if (obj && obj.tags) {
-      // Wrap isPublished around the tags we receive for this object.
+      const self = this;
       _.each(obj.tags, function (tag) {
         if (_.includes(tag, 'public')) {
           self.isPublished = true;

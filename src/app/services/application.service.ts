@@ -69,8 +69,6 @@ export class ApplicationService {
     // console.log("publish app", app);
     this.api.publishApplication(app)
       .subscribe((res: Response) => {
-        const theApp = res.text() ? res.json() : [];
-        // return the first (only) application
         app.isPublished = true;
         return;
       });
@@ -80,8 +78,6 @@ export class ApplicationService {
     // console.log("un publish app", app);
     this.api.unPublishApplication(app)
       .subscribe((res: Response) => {
-        const theApp = res.text() ? res.json() : [];
-        // return the first (only) application
         app.isPublished = false;
         return;
       });
@@ -90,9 +86,7 @@ export class ApplicationService {
   deleteApplication(app) {
     // console.log("delete app", app);
     return this.api.deleteApplication(app)
-      .map(res => {
-        return res;
-      })
+      .map(res => { return res; })
       .catch(this.api.handleError);
   }
 

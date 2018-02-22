@@ -5,6 +5,8 @@ import * as _ from 'lodash';
 import * as FileSaver from 'file-saver';
 
 import { Observable } from 'rxjs/Observable';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -133,36 +135,24 @@ export class ApiService {
   }
 
   addApplication(app: Application) {
-    // console.log('Adding:', app);
-    let queryString = 'application/';
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, app, { headers: headers });
+    return this.post(this.pathAPI, 'application/', app, { headers: headers });
+
   }
 
   publishApplication(app: Application) {
-    let queryString = 'application/' + app._id + '/publish';
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, app, { headers: headers });
+    return this.put(this.pathAPI, 'application/' + app._id + '/publish', null, { headers: headers });
   }
 
   unPublishApplication(app: Application) {
-    let queryString = 'application/' + app._id + '/unpublish';
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, app, { headers: headers });
+    return this.put(this.pathAPI, 'application/' + app._id + '/unpublish', null, { headers: headers });
   }
 
   deleteApplication(app: Application) {
-    let queryString = 'application/' + app._id;
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, queryString, app, { headers: headers });
+    return this.delete(this.pathAPI, 'application/' + app._id, app, { headers: headers });
   }
 
   saveApplication(app: Application) {
@@ -455,6 +445,16 @@ export class ApiService {
     return this.put(this.pathAPI, queryString, comment, { headers: headers });
   }
 
+  publishComment(comment: Comment) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'comment/' + comment._id + '/publish', null, { headers: headers });
+  }
+
+  unPublishComment(comment: Comment) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'comment/' + comment._id + '/unpublish', null, { headers: headers });
+  }
+
   //
   // Documents
   //
@@ -507,12 +507,12 @@ export class ApiService {
 
   publishDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'document/' + file._id + '/publish', file, { headers: headers });
+    return this.put(this.pathAPI, 'document/' + file._id + '/publish', null, { headers: headers });
   }
 
   unPublishDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', file, { headers: headers });
+    return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', null, { headers: headers });
   }
 
   uploadDocument(formData) {
@@ -527,7 +527,7 @@ export class ApiService {
     return this.post(this.pathAPI, queryString, formData, { headers: headers });
   }
 
-  downloadDocument(file) {
+  downloadDocument(file): Subscription {
     const queryString = 'document/' + file._id + '/download';
     const headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token });
     const options = new RequestOptions({ responseType: ResponseContentType.Blob, headers });
@@ -540,9 +540,9 @@ export class ApiService {
   }
 
   //
-  // Crown Lands file
+  // Crown Lands files
   //
-  getBCGWCrownLandsById(id: string) {
+  getBCGWCrownLands(id: string) {
     const fields = ['name'];
     let queryString = 'public/search/bcgw/crownLandsId/' + id + '?fields=';
     _.each(fields, function (f) {
@@ -605,7 +605,7 @@ export class ApiService {
     return this.post(this.pathAPI, queryString, user, { headers: headers });
   }
 
-  public login(username: string, password: string): Observable<boolean> {
+  login(username: string, password: string): Observable<boolean> {
     return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
@@ -623,13 +623,13 @@ export class ApiService {
       });
   }
 
-  public logout(): void {
-    // clear token remove user from local storage to log user out
+  logout(): void {
+    // clear token + remove user from local storage to log user out
     this.token = null;
     localStorage.removeItem('currentUser');
   }
 
-  public handleError(error: any) {
+  handleError(error: any): ErrorObservable {
     const reason = error.message ? error.message : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
     console.log(reason);
     return Observable.throw(reason);
@@ -647,11 +647,9 @@ export class ApiService {
   }
 
   private post(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
-    // console.log('THIS:', `${ apiPath }/${ apiRoute }`, body || null, options || null);
     return this.http.post(`${apiPath}/${apiRoute}`, body || null, options || null);
   }
   private delete(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
-    // console.log('THIS:', `${ apiPath }/${ apiRoute }`, body || null, options || null);
     return this.http.delete(`${apiPath}/${apiRoute}`, options || null);
   }
 }
