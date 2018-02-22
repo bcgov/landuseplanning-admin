@@ -35,10 +35,10 @@ export class ApplicationAddEditComponent implements OnInit {
   public purposes: string[];
   public subpurposes: {};
   public statuses: string[];
-  private error: boolean;
-  private status: string;
-  private showMsg: boolean;
-  private clFile: number;
+  public error: boolean;
+  public status: string;
+  public showMsg: boolean;
+  public clFile: number;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   constructor(
     private route: ActivatedRoute,
