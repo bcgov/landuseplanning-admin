@@ -39,11 +39,9 @@
         }
     }
     &__documents {
-        //     ul {
-        //         margin: 0;
-        //         padding: 0;
-        //         list-style-type: none;
-        //     }
+        a {
+            display: inline-flex;
+        }
     }
     &__buttons {
         display: flex;

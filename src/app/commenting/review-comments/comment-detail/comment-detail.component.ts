@@ -1,8 +1,11 @@
-import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 
 import { Comment } from 'app/models/comment';
+import { Document } from 'app/models/document';
+import { ApiService } from 'app/services/api';
 import { CommentService } from 'app/services/comment.service';
+import { DocumentService } from 'app/services/document.service';
 
 interface SaveParameters {
   comment: Comment;
@@ -26,14 +29,26 @@ export class CommentDetailComponent implements OnChanges {
 
   public internalNotes: string; // working version
   public networkMsg: string;
+  private documents: Array<Document>;
 
   constructor(
-    private commentService: CommentService
+    private api: ApiService,
+    private commentService: CommentService,
+    private documentService: DocumentService
   ) { }
 
-  ngOnChanges() {
-    if (this.comment) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.comment.currentValue) {
+      // console.log('changes =', changes);
+
+      // save copy of notes for possible reset
       this.internalNotes = this.comment.review.reviewerNotes;
+
+      // get the comment documents
+      this.documentService.getAllByCommentId(this.comment._id).subscribe(
+        documents => { this.documents = documents; console.log('documents =', this.documents); },
+        error => console.log(error)
+      );
     }
   }
 
