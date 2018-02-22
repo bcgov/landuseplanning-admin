@@ -39,6 +39,7 @@ export class ApplicationAddEditComponent implements OnInit {
   public status: string;
   public showMsg: boolean;
   public clFile: number;
+  public changedFiles: string;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   constructor(
     private route: ActivatedRoute,
