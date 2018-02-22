@@ -16,9 +16,9 @@ export interface DataModel {
 })
 export class SelectOrganizationComponent extends DialogComponent<DataModel, string> implements DataModel, OnInit {
   public selectedOrgId: string;
-  private organizations: Organization[];
-  private page: number;
-  private selectedOrg: Organization;
+  public organizations: Organization[];
+  public page: number;
+  public selectedOrg: Organization;
   constructor(public dialogService: DialogService,
               private router: Router,
               private orgService: OrganizationService) {
