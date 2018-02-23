@@ -60,6 +60,28 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
+  publish(commentperiod: CommentPeriod): Observable<CommentPeriod> {
+    return this.api.publishCommentPeriod(commentperiod)
+      .map(
+        project => {
+          commentperiod.isPublished = true;
+          return commentperiod;
+        }
+      )
+      .catch(this.api.handleError);
+  }
+
+  unPublish(commentperiod: CommentPeriod): Observable<CommentPeriod> {
+    return this.api.unPublishCommentPeriod(commentperiod)
+      .map(
+        project => {
+          commentperiod.isPublished = false;
+          return commentperiod;
+        }
+      )
+      .catch(this.api.handleError);
+  }
+
   // returns current (latest) period
   // assumes if there's an open period, there isn't also future one
   getCurrent(periods: Array<CommentPeriod>): CommentPeriod {

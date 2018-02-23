@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
-import { Subscription } from 'rxjs/Subscription';
 
 import { ApiService } from './api';
 import { CommentPeriodService } from './commentperiod.service';

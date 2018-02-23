@@ -373,7 +373,17 @@ export class ApiService {
     return this.delete(this.pathAPI, queryString, period, { headers: headers });
   }
 
-  //
+  publishCommentPeriod(period: CommentPeriod) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'commentperiod/' + period._id + '/publish', null, { headers: headers });
+  }
+
+  unPublishCommentPeriod(period: CommentPeriod) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'commentperiod/' + period._id + '/unpublish', null, { headers: headers });
+  }
+
+//
   // Comments
   //
   getCommentsByPeriodId(periodId: string) {

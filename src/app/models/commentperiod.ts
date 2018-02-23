@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export class CommentPeriod {
   _id: string;
   _addedBy: string;
@@ -10,6 +12,7 @@ export class CommentPeriod {
     notes: string;
     _addedBy: string;
   };
+  isPublished = false;
 
   constructor(obj?: any) {
     this._id          = obj && obj._id          || null;
@@ -20,5 +23,15 @@ export class CommentPeriod {
     this.endDate      = obj && obj.endDate      || null;
     this.description  = obj && obj.description  || null;
     this.internal     = obj && obj.internal     || null;
+
+    // Wrap isPublished around the tags we receive for this object.
+    if (obj && obj.tags) {
+      const self = this;
+      _.each(obj.tags, function (tag) {
+        if (_.includes(tag, 'public')) {
+          self.isPublished = true;
+        }
+      });
+    }
   }
 }
