@@ -80,18 +80,18 @@ export class DecisionService {
   // publish(decision: Decision) {
   //   console.log('publish decision =', decision);
   //   this.api.publishDecision(decision)
-  //     .subscribe((res: Response) => {
-  //       decision.isPublished = true;
-  //       return;
-  //     });
+  //     .subscribe(
+  //       value => decision.isPublished = true,
+  //       error => console.log('publish error =', error)
+  //     );
   // }
 
   // unPublish(decision: Decision) {
   //   console.log('un publish decision =', decision);
   //   this.api.unPublishDecision(decision)
-  //     .subscribe((res: Response) => {
-  //       decision.isPublished = false;
-  //       return;
-  //     });
+  //     .subscribe(
+  //       value => decision.isPublished = false,
+  //       error => console.log('unpublish error =', error)
+  //     );
   // }
 }

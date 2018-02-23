@@ -101,25 +101,29 @@ export class CommentDetailComponent implements OnChanges {
     this.networkMsg = null;
     this.commentService.save(this.comment)
       .toPromise()
-      .then(value => {
-        // save succeeded - accept new record
-        this.comment = value;
-        this.commentChange.emit(this.comment);
-      },
+      .then(
+        value => {
+          // save succeeded - accept new record
+          this.comment = value;
+          this.commentChange.emit(this.comment);
+        },
         reason => {
           this.networkMsg += reason;
-        })
-      .then(value => {
-        if (doPublish && !this.comment.isPublished) {
-          this.commentService.publish(this.comment);
         }
-        if (doUnpublish && this.comment.isPublished) {
-          this.commentService.unPublish(this.comment);
-        }
-      },
+      )
+      .then(
+        value => {
+          if (doPublish && !this.comment.isPublished) {
+            this.commentService.publish(this.comment);
+          }
+          if (doUnpublish && this.comment.isPublished) {
+            this.commentService.unPublish(this.comment);
+          }
+        },
         reason => {
           this.networkMsg += reason;
-        })
+        }
+      )
       .catch(reason => {
         this.networkMsg += reason;
       });

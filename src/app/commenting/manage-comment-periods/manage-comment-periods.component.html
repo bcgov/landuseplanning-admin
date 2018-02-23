@@ -50,13 +50,21 @@
             </li>
           </ul>
           <div class="comment-periods-table__item--buttons">
-            <button class="btn btn-primary" (click)="openCommentPeriod(item, appId)" title="Update this comment period">
+            <button class="btn btn-primary" (click)="openCommentPeriod(item, appId)" title="Edit this comment period">
               <i class="material-icons">mode_edit</i>
               <span>Edit</span>
             </button>
-            <button class="btn btn-danger" (click)="deleteCommentPeriod(item, appId)" title="Delete this comment period">
+            <button *ngIf="!item.isPublished" class="btn btn-danger" (click)="deleteCommentPeriod(item)" title="Delete this comment period">
               <i class="material-icons">delete</i>
               <span>Delete</span>
+            </button>
+            <button *ngIf="!item.isPublished" class="btn btn-success" (click)="publishCommentPeriod(item)" title="Publish this comment period">
+              <i class="material-icons">play_arrow</i>
+              <span>Publish</span>
+            </button>
+            <button *ngIf="item.isPublished" class="btn btn-dark" (click)="unPublishCommentPeriod(item)" title="Un-publish this comment period">
+              <i class="material-icons">pause</i>
+              <span>Un-Publish</span>
             </button>
           </div>
         </td>

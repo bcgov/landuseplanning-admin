@@ -207,11 +207,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   publishApplication(app) {
-    return this.applicationService.publishApplication(app);
+    return this.applicationService.publish(app);
   }
 
   unPublishApplication(app) {
-    return this.applicationService.unPublishApplication(app);
+    return this.applicationService.unPublish(app);
   }
 
   deleteApplication(app) {

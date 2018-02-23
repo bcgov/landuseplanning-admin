@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
+import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { DialogService } from 'ng2-bootstrap-modal';
+import 'rxjs/add/operator/toPromise';
 
 import { Application } from 'app/models/application';
 import { ApplicationService } from 'app/services/application.service';
@@ -54,10 +55,10 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.refreshUsersUI();
+    this.refreshUI();
   }
 
-  private refreshUsersUI() {
+  private refreshUI() {
     // If we're not logged in, redirect.
     if (!this.api.ensureLoggedIn()) {
       return false;
@@ -77,37 +78,37 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.applicationService.getById(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      application => {
-        this.application = application;
-        this._changeDetectionRef.detectChanges();
-      },
-      error => {
-        // If 403, redir to /login.
-        if (error.startsWith('403')) {
-          this.router.navigate(['/login']);
-        }
-        this.alerts.push('Error loading application');
-      });
+        application => {
+          this.application = application;
+          this._changeDetectionRef.detectChanges();
+        },
+        error => {
+          // If 403, redir to /login.
+          if (error.startsWith('403')) {
+            this.router.navigate(['/login']);
+          }
+          this.alerts.push('Error loading application');
+        });
 
     // get comment periods
     // this is independent of application data
     this.commentPeriodService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-      periods => {
-        this.loading = false;
-        this.commentPeriods = periods;
-        this._changeDetectionRef.detectChanges();
-        // TODO: calculate and store status for easier UI
-      },
-      error => {
-        this.loading = false;
-        // If 403, redir to /login.
-        if (error.startsWith('403')) {
-          this.router.navigate(['/login']);
-        }
-        this.alerts.push('Error loading comment periods');
-      });
+        periods => {
+          this.loading = false;
+          this.commentPeriods = periods;
+          this._changeDetectionRef.detectChanges();
+          // TODO: calculate and store status for easier UI
+        },
+        error => {
+          this.loading = false;
+          // If 403, redir to /login.
+          if (error.startsWith('403')) {
+            this.router.navigate(['/login']);
+          }
+          this.alerts.push('Error loading comment periods');
+        });
   }
 
   public openCommentPeriod(cp, appId) {
@@ -130,10 +131,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           // we get dialog result
           if (isConfirmed) {
             // TODO: reload page (if not observable binding)?
-            console.log('updated');
-            this.refreshUsersUI();
-          } else {
-            console.log('canceled');
+            this.refreshUI();
           }
         });
     } else {
@@ -154,18 +152,13 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           // we get dialog result
           if (isConfirmed) {
             // TODO: reload page (if not observable binding)?
-            // console.log('saved');
-            this.refreshUsersUI();
-          } else {
-            console.log('canceled');
+            this.refreshUI();
           }
         });
     }
   }
 
-  private deleteCommentPeriod(item, appId) {
-    console.log('item:', item);
-    console.log('appId:', appId);
+  private deleteCommentPeriod(item) {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Confirm deletion',
@@ -185,7 +178,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           this.api.deleteCommentPeriod(item).subscribe(
             data => {
               console.log('accepted');
-              this.refreshUsersUI();
+              this.refreshUI();
             }, error => {
               // TODO: Add alert
               console.log('Something bad happened:', error);
@@ -194,6 +187,20 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           console.log('declined');
         }
       });
+  }
+
+  publishCommentPeriod(commentperiod: CommentPeriod) {
+    return this.commentPeriodService.publish(commentperiod)
+      .toPromise()
+      // HACK: refresh UI because template item isn't being refreshed otherwise
+      .then(value => this.refreshUI());
+  }
+
+  unPublishCommentPeriod(commentperiod: CommentPeriod) {
+    return this.commentPeriodService.unPublish(commentperiod)
+      .toPromise()
+      // HACK: refresh UI because template item isn't being refreshed otherwise
+      .then(value => this.refreshUI());
   }
 
   ngOnDestroy(): void {
@@ -214,5 +221,4 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       return 'CURRENT';
     }
   }
-
 }

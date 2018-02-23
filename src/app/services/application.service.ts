@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -11,6 +12,7 @@ import { Application } from 'app/models/application';
 
 @Injectable()
 export class ApplicationService {
+
   constructor(
     private api: ApiService,
     private organizationService: OrganizationService,
@@ -65,22 +67,22 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
-  publishApplication(app) {
+  publish(app: Application): Subscription {
     // console.log("publish app", app);
-    this.api.publishApplication(app)
-      .subscribe((res: Response) => {
-        app.isPublished = true;
-        return;
-      });
+    return this.api.publishApplication(app)
+      .subscribe(
+        value => app.isPublished = true,
+        error => console.log('publish error =', error)
+      );
   }
 
-  unPublishApplication(app) {
+  unPublish(app: Application): Subscription {
     // console.log("un publish app", app);
-    this.api.unPublishApplication(app)
-      .subscribe((res: Response) => {
-        app.isPublished = false;
-        return;
-      });
+    return this.api.unPublishApplication(app)
+      .subscribe(
+        value => app.isPublished = false,
+        error => console.log('unpublish error =', error)
+      );
   }
 
   deleteApplication(app) {
