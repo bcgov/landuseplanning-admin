@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import 'rxjs/add/operator/map';
@@ -68,6 +69,22 @@ export class DocumentService {
         return document.length > 0 ? new Document(document[0]) : null;
       })
       .catch(this.api.handleError);
+  }
+
+  publish(document: Document): Subscription {
+    return this.api.publishDocument(document)
+      .subscribe(
+        value => document.isPublished = true,
+        error => console.log('publish error =', error)
+      );
+  }
+
+  unPublish(document: Document): Subscription {
+    return this.api.unPublishDocument(document)
+      .subscribe(
+        value => document.isPublished = false,
+        error => console.log('unpublish error =', error)
+      );
   }
 
   get(terms: SearchTerms, applications: Array<Application>, proponents: Array<Proponent>, page: number, limit: number) {
