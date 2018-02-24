@@ -85,7 +85,7 @@ export class ApplicationService {
       );
   }
 
-  deleteApplication(app) {
+  deleteApplication(app: Application): Observable<any> {
     // console.log("delete app", app);
     return this.api.deleteApplication(app)
       .map(res => { return res; })

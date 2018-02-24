@@ -46,7 +46,7 @@ export class CommentDetailComponent implements OnChanges {
 
       // get the comment documents
       this.documentService.getAllByCommentId(this.comment._id).subscribe(
-        documents => { this.documents = documents; console.log('documents =', this.documents); },
+        documents => this.documents = documents,
         error => console.log(error)
       );
     }

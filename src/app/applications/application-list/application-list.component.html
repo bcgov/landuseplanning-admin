@@ -17,7 +17,11 @@
         its profile page, or click the ‘+’ sign to expand the list item to see basic information (e.g., description, purpose,
         type, etc.) about that application. You can also use our interactive map to navigate to information on individual
         applications across British Columbia.</p>
-        <button type="button" class="btn btn-success" (click)="createApplication()">Create New Application</button>
+
+      <button class="btn btn-success" (click)="createApplication()">
+        <i class="material-icons">add</i>
+        <span>Create New Application</span>
+      </button>
 
       <table class="table application-table">
         <thead class="application-table__sort-header">
@@ -85,6 +89,10 @@
                       </li>
                     </ul>
                     <div class="application-table__application-details--links">
+                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item._id]">
+                        <i class="material-icons">info_outline</i>
+                        <span>Application Details</span>
+                      </a>
                       <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods']" [queryParams]="{ application: item._id }">
                         <i class="material-icons">date_range</i>
                         <span>Manage Comment Periods</span>
@@ -93,13 +101,9 @@
                         <i class="material-icons">message</i>
                         <span>Review Comments</span>
                       </a>
-                      <a class="btn content-btn slide-l-btn btn-sm float-right" href="/map" [routerLink]="['/map', { application: item._id }]">
-                        <i class="material-icons">location_on</i>
+                      <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/map', { application: item._id }]">
+                        <i class="material-icons">place</i>
                         <span>Show on Map</span>
-                      </a>
-                      <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/a', item._id]">
-                        <i class="material-icons">info_outline</i>
-                        <span>Show Details</span>
                       </a>
                     </div>
                   </div>

@@ -19,7 +19,7 @@
         <span>Manage Comment Periods</span>
       </a>
       <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()" [disabled]="!periodId">
-        <i class="material-icons">add_box</i>
+        <i class="material-icons">add</i>
         <span>Add Comment</span>
       </button>
     </div>
@@ -45,7 +45,7 @@
           <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="isCurrentComment(item)" (click)="setCurrentComment(item)">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
               <div>
-                {{item.commentNumber || '-'}}
+                {{item.commentNumber || '#'}}
               </div>
               <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{item.commentAuthor?.contactName || '-'}}
