@@ -1,23 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { ApiService } from '../../services/api';
-import { Application } from '../../models/application';
-import { Subscription } from 'rxjs/Subscription';
-import { AppComponent } from 'app/app.component';
 import { Response } from '@angular/http/src/static_response';
+import { DialogService } from 'ng2-bootstrap-modal';
+import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
 import * as moment from 'moment-timezone';
-import { ViewChild } from '@angular/core';
 import * as _ from 'lodash';
+
+import { Constants } from 'app/utils/constants';
+import { AppComponent } from 'app/app.component';
+import { SelectOrganizationComponent } from '../select-organization/select-organization.component';
+import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
+import { Organization } from 'app/models/organization';
+import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
-import { Constants } from 'app/utils/constants';
-import * as FileSaver from 'file-saver';
-import { DialogService } from 'ng2-bootstrap-modal';
-import { Subject } from 'rxjs/Subject';
-import { SelectOrganizationComponent } from '../select-organization/select-organization.component';
 import { OrganizationService } from 'app/services/organization.service';
-import { Organization } from 'app/models/organization';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -119,10 +118,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.error = isError;
     this.showMsg = true;
     this.status = msg;
-    const self = this;
-    setTimeout(function () {
-      self.showMsg = false;
-    }, 3000);
+    setTimeout(() => this.showMsg = false, 5000);
   }
 
   onSubmit() {
@@ -166,13 +162,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  downloadProtectedDocument(file: any) {
-    this.api.downloadDocument(file);
-  }
-
-  removeDocument(file: any) {
+  removeDocument(document: Document) {
     const self = this;
-    this.api.deleteDocument(file)
+    this.api.deleteDocument(document)
       .subscribe(res => {
         const doc = res.json();
         // In-memory removal on successful delete.
@@ -182,9 +174,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       });
   }
 
-  publishDocument(file: any) {
+  publishDocument(document: Document) {
     const self = this;
-    this.api.publishDocument(file)
+    this.api.publishDocument(document)
       .subscribe(res => {
         const doc = res.json();
         const f = _.find(self.applicationDocuments, function (item) {
@@ -194,9 +186,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       });
   }
 
-  unPublishDocument(file: any) {
+  unPublishDocument(document: Document) {
     const self = this;
-    this.api.unPublishDocument(file)
+    this.api.unPublishDocument(document)
       .subscribe(res => {
         const doc = res.json();
         const f = _.find(self.applicationDocuments, function (item) {
@@ -206,15 +198,15 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       });
   }
 
-  publishApplication(app) {
+  publishApplication(app: Application): Subscription {
     return this.applicationService.publish(app);
   }
 
-  unPublishApplication(app) {
+  unPublishApplication(app: Application): Subscription {
     return this.applicationService.unPublish(app);
   }
 
-  deleteApplication(app) {
+  deleteApplication(app: Application): Subscription {
     return this.applicationService.deleteApplication(app)
       .subscribe(res => {
         this.router.navigate(['/applications']);
@@ -226,7 +218,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     input.value = files.map(f => f.name).join(', ');
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     // If we're not logged in, redirect.
     if (!this.api.ensureLoggedIn()) {
       return; // return false;
@@ -274,7 +266,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

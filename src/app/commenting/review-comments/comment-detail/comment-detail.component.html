@@ -48,9 +48,9 @@
           <em>This comment has no documents.</em>
         </div>
         <div *ngFor="let document of documents">
-          <a [href]="api.getDocumentUrl(document)" target="_blank" [title]="document.displayName || ''">
-            <i class="material-icons">attachment</i>&nbsp;{{document.documentFileName}}
-          </a>
+          <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document"><i class="material-icons">file_download</i></button>
+          <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document"><i class="material-icons">open_in_new</i></button>
+          <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
         </div>
       </div>
     </div>
@@ -59,22 +59,22 @@
       <div class="col-12 comment-detail__buttons">
         <!-- ngbRadioGroup doesn't work in NGB 1.0.0-alpha.31 / Angular 4.4.6 -->
         <!-- <div class="btn-group btn-group-toggle" ngbRadioGroup [(ngModel)]="comment.commentStatus">
-        <label ngbButtonLabel class="comment-detail__accept-btn btn-success">
-          <input ngbButton type="radio" (click)="accept()" value="Accepted">
-          <i class="material-icons">check_circle</i>
-          <span>Accepted</span>
-        </label>
-        <label ngbButtonLabel class="comment-detail__pending-btn btn-secondary">
-          <input ngbButton type="radio" (click)="pend()" value="Pending">
-          <i class="material-icons">error</i>
-          <span>Pending</span>
-        </label>
-        <label ngbButtonLabel class="comment-detail__reject-btn btn-danger">
-          <input ngbButton type="radio" (click)="reject()" value="Rejected">
-          <i class="material-icons">cancel</i>
-          <span>Rejected</span>
-        </label>
-      </div> -->
+          <label ngbButtonLabel class="comment-detail__accept-btn btn-success">
+            <input ngbButton type="radio" (click)="accept()" value="Accepted">
+            <i class="material-icons">check_circle</i>
+            <span>Accepted</span>
+          </label>
+          <label ngbButtonLabel class="comment-detail__pending-btn btn-secondary">
+            <input ngbButton type="radio" (click)="pend()" value="Pending">
+            <i class="material-icons">error</i>
+            <span>Pending</span>
+          </label>
+          <label ngbButtonLabel class="comment-detail__reject-btn btn-danger">
+            <input ngbButton type="radio" (click)="reject()" value="Rejected">
+            <i class="material-icons">cancel</i>
+            <span>Rejected</span>
+          </label>
+        </div> -->
         <button class="btn btn-success" data-toggle="button" [class.active]="isAccepted()" [attr.aria-pressed]="isAccepted()" (click)="doAccept()"
           title="Change this comment to Accepted">
           <i class="material-icons">check_circle</i>

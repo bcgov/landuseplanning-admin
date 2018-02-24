@@ -383,7 +383,7 @@ export class ApiService {
     return this.put(this.pathAPI, 'commentperiod/' + period._id + '/unpublish', null, { headers: headers });
   }
 
-//
+  //
   // Comments
   //
   getCommentsByPeriodId(periodId: string) {
@@ -509,10 +509,6 @@ export class ApiService {
     return this.get(this.pathAPI, 'document/' + id, { headers: headers });
   }
 
-  getDocumentUrl(document: Document): string {
-    return document ? (this.pathAPI + '/public/document/' + document._id + '/download') : '';
-  }
-
   deleteDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     // First delete the document, then attempt to save the new version of the application
@@ -541,15 +537,30 @@ export class ApiService {
     return this.post(this.pathAPI, queryString, formData, { headers: headers });
   }
 
-  downloadDocument(file): Subscription {
-    const queryString = 'document/' + file._id + '/download';
+  downloadDocument(document: Document): Subscription {
+    return this.getDocumentBlob(document)
+      .subscribe((obj: any) => {
+        const blob = new Blob([obj], { type: document.internalMime });
+        FileSaver.saveAs(blob, document.displayName);
+      });
+  }
+
+  openDocument(document: Document): Subscription {
+    const tab = window.open();
+    return this.getDocumentBlob(document)
+      .subscribe((res) => {
+        const fileURL = URL.createObjectURL(res);
+        tab.location.href = fileURL;
+      });
+  }
+
+  private getDocumentBlob(document: Document): Observable<Blob> {
+    const queryString = 'document/' + document._id + '/download';
     const headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token });
     const options = new RequestOptions({ responseType: ResponseContentType.Blob, headers });
     return this.http.get(this.pathAPI + '/' + queryString, options)
-      .map(res => res.blob())
-      .subscribe((obj: any) => {
-        const blob = new Blob([obj], { type: file.internalMime });
-        FileSaver.saveAs(blob, file.displayName);
+      .map((res) => {
+        return new Blob([res.blob()], { type: document.internalMime });
       });
   }
 
