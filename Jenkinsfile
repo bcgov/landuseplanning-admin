@@ -1,25 +1,10 @@
 pipeline {
     agent any
     stages {
-        stage('build admin-angular-builder'){
+        stage('build chained angular app build'){
             steps {
                 notifyBuild('STARTED')
-                openshiftBuild(bldCfg: 'admin-angular-builder', showBuildLogs: 'true')
-            }
-        }
-        stage('tag admin-angular-builder'){
-            steps {
-                openshiftTag(srcStream: 'admin-angular-builder', srcTag: 'latest', destStream: 'admin-angular-builder', destTag: 'dev')
-            }
-        }
-        stage('build admin-nginx-runtime'){
-            steps {
-                openshiftBuild(bldCfg: 'admin-nginx-runtime', showBuildLogs: 'true')
-            }
-        }
-        stage('tag admin-nginx-runtime'){
-            steps {
-                openshiftTag(srcStream: 'admin-nginx-runtime', srcTag: 'latest', destStream: 'admin-nginx-runtime', destTag: 'dev')
+                openshiftBuild(bldCfg: 'admin-angular-on-nginx-build-angular-app-build', showBuildLogs: 'true')
             }
         }
         stage('build and package admin-angular-on-nginx'){
