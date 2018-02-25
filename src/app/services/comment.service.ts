@@ -21,6 +21,8 @@ export class CommentService {
   ) { }
 
   // get all comments for the specified application id
+  // TODO: chain things nicely
+  // see http://www.syntaxsuccess.com/viewarticle/error-handling-in-rxjs
   getAllByApplicationId(appId: string): Observable<Comment[]> {
     // first get the comment periods
     return this.commentPeriodService.getAllByApplicationId(appId)
@@ -47,8 +49,8 @@ export class CommentService {
     return this.api.getCommentsByPeriodId(periodId)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
-        comments.forEach((comment, index) => {
-          comments[index] = new Comment(comment);
+        comments.forEach((comment, i) => {
+          comments[i] = new Comment(comment);
         });
         return comments;
       })
@@ -61,10 +63,10 @@ export class CommentService {
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
         // return the first (only) comment
-        return comments.length > 0 ? comments[0] : null;
+        return comments.length > 0 ? new Comment(comments[0]) : null;
       })
       .map((comment: Comment) => {
-        // if (!comment) { return; }
+        if (!comment) { return null; }
 
         // now grab the comment documents
         this.documentService.getAllByCommentId(comment._id).subscribe(
@@ -78,12 +80,32 @@ export class CommentService {
   }
 
   add(comment: Comment): Observable<Comment> {
-    return this.api.addComment(comment)
+    return this.api.addComment(this.sanitizeComment(comment))
       .map((res: Response) => {
         const c = res.text() ? res.json() : null;
         return c ? new Comment(c) : null;
       })
       .catch(this.api.handleError);
+  }
+
+  // deletes object keys the API doesn't want on POST
+  private sanitizeComment(comment: Comment): Comment {
+    delete comment._id;
+    delete comment._addedBy;
+    // keep _commentPeriod
+    delete comment.commentNumber;
+    // keep comment
+    // replace newlines with \\n
+    comment.comment = comment.comment.replace(/\n/g, '\\n');
+    // keep comment.commentAuthor
+    // keep comment.commentAuthor.internal
+    delete comment._documents;
+    delete comment.review;
+    delete comment.dateAdded;
+    delete comment.commentStatus;
+    delete comment.documents; // API doesn't even look at this
+
+    return comment;
   }
 
   save(comment: Comment): Observable<Comment> {

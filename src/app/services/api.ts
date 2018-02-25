@@ -539,8 +539,8 @@ export class ApiService {
 
   downloadDocument(document: Document): Subscription {
     return this.getDocumentBlob(document)
-      .subscribe((obj: any) => {
-        const blob = new Blob([obj], { type: document.internalMime });
+      .subscribe((value: Blob) => {
+        const blob = new Blob([value], { type: document.internalMime });
         FileSaver.saveAs(blob, document.displayName);
       });
   }
@@ -548,8 +548,8 @@ export class ApiService {
   openDocument(document: Document): Subscription {
     const tab = window.open();
     return this.getDocumentBlob(document)
-      .subscribe((res) => {
-        const fileURL = URL.createObjectURL(res);
+      .subscribe((value: Blob) => {
+        const fileURL = URL.createObjectURL(value);
         tab.location.href = fileURL;
       });
   }
@@ -559,8 +559,8 @@ export class ApiService {
     const headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token });
     const options = new RequestOptions({ responseType: ResponseContentType.Blob, headers });
     return this.http.get(this.pathAPI + '/' + queryString, options)
-      .map((res) => {
-        return new Blob([res.blob()], { type: document.internalMime });
+      .map((value: Response) => {
+        return new Blob([value.blob()], { type: document.internalMime });
       });
   }
 
