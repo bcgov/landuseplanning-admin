@@ -29,13 +29,12 @@
         list-style: decimal;
         line-height: 1.7;
         margin: 0;
-        padding: 0 40px;
         overflow-x: hidden;
         li:before {
             float: left;
             width: 0;
             white-space: nowrap;
-            content: repeater(". ", 90);
+            content: repeater(". ", 100);
         }
         li .name {
             padding-right: 0.5rem;
