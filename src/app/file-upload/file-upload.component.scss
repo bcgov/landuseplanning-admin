@@ -1,0 +1,78 @@
+@import "~assets/styles/base.scss";
+@function repeater($item, $count) {
+    $string: "";
+    @for $i from 1 through $count {
+        $string: $string + $item;
+    }
+    @return "#{$string}";
+}
+
+.dragarea {
+    font-size: x-large;
+    border: 3px dashed $fc-border-color;
+    padding: 20px;
+    background-color: #fff;
+    color: #bbb;
+}
+
+.droparea {
+    font-size: x-large;
+    border: 3px dashed $fc-focus-border-color;
+    padding: 20px;
+    background-color: #eff;
+    color: #aaa;
+}
+
+.files-list {
+    margin-top: 1rem;
+    ul {
+        list-style: decimal;
+        line-height: 1.7;
+        margin: 0;
+        padding: 0 40px;
+        overflow-x: hidden;
+        li:before {
+            float: left;
+            width: 0;
+            white-space: nowrap;
+            content: repeater(". ", 90);
+        }
+        li .name {
+            padding-right: 0.5rem;
+            background-color: #fff;
+        }
+        li .value {
+            float: right;
+            clear: right;
+            padding-left: 0.5rem;
+            background-color: #fff;
+            margin-top: -2px;
+            .btn i+span {
+                vertical-align: text-top;
+            }
+        }
+    }
+}
+
+.errors-list {
+    margin-top: 1rem;
+    ul {
+        list-style: none;
+        line-height: 1.7;
+        padding-left: 20px;
+        color: #f00;
+        li,
+        li span {
+            display: flex;
+        }
+    }
+}
+
+.btn-xs {
+    padding: 0 5px;
+    font-size: smaller;
+    border-radius: 3px;
+    .material-icons {
+        font-size: large;
+    }
+}
