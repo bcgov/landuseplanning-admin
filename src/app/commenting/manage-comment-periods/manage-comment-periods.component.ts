@@ -13,7 +13,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { ApiService } from 'app/services/api';
 
 import { AddEditCommentPeriodComponent } from './add-edit-comment-period/add-edit-comment-period.component';
-import { ConfirmComponent } from '../../confirm/confirm.component';
+import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 @Component({
   selector: 'app-manage-comment-periods',
@@ -111,15 +111,15 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         });
   }
 
-  public openCommentPeriod(cp, appId) {
-    if (cp) {
-      console.log('cp:', cp);
+  public openCommentPeriod(commentPeriod: CommentPeriod, appId: string) {
+    if (commentPeriod) {
+      console.log('cp:', commentPeriod);
       this.dialogService.addDialog(AddEditCommentPeriodComponent,
         {
           title: 'Update Comment Period',
           message: 'Update',
-          model: cp,
-          application: appId
+          commentPeriod: commentPeriod,
+          appId: appId
         }, {
           // index: 0,
           // autoCloseTimeout: 10000,
@@ -139,8 +139,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         {
           title: 'Add Comment Period',
           message: 'Save',
-          model: null,
-          application: appId
+          commentPeriod: null,
+          appId: appId
         }, {
           // index: 0,
           // autoCloseTimeout: 10000,
@@ -158,7 +158,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteCommentPeriod(item) {
+  private deleteCommentPeriod(commentPeriod: CommentPeriod) {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Confirm deletion',
@@ -175,7 +175,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         if (isConfirmed) {
           //  Delete then refresh
           // TODO: should use service
-          this.api.deleteCommentPeriod(item).subscribe(
+          this.api.deleteCommentPeriod(commentPeriod).subscribe(
             data => {
               console.log('accepted');
               this.refreshUI();
@@ -189,15 +189,15 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       });
   }
 
-  publishCommentPeriod(commentperiod: CommentPeriod) {
-    return this.commentPeriodService.publish(commentperiod)
+  publishCommentPeriod(commentPeriod: CommentPeriod) {
+    return this.commentPeriodService.publish(commentPeriod)
       .toPromise()
       // HACK: refresh UI because template item isn't being refreshed otherwise
       .then(value => this.refreshUI());
   }
 
-  unPublishCommentPeriod(commentperiod: CommentPeriod) {
-    return this.commentPeriodService.unPublish(commentperiod)
+  unPublishCommentPeriod(commentPeriod: CommentPeriod) {
+    return this.commentPeriodService.unPublish(commentPeriod)
       .toPromise()
       // HACK: refresh UI because template item isn't being refreshed otherwise
       .then(value => this.refreshUI());
@@ -209,14 +209,19 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   private getStatus(item: CommentPeriod): string {
-    const today = new Date();
-
-    if (!item.startDate || !item.endDate) {
+    if (!item || !item.startDate || !item.endDate) {
       return 'unknown';
-    } else if (today < item.startDate) {
-      return 'FUTURE';
-    } else if (today > item.endDate) {
+    }
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startDate = new Date(item.startDate);
+    const endDate = new Date(item.endDate);
+
+    if (endDate < today) {
       return 'PAST';
+    } else if (startDate > today) {
+      return 'FUTURE';
     } else {
       return 'CURRENT';
     }

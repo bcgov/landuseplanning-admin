@@ -7,10 +7,10 @@ import { CommentPeriod } from 'app/models/commentperiod';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 export interface DataModel {
-  title: string;
-  message: string;
-  model: CommentPeriod;
-  application: any;
+  title: string; // not used
+  message: string; // not used
+  commentPeriod: CommentPeriod;
+  appId: string;
 }
 
 @Component({
@@ -22,13 +22,13 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
   public title: string;
   public message: string;
   public commentPeriod: CommentPeriod;
+  public appId: string;
+
   startDate: NgbDateStruct;
   endDate: NgbDateStruct;
   isNew: boolean;
-  model: CommentPeriod;
-  application: any;
   networkMsg: string;
-  comm: CommentPeriod;
+  comment: CommentPeriod;
 
   constructor(
     public dialogService: DialogService,
@@ -39,18 +39,18 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
-    this.comm = new CommentPeriod(this.model);
-    if (this.model === null) {
+    this.comment = new CommentPeriod(this.commentPeriod);
+    if (this.commentPeriod === null) {
       this.isNew = true;
-      this.comm.internal = { 'notes': '', '_addedBy': ''};
+      this.comment.internal = { 'notes': '', '_addedBy': '' };
     } else {
       this.isNew = false;
     }
-    this.comm._application = this.application;
-    this.comm.startDate = new Date();
-    this.comm.endDate = new Date();
-    const startD = new Date(this.comm.startDate);
-    const endD = new Date(this.comm.endDate);
+    this.comment._application = this.appId;
+    this.comment.startDate = this.comment.startDate || new Date();
+    this.comment.endDate = this.comment.endDate || new Date();
+    const startD = new Date(this.comment.startDate);
+    const endD = new Date(this.comment.endDate);
     this.startDate = {
       'year': startD.getFullYear(),
       'month': startD.getMonth() + 1,
@@ -64,17 +64,18 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
   }
 
   save() {
-    this.result = true;
-    this.comm.startDate = moment(this.startDate.year
+    this.result = false;
+
+    this.comment.startDate = moment(this.startDate.year
       + '-' + this.startDate.month
       + '-' + this.startDate.day, 'YYYY-MM-DD').utc().format();
 
-    this.comm.endDate = moment(this.endDate.year
+    this.comment.endDate = moment(this.endDate.year
       + '-' + this.endDate.month
       + '-' + this.endDate.day, 'YYYY-MM-DD').utc().format();
 
     if (this.isNew) {
-      this.commentPeriodService.add(this.comm).subscribe(
+      this.commentPeriodService.add(this.comment).subscribe(
         data => {
           this.result = true;
           this.isNew = false;
@@ -82,9 +83,10 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
         },
         error => {
           this.networkMsg = error;
+          this.close();
         });
     } else {
-      this.commentPeriodService.save(this.comm).subscribe(
+      this.commentPeriodService.save(this.comment).subscribe(
         data => {
           this.result = true;
           this.isNew = false;
@@ -92,9 +94,8 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
         },
         error => {
           this.networkMsg = error;
+          this.close();
         });
     }
-
-    this.close();
   }
 }

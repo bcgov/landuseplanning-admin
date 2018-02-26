@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import * as moment from 'moment-timezone';
 import * as _ from 'lodash';
@@ -10,6 +9,7 @@ import * as _ from 'lodash';
 import { Constants } from 'app/utils/constants';
 import { AppComponent } from 'app/app.component';
 import { SelectOrganizationComponent } from '../select-organization/select-organization.component';
+import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
 import { Organization } from 'app/models/organization';
@@ -25,20 +25,21 @@ import { OrganizationService } from 'app/services/organization.service';
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInput;
-  public loading: boolean;
+
+  public types = Constants.types;
+  public subtypes = Constants.subtypes;
+  public purposes = Constants.purposes;
+  public subpurposes = Constants.subpurposes;
+  public statuses = Constants.statuses;
+
+  public loading = false;
+  public fileList: FileList;
   public application: Application;
-  public applicationDocuments: Document[];
-  private sub: Subscription;
-  public types: string[];
-  public subtypes: {};
-  public purposes: string[];
-  public subpurposes: {};
-  public statuses: string[];
-  public error: boolean;
+  public applicationDocuments: Array<Document> = [];
+  public error = false;
+  public showMsg = false;
   public status: string;
-  public showMsg: boolean;
-  public clFile: number;
-  public changedFiles: string;
+  public clFile: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -49,15 +50,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private orgService: OrganizationService,
     private applicationService: ApplicationService,
     private dialogService: DialogService
-  ) {
-    this.applicationDocuments = [];
-    this.types = Constants.types;
-    this.subtypes = Constants.subtypes;
-    this.purposes = Constants.purposes;
-    this.subpurposes = Constants.subpurposes;
-    this.statuses = Constants.statuses;
-    this.showMsg = false;
-    this.clFile = null;
+  ) { }
+
+  fileChange(event) {
+    this.fileList = event.target.files;
   }
 
   typeChange(obj) {
@@ -92,10 +88,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                 self.application._proponent = data._id;
               },
               error => {
-                console.log('error:', error);
+                console.log('error =', error);
               });
         } else {
-          console.log('org selection cancelled.');
+          console.log('org selection cancelled');
         }
       });
   }
@@ -114,13 +110,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMessage(isError, msg) {
-    this.error = isError;
-    this.showMsg = true;
-    this.status = msg;
-    setTimeout(() => this.showMsg = false, 5000);
-  }
-
   onSubmit() {
     // Adjust for current tz
     this.application.projectDate = moment(this.application.projectDate).format();
@@ -128,21 +117,29 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     const self = this;
     this.api.saveApplication(this.application)
       .subscribe(
-        (data: any) => {
-          // console.log('Saved application', data);
-          self.showMessage(false, 'Saved Application');
+        (application) => {
+          // console.log('application =', application);
+          self.showMessage(false, 'Saved application!');
         },
         error => {
-          console.log('ERR:', error);
+          console.log('error =', error);
           self.showMessage(true, 'Error saving application');
         });
   }
 
-  upload() {
+  private showMessage(isError, msg) {
+    this.error = isError;
+    this.showMsg = true;
+    this.status = msg;
+    setTimeout(() => this.showMsg = false, 5000);
+  }
+
+  uploadFiles() {
     const self = this;
-    const fileBrowser = this.fileInput.nativeElement;
-    console.log('Uploading files:', fileBrowser.files);
-    _.each(fileBrowser.files, function (file) {
+    const fileList = Object.assign({}, this.fileList); // copy of files
+    this.fileInput.nativeElement.value = ''; // clear input
+
+    _.each(fileList, function (file) {
       if (file) {
         const formData = new FormData();
         formData.append('_application', self.application._id);
@@ -150,13 +147,13 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         formData.append('upfile', file);
         self.api.uploadDocument(formData)
           .subscribe(
-            res => {
+            (document) => {
               // do stuff w/my uploaded file
-              console.log('RES:', res.json());
-              self.applicationDocuments.push(res.json());
+              console.log('document =', document.json());
+              self.applicationDocuments.push(document.json());
             },
             error => {
-              console.log('error:', error);
+              console.log('error =', error);
             });
       }
     });
@@ -198,24 +195,35 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       });
   }
 
-  publishApplication(app: Application): Subscription {
-    return this.applicationService.publish(app);
+  publishApplication(app: Application) {
+    this.applicationService.publish(app);
   }
 
-  unPublishApplication(app: Application): Subscription {
-    return this.applicationService.unPublish(app);
+  unPublishApplication(app: Application) {
+    this.applicationService.unPublish(app);
   }
 
-  deleteApplication(app: Application): Subscription {
-    return this.applicationService.deleteApplication(app)
-      .subscribe(res => {
-        this.router.navigate(['/applications']);
+  deleteApplication(app: Application) {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Confirm deletion',
+        message: 'Do you really want to delete this application?'
+      }, {
+        // index: 0,
+        // autoCloseTimeout: 10000,
+        // closeByClickingOutside: true,
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isConfirmed) => {
+        // we get dialog result
+        if (isConfirmed) {
+          this.applicationService.deleteApplication(app)
+            .subscribe(res => {
+              this.router.navigate(['/applications']);
+            });
+        }
       });
-  }
-
-  onChange(event: any, input: any) {
-    const files = [].slice.call(event.target.files);
-    input.value = files.map(f => f.name).join(', ');
   }
 
   ngOnInit() {
@@ -228,8 +236,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     const self = this;
 
     // wait for the resolver to retrieve the application details from back-end
-    this.sub = this.route.data
-      // .finally(() => this.loading = false) // TODO: make this work
+    this.route.data
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
         (data: { application: Application }) => {
           this.loading = false;
@@ -240,7 +248,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           this.application.projectDate = moment(this.application.projectDate).format();
           // application not found --> navigate back to application list
           if (!this.application || !this.application._id) {
-            console.log('Application not found!');
+            console.log('application not found');
             this.router.navigate(['/applications']);
           }
 
@@ -262,7 +270,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           if (error.startsWith('403')) {
             this.router.navigate(['/login']);
           }
-          alert('Error loading application');
+          alert('error loading application');
         });
   }
 

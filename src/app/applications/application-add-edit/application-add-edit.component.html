@@ -25,22 +25,19 @@
           <span>
             <input type="file"
               #fileInput
-              placeholder="Upload file..."
-              (change)="onChange($event, changedFiles)"
+              (change)="fileChange($event)"
               multiple />
-            <button class="btn btn-primary float-right" (click)="upload()"><i class="material-icons">file_upload</i>Upload Files</button>
+            <button type="button" class="btn btn-primary float-right" [disabled]="!fileList || fileList.length === 0" (click)="uploadFiles()"><i class="material-icons">file_upload</i>Upload Files</button>
           </span>
 
           <ul class="nv-list application-details--list">
-            <li>
-              <div *ngFor="let file of applicationDocuments">
-                <span class="name">{{file.displayName}}</span>
-                <button class="btn btn-primary" (click)="api.downloadDocument(file)" title="Download this document"><i class="material-icons">file_download</i></button>
-                <button class="btn btn-primary" (click)="api.openDocument(file)" title="Open this document"><i class="material-icons">open_in_new</i></button>
-                <button *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file)" title="Publish this document"><i class="material-icons">play_arrow</i></button>
-                <button *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file)" title="Un-publish this document"><i class="material-icons">pause</i></button>
-                <button *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file)" title="Delete this document"><i class="material-icons">delete</i></button>
-              </div>
+            <li *ngFor="let file of applicationDocuments">
+              <span class="name">{{file.displayName}}</span>
+              <button type="button" class="btn btn-primary" (click)="api.downloadDocument(file)" title="Download this document"><i class="material-icons">file_download</i></button>
+              <button type="button" class="btn btn-primary" (click)="api.openDocument(file)" title="Open this document"><i class="material-icons">open_in_new</i></button>
+              <button type="button" *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file)" title="Publish this document"><i class="material-icons">play_arrow</i></button>
+              <button type="button" *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file)" title="Un-publish this document"><i class="material-icons">pause</i></button>
+              <button type="button" *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file)" title="Delete this document"><i class="material-icons">delete</i></button>
             </li>
           </ul>
         </section>
@@ -220,9 +217,9 @@
 
             <li>
               <button type="submit" class="btn btn-primary"><i class="material-icons">save</i>Save</button>
-              <button *ngIf="!application.isPublished" class="btn btn-success" (click)="publishApplication(application)"><i class="material-icons">play_arrow</i>Publish</button>
-              <button *ngIf="application.isPublished" class="btn btn-dark" (click)="unPublishApplication(application)"><i class="material-icons">pause</i>Un-Publish</button>
-              <button *ngIf="!application.isPublished" class="btn btn-danger" (click)="deleteApplication(application)"><i class="material-icons">delete</i>Delete</button>
+              <button type="button" *ngIf="!application.isPublished" class="btn btn-success" (click)="publishApplication(application)"><i class="material-icons">play_arrow</i>Publish</button>
+              <button type="button" *ngIf="application.isPublished" class="btn btn-dark" (click)="unPublishApplication(application)"><i class="material-icons">pause</i>Un-Publish</button>
+              <button type="button" *ngIf="!application.isPublished" class="btn btn-danger" (click)="deleteApplication(application)"><i class="material-icons">delete</i>Delete</button>
             </li>
           </ul>
 
