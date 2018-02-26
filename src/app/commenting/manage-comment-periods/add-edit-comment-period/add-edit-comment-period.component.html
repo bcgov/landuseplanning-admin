@@ -39,14 +39,14 @@
                 class="form-control"
                 id="description"
                 name="description"
-                [(ngModel)]="comm.description"></textarea>
-        <div *ngIf="comm.internal" class="form-group">
+                [(ngModel)]="comment.description"></textarea>
+        <div *ngIf="comment.internal" class="form-group">
           <label for="internal.notes">Internal Notes</label>
           <textarea rows="5"
                 class="form-control"
                 id="internal.notes"
                 name="internal.notes"
-                [(ngModel)]="comm.internal.notes"></textarea>
+                [(ngModel)]="comment.internal.notes"></textarea>
         </div>
       </div>
     </div>
