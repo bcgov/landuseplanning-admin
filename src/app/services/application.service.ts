@@ -183,7 +183,7 @@ export class ApplicationService {
   // returns application status based on status code
   getStatus(application: Application): string {
     if (!application || !application.status) {
-      return 'Unknown Application Status';
+      return null; // 'Unknown Application Status';
     }
 
     switch (application.status.toUpperCase()) {

@@ -40,7 +40,7 @@
         <ul class="nv-list application-details--list">
           <li>
             <span class="name">Type / Subtype</span>
-            <span class="value">{{application.type || '-' | titlecase}} / {{application.subtype || '-' | titlecase}}</span>
+            <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
           </li>
           <li>
             <span class="name">Project Date</span>
@@ -48,7 +48,7 @@
           </li>
           <li>
             <span class="name">Status</span>
-            <span class="value">{{applicationService.getStatus(application)}}</span>
+            <span class="value">{{applicationService.getStatus(application) || '-'}}</span>
           </li>
           <li>
             <span class="name">Region</span>
@@ -73,7 +73,7 @@
           </li>
           <li>
             <span class="name">Crown Lands File(s)</span>
-            <span class="value">{{application.cl_files ? application.cl_files.join(', ') : 'none'}}</span>
+            <span class="value">{{application.cl_files ? application.cl_files.join(', ') : '-'}}</span>
           </li>
         </ul>
       </section>

@@ -5,43 +5,49 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 
 export class OrderByPipe implements PipeTransform {
-    transform(records: Array<any>, args: any): any {
+    transform(records: Array<any>, args: any): any[] {
         if (!args.property || !args.direction) {
             return records;
         }
 
-        return records.sort(function (a, b) {
-            if (!args) {
-                return 0;
-            }
+        const self = this;
+        return records.sort((a, b) => {
+            if (!args) { return 0; }
 
-            let aCompare = a[args.property] || '';
-            let bCompare = b[args.property] || '';
+            let aCompare = a[args.property];
+            let bCompare = b[args.property];
 
-            if (typeof aCompare === 'object' && !(aCompare instanceof Date)) {
+            // put null values first
+            if (!aCompare) { return -args.direction; }
+            if (!bCompare) { return +args.direction; }
+
+            if (Array.isArray(aCompare) || Array.isArray(bCompare)) {
+                // just compare first elements
+                aCompare = self.coalesce(aCompare[0]);
+                bCompare = self.coalesce(bCompare[0]);
+
+            } else if (typeof aCompare === 'object' || typeof bCompare === 'object') {
+                // put undefined values first
                 // MBL TODO: Assume name for sub-property.  Fix this to be more generic.
-                if (aCompare.name === undefined) {
-                    return 0;
-                }
+                if (aCompare.name === undefined) { return +args.direction; }
+                if (bCompare.name === undefined) { return -args.direction; }
 
-                aCompare = aCompare.name;
-                bCompare = bCompare.name;
+                aCompare = self.coalesce(aCompare.name);
+                bCompare = self.coalesce(bCompare.name);
             }
 
-            if (typeof aCompare === 'string') {
-                aCompare = aCompare.toLowerCase();
-                bCompare = bCompare.toLowerCase();
-            }
-
-            if (aCompare < bCompare) {
-                return -1 * args.direction;
-            }
-
-            if (aCompare > bCompare) {
-                return 1 * args.direction;
-            }
-
+            if (aCompare < bCompare) { return -args.direction; }
+            if (aCompare > bCompare) { return +args.direction; }
             return 0;
         });
-    };
+
+    }
+
+    // coalesce literals to a base value
+    private coalesce(obj: any): any {
+        if (typeof obj === 'string') {
+            return obj ? obj.toLowerCase() : 0;
+        }
+        return obj || 0;
+    }
 }
