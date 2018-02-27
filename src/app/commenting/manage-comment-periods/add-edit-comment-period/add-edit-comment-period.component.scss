@@ -1,12 +1,14 @@
 .modal-dialog {
-    .modal-header {
-        button {
-            cursor: pointer;
+    button {
+        cursor: pointer;
+    }
+    .modal-header {}
+    .modal-body {
+        .date-range {
+            &__spacer {
+                padding: 8px;
+            }
         }
     }
-    .modal-footer {
-        button {
-            cursor: pointer;
-        }
-    }
+    .modal-footer {}
 }

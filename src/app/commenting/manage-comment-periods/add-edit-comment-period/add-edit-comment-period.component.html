@@ -1,28 +1,29 @@
 <div class="modal-dialog modal-lg">
   <div class="modal-content">
+
     <div class="modal-header">
       <h4 class="modal-title">{{title}}</h4>
       <button type="button" class="close" aria-label="Close" (click)="close()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+
     <div class="modal-body">
-      <!-- <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()"> -->
       <div class="form-group">
         <label>Date Range</label>
         <div class="form-inline">
           <div class="form-group">
             <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd"
-                     name="d1" #c2="ngModel" [(ngModel)]="startDate" ngbDatepicker #d1="ngbDatepicker">
+              <input class="form-control" placeholder="yyyy-mm-dd" name="d1" #c1="ngModel" [(ngModel)]="startDate" ngbDatepicker #d1="ngbDatepicker" navigation="arrows" [firstDayOfWeek]="7" />
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
                   <i class="material-icons">date_range</i>
                 </button>
               </div>
-              <span class="date-range__spacer"> &nbsp;&nbsp; - &nbsp;&nbsp; </span>
-              <input class="form-control" placeholder="yyyy-mm-dd"
-                     name="d2" #c2="ngModel" [(ngModel)]="endDate" ngbDatepicker #d2="ngbDatepicker">
+
+              <span class="date-range__spacer"><i class="material-icons">forward</i></span>
+
+              <input class="form-control" placeholder="yyyy-mm-dd" name="d2"  #c2="ngModel"[(ngModel)]="endDate" ngbDatepicker #d2="ngbDatepicker" navigation="arrows" [firstDayOfWeek]="7" />
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
                   <i class="material-icons">date_range</i>
@@ -35,19 +36,12 @@
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea rows="5"
-                class="form-control"
-                id="description"
-                name="description"
-                [(ngModel)]="comment.description"></textarea>
-        <div *ngIf="comment.internal" class="form-group">
-          <label for="internal.notes">Internal Notes</label>
-          <textarea rows="5"
-                class="form-control"
-                id="internal.notes"
-                name="internal.notes"
-                [(ngModel)]="comment.internal.notes"></textarea>
-        </div>
+        <textarea rows="5" class="form-control" id="description" name="description" [(ngModel)]="comment.description"></textarea>
+      </div>
+
+      <div *ngIf="comment.internal" class="form-group">
+        <label for="internal.notes">Internal Notes</label>
+        <textarea rows="5" class="form-control" id="internal.notes" name="internal.notes" [(ngModel)]="comment.internal.notes"></textarea>
       </div>
     </div>
 
@@ -55,5 +49,6 @@
       <button type="button" class="btn btn-primary" (click)="save()">{{message}}</button>
       <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
     </div>
+
   </div>
 </div>

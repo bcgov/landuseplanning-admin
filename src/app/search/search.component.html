@@ -79,21 +79,13 @@
               <div class="form-inline">
                 <label class="sr-only" for="dateRangeStart">Start Date</label>
                 <input class="form-control" type="text" placeholder="Start Date" name="dateRangeStartInput" id="dateRangeStart"
-                  #dateRangeStart="ngbDatepicker"
-                  ngbDatepicker
-                  readonly
-                  [disabled]="protoSearchActive"
-                  (click)="dateRangeStart.toggle();dateRangeEnd.close();"
-                  [(ngModel)]="terms.dateStart"/>
+                  #dateRangeStart="ngbDatepicker" ngbDatepicker readonly [disabled]="protoSearchActive"
+                  (click)="dateRangeStart.toggle();dateRangeEnd.close();" [(ngModel)]="terms.dateStart"/>
                 <span class="date-range__spacer"> &nbsp;&nbsp; - &nbsp;&nbsp; </span>
                 <label class="sr-only" for="dateRangeEnd">End Date</label>
                 <input class="form-control" type="text" placeholder="End Date" name="dateRangeEndInput" id="dateRangeEnd"
-                  #dateRangeEnd="ngbDatepicker"
-                  ngbDatepicker
-                  readonly
-                  [disabled]="protoSearchActive"
-                  (click)="dateRangeEnd.toggle();dateRangeStart.close();"
-                  [(ngModel)]="terms.dateEnd"/>
+                  #dateRangeEnd="ngbDatepicker" ngbDatepicker readonly [disabled]="protoSearchActive"
+                  (click)="dateRangeEnd.toggle();dateRangeStart.close();" [(ngModel)]="terms.dateEnd"/>
               </div>
             </div>
           </div>

@@ -24,7 +24,7 @@ import { OrganizationService } from 'app/services/organization.service';
   styleUrls: ['./application-add-edit.component.scss']
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
-  @ViewChild('fileInput') fileInput;
+  @ViewChild('fileInput') private fileInput;
 
   public types = Constants.types;
   public subtypes = Constants.subtypes;

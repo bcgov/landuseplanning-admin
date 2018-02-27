@@ -40,7 +40,7 @@
         <ul class="nv-list application-details--list">
           <li>
             <span class="name">Type / Subtype</span>
-            <span class="value">{{application.type || 'unknown'}} / {{application.subtype || 'unknown'}}</span>
+            <span class="value">{{application.type || '-' | titlecase}} / {{application.subtype || '-' | titlecase}}</span>
           </li>
           <li>
             <span class="name">Project Date</span>
@@ -48,15 +48,15 @@
           </li>
           <li>
             <span class="name">Status</span>
-            <span class="value">{{application.status || 'unknown'}}</span>
+            <span class="value">{{applicationService.getStatus(application)}}</span>
           </li>
           <li>
             <span class="name">Region</span>
-            <span class="value">{{application.region || 'unknown'}}</span>
+            <span class="value">{{application.region || '-'}}</span>
           </li>
           <li>
             <span class="name">Location</span>
-            <span class="value">{{application.location || 'unknown'}}</span>
+            <span class="value">{{application.location || '-'}}</span>
           </li>
           <li>
             <span class="name">Area (hectares)</span>
@@ -69,10 +69,10 @@
           </li>
           <li>
             <span class="name">Business Unit</span>
-            <span class="value">{{application.businessUnit || 'unknown'}}</span>
+            <span class="value">{{application.businessUnit || '-'}}</span>
           </li>
           <li>
-            <span class="name">Crown Land File(s)</span>
+            <span class="name">Crown Lands File(s)</span>
             <span class="value">{{application.cl_files ? application.cl_files.join(', ') : 'none'}}</span>
           </li>
         </ul>
