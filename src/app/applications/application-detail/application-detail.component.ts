@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
+import { ApiService } from '../../services/api';
 import { Application } from '../../models/application';
+import { ApplicationService } from '../../services/application.service';
 // import { CollectionsArray } from '../../models/collection';
 // import { DocumentService } from '../../services/document.service';
-import { ApiService } from '../../services/api';
 
 @Component({
   selector: 'app-application-detail',
@@ -23,8 +24,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private api: ApiService,
+    public applicationService: ApplicationService,
     // private documentService: DocumentService,
-    private api: ApiService
   ) { }
 
   ngOnInit(): void {
@@ -41,27 +43,27 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     this.sub = this.route.data
       // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
-      (data: { application: Application }) => {
-        this.loading = false;
-        this.application = data.application;
+        (data: { application: Application }) => {
+          this.loading = false;
+          this.application = data.application;
 
-        // application not found --> navigate back to application list
-        if (!this.application || !this.application._id) {
-          console.log('Application not found!');
-          this.gotoApplicationList();
-        }
+          // application not found --> navigate back to application list
+          if (!this.application || !this.application._id) {
+            console.log('Application not found!');
+            this.gotoApplicationList();
+          }
 
-        // this.collections = data.application.collections.documents;
-        // this.collections.sort();
-      },
-      error => {
-        this.loading = false;
-        // If 403, redir to /login.
-        if (error.startsWith('403')) {
-          this.router.navigate(['/login']);
-        }
-        alert('Error loading application');
-      });
+          // this.collections = data.application.collections.documents;
+          // this.collections.sort();
+        },
+        error => {
+          this.loading = false;
+          // If 403, redir to /login.
+          if (error.startsWith('403')) {
+            this.router.navigate(['/login']);
+          }
+          alert('Error loading application');
+        });
   }
 
   ngOnDestroy(): void {

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import * as _ from 'lodash';
 
 import { ApiService } from './api';
 import { OrganizationService } from './organization.service';
@@ -177,5 +178,27 @@ export class ApplicationService {
         return application;
       })
       .catch(this.api.handleError);
+  }
+
+  // returns application status based on status code
+  getStatus(application: Application): string {
+    if (!application || !application.status) {
+      return null; // 'Unknown Application Status';
+    }
+
+    switch (application.status.toUpperCase()) {
+      case 'ABANDONED': return 'Application Abandoned';
+      case 'ACCEPTED': return 'Application Under Review';
+      case 'ALLOWED': return 'Decision: Allowed';
+      case 'DISALLOWED': return 'Decision: Not Approved';
+      case 'DISPOSITION IN GOOD STANDING': return 'Tenure: Disposition in Good Standing';
+      case 'OFFER ACCEPTED': return 'Decision: Offer Accepted';
+      case 'OFFER NOT ACCEPTED': return 'Decision: Offer Not Accepted';
+      case 'OFFERED': return 'Decision: Offered';
+      case 'SUSPENDED': return 'Tenure: Suspended';
+    }
+
+    // return status in title case
+    return _.startCase(_.camelCase(application.status));
   }
 }

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container__inner-container">
       <div class="hero-banner__content">
-        <h1 id="pgTitle">Find Crown Land Application information in British Columbia</h1>
+        <h1 id="pgTitle">Find Crown Lands Application information in British Columbia</h1>
         <p class="mb-2">Some blurb about applications and PRC...</p>
       </div>
     </div>
@@ -12,13 +12,13 @@
 <div class="container" id="anchor-point">
   <main>
     <section>
-      <h2>Crown Land Applications in British Columbia</h2>
+      <h2>Crown Lands Applications in British Columbia</h2>
       <p class="tab-intro">Use the list below to navigate to information on individual application. Click on any application to go directly to
-        its profile page, or click the ‘+’ sign to expand the list item to see basic information (e.g., description, purpose,
-        type, etc.) about that application. You can also use our interactive map to navigate to information on individual
-        applications across British Columbia.</p>
+        its details page, or click the<i class="material-icons open-icon" style="vertical-align: middle">arrow_drop_down</i>sign to expand the
+        list item to see basic information (e.g., Type, Location, Description, etc.) about that application.
+      </p>
 
-      <button class="btn btn-success" (click)="createApplication()">
+      <button class="btn btn-primary" (click)="createApplication()">
         <i class="material-icons">add</i>
         <span>Create New Application</span>
       </button>
@@ -26,8 +26,11 @@
       <table class="table application-table">
         <thead class="application-table__sort-header">
           <tr>
-            <th class="application-table__name-col sortable" (click)="sort('name')">Name
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'name' && isDesc), 'sort-desc': (column == 'name' && !isDesc) }" aria-hidden="true"></i>
+            <th class="application-table__name-col sortable" (click)="sort('proponent')">Client Name
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'proponent' && isDesc), 'sort-desc': (column == 'proponent' && !isDesc) }" aria-hidden="true"></i>
+            </th>
+            <th class="application-table__cl_file-col sortable" (click)="sort('cl_files')">CL File(s)
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_files' && isDesc), 'sort-desc': (column == 'cl_files' && !isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
               <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && isDesc), 'sort-desc': (column == 'purpose' && !isDesc) }"
@@ -35,10 +38,6 @@
             </th>
             <th class="application-table__region-col sortable" (click)="sort('region')">Region
               <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && isDesc), 'sort-desc': (column == 'region' && !isDesc) }" aria-hidden="true"></i>
-            </th>
-            <th class="application-table__date-col sortable" (click)="sort('projectDate')">Date
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'projectDate' && isDesc), 'sort-desc': (column == 'projectDate' && !isDesc) }"
-                aria-hidden="true"></i>
             </th>
             <th class="application-table__status-col sortable" (click)="sort('status')">Status
               <i class="sort" [ngClass]="{'sort-asc': (column == 'status' && isDesc), 'sort-desc': (column == 'status' && !isDesc) }" aria-hidden="true"></i>
@@ -49,45 +48,38 @@
         <tbody class="application-table__content">
           <tr *ngFor="let item of applications | orderBy: {property: column, direction: direction} | paginate: config">
             <td class="accordion__collapse-item p-0" colspan="5">
-              <div class="accordion__collapse-header" id="accordHead" role="tab">
+              <div class="accordion__collapse-header" role="tab">
                 <a role="button" class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item._id}}">
                   <i class="material-icons open-icon">arrow_drop_down</i>
                   <i class="material-icons close-icon">arrow_drop_up</i>
                 </a>
-                <span class="accordion__collapse-header--column">
-                  <a [routerLink]="['/a', item._id]">{{item.name}}</a>
+                <span class="accordion__collapse-header--column application-table__name-col">{{item.proponent?.name || '-'}}</span>
+                <span class="accordion__collapse-header--column application-table__cl_file-col">
+                    <a [routerLink]="['/a', item._id]">{{item.cl_files ? item.cl_files.join(', ') : '-'}}</a>
                 </span>
-                <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose}} / {{item.subpurpose}}</span>
-                <!-- TODO: create filter 'unknown' for null/blank region -->
-                <span class="accordion__collapse-header--column application-table__region-col">{{item.region}}</span>
-                <span class="accordion__collapse-header--column application-table__date-col">{{item.projectDate | date}}</span>
-                <span class="accordion__collapse-header--column application-table__status-col">{{item.status || '-'}}</span>
+                <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
+                <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
+                <span class="accordion__collapse-header--column application-table__status-col">{{applicationService.getStatus(item) || '-'}}</span>
               </div>
+
               <div class="collapse" id="accordCollapse{{item._id}}" role="tabpanel">
                 <div class="accordion__collapse-body">
                   <div class="application-table__application-details">
-                    <ul class="application-table__application-details--list list-group">
-                      <li class="list-group-item p-0">
-                        <span class="name">Client:</span>
-                        <span *ngIf="item.proponent && item.proponent.name" class="value">{{item.proponent.name}}</span>
-                      </li>
-                      <li class="list-group-item p-0">
+                    <ul class="nv-list application-table__application-details--list">
+                      <li class="p-0">
                         <span class="name">Type / Subtype:</span>
-                        <span class="value">{{item.type}} / {{item.subtype}}</span>
+                        <span class="value">{{item.type || '-'}} / {{item.subtype || '-'}}</span>
                       </li>
-                      <li class="list-group-item p-0">
+                      <li class="p-0">
                         <span class="name">Location:</span>
-                        <span class="value">{{item.location}}</span>
+                        <span class="value">{{item.location || '-'}}</span>
                       </li>
-                      <!-- <li class="list-group-item p-0">
-                        <span class="name">Legal Description:</span>
-                        <span class="value">{{item.legalDescription}}</span>
-                      </li> -->
-                      <li class="list-group-item p-0">
+                      <li class="p-0">
                         <span class="name">Description:</span>
                         <span class="value" [innerHTML]="item.description | newlines"></span>
                       </li>
                     </ul>
+
                     <div class="application-table__application-details--links">
                       <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item._id]">
                         <i class="material-icons">info_outline</i>
@@ -101,10 +93,10 @@
                         <i class="material-icons">message</i>
                         <span>Review Comments</span>
                       </a>
-                      <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/map', { application: item._id }]">
+                      <!-- <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/map', { application: item._id }]">
                         <i class="material-icons">place</i>
                         <span>Show on Map</span>
-                      </a>
+                      </a> -->
                     </div>
                   </div>
                 </div>
