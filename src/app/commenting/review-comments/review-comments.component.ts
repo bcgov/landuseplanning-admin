@@ -109,6 +109,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
     // get comments
     // this is independent of application data
+    // TODO: turn this into a promise and then() sort and select
     this.commentService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(

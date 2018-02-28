@@ -95,11 +95,10 @@ export class CommentService {
     // keep _commentPeriod
     delete comment.commentNumber;
     // keep comment
-    // replace newlines with \\n
+    // replace newlines with \\n (JSON format)
     comment.comment = comment.comment.replace(/\n/g, '\\n');
     // keep comment.commentAuthor
     // keep comment.commentAuthor.internal
-    delete comment._documents;
     delete comment.review;
     delete comment.dateAdded;
     delete comment.commentStatus;

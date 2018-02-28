@@ -393,7 +393,6 @@ export class ApiService {
       'commentNumber',
       'comment',
       'commentAuthor',
-      '_documents',
       'review',
       'dateAdded',
       'commentStatus'
@@ -415,7 +414,6 @@ export class ApiService {
       'commentNumber',
       'comment',
       'commentAuthor',
-      '_documents',
       'review',
       'dateAdded',
       'commentStatus'

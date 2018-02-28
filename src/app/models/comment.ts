@@ -48,7 +48,6 @@ export class Comment {
   commentNumber: number;
   comment: string;
   commentAuthor: CommentAuthor;
-  _documents: string[]; // list of object ids -> Document
   review: Review;
   dateAdded: Date;
   commentStatus: string;
@@ -62,7 +61,6 @@ export class Comment {
     this.commentNumber  = obj && obj.commentNumber  || 0;
     this.comment        = obj && obj.comment        || null;
     this.commentAuthor  = obj && obj.commentAuthor  || new Comment();
-    this._documents     = obj && obj._documents     || [];
     this.review         = obj && obj.review         || new Review();
     this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;
