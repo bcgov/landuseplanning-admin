@@ -14,7 +14,7 @@
     <section>
       <h2>Crown Lands Applications in British Columbia</h2>
       <p class="tab-intro">Use the list below to navigate to information on individual application. Click on any application to go directly to
-        its details page, or click the<i class="material-icons open-icon" style="vertical-align: middle">arrow_drop_down</i>sign to expand the
+        its details page, or click the <i class="material-icons open-icon" style="vertical-align: middle">arrow_drop_down</i>sign to expand the
         list item to see basic information (e.g., Type, Location, Description, etc.) about that application.
       </p>
 
@@ -27,10 +27,12 @@
         <thead class="application-table__sort-header">
           <tr>
             <th class="application-table__name-col sortable" (click)="sort('proponent')">Client Name
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'proponent' && isDesc), 'sort-desc': (column == 'proponent' && !isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'proponent' && isDesc), 'sort-desc': (column == 'proponent' && !isDesc) }"
+                aria-hidden="true"></i>
             </th>
             <th class="application-table__cl_file-col sortable" (click)="sort('cl_files')">CL File(s)
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_files' && isDesc), 'sort-desc': (column == 'cl_files' && !isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_files' && isDesc), 'sort-desc': (column == 'cl_files' && !isDesc) }"
+                aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
               <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && isDesc), 'sort-desc': (column == 'purpose' && !isDesc) }"
@@ -55,7 +57,7 @@
                 </a>
                 <span class="accordion__collapse-header--column application-table__name-col">{{item.proponent?.name || '-'}}</span>
                 <span class="accordion__collapse-header--column application-table__cl_file-col">
-                    <a [routerLink]="['/a', item._id]">{{item.cl_files ? item.cl_files.join(', ') : '-'}}</a>
+                  <a [routerLink]="['/a', item._id]">{{item.cl_files ? item.cl_files.join(', ') : '-'}}</a>
                 </span>
                 <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
                 <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
@@ -66,9 +68,17 @@
                 <div class="accordion__collapse-body">
                   <div class="application-table__application-details">
                     <ul class="nv-list application-table__application-details--list">
-                      <li class="p-0">
+                      <!-- <li class="p-0">
                         <span class="name">Type / Subtype:</span>
                         <span class="value">{{item.type || '-'}} / {{item.subtype || '-'}}</span>
+                      </li> -->
+                      <li class="p-0">
+                        <span class="name">Comment Period Status:</span>
+                        <span class="value">{{commentPeriodService.getStatus(item.currentPeriod)}}</span>
+                      </li>
+                      <li class="p-0" *ngIf="item.currentPeriod">
+                        <span class="name">Comment Period Dates:</span>
+                        <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}</span>
                       </li>
                       <li class="p-0">
                         <span class="name">Location:</span>

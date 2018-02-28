@@ -4,11 +4,11 @@ import { PaginationInstance } from 'ngx-pagination';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { Application } from '../../models/application';
-import { ApplicationService } from '../../services/application.service';
-import { ApiService } from '../../services/api';
+import { Application } from 'app/models/application';
+import { ApiService } from 'app/services/api';
+import { ApplicationService } from 'app/services/application.service';
 import { OrganizationService } from 'app/services/organization.service';
-import { Organization } from 'app/models/organization';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 @Component({
   selector: 'app-application-list',
@@ -22,8 +22,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   public isDesc: boolean;
   public column: string;
   public direction: number;
-  public loading: boolean;
-  public appCount: number;
+  public loading = true;
   public config: PaginationInstance = {
     id: 'custom',
     itemsPerPage: 25,
@@ -33,11 +32,12 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
   constructor(
-    private router: Router,
-    private applicationService: ApplicationService,
     private _changeDetectionRef: ChangeDetectorRef,
+    private router: Router,
     private api: ApiService,
-    private orgService: OrganizationService
+    private applicationService: ApplicationService,
+    private orgService: OrganizationService,
+    private commentPeriodService: CommentPeriodService
   ) { }
 
   ngOnInit() {
@@ -46,43 +46,41 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    this.loading = true;
     const self = this;
     this.sub = this.applicationService.getAll()
-      // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
         applications => {
-          this.loading = false;
           this.applications = applications;
-          this.appCount = applications ? applications.length : 0;
-          // console.log(this.applications);
-          _.each(this.applications, function (a) {
-            if (a._proponent) {
-              self.orgService.getById(a._proponent)
+          // TODO: should not have to get proponent here because getAll() above is also getting it
+          //       but this works around a change detection issue
+          _.each(this.applications, function (application) {
+            if (application._proponent) {
+              self.orgService.getById(application._proponent)
                 .subscribe(
-                  data => {
+                  proponent => {
+                    self.loading = false;
                     const f = _.find(self.applications, function (app) {
-                      return (app._proponent === data._id);
+                      return (app._proponent === proponent._id);
                     });
                     if (f) {
-                      f.proponent = data;
+                      f.proponent = proponent;
                       self._changeDetectionRef.detectChanges();
                     }
                   },
                   error => {
+                    self.loading = false;
                     console.log('error:', error);
-                  });
+                  }
+                );
             }
           });
-          // Needed in development mode - not required in prod.
+          // Needed in development mode - not required in prod?
           this._changeDetectionRef.detectChanges();
         },
         error => {
           this.loading = false;
           // If 403, redir to /login.
-          if (error.startsWith('403')) {
-            this.router.navigate(['/login']);
-          }
+          if (error.startsWith('403')) { this.router.navigate(['/login']); }
           alert('Error loading applications');
         });
   }

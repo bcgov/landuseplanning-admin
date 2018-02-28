@@ -9,7 +9,6 @@ export class Decision {
   name: string;
   decisionDate: Date;
   description: string;
-  _documents: string[]; // list of object ids -> Document
   documents: Array<Document>;
   isPublished = false;
 
@@ -21,7 +20,6 @@ export class Decision {
     this.name         = obj && obj.name         || null;
     this.decisionDate = obj && obj.decisionDate || null;
     this.description  = obj && obj.description  || null;
-    this._documents   = obj && obj._documents   || [];
 
     this.documents = [];
 

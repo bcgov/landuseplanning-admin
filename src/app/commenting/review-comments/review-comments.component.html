@@ -18,7 +18,7 @@
         <i class="material-icons">date_range</i>
         <span>Manage Comment Periods</span>
       </a>
-      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()" [disabled]="!periodId">
+      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()" disabled>
         <i class="material-icons">add</i>
         <span>Add Comment</span>
       </button>
@@ -62,7 +62,6 @@
               : item.commentStatus === pending ? 'badge-secondary'
               : item.commentStatus === rejected ? 'badge-danger'
               : 'badge-light'">{{item.commentStatus}}</div>
-              <div class="material-icons" *ngIf="item._documents.length > 0">attachment</div>
             </div>
           </a>
         </ng-template>
