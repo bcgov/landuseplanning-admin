@@ -17,18 +17,6 @@ $search-input-font-size: 0.9375rem;
     cursor: pointer;
 }
 
-@media (max-width: 567px) {
-    .search-form {
-        .date-range {
-            &__spacer {
-                display: block;
-                width: 100%;
-                text-align: center;
-            }
-        }
-    }
-}
-
 @media (min-width: 992px) {
     .hero-banner {
         &__content {
@@ -51,6 +39,12 @@ $search-input-font-size: 0.9375rem;
     button {
         &[type="submit"] {
             font-weight: 700;
+        }
+    }
+
+    .date-range {
+        &__spacer {
+            padding: 10px;
         }
     }
 
@@ -97,6 +91,18 @@ $search-input-font-size: 0.9375rem;
 
     .ng2-tag-input {
         border-bottom: 10px solid red;
+    }
+}
+
+@media (max-width: 575px) {
+    .search-form {
+        .date-range {
+            &__spacer {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
     }
 }
 
