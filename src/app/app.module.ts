@@ -42,7 +42,6 @@ import { UsersComponent } from './administration/users/users.component';
 import { AddEditUserComponent } from './administration/users/add-edit-user/add-edit-user.component';
 import { SelectOrganizationComponent } from './applications/select-organization/select-organization.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,7 +70,8 @@ import { SelectOrganizationComponent } from './applications/select-organization/
     NgxPaginationModule,
     Ng2PageScrollModule.forRoot(),
     BootstrapModalModule,
-    MapModule
+    MapModule,
+
   ],
   providers: [
     CookieService,

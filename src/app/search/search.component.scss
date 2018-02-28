@@ -13,6 +13,15 @@ $search-input-font-size: 0.9375rem;
     }
 }
 
+.map {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    touch-action: none;
+    background-color: #445a71;
+  }
+
 .import-link {
     cursor: pointer;
 }

@@ -5,14 +5,15 @@
 <div class="hero-banner search-banner">
   <div class="container">
     <div class="container__inner-container">
-      <div class="hero-banner__content">
+      <!-- <div class="hero-banner__content"> -->
+      <div class="">
         <h1 id="pgTitle">Find in BCGW...</h1>
 
         <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
 
           <div class="search-form__basic-search-fields">
             <div class="form-group mb-0">
-              <input class="form-control" type="text" placeholder="Enter Disposition Trasaction ID..." name="keywordInput" id="keywordInput"
+              <input class="form-control" type="text" placeholder="Enter Crown Lands Number..." name="keywordInput" id="keywordInput"
                 [disabled]="protoSearchActive" [(ngModel)]="terms.clfile"/>
             </div>
           </div>
@@ -130,7 +131,11 @@
 
 <div class="container" id="anchor-point">
   <main>
-
+    <section>
+      <div class="map-container" style="height: 800px; background-color: blue;">
+        <div class="map" id="map"></div>
+      </div>
+    </section>
     <!-- SEARCH RESULTS TEMPLATE -->
     <section class="add-spacer" *ngIf="ranSearch">
       <h2 class="search-results__title" *ngIf="ranSearch && results && count > 0">Showing {{count}} Feature<span *ngIf="count != 1">s</span></h2>
@@ -186,6 +191,7 @@
 
       <h2 class="search-results__title" *ngIf="ranSearch && results && results.length > 0">Showing {{results.length}} out of {{count}} Document<span *ngIf="count != 1">s</span></h2>
     </section>
+
 
     <section>
       <h2>How to use this page...</h2>
