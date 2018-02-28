@@ -9,23 +9,33 @@
     </div>
 
     <div class="modal-body">
+
       <div class="form-group">
         <label>Date Range</label>
         <div class="form-inline">
           <div class="form-group">
-            <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" name="d1" #c1="ngModel" [(ngModel)]="startDate" ngbDatepicker #d1="ngbDatepicker" navigation="arrows" [firstDayOfWeek]="7" />
+            <div class="input-group date-range">
+              <label class="sr-only" for="d1">Start Date</label>
+              <input class="form-control date-range_start" placeholder="yyyy-mm-dd" name="d1" id="d1"
+                ngbDatepicker #d1="ngbDatepicker" [firstDayOfWeek]="7" navigation="arrows"
+                [(ngModel)]="startDate" (ngModelChange)="onDate1Chg($event)" (click)="d1.close(); d2.close();" />
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+                <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button" tabindex="-1">
                   <i class="material-icons">date_range</i>
                 </button>
               </div>
 
-              <span class="date-range__spacer"><i class="material-icons">forward</i></span>
+              <span class="date-range__spacer"><i class="material-icons">add</i></span>
+              <input type="number" class="form-control date-range__delta" min="1" max="365" [(ngModel)]="delta"
+                (ngModelChange)="onDeltaChg($event)">
+              <span class="date-range__spacer"><i class="material-icons">drag_handle</i></span>
 
-              <input class="form-control" placeholder="yyyy-mm-dd" name="d2"  #c2="ngModel"[(ngModel)]="endDate" ngbDatepicker #d2="ngbDatepicker" navigation="arrows" [firstDayOfWeek]="7" />
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+              <label class="sr-only" for="d2">End Date</label>
+              <input class="form-control date-range__end" placeholder="yyyy-mm-dd" name="d2" id="d2"
+                ngbDatepicker #d2="ngbDatepicker" [firstDayOfWeek]="7" navigation="arrows"
+                [(ngModel)]="endDate" (ngModelChange)="onDate2Chg($event)" (click)="d1.close(); d2.close();" />
+              <div class="input-group-append" tabindex="-1">
+                <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button" tabindex="-1">
                   <i class="material-icons">date_range</i>
                 </button>
               </div>

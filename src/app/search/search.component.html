@@ -80,12 +80,16 @@
                 <label class="sr-only" for="dateRangeStart">Start Date</label>
                 <input class="form-control" type="text" placeholder="Start Date" name="dateRangeStartInput" id="dateRangeStart"
                   #dateRangeStart="ngbDatepicker" ngbDatepicker readonly [disabled]="protoSearchActive"
-                  (click)="dateRangeStart.toggle();dateRangeEnd.close();" [(ngModel)]="terms.dateStart"/>
-                <span class="date-range__spacer"> &nbsp;&nbsp; - &nbsp;&nbsp; </span>
+                  (click)="dateRangeStart.toggle(); dateRangeEnd.close();" [(ngModel)]="terms.dateStart"
+                  navigation="arrows" [firstDayOfWeek]="7" />
+
+                <span class="date-range__spacer"><i class="material-icons">forward</i></span>
+
                 <label class="sr-only" for="dateRangeEnd">End Date</label>
                 <input class="form-control" type="text" placeholder="End Date" name="dateRangeEndInput" id="dateRangeEnd"
                   #dateRangeEnd="ngbDatepicker" ngbDatepicker readonly [disabled]="protoSearchActive"
-                  (click)="dateRangeEnd.toggle();dateRangeStart.close();" [(ngModel)]="terms.dateEnd"/>
+                  (click)="dateRangeEnd.toggle(); dateRangeStart.close();" [(ngModel)]="terms.dateEnd"
+                  navigation="arrows" [firstDayOfWeek]="7"/>
               </div>
             </div>
           </div>
@@ -114,7 +118,6 @@
           </div>
 
         </form>
-
       </div>
     </div>
   </div>
@@ -132,7 +135,7 @@
             <tr>
                <th>Import?</th>
                <th>Purpose</th>
-               <th>SubPurpose</th>
+               <th>SubPurp</th>
                <th>CL File</th>
                <th>DIP</th>
                <th>OID</th>
@@ -183,5 +186,6 @@
       <h2>How to use this page...</h2>
       <p>You can use this tool to search for applications available on the BCGW.</p>
     </section>
+
   </main>
 </div>

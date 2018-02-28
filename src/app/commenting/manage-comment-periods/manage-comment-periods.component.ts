@@ -113,7 +113,6 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
 
   public openCommentPeriod(commentPeriod: CommentPeriod, appId: string) {
     if (commentPeriod) {
-      console.log('cp:', commentPeriod);
       this.dialogService.addDialog(AddEditCommentPeriodComponent,
         {
           title: 'Update Comment Period',
