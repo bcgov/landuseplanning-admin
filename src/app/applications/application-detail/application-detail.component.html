@@ -1,104 +1,179 @@
-<div class="hero-banner">
+
+<div class="application-detail">
+
   <div class="container">
-    <div class="container__inner-container">
-      <div class="hero-banner__content">
-        <h1 id="pgTitle">{{application.name}}</h1>
-        <p class="mb-2">{{application.purpose}} / {{application.subpurpose}}</p>
 
-        <div class="application-links">
-          <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods']" [queryParams]="{ application: application._id }">
-            <i class="material-icons">date_range</i>
-            <span>Manage Comment Periods</span>
-          </a>
-          <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments']" [queryParams]="{ application: application._id }">
-            <i class="material-icons">message</i>
-            <span>Review Comments</span>
-          </a>
-          <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/a/' + application._id + '/edit']">
-            <i class="material-icons">mode_edit</i>
-            <span>Edit Application</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    <h1>Application Details</h1>
 
-<div class="container" id="anchor-point">
-  <div class="row">
-    <main class="col-lg-12">
-      <section class="application-description card">
-        <h4 class="card-header">Client</h4>
-        <p *ngIf="application.proponent && application.proponent.name" class="mb-2" [innerHTML]="application.proponent.name"></p>
-      </section>
-      <section class="application-description card">
-        <h4 class="card-header">Description</h4>
-        <p class="mb-2" [innerHTML]="application.description | newlines"></p>
-      </section>
-      <section class="application-details card">
-        <h4 class="card-header">Application Details</h4>
-        <ul class="nv-list application-details--list">
-          <li>
-            <span class="name">Type / Subtype</span>
-            <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Project Date</span>
-            <span class="value">{{application.projectDate | date: 'longDate'}}</span>
-          </li>
-          <li>
-            <span class="name">Status</span>
-            <span class="value">{{applicationService.getStatus(application) || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Region</span>
-            <span class="value">{{application.region || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Location</span>
-            <span class="value">{{application.location || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Area (hectares)</span>
-            <span class="value">{{application.areaHectares | number:'1.2-2'}}</span>
-          </li>
-          <li>
-            <span class="name">Latitude / Longitude</span>
-            <span class="value">{{application.latitude | number:'1.2-2'}} /
-              {{application.longitude | number:'1.2-2'}}</span>
-          </li>
-          <li>
-            <span class="name">Business Unit</span>
-            <span class="value">{{application.businessUnit || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Crown Lands File(s)</span>
-            <span class="value">{{application.cl_files ? application.cl_files.join(', ') : '-'}}</span>
-          </li>
-        </ul>
-      </section>
-      <section class="application-legal_description card">
-        <h4 class="card-header">Legal Description</h4>
-        <p class="mb-2">{{application.legalDescription}}</p>
+    <!--
+    <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/a/' + application._id + '/edit']">
+      <i class="material-icons">mode_edit</i>
+      <span>Edit Application</span>
+    </a>    
+    -->
 
-        <div class="map-section">
+    <div class="row">
+      <main class="col-lg-8">
+        <section class="p-0">
+          <div class="application-detail__client-card card bg-light">
+            <div class="card-header">
+              <h2 class="mb-0" *ngIf="application.proponent && application.proponent.name" [innerHTML]="application.proponent.name"></h2>
+              <span>{{application.purpose}}</span> / <span>{{application.subpurpose}}</span>
+            </div>
+            <div class="card-body">
+              <ul class="application-detail__list">
+                <li>
+                  <span class="name">Type / Subtype</span>
+                  <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Status</span>
+                  <span class="value">{{applicationService.getStatus(application) || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Project Date</span>
+                  <span class="value">{{application.projectDate | date: 'longDate'}}</span>
+                </li>
+                <li>
+                  <span class="name">Region</span>
+                  <span class="value">{{application.region || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Location</span>
+                  <span class="value">{{application.location || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Area (hectares)</span>
+                  <span class="value">{{application.areaHectares | number:'1.2-2'}}</span>
+                </li>
+                <li>
+                  <span class="name">Latitude / Longitude</span>
+                  <span class="value">{{application.latitude | number:'1.2-2'}} /
+                    {{application.longitude | number:'1.2-2'}}</span>
+                </li>
+                <li>
+                  <span class="name">Business Unit</span>
+                  <span class="value">{{application.businessUnit || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Crown Lands File(s)</span>
+                  <span class="value">{{application.cl_files ? application.cl_files.join(', ') : '-'}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- APPLICATION -->
+        <section>
+          <h2>Application</h2>
+          <p [innerHTML]="application.description | newlines"></p>
+          <section class="application-detail__documents mt-2">
+            <h3>Application Documents</h3>
+            <ul class="application-detail__document-list" >
+              <li>
+                <i class="material-icons">&#xE157;</i>
+                <span class="name">File Name</span>
+              </li>
+              <li>
+                <i class="material-icons">&#xE157;</i>
+                <span class="name">File Name</span>
+              </li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- DECISION -->
+        <section>
+          <h2>Decision</h2>
+          <p [innerHTML]="application.description | newlines"></p>
+          <ul class="application-detail__list">
+            <li>
+              <span class="name">Description</span>
+              <span class="value"></span>
+            </li>
+            <li>
+              <span class="name"></span>
+              <span class="value"></span>
+            </li>
+          </ul>
+
+          <section class="application-detail__documents mt-2">
+            <h3>Decision Documents</h3>
+            <ul class="application-detail__document-list">
+              <li>
+                <i class="material-icons">&#xE157;</i>
+                <span class="name">File Name</span>
+              </li>
+              <li>
+                <i class="material-icons">&#xE157;</i>
+                <span class="name">File Name</span>
+              </li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- GEOGRAPHIC SHAPE DATA -->
+        <section class="application-detail__geo-shape-data">
+          <h2>Geographic Shape Data</h2>
+          <ul class="application-detail__list">
+            <li>
+              <span class="name">Type / Subtype</span>
+              <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
+            </li>
+            <li>
+              <span class="name">Area (ha)</span>
+              <span class="value">{{application.areaHectares || '-'}}</span>
+            </li>
+            <li>
+              <span class="name">Legal Description</span>
+              <span class="value" [innerHTML]="application.legalDescription"></span>
+            </li>
+            <li>
+              <span class="name"></span>
+              <span class="value"></span>
+            </li>
+          </ul>
+        </section>
+      </main>
+
+      <aside class="col-lg-4">
+        
+        <div class="map-thumbnail">
           <div class="map-section__thumbnail" (click)="gotoMap()">
             <app-application-map [application]="application" [zoom]="4"></app-application-map>
           </div>
         </div>
-      </section>
-      <section class="related-documents card">
-        <div class="card-header">Related Documents</div>
-        <p>
-          <em>In Progress...</em>
-        </p>
-        <!-- *ngIf="application.collections.documents && application.collections.documents.length > 0">
-        <ul class="list-group">
-          <li class="list-group-item" *ngFor="let d of c.documents">
-            <a href="{{d.ref}}" target="_blank">{{d.name}}</a>
-          </li>
-        </ul> -->
-      </section>
-    </main>
+
+        <!-- COMMENT INFO -->
+        <section class="aside-comment-info bg-light">
+          <h2>Commenting Open</h2>
+          <span class="comment-info-card__date-range">
+            {{application.currentPeriod?.startDate | date:'mediumDate'}} - {{application.currentPeriod?.startDate | date:'mediumDate'}}
+          </span>
+          <div class="comment-info-card__days-remaining">Days Remaining</div>
+          <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods']" [queryParams]="{ application: application._id }">
+            <span>Manage Comment Periods</span>
+            <i class="material-icons">arrow_forward</i>
+          </a>
+        </section>
+
+        <!-- NEW COMMENTS INFO -->
+        <section class="aside-comment-count bg-light">
+          <h2>New Comments</h2>
+          <div>
+            <span>{{comment}}</span>
+            <span></span>
+          </div>
+          <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments']" [queryParams]="{ application: application._id }">
+            <span>Review Comments</span>
+            <i class="material-icons">arrow_forward</i>
+          </a>
+        </section>
+
+      </aside>
+
+    </div>
   </div>
+
 </div>
