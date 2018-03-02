@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ApiService } from '../../services/api';
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
+import { CommentPeriodService } from '../../services/commentperiod.service';
 // import { CollectionsArray } from '../../models/collection';
 // import { DocumentService } from '../../services/document.service';
 
@@ -26,6 +27,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private api: ApiService,
     public applicationService: ApplicationService,
+    private commentPeriodService: CommentPeriodService
     // private documentService: DocumentService,
   ) { }
 
