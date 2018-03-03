@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { ApiService } from '../services/api';
-import { JwtUtil } from '../jwt-util';
+import { ApiService } from 'app/services/api';
+import { JwtUtil } from 'app/jwt-util';
 
 @Component({
   selector: 'app-header',
