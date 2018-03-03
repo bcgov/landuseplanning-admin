@@ -73,7 +73,7 @@ export class ApiService {
       'subtype',
       'purpose',
       'subpurpose',
-      '_proponent',
+      '_proponent', // TODO: change to _organization
       'latitude',
       'internal',
       'longitude',
@@ -108,7 +108,7 @@ export class ApiService {
       'areaHectares',
       'purpose',
       'subpurpose',
-      '_proponent',
+      '_proponent', // TODO: change to _organization
       'internal',
       'latitude',
       'longitude',
@@ -213,39 +213,6 @@ export class ApiService {
       'name'
     ];
     let queryString = 'organization/' + id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
-  }
-  //
-  // Proponents
-  //
-  getProponents() {
-    const fields = [
-      '_addedBy',
-      'code',
-      'name'
-    ];
-    let queryString = 'proponent?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
-  }
-  getProponent(id: string) {
-    const fields = [
-      '_addedBy',
-      'code',
-      'name'
-    ];
-    let queryString = 'proponent/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });

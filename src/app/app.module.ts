@@ -23,7 +23,6 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 // services
 import { SearchService } from 'app/services/search.service';
-import { ProponentService } from 'app/services/proponent.service';
 import { AuthenticationService } from 'app/services/authentication.service';
 import { ApplicationService } from 'app/services/application.service';
 import { OrganizationService } from 'app/services/organization.service';
@@ -78,7 +77,6 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
   providers: [
     CookieService,
     SearchService,
-    ProponentService,
     AuthenticationService,
     ApplicationService,
     OrganizationService,

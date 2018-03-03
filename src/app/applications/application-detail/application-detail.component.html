@@ -1,7 +1,7 @@
 
 <div class="application-detail">
 
-  <div class="container">
+  <div class="container" *ngIf="application">
 
     <h1>Application Details</h1>
 
@@ -15,8 +15,8 @@
         <section class="p-0">
           <div class="application-detail__client-card card bg-light">
             <div class="card-header">
-              <h2 class="mb-0" *ngIf="application.proponent && application.proponent.name" [innerHTML]="application.proponent.name"></h2>
-              <span>{{application.purpose}}</span> / <span>{{application.subpurpose}}</span>
+              <h2 class="mb-0" >{{application.organization?.name || 'Unknown'}}</h2>
+              <span>{{application.purpose || '-'}}</span> / <span>{{application.subpurpose || '-'}}</span>
             </div>
             <div class="card-body">
               <ul class="application-detail__list">
@@ -30,7 +30,7 @@
                 </li>
                 <li>
                   <span class="name">Project Date</span>
-                  <span class="value">{{application.projectDate | date: 'longDate'}}</span>
+                  <span class="value">{{application.projectDate | date:'longDate'}}</span>
                 </li>
                 <li>
                   <span class="name">Region</span>
@@ -42,7 +42,7 @@
                 </li>
                 <li>
                   <span class="name">Area (hectares)</span>
-                  <span class="value">{{application.areaHectares | number:'1.2-2'}}</span>
+                  <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
                 </li>
                 <li>
                   <span class="name">Latitude / Longitude</span>
