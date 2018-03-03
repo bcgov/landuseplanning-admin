@@ -10,37 +10,38 @@ import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { CookieService } from 'ngx-cookie-service';
 import { TagInputModule } from 'ngx-chips';
 
-import { AppRoutingModule } from './app-routing.module';
-import { SharedModule } from './shared/shared.module';
+import { AppRoutingModule } from 'app/app-routing.module';
+import { SharedModule } from 'app/shared/shared.module';
 
 // components
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { ObjectFilterPipe } from './object-filter.pipe';
-import { SearchComponent } from './search/search.component';
-import { LoginComponent } from './login/login.component';
-import { ConfirmComponent } from './confirm/confirm.component';
+import { AppComponent } from 'app/app.component';
+import { HomeComponent } from 'app/home/home.component';
+import { ObjectFilterPipe } from 'app/object-filter.pipe';
+import { SearchComponent } from 'app/search/search.component';
+import { LoginComponent } from 'app/login/login.component';
+import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 // services
-import { SearchService } from './services/search.service';
-import { ProponentService } from './services/proponent.service';
-import { AuthenticationService } from './services/authentication.service';
-import { ApplicationService } from './services/application.service';
-import { OrganizationService } from './services/organization.service';
-import { CommentPeriodService } from './services/commentperiod.service';
-import { CommentService } from './services/comment.service';
-import { DocumentService } from './services/document.service';
-import { UserService } from './services/user.service';
+import { SearchService } from 'app/services/search.service';
+import { ProponentService } from 'app/services/proponent.service';
+import { AuthenticationService } from 'app/services/authentication.service';
+import { ApplicationService } from 'app/services/application.service';
+import { OrganizationService } from 'app/services/organization.service';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { CommentService } from 'app/services/comment.service';
+import { DocumentService } from 'app/services/document.service';
+import { UserService } from 'app/services/user.service';
 
 // feature modules
-import { ApplicationsModule } from './applications/applications.module';
-import { CommentingModule } from './commenting/commenting.module';
-import { MapModule } from './map/map.module';
-import { HeaderComponent } from './header/header.component';
-import { AdministrationComponent } from './administration/administration.component';
-import { UsersComponent } from './administration/users/users.component';
-import { AddEditUserComponent } from './administration/users/add-edit-user/add-edit-user.component';
-import { SelectOrganizationComponent } from './applications/select-organization/select-organization.component';
+import { ApplicationsModule } from 'app/applications/applications.module';
+import { CommentingModule } from 'app/commenting/commenting.module';
+import { MapModule } from 'app/map/map.module';
+import { HeaderComponent } from 'app/header/header.component';
+import { FooterComponent } from 'app/footer/footer.component';
+import { AdministrationComponent } from 'app/administration/administration.component';
+import { UsersComponent } from 'app/administration/users/users.component';
+import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
+import { SelectOrganizationComponent } from 'app/applications/select-organization/select-organization.component';
 
 
 @NgModule({
@@ -52,6 +53,7 @@ import { SelectOrganizationComponent } from './applications/select-organization/
     LoginComponent,
     ConfirmComponent,
     HeaderComponent,
+    FooterComponent,
     AdministrationComponent,
     UsersComponent,
     AddEditUserComponent,

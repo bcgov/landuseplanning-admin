@@ -2,64 +2,8 @@
 
 <router-outlet id="scrollTop"></router-outlet>
 
-<footer class="app-footer">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4">
-				<section>
-					<h4>About this website...</h4>
-					<p class="mb-0">The NRTS Lorem Ipsum.</p>
-				</section>
-			</div>
-			<div class="col-md-4">
-				<section>
-					<h4>Navigate</h4>
-					<h5>Find Applications In British Columbia</h5>
-					<ul>
-						<li>
-							<a href="/applications" [routerLink]="['/applications']">Find Application by List</a>
-						</li>
-						<li>
-							<a href="/map" [routerLink]="['/map']">Find Application by Map</a>
-						</li>
-					</ul>
-					<h5>PRC in British Columbia</h5>
-					<ul>
-						<li>
-							<a href="/lifecycle" [routerLink]="['/lifecycle']">The PRC Lifecycle</a>
-						</li>
-						<li>
-							<a href="/topics-of-interest" [routerLink]="['/topics-of-interest']">Topics of Interest</a>
-						</li>
-						<!-- <li>
-							<a href="/applications" [routerLink]="['/applications']">Find Applications in BC</a>
-						</li> -->
-					</ul>
-				</section>
-			</div>
-			<div class="col-md-4">
-				<section class="last">
-					<h4>More Information</h4>
-					<p>NRTS PRC is continuously evolving. More information and features will be added to the site on an ongoing basis and we welcome feedback to help us decide what would be most valuable.</p>
-					<a class="btn slide-r-btn inverted" href="/contact" [routerLink]="['/contact']"><span>Submit Feedback</span><i class="material-icons">arrow_forward</i></a>
-				</section>
-			</div>
-		</div>
-		<div class="footer-admin clearfix">
-			<ul class="gov-links">
-				<li><a href="#">Home</a></li>
-				<li><a href="http://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a></li>
-				<li><a href="http://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a></li>
-				<li><a href="http://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy</a></li>
-				<li><a href="http://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a></li>
-			</ul>
-		</div>
-	</div>
-</footer>
+<app-footer></app-footer>
 
-<a href="#scrollTop" class="btn scroll-top-btn"
-	pageScroll
-	[pageScrollOffset]="0"
-	[pageScrollDuration]="800">
+<a href="#scrollTop" class="btn scroll-top-btn" pageScroll [pageScrollOffset]="0" [pageScrollDuration]="800">
 	<i class="material-icons">arrow_upward</i>
 </a>

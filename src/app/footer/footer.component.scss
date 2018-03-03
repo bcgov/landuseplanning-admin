@@ -1,0 +1,75 @@
+@import "~assets/styles/base.scss";
+.app-footer {
+    border-top: 4px solid $gold;
+    background: $footer-bg;
+    color: $footer-color;
+    text-align: center;
+    .container {
+        padding-top: 0;
+        padding-bottom: 1rem;
+    }
+    ul {
+        padding: 0;
+        font-size: 0.875rem;
+        list-style-type: none;
+        &.last {
+            margin-bottom: 0;
+        }
+        li {
+            margin-bottom: 0.25rem;
+        }
+    }
+    a {
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        color: $footer-color;
+        &:focus,
+        &:hover {
+            color: $gold;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .app-footer {
+        text-align: left;
+    }
+}
+
+.footer-nav {
+    padding-top: 1rem;
+    .gov-links {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding: 0;
+        li {
+            display: inline-block;
+            margin: 0;
+            line-height: 1rem;
+            &:after {
+                position: relative;
+                top: -1px;
+                display: inline-block;
+                margin-left: 0.5rem;
+                margin-right: 0.25rem;
+                content: '|';
+            }
+            &:last-child {
+                &:after {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .footer-nav {
+        border-top: 1px solid $bg-dark-border-color;
+        .gov-links {
+            float: left;
+        }
+    }
+}
+
+@media (min-width: 1200px) {}
