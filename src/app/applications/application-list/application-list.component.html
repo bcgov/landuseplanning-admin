@@ -75,7 +75,8 @@
                       </li>
                       <li class="p-0">
                         <span class="name">Description:</span>
-                        <span class="value" [innerHTML]="item.description | newlines"></span>
+                        <span class="value" *ngIf="item.description" [innerHTML]="item.description | newlines"></span>
+                        <span class="value" *ngIf="!item.description">-</span>
                       </li>
                     </ul>
 

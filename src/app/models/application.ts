@@ -1,7 +1,9 @@
 import * as _ from 'lodash';
 import { CollectionsList } from './collection';
+import { Document } from './document';
 import { Organization } from './organization';
 import { CommentPeriod } from './commentperiod';
+import { Decision } from './decision';
 
 export class Application {
   _id: string;
@@ -38,7 +40,7 @@ export class Application {
   type: string;
   subtype: string;
 
-  collections: CollectionsList; // used for documents
+  collections: CollectionsList; // TODO: DELETE THIS WHEN DOCUMENTS IS IMPLEMENTED
 
   content: {
     type: string;
@@ -52,10 +54,10 @@ export class Application {
 
   isPublished = false;
 
+  documents: Array<Document>;
   organization: Organization;
   currentPeriod: CommentPeriod;
-
-  // client: string;
+  decision: Decision;
 
   constructor(obj?: any) {
     this._id                     = obj && obj._id                     || null;
@@ -106,11 +108,10 @@ export class Application {
       });
     }
 
+    this.documents = [];
     this.organization = null;
     this.currentPeriod = null;
-
-    // get the client from the organization
-    // this.client = (obj && obj.organization && obj.organization.name) ? obj.organization.name : 'unknown';
+    this.decision = null;
   }
 
   getContent(page: string, type: string): string {

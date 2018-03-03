@@ -29,6 +29,7 @@ import { OrganizationService } from 'app/services/organization.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { CommentService } from 'app/services/comment.service';
 import { DocumentService } from 'app/services/document.service';
+import { DecisionService } from 'app/services/decision.service';
 import { UserService } from 'app/services/user.service';
 
 // feature modules
@@ -83,6 +84,7 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
     CommentPeriodService,
     CommentService,
     DocumentService,
+    DecisionService,
     UserService
   ],
   entryComponents: [

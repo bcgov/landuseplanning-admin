@@ -51,6 +51,7 @@ export class Comment {
   review: Review;
   dateAdded: Date;
   commentStatus: string;
+
   documents: Array<Document>;
   isPublished = false;
 
@@ -65,7 +66,7 @@ export class Comment {
     this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;
 
-    this.documents = new Array<Document>();
+    this.documents = [];
 
     // Wrap isPublished around the tags we receive for this object.
     if (obj && obj.tags) {

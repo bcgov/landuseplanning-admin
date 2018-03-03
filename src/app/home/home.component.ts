@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Home } from '../models/home';
 import { ApplicationService } from '../services/application.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
@@ -12,8 +11,8 @@ import { ApiService } from '../services/api';
 })
 
 export class HomeComponent implements OnInit {
-  results: Array<Home>;
   numApplications: number;
+
   constructor(
     private router: Router,
     private applicationService: ApplicationService,

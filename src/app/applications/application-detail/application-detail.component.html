@@ -65,16 +65,17 @@
         <!-- APPLICATION -->
         <section>
           <h2>Application</h2>
-          <p [innerHTML]="application.description | newlines"></p>
+          <p *ngIf="application.description" [innerHTML]="application.description | newlines"></p>
+          <p *ngIf="!application.description">-</p>
           <section class="application-detail__documents mt-2">
             <h3>Application Documents</h3>
             <ul class="application-detail__document-list" >
               <li>
-                <i class="material-icons">&#xE157;</i>
+                <i class="material-icons">link</i>
                 <span class="name">File Name</span>
               </li>
               <li>
-                <i class="material-icons">&#xE157;</i>
+                <i class="material-icons">link</i>
                 <span class="name">File Name</span>
               </li>
             </ul>
@@ -84,7 +85,8 @@
         <!-- DECISION -->
         <section>
           <h2>Decision</h2>
-          <p [innerHTML]="application.description | newlines"></p>
+          <p *ngIf="application.description" [innerHTML]="application.description | newlines"></p>
+          <p *ngIf="!application.description">-</p>
           <section class="application-detail__documents mt-2">
             <h3>Decision Documents</h3>
             <ul class="application-detail__document-list" >
@@ -93,7 +95,7 @@
                 <span class="name">File Name</span>
               </li>
               <li>
-                <i class="material-icons">link</i>
+                <i class="material-icons">attachment</i>
                 <span class="name">File Name</span>
               </li>
             </ul>
@@ -114,11 +116,8 @@
             </li>
             <li>
               <span class="name">Legal Description</span>
-              <span class="value" [innerHTML]="application.legalDescription"></span>
-            </li>
-            <li>
-              <span class="name"></span>
-              <span class="value"></span>
+              <span class="value" *ngIf="application.legalDescription" [innerHTML]="application.legalDescription"></span>
+              <span class="value" *ngIf="!application.legalDescription">-</span>
             </li>
           </ul>
         </section>

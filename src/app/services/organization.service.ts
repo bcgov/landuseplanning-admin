@@ -9,7 +9,7 @@ import { Organization } from 'app/models/organization';
 
 @Injectable()
 export class OrganizationService {
-  organization: Organization;
+  private organization: Organization = null;
 
   constructor(private api: ApiService) { }
 
@@ -27,12 +27,22 @@ export class OrganizationService {
   }
 
   // get a specific organization by its id
-  getById(id: string): Observable<Organization> {
-    return this.api.getOrganization(id)
+  getById(orgId: string): Observable<Organization> {
+    if (this.organization && this.organization._id === orgId) {
+      return Observable.of(this.organization);
+    }
+
+    return this.api.getOrganization(orgId)
       .map((res: Response) => {
         const organizations = res.text() ? res.json() : [];
         // return the first (only) organization
         return organizations.length > 0 ? new Organization(organizations[0]) : null;
+      })
+      .map((organization: Organization) => {
+        if (!organization) { return null; }
+
+        this.organization = organization;
+        return this.organization;
       })
       .catch(this.api.handleError);
   }
