@@ -1,86 +1,103 @@
 @import "~assets/styles/base.scss";
-.application-links {
-    padding-top: 1rem;
-}
 
-.application-description {
-    p {
-        margin: 0;
-        padding: 0.5rem 0.75rem;
+.application-detail {
+  h1 {
+    margin-bottom: 2rem;
+  }
+
+  section {
+    h3 {
+      font-size: 1rem;
+      font-weight: bold;
     }
-}
+  }
 
-.application-details {
-    // font-size: 0.85rem;
-    &--list {
-        li {
-            @include align-items(start);
-            +li {
-                border-top: 1px solid #fff;
-            }
-        }
-        .name,
-        .value {
-            margin: 0;
-            padding: 0.5rem 0.75rem;
-            width: 50%;
-        }
-    }
-}
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
 
-.map-section {
-    margin-bottom: 0;
-    display: table;
-    width: 100%;
-    overflow: hidden;
-    background: #eee;
-    &__thumbnail {
-        display: table-cell;
-        text-align: center;
-        vertical-align: middle;
-        transform: scale(1.4);
-        cursor: pointer;
-    }
-}
+  &__list {
+    @include clearfix();
 
-.related_documents {
     li {
-        line-height: 1.25rem;
-        font-size: 0.875rem;
-        +li {
-            border-top: 1px solid #fff;
-        }
-    }
-}
+      .name, 
+      .value {
+        display: block;
+      }
 
-@media (max-width: 760px) {
-    .related_documents {
-        .card-header {
-            padding: 0.3rem 1rem;
-            font-size: 0.7rem;
-        }
+      .name {
+        font-weight: bold;
+      }
     }
-}
+  }
 
-@media (min-width: 760px) {
-    .application-details {
-        &--list {
-            .name {
-                margin: 0;
-                padding: 0.5rem 0.75rem;
-                width: 25%;
-            }
-            .value {
-                margin: 0;
-                padding: 0.5rem 0.75rem;
-                width: 75%;
-            }
-        }
+  &__client-card {
+    ul {
+      @include clearfix();
     }
-    .related_documents {
-        .card-header {
-            padding: 0.3rem 1rem;
-            font-size: 0.875rem;
-        }
+
+    li {
+      margin-top: 1rem;
+      float: left;
+      width: 50%;
+
+      &:nth-child(1),
+      &:nth-child(2) {
+        margin-top: 0;
+      }
     }
+
+    .card {
+      &-header,
+      &-body {
+        padding: 1.5rem;
+      }
+    }
+  }
+
+  &__geo-shape-data {
+    ul {
+      @include clearfix();
+    }
+
+    li {
+      margin-top: 1rem;
+      float: left;
+      width: 50%;
+
+      &:nth-child(1),
+      &:nth-child(2) {
+        margin-top: 0;
+      }
+
+      &:nth-child(3) {
+        width: 100%;
+      }
+    }
+  }
+
+  main {
+    section {
+      padding: 1.5rem;
+      background: #f7f8fa;
+
+      > section {
+        padding: 0;
+      }
+    }
+  }
+
+  aside {
+    section {
+      padding: 1.5rem;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+
 }

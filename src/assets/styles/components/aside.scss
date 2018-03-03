@@ -1,8 +1,6 @@
 @import "~assets/styles/base.scss";
 
 aside {
-    margin-top: 2rem;
-
     section {
         + section {
             margin-top: 1.5rem;
@@ -23,11 +21,5 @@ aside {
 
     .card-body {
         background: $aside-bg;
-    }
-}
-
-@media (min-width: 992px) {
-    aside {
-        margin-top: 0.75rem;
     }
 }
