@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Params, Router, NavigationEnd } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../services/api';
 import { JwtUtil } from '../jwt-util';
 
@@ -8,12 +8,13 @@ import { JwtUtil } from '../jwt-util';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+
+export class HeaderComponent {
   welcomeMsg: String;
   private _api: ApiService;
   private jwt: {
-      username: String,
-      scopes: Array<String>
+    username: String,
+    scopes: Array<String>
   };
 
   constructor(private api: ApiService, private router: Router) {
@@ -21,25 +22,21 @@ export class HeaderComponent implements OnInit {
     router.events.subscribe((val) => {
       // TODO: Change this to observe the change in the _api.token
       if (val instanceof NavigationEnd && val.url !== '/login' && this._api.token) {
-          const jwt = new JwtUtil().decodeToken(this._api.token);
-          this.welcomeMsg = 'Hello ' + jwt.username;
-          this.jwt = jwt;
+        const jwt = new JwtUtil().decodeToken(this._api.token);
+        this.welcomeMsg = 'Hello ' + jwt.username;
+        this.jwt = jwt;
       } else {
-          this.welcomeMsg = 'Login';
-          this.jwt = null;
+        this.welcomeMsg = 'Login';
+        this.jwt = null;
       }
       // console.log('val:', val instanceof NavigationEnd);
     });
   }
 
-  ngOnInit() {
-
-  }
-
   renderMenu(route: String) {
     // Sysadmin's get administration.
     if (route === 'administration') {
-        return (this.jwt && this.jwt.scopes.find(x => x === 'sysadmin'));
+      return (this.jwt && this.jwt.scopes.find(x => x === 'sysadmin'));
     }
   }
 }
