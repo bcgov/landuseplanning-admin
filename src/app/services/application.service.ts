@@ -6,18 +6,23 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
 
+import { Application } from 'app/models/application';
 import { ApiService } from './api';
+import { DocumentService } from './document.service';
 import { OrganizationService } from './organization.service';
 import { CommentPeriodService } from './commentperiod.service';
-import { Application } from 'app/models/application';
+import { DecisionService } from './decision.service';
 
 @Injectable()
 export class ApplicationService {
+  private application: Application = null;
 
   constructor(
     private api: ApiService,
+    private documentService: DocumentService,
     private organizationService: OrganizationService,
-    private commentPeriodService: CommentPeriodService
+    private commentPeriodService: CommentPeriodService,
+    private decisionService: DecisionService
   ) { }
 
   // get count of applications
@@ -150,9 +155,13 @@ export class ApplicationService {
   }
 
   // get a specific application by its id
-  getById(id: string): Observable<Application> {
+  getById(appId: string): Observable<Application> {
+    if (this.application && this.application._id === appId) {
+      return Observable.of(this.application);
+    }
+
     // first get the application data
-    return this.api.getApplication(id)
+    return this.api.getApplication(appId)
       .map((res: Response) => {
         const applications = res.text() ? res.json() : [];
         // return the first (only) application
@@ -169,13 +178,26 @@ export class ApplicationService {
           );
         }
 
+        // get the documents
+        this.documentService.getAllByApplicationId(application._id).subscribe(
+          documents => this.application.documents = documents,
+          error => console.log(error)
+        );
+
         // get the current comment period
         this.commentPeriodService.getAllByApplicationId(application._id).subscribe(
           periods => application.currentPeriod = this.commentPeriodService.getCurrent(periods),
           error => console.log(error)
         );
 
-        return application;
+        // get the decision
+        this.decisionService.getByApplicationId(application._id).subscribe(
+          decision => this.application.decision = decision,
+          error => console.log(error)
+        );
+
+        this.application = application;
+        return this.application;
       })
       .catch(this.api.handleError);
   }

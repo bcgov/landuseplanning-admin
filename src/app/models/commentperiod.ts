@@ -12,6 +12,7 @@ export class CommentPeriod {
     notes: string;
     _addedBy: string;
   };
+
   isPublished = false;
 
   constructor(obj?: any) {

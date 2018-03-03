@@ -15,6 +15,7 @@ import { Document } from 'app/models/document';
 
 @Injectable()
 export class DocumentService {
+  private document: Document = null;
   // searchResult: SearchArray;
 
   constructor(private api: ApiService) { }
@@ -60,11 +61,21 @@ export class DocumentService {
 
   // get a specific document by its id
   getById(documentId): Observable<Document> {
+    if (this.document && this.document._id === documentId) {
+      return Observable.of(this.document);
+    }
+
     return this.api.getDocument(documentId)
       .map((res: Response) => {
         const document = res.text() ? res.json() : [];
         // return the first (only) document
         return document.length > 0 ? new Document(document[0]) : null;
+      })
+      .map((document: Document) => {
+        if (!document) { return null; }
+
+        this.document = document;
+        return this.document;
       })
       .catch(this.api.handleError);
   }

@@ -14,6 +14,8 @@ import { Comment } from 'app/models/comment';
 
 @Injectable()
 export class CommentService {
+  private comment: Comment = null;
+
   constructor(
     private api: ApiService,
     private commentPeriodService: CommentPeriodService,
@@ -59,6 +61,10 @@ export class CommentService {
 
   // get a specific comment by its id
   getById(commentId: string): Observable<Comment> {
+    if (this.comment && this.comment._id === commentId) {
+      return Observable.of(this.comment);
+    }
+
     return this.api.getComment(commentId)
       .map((res: Response) => {
         const comments = res.text() ? res.json() : [];
@@ -74,7 +80,8 @@ export class CommentService {
           error => console.log(error)
         );
 
-        return comment;
+        this.comment = comment;
+        return this.comment;
       })
       .catch(this.api.handleError);
   }

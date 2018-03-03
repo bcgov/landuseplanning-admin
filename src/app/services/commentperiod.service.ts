@@ -9,6 +9,7 @@ import { CommentPeriod } from 'app/models/commentperiod';
 
 @Injectable()
 export class CommentPeriodService {
+  private commentPeriod: CommentPeriod = null;
   commentStatuses = {};
 
   constructor(private api: ApiService) {
@@ -33,11 +34,21 @@ export class CommentPeriodService {
 
   // get a specific comment period by its id
   getById(periodId: string): Observable<CommentPeriod> {
+    if (this.commentPeriod && this.commentPeriod._id === periodId) {
+      return Observable.of(this.commentPeriod);
+    }
+
     return this.api.getPeriod(periodId)
       .map((res: Response) => {
         const periods = res.text() ? res.json() : [];
         // return the first (only) comment period
         return periods.length > 0 ? new CommentPeriod(periods[0]) : null;
+      })
+      .map((commentPeriod: CommentPeriod) => {
+        if (!commentPeriod) { return null; }
+
+        this.commentPeriod = commentPeriod;
+        return this.commentPeriod;
       })
       .catch(this.api.handleError);
   }

@@ -12,6 +12,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { Application } from 'app/models/application';
+// import { Organization } from 'app/models/organization';
+import { Decision } from 'app/models/decision';
 import { CommentPeriod } from 'app/models/commentperiod';
 import { Comment } from 'app/models/comment';
 import { Document } from 'app/models/document';
@@ -163,7 +165,7 @@ export class ApiService {
       'areaHectares',
       'purpose',
       'subpurpose',
-      '_proponent',
+      '_proponent', // TODO: change to _organization
       'latitude',
       'longitude',
       'location',
@@ -261,6 +263,30 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  addDecision(decision: Decision) {
+    const fields = ['_application', 'decisionDate', 'description'];
+    let queryString = 'decision?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.post(this.pathAPI, queryString, decision, { headers: headers });
+  }
+
+  saveDecision(decision: Decision) {
+    const fields = ['_application', 'decisionDate', 'description'];
+    let queryString = 'decision/' + decision._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, queryString, decision, { headers: headers });
   }
 
   //

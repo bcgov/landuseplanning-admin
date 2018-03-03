@@ -9,6 +9,7 @@ export class Decision {
   name: string;
   decisionDate: Date;
   description: string;
+
   documents: Array<Document>;
   isPublished = false;
 
