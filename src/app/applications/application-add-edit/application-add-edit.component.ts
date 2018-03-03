@@ -67,8 +67,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   selectClient() {
     const self = this;
     let orgId = null;
-    if (this.application.proponent) {
-      orgId = this.application.proponent._id;
+    if (this.application.organization) {
+      orgId = this.application.organization._id;
     }
     this.dialogService.addDialog(SelectOrganizationComponent,
       {
@@ -83,9 +83,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           self.orgService.getById(selectedOrgId)
             .subscribe(
               data => {
-                self.application.proponent = new Organization(data);
+                self.application.organization = new Organization(data);
                 // Update current reference.
-                self.application._proponent = data._id;
+                self.application._organization = data._id;
               },
               error => {
                 console.log('error =', error);
@@ -242,25 +242,26 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         (data: { application: Application }) => {
           this.loading = false;
           this.application = data.application;
-          if (!this.application.projectDate) {
-            this.application.projectDate = new Date();
-          }
-          this.application.projectDate = moment(this.application.projectDate).format();
           // application not found --> navigate back to application list
           if (!this.application || !this.application._id) {
             console.log('application not found');
             this.router.navigate(['/applications']);
           }
 
+          if (!this.application.projectDate) {
+            this.application.projectDate = new Date();
+          }
+          this.application.projectDate = moment(this.application.projectDate).format();
+
           this.documentService.getAllByApplicationId(this.application._id)
             .subscribe((docs: Document[]) => {
               this.applicationDocuments = docs;
             });
 
-          if (self.application._proponent) {
-            this.orgService.getById(self.application._proponent)
+          if (self.application._organization) {
+            this.orgService.getById(self.application._organization)
               .subscribe((o: Organization) => {
-                self.application.proponent = new Organization(o);
+                self.application.organization = new Organization(o);
               });
           }
         },

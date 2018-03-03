@@ -51,19 +51,19 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       .subscribe(
         applications => {
           this.applications = applications;
-          // TODO: should not have to get proponent here because getAll() above is also getting it
+          // TODO: should not have to get organization here because getAll() above is also getting it
           //       but this works around a change detection issue
           _.each(this.applications, function (application) {
-            if (application._proponent) {
-              self.orgService.getById(application._proponent)
+            if (application._organization) {
+              self.orgService.getById(application._organization)
                 .subscribe(
-                  proponent => {
+                  organization => {
                     self.loading = false;
                     const f = _.find(self.applications, function (app) {
-                      return (app._proponent === proponent._id);
+                      return (app._organization === organization._id);
                     });
                     if (f) {
-                      f.proponent = proponent;
+                      f.organization = organization;
                       self._changeDetectionRef.detectChanges();
                     }
                   },

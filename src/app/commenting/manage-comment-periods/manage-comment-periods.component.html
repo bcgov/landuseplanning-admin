@@ -7,7 +7,7 @@
 
   <div class="container__inner-container">
     <h1 id="pgTitle">Manage Comment Periods</h1>
-    <p class="mb-2" *ngIf="application">{{application._proponent}} : {{application.purpose}} : {{application.subpurpose}}</p>
+    <p class="mb-2" *ngIf="application">{{application.organization?.name || 'Unknown'}} : {{application.purpose}} : {{application.subpurpose}}</p>
 
     <div class="comment-periods-header__links">
       <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', appId]">

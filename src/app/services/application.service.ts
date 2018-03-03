@@ -45,11 +45,11 @@ export class ApplicationService {
           return Observable.of([]);
         }
 
-        // now get the proponent for each application
+        // now get the organization for each application
         applications.forEach((application, i) => {
-          if (applications[i]._proponent) {
-            this.organizationService.getById(applications[i]._proponent).subscribe(
-              organization => application.proponent = organization,
+          if (applications[i]._organization) {
+            this.organizationService.getById(applications[i]._organization).subscribe(
+              organization => application.organization = organization,
               error => console.log(error)
             );
           }
@@ -161,10 +161,10 @@ export class ApplicationService {
       .map((application: Application) => {
         if (!application) { return; }
 
-        // get the proponent
-        if (application._proponent) {
-          this.organizationService.getById(application._proponent).subscribe(
-            organization => application.proponent = organization,
+        // get the organization
+        if (application._organization) {
+          this.organizationService.getById(application._organization).subscribe(
+            organization => application.organization = organization,
             error => console.log(error)
           );
         }

@@ -29,7 +29,7 @@ export class Application {
   mapsheet: string;
   postID: number;
   projectDate: Date;
-  _proponent: string; // objectid -> Organization
+  _organization: string; // objectid -> Organization
   purpose: string;
   subpurpose: string;
   region: string;
@@ -52,7 +52,7 @@ export class Application {
 
   isPublished = false;
 
-  proponent: Organization;
+  organization: Organization;
   currentPeriod: CommentPeriod;
 
   // client: string;
@@ -83,7 +83,7 @@ export class Application {
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
     this.projectDate             = obj && obj.projectDate             || null;
-    this._proponent              = obj && obj._proponent              || null;
+    this._organization           = obj && obj._proponent              || null; // TODO: change to _organization
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;
@@ -106,11 +106,11 @@ export class Application {
       });
     }
 
-    this.proponent = null;
+    this.organization = null;
     this.currentPeriod = null;
 
-    // get the client from the proponent
-    // this.client = (obj && obj.proponent && obj.proponent.name) ? obj.proponent.name : 'unknown';
+    // get the client from the organization
+    // this.client = (obj && obj.organization && obj.organization.name) ? obj.organization.name : 'unknown';
   }
 
   getContent(page: string, type: string): string {

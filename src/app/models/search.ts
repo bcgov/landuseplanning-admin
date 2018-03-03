@@ -1,5 +1,5 @@
 import { Application } from './application';
-import { Proponent } from './proponent';
+import { Organization } from './organization';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 export class Search {
@@ -65,20 +65,20 @@ export class SearchTerms {
   clfile: string;
   dtid: string;
   applications: Array<Application>;
-  proponents: Array<Proponent>;
-  ownerships: Array<Proponent>;
+  organizations: Array<Organization>;
+  ownerships: Array<Organization>;
   dateStart: NgbDateStruct;
   dateEnd: NgbDateStruct;
 
   constructor() {
-    this.keywords     = '';
-    this.clfile      = '';
-    this.dtid      = '';
-    this.applications = [];
-    this.proponents   = [];
-    this.ownerships   = [];
-    this.dateStart    = null;
-    this.dateEnd      = null;
+    this.keywords       = '';
+    this.clfile         = '';
+    this.dtid           = '';
+    this.applications   = [];
+    this.organizations  = [];
+    this.ownerships     = [];
+    this.dateStart      = null;
+    this.dateEnd        = null;
   }
 
   getParams() {
@@ -100,8 +100,8 @@ export class SearchTerms {
       params['applications'] = this.applications.map(p => p._id).join(',');
     }
 
-    if (this.proponents.length) {
-      params['proponents'] = this.proponents.map(p => p._id).join(',');
+    if (this.organizations.length) {
+      params['organizations'] = this.organizations.map(p => p._id).join(',');
     }
 
     if (this.ownerships.length) {

@@ -3,22 +3,14 @@ import * as _ from 'lodash';
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
-// import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-
-import { DocumentService } from '../services/document.service';
-import { Application } from '../models/application';
-import { Search, SearchTerms } from '../models/search';
-import { Proponent } from '../models/proponent';
-import { ApplicationService } from '../services/application.service';
-import { ProponentService } from '../services/proponent.service';
-import { SearchService } from '../services/search.service';
-// import { ApiService } from '../services/api';
+import 'rxjs/add/operator/map';
 import * as L from 'leaflet';
 
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/map';
-import { AppComponent } from 'app/app.component';
+import { Application } from 'app/models/application';
+import { Organization } from 'app/models/organization';
+import { Search, SearchTerms } from 'app/models/search';
+import { ApplicationService } from 'app/services/application.service';
+import { SearchService } from 'app/services/search.service';
 
 @Component({
   selector: 'app-search',
@@ -45,7 +37,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   noMoreResults: boolean;
   ranSearch: boolean;
   applications: Array<Application>;
-  proponents: Array<Proponent>;
+  organizations: Array<Organization>;
   applicationArray: Array<string>;
   protoSearchActive: boolean;
   showAdvancedFields: boolean;
@@ -62,12 +54,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
   constructor(
-    // calendar: NgbCalendar,
-    private documentService: DocumentService,
     private applicationService: ApplicationService,
-    private proponentService: ProponentService,
     private searchService: SearchService,
-    // private api: ApiService,
     private _changeDetectionRef: ChangeDetectorRef,
     private router: Router,
     private route: ActivatedRoute
@@ -143,7 +131,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     );
   }
 
-   ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
@@ -152,10 +140,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // Call the API and create the project, upon success redirect to the edit.
     this.applicationService.addApplication(item)
-    .subscribe(application => {
-      // console.log('ADDED:', application._id);
-      this.router.navigate(['a/', application._id]);
-    });
+      .subscribe(application => {
+        // console.log('ADDED:', application._id);
+        this.router.navigate(['a/', application._id]);
+      });
   }
 
   toggleAdvancedSearch() {
@@ -178,76 +166,76 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchService.getByCLFile(this.terms.clfile)
       // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
-      data => {
-        this.loading = false;
-        // This outputs the value of data to the web console.
-        this.results = data;
-        const self = this;
+        data => {
+          this.loading = false;
+          // This outputs the value of data to the web console.
+          this.results = data;
+          const self = this;
 
-        // Create the FG for all the layers in this search.
-        if (self.fg) {
-          // console.log('clearing');
-          self.map.removeControl(self.control);
-          _.each(self.layers, function (layer) {
-            self.map.removeLayer(layer);
+          // Create the FG for all the layers in this search.
+          if (self.fg) {
+            // console.log('clearing');
+            self.map.removeControl(self.control);
+            _.each(self.layers, function (layer) {
+              self.map.removeLayer(layer);
+            });
+            self.fg.clearLayers();
+            // console.log('self.fg', self.fg);
+          } else {
+            self.fg = L.featureGroup();
+          }
+          const overlayMaps: { [k: string]: any } = {};
+
+          _.each(this.results.features, function (feature) {
+            const f = JSON.parse(JSON.stringify(feature));
+            delete f.geometry_name;
+            const featureObj: GeoJSON.Feature<any> = f;
+            const layer = L.geoJSON(featureObj);
+            self.layers.push(layer);
+            console.log('props:', featureObj.properties);
+            const options = { maxWidth: 400 };
+            const content = '<h3>' + featureObj.properties.TENURE_TYPE
+              + '<br />'
+              + featureObj.properties.TENURE_SUBTYPE + '</h3>'
+              + '<strong>ShapeID: </strong>' + featureObj.properties.INTRID_SID
+              + '<br />'
+              + '<strong>Disposition: </strong>' + featureObj.properties.DISPOSITION_TRANSACTION_SID
+              + '<br />'
+              + '<strong>Purpose: </strong>' + featureObj.properties.TENURE_PURPOSE
+              + '<br />'
+              + '<strong>Sub Purpose: </strong>' + featureObj.properties.TENURE_SUBPURPOSE
+              + '<br />'
+              + '<strong>Stage: </strong>' + featureObj.properties.TENURE_STAGE
+              + '<br />'
+              + '<strong>Status: </strong>' + featureObj.properties.TENURE_STATUS
+              + '<br />'
+              + '<strong>Hectares: </strong>' + featureObj.properties.TENURE_AREA_IN_HECTARES
+              + '<br />'
+              + '<br />'
+              + '<strong>Legal Description: </strong>' + featureObj.properties.TENURE_LEGAL_DESCRIPTION;
+            const popup = L.popup(options).setContent(content);
+            layer.bindPopup(popup);
+            self.fg.addLayer(layer);
+            layer.addTo(self.map);
+            const st = '<strong>Interest ID:</strong> ' + featureObj.properties.INTRID_SID + '</span>';
+            overlayMaps[st] = layer;
           });
-          self.fg.clearLayers();
-          // console.log('self.fg', self.fg);
-        } else {
-          self.fg = L.featureGroup();
-        }
-        const overlayMaps: {[k: string]: any} = {};
 
-        _.each(this.results.features, function (feature) {
-          const f = JSON.parse(JSON.stringify(feature));
-          delete f.geometry_name;
-          const featureObj: GeoJSON.Feature<any> = f;
-          const layer = L.geoJSON(featureObj);
-          self.layers.push(layer);
-          console.log('props:', featureObj.properties);
-          const options = {maxWidth: 400};
-          const content = '<h3>' + featureObj.properties.TENURE_TYPE
-                          + '<br />'
-                          + featureObj.properties.TENURE_SUBTYPE + '</h3>'
-                          + '<strong>ShapeID: </strong>' + featureObj.properties.INTRID_SID
-                          + '<br />'
-                          + '<strong>Disposition: </strong>' + featureObj.properties.DISPOSITION_TRANSACTION_SID
-                          + '<br />'
-                          + '<strong>Purpose: </strong>' + featureObj.properties.TENURE_PURPOSE
-                          + '<br />'
-                          + '<strong>Sub Purpose: </strong>' + featureObj.properties.TENURE_SUBPURPOSE
-                          + '<br />'
-                          + '<strong>Stage: </strong>' + featureObj.properties.TENURE_STAGE
-                          + '<br />'
-                          + '<strong>Status: </strong>' + featureObj.properties.TENURE_STATUS
-                          + '<br />'
-                          + '<strong>Hectares: </strong>' + featureObj.properties.TENURE_AREA_IN_HECTARES
-                          + '<br />'
-                          + '<br />'
-                          + '<strong>Legal Description: </strong>' + featureObj.properties.TENURE_LEGAL_DESCRIPTION;
-          const popup = L.popup(options).setContent(content);
-          layer.bindPopup(popup);
-          self.fg.addLayer(layer);
-          layer.addTo(self.map);
-          const st = '<strong>Interest ID:</strong> ' + featureObj.properties.INTRID_SID + '</span>';
-          overlayMaps[st] = layer;
+          self.control = L.control.layers(self.baseMaps, overlayMaps, { collapsed: false }).addTo(self.map);
+
+          self.map.fitBounds(self.fg.getBounds());
+
+          if (data && data.totalFeatures) {
+            this.count = data.totalFeatures;
+          }
+
+          // Needed in development mode - not required in prod.
+          this._changeDetectionRef.detectChanges();
+        },
+        error => {
+          this.loading = false;
+          console.log(error);
         });
-
-        self.control = L.control.layers(self.baseMaps, overlayMaps, { collapsed: false }).addTo(self.map);
-
-        self.map.fitBounds(self.fg.getBounds());
-
-        if (data && data.totalFeatures) {
-          this.count = data.totalFeatures;
-        }
-
-        // Needed in development mode - not required in prod.
-        this._changeDetectionRef.detectChanges();
-      },
-      error => {
-        this.loading = false;
-        console.log(error);
-      });
   }
 
   onSubmit() {
