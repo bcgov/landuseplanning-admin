@@ -5,12 +5,10 @@
 
     <h1>Application Details</h1>
 
-    <!--
     <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/a/' + application._id + '/edit']">
       <i class="material-icons">mode_edit</i>
       <span>Edit Application</span>
     </a>    
-    -->
 
     <div class="row">
       <main class="col-lg-8">
@@ -87,26 +85,15 @@
         <section>
           <h2>Decision</h2>
           <p [innerHTML]="application.description | newlines"></p>
-          <ul class="application-detail__list">
-            <li>
-              <span class="name">Description</span>
-              <span class="value"></span>
-            </li>
-            <li>
-              <span class="name"></span>
-              <span class="value"></span>
-            </li>
-          </ul>
-
           <section class="application-detail__documents mt-2">
             <h3>Decision Documents</h3>
-            <ul class="application-detail__document-list">
+            <ul class="application-detail__document-list" >
               <li>
-                <i class="material-icons">&#xE157;</i>
+                <i class="material-icons">attachment</i>
                 <span class="name">File Name</span>
               </li>
               <li>
-                <i class="material-icons">&#xE157;</i>
+                <i class="material-icons">link</i>
                 <span class="name">File Name</span>
               </li>
             </ul>
