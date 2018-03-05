@@ -125,11 +125,6 @@
           </div>
         </div>
 
-        <a class="btn content-btn slide-l-btn btn-sm d-block" [routerLink]="['/a/' + application._id + '/edit']">
-          <i class="material-icons">mode_edit</i>
-          <span>Edit Application</span>
-        </a>
-
         <!-- COMMENT INFO -->
         <section class="aside-comment-info bg-light">
           <h2>Commenting Open</h2>
@@ -155,6 +150,13 @@
             <i class="material-icons">arrow_forward</i>
           </a>
         </section>
+
+        <div style="display: grid; margin-top: 1rem;">
+          <a class="btn content-btn slide-l-btn btn-sm d-inline" [routerLink]="['/a/' + application._id + '/edit']">
+            <i class="material-icons">mode_edit</i>
+            <span>Edit Application</span>
+          </a>
+        </div>
       </aside>
     </div>
   </div>
