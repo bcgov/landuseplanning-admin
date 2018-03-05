@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { OrganizationService } from 'app/services/organization.service';
 import { Organization } from 'app/models/organization';
 import * as _ from 'lodash';
@@ -16,12 +16,15 @@ export interface DataModel {
 })
 export class SelectOrganizationComponent extends DialogComponent<DataModel, string> implements DataModel, OnInit {
   public selectedOrgId: string;
-  public organizations: Organization[];
-  public page: number;
-  public selectedOrg: Organization;
-  constructor(public dialogService: DialogService,
-              private router: Router,
-              private orgService: OrganizationService) {
+  public organizations: Organization[] = [];
+  public page = 1;
+  public selectedOrg: Organization = null;
+
+  constructor(
+    public dialogService: DialogService,
+    private router: Router,
+    private orgService: OrganizationService
+  ) {
     super(dialogService);
   }
 
@@ -31,27 +34,24 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
 
   ngOnInit() {
     const self = this;
-    self.organizations = [];
-    self.selectedOrg = null;
-    self.page = 1;
     this.orgService.getAll()
       .subscribe(
-      data => {
-        _.each(data, function (i) {
-          self.organizations.push(new Organization(i));
-          // Pre-select the existing org if it's in the list
-          if (i._id === self.selectedOrgId) {
-            self.selectedOrg = i;
+        data => {
+          _.each(data, function (i) {
+            self.organizations.push(new Organization(i));
+            // Pre-select the existing org if it's in the list
+            if (i._id === self.selectedOrgId) {
+              self.selectedOrg = i;
+            }
+          });
+        },
+        error => {
+          // If 403, redir to /login.
+          if (error.startsWith('403')) {
+            this.router.navigate(['/login']);
           }
+          alert('Error loading users');
         });
-      },
-      error => {
-        // If 403, redir to /login.
-        if (error.startsWith('403')) {
-          this.router.navigate(['/login']);
-        }
-        alert('Error loading users');
-      });
   }
 
   save() {
@@ -59,5 +59,4 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
     // alert('Save is not yet implemented');
     this.close();
   }
-
 }

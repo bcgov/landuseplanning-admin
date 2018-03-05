@@ -10,11 +10,11 @@
     <p class="mb-2" *ngIf="application">{{application.organization?.name || 'Unknown'}} : {{application.purpose}} : {{application.subpurpose}}</p>
 
     <div class="review-comments-links">
-      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', appId]">
+      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', application._id]">
         <i class="material-icons">info_outline</i>
         <span>Application Details</span>
       </a>
-      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods']" [queryParams]="{ application: appId }">
+      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods', application._id]">
         <i class="material-icons">date_range</i>
         <span>Manage Comment Periods</span>
       </a>

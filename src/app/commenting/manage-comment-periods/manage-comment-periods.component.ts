@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
@@ -7,10 +7,9 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/toPromise';
 
 import { Application } from 'app/models/application';
-import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriod } from 'app/models/commentperiod';
-import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { ApiService } from 'app/services/api';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 import { AddEditCommentPeriodComponent } from './add-edit-comment-period/add-edit-comment-period.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
@@ -33,11 +32,10 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 })
 
 export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
-  public loading: boolean;
-  public appId: string;
-  public application: Application;
-  public commentPeriods: Array<CommentPeriod>;
-  public alerts: Array<string>;
+  public loading = true;
+  public application: Application = null;
+  public commentPeriods: Array<CommentPeriod> = [];
+  public alerts: Array<string> = [];
 
   // see official solution:
   // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
@@ -47,10 +45,9 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private applicationService: ApplicationService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private commentPeriodService: CommentPeriodService,
     private api: ApiService,
+    private commentPeriodService: CommentPeriodService,
     private dialogService: DialogService
   ) { }
 
@@ -59,47 +56,29 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   private refreshUI() {
-    // If we're not logged in, redirect.
+    // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
 
-    this.loading = true;
-    this.appId = null;
-    this.application = null;
-    this.commentPeriods = [];
-    this.alerts = [];
+    // get data directly from resolver
+    this.application = this.route.snapshot.data.application;
 
-    // get route parameters
-    this.appId = this.route.snapshot.queryParamMap.get('application');
-
-    // get application
-    // this is independent of comment periods data
-    this.applicationService.getById(this.appId)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        application => {
-          this.application = application;
-          this._changeDetectionRef.detectChanges();
-        },
-        error => {
-          // If 403, redir to /login.
-          if (error.startsWith('403')) {
-            this.router.navigate(['/login']);
-          }
-          this.alerts.push('Error loading application');
-        });
+    // application not found --> navigate back to application list
+    if (!this.application || !this.application._id) {
+      alert('Uh-oh, application not found');
+      this.router.navigate(['/applications']);
+    }
 
     // get comment periods
     // this is independent of application data
-    this.commentPeriodService.getAllByApplicationId(this.appId)
+    this.commentPeriodService.getAllByApplicationId(this.application._id)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         periods => {
           this.loading = false;
           this.commentPeriods = periods;
           this._changeDetectionRef.detectChanges();
-          // TODO: calculate and store status for easier UI
         },
         error => {
           this.loading = false;

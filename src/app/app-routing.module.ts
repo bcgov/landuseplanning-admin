@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { LoginComponent } from './login/login.component';
 import { MainMapComponent } from './map/main-map/main-map.component';
 import { SearchComponent } from './search/search.component';
@@ -29,14 +30,16 @@ const routes: Routes = [
     component: UsersComponent
   },
   {
+    // default route
     path: '',
     component: HomeComponent
-  // },
-  // {
-  //   path: '**',
-  //   component: PageNotFoundComponent
+  },
+  {
+    // wildcard route
+    path: '**',
+    redirectTo: '/',
+    pathMatch: 'full'
   }
-
 ];
 
 @NgModule({

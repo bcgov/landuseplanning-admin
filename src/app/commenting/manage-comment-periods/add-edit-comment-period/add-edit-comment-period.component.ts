@@ -93,7 +93,6 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
       // use moment to handle daylight savings changes
       // this.delta = moment.duration(this.comment.endDate.getTime() - this.comment.startDate.getTime()).days() + 1;
       this.delta = moment(this.comment.endDate).diff(moment(this.comment.startDate), 'days') + 1;
-      console.log('delta =', this.delta);
     }
 
     // update date pickers
