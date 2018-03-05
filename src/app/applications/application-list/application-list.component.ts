@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationInstance } from 'ngx-pagination';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
 import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
-import { OrganizationService } from 'app/services/organization.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 @Component({
@@ -29,15 +29,15 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     currentPage: 1
   };
 
-  private sub: Subscription;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private _changeDetectionRef: ChangeDetectorRef,
-    private router: Router,
     private api: ApiService,
+    private route: ActivatedRoute,
+    private router: Router,
     private applicationService: ApplicationService,
-    private orgService: OrganizationService,
-    private commentPeriodService: CommentPeriodService
+    private commentPeriodService: CommentPeriodService,
+    private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -46,51 +46,26 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const self = this;
-    this.sub = this.applicationService.getAll()
-      .subscribe(
-        applications => {
-          this.applications = applications;
-          // TODO: should not have to get organization here because getAll() above is also getting it
-          //       but this works around a change detection issue
-          _.each(this.applications, function (application) {
-            if (application._organization) {
-              self.orgService.getById(application._organization)
-                .subscribe(
-                  organization => {
-                    self.loading = false;
-                    const f = _.find(self.applications, function (app) {
-                      return (app._organization === organization._id);
-                    });
-                    if (f) {
-                      f.organization = organization;
-                      self._changeDetectionRef.detectChanges();
-                    }
-                  },
-                  error => {
-                    self.loading = false;
-                    console.log('error:', error);
-                  }
-                );
-            }
-          });
-          // Needed in development mode - not required in prod?
-          this._changeDetectionRef.detectChanges();
-        },
-        error => {
-          this.loading = false;
-          // If 403, redir to /login.
-          if (error.startsWith('403')) { this.router.navigate(['/login']); }
-          alert('Error loading applications');
-        });
+    // approach 1: get data directly from resolver
+    this.applications = this.route.snapshot.data.applications;
+
+    // approach 2: wait for resolver to retrieve applications
+    // this.route.data
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe(
+    //     (data: { applications: Application[] }) => this.applications = data.applications,
+    //     error => console.log(error)
+    //   );
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   createApplication() {
     this.applicationService.addApplication(new Application())
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(application => {
         this.router.navigate(['a/', application._id]);
       });

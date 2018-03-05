@@ -95,7 +95,7 @@ export class CommentPeriodService {
 
   // returns current (latest) period
   // assumes if there's an open period, there isn't also future one
-  getCurrent(periods: Array<CommentPeriod>): CommentPeriod {
+  getCurrent(periods: CommentPeriod[]): CommentPeriod {
     const sortedPeriods = periods.sort((a, b) => a.startDate < b.startDate ? 1 : 0);
     return (sortedPeriods.length > 0) ? sortedPeriods[0] : null;
   }

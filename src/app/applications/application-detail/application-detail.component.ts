@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 import { ApiService } from '../../services/api';
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
 import { CommentPeriodService } from '../../services/commentperiod.service';
-// import { CollectionsArray } from '../../models/collection';
-// import { DocumentService } from '../../services/document.service';
 
 @Component({
   selector: 'app-application-detail',
@@ -16,11 +15,9 @@ import { CommentPeriodService } from '../../services/commentperiod.service';
 })
 
 export class ApplicationDetailComponent implements OnInit, OnDestroy {
-  public loading: boolean;
+  public loading = true;
   public application: Application;
-  // public collections: CollectionsArray;
-
-  private sub: Subscription;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private route: ActivatedRoute,
@@ -28,7 +25,6 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     private api: ApiService,
     public applicationService: ApplicationService,
     private commentPeriodService: CommentPeriodService
-    // private documentService: DocumentService,
   ) { }
 
   ngOnInit(): void {
@@ -37,13 +33,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
       return; // return false;
     }
 
-    this.loading = true;
-
-    // this.collections = [new Collection(this.documentService.getAllByApplicationId())];
-
     // wait for the resolver to retrieve the application details from back-end
-    this.sub = this.route.data
-      // .finally(() => this.loading = false) // TODO: make this work
+    this.route.data
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
         (data: { application: Application }) => {
           this.loading = false;
@@ -52,11 +44,8 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           // application not found --> navigate back to application list
           if (!this.application || !this.application._id) {
             console.log('Application not found!');
-            this.gotoApplicationList();
+            this.router.navigate(['/applications']);
           }
-
-          // this.collections = data.application.collections.documents;
-          // this.collections.sort();
         },
         error => {
           this.loading = false;
@@ -69,11 +58,8 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
-
-  private gotoApplicationList(): void {
-    this.router.navigate(['/applications']);
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   public gotoMap(): void {
@@ -82,5 +68,4 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     const applicationId = this.application ? this.application._id : null;
     this.router.navigate(['/map', { application: applicationId }]);
   }
-
 }

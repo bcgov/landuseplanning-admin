@@ -109,16 +109,17 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
     // get comments
     // this is independent of application data
-    // TODO: turn this into a promise and then() sort and select
     this.commentService.getAllByApplicationId(this.appId)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         comments => {
           this.loading = false;
           this.comments = comments;
-          this.sort(this.sortKeys[0]); // initial order // may not work per below
 
-          // pre-select first comment // doesn't work because we don't have comments yet
+          // initial sort
+          this.sort(this.sortKeys[0]);
+
+          // pre-select first comment
           if (this.comments.length > 0) {
             this.setCurrentComment(this.comments[0]);
           }

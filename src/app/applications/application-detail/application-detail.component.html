@@ -5,11 +5,6 @@
 
     <h1>Application Details</h1>
 
-    <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/a/' + application._id + '/edit']">
-      <i class="material-icons">mode_edit</i>
-      <span>Edit Application</span>
-    </a>    
-
     <div class="row">
       <main class="col-lg-8">
         <section class="p-0">
@@ -124,7 +119,6 @@
       </main>
 
       <aside class="col-lg-4">
-        
         <div class="map-thumbnail">
           <div class="map-section__thumbnail" (click)="gotoMap()">
             <app-application-map [application]="application" [zoom]="4"></app-application-map>
@@ -157,9 +151,13 @@
           </a>
         </section>
 
+        <div style="display: grid; margin-top: 1rem;">
+          <a class="btn content-btn slide-l-btn btn-sm d-inline" [routerLink]="['/a/' + application._id + '/edit']">
+            <i class="material-icons">mode_edit</i>
+            <span>Edit Application</span>
+          </a>
+        </div>
       </aside>
-
     </div>
   </div>
-
 </div>

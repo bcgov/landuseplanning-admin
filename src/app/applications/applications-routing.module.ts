@@ -3,15 +3,18 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
-import { ApplicationDetailResolver } from './application-detail-resolver.service';
 import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
+import { ApplicationListResolver, ApplicationDetailResolver } from './application-resolver.service';
 
-import { TAB_NAV_ROUTES } from './application-detail/routes';
+import { TAB_NAV_ROUTES } from './application-detail/application-detail-routes';
 
 const routes: Routes = [
   {
     path: 'applications',
-    component: ApplicationListComponent
+    component: ApplicationListComponent,
+    resolve: {
+      applications: ApplicationListResolver
+    }
   },
   {
     path: 'a/:appId',
@@ -35,7 +38,10 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [ApplicationDetailResolver]
+  providers: [
+    ApplicationListResolver,
+    ApplicationDetailResolver
+  ]
 })
 
 export class ApplicationsRoutingModule { }

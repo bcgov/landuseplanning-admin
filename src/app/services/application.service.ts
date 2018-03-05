@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/toPromise';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
@@ -36,38 +37,45 @@ export class ApplicationService {
   }
 
   // get all applications
+  // no need for catch statements since we're calling other services
   getAll(): Observable<Application[]> {
-    return this.api.getApplications()
-      .map((res: Response) => {
-        const applications = res.text() ? res.json() : [];
-        applications.forEach((application, index) => {
-          applications[index] = new Application(application);
-        });
-        return applications;
-      })
-      .map((applications: Array<Application>) => {
+    // first get the applications
+    return this.getAllInternal()
+      .mergeMap((applications: Application[]) => {
         if (applications.length === 0) {
-          return Observable.of([]);
+          return [];
         }
+
+        const promises: Array<Promise<any>> = [];
 
         // now get the organization for each application
         applications.forEach((application, i) => {
           if (applications[i]._organization) {
-            this.organizationService.getById(applications[i]._organization).subscribe(
-              organization => application.organization = organization,
-              error => console.log(error)
-            );
+            promises.push(this.organizationService.getById(applications[i]._organization)
+              .toPromise()
+              .then(organization => application.organization = organization));
           }
         });
 
         // now get the current comment period for each application
         applications.forEach((application, i) => {
-          this.commentPeriodService.getAllByApplicationId(applications[i]._id).subscribe(
-            periods => applications[i].currentPeriod = this.commentPeriodService.getCurrent(periods),
-            error => console.log(error)
-          );
+          promises.push(this.commentPeriodService.getAllByApplicationId(applications[i]._id)
+            .toPromise()
+            .then(periods => applications[i].currentPeriod = this.commentPeriodService.getCurrent(periods)));
         });
 
+        return Promise.all(promises).then(() => { return applications; });
+      });
+  }
+
+  // get just the applications
+  private getAllInternal(): Observable<Application[]> {
+    return this.api.getApplications()
+      .map((res: Response) => {
+        const applications = res.text() ? res.json() : [];
+        applications.forEach((application, i) => {
+          applications[i] = new Application(application);
+        });
         return applications;
       })
       .catch(this.api.handleError);
