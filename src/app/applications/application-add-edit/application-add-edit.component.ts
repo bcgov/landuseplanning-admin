@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
@@ -32,7 +32,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public subpurposes = Constants.subpurposes;
   public statuses = Constants.statuses;
 
-  public loading = false;
   public fileList: FileList;
   public application: Application;
   public applicationDocuments: Array<Document> = [];
@@ -45,12 +44,51 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private api: ApiService,
+    private api: ApiService, // also used in template
     private documentService: DocumentService,
     private orgService: OrganizationService,
     private applicationService: ApplicationService,
     private dialogService: DialogService
   ) { }
+
+  ngOnInit() {
+    // if we're not logged in, redirect
+    if (!this.api.ensureLoggedIn()) {
+      return; // return false;
+    }
+
+    // get data directly from resolver
+    this.application = this.route.snapshot.data.application;
+
+    // application not found --> navigate back to application list
+    if (!this.application || !this.application._id) {
+      alert('Uh-oh, application not found');
+      this.router.navigate(['/applications']);
+    }
+
+    if (!this.application.projectDate) {
+      this.application.projectDate = new Date();
+    }
+    this.application.projectDate = moment(this.application.projectDate).format();
+
+    // TODO: this should be cleaned up (do this in service already) -- see list page for example
+    this.documentService.getAllByApplicationId(this.application._id)
+      .subscribe((documents: Document[]) => {
+        this.applicationDocuments = documents;
+      });
+
+    if (this.application._organization) {
+      this.orgService.getById(this.application._organization)
+        .subscribe((organization: Organization) => {
+          this.application.organization = organization;
+        });
+    }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
   fileChange(event) {
     this.fileList = event.target.files;
@@ -224,60 +262,5 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
             });
         }
       });
-  }
-
-  ngOnInit() {
-    // If we're not logged in, redirect.
-    if (!this.api.ensureLoggedIn()) {
-      return; // return false;
-    }
-
-    this.loading = true;
-    const self = this;
-
-    // wait for the resolver to retrieve the application details from back-end
-    this.route.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (data: { application: Application }) => {
-          this.loading = false;
-          this.application = data.application;
-          // application not found --> navigate back to application list
-          if (!this.application || !this.application._id) {
-            console.log('application not found');
-            this.router.navigate(['/applications']);
-          }
-
-          if (!this.application.projectDate) {
-            this.application.projectDate = new Date();
-          }
-          this.application.projectDate = moment(this.application.projectDate).format();
-
-          // TODO: this should be cleaned up (do this in service already) -- see list page for example
-          this.documentService.getAllByApplicationId(this.application._id)
-            .subscribe((docs: Document[]) => {
-              this.applicationDocuments = docs;
-            });
-
-          if (self.application._organization) {
-            this.orgService.getById(self.application._organization)
-              .subscribe((o: Organization) => {
-                self.application.organization = new Organization(o);
-              });
-          }
-        },
-        error => {
-          this.loading = false;
-          // If 403, redir to /login.
-          if (error.startsWith('403')) {
-            this.router.navigate(['/login']);
-          }
-          alert('error loading application');
-        });
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }

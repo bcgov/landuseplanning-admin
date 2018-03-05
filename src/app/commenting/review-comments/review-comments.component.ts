@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -9,7 +9,6 @@ import { DialogService } from 'ng2-bootstrap-modal';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
-import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriod } from 'app/models/commentperiod';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Comment } from 'app/models/comment';
@@ -43,11 +42,10 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly sortKeys = ['Number', 'Name', 'Date', 'Status'];
 
   public loading = true;
-  public appId: string;
   public application: Application;
   public periodId: string;
-  public comments: Array<Comment>;
-  public alerts: Array<string>;
+  public comments: Array<Comment> = [];
+  public alerts: Array<string> = [];
   public currentComment: Comment;
 
   // see official solution:
@@ -58,7 +56,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private applicationService: ApplicationService,
     private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
     private api: ApiService,
@@ -66,34 +63,23 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // If we're not logged in, redirect.
+    // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
 
-    this.comments = [];
-    this.alerts = [];
+    // get data directly from resolver
+    this.application = this.route.snapshot.data.application;
 
-    // get route parameters
-    this.appId = this.route.snapshot.queryParamMap.get('application');
-
-    // get application
-    // this is independent of comment data
-    // TODO: get from route? (see public tabs)
-    this.applicationService.getById(this.appId)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        application => {
-          this.application = application;
-        },
-        error => {
-          if (error.startsWith('403')) { this.router.navigate(['/login']); }
-          this.alerts.push('Error loading application');
-        });
+    // application not found --> navigate back to application list
+    if (!this.application || !this.application._id) {
+      alert('Uh-oh, application not found');
+      this.router.navigate(['/applications']);
+    }
 
     // get comment periods
     // this is independent of application data
-    this.commentPeriodService.getAllByApplicationId(this.appId)
+    this.commentPeriodService.getAllByApplicationId(this.application._id)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         periods => {
@@ -109,7 +95,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
     // get comments
     // this is independent of application data
-    this.commentService.getAllByApplicationId(this.appId)
+    this.commentService.getAllByApplicationId(this.application._id)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         comments => {

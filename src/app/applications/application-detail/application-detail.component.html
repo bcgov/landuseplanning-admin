@@ -1,4 +1,3 @@
-
 <div class="application-detail">
 
   <div class="container" *ngIf="application">
@@ -10,8 +9,9 @@
         <section class="p-0">
           <div class="application-detail__client-card card bg-light">
             <div class="card-header">
-              <h2 class="mb-0" >{{application.organization?.name || 'Unknown'}}</h2>
-              <span>{{application.purpose || '-'}}</span> / <span>{{application.subpurpose || '-'}}</span>
+              <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
+              <span>{{application.purpose || '-'}}</span> /
+              <span>{{application.subpurpose || '-'}}</span>
             </div>
             <div class="card-body">
               <ul class="application-detail__list">
@@ -41,8 +41,7 @@
                 </li>
                 <li>
                   <span class="name">Latitude / Longitude</span>
-                  <span class="value">{{application.latitude | number:'1.2-2'}} /
-                    {{application.longitude | number:'1.2-2'}}</span>
+                  <span class="value">{{application.latitude | number:'1.2-2'}} / {{application.longitude | number:'1.2-2'}}</span>
                 </li>
                 <li>
                   <span class="name">Business Unit</span>
@@ -64,7 +63,7 @@
           <p *ngIf="!application.description">-</p>
           <section class="application-detail__documents mt-2">
             <h3>Application Documents</h3>
-            <ul class="application-detail__document-list" >
+            <ul class="application-detail__document-list">
               <li>
                 <i class="material-icons">link</i>
                 <span class="name">File Name</span>
@@ -84,7 +83,7 @@
           <p *ngIf="!application.description">-</p>
           <section class="application-detail__documents mt-2">
             <h3>Decision Documents</h3>
-            <ul class="application-detail__document-list" >
+            <ul class="application-detail__document-list">
               <li>
                 <i class="material-icons">attachment</i>
                 <span class="name">File Name</span>
@@ -132,7 +131,7 @@
             {{application.currentPeriod?.startDate | date:'mediumDate'}} - {{application.currentPeriod?.startDate | date:'mediumDate'}}
           </span>
           <div class="comment-info-card__days-remaining">Days Remaining</div>
-          <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods']" [queryParams]="{ application: application._id }">
+          <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods', application._id]">
             <span>Manage Comment Periods</span>
             <i class="material-icons">arrow_forward</i>
           </a>
@@ -145,14 +144,14 @@
             <!-- <span>{{comment}}</span> -->
             <span></span>
           </div>
-          <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments']" [queryParams]="{ application: application._id }">
+          <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments', application._id]">
             <span>Review Comments</span>
             <i class="material-icons">arrow_forward</i>
           </a>
         </section>
 
         <div style="display: grid; margin-top: 1rem;">
-          <a class="btn content-btn slide-l-btn btn-sm d-inline" [routerLink]="['/a/' + application._id + '/edit']">
+          <a class="btn content-btn slide-l-btn btn-sm d-inline" [routerLink]="['/a', application._id, 'edit']">
             <i class="material-icons">mode_edit</i>
             <span>Edit Application</span>
           </a>

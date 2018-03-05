@@ -18,9 +18,9 @@ import { AddEditUserComponent } from './add-edit-user/add-edit-user.component';
 
 export class UsersComponent implements OnInit, OnDestroy {
   public users: Array<User>;
-  public loading: boolean;
-  public sysadmins: Array<User>;
-  public standards: Array<User>;
+  public loading = true;
+  public sysadmins: Array<User> = [];
+  public standards: Array<User> = [];
   private sub: Subscription;
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -35,17 +35,12 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   refreshUsersUI() {
-    // If we're not logged in, redirect.
+    // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
 
-    this.loading = true;
-    this.sysadmins = [];
-    this.standards = [];
-
     this.sub = this.userService.getAll()
-      // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
       data => {
         this.loading = false;

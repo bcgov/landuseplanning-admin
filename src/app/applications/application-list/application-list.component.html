@@ -85,11 +85,11 @@
                         <i class="material-icons">info_outline</i>
                         <span>Application Details</span>
                       </a>
-                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods']" [queryParams]="{ application: item._id }">
+                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods', item._id]">
                         <i class="material-icons">date_range</i>
                         <span>Manage Comment Periods</span>
                       </a>
-                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments']" [queryParams]="{ application: item._id }">
+                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments', item._id]">
                         <i class="material-icons">message</i>
                         <span>Review Comments</span>
                       </a>

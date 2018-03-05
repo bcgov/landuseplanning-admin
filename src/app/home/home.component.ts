@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // If we're not logged in, redirect.
+    // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
       return false;
     }

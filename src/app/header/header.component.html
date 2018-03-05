@@ -1,6 +1,6 @@
 <header class="app-header" id="header">
     <nav class="navbar navbar-expand-md justify-content-between">
-        <a class="navbar-brand" href="/" [routerLink]="['/']"></a>
+        <a class="navbar-brand" routerLink="/"></a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav" aria-controls="navbarText" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -16,11 +16,11 @@
                         <span class="caret"></span>
                     </a>
                     <div class="dropdown-menu dm-sm dropdown-menu-right" aria-labelledby="findApplications">
-                        <a class="dropdown-item" href="/applications" [routerLink]="['/applications']">
+                        <a class="dropdown-item" routerLink="/applications">
                             <strong>Find Applications by List</strong>
                             <span class="dd-item-desc">View a list of applications in British Columbia</span>
                         </a>
-                        <a class="dropdown-item" href="/map" [routerLink]="['/map']">
+                        <a class="dropdown-item" routerLink="/map">
                             <strong>Find Applications by Map</strong>
                             <span class="dd-item-desc">Use our interactive map to locate applications across British Columbia</span>
                         </a>
@@ -28,7 +28,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/search" [routerLink]="['/search']" title="Search the BCGW for applications">
+                    <a class="nav-link" routerLink="/search" title="Search the BCGW for applications">
                         <span>Search</span>
                     </a>
                 </li>
@@ -39,10 +39,10 @@
                         <span class="caret"></span>
                     </a>
                     <div class="dropdown-menu dm-sm dropdown-menu-right" aria-labelledby="welcome">
-                        <a class="dropdown-item" *ngIf="renderMenu('administration')" href="/administration" [routerLink]="['/administration']">
+                        <a class="dropdown-item" *ngIf="renderMenu('administration')" routerLink="/administration">
                             <strong>Administration</strong>
                         </a>
-                        <a class="dropdown-item" href="/login" [routerLink]="['/login']">
+                        <a class="dropdown-item" routerLink="/login">
                             <strong>Logout</strong>
                         </a>
                     </div>

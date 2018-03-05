@@ -36,26 +36,24 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private applicationService: ApplicationService,
-    private commentPeriodService: CommentPeriodService,
+    private commentPeriodService: CommentPeriodService, // used in template
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    // If we're not logged in, redirect.
+    // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
 
-    // approach 1: get data directly from resolver
+    // get data directly from resolver
     this.applications = this.route.snapshot.data.applications;
 
-    // approach 2: wait for resolver to retrieve applications
-    // this.route.data
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe(
-    //     (data: { applications: Application[] }) => this.applications = data.applications,
-    //     error => console.log(error)
-    //   );
+    // applications not found --> navigate back to home
+    if (!this.applications) {
+      alert('Uh-oh, applications not found');
+      this.router.navigate(['/']);
+    }
   }
 
   ngOnDestroy(): void {

@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
 import { ApiService } from '../../services/api';
 import { Application } from '../../models/application';
 import { ApplicationService } from '../../services/application.service';
-import { CommentPeriodService } from '../../services/commentperiod.service';
 
 @Component({
   selector: 'app-application-detail',
@@ -15,7 +14,6 @@ import { CommentPeriodService } from '../../services/commentperiod.service';
 })
 
 export class ApplicationDetailComponent implements OnInit, OnDestroy {
-  public loading = true;
   public application: Application;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
@@ -23,38 +21,23 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService,
-    public applicationService: ApplicationService,
-    private commentPeriodService: CommentPeriodService
+    public applicationService: ApplicationService // used in template
   ) { }
 
   ngOnInit(): void {
-    // If we're not logged in, redirect.
+    // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
       return; // return false;
     }
 
-    // wait for the resolver to retrieve the application details from back-end
-    this.route.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (data: { application: Application }) => {
-          this.loading = false;
-          this.application = data.application;
+    // get data directly from resolver
+    this.application = this.route.snapshot.data.application;
 
-          // application not found --> navigate back to application list
-          if (!this.application || !this.application._id) {
-            console.log('Application not found!');
-            this.router.navigate(['/applications']);
-          }
-        },
-        error => {
-          this.loading = false;
-          // If 403, redir to /login.
-          if (error.startsWith('403')) {
-            this.router.navigate(['/login']);
-          }
-          alert('Error loading application');
-        });
+    // application not found --> navigate back to application list
+    if (!this.application || !this.application._id) {
+      alert('Uh-oh, application not found');
+      this.router.navigate(['/applications']);
+    }
   }
 
   ngOnDestroy(): void {
