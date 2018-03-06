@@ -71,6 +71,12 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
+  delete(commentperiod: CommentPeriod): Observable<any> {
+    return this.api.deleteCommentPeriod(commentperiod)
+      .map(res => { return res; })
+      .catch(this.api.handleError);
+  }
+
   publish(commentperiod: CommentPeriod): Observable<CommentPeriod> {
     return this.api.publishCommentPeriod(commentperiod)
       .map(

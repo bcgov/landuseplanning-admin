@@ -159,7 +159,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         if (isConfirmed) {
           //  Delete then refresh
           // TODO: should use service
-          this.api.deleteCommentPeriod(commentPeriod).subscribe(
+          this.api.deleteCommentPeriod(commentPeriod).subscribe( // TODO: should call service instead of API
             data => {
               console.log('accepted');
               this.refreshUI();

@@ -82,7 +82,6 @@ export class ApplicationService {
   }
 
   publish(app: Application): Subscription {
-    // console.log("publish app", app);
     return this.api.publishApplication(app)
       .subscribe(
         value => app.isPublished = true,
@@ -91,7 +90,6 @@ export class ApplicationService {
   }
 
   unPublish(app: Application): Subscription {
-    // console.log("un publish app", app);
     return this.api.unPublishApplication(app)
       .subscribe(
         value => app.isPublished = false,
@@ -99,8 +97,7 @@ export class ApplicationService {
       );
   }
 
-  deleteApplication(app: Application): Observable<any> {
-    // console.log("delete app", app);
+  delete(app: Application): Observable<any> {
     return this.api.deleteApplication(app)
       .map(res => { return res; })
       .catch(this.api.handleError);

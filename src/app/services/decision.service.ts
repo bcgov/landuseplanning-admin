@@ -89,21 +89,25 @@ export class DecisionService {
       .catch(this.api.handleError);
   }
 
-  // publish(decision: Decision) {
-  //   console.log('publish decision =', decision);
-  //   this.api.publishDecision(decision)
-  //     .subscribe(
-  //       value => decision.isPublished = true,
-  //       error => console.log('publish error =', error)
-  //     );
-  // }
+  delete(decision: Decision): Observable<any> {
+    return this.api.deleteDecision(decision)
+      .map(res => { return res; })
+      .catch(this.api.handleError);
+  }
 
-  // unPublish(decision: Decision) {
-  //   console.log('un publish decision =', decision);
-  //   this.api.unPublishDecision(decision)
-  //     .subscribe(
-  //       value => decision.isPublished = false,
-  //       error => console.log('unpublish error =', error)
-  //     );
-  // }
+  publish(decision: Decision) {
+    this.api.publishDecision(decision)
+      .subscribe(
+        value => decision.isPublished = true,
+        error => console.log('publish error =', error)
+      );
+  }
+
+  unPublish(decision: Decision) {
+    this.api.unPublishDecision(decision)
+      .subscribe(
+        value => decision.isPublished = false,
+        error => console.log('unpublish error =', error)
+      );
+  }
 }
