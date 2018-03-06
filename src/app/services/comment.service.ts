@@ -62,8 +62,8 @@ export class CommentService {
   }
 
   // get a specific comment by its id
-  getById(commentId: string): Observable<Comment> {
-    if (this.comment && this.comment._id === commentId) {
+  getById(commentId: string, forceReload: boolean = false): Observable<Comment> {
+    if (this.comment && this.comment._id === commentId && !forceReload) {
       return Observable.of(this.comment);
     }
 

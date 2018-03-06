@@ -27,8 +27,8 @@ export class OrganizationService {
   }
 
   // get a specific organization by its id
-  getById(orgId: string): Observable<Organization> {
-    if (this.organization && this.organization._id === orgId) {
+  getById(orgId: string, forceReload: boolean = false): Observable<Organization> {
+    if (this.organization && this.organization._id === orgId && !forceReload) {
       return Observable.of(this.organization);
     }
 

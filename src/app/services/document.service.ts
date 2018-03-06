@@ -60,8 +60,8 @@ export class DocumentService {
   }
 
   // get a specific document by its id
-  getById(documentId): Observable<Document> {
-    if (this.document && this.document._id === documentId) {
+  getById(documentId, forceReload: boolean = false): Observable<Document> {
+    if (this.document && this.document._id === documentId && !forceReload) {
       return Observable.of(this.document);
     }
 
