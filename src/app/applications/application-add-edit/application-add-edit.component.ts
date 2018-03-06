@@ -71,7 +71,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
     this.application.projectDate = moment(this.application.projectDate).format();
 
-    // TODO: this should be cleaned up (do this in service already) -- see list page for example
+    // TODO: this should be cleaned up (does this in service already) -- see list page for example
     this.documentService.getAllByApplicationId(this.application._id)
       .subscribe((documents: Document[]) => {
         this.applicationDocuments = documents;

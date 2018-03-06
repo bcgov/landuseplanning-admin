@@ -29,7 +29,7 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
   delta = 30; // # days including today
   isNew = false;
   networkMsg: string; // not used
-  comment: CommentPeriod;
+  cp: CommentPeriod = null;
 
   constructor(
     public dialogService: DialogService,
@@ -40,12 +40,12 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
-    this.comment = new CommentPeriod(this.commentPeriod);
-    this.comment._application = this.appId;
+    this.cp = new CommentPeriod(this.commentPeriod);
+    this.cp._application = this.appId;
 
     if (!this.commentPeriod) {
       this.isNew = true;
-      this.comment.internal = { 'notes': '', '_addedBy': '' };
+      this.cp.internal = { 'notes': '', '_addedBy': '' };
 
       // set initial start date and duration
       const n = new Date();
@@ -54,15 +54,15 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
 
     } else {
       // set start and end dates
-      const s = new Date(this.comment.startDate);
-      const e = new Date(this.comment.endDate); // NB: must save e before setting s
+      const s = new Date(this.cp.startDate);
+      const e = new Date(this.cp.endDate); // NB: must save e before setting s
       this.onDate1Chg({ 'year': s.getFullYear(), 'month': s.getMonth() + 1, 'day': s.getDate() });
       this.onDate2Chg({ 'year': e.getFullYear(), 'month': e.getMonth() + 1, 'day': e.getDate() });
     }
   }
 
   onDate1Chg(startDate: NgbDateStruct) {
-    this.comment.startDate = new Date(startDate.year, (startDate.month - 1), startDate.day);
+    this.cp.startDate = new Date(startDate.year, (startDate.month - 1), startDate.day);
     this.setDates(true, false, false);
   }
 
@@ -73,38 +73,38 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
 
   onDate2Chg(endDate: NgbDateStruct) {
     this.endDate = endDate;
-    this.comment.endDate = new Date(endDate.year, (endDate.month - 1), endDate.day);
+    this.cp.endDate = new Date(endDate.year, (endDate.month - 1), endDate.day);
     this.setDates(false, false, true);
   }
 
   private setDates(start?: boolean, delta?: boolean, end?: boolean) {
     if (start) {
       // when start changes, adjust end accordingly
-      this.comment.endDate = new Date(this.comment.startDate);
-      this.comment.endDate.setDate(this.comment.startDate.getDate() + this.delta - 1);
+      this.cp.endDate = new Date(this.cp.startDate);
+      this.cp.endDate.setDate(this.cp.startDate.getDate() + this.delta - 1);
 
     } else if (delta) {
       // when delta changes, adjust end accordingly
-      this.comment.endDate = new Date(this.comment.startDate);
-      this.comment.endDate.setDate(this.comment.startDate.getDate() + this.delta - 1);
+      this.cp.endDate = new Date(this.cp.startDate);
+      this.cp.endDate.setDate(this.cp.startDate.getDate() + this.delta - 1);
 
     } else if (end) {
       // when end changes, adjust delta accordingly
       // use moment to handle daylight savings changes
-      // this.delta = moment.duration(this.comment.endDate.getTime() - this.comment.startDate.getTime()).days() + 1;
-      this.delta = moment(this.comment.endDate).diff(moment(this.comment.startDate), 'days') + 1;
+      // this.delta = moment.duration(this.cp.endDate.getTime() - this.cp.startDate.getTime()).days() + 1;
+      this.delta = moment(this.cp.endDate).diff(moment(this.cp.startDate), 'days') + 1;
     }
 
     // update date pickers
-    const s = new Date(this.comment.startDate);
-    const e = new Date(this.comment.endDate);
+    const s = new Date(this.cp.startDate);
+    const e = new Date(this.cp.endDate);
     this.startDate = { 'year': s.getFullYear(), 'month': s.getMonth() + 1, 'day': s.getDate() };
     this.endDate = { 'year': e.getFullYear(), 'month': e.getMonth() + 1, 'day': e.getDate() };
   }
 
   save() {
     if (this.isNew) {
-      this.commentPeriodService.add(this.comment).subscribe(
+      this.commentPeriodService.add(this.cp).subscribe(
         data => {
           this.result = true;
           this.isNew = false;
@@ -116,7 +116,7 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
           this.close();
         });
     } else {
-      this.commentPeriodService.save(this.comment).subscribe(
+      this.commentPeriodService.save(this.cp).subscribe(
         data => {
           this.result = true;
           this.isNew = false;

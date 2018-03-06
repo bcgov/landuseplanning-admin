@@ -9,7 +9,6 @@
     </div>
 
     <div class="modal-body">
-
       <div class="form-group">
         <label>Date Range</label>
         <div class="form-inline">
@@ -46,12 +45,12 @@
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea rows="5" class="form-control" id="description" name="description" [(ngModel)]="comment.description"></textarea>
+        <textarea rows="5" class="form-control" id="description" name="description" [(ngModel)]="cp.description"></textarea>
       </div>
 
-      <div *ngIf="comment.internal" class="form-group">
+      <div *ngIf="cp.internal" class="form-group">
         <label for="internal.notes">Internal Notes</label>
-        <textarea rows="5" class="form-control" id="internal.notes" name="internal.notes" [(ngModel)]="comment.internal.notes"></textarea>
+        <textarea rows="5" class="form-control" id="internal.notes" name="internal.notes" [(ngModel)]="cp.internal.notes"></textarea>
       </div>
     </div>
 

@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+import * as moment from 'moment-timezone';
 
-import { ApiService } from '../../services/api';
-import { Application } from '../../models/application';
-import { ApplicationService } from '../../services/application.service';
+import { Application } from 'app/models/application';
+import { ApiService } from 'app/services/api';
+import { ApplicationService } from 'app/services/application.service';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 @Component({
   selector: 'app-application-detail',
@@ -20,8 +22,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private api: ApiService,
-    public applicationService: ApplicationService // used in template
+    private api: ApiService, // also used in template
+    public applicationService: ApplicationService, // used in template
+    private commentPeriodService: CommentPeriodService, // used in template
   ) { }
 
   ngOnInit(): void {
@@ -32,6 +35,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
     // get data directly from resolver
     this.application = this.route.snapshot.data.application;
+    console.log('this.application =', this.application);
 
     // application not found --> navigate back to application list
     if (!this.application || !this.application._id) {
@@ -50,5 +54,17 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     // so that the map component can show the popup for it.
     const applicationId = this.application ? this.application._id : null;
     this.router.navigate(['/map', { application: applicationId }]);
+  }
+
+  getDaysRemaining(): string {
+    const today = new Date();
+    const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
+    return (days === 1) ? (days + ' Day Remaining') : (days + ' Days Remaining');
+  }
+
+  getPendingComments(): string {
+    let count: number;
+    count = 0;
+    return (count === 1) ? (count + ' Pending Comment') : (count + ' Pending Comments');
   }
 }
