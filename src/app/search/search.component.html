@@ -2,96 +2,17 @@
   <div class="spinner-new rotating"></div>
 </div>
 
-<div class="hero-banner search-banner">
+<div class="search-banner">
   <div class="container">
     <div class="container__inner-container">
-      <!-- <div class="hero-banner__content"> -->
-      <div class="">
-        <h1 id="pgTitle">Find in BCGW...</h1>
-
+      <div >
+        <h1 id="pgTitle">Search Crown Lands File&nbsp;</h1>
         <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
 
           <div class="search-form__basic-search-fields">
             <div class="form-group mb-0">
               <input class="form-control" type="text" placeholder="Enter Crown Lands Number..." name="keywordInput" id="keywordInput"
                 [disabled]="protoSearchActive" [(ngModel)]="terms.clfile"/>
-            </div>
-          </div>
-
-          <div class="search-form__advanced-search-fields mt-4" id="advancedSearchFields" [hidden]="!showAdvancedFields">
-            <!-- <div class="form-group mb-4">
-              <label for="applications">Application</label>
-              <tag-input class="form-control" name='applicationInput'
-                [secondaryPlaceholder]="'Enter an Application Name'"
-                [identifyBy]="'_id'"
-                [displayBy]="'name'"
-                [(ngModel)]="terms.applications">
-                   <tag-input-dropdown
-                    [identifyBy]="'_id'"
-                    [displayBy]="'name'"
-                    [autocompleteItems]="applications">
-                   </tag-input-dropdown>
-              </tag-input>
-            </div> -->
-            <!-- <div class="form-group mb-4">
-              <label for="dtid">Disposition Trasaction ID</label>
-              <tag-input class="form-control" name='dtidInput'
-                [secondaryPlaceholder]="'Enter an Internal Interest ID'"
-                [identifyBy]="'_id'"
-                [displayBy]="'name'"
-                [(ngModel)]="terms.dtid">
-                   <tag-input-dropdown
-                    [identifyBy]="'_id'"
-                    [displayBy]="'name'"
-                    [autocompleteItems]="dtid">
-                   </tag-input-dropdown>
-              </tag-input>
-            </div>  -->           
-            <!-- <div class="form-group mb-4">
-              <label for="operatorInput">Operator</label>
-              <tag-input class="form-control" name='operatorInput'
-                [secondaryPlaceholder]="'Enter an Operator Name'"
-                [identifyBy]="'_id'"
-                [displayBy]="'company'"
-                [(ngModel)]="terms.organizations">
-                   <tag-input-dropdown
-                    [identifyBy]="'_id'"
-                    [displayBy]="'company'"
-                    [autocompleteItems]="organizations">
-                   </tag-input-dropdown>
-              </tag-input>
-            </div> -->
-            <!-- <div class="form-group mb-4">
-              <label for="ownerInput">Owner</label>
-              <tag-input class="form-control" name='ownerInput'
-                [secondaryPlaceholder]="'Enter an Owner Name'"
-                [identifyBy]="'_id'"
-                [displayBy]="'company'"
-                [(ngModel)]="terms.ownerships">
-                   <tag-input-dropdown
-                    [identifyBy]="'_id'"
-                    [displayBy]="'company'"
-                    [autocompleteItems]="organizations">
-                   </tag-input-dropdown>
-              </tag-input>
-            </div> -->
-            <div class="form-group mb-0">
-              <label>Date Range</label>
-              <div class="form-inline">
-                <label class="sr-only" for="dateRangeStart">Start Date</label>
-                <input class="form-control" type="text" placeholder="Start Date" name="dateRangeStartInput" id="dateRangeStart"
-                  #dateRangeStart="ngbDatepicker" ngbDatepicker readonly [disabled]="protoSearchActive"
-                  (click)="dateRangeStart.toggle(); dateRangeEnd.close();" [(ngModel)]="terms.dateStart"
-                  navigation="arrows" [firstDayOfWeek]="7" />
-
-                <span class="date-range__spacer"><i class="material-icons">forward</i></span>
-
-                <label class="sr-only" for="dateRangeEnd">End Date</label>
-                <input class="form-control" type="text" placeholder="End Date" name="dateRangeEndInput" id="dateRangeEnd"
-                  #dateRangeEnd="ngbDatepicker" ngbDatepicker readonly [disabled]="protoSearchActive"
-                  (click)="dateRangeEnd.toggle(); dateRangeStart.close();" [(ngModel)]="terms.dateEnd"
-                  navigation="arrows" [firstDayOfWeek]="7"/>
-              </div>
             </div>
           </div>
 
@@ -107,19 +28,8 @@
               disabled>
               <i class="material-icons">search</i><span>Searching...</span>
             </button>
-
             <br>
-
-            <!-- <button class="search-form__toggle-advanced-btn btn btn-link" type="button" (click)="toggleAdvancedSearch()">
-              <span *ngIf="!showAdvancedFields">
-                  <i class="material-icons">add_box</i> Show Advanced
-              </span>
-              <span *ngIf="showAdvancedFields">
-                <i class="material-icons">indeterminate_check_box</i> Hide Advanced
-              </span>
-            </button> -->
           </div>
-
         </form>
       </div>
     </div>
@@ -128,46 +38,37 @@
 
 <div class="container" id="anchor-point">
   <main>
-    <section>
-      <div class="map-container" style="height: 800px; background-color: blue;">
-        <div class="map" id="map"></div>
-      </div>
-    </section>
     <!-- SEARCH RESULTS TEMPLATE -->
     <section class="add-spacer" *ngIf="ranSearch">
       <h2 class="search-results__title" *ngIf="ranSearch && results && count > 0">Showing {{count}} Disposition<span *ngIf="count != 1">s</span></h2>
       <section class="card">
-        <table class="table">
+        <table class="table table-sm">
           <thead>
             <tr>
                <th>Import?</th>
+               <th>CL File</th>
                <th>Purpose</th>
                <th>SubPurp</th>
-               <th>CL File</th>
                <th>DIP</th>
-               <th>OID</th>
                <th>RBI</th>
                <th>Location</th>
                <th>Status</th>
                <th>Type</th>
                <th>SubType</th>
-               <th>INTID</th>
             </tr>
           </thead>
           <tbody *ngIf="results && groupByResults">
             <tr *ngFor="let item of groupByResults">
               <td><span class="import-link" *ngIf="!item.isImported" (click)="importProject(item)"><i class="material-icons">input</i></span></td>
+              <td>{{item.properties.CROWN_LANDS_FILE}}</td>
               <td>{{item.properties.TENURE_PURPOSE}}</td>
               <td>{{item.properties.TENURE_SUBPURPOSE}}</td>
-              <td>{{item.properties.CROWN_LANDS_FILE}}</td>
               <td>{{item.properties.DISPOSITION_TRANSACTION_SID}}</td>
-              <td>{{item.properties.OBJECTID}}</td>
               <td>{{item.properties.RESPONSIBLE_BUSINESS_UNIT}}</td>
               <td>{{item.properties.TENURE_LOCATION}}</td>
               <td>{{item.properties.TENURE_STATUS}}</td>
               <td>{{item.properties.TENURE_TYPE}}</td>
               <td>{{item.properties.TENURE_SUBTYPE}}</td>
-              <td>{{item.properties.INTRID_SID}}</td>
             </tr>
           </tbody>
         </table>
@@ -189,11 +90,10 @@
       <h2 class="search-results__title" *ngIf="ranSearch && results && results.length > 0">Showing {{results.length}} out of {{count}} Document<span *ngIf="count != 1">s</span></h2>
     </section>
 
-
-    <section>
-      <h2>How to use this page...</h2>
-      <p>You can use this tool to search for applications available on the BCGW.</p>
-    </section>
-
   </main>
+  <section>
+    <div class="map-container" style="height: 800px; background-color: blue;">
+      <div class="map" id="map"></div>
+    </div>
+  </section>
 </div>
