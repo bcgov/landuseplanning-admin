@@ -179,7 +179,10 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.groupByResults = [];
           const groupedFeatures = _.groupBy(data.features, 'properties.DISPOSITION_TRANSACTION_SID');
 
-          _.each(groupedFeatures, function (value, key) {
+          _.each(groupedFeatures, function (value: any, key) {
+            if (_.includes(data.sidsFound, key)) {
+              value[0].isImported = true;
+            }
             self.groupByResults.push(value[0]);
           });
 
