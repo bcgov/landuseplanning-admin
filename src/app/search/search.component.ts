@@ -31,6 +31,7 @@ import { SearchService } from 'app/services/search.service';
 
 export class SearchComponent implements OnInit, OnDestroy {
   results: Search;
+  groupByResults: Array<any>;
   page: number;
   limit: number;
   count: number;
@@ -47,6 +48,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   myApplications: Array<any>;
   map: L.Map;
   fg: L.FeatureGroup;
+  layerGroups: L.FeatureGroup[];
   layers: L.Layer[];
   tileLayers: L.TileLayer[];
   baseMaps: {};
@@ -158,6 +160,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.page = 0;
       this.count = 0;
       this.results = null;
+      this.groupByResults = [];
       this.noMoreResults = false;
     } else {
       this.page += 1;
@@ -170,17 +173,24 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.loading = false;
           // This outputs the value of data to the web console.
           this.results = data;
+
           const self = this;
 
-          // Create the FG for all the layers in this search.
+          this.groupByResults = [];
+          const groupedFeatures = _.groupBy(data.features, 'properties.DISPOSITION_TRANSACTION_SID');
+
+          _.each(groupedFeatures, function (value, key) {
+            self.groupByResults.push(value[0]);
+          });
+
+          self.layerGroups = [];
+          // Create the FG for all the layers found in this search.
           if (self.fg) {
-            // console.log('clearing');
             self.map.removeControl(self.control);
             _.each(self.layers, function (layer) {
               self.map.removeLayer(layer);
             });
             self.fg.clearLayers();
-            // console.log('self.fg', self.fg);
           } else {
             self.fg = L.featureGroup();
           }
@@ -188,11 +198,11 @@ export class SearchComponent implements OnInit, OnDestroy {
 
           _.each(this.results.features, function (feature) {
             const f = JSON.parse(JSON.stringify(feature));
+            // Needed to be valid GeoJSON
             delete f.geometry_name;
             const featureObj: GeoJSON.Feature<any> = f;
             const layer = L.geoJSON(featureObj);
             self.layers.push(layer);
-            console.log('props:', featureObj.properties);
             const options = { maxWidth: 400 };
             const content = '<h3>' + featureObj.properties.TENURE_TYPE
               + '<br />'
@@ -216,17 +226,27 @@ export class SearchComponent implements OnInit, OnDestroy {
             const popup = L.popup(options).setContent(content);
             layer.bindPopup(popup);
             self.fg.addLayer(layer);
-            layer.addTo(self.map);
-            const st = '<strong>Interest ID:</strong> ' + featureObj.properties.INTRID_SID + '</span>';
-            overlayMaps[st] = layer;
+            const dispLabel = '<strong>Disposition ID:</strong> ' + featureObj.properties.DISPOSITION_TRANSACTION_SID + '</span>';
+            if (!!self.layerGroups[dispLabel]) {
+              // Already exists as a FG.
+            } else {
+              self.layerGroups[dispLabel] = new L.FeatureGroup();
+            }
+            self.layerGroups[dispLabel].addLayer(layer);
+          });
+
+          // Add the layergroups to the map.
+          _.forOwn(self.layerGroups, function (value, key) {
+            overlayMaps[key] = self.layerGroups[key];
+            self.layerGroups[key].addTo(self.map);
           });
 
           self.control = L.control.layers(self.baseMaps, overlayMaps, { collapsed: false }).addTo(self.map);
 
           self.map.fitBounds(self.fg.getBounds());
 
-          if (data && data.totalFeatures) {
-            this.count = data.totalFeatures;
+          if (self.groupByResults) {
+            this.count = self.groupByResults.length;
           }
 
           // Needed in development mode - not required in prod.
