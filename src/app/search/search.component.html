@@ -156,7 +156,7 @@
           </thead>
           <tbody *ngIf="results && groupByResults">
             <tr *ngFor="let item of groupByResults">
-              <td><span class="import-link" (click)="importProject(item)"><i class="material-icons">input</i></span></td>
+              <td><span class="import-link" *ngIf="!item.isImported" (click)="importProject(item)"><i class="material-icons">input</i></span></td>
               <td>{{item.properties.TENURE_PURPOSE}}</td>
               <td>{{item.properties.TENURE_SUBPURPOSE}}</td>
               <td>{{item.properties.CROWN_LANDS_FILE}}</td>

@@ -14,6 +14,7 @@ export class Search {
   status: string;
   hostname: string;
   application: Application;
+  sidsFound: string[];
 
   constructor(search?: any, hostname?: any) {
     this._id            = search && search._id            || null;
@@ -23,6 +24,7 @@ export class Search {
     this.date           = search && search.date           || null;
     this.status         = search && search.status         || null;
     this.application    = search && search.application    || null;
+    this.sidsFound     = search && search.sidsFound       || null;
     this.hostname       = hostname;
 
     this.features = [];
