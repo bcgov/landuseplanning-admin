@@ -11,8 +11,8 @@
     nav {
         margin-bottom: 1rem;
         .list-group {
-            // max-height: 50rem;
-            // overflow-y: auto;
+            max-height: 50rem; // match this with comment-detail height
+            overflow-y: auto;
         }
         .list-group-item {
             cursor: pointer;
@@ -54,7 +54,11 @@
 @media (min-width: 768px) {}
 
 // @include media-breakpoint-up(lg) {}
-@media (min-width: 992px) {}
+@media (min-width: 992px) {
+    main {
+        margin-top: 2rem;
+    }
+}
 
 // @include media-breakpoint-up(xl) {}
 @media (min-width: 1200px) {}

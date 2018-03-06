@@ -33,8 +33,8 @@ export class CommentPeriodService {
   }
 
   // get a specific comment period by its id
-  getById(periodId: string): Observable<CommentPeriod> {
-    if (this.commentPeriod && this.commentPeriod._id === periodId) {
+  getById(periodId: string, forceReload: boolean = false): Observable<CommentPeriod> {
+    if (this.commentPeriod && this.commentPeriod._id === periodId && !forceReload) {
       return Observable.of(this.commentPeriod);
     }
 
@@ -68,6 +68,12 @@ export class CommentPeriodService {
         const cp = res.text() ? res.json() : null;
         return cp ? new CommentPeriod(cp) : null;
       })
+      .catch(this.api.handleError);
+  }
+
+  delete(commentperiod: CommentPeriod): Observable<any> {
+    return this.api.deleteCommentPeriod(commentperiod)
+      .map(res => { return res; })
       .catch(this.api.handleError);
   }
 

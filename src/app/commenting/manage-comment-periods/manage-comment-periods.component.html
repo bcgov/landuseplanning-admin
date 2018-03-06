@@ -42,11 +42,11 @@
             </li>
             <li class="p-0">
               <span class="name">Description:</span>
-              <span class="value" [innerHTML]="item.description | newlines"></span>
+              <span class="value pre-wrap" [innerHTML]="item.description | newlines"></span>
             </li>
             <li class="p-0" *ngIf="item.internal">
               <span class="name">Internal Notes:</span>
-              <span class="value" [innerHTML]="item.internal.notes | newlines"></span>
+              <span class="value pre-wrap" [innerHTML]="item.internal.notes | newlines"></span>
             </li>
             <!-- <li class="p-0">
               <span class="name"># Comments:</span>

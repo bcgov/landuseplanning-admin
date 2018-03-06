@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationInstance } from 'ngx-pagination';
 import { Subject } from 'rxjs/Subject';
@@ -13,8 +13,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 @Component({
   selector: 'app-application-list',
   templateUrl: './application-list.component.html',
-  styleUrls: ['./application-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./application-list.component.scss']
 })
 
 export class ApplicationListComponent implements OnInit, OnDestroy {
@@ -36,8 +35,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private applicationService: ApplicationService,
-    private commentPeriodService: CommentPeriodService, // used in template
-    private _changeDetectionRef: ChangeDetectorRef
+    private commentPeriodService: CommentPeriodService // used in template
   ) { }
 
   ngOnInit() {

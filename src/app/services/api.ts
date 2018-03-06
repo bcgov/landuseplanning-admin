@@ -154,7 +154,7 @@ export class ApiService {
 
   deleteApplication(app: Application) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, 'application/' + app._id, app, { headers: headers });
+    return this.delete(this.pathAPI, 'application/' + app._id, null, { headers: headers });
   }
 
   saveApplication(app: Application) {
@@ -287,6 +287,21 @@ export class ApiService {
     return this.put(this.pathAPI, queryString, decision, { headers: headers });
   }
 
+  deleteDecision(decision: Decision) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.delete(this.pathAPI, 'decision/' + decision._id, null, { headers: headers });
+  }
+
+  publishDecision(decision: Decision) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'decision/' + decision._id + '/publish', null, { headers: headers });
+  }
+
+  unPublishDecision(decision: Decision) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.put(this.pathAPI, 'decision/' + decision._id + '/unpublish', null, { headers: headers });
+  }
+
   //
   // Comment Periods
   //
@@ -353,15 +368,8 @@ export class ApiService {
   }
 
   deleteCommentPeriod(period: CommentPeriod) {
-    const fields = ['_application', 'startDate', 'endDate', 'description'];
-    let queryString = 'commentperiod/' + period._id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, queryString, period, { headers: headers });
+    return this.delete(this.pathAPI, 'commentperiod/' + period._id, null, { headers: headers });
   }
 
   publishCommentPeriod(period: CommentPeriod) {
@@ -500,8 +508,7 @@ export class ApiService {
 
   deleteDocument(file: any) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // First delete the document, then attempt to save the new version of the application
-    return this.delete(this.pathAPI, 'document/' + file._id, file, { headers: headers });
+    return this.delete(this.pathAPI, 'document/' + file._id, null, { headers: headers });
   }
 
   publishDocument(file: any) {

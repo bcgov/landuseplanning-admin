@@ -10,6 +10,7 @@ import { Application } from 'app/models/application';
 import { CommentPeriod } from 'app/models/commentperiod';
 import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { ApplicationService } from 'app/services/application.service';
 
 import { AddEditCommentPeriodComponent } from './add-edit-comment-period/add-edit-comment-period.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
@@ -43,12 +44,13 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
+    private _changeDetectionRef: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private _changeDetectionRef: ChangeDetectorRef,
+    private dialogService: DialogService,
     private api: ApiService,
     private commentPeriodService: CommentPeriodService,
-    private dialogService: DialogService
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit() {
@@ -108,8 +110,10 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         .subscribe((isConfirmed) => {
           // we get dialog result
           if (isConfirmed) {
-            // TODO: reload page (if not observable binding)?
+            // reload page
             this.refreshUI();
+            // reload cached app data
+            this.applicationService.getById(this.application._id, true).subscribe();
           }
         });
     } else {
@@ -129,8 +133,10 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         .subscribe((isConfirmed) => {
           // we get dialog result
           if (isConfirmed) {
-            // TODO: reload page (if not observable binding)?
+            // reload page
             this.refreshUI();
+            // reload cached app data
+            this.applicationService.getById(this.application._id, true).subscribe();
           }
         });
     }
@@ -153,7 +159,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         if (isConfirmed) {
           //  Delete then refresh
           // TODO: should use service
-          this.api.deleteCommentPeriod(commentPeriod).subscribe(
+          this.api.deleteCommentPeriod(commentPeriod).subscribe( // TODO: should call service instead of API
             data => {
               console.log('accepted');
               this.refreshUI();

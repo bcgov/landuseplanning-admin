@@ -18,7 +18,11 @@ export class DecisionService {
   ) { }
 
   // get decision for the specified application id
-  getByApplicationId(appId: string): Observable<Decision> {
+  getByApplicationId(appId: string, forceReload: boolean = false): Observable<Decision> {
+    if (this.decision && this.decision._application === appId && !forceReload) {
+      return Observable.of(this.decision);
+    }
+
     return this.api.getDecisionByAppId(appId)
       .map((res: Response) => {
         const decisions = res.text() ? res.json() : [];
@@ -34,14 +38,15 @@ export class DecisionService {
           error => console.log(error)
         );
 
+        this.decision = decision;
         return decision;
       })
       .catch(this.api.handleError);
   }
 
   // get a specific decision by its id
-  getById(decisionId): Observable<Decision> {
-    if (this.decision && this.decision._id === decisionId) {
+  getById(decisionId, forceReload: boolean = false): Observable<Decision> {
+    if (this.decision && this.decision._id === decisionId && !forceReload) {
       return Observable.of(this.decision);
     }
 
@@ -84,21 +89,25 @@ export class DecisionService {
       .catch(this.api.handleError);
   }
 
-  // publish(decision: Decision) {
-  //   console.log('publish decision =', decision);
-  //   this.api.publishDecision(decision)
-  //     .subscribe(
-  //       value => decision.isPublished = true,
-  //       error => console.log('publish error =', error)
-  //     );
-  // }
+  delete(decision: Decision): Observable<any> {
+    return this.api.deleteDecision(decision)
+      .map(res => { return res; })
+      .catch(this.api.handleError);
+  }
 
-  // unPublish(decision: Decision) {
-  //   console.log('un publish decision =', decision);
-  //   this.api.unPublishDecision(decision)
-  //     .subscribe(
-  //       value => decision.isPublished = false,
-  //       error => console.log('unpublish error =', error)
-  //     );
-  // }
+  publish(decision: Decision) {
+    this.api.publishDecision(decision)
+      .subscribe(
+        value => decision.isPublished = true,
+        error => console.log('publish error =', error)
+      );
+  }
+
+  unPublish(decision: Decision) {
+    this.api.unPublishDecision(decision)
+      .subscribe(
+        value => decision.isPublished = false,
+        error => console.log('unpublish error =', error)
+      );
+  }
 }
