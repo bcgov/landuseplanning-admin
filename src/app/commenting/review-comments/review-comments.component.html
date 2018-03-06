@@ -44,20 +44,17 @@
         <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
           <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="isCurrentComment(item)" (click)="setCurrentComment(item)">
             <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
-              <div>
-                {{item.commentNumber || '#'}}
-              </div>
               <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{item.commentAuthor?.contactName || '-'}}
               </div>
-              <div>
+              <div style="white-space: nowrap;">
                 {{(item.dateAdded | date) || '-'}}
               </div>
             </div>
             <p class="mb-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
               <small>{{item.comment}}</small>
             </p>
-            <div class="d-flex w-100 justify-content-between">
+            <div class="d-flex w-100 justify-content-end">
               <div class="badge" [ngClass]="item.commentStatus === accepted ? 'badge-success'
               : item.commentStatus === pending ? 'badge-secondary'
               : item.commentStatus === rejected ? 'badge-danger'
