@@ -39,7 +39,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly pending = 'Pending';
   readonly rejected = 'Rejected';
 
-  readonly sortKeys = ['Number', 'Name', 'Date', 'Status'];
+  readonly sortKeys = ['Date', 'Name', 'Status'];
 
   public loading = true;
   public application: Application;
@@ -125,9 +125,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   private sort(key: string): Comment[] {
     return this.comments.sort(function (a: Comment, b: Comment) {
       switch (key) {
-        case 'Number': return (a.commentNumber > b.commentNumber) ? 1 : -1;
-        case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
         case 'Date': return (a.dateAdded > b.dateAdded) ? 1 : -1;
+        case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
         case 'Status': return (a.commentStatus > b.commentStatus) ? 1 : -1;
         default: return 0;
       }
