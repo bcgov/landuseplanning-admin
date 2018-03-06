@@ -1,8 +1,12 @@
 <div class="application-detail">
-
   <div class="container" *ngIf="application">
-
-    <h1>Application Details</h1>
+    <div>
+      <h1>Application Details</h1>
+      <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/a', application._id, 'edit']">
+        <i class="material-icons">mode_edit</i>
+        <span>Edit Application</span>
+      </a>
+    </div>
 
     <div class="row">
       <main class="col-lg-8">
@@ -10,47 +14,38 @@
           <div class="application-detail__client-card card bg-light">
             <div class="card-header">
               <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
-              <span>{{application.purpose || '-'}}</span> /
-              <span>{{application.subpurpose || '-'}}</span>
+              <h3>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</h3>
+              <h3>CL # &nbsp;{{application.cl_files ? application.cl_files.join(', ') : '-'}}</h3>
             </div>
+
             <div class="card-body">
+              <h2>BASIC INFORMATION</h2>
+
               <ul class="application-detail__list">
-                <li>
-                  <span class="name">Type / Subtype</span>
-                  <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
-                </li>
                 <li>
                   <span class="name">Status</span>
                   <span class="value">{{applicationService.getStatus(application) || '-'}}</span>
                 </li>
                 <li>
+                  <span class="name">Type / Subtype</span>
+                  <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
+                </li>
+                <!-- <li>
                   <span class="name">Project Date</span>
                   <span class="value">{{application.projectDate | date:'longDate'}}</span>
-                </li>
+                </li> -->
                 <li>
                   <span class="name">Region</span>
                   <span class="value">{{application.region || '-'}}</span>
                 </li>
                 <li>
-                  <span class="name">Location</span>
-                  <span class="value">{{application.location || '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Area (hectares)</span>
-                  <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Latitude / Longitude</span>
-                  <span class="value">{{application.latitude | number:'1.2-2'}} / {{application.longitude | number:'1.2-2'}}</span>
-                </li>
-                <li>
                   <span class="name">Business Unit</span>
                   <span class="value">{{application.businessUnit || '-'}}</span>
                 </li>
-                <li>
+                <!-- <li>
                   <span class="name">Crown Lands File(s)</span>
                   <span class="value">{{application.cl_files ? application.cl_files.join(', ') : '-'}}</span>
-                </li>
+                </li> -->
               </ul>
             </div>
           </div>
@@ -58,104 +53,120 @@
 
         <!-- APPLICATION -->
         <section>
-          <h2>Application</h2>
-          <p *ngIf="application.description" [innerHTML]="application.description | newlines"></p>
-          <p *ngIf="!application.description">-</p>
+          <h2>APPLICATION</h2>
+
+          <h3>Description</h3>
+          <p [innerHTML]="(application.description | newlines) || '-'"></p>
+
           <section class="application-detail__documents mt-2">
             <h3>Application Documents</h3>
-            <ul class="application-detail__document-list">
-              <li>
-                <i class="material-icons">link</i>
-                <span class="name">File Name</span>
-              </li>
-              <li>
-                <i class="material-icons">link</i>
-                <span class="name">File Name</span>
-              </li>
-            </ul>
+            <div *ngIf="!application.documents || application.documents.length === 0">
+              <em>This application has no documents.</em>
+            </div>
+            <div *ngFor="let document of application.documents" class="application-detail__document-list">
+              <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
+                <i class="material-icons">file_download</i>
+              </button>
+              <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
+                <i class="material-icons">open_in_new</i>
+              </button>
+              <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
+            </div>
           </section>
         </section>
 
         <!-- DECISION -->
         <section>
-          <h2>Decision</h2>
-          <p *ngIf="application.description" [innerHTML]="application.description | newlines"></p>
-          <p *ngIf="!application.description">-</p>
-          <section class="application-detail__documents mt-2">
+          <h2>DECISION</h2>
+
+          <div *ngIf="!application.decision">
+            <em>No decisions have been made for this application at this time.</em>
+          </div>
+
+          <section *ngIf="application.decision" class="application-detail__documents mt-2">
+            <h3>Description</h3>
+            <p [innerHTML]="(application.decision.description | newlines) || '-'"></p>
+
             <h3>Decision Documents</h3>
-            <ul class="application-detail__document-list">
-              <li>
-                <i class="material-icons">attachment</i>
-                <span class="name">File Name</span>
-              </li>
-              <li>
-                <i class="material-icons">attachment</i>
-                <span class="name">File Name</span>
-              </li>
-            </ul>
+            <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
+              <em>This decision has no documents.</em>
+            </div>
+            <div *ngFor="let document of application.decision.documents" class="application-detail__document-list">
+              <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
+                <i class="material-icons">file_download</i>
+              </button>
+              <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
+                <i class="material-icons">open_in_new</i>
+              </button>
+              <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
+            </div>
           </section>
         </section>
 
         <!-- GEOGRAPHIC SHAPE DATA -->
         <section class="application-detail__geo-shape-data">
-          <h2>Geographic Shape Data</h2>
+          <h2>GEOGRAPHIC SHAPE DATA</h2>
           <ul class="application-detail__list">
             <li>
-              <span class="name">Type / Subtype</span>
-              <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
+              <span class="name">Location</span>
+              <span class="value">{{application.location || '-'}}</span>
             </li>
             <li>
-              <span class="name">Area (ha)</span>
-              <span class="value">{{application.areaHectares || '-'}}</span>
+              <span class="name">Region</span>
+              <span class="value">{{application.region || '-'}}</span>
             </li>
             <li>
+              <span class="name">Area (hectares)</span>
+              <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
+            </li>
+            <li>
+              <span class="name">Latitude / Longitude</span>
+              <span class="value">{{application.latitude | number:'1.2-2'}} / {{application.longitude | number:'1.2-2'}}</span>
+            </li>
+            <li class="w-100">
               <span class="name">Legal Description</span>
-              <span class="value" *ngIf="application.legalDescription" [innerHTML]="application.legalDescription"></span>
-              <span class="value" *ngIf="!application.legalDescription">-</span>
+              <span class="value" [innerHTML]="(application.legalDescription | newlines) || '-'"></span>
             </li>
           </ul>
         </section>
       </main>
 
       <aside class="col-lg-4">
-        <div class="map-thumbnail">
-          <div class="map-section__thumbnail" (click)="gotoMap()">
+        <!-- MAP THUMBNAIL -->
+        <section class="aside-map">
+          <div class="aside-map__thumbnail" (click)="gotoMap()">
             <app-application-map [application]="application" [zoom]="4"></app-application-map>
           </div>
-        </div>
+        </section>
 
-        <!-- COMMENT INFO -->
-        <section class="aside-comment-info bg-light">
-          <h2>Commenting Open</h2>
-          <span class="comment-info-card__date-range">
-            {{application.currentPeriod?.startDate | date:'mediumDate'}} - {{application.currentPeriod?.startDate | date:'mediumDate'}}
-          </span>
-          <div class="comment-info-card__days-remaining">Days Remaining</div>
-          <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods', application._id]">
-            <span>Manage Comment Periods</span>
-            <i class="material-icons">arrow_forward</i>
-          </a>
+        <!-- COMMENTING INFO -->
+        <section class="aside-commenting bg-light">
+          <!-- <h2>Commenting Open</h2> -->
+          <h2>{{commentPeriodService.getStatus(application.currentPeriod)}}</h2>
+          <div *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
+            <p>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</p>
+            <div class="badge badge-success">{{getDaysRemaining()}}</div>
+          </div>
+          <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods', application._id]">
+            <span>Click to Modify</span>
+            <i class="material-icons">forward</i>
+          </a> -->
+          <a [routerLink]="['/periods', application._id]">Click to Modify &nbsp; &rsaquo;</a>
         </section>
 
         <!-- NEW COMMENTS INFO -->
-        <section class="aside-comment-count bg-light">
+        <section class="aside-comments bg-light">
           <h2>New Comments</h2>
+          <!-- <p>Comments can be reviewed by following the link below.</p> -->
           <div>
-            <!-- <span>{{comment}}</span> -->
-            <span></span>
+            <div class="badge badge-warning">{{getPendingComments()}}</div>
           </div>
-          <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments', application._id]">
-            <span>Review Comments</span>
-            <i class="material-icons">arrow_forward</i>
-          </a>
+          <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments', application._id]">
+            <span>Click to Review</span>
+            <i class="material-icons">forward</i>
+          </a> -->
+          <a [routerLink]="['/comments', application._id]">Click to Review &nbsp; &rsaquo;</a>
         </section>
-
-        <div style="display: grid; margin-top: 1rem;">
-          <a class="btn content-btn slide-l-btn btn-sm d-inline" [routerLink]="['/a', application._id, 'edit']">
-            <i class="material-icons">mode_edit</i>
-            <span>Edit Application</span>
-          </a>
-        </div>
       </aside>
     </div>
   </div>

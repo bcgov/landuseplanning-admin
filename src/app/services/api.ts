@@ -233,7 +233,6 @@ export class ApiService {
       '_application',
       'code',
       'name',
-      'decisionDate',
       'description'
     ];
     let queryString = 'decision?_application=' + appId + '&fields=';
@@ -252,7 +251,6 @@ export class ApiService {
       '_application',
       'code',
       'name',
-      'decisionDate',
       'description'
     ];
     let queryString = 'decision/' + id + '?fields=';
@@ -266,7 +264,7 @@ export class ApiService {
   }
 
   addDecision(decision: Decision) {
-    const fields = ['_application', 'decisionDate', 'description'];
+    const fields = ['_application', 'description'];
     let queryString = 'decision?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -278,7 +276,7 @@ export class ApiService {
   }
 
   saveDecision(decision: Decision) {
-    const fields = ['_application', 'decisionDate', 'description'];
+    const fields = ['_application', 'description'];
     let queryString = 'decision/' + decision._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
