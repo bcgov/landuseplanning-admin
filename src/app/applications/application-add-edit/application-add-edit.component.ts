@@ -199,7 +199,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
 
   removeDocument(document: Document) {
     const self = this;
-    this.api.deleteDocument(document)
+    this.api.deleteDocument(document) // TODO: should call service instead of API
       .subscribe(res => {
         const doc = res.json();
         // In-memory removal on successful delete.
@@ -256,7 +256,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {
-          this.applicationService.deleteApplication(app)
+          this.applicationService.delete(app)
             .subscribe(res => {
               this.router.navigate(['/applications']);
             });
