@@ -115,7 +115,7 @@ export class Application {
     this.organization = null;
     this.currentPeriod = null;
     this.decision = null;
-    this.features = null;
+    this.features = [];
   }
 
   getContent(page: string, type: string): string {
