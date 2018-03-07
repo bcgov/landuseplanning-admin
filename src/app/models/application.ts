@@ -59,6 +59,7 @@ export class Application {
   organization: Organization;
   currentPeriod: CommentPeriod;
   decision: Decision;
+  features: object[];
 
   constructor(obj?: any) {
     this._id                     = obj && obj._id                     || null;
@@ -114,6 +115,7 @@ export class Application {
     this.organization = null;
     this.currentPeriod = null;
     this.decision = null;
+    this.features = null;
   }
 
   getContent(page: string, type: string): string {

@@ -19,10 +19,11 @@ export class SearchService {
       });
   }
 
-  getByDTID(dtid: string): Observable<Search> {
+  getByDTID(dtid: string): Observable<object[]> {
     return this.api.getBCGWDispositionTransactionId(dtid)
       .map((res: Response) => {
-        return res.text() ? new Search(res.json()) : null;
+        const results = res.text() ? new Search(res.json()) : null;
+        return results.features;
       });
   }
 }

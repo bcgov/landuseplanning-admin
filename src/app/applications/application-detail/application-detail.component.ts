@@ -49,6 +49,10 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  public launchMap(): void {
+    const applicationId = this.application ? this.application._id : null;
+    this.router.navigate(['/map', { application: applicationId }]);
+  }
   public gotoMap(): void {
     // pass along the id of the current application if available
     // so that the map component can show the popup for it.

@@ -189,31 +189,49 @@ export class ApiService {
 
   saveApplication(app: Application) {
     const fields = [
-      'name',
-      'type',
-      'subtype',
+      // '_addedBy',
+      // '_updatedBy',
+      // 'dateAdded',
+      // 'dateUpdated',
+
+      'agency',
       'areaHectares',
-      'purpose',
-      'subpurpose',
-      '_proponent', // TODO: change to _organization
-      'latitude',
-      'longitude',
-      'location',
-      'region',
-      'description',
-      'legalDescription',
-      'status',
-      'projectDate',
       'businessUnit',
       'cl_files',
-      'commodityType',
-      'commodity',
-      'commodities'
+      'code',
+      'name',
+      'description',
+      'interestID',
+      'internalID',
+      'legalDescription',
+      'location',
+      'latitude',
+      'longitude',
+      'mapsheet',
+      'postID',
+      'projectDate',
+      '_proponent', // TODO: change to _organization
+      'purpose',
+      'subpurpose',
+      'region',
+      'status',
+      'tenureStage',
+      'tantalisID',
+      'dispositionID',
+      'type',
+      'subtype',
+
+      'internal'
     ];
     let queryString = 'application/' + app._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
+    // Remove features since we don't really save them in the back-end, they are
+    // referencial.
+    if (app.features) {
+      delete app.features;
+    }
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
