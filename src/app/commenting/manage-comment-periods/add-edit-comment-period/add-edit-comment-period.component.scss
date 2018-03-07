@@ -2,14 +2,28 @@
     button {
         cursor: pointer;
     }
+    label {
+        font-weight: bold;
+    }
+    .form-group.required .control-label:after {
+        white-space: pre;
+        content: " *";
+        color: red;
+    }
+    .form-group.optional .control-label:after {
+        white-space: pre;
+        content: " (optional)";
+        font-weight: normal;
+    }
     .modal-header {}
     .modal-body {
-        .date-range {
-            &__spacer {
+        .form-inline.dates {
+            margin-bottom: 1rem;
+        }
+        .form-group.delta {
+            display: inline-flex;
+            span {
                 padding: 8px;
-            }
-            &__delta {
-                width: 0;
             }
         }
     }
