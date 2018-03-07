@@ -4,43 +4,21 @@
         display: inline-block;
         margin-bottom: 2rem;
     }
-    section {
-        h3 {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 0;
-        }
-    }
-    ul {
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-    }
-    &__list {
-        @include clearfix();
-        li {
-            .name,
-            .value {
-                display: block;
+    main {
+        section {
+            padding: 1.5rem;
+            background: #f7f8fa;
+            >section {
+                padding: 0;
             }
-            .name {
+            h3 {
+                font-size: 1rem;
                 font-weight: bold;
+                margin-bottom: 0;
             }
         }
     }
     &__client-card {
-        ul {
-            @include clearfix();
-        }
-        li {
-            margin-top: 1rem;
-            float: left;
-            width: 50%;
-            &:nth-child(1),
-            &:nth-child(2) {
-                margin-top: 0;
-            }
-        }
         .card {
             &-header,
             &-body {
@@ -48,29 +26,35 @@
             }
         }
     }
-    &__geo-shape-data {
-        ul {
-            @include clearfix();
-        }
+    ul {
+        @include clearfix();
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
         li {
             margin-top: 1rem;
             float: left;
             width: 50%;
+            .name {
+                display: block;
+                font-weight: bold;
+            }
+            .value {
+                display: block;
+            }
             &:nth-child(1),
             &:nth-child(2) {
                 margin-top: 0;
             }
-            &:nth-child(3) {
-                width: 100%;
-            }
         }
     }
-    main {
-        section {
-            padding: 1.5rem;
-            background: #f7f8fa;
-            >section {
-                padding: 0;
+    &__geo-shape-data {
+        margin-top: 2rem;
+        ul {
+            li {
+                &:nth-child(3) {
+                    width: 100%;
+                }
             }
         }
     }
@@ -89,6 +73,20 @@
                 text-transform: none;
                 margin-bottom: 0.5rem;
                 padding: 1rem;
+            }
+        }
+        section.aside-commenting {
+            .badge {
+                font-size: larger;
+            }
+        }
+        section.aside-comments {
+            .badge {
+                height: 72px;
+                width: 72px;
+                border-radius: 50%;
+                line-height: unset;
+                font-size: x-large;
             }
         }
         section.aside-map {

@@ -15,37 +15,47 @@
             <div class="card-header">
               <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
               <h3>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</h3>
+              <h3>{{applicationService.getStatus(application) || '-'}}</h3>
               <h3>CL # &nbsp;{{application.cl_files ? application.cl_files.join(', ') : '-'}}</h3>
+              <h3>Disp ID: &nbsp; {{application.dispositionID}}</h3>
             </div>
 
             <div class="card-body">
               <h2>BASIC INFORMATION</h2>
 
-              <ul class="application-detail__list">
-                <li>
-                  <span class="name">Status</span>
-                  <span class="value">{{applicationService.getStatus(application) || '-'}}</span>
-                </li>
+              <ul>
                 <li>
                   <span class="name">Type / Subtype</span>
                   <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
                 </li>
-                <!-- <li>
-                  <span class="name">Project Date</span>
-                  <span class="value">{{application.projectDate | date:'longDate'}}</span>
-                </li> -->
                 <li>
-                  <span class="name">Region</span>
-                  <span class="value">{{application.region || '-'}}</span>
+                  <span class="name">Status</span>
+                  <span class="value">{{application.status || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Stage</span>
+                  <span class="value">{{application.tenureStage || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Agency</span>
+                  <span class="value">{{application.agency || '-'}}</span>
                 </li>
                 <li>
                   <span class="name">Business Unit</span>
                   <span class="value">{{application.businessUnit || '-'}}</span>
                 </li>
-                <!-- <li>
-                  <span class="name">Crown Lands File(s)</span>
-                  <span class="value">{{application.cl_files ? application.cl_files.join(', ') : '-'}}</span>
-                </li> -->
+                <li>
+                  <span class="name">Region</span>
+                  <span class="value">{{application.region || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Location</span>
+                  <span class="value">{{application.location || '-'}}</span>
+                </li>
+                <li>
+                  <span class="name">Total Area (hectares)</span>
+                  <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -106,22 +116,14 @@
         <!-- GEOGRAPHIC SHAPE DATA -->
         <section class="application-detail__geo-shape-data">
           <h2>GEOGRAPHIC SHAPE DATA</h2>
-          <ul class="application-detail__list">
+          <ul>
             <li>
-              <span class="name">Location</span>
-              <span class="value">{{application.location || '-'}}</span>
-            </li>
-            <li>
-              <span class="name">Region</span>
-              <span class="value">{{application.region || '-'}}</span>
+              <span class="name">Type / Subtype</span>
+              <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
             </li>
             <li>
               <span class="name">Area (hectares)</span>
               <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
-            </li>
-            <li>
-              <span class="name">Latitude / Longitude</span>
-              <span class="value">{{application.latitude | number:'1.2-2'}} / {{application.longitude | number:'1.2-2'}}</span>
             </li>
             <li class="w-100">
               <span class="name">Legal Description</span>
@@ -145,7 +147,7 @@
           <h2>{{commentPeriodService.getStatus(application.currentPeriod)}}</h2>
           <div *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
             <p>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</p>
-            <div class="badge badge-success">{{getDaysRemaining()}}</div>
+            <div class="badge badge-secondary">{{getDaysRemaining()}}</div>
           </div>
           <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods', application._id]">
             <span>Click to Modify</span>
@@ -159,7 +161,7 @@
           <h2>New Comments</h2>
           <!-- <p>Comments can be reviewed by following the link below.</p> -->
           <div>
-            <div class="badge badge-warning">{{getPendingComments()}}</div>
+            <div class="badge badge-secondary">{{getPendingComments()}}</div>
           </div>
           <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments', application._id]">
             <span>Click to Review</span>
