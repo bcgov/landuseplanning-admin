@@ -114,6 +114,7 @@ export class ApplicationService {
       app.type = item.properties.TENURE_TYPE;
       app.subtype = item.properties.TENURE_SUBTYPE;
       app.status = item.properties.TENURE_STATUS;
+      app.cl_files = item.properties.CROWN_LANDS_FILE;
       // app.region = item.region;
       app.location = item.properties.TENURE_LOCATION;
       // app.latitude = item.latitude
@@ -205,7 +206,17 @@ export class ApplicationService {
 
         // Get the shapes
         this.searchService.getByDTID(application.tantalisID.toString()).subscribe(
-          features => this.application.features = features,
+          features => {
+            this.application.features = features;
+            let areaHectares = 0;
+            _.each(this.application.features, function (f) {
+              // Calculate the areaHectares.
+              if (f['properties']) {
+                areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+              }
+            });
+            this.application.areaHectares = areaHectares;
+          },
           error => console.log(error)
         );
 

@@ -187,6 +187,11 @@ export class ApiService {
     _.each(fields, function (f) {
       queryString += f + '|';
     });
+    // Remove features since we don't really save them in the back-end, they are
+    // referencial.
+    if (app.features) {
+      delete app.features;
+    }
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
