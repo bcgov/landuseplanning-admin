@@ -36,7 +36,9 @@ export class Application {
   subpurpose: string;
   region: string;
   status: string;
+  tenureStage: string;
   tantalisID: number;
+  dispositionID: number;
   type: string;
   subtype: string;
 
@@ -91,7 +93,9 @@ export class Application {
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;
     this.status                  = obj && obj.status                  || null;
+    this.tenureStage             = obj && obj.tenureStage             || null;
     this.tantalisID              = obj && obj.tantalisID              || 0;
+    this.dispositionID           = obj && obj.dispositionID           || 0;
     this.type                    = obj && obj.type                    || null;
     this.subtype                 = obj && obj.subtype                 || null;
 

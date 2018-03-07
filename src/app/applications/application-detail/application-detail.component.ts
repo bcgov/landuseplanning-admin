@@ -35,7 +35,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
     // get data directly from resolver
     this.application = this.route.snapshot.data.application;
-    console.log('this.application =', this.application);
+    console.log('this.application =', this.application); // FOR DEBUGGING
 
     // application not found --> navigate back to application list
     if (!this.application || !this.application._id) {
@@ -61,14 +61,15 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   }
 
   getDaysRemaining(): string {
-    const today = new Date();
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
     return (days === 1) ? (days + ' Day Remaining') : (days + ' Days Remaining');
   }
 
   getPendingComments(): string {
     let count: number;
-    count = 0;
-    return (count === 1) ? (count + ' Pending Comment') : (count + ' Pending Comments');
+    count = 123;
+    return count.toString();
   }
 }
