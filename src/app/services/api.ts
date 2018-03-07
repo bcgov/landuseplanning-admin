@@ -87,6 +87,7 @@ export class ApiService {
       'projectDate',
       'businessUnit',
       'cl_files',
+      'tantalisID',
       'commodityType',
       'commodity',
       'tags',
@@ -122,6 +123,7 @@ export class ApiService {
       'projectDate',
       'businessUnit',
       'cl_files',
+      'tantalisID',
       'commodityType',
       'commodity',
       'commodities'
@@ -177,6 +179,7 @@ export class ApiService {
       'businessUnit',
       'cl_files',
       'commodityType',
+      'tantalisID',
       'commodity',
       'commodities'
     ];
@@ -184,6 +187,11 @@ export class ApiService {
     _.each(fields, function (f) {
       queryString += f + '|';
     });
+    // Remove features since we don't really save them in the back-end, they are
+    // referencial.
+    if (app.features) {
+      delete app.features;
+    }
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
