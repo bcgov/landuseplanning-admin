@@ -64,7 +64,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     }
 
     // get data directly from resolver
-    this.application = this.route.snapshot.data.application;
+    this.application = this.route.snapshot.data['application'];
 
     // application not found --> navigate back to application list
     if (!this.application || !this.application._id) {
@@ -130,9 +130,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((isConfirmed) => {
-          // we get dialog result
-          if (isConfirmed) {
+        .subscribe((result: boolean) => {
+          if (result) {
             // reload page
             this.refreshUI();
             // reload cached app data
@@ -154,21 +153,21 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed) => {
-        // we get dialog result
-        if (isConfirmed) {
-          //  Delete then refresh
+      .subscribe((result: boolean) => {
+        if (result) {
           // TODO: should use service
           this.api.deleteCommentPeriod(commentPeriod).subscribe( // TODO: should call service instead of API
             data => {
-              console.log('accepted');
+              // reload page
               this.refreshUI();
-            }, error => {
-              // TODO: Add alert
+              // reload cached app data
+              this.applicationService.getById(this.application._id, true).subscribe();
+            },
+            error => {
+              // TODO: add alert
               console.log('Something bad happened:', error);
-            });
-        } else {
-          console.log('declined');
+            }
+          );
         }
       });
   }
@@ -176,18 +175,26 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
   publishCommentPeriod(commentPeriod: CommentPeriod) {
     return this.commentPeriodService.publish(commentPeriod)
       .toPromise()
-      // HACK: refresh UI because template item isn't being refreshed otherwise
-      .then(value => this.refreshUI());
+      .then(() => {
+        // HACK: refresh UI because template item isn't being refreshed otherwise
+        this.refreshUI();
+        // reload cached app data
+        this.applicationService.getById(this.application._id, true).subscribe();
+      });
   }
 
   unPublishCommentPeriod(commentPeriod: CommentPeriod) {
     return this.commentPeriodService.unPublish(commentPeriod)
       .toPromise()
-      // HACK: refresh UI because template item isn't being refreshed otherwise
-      .then(value => this.refreshUI());
+      .then(() => {
+        // HACK: refresh UI because template item isn't being refreshed otherwise
+        this.refreshUI();
+        // reload cached app data
+        this.applicationService.getById(this.application._id, true).subscribe();
+      });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
