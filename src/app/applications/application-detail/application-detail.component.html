@@ -23,7 +23,7 @@
             <div class="card-body">
               <h2>BASIC INFORMATION</h2>
 
-              <ul>
+              <ul class="application-detail__list">
                 <li>
                   <span class="name">Type / Subtype</span>
                   <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
@@ -116,10 +116,12 @@
         <!-- GEOGRAPHIC SHAPE DATA -->
         <section class="application-detail__geo-shape-data">
           <h2>GEOGRAPHIC SHAPE DATA</h2>
-          <label *ngIf="application.features" >This application has <strong>{{application.features.length}}</strong> shape file<label *ngIf="application.features && application.features.length > 1">s</label>.</label>
+          <label *ngIf="application.features">This application has
+            <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.
+          </label>
           <span class="hover" (click)="launchMap()">
             <label class="float-right">See on map</label>
-            <i class="material-icons float-right">location_on</i>
+            <i class="material-icons float-right">place</i>
           </span>
           <ul class="application-detail__list" *ngFor="let shape of application.features">
             <hr>
@@ -127,12 +129,14 @@
               <span class="name main-label">Interest ID: {{shape.properties.INTRID_SID}}</span>
             </li>
             <li>
-                <span class="name">Type/Subtype</span>
-                <span class="value">{{shape.properties.TENURE_TYPE}}/{{shape.properties.TENURE_SUBTYPE}}</span>
+              <span class="name">Type/Subtype</span>
+              <span class="value">{{shape.properties.TENURE_TYPE}}/{{shape.properties.TENURE_SUBTYPE}}</span>
             </li>
             <li>
-                <span class="name">Area (ha)</span>
-                <span class="value">{{shape.properties.TENURE_AREA_IN_HECTARES ? (shape.properties.TENURE_AREA_IN_HECTARES | number:'1.2-2') : '-'}}</span>
+              <span class="name">Area (ha)</span>
+              <span class="value">
+                {{shape.properties.TENURE_AREA_IN_HECTARES ? (shape.properties.TENURE_AREA_IN_HECTARES | number:'1.2-2') : '-'}}
+              </span>
             </li>
             <li class="full-width">
               <span class="name">Legal Description</span>

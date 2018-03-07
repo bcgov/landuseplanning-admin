@@ -123,7 +123,7 @@ export class ApplicationService {
       // app.areaHectares = 4993;
       // app.legalDescription = 'ALL THAT UNSURVEYED CROWN LAND IN THE VICINITY OF BAKER POINT SITUATED ON NORTH'
       //   + ' ARISTAZABAL ISLAND, RANGE 3 COAST DISTRICT, CONTAINING 4,993 HECTARES, MORE OR LESS.';
-      // app.agency = "Crown Land Allocation";
+      app.agency = 'Crown Land Allocation';
       // app.mapsheet = "103A.055 103A.064 103A.065 103A.074 103A.075 103A.084";
       // app.description = 'SB Central Coast Holdings is submitting an application for an amendment to an investigative'
       //   + 'licence for activities related to the development of a utility scale wind power generation facility. The purpose'
@@ -204,13 +204,13 @@ export class ApplicationService {
           error => console.log(error)
         );
 
-        // Get the shapes
+        // get the shapes
         this.searchService.getByDTID(application.tantalisID.toString()).subscribe(
           features => {
             this.application.features = features;
+            // calculate areaHectares
             let areaHectares = 0;
             _.each(this.application.features, function (f) {
-              // Calculate the areaHectares.
               if (f['properties']) {
                 areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
               }
