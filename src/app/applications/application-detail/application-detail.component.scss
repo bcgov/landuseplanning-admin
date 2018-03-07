@@ -52,16 +52,27 @@
         ul {
             @include clearfix();
         }
+
         li {
             margin-top: 1rem;
             float: left;
             width: 50%;
-            &:nth-child(1),
-            &:nth-child(2) {
+
+            // This is your INTEREST ID line - we ensure the first LI doesn't have a top margin
+            &:nth-child(1){
                 margin-top: 0;
             }
-            &:nth-child(3) {
-                width: 100%;
+
+            span {
+                &.main-label {
+                    font-size: 16pt;
+                }
+            }
+
+            // Need a variant to display full-width
+            &.full-width {
+            float: none;
+            width: 100%;
             }
         }
     }

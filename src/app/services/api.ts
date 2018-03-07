@@ -87,6 +87,7 @@ export class ApiService {
       'projectDate',
       'businessUnit',
       'cl_files',
+      'tantalisID',
       'commodityType',
       'commodity',
       'tags',
@@ -122,6 +123,7 @@ export class ApiService {
       'projectDate',
       'businessUnit',
       'cl_files',
+      'tantalisID',
       'commodityType',
       'commodity',
       'commodities'
@@ -177,6 +179,7 @@ export class ApiService {
       'businessUnit',
       'cl_files',
       'commodityType',
+      'tantalisID',
       'commodity',
       'commodities'
     ];
