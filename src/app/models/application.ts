@@ -7,7 +7,6 @@ import { Decision } from './decision';
 
 export class Application {
   _id: string;
-  _schemaName: string;
   id: string; // objectid
 
   _addedBy: string; // objectid -> User
@@ -64,7 +63,6 @@ export class Application {
 
   constructor(obj?: any) {
     this._id                     = obj && obj._id                     || null;
-    this._schemaName             = obj && obj._schemaName             || null;
     this.id                      = obj && obj.id                      || null;
 
     this._addedBy                = obj && obj._addedBy                || null;

@@ -35,7 +35,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
     // get data directly from resolver
     this.application = this.route.snapshot.data.application;
-    console.log('this.application =', this.application); // FOR DEBUGGING
+    console.log('application =', this.application); // FOR DEBUGGING
 
     // application not found --> navigate back to application list
     if (!this.application || !this.application._id) {

@@ -70,28 +70,42 @@ export class ApiService {
   //
   getApplications() {
     const fields = [
-      'name',
-      'type',
-      'subtype',
-      'purpose',
-      'subpurpose',
-      '_proponent', // TODO: change to _organization
-      'latitude',
-      'internal',
-      'longitude',
-      'location',
-      'region',
-      'description',
-      'legalDescription',
-      'status',
-      'projectDate',
+      '_id',
+      'id',
+
+      '_addedBy',
+      '_updatedBy',
+      'dateAdded',
+      'dateUpdated',
+
+      'agency',
+      'areaHectares',
       'businessUnit',
       'cl_files',
+      'code',
+      'name',
+      'description',
+      'interestID',
+      'internalID',
+      'legalDescription',
+      'location',
+      'latitude',
+      'longitude',
+      'mapsheet',
+      'postID',
+      'projectDate',
+      '_proponent', // TODO: change to _organization
+      'purpose',
+      'subpurpose',
+      'region',
+      'status',
+      'tenureStage',
       'tantalisID',
-      'commodityType',
-      'commodity',
-      'tags',
-      'commodities'
+      'dispositionID',
+      'type',
+      'subtype',
+
+      'internal'
     ];
     let queryString = 'application?isDeleted=false&fields=';
     _.each(fields, function (f) {
@@ -105,28 +119,42 @@ export class ApiService {
 
   getApplication(id: string) {
     const fields = [
-      'name',
-      'type',
-      'subtype',
+      '_id',
+      'id',
+
+      '_addedBy',
+      '_updatedBy',
+      'dateAdded',
+      'dateUpdated',
+
+      'agency',
       'areaHectares',
-      'purpose',
-      'subpurpose',
-      '_proponent', // TODO: change to _organization
-      'internal',
-      'latitude',
-      'longitude',
-      'location',
-      'region',
-      'description',
-      'legalDescription',
-      'status',
-      'projectDate',
       'businessUnit',
       'cl_files',
+      'code',
+      'name',
+      'description',
+      'interestID',
+      'internalID',
+      'legalDescription',
+      'location',
+      'latitude',
+      'longitude',
+      'mapsheet',
+      'postID',
+      'projectDate',
+      '_proponent', // TODO: change to _organization
+      'purpose',
+      'subpurpose',
+      'region',
+      'status',
+      'tenureStage',
       'tantalisID',
-      'commodityType',
-      'commodity',
-      'commodities'
+      'dispositionID',
+      'type',
+      'subtype',
+
+      'internal'
     ];
     let queryString = 'application/' + id + '?fields=';
     _.each(fields, function (f) {
@@ -161,27 +189,39 @@ export class ApiService {
 
   saveApplication(app: Application) {
     const fields = [
-      'name',
-      'type',
-      'subtype',
+      // '_addedBy',
+      // '_updatedBy',
+      // 'dateAdded',
+      // 'dateUpdated',
+
+      'agency',
       'areaHectares',
-      'purpose',
-      'subpurpose',
-      '_proponent', // TODO: change to _organization
-      'latitude',
-      'longitude',
-      'location',
-      'region',
-      'description',
-      'legalDescription',
-      'status',
-      'projectDate',
       'businessUnit',
       'cl_files',
-      'commodityType',
+      'code',
+      'name',
+      'description',
+      'interestID',
+      'internalID',
+      'legalDescription',
+      'location',
+      'latitude',
+      'longitude',
+      'mapsheet',
+      'postID',
+      'projectDate',
+      '_proponent', // TODO: change to _organization
+      'purpose',
+      'subpurpose',
+      'region',
+      'status',
+      'tenureStage',
       'tantalisID',
-      'commodity',
-      'commodities'
+      'dispositionID',
+      'type',
+      'subtype',
+
+      'internal'
     ];
     let queryString = 'application/' + app._id + '?fields=';
     _.each(fields, function (f) {
