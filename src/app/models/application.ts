@@ -1,9 +1,9 @@
-import * as _ from 'lodash';
 import { CollectionsList } from './collection';
 import { Document } from './document';
 import { Organization } from './organization';
 import { CommentPeriod } from './commentperiod';
 import { Decision } from './decision';
+import * as _ from 'lodash';
 
 export class Application {
   _id: string;

@@ -17,16 +17,17 @@
               <h3>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</h3>
               <h3>{{applicationService.getStatus(application) || '-'}}</h3>
               <h3>CL # &nbsp;{{application.cl_files ? application.cl_files.join(', ') : '-'}}</h3>
-              <h3 *ngIf="application.features && application.features.length">Disp ID: &nbsp; {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</h3>
+              <h3 *ngIf="application.features?.length > 0">Disp ID: &nbsp; {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</h3>
             </div>
 
             <div class="card-body">
               <h2>BASIC INFORMATION</h2>
 
-              <ul class="application-detail__list" *ngIf="application.features && application.features.length">
+              <ul class="application-detail__list" *ngIf="application.features?.length > 0">
                 <li>
                   <span class="name">Type / Subtype</span>
-                  <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE || '-'}}</span>
+                  <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE
+                    || '-'}}</span>
                 </li>
                 <li>
                   <span class="name">Status</span>
@@ -36,10 +37,11 @@
                   <span class="name">Stage</span>
                   <span class="value">{{application.features[0].properties.TENURE_STAGE || '-'}}</span>
                 </li>
-                <!-- <li>
+                <li>
                   <span class="name">Agency</span>
                   <span class="value">{{application.agency || '-'}}</span>
-                </li> -->
+                </li>
+                <!-- TODO: need border here -->
                 <li>
                   <span class="name">Business Unit</span>
                   <span class="value">{{application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT || '-'}}</span>
@@ -160,7 +162,7 @@
           <h2>{{commentPeriodService.getStatus(application.currentPeriod)}}</h2>
           <div *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
             <p>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</p>
-            <div class="badge badge-secondary">{{getDaysRemaining()}}</div>
+            <div class="badge badge-secondary">{{daysRemaining}}</div>
           </div>
           <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods', application._id]">
             <span>Click to Modify</span>
@@ -174,7 +176,7 @@
           <h2>New Comments</h2>
           <!-- <p>Comments can be reviewed by following the link below.</p> -->
           <div>
-            <div class="badge badge-secondary">{{getPendingComments()}}</div>
+            <div class="badge badge-secondary">{{numComments}}</div>
           </div>
           <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments', application._id]">
             <span>Click to Review</span>

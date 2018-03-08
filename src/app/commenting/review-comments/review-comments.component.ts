@@ -69,11 +69,11 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     }
 
     // get data directly from resolver
-    this.application = this.route.snapshot.data.application;
+    this.application = this.route.snapshot.data['application'];
 
     // application not found --> navigate back to application list
     if (!this.application || !this.application._id) {
-      alert('Uh-oh, application not found');
+      alert('Uh-oh, couldn\'t load application');
       this.router.navigate(['/applications']);
     }
 
@@ -117,7 +117,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
         });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

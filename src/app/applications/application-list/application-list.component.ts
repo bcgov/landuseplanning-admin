@@ -45,16 +45,16 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     // get data directly from resolver
-    this.applications = this.route.snapshot.data.applications;
+    this.applications = this.route.snapshot.data['applications'];
 
     // applications not found --> navigate back to home
     if (!this.applications) {
-      alert('Uh-oh, applications not found');
+      alert('Uh-oh, couldn\'t loads applications');
       this.router.navigate(['/']);
     }
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

@@ -23,7 +23,7 @@ export class DocumentsTabContentComponent implements OnInit, OnDestroy {
     private router: Router,
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
 
     // wait for resolver to retrieve applications
     this.sub = this.route.parent.data.subscribe(
@@ -42,8 +42,7 @@ export class DocumentsTabContentComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.sub.unsubscribe();
   }
-
 }

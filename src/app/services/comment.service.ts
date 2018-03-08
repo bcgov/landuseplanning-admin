@@ -26,7 +26,6 @@ export class CommentService {
   ) { }
 
   // get all comments for the specified application id
-  // no need for catch statements since we're calling other services
   getAllByApplicationId(appId: string): Observable<Comment[]> {
     // first get the comment periods
     return this.commentPeriodService.getAllByApplicationId(appId)
@@ -35,8 +34,9 @@ export class CommentService {
           return Observable.of([]);
         }
 
-        // now get the comments for all periods
         const promises: Array<Promise<any>> = [];
+
+        // now get the comments for all periods
         periods.forEach(period => {
           promises.push(this.getAllByPeriodId(period._id).toPromise());
         });

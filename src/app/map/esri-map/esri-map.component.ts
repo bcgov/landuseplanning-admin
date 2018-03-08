@@ -39,7 +39,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
     this.loadMap();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     // dispose the resources held by event handlers (if any)
     (this.subs || []).forEach(sub => sub.remove());
     this.subs = null;

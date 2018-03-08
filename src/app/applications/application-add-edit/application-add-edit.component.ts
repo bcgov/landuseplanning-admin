@@ -56,15 +56,15 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
-      return; // return false;
+      return false;
     }
 
     // get data directly from resolver
-    this.application = this.route.snapshot.data.application;
+    this.application = this.route.snapshot.data['application'];
 
     // application not found --> navigate back to application list
     if (!this.application || !this.application._id) {
-      alert('Uh-oh, application not found');
+      alert('Uh-oh, couldn\'t load application');
       this.router.navigate(['/applications']);
     }
 
