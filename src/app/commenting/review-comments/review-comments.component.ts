@@ -3,8 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-// import 'rxjs/add/operator/toPromise';
-// import 'rxjs/add/operator/first';
 import { DialogService } from 'ng2-bootstrap-modal';
 import * as _ from 'lodash';
 
@@ -42,7 +40,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly sortKeys = ['Date', 'Name', 'Status'];
 
   public loading = true;
-  public application: Application;
+  public application: Application = null;
   public periodId: string;
   public comments: Array<Comment> = [];
   public alerts: Array<string> = [];
@@ -68,53 +66,65 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // get data directly from resolver
-    this.application = this.route.snapshot.data['application'];
-
-    // application not found --> navigate back to application list
-    if (!this.application || !this.application._id) {
-      alert('Uh-oh, couldn\'t load application');
-      this.router.navigate(['/applications']);
-    }
-
-    // get comment periods
-    // this is independent of application data
-    this.commentPeriodService.getAllByApplicationId(this.application._id)
+    // get data from route resolver
+    this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        periods => {
-          if (periods.length > 0) {
-            // for now, pick first comment period
-            this.periodId = periods[0]._id;
+        (data: { application: Application }) => {
+          if (data.application) {
+            this.application = data.application;
+
+            // get comment periods
+            // this is independent of application data
+            this.commentPeriodService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                periods => {
+                  if (periods.length > 0) {
+                    // for now, pick first comment period
+                    this.periodId = periods[0]._id;
+                  }
+                },
+                error => {
+                  if (error.startsWith('403')) { this.router.navigate(['/login']); }
+                  this.alerts.push('Error loading comment periods');
+                });
+
+            // get comments
+            // this is independent of application data
+            this.commentService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                comments => {
+                  this.loading = false;
+                  this.comments = comments;
+
+                  // initial sort
+                  this.sort(this.sortKeys[0]);
+
+                  // pre-select first comment
+                  if (this.comments.length > 0) {
+                    this.setCurrentComment(this.comments[0]);
+                  }
+                },
+                error => {
+                  this.loading = false;
+                  if (error.startsWith('403')) { this.router.navigate(['/login']); }
+                  this.alerts.push('Error loading comments');
+                }
+              );
+          } else {
+            // application not found --> navigate back to application list
+            alert('Uh-oh, couldn\'t load application');
+            this.router.navigate(['/applications']);
           }
         },
         error => {
-          if (error.startsWith('403')) { this.router.navigate(['/login']); }
-          this.alerts.push('Error loading comment periods');
-        });
-
-    // get comments
-    // this is independent of application data
-    this.commentService.getAllByApplicationId(this.application._id)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        comments => {
-          this.loading = false;
-          this.comments = comments;
-
-          // initial sort
-          this.sort(this.sortKeys[0]);
-
-          // pre-select first comment
-          if (this.comments.length > 0) {
-            this.setCurrentComment(this.comments[0]);
-          }
-        },
-        error => {
-          this.loading = false;
-          if (error.startsWith('403')) { this.router.navigate(['/login']); }
-          this.alerts.push('Error loading comments');
-        });
+          console.log(error);
+          alert('Uh-oh, couldn\'t load application');
+          this.router.navigate(['/applications']);
+        }
+      );
   }
 
   ngOnDestroy() {

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
 import * as _ from 'lodash';
 
@@ -34,7 +35,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public statuses = Constants.statuses;
 
   public fileList: FileList;
-  public application: Application;
+  public application: Application = null;
   public applicationDocuments: Array<Document> = [];
   public error = false;
   public showMsg = false;
@@ -59,40 +60,51 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // get data directly from resolver
-    this.application = this.route.snapshot.data['application'];
+    // get data from route resolver
+    this.route.data
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (data: { application: Application }) => {
+          if (data.application) {
+            this.application = data.application;
 
-    // application not found --> navigate back to application list
-    if (!this.application || !this.application._id) {
-      alert('Uh-oh, couldn\'t load application');
-      this.router.navigate(['/applications']);
-    }
+            if (!this.application.projectDate) {
+              this.application.projectDate = new Date();
+            }
+            this.application.projectDate = moment(this.application.projectDate).format();
 
-    if (!this.application.projectDate) {
-      this.application.projectDate = new Date();
-    }
-    this.application.projectDate = moment(this.application.projectDate).format();
+            // TODO: this should be cleaned up (does this in service already) -- see list page for example
+            this.documentService.getAllByApplicationId(this.application._id)
+              .subscribe((documents: Document[]) => {
+                this.applicationDocuments = documents;
+              });
 
-    // TODO: this should be cleaned up (does this in service already) -- see list page for example
-    this.documentService.getAllByApplicationId(this.application._id)
-      .subscribe((documents: Document[]) => {
-        this.applicationDocuments = documents;
-      });
-
-    if (this.application._organization) {
-      this.orgService.getById(this.application._organization)
-        .subscribe((organization: Organization) => {
-          this.application.organization = organization;
-        });
-    }
+            if (this.application._organization) {
+              this.orgService.getById(this.application._organization)
+                .subscribe((organization: Organization) => {
+                  this.application.organization = organization;
+                });
+            }
+          } else {
+            // application not found --> navigate back to application list
+            alert('Uh-oh, couldn\'t load application');
+            this.router.navigate(['/applications']);
+          }
+        },
+        error => {
+          console.log(error);
+          alert('Uh-oh, couldn\'t load application');
+          this.router.navigate(['/applications']);
+        }
+      );
   }
 
   applyDisposition() {
     // Fetch the new feature data, update current UI.
     this.searchService.getByDTID(this.application.tantalisID.toString())
-    .subscribe(data => {
-      this.application.features = data;
-    });
+      .subscribe(data => {
+        this.application.features = data;
+      });
   }
 
   ngOnDestroy() {
