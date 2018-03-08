@@ -2,71 +2,88 @@
   <div class="spinner-new rotating"></div>
 </div>
 
-<div class="review-comments-header container">
-  <ngb-alert type="danger" [dismissible]="false" *ngFor="let alert of alerts">{{alert}}</ngb-alert>
+<ngb-alert type="danger" [dismissible]="false" *ngFor="let alert of alerts">{{alert}}</ngb-alert>
 
-  <div class="container__inner-container">
-    <h1 id="pgTitle">Review Comments</h1>
-    <p class="mb-2" *ngIf="application">{{application.organization?.name || 'Unknown'}} : {{application.purpose}} : {{application.subpurpose}}</p>
+<div class="review-comments">
+  <div class="container" *ngIf="application">
+    <div>
+      <h1>Review Comments</h1>
+    </div>
 
-    <div class="review-comments-links">
-      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', application._id]">
-        <i class="material-icons">info_outline</i>
-        <span>Application Details</span>
-      </a>
-      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods', application._id]">
-        <i class="material-icons">date_range</i>
-        <span>Manage Comment Periods</span>
-      </a>
-      <button class="btn content-btn slide-l-btn btm-sm float-right" (click)="addClick()" disabled>
-        <i class="material-icons">add</i>
-        <span>Add Comment</span>
-      </button>
+    <div class="row">
+      <main class="col-md-8">
+        <section class="p-0">
+          <div class="review-comments__client-card card bg-light">
+            <div class="card-header">
+              <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
+              <h3>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</h3>
+              <h3>CL # &nbsp;{{application.cl_files ? application.cl_files.join(', ') : '-'}}</h3>
+              <h3 *ngIf="application.features?.length > 0">Disp ID: &nbsp; {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</h3>
+            </div>
+          </div>
+        </section>
+      </main>
+      <nav class="col-md-4">
+        <section class="d-flex flex-column">
+          <a class="btn content-btn slide-l-btn btn-sm p-1 my-1" [routerLink]="['/a', application._id]">
+            <i class="material-icons">info_outline</i>
+            <span>Application Details</span>
+          </a>
+          <a class="btn content-btn slide-l-btn btn-sm p-1 my-1" [routerLink]="['/periods', application._id]">
+            <i class="material-icons">date_range</i>
+            <span>Manage Comment Periods</span>
+          </a>
+          <button class="btn btn-primary btn-sm p-1 my-1" (click)="addClick()" disabled aria-disabled="true">
+            <i class="material-icons">add</i>
+            <span>Add Comment</span>
+          </button>
+        </section>
+      </nav>
     </div>
   </div>
-</div>
 
-<div class="review-comments-body container" id="anchor-point">
-  <p *ngIf="comments.length === 0">
-    <em>This application has no comments.</em>
-  </p>
+  <div class="review-comments-body container" id="anchor-point">
+    <p *ngIf="comments.length === 0">
+      <em>This application has no comments.</em>
+    </p>
 
-  <div class="row" *ngIf="comments.length > 0">
-    <nav class="col-lg-4">
-      <div class="review-comments-sort">
-        <label>Order by</label>
-        <select #t (change)="sort(t.value)">
-          <option *ngFor="let sortKey of sortKeys" [value]="sortKey">{{sortKey}}</option>
-        </select>
-      </div>
+    <div class="row" *ngIf="comments.length > 0">
+      <nav class="col-lg-4">
+        <div class="review-comments-sort">
+          <label>Order by</label>
+          <select #t (change)="sort(t.value)">
+            <option *ngFor="let sortKey of sortKeys" [value]="sortKey">{{sortKey}}</option>
+          </select>
+        </div>
 
-      <div class="review-comments-list list-group">
-        <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
-          <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="isCurrentComment(item)" (click)="setCurrentComment(item)">
-            <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
-              <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{item.commentAuthor?.contactName || '-'}}
+        <div class="review-comments-list list-group">
+          <ng-template ngFor let-item [ngForOf]="comments" class="review-comments-list-item">
+            <a class="list-group-item list-group-item-action flex-column align-items-start" [class.active]="isCurrentComment(item)" (click)="setCurrentComment(item)">
+              <div class="d-flex w-100 justify-content-between" style="border-bottom: 1px black solid;">
+                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  {{item.commentAuthor?.contactName || '-'}}
+                </div>
+                <div style="white-space: nowrap;">
+                  {{(item.dateAdded | date) || '-'}}
+                </div>
               </div>
-              <div style="white-space: nowrap;">
-                {{(item.dateAdded | date) || '-'}}
-              </div>
-            </div>
-            <p class="mb-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              <small>{{item.comment}}</small>
-            </p>
-            <div class="d-flex w-100 justify-content-end">
-              <div class="badge" [ngClass]="commentService.isAccepted(item) ? 'badge-success'
+              <p class="mb-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <small>{{item.comment}}</small>
+              </p>
+              <div class="d-flex w-100 justify-content-end">
+                <div class="badge" [ngClass]="commentService.isAccepted(item) ? 'badge-success'
               : commentService.isPending(item) ? 'badge-secondary'
               : commentService.isRejected(item) ? 'badge-danger'
               : 'badge-light'">{{item.commentStatus}}</div>
-            </div>
-          </a>
-        </ng-template>
-      </div>
-    </nav>
+              </div>
+            </a>
+          </ng-template>
+        </div>
+      </nav>
 
-    <main class="col-lg-8">
-      <app-comment-detail [comment]="currentComment" (commentChange)="setCurrentComment($event)"></app-comment-detail>
-    </main>
+      <article class="col-lg-8">
+        <app-comment-detail [comment]="currentComment" (commentChange)="setCurrentComment($event)"></app-comment-detail>
+      </article>
+    </div>
   </div>
 </div>

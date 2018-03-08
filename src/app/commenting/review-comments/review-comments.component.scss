@@ -1,8 +1,15 @@
 @import "~assets/styles/base.scss";
-.review-comments-links {
-    padding-top: 1rem;
-    button {
-        cursor: pointer;
+.review-comments {
+    h1 {
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+    section {
+        h3 {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
     }
 }
 
@@ -47,18 +54,8 @@
     }
 }
 
-// @include media-breakpoint-up(sm) {}
-@media (max-width: 576px) {}
-
-// @include media-breakpoint-up(md) {}
-@media (min-width: 768px) {}
-
-// @include media-breakpoint-up(lg) {}
 @media (min-width: 992px) {
-    main {
+    article {
         margin-top: 2rem;
     }
 }
-
-// @include media-breakpoint-up(xl) {}
-@media (min-width: 1200px) {}
