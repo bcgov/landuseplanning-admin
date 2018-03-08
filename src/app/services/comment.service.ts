@@ -17,6 +17,10 @@ import { CommentPeriod } from 'app/models/commentperiod';
 
 @Injectable()
 export class CommentService {
+  readonly accepted = 'Accepted';
+  readonly pending = 'Pending';
+  readonly rejected = 'Rejected';
+
   private comment: Comment = null;
 
   constructor(
@@ -139,5 +143,26 @@ export class CommentService {
         value => comment.isPublished = false,
         error => console.log('unpublish error =', error)
       );
+  }
+
+  isAccepted(comment: Comment): boolean { return comment.commentStatus === this.accepted; }
+
+  isPending(comment: Comment): boolean { return comment.commentStatus === this.pending; }
+
+  isRejected(comment: Comment): boolean { return comment.commentStatus === this.rejected; }
+
+  doAccept(comment: Comment): Comment {
+    comment.commentStatus = this.accepted;
+    return comment;
+  }
+
+  doPending(comment: Comment): Comment {
+    comment.commentStatus = this.pending;
+    return comment;
+  }
+
+  doReject(comment: Comment): Comment {
+    comment.commentStatus = this.rejected;
+    return comment;
   }
 }

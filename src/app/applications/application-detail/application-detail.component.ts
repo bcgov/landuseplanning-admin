@@ -53,7 +53,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
             this.application = data.application;
 
             // get comment period days remaining
-            if (this.application.currentPeriod) { // TODO: only published comment period!
+            if (this.application.currentPeriod) {
               const now = new Date();
               const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
               const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
@@ -65,7 +65,8 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
                 comments => {
-                  const count = comments.length; // TODO: count only # pending
+                  const pending = comments.filter(comment => this.commentService.isPending(comment));
+                  const count = pending.length;
                   this.numComments = count.toString();
                 },
                 error => console.log('couldn\'t get pending comments, error =', error)

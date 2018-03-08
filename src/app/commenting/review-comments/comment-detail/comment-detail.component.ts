@@ -23,10 +23,6 @@ export class CommentDetailComponent implements OnChanges {
   @Input() comment: Comment;
   @Output() commentChange = new EventEmitter<Comment>();
 
-  readonly accepted = 'Accepted';
-  readonly pending = 'Pending';
-  readonly rejected = 'Rejected';
-
   public internalNotes: string; // working version
   public networkMsg: string;
   private documents: Array<Document>;
@@ -52,29 +48,23 @@ export class CommentDetailComponent implements OnChanges {
     }
   }
 
-  private isAccepted(): boolean { return (this.comment.commentStatus === this.accepted); }
-
-  private isPending(): boolean { return (this.comment.commentStatus === this.pending); }
-
-  private isRejected(): boolean { return (this.comment.commentStatus === this.rejected); }
-
-  private doAccept() {
-    if (this.comment.commentStatus !== this.accepted) {
-      this.comment.commentStatus = this.accepted;
+  private doAccept(comment: Comment) {
+    if (!this.commentService.isAccepted(comment)) {
+      this.commentService.doAccept(comment);
       this.save({ comment: this.comment, doPublish: true });
     }
   }
 
-  private doPending() {
-    if (this.comment.commentStatus !== this.pending) {
-      this.comment.commentStatus = this.pending;
+  private doPending(comment: Comment) {
+    if (!this.commentService.isPending(comment)) {
+      this.commentService.doPending(comment);
       this.save({ comment: this.comment, doUnpublish: true });
     }
   }
 
-  private doReject() {
-    if (this.comment.commentStatus !== this.rejected) {
-      this.comment.commentStatus = this.rejected;
+  private doReject(comment: Comment) {
+    if (!this.commentService.isRejected(comment)) {
+      this.commentService.doReject(comment);
       this.save({ comment: this.comment, doUnpublish: true });
     }
   }

@@ -99,11 +99,12 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  // returns current (latest) period
+  // returns current (latest) published period
   // assumes if there's an open period, there isn't also future one
   getCurrent(periods: CommentPeriod[]): CommentPeriod {
-    const sortedPeriods = periods.sort((a, b) => a.startDate < b.startDate ? 1 : 0);
-    return (sortedPeriods.length > 0) ? sortedPeriods[0] : null;
+    const published = periods.filter(period => period.isPublished);
+    const sorted = published.sort((a, b) => a.startDate < b.startDate ? 1 : 0);
+    return (sorted.length > 0) ? sorted[0] : null;
   }
 
   isOpen(period: CommentPeriod): boolean {

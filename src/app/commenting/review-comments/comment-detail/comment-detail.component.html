@@ -29,9 +29,9 @@
       </div>
       <div class="col-6 comment-detail__status">
         <!-- <p style="font-size: small"><span *ngIf="!comment.isPublished">Not </span>Published</p> -->
-        <span class="badge" [ngClass]="comment.commentStatus === accepted ? 'badge-success'
-        : comment.commentStatus === pending ? 'badge-secondary'
-        : comment.commentStatus === rejected ? 'badge-danger'
+        <span class="badge" [ngClass]="commentService.isAccepted(comment) ? 'badge-success'
+        : commentService.isPending(comment) ? 'badge-secondary'
+        : commentService.isRejected(comment) ? 'badge-danger'
         : 'badge-light'">{{comment.commentStatus}}</span>
       </div>
     </div>
@@ -48,8 +48,12 @@
           <em>This comment has no documents.</em>
         </div>
         <div *ngFor="let document of documents">
-          <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document"><i class="material-icons">file_download</i></button>
-          <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document"><i class="material-icons">open_in_new</i></button>
+          <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
+            <i class="material-icons">file_download</i>
+          </button>
+          <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
+            <i class="material-icons">open_in_new</i>
+          </button>
           <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
         </div>
       </div>
@@ -75,18 +79,18 @@
             <span>Rejected</span>
           </label>
         </div> -->
-        <button class="btn btn-success" data-toggle="button" [class.active]="isAccepted()" [attr.aria-pressed]="isAccepted()" (click)="doAccept()"
-          title="Change this comment to Accepted">
+        <button class="btn btn-success" data-toggle="button" [class.active]="commentService.isAccepted(comment)" [attr.aria-pressed]="commentService.isAccepted(comment)"
+          (click)="doAccept(comment)" title="Change this comment to Accepted">
           <i class="material-icons">check_circle</i>
           <span>Accept</span>
         </button>
-        <button class="btn btn-secondary" data-toggle="button" [class.active]="isPending()" [attr.aria-pressed]="isPending()" (click)="doPending()"
-          title="Change this comment to Pending">
+        <button class="btn btn-secondary" data-toggle="button" [class.active]="commentService.isPending(comment)" [attr.aria-pressed]="commentService.isPending(comment)"
+          (click)="doPending(comment)" title="Change this comment to Pending">
           <i class="material-icons">error</i>
           <span>Pending</span>
         </button>
-        <button class="btn btn-danger" data-toggle="button" [class.active]="isRejected()" [attr.aria-pressed]="isRejected()" (click)="doReject()"
-          title="Change this comment to Rejected">
+        <button class="btn btn-danger" data-toggle="button" [class.active]="commentService.isRejected(comment)" [attr.aria-pressed]="commentService.isRejected(comment)"
+          (click)="doReject(comment)" title="Change this comment to Rejected">
           <i class="material-icons">cancel</i>
           <span>Reject</span>
         </button>

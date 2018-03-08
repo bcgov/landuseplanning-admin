@@ -55,9 +55,9 @@
               <small>{{item.comment}}</small>
             </p>
             <div class="d-flex w-100 justify-content-end">
-              <div class="badge" [ngClass]="item.commentStatus === accepted ? 'badge-success'
-              : item.commentStatus === pending ? 'badge-secondary'
-              : item.commentStatus === rejected ? 'badge-danger'
+              <div class="badge" [ngClass]="commentService.isAccepted(item) ? 'badge-success'
+              : commentService.isPending(item) ? 'badge-secondary'
+              : commentService.isRejected(item) ? 'badge-danger'
               : 'badge-light'">{{item.commentStatus}}</div>
             </div>
           </a>
