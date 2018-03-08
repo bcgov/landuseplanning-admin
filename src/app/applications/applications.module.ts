@@ -11,7 +11,6 @@ import { MapModule } from '../map/map.module';
 // components
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
-import { DocumentsTabContentComponent } from './application-detail/documents/documents-tab-content.component';
 
 // services
 import { ApiService } from '../services/api';
@@ -32,7 +31,6 @@ import { SelectOrganizationComponent } from './select-organization/select-organi
   declarations: [
     ApplicationListComponent,
     ApplicationDetailComponent,
-    DocumentsTabContentComponent,
     ApplicationAddEditComponent
   ],
   exports: [

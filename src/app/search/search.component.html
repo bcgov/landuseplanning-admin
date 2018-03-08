@@ -59,8 +59,12 @@
           </thead>
           <tbody *ngIf="results && groupByResults">
             <tr *ngFor="let item of groupByResults">
-              <td *ngIf="!item.isImported"><span class="import-link" (click)="importProject(item)"><i class="material-icons">input</i></span></td>
-              <td *ngIf="item.isImported"><span class="import-link"><i class="material-icons">done</i></span></td>
+              <td *ngIf="!item.isImported">
+                <span class="import-link" (click)="importProject(item)"  title="Import this item"><i class="material-icons">cloud_download</i></span>
+              </td>
+              <td *ngIf="item.isImported">
+                <span><i class="material-icons" title="Already imported">cloud_done</i></span>
+              </td>
               <td>{{item.properties.CROWN_LANDS_FILE}}</td>
               <td>{{item.properties.TENURE_PURPOSE}}</td>
               <td>{{item.properties.TENURE_SUBPURPOSE}}</td>

@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 // import { OverviewTabContentComponent } from './overview/overview-tab-content.component';
 // import { AuthorizationsTabContentComponent } from './authorizations/authorizations-tab-content.component';
 // import { ComplianceTabContentComponent } from './compliance/compliance-tab-content.component';
-import { DocumentsTabContentComponent } from './documents/documents-tab-content.component';
+// import { DocumentsTabContentComponent } from './documents/documents-tab-content.component';
 
 export const TAB_NAV_ROUTES: Routes = [
     // {
@@ -23,8 +23,8 @@ export const TAB_NAV_ROUTES: Routes = [
     //     path: 'compliance',
     //     component: ComplianceTabContentComponent
     // },
-    {
-        path: 'docs',
-        component: DocumentsTabContentComponent
-    }
+    // {
+    //     path: 'docs',
+    //     component: DocumentsTabContentComponent
+    // }
 ];
