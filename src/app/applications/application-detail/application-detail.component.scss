@@ -1,4 +1,12 @@
 @import "~assets/styles/base.scss";
+.mapid {
+    position: relative;
+    height: 300px;
+    outline: none;
+    touch-action: none;
+    background-color: #445a71;
+}
+
 .application-detail {
     h1 {
         display: inline-block;

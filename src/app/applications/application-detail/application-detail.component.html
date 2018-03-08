@@ -150,9 +150,9 @@
 
       <aside class="col-lg-4">
         <!-- MAP THUMBNAIL -->
-        <section class="aside-map">
-          <div class="aside-map__thumbnail" (click)="gotoMap()">
-            <app-application-map [application]="application" [zoom]="4"></app-application-map>
+        <section>
+          <div class="map-container">
+            <div class="map" style="height: 300px;" id="map"></div>
           </div>
         </section>
 

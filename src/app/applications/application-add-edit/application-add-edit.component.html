@@ -1,6 +1,6 @@
 <div class="container" id="anchor-point">
   <div class="row">
-    <main class="col-lg-8">
+    <main class="col-lg-12">
       <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
         <section class="application-client card">
           <h4 class="card-header">Client</h4>
@@ -52,157 +52,66 @@
             required></textarea>
         </section>
 
-        <section class="application-details card">
-          <h4 class="card-header">Application Details</h4>
+        <section class="disposition-id card">
+          <h4 class="card-header">Disposition</h4>
           <ul class="nv-list application-details--list">
             <li>
+              <span class="name">Disposition ID</span>
+              <input type="number"
+                  class="name form-control"
+                  id="tantalisID"
+                  name="tantalisID"
+                  [(ngModel)]="application.tantalisID"
+                  required>
+              <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()">Fetch Disposition ID Data</button>
+              </li>
+          </ul>
+        </section>
+
+        <section class="application-details card">
+          <h4 class="card-header">Application Details</h4>
+          <ul class="nv-list application-details--list" *ngIf="application.features && application.features.length">
+            <li>
               <span class="name">Type</span>
-              <select class="form-control"
-                id="type"
-                name="type"
-                required
-                (change)="typeChange(application.type)"
-                [(ngModel)]="application.type"
-                name="type">
-                <option *ngFor="let type of types"
-                  [value]="type">{{type}}</option>
-              </select>
+              <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE || '-'}}</span>
             </li>
             <li>
-              <span class="name">Sub-Type</span>
-              <select class="form-control"
-                id="subtype"
-                required
-                name="subtype"
-                [(ngModel)]="application.subtype"
-                name="subtype">
-                <option *ngFor="let subtype of subtypes[application.type]"
-                  [value]="subtype">{{subtype}}</option>
-              </select>
+                <span class="name">Stage</span>
+                <span class="value">{{application.features[0].properties.TENURE_STAGE || '-'}}</span>
             </li>
             <li>
-              <span class="name">Project Date</span>
-              <input type="date"
-                class="form-control"
-                id="projectDate"
-                name="projectData"
-                [ngModel]="application.projectDate | date:'yyyy-MM-dd'"
-                (ngModelChange)="application.projectDate = $event"
-                required useValueAsDate>
+                <span class="name">Status</span>
+                  <span class="value">{{application.features[0].properties.TENURE_STATUS || '-'}}</span>
             </li>
             <li>
-              <span class="name">Status</span>
-              <select class="form-control"
-                id="status"
-                required
-                name="status"
-                [(ngModel)]="application.status"
-                name="status">
-                <option *ngFor="let status of statuses"
-                  [value]="status">{{status}}</option>
-              </select>
+                <span class="name">Crown Lands File:</span>
+                <span class="value">{{application.features[0].properties.CROWN_LANDS_FILE || '-'}}</span>
             </li>
             <li>
               <span class="name">Region</span>
-              <input type="text"
-                class="form-control"
-                id="region"
-                name="region"
-                [(ngModel)]="application.region"
-                required>
+              <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}}</span>
             </li>
             <li>
               <span class="name">Location</span>
-              <input type="text"
-                class="form-control"
-                id="location"
-                name="location"
-                [(ngModel)]="application.location"
-                required>
-              <span class="name">Area (hectares)</span>
-              <input type="number"
-                class="form-control"
-                id="areaHectares"
-                name="areaHectares"
-                step="0.01"
-                [(ngModel)]="application.areaHectares"
-                required>
-              <span class="name">Latitude</span>
-              <input type="number"
-                class="form-control"
-                id="latitude"
-                name="latitude"
-                step="0.01"
-                [(ngModel)]="application.latitude"
-                required>
-              <span class="name">Longitude</span>
-              <input type="number"
-                class="form-control"
-                id="longitude"
-                name="longitude"
-                step="0.01"
-                [(ngModel)]="application.longitude"
-                required>
+              <span class="value">{{application.features[0].properties.TENURE_LOCATION || '-'}}</span>
+            </li>
+            <li>
+              <span class="name">Area (ha)</span>
+              <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
             </li>
             <li>
               <label for="purpose">Purpose:</label>
-              <select class="form-control"
-                id="purpose"
-                required
-                name="purpose"
-                [(ngModel)]="application.purpose"
-                (change)="purposeChange(application.purpose)"
-                name="purpose">
-                <option *ngFor="let purpose of purposes"
-                  [value]="purpose">{{purpose}}</option>
-              </select>
+              <span class="value">{{application.features[0].properties.TENURE_PURPOSE || '-'}}</span>
             </li>
             <li>
               <label for="purpose">Sub-Purpose:</label>
-              <select class="form-control"
-                id="subpurpose"
-                name="subpurpose"
-                required
-                [(ngModel)]="application.subpurpose"
-                name="subpurpose">
-                <option *ngFor="let subpurpose of subpurposes[application.purpose]"
-                  [value]="subpurpose">{{subpurpose}}</option>
-              </select>
+              <span class="value">{{application.features[0].properties.TENURE_SUBPURPOSE || '-'}}</span>
             </li>
-            <!-- <li>
-              <span class="value">{{application.latitude | coordinates:TransformationType.toDegree:Direction.Latitude}},
-              <span class="name">Lat / Lon</span>
-              <geo-coordinates [value]="10"></geo-coordinates>
-              {{application.longitude | coordinates:TransformationType.toDegree:Direction.Longitude}}</span>
-            </li> -->
             <li>
               <span class="name">Business Unit</span>
-              <input type="text"
-                class="form-control"
-                id="businessUnit"
-                name="businessUnit"
-                [(ngModel)]="application.businessUnit"
-                required>
+              <span class="value">{{application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT || '-'}}</span>
             </li>
-            <li>
-              <div class="name">Crown Lands File(s):</div>
-              <div *ngFor="let clf of application.cl_files">
-                <span>
-                  <div class="name col-4" (click)="removeCLFile(clf)">{{clf}}
-                    <i class="material-icons">delete_forever</i>
-                  </div>
-                </span>
-              </div>
-              <div class="col-12">
-                <input type="number"
-                  class="name form-control col-4"
-                  id="cl_files"
-                  name="cl_files"
-                  [(ngModel)]="clFile"
-                  required>
-                <button type="button pull-right" (click)="addCLFile()">Add CL File</button>
-              </div>
-            </li>
+            <hr>
             <div *ngIf="application.internal" class="form-group">
               <section class="application-description card">
                 <h4 class="card-header">Internal Notes</h4>

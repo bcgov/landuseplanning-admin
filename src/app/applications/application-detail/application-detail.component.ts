@@ -3,12 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
-
+import * as L from 'leaflet';
+import * as _ from 'lodash';
 import { Application } from 'app/models/application';
 import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { CommentService } from 'app/services/comment.service';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-application-detail',
@@ -21,12 +23,16 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   private daysRemaining = '?';
   private numComments = '?';
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  fg: L.FeatureGroup;
+  map: L.Map;
+  layers: L.Layer[];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService, // also used in template
     private applicationService: ApplicationService, // used in template
+    private searchService: SearchService,
     private commentPeriodService: CommentPeriodService, // used in template
     private commentService: CommentService
   ) { }
@@ -34,7 +40,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
-      return; // return false;
+      return false;
     }
 
     // get data directly from resolver
@@ -64,6 +70,62 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         },
         error => { }
       );
+
+    const self = this;
+    this.searchService.getByDTID(this.application.tantalisID.toString()).subscribe(
+      features => {
+        self.map = L.map('map').setView([53.505, -127.09], 6);
+        console.log('map');
+        const World_Topo_Map = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Tiles &copy; Esri &mdash; and the GIS User Community'
+        }).addTo(self.map);
+
+        if (self.fg) {
+          _.each(self.layers, function (layer) {
+            self.map.removeLayer(layer);
+          });
+          self.fg.clearLayers();
+        } else {
+          self.fg = L.featureGroup();
+        }
+
+        _.each(features, function (feature) {
+          const f = JSON.parse(JSON.stringify(feature));
+          // Needed to be valid GeoJSON
+          delete f.geometry_name;
+          const featureObj: GeoJSON.Feature<any> = f;
+          const layer = L.geoJSON(featureObj);
+          const options = { maxWidth: 400 };
+          // const content = '<h3>' + featureObj.properties.TENURE_TYPE
+          //   + '<br />'
+          //   + featureObj.properties.TENURE_SUBTYPE + '</h3>'
+          //   + '<strong>ShapeID: </strong>' + featureObj.properties.INTRID_SID
+          //   + '<br />'
+          //   + '<strong>Disposition: </strong>' + featureObj.properties.DISPOSITION_TRANSACTION_SID
+          //   + '<br />'
+          //   + '<strong>Purpose: </strong>' + featureObj.properties.TENURE_PURPOSE
+          //   + '<br />'
+          //   + '<strong>Sub Purpose: </strong>' + featureObj.properties.TENURE_SUBPURPOSE
+          //   + '<br />'
+          //   + '<strong>Stage: </strong>' + featureObj.properties.TENURE_STAGE
+          //   + '<br />'
+          //   + '<strong>Status: </strong>' + featureObj.properties.TENURE_STATUS
+          //   + '<br />'
+          //   + '<strong>Hectares: </strong>' + featureObj.properties.TENURE_AREA_IN_HECTARES
+          //   + '<br />'
+          //   + '<br />'
+          //   + '<strong>Legal Description: </strong>' + featureObj.properties.TENURE_LEGAL_DESCRIPTION;
+          // const popup = L.popup(options).setContent(content);
+          // layer.bindPopup(popup);
+          self.fg.addLayer(layer);
+          layer.addTo(self.map);
+        });
+
+        self.map.fitBounds(self.fg.getBounds());
+      },
+      error => {
+        console.log('error =', error);
+      });
   }
 
   ngOnDestroy() {

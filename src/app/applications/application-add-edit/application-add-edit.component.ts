@@ -17,6 +17,7 @@ import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
 import { OrganizationService } from 'app/services/organization.service';
+import { SearchService } from 'app/services/search.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -48,13 +49,14 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private documentService: DocumentService,
     private orgService: OrganizationService,
     private applicationService: ApplicationService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private searchService: SearchService
   ) { }
 
   ngOnInit() {
     // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
-      return; // return false;
+      return false;
     }
 
     // get data directly from resolver
@@ -83,6 +85,14 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           this.application.organization = organization;
         });
     }
+  }
+
+  applyDisposition() {
+    // Fetch the new feature data, update current UI.
+    this.searchService.getByDTID(this.application.tantalisID.toString())
+    .subscribe(data => {
+      this.application.features = data;
+    });
   }
 
   ngOnDestroy() {
@@ -158,6 +168,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         (application) => {
           // console.log('application =', application);
           self.showMessage(false, 'Saved application!');
+          // Update the shape data
+          self.applyDisposition();
         },
         error => {
           console.log('error =', error);
