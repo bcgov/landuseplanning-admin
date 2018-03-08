@@ -33,10 +33,6 @@ import { AddCommentComponent } from './add-comment/add-comment.component';
 })
 
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
-  readonly accepted = 'Accepted';
-  readonly pending = 'Pending';
-  readonly rejected = 'Rejected';
-
   readonly sortKeys = ['Date', 'Name', 'Status'];
 
   public loading = true;
