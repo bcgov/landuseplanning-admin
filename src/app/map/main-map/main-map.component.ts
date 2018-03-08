@@ -42,7 +42,7 @@ export class MainMapComponent implements OnInit {
     this.popupProperties = props.mainMap.popup;
   }
 
-  onMapInit(mapInfo: { map: __esri.Map, mapView: __esri.MapView }): void {
+  onMapInit(mapInfo: { map: __esri.Map, mapView: __esri.MapView }) {
     const args = {
       ...mapInfo,
       popupProperties: this.popupProperties,
@@ -164,7 +164,7 @@ export class MainMapComponent implements OnInit {
     });
   }
 
-  private showMapPopup(view: __esri.MapView, targetMine: __esri.Graphic): void {
+  private showMapPopup(view: __esri.MapView, targetMine: __esri.Graphic) {
     view.popup.open({
       features: [targetMine],
       updateLocationEnabled: true  // updates the location of popup based on selected feature's geometry

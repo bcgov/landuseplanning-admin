@@ -30,16 +30,13 @@ export class ApplicationService {
 
   // get count of applications
   getCount(): Observable<number> {
-    return this.api.getApplications()
-      .map((res: Response) => {
-        const applications = res.text() ? res.json() : [];
+    return this.getAllInternal()
+      .map((applications: Application[]) => {
         return applications.length;
-      })
-      .catch(this.api.handleError);
+      });
   }
 
   // get all applications
-  // no need for catch statements since we're calling other services
   getAll(): Observable<Application[]> {
     // first get the applications
     return this.getAllInternal()
@@ -79,6 +76,74 @@ export class ApplicationService {
           applications[i] = new Application(application);
         });
         return applications;
+      })
+      .catch(this.api.handleError);
+  }
+
+  // get a specific application by its id
+  getById(appId: string, forceReload: boolean = false): Observable<Application> {
+    if (this.application && this.application._id === appId && !forceReload) {
+      return Observable.of(this.application);
+    }
+
+    // first get the application data
+    return this.api.getApplication(appId)
+      .map((res: Response) => {
+        const applications = res.text() ? res.json() : [];
+        // return the first (only) application
+        return applications.length > 0 ? new Application(applications[0]) : null;
+      })
+      .mergeMap((application: Application) => {
+        if (!application) { return null; }
+
+        const promises: Array<Promise<any>> = [];
+
+        // now get the organization
+        if (application._organization) {
+          promises.push(this.organizationService.getById(application._organization, forceReload)
+            .toPromise()
+            .then(organization => application.organization = organization)
+          );
+        }
+
+        // now get the documents
+        promises.push(this.documentService.getAllByApplicationId(application._id)
+          .toPromise()
+          .then(documents => application.documents = documents)
+        );
+
+        // now get the current comment period
+        promises.push(this.commentPeriodService.getAllByApplicationId(application._id)
+          .toPromise()
+          .then(periods => application.currentPeriod = this.commentPeriodService.getCurrent(periods))
+        );
+
+        // now get the decision
+        promises.push(this.decisionService.getByApplicationId(application._id, forceReload)
+          .toPromise()
+          .then(decision => application.decision = decision)
+        );
+
+        // now get the shapes
+        promises.push(this.searchService.getByDTID(application.tantalisID.toString())
+          .toPromise()
+          .then(features => {
+            application.features = features;
+            // calculate areaHectares
+            let areaHectares = 0;
+            _.each(application.features, function (f) {
+              if (f['properties']) {
+                areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+              }
+            });
+            application.areaHectares = areaHectares;
+          })
+        );
+
+        return Promise.all(promises).then(() => {
+          this.application = application;
+          return this.application;
+        });
       })
       .catch(this.api.handleError);
   }
@@ -158,70 +223,6 @@ export class ApplicationService {
         const application = res.text() ? res.json() : [];
         // console.log("application:", application);
         return new Application(application);
-      })
-      .catch(this.api.handleError);
-  }
-
-  // get a specific application by its id
-  getById(appId: string, forceReload: boolean = false): Observable<Application> {
-    if (this.application && this.application._id === appId && !forceReload) {
-      return Observable.of(this.application);
-    }
-
-    // first get the application data
-    return this.api.getApplication(appId)
-      .map((res: Response) => {
-        const applications = res.text() ? res.json() : [];
-        // return the first (only) application
-        return applications.length > 0 ? new Application(applications[0]) : null;
-      })
-      .map((application: Application) => {
-        if (!application) { return; }
-
-        // get the organization
-        if (application._organization) {
-          this.organizationService.getById(application._organization, forceReload).subscribe(
-            organization => application.organization = organization,
-            error => console.log(error)
-          );
-        }
-
-        // get the documents
-        this.documentService.getAllByApplicationId(application._id).subscribe(
-          documents => this.application.documents = documents,
-          error => console.log(error)
-        );
-
-        // get the current comment period
-        this.commentPeriodService.getAllByApplicationId(application._id).subscribe(
-          periods => application.currentPeriod = this.commentPeriodService.getCurrent(periods),
-          error => console.log(error)
-        );
-
-        // get the decision
-        this.decisionService.getByApplicationId(application._id, forceReload).subscribe(
-          decision => this.application.decision = decision,
-          error => console.log(error)
-        );
-
-        // get the shapes
-        this.searchService.getByDTID(application.tantalisID.toString()).subscribe(
-          features => {
-            this.application.features = features;
-            // calculate areaHectares
-            let areaHectares = 0;
-            _.each(this.application.features, function (f) {
-              if (f['properties']) {
-                areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-              }
-            });
-            this.application.areaHectares = areaHectares;
-          },
-          error => console.log(error)
-        );
-
-        this.application = application;
-        return this.application;
       })
       .catch(this.api.handleError);
   }

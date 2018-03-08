@@ -23,7 +23,7 @@ export class ApplicationMapComponent implements OnInit {
 
     constructor(private config: MapConfigService) { }
 
-    ngOnInit(): void {
+    ngOnInit() {
         const props = this.config.get();
         const { latitude, longitude } = this.application;  // ES6 destructuring
 
@@ -31,7 +31,7 @@ export class ApplicationMapComponent implements OnInit {
         this.mapViewProperties = { ...props.mainMap.mapView, zoom: this.zoom, center: { latitude, longitude } };
     }
 
-    onMapInit(mapInfo: { map: __esri.Map, mapView: __esri.MapView }): void {
+    onMapInit(mapInfo: { map: __esri.Map, mapView: __esri.MapView }) {
         const args = {
             ...mapInfo,
             featureLayer: <__esri.FeatureLayer>null
