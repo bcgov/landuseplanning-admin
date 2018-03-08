@@ -1,8 +1,8 @@
-import { CollectionsList } from './collection';
 import { Document } from './document';
 import { Organization } from './organization';
 import { CommentPeriod } from './commentperiod';
 import { Decision } from './decision';
+import { Feature } from './feature';
 import * as _ from 'lodash';
 
 export class Application {
@@ -41,8 +41,6 @@ export class Application {
   type: string;
   subtype: string;
 
-  collections: CollectionsList; // TODO: DELETE THIS WHEN DOCUMENTS IS IMPLEMENTED
-
   content: {
     type: string;
     page: string;
@@ -59,7 +57,7 @@ export class Application {
   organization: Organization;
   currentPeriod: CommentPeriod;
   decision: Decision;
-  features: object[];
+  features: Feature[];
 
   constructor(obj?: any) {
     this._id                     = obj && obj._id                     || null;
@@ -73,7 +71,7 @@ export class Application {
     this.agency                  = obj && obj.agency                  || null;
     this.areaHectares            = obj && obj.areaHectares            || null;
     this.businessUnit            = obj && obj.businessUnit            || null;
-    this.cl_files                = obj && obj.cl_files                || null;
+    this.cl_files                = obj && obj.cl_files                || [];
     this.code                    = obj && obj.code                    || null;
     this.name                    = obj && obj.name                    || null;
     this.description             = obj && obj.description             || null;
@@ -97,7 +95,6 @@ export class Application {
     this.type                    = obj && obj.type                    || null;
     this.subtype                 = obj && obj.subtype                 || null;
 
-    this.collections             = obj && obj.collections             || null;
     this.content                 = obj && obj.content                 || [];
     this.internal                = obj && obj.internal                || null;
 

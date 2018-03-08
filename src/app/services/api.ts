@@ -169,7 +169,6 @@ export class ApiService {
   addApplication(app: Application) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, 'application/', app, { headers: headers });
-
   }
 
   publishApplication(app: Application) {

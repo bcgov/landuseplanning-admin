@@ -1,3 +1,4 @@
+import { Feature } from './feature';
 import { Application } from './application';
 import { Organization } from './organization';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -5,9 +6,7 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 export class Search {
   _id: string;
   totalFeatures: number;
-  features: {
-    id: string;
-  }[];
+  features: Feature[];
   date: Date;
   crs: string;
   type: string;
@@ -24,7 +23,7 @@ export class Search {
     this.date           = search && search.date           || null;
     this.status         = search && search.status         || null;
     this.application    = search && search.application    || null;
-    this.sidsFound     = search && search.sidsFound       || null;
+    this.sidsFound      = search && search.sidsFound      || null;
     this.hostname       = hostname;
 
     this.features = [];

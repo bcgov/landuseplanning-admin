@@ -104,29 +104,33 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
 
   save() {
     if (this.isNew) {
-      this.commentPeriodService.add(this.cp).subscribe(
-        data => {
-          this.result = true;
-          this.isNew = false;
-          this.close();
-        },
-        error => {
-          this.result = false;
-          this.networkMsg = error;
-          this.close();
-        });
+      this.commentPeriodService.add(this.cp)
+        .subscribe(
+          value => {
+            this.result = true;
+            this.isNew = false;
+            this.close();
+          },
+          error => {
+            this.result = false;
+            this.networkMsg = error;
+            this.close();
+          }
+        );
     } else {
-      this.commentPeriodService.save(this.cp).subscribe(
-        data => {
-          this.result = true;
-          this.isNew = false;
-          this.close();
-        },
-        error => {
-          this.result = false;
-          this.networkMsg = error;
-          this.close();
-        });
+      this.commentPeriodService.save(this.cp)
+        .subscribe(
+          value => {
+            this.result = true;
+            this.isNew = false;
+            this.close();
+          },
+          error => {
+            this.result = false;
+            this.networkMsg = error;
+            this.close();
+          }
+        );
     }
   }
 }

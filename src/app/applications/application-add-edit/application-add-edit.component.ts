@@ -14,6 +14,7 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
 import { Organization } from 'app/models/organization';
+import { Feature } from 'app/models/feature';
 import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
@@ -102,8 +103,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   applyDisposition() {
     // Fetch the new feature data, update current UI.
     this.searchService.getByDTID(this.application.tantalisID.toString())
-      .subscribe(data => {
-        this.application.features = data;
+      .subscribe((features: Feature[]) => {
+        this.application.features = features;
       });
   }
 
@@ -127,6 +128,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   selectClient() {
     const self = this;
     let orgId = null;
+
     if (this.application.organization) {
       orgId = this.application.organization._id;
     }
@@ -137,19 +139,20 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((selectedOrgId) => {
+      .subscribe((selectedOrgId: string) => {
         if (selectedOrgId) {
           // Fetch the org from the service, and bind to this instance of an application.
           self.orgService.getById(selectedOrgId)
             .subscribe(
-              data => {
-                self.application.organization = new Organization(data);
+              (org: Organization) => {
+                self.application.organization = new Organization(org);
                 // Update current reference.
-                self.application._organization = data._id;
+                self.application._organization = org._id;
               },
               error => {
                 console.log('error =', error);
-              });
+              }
+            );
         } else {
           console.log('org selection cancelled');
         }
@@ -175,18 +178,20 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.application.projectDate = moment(this.application.projectDate).format();
 
     const self = this;
-    this.api.saveApplication(this.application)
+    this.applicationService.save(this.application)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (application) => {
-          // console.log('application =', application);
+        (app: Application) => {
+          // console.log('application =', app);
           self.showMessage(false, 'Saved application!');
-          // Update the shape data
-          self.applyDisposition();
+          // reload cached app data
+          this.applicationService.getById(this.application._id, true).subscribe();
         },
         error => {
           console.log('error =', error);
           self.showMessage(true, 'Error saving application');
-        });
+        }
+      );
   }
 
   private showMessage(isError, msg) {
@@ -209,14 +214,15 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         formData.append('upfile', file);
         self.api.uploadDocument(formData)
           .subscribe(
-            (document) => {
+            (doc: Response) => {
               // do stuff w/my uploaded file
-              console.log('document =', document.json());
-              self.applicationDocuments.push(document.json());
+              console.log('document =', doc.json());
+              self.applicationDocuments.push(doc.json());
             },
             error => {
               console.log('error =', error);
-            });
+            }
+          );
       }
     });
   }
@@ -277,7 +283,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed) => {
+      .subscribe((isConfirmed: boolean) => {
         // we get dialog result
         if (isConfirmed) {
           this.applicationService.delete(app)

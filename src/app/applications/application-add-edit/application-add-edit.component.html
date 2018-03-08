@@ -5,51 +5,45 @@
         <section class="application-client card">
           <h4 class="card-header">Client</h4>
           <span>
-            <label *ngIf="application.organization">{{application.organization.name}}</label>
-            <button type="button" class="btn btn-primary float-right" (click)="selectClient()"><i class="material-icons">contacts</i>Select Client</button>
+            <label>{{application.organization?.name || '-'}}</label>
+            <button type="button" class="btn btn-primary float-right" (click)="selectClient()">
+              <i class="material-icons">contacts</i>Select Client</button>
           </span>
         </section>
 
         <section class="application-description card">
           <h4 class="card-header">Description</h4>
-          <textarea type="text"
-            class="form-control"
-            id="description"
-            name="description"
-            [(ngModel)]="application.description"
-            required></textarea>
+          <textarea type="text" class="form-control" id="description" name="description" [(ngModel)]="application.description" required></textarea>
         </section>
 
         <section class="application-documents card">
           <h4 class="card-header">Documents</h4>
           <span>
-            <input type="file"
-              #fileInput
-              (change)="fileChange($event)"
-              multiple />
-            <button type="button" class="btn btn-primary float-right" [disabled]="!fileList || fileList.length === 0" (click)="uploadFiles()"><i class="material-icons">file_upload</i>Upload Files</button>
+            <input type="file" #fileInput (change)="fileChange($event)" multiple />
+            <button type="button" class="btn btn-primary float-right" [disabled]="!fileList || fileList.length === 0" (click)="uploadFiles()">
+              <i class="material-icons">file_upload</i>Upload Files</button>
           </span>
 
           <ul class="nv-list application-details--list">
             <li *ngFor="let file of applicationDocuments">
               <span class="name">{{file.displayName}}</span>
-              <button type="button" class="btn btn-primary" (click)="api.downloadDocument(file)" title="Download this document"><i class="material-icons">file_download</i></button>
-              <button type="button" class="btn btn-primary" (click)="api.openDocument(file)" title="Open this document"><i class="material-icons">open_in_new</i></button>
-              <button type="button" *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file)" title="Publish this document"><i class="material-icons">play_arrow</i></button>
-              <button type="button" *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file)" title="Un-publish this document"><i class="material-icons">pause</i></button>
-              <button type="button" *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file)" title="Delete this document"><i class="material-icons">delete</i></button>
+              <button type="button" class="btn btn-primary" (click)="api.downloadDocument(file)" title="Download this document">
+                <i class="material-icons">file_download</i>
+              </button>
+              <button type="button" class="btn btn-primary" (click)="api.openDocument(file)" title="Open this document">
+                <i class="material-icons">open_in_new</i>
+              </button>
+              <button type="button" *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file)" title="Publish this document">
+                <i class="material-icons">play_arrow</i>
+              </button>
+              <button type="button" *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file)" title="Un-publish this document">
+                <i class="material-icons">pause</i>
+              </button>
+              <button type="button" *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file)" title="Delete this document">
+                <i class="material-icons">delete</i>
+              </button>
             </li>
           </ul>
-        </section>
-
-        <section class="application-legal_description card">
-          <h4 class="card-header">Legal Description</h4>
-          <textarea type="text"
-            class="form-control"
-            id="legalDescription"
-            name="legalDescription"
-            [(ngModel)]="application.legalDescription"
-            required></textarea>
         </section>
 
         <section class="disposition-id card">
@@ -57,90 +51,84 @@
           <ul class="nv-list application-details--list">
             <li>
               <span class="name">Disposition ID</span>
-              <input type="number"
-                  class="name form-control"
-                  id="tantalisID"
-                  name="tantalisID"
-                  [(ngModel)]="application.tantalisID"
-                  required>
+              <input type="number" class="name form-control" id="tantalisID" name="tantalisID" [(ngModel)]="application.tantalisID" required>
               <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()">Fetch Disposition ID Data</button>
-              </li>
+            </li>
           </ul>
         </section>
 
-        <section class="application-details card">
+        <section class="application-details card" *ngIf="application.features && application.features.length > 0">
           <h4 class="card-header">Application Details</h4>
-          <ul class="nv-list application-details--list" *ngIf="application.features && application.features.length">
+          <ul class="nv-list application-details--list">
             <li>
-              <span class="name">Type</span>
-              <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE || '-'}}</span>
+              <span class="name">Purpose / Subpurpose</span>
+              <span class="value">{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</span>
             </li>
             <li>
-                <span class="name">Stage</span>
-                <span class="value">{{application.features[0].properties.TENURE_STAGE || '-'}}</span>
+              <span class="name">Type / Subtype</span>
+              <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE
+                || '-'}}</span>
             </li>
             <li>
-                <span class="name">Status</span>
-                  <span class="value">{{application.features[0].properties.TENURE_STATUS || '-'}}</span>
+              <span class="name">Status</span>
+              <span class="value">{{application.features[0].properties.TENURE_STATUS || '-'}}</span>
             </li>
             <li>
-                <span class="name">Crown Lands File:</span>
-                <span class="value">{{application.features[0].properties.CROWN_LANDS_FILE || '-'}}</span>
+              <span class="name">Stage</span>
+              <span class="value">{{application.features[0].properties.TENURE_STAGE || '-'}}</span>
+            </li>
+            <li>
+              <span class="name">Crown Land File(s)</span>
+              <span class="value">{{application.features[0].properties.CROWN_LANDS_FILE || '-'}}</span>
+            </li>
+            <li>
+              <span class="name">Agency</span>
+              <span class="value">{{application.agency || '-'}}</span>
+            </li>
+            <li>
+              <span class="name">Business Unit</span>
+              <span class="value">{{application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT || '-'}}</span>
             </li>
             <li>
               <span class="name">Region</span>
-              <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}}</span>
+              <span class="value">{{application.features[0].properties.REGION || '-'}}</span>
             </li>
             <li>
               <span class="name">Location</span>
               <span class="value">{{application.features[0].properties.TENURE_LOCATION || '-'}}</span>
             </li>
             <li>
-              <span class="name">Area (ha)</span>
+              <span class="name">Total Area (hectares)</span>
               <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
             </li>
-            <li>
-              <label for="purpose">Purpose:</label>
-              <span class="value">{{application.features[0].properties.TENURE_PURPOSE || '-'}}</span>
-            </li>
-            <li>
-              <label for="purpose">Sub-Purpose:</label>
-              <span class="value">{{application.features[0].properties.TENURE_SUBPURPOSE || '-'}}</span>
-            </li>
-            <li>
-              <span class="name">Business Unit</span>
-              <span class="value">{{application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT || '-'}}</span>
-            </li>
-            <hr>
-            <div *ngIf="application.internal" class="form-group">
-              <section class="application-description card">
-                <h4 class="card-header">Internal Notes</h4>
-                <textarea type="text"
-                  class="form-control"
-                  id="internal.notes"
-                  name="internal.notes"
-                  [(ngModel)]="application.internal.notes"
-                  required></textarea>
-              </section>
-            </div>
-
-            <li>
-              <button type="submit" class="btn btn-primary"><i class="material-icons">save</i>Save</button>
-              <button type="button" *ngIf="!application.isPublished" class="btn btn-success" (click)="publishApplication(application)"><i class="material-icons">play_arrow</i>Publish</button>
-              <button type="button" *ngIf="application.isPublished" class="btn btn-dark" (click)="unPublishApplication(application)"><i class="material-icons">pause</i>Un-Publish</button>
-              <button type="button" *ngIf="!application.isPublished" class="btn btn-danger" (click)="deleteApplication(application)"><i class="material-icons">delete</i>Delete</button>
-            </li>
           </ul>
+        </section>
 
-          <div *ngIf="showMsg">
-            <div *ngIf="error" class="alert alert-danger">{{status}}</div>
-            <div *ngIf="!error" class="alert alert-success">{{status}}</div>
+        <section class="internal-notes card" *ngIf="application.internal">
+          <div class="form-group">
+            <h4 class="card-header">Internal Notes</h4>
+            <textarea type="text" class="form-control" id="internal.notes" name="internal.notes" [(ngModel)]="application.internal.notes"
+              required></textarea>
           </div>
         </section>
+
+        <button type="submit" class="btn btn-primary">
+          <i class="material-icons">save</i>Save</button>
+        <button type="button" *ngIf="!application.isPublished" class="btn btn-success" (click)="publishApplication(application)">
+          <i class="material-icons">play_arrow</i>Publish</button>
+        <button type="button" *ngIf="application.isPublished" class="btn btn-dark" (click)="unPublishApplication(application)">
+          <i class="material-icons">pause</i>Un-Publish</button>
+        <button type="button" *ngIf="!application.isPublished" class="btn btn-danger" (click)="deleteApplication(application)">
+          <i class="material-icons">delete</i>Delete</button>
+
+        <div *ngIf="showMsg">
+          <div *ngIf="error" class="alert alert-danger">{{status}}</div>
+          <div *ngIf="!error" class="alert alert-success">{{status}}</div>
+        </div>
       </form>
     </main>
-    <aside class="col-lg-4">
-      
-    </aside>
+
+    <aside class="col-lg-4"></aside>
+
   </div>
 </div>
