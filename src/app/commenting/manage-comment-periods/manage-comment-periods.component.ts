@@ -63,33 +63,45 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // get data directly from resolver
-    this.application = this.route.snapshot.data['application'];
-
-    // application not found --> navigate back to application list
-    if (!this.application || !this.application._id) {
-      alert('Uh-oh, couldn\'t load application');
-      this.router.navigate(['/applications']);
-    }
-
-    // get comment periods
-    // this is independent of application data
-    this.commentPeriodService.getAllByApplicationId(this.application._id)
+    // get data from route resolver
+    this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        periods => {
-          this.loading = false;
-          this.commentPeriods = periods;
-          this._changeDetectionRef.detectChanges();
+        (data: { application: Application }) => {
+          if (data.application) {
+            this.application = data.application;
+
+            // get comment periods
+            // this is independent of application data
+            this.commentPeriodService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                periods => {
+                  this.loading = false;
+                  this.commentPeriods = periods;
+                  this._changeDetectionRef.detectChanges();
+                },
+                error => {
+                  this.loading = false;
+                  // If 403, redir to /login.
+                  if (error.startsWith('403')) {
+                    this.router.navigate(['/login']);
+                  }
+                  this.alerts.push('Error loading comment periods');
+                }
+              );
+          } else {
+            // application not found --> navigate back to application list
+            alert('Uh-oh, couldn\'t load application');
+            this.router.navigate(['/applications']);
+          }
         },
         error => {
-          this.loading = false;
-          // If 403, redir to /login.
-          if (error.startsWith('403')) {
-            this.router.navigate(['/login']);
-          }
-          this.alerts.push('Error loading comment periods');
-        });
+          console.log(error);
+          alert('Uh-oh, couldn\'t load application');
+          this.router.navigate(['/applications']);
+        }
+      );
   }
 
   public openCommentPeriod(commentPeriod: CommentPeriod, appId: string) {

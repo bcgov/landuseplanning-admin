@@ -17,7 +17,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 })
 
 export class ApplicationListComponent implements OnInit, OnDestroy {
-  public applications: Array<Application>;
+  public applications: Array<Application> = [];
   public isDesc: boolean;
   public column: string;
   public direction: number;
@@ -44,14 +44,25 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // get data directly from resolver
-    this.applications = this.route.snapshot.data['applications'];
-
-    // applications not found --> navigate back to home
-    if (!this.applications) {
-      alert('Uh-oh, couldn\'t loads applications');
-      this.router.navigate(['/']);
-    }
+    // get data from route resolver
+    this.route.data
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (data: { applications: Application[] }) => {
+          if (data.applications) {
+            this.applications = data.applications;
+          } else {
+            // applications not found --> navigate back to home
+            alert('Uh-oh, couldn\'t load applications');
+            this.router.navigate(['/']);
+          }
+        },
+        error => {
+          console.log(error);
+          alert('Uh-oh, couldn\'t load applications');
+          this.router.navigate(['/']);
+        }
+      );
   }
 
   ngOnDestroy() {
