@@ -1,130 +1,137 @@
 @import "~assets/styles/base.scss";
+
 .mapid {
-    position: relative;
-    height: 300px;
-    outline: none;
-    touch-action: none;
-    background-color: #445a71;
+  position: relative;
+  height: 300px;
+  outline: none;
+  touch-action: none;
+  background-color: #445a71;
+}
+
+.title-container {
+  @include flex-box();
+
+  &__title {
+    @include flex(1 1 auto);
+  }
+
+  &__actions {
+    @include flex(0 0 auto);
+  }
 }
 
 .application-detail {
-    h1 {
-        display: inline-block;
-        margin-bottom: 2rem;
-    }
+  main {
     section {
-        h3 {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 0;
-        }
-    }
-    ul {
-        margin: 0;
+      padding: 1.5rem;
+
+      > section {
         padding: 0;
-        list-style-type: none;
+      }
     }
-    &__list {
-        @include clearfix();
-        li {
-            .name,
-            .value {
-                display: block;
-            }
-            .name {
-                font-weight: bold;
-            }
-        }
+  }
+
+  hr {
+    margin: 1.5rem 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  &__list {
+    @include clearfix();
+
+    li {
+      width: 50%;
+      float: left;
+      padding-top: 1rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      &.full-width {
+        width: 100%;
+      }
+
+      .name,
+      .value {
+        display: block;
+      }
+
+      .name {
+        font-weight: bold;
+      } 
     }
-    &__client-card {
-        ul {
-            @include clearfix();
-        }
-        li {
-            margin-top: 1rem;
-            float: left;
-            width: 50%;
-            &:nth-child(1),
-            &:nth-child(2) {
-                margin-top: 0;
-            }
-        }
-        .card {
-            &-header,
-            &-body {
-                padding: 1.5rem;
-            }
-        }
+  }
+
+  aside {
+    section {
+      text-align: center;
+      padding: 1.5rem;
+      h2 {
+        font-size: 1.5rem;
+      }
+      p {
+        margin-bottom: 0.5rem;
+      }
+      .badge {
+        position: unset;
+        text-transform: none;
+        margin-bottom: 0.5rem;
+        padding: 1rem;
+      }
     }
-    &__geo-shape-data {
-        ul {
-            @include clearfix();
-        }
-        li {
-            margin-top: 1rem;
-            float: left;
-            width: 50%;
-            
-            // This is your INTEREST ID line - we ensure the first LI doesn't have a top margin
-            &:nth-child(1) {
-                margin-top: 0;
-            }
-            span {
-                &.main-label {
-                    font-size: 16pt;
-                }
-            }
-            
-            // Need a variant to display full-width
-            &.full-width {
-                float: none;
-                width: 100%;
-            }
-        }
+    section.aside-map {
+      padding: 0;
     }
-    main {
-        section {
-            padding: 1.5rem;
-            background: #f7f8fa;
-            >section {
-                padding: 0;
-            }
-        }
+    section.aside-commenting {
+      .badge {
+        font-size: large;
+      }
     }
-    aside {
-        section {
-            text-align: center;
-            padding: 1.5rem;
-            h2 {
-                font-size: 1.5rem;
-            }
-            p {
-                margin-bottom: 0.5rem;
-            }
-            .badge {
-                position: unset;
-                text-transform: none;
-                margin-bottom: 0.5rem;
-                padding: 1rem;
-            }
-        }
-        section.aside-map {
-            padding: 0;
-        }
-        section.aside-commenting {
-            .badge {
-                font-size: large;
-            }
-        }
-        section.aside-comments {
-            .badge {
-                font-size: larger;
-                text-align: center;
-                line-height: unset;
-                border-radius: 50%;
-                height: 4rem;
-                width: 4rem;
-            }
-        }
+    section.aside-comments {
+      .badge {
+        font-size: larger;
+        text-align: center;
+        line-height: unset;
+        border-radius: 50%;
+        height: 4rem;
+        width: 4rem;
+      }
     }
+  }
+}
+
+.document-list {
+  display: table;
+  width: 100%;
+
+  li {
+    display: table-row;
+    width: 100%;
+
+    .cell {
+      display: table-cell;
+      padding: 0.5rem;
+      vertical-align: middle;
+      border-top: 1px solid #ccc;
+
+      &.icon {
+        width: 3rem;
+        text-align: center;
+      }
+    }
+
+    + li {
+      margin-top: 0.25rem;
+    }
+  }
+
+  .actions {
+    width: 8rem;
+    text-align: right;
+  }
 }

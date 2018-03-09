@@ -35,11 +35,8 @@ export class SearchService {
   getByDTID(dtid: string, forceReload: boolean = false): Observable<Feature[]> {
     // TODO: fix - map error when using cached data!?
     // if (this.features && this.features[0].properties.DISPOSITION_TRANSACTION_SID === +dtid && !forceReload) {
-    //   console.log('cached features =', this.features);
     //   return Observable.of(this.features);
     // }
-
-    console.log('dtid =', dtid);
 
     return this.api.getBCGWDispositionTransactionId(dtid)
       .map((res: Response) => {
@@ -49,7 +46,6 @@ export class SearchService {
       .map((features: Feature[]) => {
         if (!features) { return null; }
 
-        console.log('new features =', features);
         this.features = features;
         return this.features;
       });

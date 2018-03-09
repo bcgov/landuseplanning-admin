@@ -1,2 +1,14 @@
 @import "~assets/styles/base.scss";
 @import "~assets/styles/layout.scss";
+
+:host {
+  display: block;
+  margin-top: 52px;
+  z-index: 998;
+}
+
+@media (min-width: 992px) {
+  :host {
+    margin-top: 68px;
+  }
+}

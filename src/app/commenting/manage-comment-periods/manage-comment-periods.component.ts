@@ -10,7 +10,6 @@ import { Application } from 'app/models/application';
 import { CommentPeriod } from 'app/models/commentperiod';
 import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
-import { ApplicationService } from 'app/services/application.service';
 
 import { AddEditCommentPeriodComponent } from './add-edit-comment-period/add-edit-comment-period.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
@@ -49,8 +48,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialogService: DialogService,
     private api: ApiService,
-    private commentPeriodService: CommentPeriodService,
-    private applicationService: ApplicationService
+    private commentPeriodService: CommentPeriodService
   ) { }
 
   ngOnInit() {
@@ -119,13 +117,17 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((isConfirmed) => {
-          // we get dialog result
-          if (isConfirmed) {
-            // reload page
+        .subscribe((result: boolean) => {
+          if (result) {
+            // HACK: refresh UI because template item isn't being refreshed otherwise
             this.refreshUI();
-            // reload cached app data
-            this.applicationService.getById(this.application._id, true).subscribe();
+            // reload current period
+            this.commentPeriodService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                periods => this.application.currentPeriod = this.commentPeriodService.getCurrent(periods),
+                error => console.log(error)
+              );
           }
         });
     } else {
@@ -144,10 +146,15 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe((result: boolean) => {
           if (result) {
-            // reload page
+            // HACK: refresh UI because template item isn't being refreshed otherwise
             this.refreshUI();
-            // reload cached app data
-            this.applicationService.getById(this.application._id, true).subscribe();
+            // reload current period
+            this.commentPeriodService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                periods => this.application.currentPeriod = this.commentPeriodService.getCurrent(periods),
+                error => console.log(error)
+              );
           }
         });
     }
@@ -170,10 +177,15 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           // TODO: should use service
           this.api.deleteCommentPeriod(commentPeriod).subscribe( // TODO: should call service instead of API
             data => {
-              // reload page
+              // HACK: refresh UI because template item isn't being refreshed otherwise
               this.refreshUI();
-              // reload cached app data
-              this.applicationService.getById(this.application._id, true).subscribe();
+              // reload current period
+              this.commentPeriodService.getAllByApplicationId(this.application._id)
+                .takeUntil(this.ngUnsubscribe)
+                .subscribe(
+                  periods => this.application.currentPeriod = this.commentPeriodService.getCurrent(periods),
+                  error => console.log(error)
+                );
             },
             error => {
               // TODO: add alert
@@ -190,8 +202,13 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       .then(() => {
         // HACK: refresh UI because template item isn't being refreshed otherwise
         this.refreshUI();
-        // reload cached app data
-        this.applicationService.getById(this.application._id, true).subscribe();
+        // reload current period
+        this.commentPeriodService.getAllByApplicationId(this.application._id)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            periods => this.application.currentPeriod = this.commentPeriodService.getCurrent(periods),
+            error => console.log(error)
+          );
       });
   }
 
@@ -201,8 +218,13 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       .then(() => {
         // HACK: refresh UI because template item isn't being refreshed otherwise
         this.refreshUI();
-        // reload cached app data
-        this.applicationService.getById(this.application._id, true).subscribe();
+        // reload current period
+        this.commentPeriodService.getAllByApplicationId(this.application._id)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            periods => this.application.currentPeriod = this.commentPeriodService.getCurrent(periods),
+            error => console.log(error)
+          );
       });
   }
 

@@ -6,7 +6,7 @@
 
 <div class="review-comments">
   <div class="container" *ngIf="application">
-    <div>
+    <div class="review-comments__title mb-3">
       <h1>Review Comments</h1>
     </div>
 
@@ -33,7 +33,7 @@
             <i class="material-icons">date_range</i>
             <span>Manage Comment Periods</span>
           </a>
-          <button class="btn btn-primary btn-sm p-1 my-1" (click)="addClick()" disabled aria-disabled="true">
+          <button class="btn btn-primary p-1 my-1" (click)="addClick()" disabled aria-disabled="true">
             <i class="material-icons">add</i>
             <span>Add Comment</span>
           </button>
