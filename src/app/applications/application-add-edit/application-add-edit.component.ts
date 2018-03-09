@@ -114,33 +114,22 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
 
   selectClient() {
     const self = this;
-    let orgId = null;
+    let dispId = null;
+    let intrId = null;
 
-    if (this.application.organization) {
-      orgId = this.application.organization._id;
+    if (this.application && this.application.tantalisID) {
+      dispId = this.application.tantalisID;
     }
     this.dialogService.addDialog(SelectOrganizationComponent,
       {
-        selectedOrgId: orgId
+        dispositionId: dispId
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((selectedOrgId: string) => {
-        if (selectedOrgId) {
-          // Fetch the org from the service, and bind to this instance of an application.
-          self.orgService.getById(selectedOrgId)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-              (org: Organization) => {
-                self.application.organization = new Organization(org);
-                // Update current reference.
-                self.application._organization = org._id;
-              },
-              error => {
-                console.log('error =', error);
-              }
-            );
+      .subscribe((clientString: string) => {
+        if (clientString) {
+          self.application.client = clientString;
         } else {
           console.log('org selection cancelled');
         }
