@@ -15,11 +15,13 @@ import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
 import { Organization } from 'app/models/organization';
 import { Feature } from 'app/models/feature';
+import { Decision } from 'app/models/decision';
 import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
 import { OrganizationService } from 'app/services/organization.service';
 import { SearchService } from 'app/services/search.service';
+import { DecisionService } from 'app/services/decision.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -48,7 +50,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private orgService: OrganizationService,
     private applicationService: ApplicationService,
     private dialogService: DialogService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private decisionService: DecisionService
   ) { }
 
   ngOnInit() {
@@ -89,32 +92,31 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   applyDisposition() {
-    // // Fetch the new feature data, update current UI.
-    // this.searchService.getByDTID(this.application.tantalisID.toString())
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe((features: Feature[]) => {
-    //     this.application.features = features;
-    //   });
-
-    // reload cached app data
-    this.applicationService.getById(this.application._id, true)
+    // (re)load the shapes
+    // TODO: user needs to SAVE the application
+    this.searchService.getByDTID(this.application.tantalisID.toString())
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((application: Application) => {
-        this.application = application;
-      });
-  }
-
-  typeChange(obj) {
-    this.application.subtype = Constants.subtypes[obj][0];
-  }
-
-  purposeChange(obj) {
-    this.application.subpurpose = Constants.subpurposes[obj][0];
+      .subscribe(
+        (features: Feature[]) => {
+          this.application.features = features;
+          // calculate areaHectares
+          let areaHectares = 0;
+          _.each(this.application.features, function (f) {
+            if (f['properties']) {
+              areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+            }
+          });
+          this.application.areaHectares = areaHectares;
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error loading shapes');
+        }
+      );
   }
 
   selectClient() {
-    const self = this;
-    let orgId = null;
+    let orgId: string = null;
 
     if (this.application.organization) {
       orgId = this.application.organization._id;
@@ -128,21 +130,19 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((selectedOrgId: string) => {
         if (selectedOrgId) {
-          // Fetch the org from the service, and bind to this instance of an application.
-          self.orgService.getById(selectedOrgId)
+          // (re)load the organization
+          this.orgService.getById(selectedOrgId)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
-              (org: Organization) => {
-                self.application.organization = new Organization(org);
-                // Update current reference.
-                self.application._organization = org._id;
+              (organization: Organization) => {
+                this.application._organization = selectedOrgId;
+                this.application.organization = new Organization(organization);
               },
               error => {
                 console.log('error =', error);
+                this.showMessage(true, 'Error selecting organization');
               }
             );
-        } else {
-          console.log('org selection cancelled');
         }
       });
   }
@@ -161,16 +161,19 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit() {
+  addDecision() {
+    // TODO
+  }
+
+  saveApplication() {
     // adjust for current tz
-    this.application.projectDate = moment(this.application.projectDate).format();
+    this.application.projectDate = moment(this.application.projectDate).format(); // TODO: change projectDate to publishDate
 
     const self = this;
     this.applicationService.save(this.application)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (app: Application) => {
-          // console.log('application =', app);
+        (application: Application) => {
           self.showMessage(false, 'Saved application!');
           // reload cached app data
           this.applicationService.getById(this.application._id, true)
@@ -182,6 +185,26 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           self.showMessage(true, 'Error saving application');
         }
       );
+  }
+
+  saveDecision() {
+    // const self = this;
+    // this.decisionService.save(this.application.decision)
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe(
+    //     (decision: Decision) => {
+    //       console.log('decision =', decision);
+    //       self.showMessage(false, 'Saved decision!');
+    //       // reload cached app data
+    //       this.applicationService.getById(this.application._id, true)
+    //         .takeUntil(this.ngUnsubscribe)
+    //         .subscribe();
+    //     },
+    //     error => {
+    //       console.log('error =', error);
+    //       self.showMessage(true, 'Error saving decision');
+    //     }
+    //   );
   }
 
   uploadFiles(fileList: FileList, documents: Document[]) {
@@ -200,12 +223,13 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         this.api.uploadDocument(formData)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
-            (doc: Response) => {
+            value => {
               // add uploaded file to specified document array
-              documents.push(doc.json());
+              documents.push(value.json());
             },
             error => {
               console.log('error =', error);
+              this.showMessage(true, 'Error uploading file');
             }
           );
       }
@@ -215,37 +239,55 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   publishDocument(document: Document, documents: Document[]) {
     this.api.publishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(res => {
-        const doc = res.json();
-        const f = _.find(documents, function (item) {
-          return (item._id === doc._id);
-        });
-        f.isPublished = true;
-      });
+      .subscribe(
+        value => {
+          const doc = value.json();
+          const f = _.find(documents, function (item) {
+            return (item._id === doc._id);
+          });
+          f.isPublished = true;
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error publishing document');
+        }
+      );
   }
 
   unPublishDocument(document: Document, documents: Document[]) {
     this.api.unPublishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(res => {
-        const doc = res.json();
-        const f = _.find(documents, function (item) {
-          return (item._id === doc._id);
-        });
-        f.isPublished = false;
-      });
+      .subscribe(
+        value => {
+          const doc = value.json();
+          const f = _.find(documents, function (item) {
+            return (item._id === doc._id);
+          });
+          f.isPublished = false;
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error un-publishing document');
+        }
+      );
   }
 
-  removeDocument(document: Document, documents: Document[]) {
+  deleteDocument(document: Document, documents: Document[]) {
     this.api.deleteDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(res => {
-        const doc = res.json();
-        // remove file from specified document array
-        _.remove(documents, function (item) {
-          return (item._id === doc._id);
-        });
-      });
+      .subscribe(
+        value => {
+          const doc = value.json();
+          // remove file from specified document array
+          _.remove(documents, function (item) {
+            return (item._id === doc._id);
+          });
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error deleting document');
+        }
+      );
   }
 
   publishApplication(app: Application) {
@@ -262,20 +304,57 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         title: 'Confirm deletion',
         message: 'Do you really want to delete this application?'
       }, {
-        // index: 0,
-        // autoCloseTimeout: 10000,
-        // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
       .subscribe((isConfirmed: boolean) => {
-        // we get dialog result
         if (isConfirmed) {
           this.applicationService.delete(app)
             .takeUntil(this.ngUnsubscribe)
-            .subscribe(res => {
-              this.router.navigate(['/applications']);
-            });
+            .subscribe(
+              value => {
+                this.application = null;
+                this.router.navigate(['/applications']);
+              },
+              error => {
+                console.log('error =', error);
+                this.showMessage(true, 'Error deleting application');
+              }
+            );
+        }
+      });
+  }
+
+  publishDecision(decision: Decision) {
+    this.decisionService.publish(decision);
+  }
+
+  unPublishDecision(decision: Decision) {
+    this.decisionService.unPublish(decision);
+  }
+
+  deleteDecision(decision: Decision) {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Confirm deletion',
+        message: 'Do you really want to delete this decision?'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isConfirmed: boolean) => {
+        if (isConfirmed) {
+          this.decisionService.delete(decision)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe(
+              value => {
+                this.application.decision = null;
+              },
+              error => {
+                console.log('error =', error);
+                this.showMessage(true, 'Error deleting decision');
+              }
+            );
         }
       });
   }

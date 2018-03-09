@@ -84,9 +84,9 @@
             <div *ngIf="!application.documents || application.documents.length === 0">
               <em>This application has no documents.</em>
             </div>
-            <div *ngFor="let document of application.documents" class="application-detail__document-list">
-              <!-- only display published documents -->
-              <div *ngIf="document.isPublished">
+            <!-- only display published documents -->
+            <div *ngFor="let document of application.documents | published" class="application-detail__document-list">
+              <div>
                 <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
                   <i class="material-icons">file_download</i>
                 </button>
@@ -116,9 +116,9 @@
             <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
               <em>This decision has no documents.</em>
             </div>
-            <div *ngFor="let document of application.decision.documents" class="application-detail__document-list">
-              <!-- only display published documents -->
-              <div *ngIf="document.isPublished">
+            <!-- only display published documents -->
+            <div *ngFor="let document of application.decision.documents | published" class="application-detail__document-list">
+              <div>
                 <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
                   <i class="material-icons">file_download</i>
                 </button>
