@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -27,17 +27,13 @@ import { SearchService } from 'app/services/search.service';
   styleUrls: ['./application-add-edit.component.scss']
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
-  @ViewChild('fileInput') private fileInput;
-
   public types = Constants.types;
   public subtypes = Constants.subtypes;
   public purposes = Constants.purposes;
   public subpurposes = Constants.subpurposes;
   public statuses = Constants.statuses;
 
-  public fileList: FileList;
   public application: Application = null;
-  public applicationDocuments: Array<Document> = [];
   public error = false;
   public showMsg = false;
   public status: string;
@@ -73,19 +69,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
               this.application.projectDate = new Date();
             }
             this.application.projectDate = moment(this.application.projectDate).format();
-
-            // TODO: this should be cleaned up (does this in service already) -- see list page for example
-            this.documentService.getAllByApplicationId(this.application._id)
-              .subscribe((documents: Document[]) => {
-                this.applicationDocuments = documents;
-              });
-
-            if (this.application._organization) {
-              this.orgService.getById(this.application._organization)
-                .subscribe((organization: Organization) => {
-                  this.application.organization = organization;
-                });
-            }
           } else {
             // application not found --> navigate back to application list
             alert('Uh-oh, couldn\'t load application');
@@ -100,21 +83,25 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  applyDisposition() {
-    // Fetch the new feature data, update current UI.
-    this.searchService.getByDTID(this.application.tantalisID.toString())
-      .subscribe((features: Feature[]) => {
-        this.application.features = features;
-      });
-  }
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
-  fileChange(event) {
-    this.fileList = event.target.files;
+  applyDisposition() {
+    // // Fetch the new feature data, update current UI.
+    // this.searchService.getByDTID(this.application.tantalisID.toString())
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe((features: Feature[]) => {
+    //     this.application.features = features;
+    //   });
+
+    // reload cached app data
+    this.applicationService.getById(this.application._id, true)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((application: Application) => {
+        this.application = application;
+      });
   }
 
   typeChange(obj) {
@@ -143,6 +130,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         if (selectedOrgId) {
           // Fetch the org from the service, and bind to this instance of an application.
           self.orgService.getById(selectedOrgId)
+            .takeUntil(this.ngUnsubscribe)
             .subscribe(
               (org: Organization) => {
                 self.application.organization = new Organization(org);
@@ -174,7 +162,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    // Adjust for current tz
+    // adjust for current tz
     this.application.projectDate = moment(this.application.projectDate).format();
 
     const self = this;
@@ -185,7 +173,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           // console.log('application =', app);
           self.showMessage(false, 'Saved application!');
           // reload cached app data
-          this.applicationService.getById(this.application._id, true).subscribe();
+          this.applicationService.getById(this.application._id, true)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe();
         },
         error => {
           console.log('error =', error);
@@ -194,72 +184,67 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  private showMessage(isError, msg) {
-    this.error = isError;
-    this.showMsg = true;
-    this.status = msg;
-    setTimeout(() => this.showMsg = false, 5000);
-  }
-
-  uploadFiles() {
-    const self = this;
-    const fileList = Object.assign({}, this.fileList); // copy of files
-    this.fileInput.nativeElement.value = ''; // clear input
-
-    _.each(fileList, function (file) {
-      if (file) {
+  uploadFiles(fileList: FileList, documents: Document[]) {
+    for (let i = 0; i < fileList.length; i++) {
+      if (fileList[i]) {
         const formData = new FormData();
-        formData.append('_application', self.application._id);
-        formData.append('displayName', file.name);
-        formData.append('upfile', file);
-        self.api.uploadDocument(formData)
+        if (documents === this.application.documents) {
+          formData.append('_application', this.application._id);
+        } else if (documents === this.application.decision.documents) {
+          formData.append('_decision', this.application.decision._id);
+        } else {
+          break; // error
+        }
+        formData.append('displayName', fileList[i].name);
+        formData.append('upfile', fileList[i]);
+        this.api.uploadDocument(formData)
+          .takeUntil(this.ngUnsubscribe)
           .subscribe(
             (doc: Response) => {
-              // do stuff w/my uploaded file
-              console.log('document =', doc.json());
-              self.applicationDocuments.push(doc.json());
+              // add uploaded file to specified document array
+              documents.push(doc.json());
             },
             error => {
               console.log('error =', error);
             }
           );
       }
-    });
+    }
   }
 
-  removeDocument(document: Document) {
-    const self = this;
-    this.api.deleteDocument(document) // TODO: should call service instead of API
+  publishDocument(document: Document, documents: Document[]) {
+    this.api.publishDocument(document) // TODO: should call service instead of API
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
         const doc = res.json();
-        // In-memory removal on successful delete.
-        _.remove(self.applicationDocuments, function (item) {
-          return (item._id === doc._id);
-        });
-      });
-  }
-
-  publishDocument(document: Document) {
-    const self = this;
-    this.api.publishDocument(document)
-      .subscribe(res => {
-        const doc = res.json();
-        const f = _.find(self.applicationDocuments, function (item) {
+        const f = _.find(documents, function (item) {
           return (item._id === doc._id);
         });
         f.isPublished = true;
       });
   }
 
-  unPublishDocument(document: Document) {
-    const self = this;
-    this.api.unPublishDocument(document)
+  unPublishDocument(document: Document, documents: Document[]) {
+    this.api.unPublishDocument(document) // TODO: should call service instead of API
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
         const doc = res.json();
-        const f = _.find(self.applicationDocuments, function (item) {
+        const f = _.find(documents, function (item) {
           return (item._id === doc._id);
         });
         f.isPublished = false;
+      });
+  }
+
+  removeDocument(document: Document, documents: Document[]) {
+    this.api.deleteDocument(document) // TODO: should call service instead of API
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(res => {
+        const doc = res.json();
+        // remove file from specified document array
+        _.remove(documents, function (item) {
+          return (item._id === doc._id);
+        });
       });
   }
 
@@ -287,10 +272,18 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         // we get dialog result
         if (isConfirmed) {
           this.applicationService.delete(app)
+            .takeUntil(this.ngUnsubscribe)
             .subscribe(res => {
               this.router.navigate(['/applications']);
             });
         }
       });
+  }
+
+  private showMessage(isError, msg) {
+    this.error = isError;
+    this.showMsg = true;
+    this.status = msg;
+    setTimeout(() => this.showMsg = false, 5000);
   }
 }

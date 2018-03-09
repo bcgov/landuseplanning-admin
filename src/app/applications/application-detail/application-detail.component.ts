@@ -122,7 +122,10 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
                   layer.addTo(self.map);
                 });
 
-                self.map.fitBounds(self.fg.getBounds());
+                const bounds = self.fg.getBounds();
+                if (!_.isEmpty(bounds)) {
+                  self.map.fitBounds(bounds);
+                }
               },
               error => {
                 console.log('error =', error);
