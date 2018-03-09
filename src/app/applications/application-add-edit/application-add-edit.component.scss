@@ -63,6 +63,42 @@ textarea {
             }
         }
     }
+    aside {
+        section {
+            text-align: center;
+            padding: 1.5rem;
+            h2 {
+                font-size: 1.5rem;
+            }
+            p {
+                margin-bottom: 0.5rem;
+            }
+            .badge {
+                position: unset;
+                text-transform: none;
+                margin-bottom: 0.5rem;
+                padding: 1rem;
+            }
+        }
+        section.aside-map {
+            padding: 0;
+        }
+        section.aside-commenting {
+            .badge {
+                font-size: large;
+            }
+        }
+        section.aside-comments {
+            .badge {
+                font-size: larger;
+                text-align: center;
+                line-height: unset;
+                border-radius: 50%;
+                height: 4rem;
+                width: 4rem;
+            }
+        }
+    }
 }
 
 .document-list {

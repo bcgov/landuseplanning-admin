@@ -22,6 +22,8 @@ import { ApplicationService } from 'app/services/application.service';
 import { OrganizationService } from 'app/services/organization.service';
 import { SearchService } from 'app/services/search.service';
 import { DecisionService } from 'app/services/decision.service';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { CommentService } from 'app/services/comment.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -36,6 +38,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public statuses = Constants.statuses;
 
   public application: Application = null;
+  private daysRemaining = '?';
+  private numComments = '?';
   public error = false;
   public showMsg = false;
   public status: string;
@@ -51,7 +55,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private dialogService: DialogService,
     private searchService: SearchService,
-    private decisionService: DecisionService
+    private decisionService: DecisionService,
+    private commentPeriodService: CommentPeriodService, // used in template
+    private commentService: CommentService
   ) { }
 
   ngOnInit() {
@@ -67,6 +73,31 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         (data: { application: Application }) => {
           if (data.application) {
             this.application = data.application;
+
+            //
+            // TODO: create separate component for aside items
+            //       which can be used here and in application-detail
+            //
+
+            // get comment period days remaining
+            if (this.application.currentPeriod) {
+              const now = new Date();
+              const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+              const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
+              this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
+            }
+
+            // get number of pending comments
+            this.commentService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                comments => {
+                  const pending = comments.filter(comment => this.commentService.isPending(comment));
+                  const count = pending.length;
+                  this.numComments = count.toString();
+                },
+                error => console.log('couldn\'t get pending comments, error =', error)
+              );
 
             if (!this.application.publishDate) {
               this.application.publishDate = new Date();

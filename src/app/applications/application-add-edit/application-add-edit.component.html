@@ -11,7 +11,7 @@
     </div>
 
     <div class="row">
-      <main class="col-12">
+      <main class="col-lg-8">
         <form #appEditForm="ngForm">
 
           <!-- HEADER -->
@@ -257,8 +257,33 @@
         </form>
       </main>
 
-      <aside class="col-lg-4"></aside>
+      <aside class="col-lg-4">
+        <!-- MAP THUMBNAIL -->
+        <section class="aside-map card">
+          <div class="map-container">
+            <div class="map" style="height: 300px;" id="map"></div>
+          </div>
+        </section>
 
+        <!-- COMMENTING INFO -->
+        <section class="aside-commenting card bg-light">
+          <h2>{{commentPeriodService.getStatus(application.currentPeriod)}}</h2>
+          <!-- <div *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
+            <p>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</p>
+            <div class="badge badge-secondary">{{daysRemaining}}</div>
+          </div> -->
+          <a [routerLink]="['/periods', application._id]">Click to Modify &nbsp; &rsaquo;</a>
+        </section>
+
+        <!-- NEW COMMENTS INFO -->
+        <section class="aside-comments card bg-light">
+          <h2>New Comments</h2>
+          <div>
+            <div class="badge badge-secondary">{{numComments}}</div>
+          </div>
+          <a [routerLink]="['/comments', application._id]">Click to Review &nbsp; &rsaquo;</a>
+        </section>
+      </aside>
     </div>
   </div>
 </div>
