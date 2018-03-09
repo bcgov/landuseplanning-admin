@@ -15,7 +15,9 @@
           <span>
             <label>{{application.organization?.name || '-'}}</label>
             <button type="button" class="btn btn-primary float-right" (click)="selectClient()">
-              <i class="material-icons">contacts</i>Select Client</button>
+              <i class="material-icons">contacts</i>
+              <span>Select Client</span>
+            </button>
           </span>
         </section>
 
@@ -32,13 +34,16 @@
         <section class="application-documents card">
           <h2 class="card-header">Application Documents</h2>
           <span>
-            <input type="file" #fileInput (change)="fileChange($event)" multiple />
-            <button type="button" class="btn btn-primary float-right" [disabled]="!fileList || fileList.length === 0" (click)="uploadFiles()">
-              <i class="material-icons">file_upload</i>Upload Files</button>
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput1').click()">
+              <i class="material-icons">file_upload</i>
+              <span>Upload Files</span>
+            </button>
+            <input type="file" id="fileInput1" style="display: none;" (change)="uploadFiles($event.target.files, application.documents)"
+              multiple />
           </span>
 
           <ul class="nv-list application-documents--list">
-            <li *ngFor="let file of applicationDocuments">
+            <li *ngFor="let file of application.documents">
               <span class="name" [title]="file.displayName || ''">{{file.documentFileName}}</span>
               <button type="button" class="btn btn-primary" (click)="api.downloadDocument(file)" title="Download this document">
                 <i class="material-icons">file_download</i>
@@ -46,13 +51,16 @@
               <button type="button" class="btn btn-primary" (click)="api.openDocument(file)" title="Open this document">
                 <i class="material-icons">open_in_new</i>
               </button>
-              <button type="button" *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file)" title="Publish this document">
+              <button type="button" *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file, application.documents)"
+                title="Publish this document">
                 <i class="material-icons">play_arrow</i>
               </button>
-              <button type="button" *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file)" title="Un-publish this document">
+              <button type="button" *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file, application.documents)"
+                title="Un-publish this document">
                 <i class="material-icons">pause</i>
               </button>
-              <button type="button" *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file)" title="Delete this document">
+              <button type="button" *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file, application.documents)"
+                title="Delete this document">
                 <i class="material-icons">delete</i>
               </button>
             </li>
@@ -65,7 +73,10 @@
             <h3 for="tantalisID" class="control-label">Disposition ID</h3>
             <input type="number" class="form-control" id="tantalisID" name="tantalisID" required area-required="true" [(ngModel)]="application.tantalisID"
               #tantalisID="ngModel" (keyup.enter)="applyDisposition()">
-            <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()">Fetch Disposition Data</button>
+            <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()">
+              <i class="material-icons">system_update_alt</i>
+              <span>Fetch Disposition Data</span>
+            </button>
             <div [hidden]="tantalisID.valid || tantalisID.untouched" class="alert alert-danger">Disposition ID is required</div>
           </div>
         </section>
@@ -137,16 +148,18 @@
               <h3 for="decisionDesc" class="control-label">Description</h3>
               <textarea type="text" class="form-control" id="decisionDesc" name="decisionDesc" rows="5" [(ngModel)]="application.decision.description"
                 required area-required="true" #decisionDesc="ngModel"></textarea>
-              <!-- <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()">Fetch Disposition Data</button> -->
               <div [hidden]="decisionDesc.valid || decisionDesc.untouched" class="alert alert-danger">Decision Description is required</div>
             </div>
 
             <h3>Decision Documents</h3>
-            <!-- <span>
-              <input type="file" #fileInput (change)="fileChange($event)" multiple />
-              <button type="button" class="btn btn-primary float-right" [disabled]="!fileList || fileList.length === 0" (click)="uploadFiles()">
-                <i class="material-icons">file_upload</i>Upload Files</button>
-            </span> -->
+            <span>
+              <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput2').click()">
+                <i class="material-icons">file_upload</i>
+                <span>Upload Files</span>
+              </button>
+              <input type="file" id="fileInput2" style="display: none;" (change)="uploadFiles($event.target.files, application.decision.documents)"
+                multiple />
+            </span>
 
             <ul class="nv-list decision-documents--list">
               <li *ngFor="let file of application.decision.documents">
@@ -157,13 +170,16 @@
                 <button type="button" class="btn btn-primary" (click)="api.openDocument(file)" title="Open this document">
                   <i class="material-icons">open_in_new</i>
                 </button>
-                <button type="button" *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file)" title="Publish this document">
+                <button type="button" *ngIf="!file.isPublished" class="btn btn-success" (click)="publishDocument(file, application.decision.documents)"
+                  title="Publish this document">
                   <i class="material-icons">play_arrow</i>
                 </button>
-                <button type="button" *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file)" title="Un-publish this document">
+                <button type="button" *ngIf="file.isPublished" class="btn btn-dark" (click)="unPublishDocument(file, application.decision.documents)"
+                  title="Un-publish this document">
                   <i class="material-icons">pause</i>
                 </button>
-                <button type="button" *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file)" title="Delete this document">
+                <button type="button" *ngIf="!file.isPublished" class="btn btn-danger" (click)="removeDocument(file, application.decision.documents)"
+                  title="Delete this document">
                   <i class="material-icons">delete</i>
                 </button>
               </li>
@@ -171,15 +187,25 @@
           </div>
         </section>
 
+        <hr>
+
         <section class="application-buttons">
           <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="!appEditForm.form.valid">
-            <i class="material-icons">save</i>Save</button>
+            <i class="material-icons">save</i>
+            <span>Save</span>
+          </button>
           <button type="button" *ngIf="!application.isPublished" class="btn btn-success" (click)="publishApplication(application)">
-            <i class="material-icons">play_arrow</i>Publish</button>
+            <i class="material-icons">play_arrow</i>
+            <span>Publish</span>
+          </button>
           <button type="button" *ngIf="application.isPublished" class="btn btn-dark" (click)="unPublishApplication(application)">
-            <i class="material-icons">pause</i>Un-Publish</button>
+            <i class="material-icons">pause</i>
+            <span>Un-Publish</span>
+          </button>
           <button type="button" *ngIf="!application.isPublished" class="btn btn-danger" (click)="deleteApplication(application)">
-            <i class="material-icons">delete</i>Delete</button>
+            <i class="material-icons">delete</i>
+            <span>Delete</span>
+          </button>
         </section>
 
         <div *ngIf="showMsg">
