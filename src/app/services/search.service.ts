@@ -7,13 +7,30 @@ import 'rxjs/add/operator/catch';
 import { ApiService } from './api';
 import { Search } from 'app/models/search';
 import { Feature } from 'app/models/feature';
+import { Client } from 'app/models/client';
 
 @Injectable()
 export class SearchService {
   private search: Search = null;
   private features: Feature[] = null;
+  private clients: Client[] = null;
 
   constructor(private api: ApiService) { }
+
+  getClientsByDispositionId(dispositionId: number): Observable<Client[]> {
+    return this.api.getClientsInfoByDispositionId(dispositionId)
+      .map((res: Response) => {
+        const results = res.text() ? res.json() : null;
+        return results;
+      })
+      .map((clients: Client[]) => {
+        if (!clients) { return null; }
+
+        // console.log('new clients =', clients);
+        this.clients = clients;
+        return this.clients;
+      });
+  }
 
   getByCLFile(clfile: string, forceReload: boolean = false): Observable<Search> {
     if (this.search && this.search._id === clfile && !forceReload) {
@@ -35,8 +52,11 @@ export class SearchService {
   getByDTID(dtid: string, forceReload: boolean = false): Observable<Feature[]> {
     // TODO: fix - map error when using cached data!?
     // if (this.features && this.features[0].properties.DISPOSITION_TRANSACTION_SID === +dtid && !forceReload) {
+    //   console.log('cached features =', this.features);
     //   return Observable.of(this.features);
     // }
+
+    console.log('dtid =', dtid);
 
     return this.api.getBCGWDispositionTransactionId(dtid)
       .map((res: Response) => {
@@ -46,6 +66,7 @@ export class SearchService {
       .map((features: Feature[]) => {
         if (!features) { return null; }
 
+        console.log('new features =', features);
         this.features = features;
         return this.features;
       });

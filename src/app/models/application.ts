@@ -31,6 +31,7 @@ export class Application {
   postID: number;
   publishDate: Date;
   _organization: string; // objectid -> Organization
+  client: string;
   purpose: string;
   subpurpose: string;
   region: string;
@@ -74,6 +75,7 @@ export class Application {
     this.cl_files                = obj && obj.cl_files                || [];
     this.code                    = obj && obj.code                    || null;
     this.name                    = obj && obj.name                    || null;
+    this.client                  = obj && obj.client                  || null;
     this.description             = obj && obj.description             || null;
     this.interestID              = obj && obj.interestID              || 0;
     this.internalID              = obj && obj.internalID              || 0;
