@@ -11,7 +11,7 @@
 
     <div class="row">
       <main class="col-lg-8">
-        
+
         <!-- HEADER -->
         <section class="card bg-dark">
           <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
@@ -28,9 +28,11 @@
         <!-- BASIC INFORMATION -->
         <section class="card bg-light">
           <h3>Basic Information</h3>
+
           <div *ngIf="!application.features || application.features.length === 0">
             <em>No features have been loaded.</em>
           </div>
+
           <div *ngIf="application.features?.length > 0">
             <ul class="application-detail__list">
               <li class="pt-0">
@@ -76,20 +78,64 @@
         <!-- APPLICATION -->
         <section class="card bg-light">
           <h3 class="mb-4">Application</h3>
+
           <section>
             <h4 class="mb-1">Description</h4>
             <p [innerHTML]="(application.description | newlines) || '-'"></p>
           </section>
+
           <section class="application-detail__documents mt-1">
             <h4 class="mb-3">Application Documents</h4>
+
             <div *ngIf="!application.documents || application.documents.length === 0">
               <em>This application has no documents.</em>
             </div>
+
             <ul class="document-list list-group">
-              <ng-container *ngFor="let document of application.documents">
-                <li class="list-group-item" *ngIf="document.isPublished">
-                  <span class="cell icon pr-0">
-                    <i class="material-icons">&#xE2BC;</i>
+              <li class="list-group-item" *ngFor="let document of application.documents | published">
+                <span class="cell icon pr-0">
+                  <i class="material-icons">attachment</i>
+                </span>
+                <span class="cell name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
+                <span class="cell actions">
+                  <button class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
+                    <i class="material-icons">file_download</i>
+                  </button>
+                  <button class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document">
+                    <i class="material-icons">open_in_new</i>
+                  </button>
+                </span>
+              </li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- DECISION -->
+        <section class="card bg-light">
+          <h3 class="mb-4">Decision</h3>
+
+          <div *ngIf="!application.decision || !application.decision.isPublished">
+            <em>No decisions have been made for this application at this time.</em>
+          </div>
+
+          <!-- only display published decision -->
+          <section *ngIf="application.decision && application.decision.isPublished">
+            <section>
+              <h4 class="mb-1">Description</h4>
+              <p [innerHTML]="(application.decision.description | newlines) || '-'"></p>
+            </section>
+
+            <section class="application-detail__documents mt-1">
+              <h4 class="mb-3">Decision Documents</h4>
+
+              <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
+                <em>This decision has no documents.</em>
+              </div>
+
+              <ul class="document-list list-group">
+                <li class="list-group-item" *ngFor="let document of application.decision.documents | published">
+                  <span class="cell icon pr-2">
+                    <i class="material-icons">attachment</i>
                   </span>
                   <span class="cell name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
                   <span class="cell actions">
@@ -101,43 +147,8 @@
                     </button>
                   </span>
                 </li>
-              </ng-container>
-            </ul>
-          </section>
-        </section>
-
-        <!-- DECISION -->
-        <section class="card bg-light">
-          <h3 class="mb-3">Decision</h3>
-          <div *ngIf="!application.decision || !application.decision.isPublished">
-            <em>No decisions have been made for this application at this time.</em>
-          </div>
-          <!-- only display published decision -->
-          <section *ngIf="application.decision && application.decision.isPublished" class="application-detail__decision mt-2">
-            <h3>Description</h3>
-            <p [innerHTML]="(application.decision.description | newlines) || '-'"></p>
-            <h3>Decision Documents</h3>
-            <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
-              <em>This decision has no documents.</em>
-            </div>
-            <ul class="document-list list-group-item">
-              <ng-container *ngFor="let document of application.decision.documents">
-                <li class="list-group-item bg-white p-2" *ngIf="document.isPublished">
-                  <span class="icon mr-2">
-                    <i class="material-icons">&#xE2BC;</i>
-                  </span>
-                  <span class="name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
-                  <span class="actions">
-                    <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
-                      <i class="material-icons">file_download</i>
-                    </button>
-                    <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
-                      <i class="material-icons">open_in_new</i>
-                    </button>
-                  </span>
-                </li>
-              </ng-container>
-            </ul>
+              </ul>
+            </section>
           </section>
         </section>
 
@@ -145,6 +156,7 @@
         <section class="bg-light">
           <div class="title-container">
             <h3 class="title-container__title mb-0">Geographic Shape Data</h3>
+
             <div class="title-container__actions">
               <button class="btn btn-default" (click)="launchMap()">
                 <i class="material-icons">place</i>
@@ -152,7 +164,8 @@
               </button>
             </div>
           </div>
-          <span *ngIf="application.features">This application has <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
+          <span *ngIf="application.features">This application has
+            <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
           <hr>
           <ul class="application-detail__list" *ngFor="let shape of application.features">
             <li class="full-width pt-0">
@@ -186,30 +199,20 @@
 
         <!-- COMMENTING INFO -->
         <section class="aside-commenting card bg-light">
-          <!-- <h2>Commenting Open</h2> -->
           <h2>{{commentPeriodService.getStatus(application.currentPeriod)}}</h2>
           <div *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
             <p>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</p>
             <div class="badge badge-secondary">{{daysRemaining}}</div>
           </div>
-          <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/periods', application._id]">
-            <span>Click to Modify</span>
-            <i class="material-icons">forward</i>
-          </a> -->
           <a [routerLink]="['/periods', application._id]">Click to Modify &nbsp; &rsaquo;</a>
         </section>
 
         <!-- NEW COMMENTS INFO -->
         <section class="aside-comments card bg-light">
           <h2>New Comments</h2>
-          <!-- <p>Comments can be reviewed by following the link below.</p> -->
           <div>
             <div class="badge badge-secondary">{{numComments}}</div>
           </div>
-          <!-- <a class="btn btn-primary slide-r-btn" [routerLink]="['/comments', application._id]">
-            <span>Click to Review</span>
-            <i class="material-icons">forward</i>
-          </a> -->
           <a [routerLink]="['/comments', application._id]">Click to Review &nbsp; &rsaquo;</a>
         </section>
       </aside>
