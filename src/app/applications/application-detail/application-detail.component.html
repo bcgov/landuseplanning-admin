@@ -1,9 +1,9 @@
 <div class="application-detail">
   <div class="container" *ngIf="application">
-    <div class="pg-title-container">
-      <h1>Application Details</h1>
+    <div class="title-container mb-4">
+      <h1 class="title-container__title">Application Details</h1>
       <div class="pg-title-container__actions">
-        <a class="btn btn-primary" [routerLink]="['/a', application._id, 'edit']">
+        <a class="btn btn-default" [routerLink]="['/a', application._id, 'edit']">
           <span>Edit Application</span>
         </a>
       </div>
@@ -13,7 +13,7 @@
       <main class="col-lg-8">
         
         <!-- HEADER -->
-        <section class="bg-dark">
+        <section class="card bg-dark">
           <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
           <div>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</div>
           <!--
@@ -26,7 +26,7 @@
         </section>
 
         <!-- BASIC INFORMATION -->
-        <section>
+        <section class="card bg-light">
           <h3>Basic Information</h3>
           <div *ngIf="!application.features || application.features.length === 0">
             <em>No features have been loaded.</em>
@@ -74,35 +74,41 @@
         </section>
 
         <!-- APPLICATION -->
-        <section>
-          <h3>Application</h3>
+        <section class="card bg-light">
+          <h3 class="mb-4">Application</h3>
           <section>
-            <h4>Description</h4>
+            <h4 class="mb-1">Description</h4>
             <p [innerHTML]="(application.description | newlines) || '-'"></p>
           </section>
-          <section class="application-detail__documents mt-2">
-            <h4>Application Documents</h4>
+          <section class="application-detail__documents mt-1">
+            <h4 class="mb-3">Application Documents</h4>
             <div *ngIf="!application.documents || application.documents.length === 0">
               <em>This application has no documents.</em>
             </div>
-            <div *ngFor="let document of application.documents" class="application-detail__document-list">
-              <!-- only display published documents -->
-              <div *ngIf="document.isPublished">
-                <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
-                  <i class="material-icons">file_download</i>
-                </button>
-                <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
-                  <i class="material-icons">open_in_new</i>
-                </button>
-                <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
-              </div>
-            </div>
+            <ul class="document-list list-group">
+              <ng-container *ngFor="let document of application.documents">
+                <li class="list-group-item" *ngIf="document.isPublished">
+                  <span class="cell icon pr-0">
+                    <i class="material-icons">&#xE2BC;</i>
+                  </span>
+                  <span class="cell name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
+                  <span class="cell actions">
+                    <button class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
+                      <i class="material-icons">file_download</i>
+                    </button>
+                    <button class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document">
+                      <i class="material-icons">open_in_new</i>
+                    </button>
+                  </span>
+                </li>
+              </ng-container>
+            </ul>
           </section>
         </section>
 
         <!-- DECISION -->
-        <section>
-          <h3>Decision</h3>
+        <section class="card bg-light">
+          <h3 class="mb-3">Decision</h3>
           <div *ngIf="!application.decision || !application.decision.isPublished">
             <em>No decisions have been made for this application at this time.</em>
           </div>
@@ -114,33 +120,43 @@
             <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
               <em>This decision has no documents.</em>
             </div>
-            <div *ngFor="let document of application.decision.documents" class="application-detail__document-list">
-              <!-- only display published documents -->
-              <div *ngIf="document.isPublished">
-                <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
-                  <i class="material-icons">file_download</i>
-                </button>
-                <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
-                  <i class="material-icons">open_in_new</i>
-                </button>
-                <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
-              </div>
-            </div>
+            <ul class="document-list list-group-item">
+              <ng-container *ngFor="let document of application.decision.documents">
+                <li class="list-group-item bg-white p-2" *ngIf="document.isPublished">
+                  <span class="icon mr-2">
+                    <i class="material-icons">&#xE2BC;</i>
+                  </span>
+                  <span class="name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
+                  <span class="actions">
+                    <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
+                      <i class="material-icons">file_download</i>
+                    </button>
+                    <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
+                      <i class="material-icons">open_in_new</i>
+                    </button>
+                  </span>
+                </li>
+              </ng-container>
+            </ul>
           </section>
         </section>
 
         <!-- GEOGRAPHIC SHAPE DATA -->
-        <section class="application-detail__geo-shape-data">
-          <h3 class="mb-0">Geographic Shape Data</h3>
+        <section class="bg-light">
+          <div class="title-container">
+            <h3 class="title-container__title mb-0">Geographic Shape Data</h3>
+            <div class="title-container__actions">
+              <button class="btn btn-default" (click)="launchMap()">
+                <i class="material-icons">place</i>
+                <span>See on map</span>
+              </button>
+            </div>
+          </div>
           <span *ngIf="application.features">This application has <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
-          <span class="hover" (click)="launchMap()">
-            <label class="float-right">See on map</label>
-            <i class="material-icons float-right">place</i>
-          </span>
           <hr>
           <ul class="application-detail__list" *ngFor="let shape of application.features">
-            <li class="full-width">
-              <span class="name main-label">Interest ID: {{shape.properties.INTRID_SID}}</span>
+            <li class="full-width pt-0">
+              <span class="name">Interest ID: {{shape.properties.INTRID_SID}}</span>
             </li>
             <li>
               <span class="name">Type/Subtype</span>
@@ -162,14 +178,14 @@
 
       <aside class="col-lg-4">
         <!-- MAP THUMBNAIL -->
-        <section class="aside-map">
+        <section class="aside-map card">
           <div class="map-container">
             <div class="map" style="height: 300px;" id="map"></div>
           </div>
         </section>
 
         <!-- COMMENTING INFO -->
-        <section class="aside-commenting bg-light">
+        <section class="aside-commenting card bg-light">
           <!-- <h2>Commenting Open</h2> -->
           <h2>{{commentPeriodService.getStatus(application.currentPeriod)}}</h2>
           <div *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
@@ -184,7 +200,7 @@
         </section>
 
         <!-- NEW COMMENTS INFO -->
-        <section class="aside-comments bg-light">
+        <section class="aside-comments card bg-light">
           <h2>New Comments</h2>
           <!-- <p>Comments can be reviewed by following the link below.</p> -->
           <div>

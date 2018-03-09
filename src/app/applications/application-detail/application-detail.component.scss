@@ -8,11 +8,10 @@
   background-color: #445a71;
 }
 
-.pg-title-container {
+.title-container {
   @include flex-box();
-  padding-bottom: 1rem;
 
-  h1 {
+  &__title {
     @include flex(1 1 auto);
   }
 
@@ -22,6 +21,16 @@
 }
 
 .application-detail {
+  main {
+    section {
+      padding: 1.5rem;
+
+      > section {
+        padding: 0;
+      }
+    }
+  }
+
   hr {
     margin: 1.5rem 0;
   }
@@ -55,16 +64,6 @@
       .name {
         font-weight: bold;
       } 
-    }
-  }
-
-  main {
-    section {
-      padding: 1.5rem;
-      background: #f7f8fa;
-      >section {
-        padding: 0;
-      }
     }
   }
 
@@ -107,6 +106,32 @@
 }
 
 .document-list {
-  margin: 0;
-  padding: 0;
+  display: table;
+  width: 100%;
+
+  li {
+    display: table-row;
+    width: 100%;
+
+    .cell {
+      display: table-cell;
+      padding: 0.5rem;
+      vertical-align: middle;
+      border-top: 1px solid #ccc;
+
+      &.icon {
+        width: 3rem;
+        text-align: center;
+      }
+    }
+
+    + li {
+      margin-top: 0.25rem;
+    }
+  }
+
+  .actions {
+    width: 8rem;
+    text-align: right;
+  }
 }
