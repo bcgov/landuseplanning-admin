@@ -81,13 +81,16 @@
               <em>This application has no documents.</em>
             </div>
             <div *ngFor="let document of application.documents" class="application-detail__document-list">
-              <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
-                <i class="material-icons">file_download</i>
-              </button>
-              <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
-                <i class="material-icons">open_in_new</i>
-              </button>
-              <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
+              <!-- only display published documents -->
+              <div *ngIf="document.isPublished">
+                <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
+                  <i class="material-icons">file_download</i>
+                </button>
+                <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
+                  <i class="material-icons">open_in_new</i>
+                </button>
+                <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
+              </div>
             </div>
           </section>
         </section>
@@ -96,11 +99,12 @@
         <section>
           <h2>DECISION</h2>
 
-          <div *ngIf="!application.decision">
+          <div *ngIf="!application.decision || !application.decision.isPublished">
             <em>No decisions have been made for this application at this time.</em>
           </div>
 
-          <section *ngIf="application.decision" class="application-detail__decision mt-2">
+          <!-- only display published decision -->
+          <section *ngIf="application.decision && application.decision.isPublished" class="application-detail__decision mt-2">
             <h3>Description</h3>
             <p [innerHTML]="(application.decision.description | newlines) || '-'"></p>
 
@@ -109,13 +113,16 @@
               <em>This decision has no documents.</em>
             </div>
             <div *ngFor="let document of application.decision.documents" class="application-detail__document-list">
-              <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
-                <i class="material-icons">file_download</i>
-              </button>
-              <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
-                <i class="material-icons">open_in_new</i>
-              </button>
-              <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
+              <!-- only display published documents -->
+              <div *ngIf="document.isPublished">
+                <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
+                  <i class="material-icons">file_download</i>
+                </button>
+                <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
+                  <i class="material-icons">open_in_new</i>
+                </button>
+                <span [title]="document.displayName || ''">{{document.documentFileName}}</span>
+              </div>
             </div>
           </section>
         </section>
