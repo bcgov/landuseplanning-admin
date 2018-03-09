@@ -1,22 +1,30 @@
 @import "~assets/styles/base.scss";
+
+// HEADER ELEMENT
 header {
   &.app-header {
     @include clearfix;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
     border-bottom: 4px solid $gold;
     background: $header-bg;
     color: $header-font-color;
-    z-index: 1000;
+    z-index: 1001;
   }
 }
 
-.navbar-brand {
-  width: 270px; // use PX dimensions here to ensure exact match to image
-  height: 3rem;
-  background-image: url("~assets/images/bcgov-header-horiz-SM.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: auto;
+@media (min-width:768px) {
+  header {
+    &.app-header {
+      border-bottom-style: solid;
+      border-bottom-width: 4px;
+      border-bottom-color: $gold;
+      background-color: $header-bg;
+    }
+  }
 }
 
 .navbar-toggler {
@@ -53,6 +61,7 @@ header {
   }
 }
 
+// NAVBAR
 .navbar {
   padding: 0;
   background-color: $header-bg;
@@ -126,10 +135,6 @@ header {
 }
 
 @media (min-width: 768px) {
-  .navbar-collapse {
-    flex-grow: 0;
-  }
-
   .navbar {
     background: transparent;
     
@@ -187,6 +192,28 @@ header {
         }
       }
     }
+  }
+
+  .navbar-collapse {
+    flex-grow: 0;
+  }
+}
+
+// NAVBAR BRAND
+.navbar-brand {
+  margin: 0;
+  width: 260px; // use PX dimensions here to ensure exact match to image
+  height: 3rem;
+  background-image: url("~assets/images/bcgov-header-horiz-SM.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: auto;
+}
+
+@media (min-width: 768px) {
+  .navbar-brand {
+    width: 260px;
+    height: 4rem;
   }
 }
 

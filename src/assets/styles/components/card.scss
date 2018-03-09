@@ -1,14 +1,9 @@
 @import "~assets/styles/base.scss";
 
-.card {
-    border: none;
-}
-
 .card-header {
     padding: 0.5rem 1rem;
     color: $card-header-color;
     background: $card-header-bg;
-    text-transform: uppercase;
     font-size: 0.875rem;
     font-weight: 700;
 }
