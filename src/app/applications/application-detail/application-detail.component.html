@@ -1,82 +1,87 @@
 <div class="application-detail">
   <div class="container" *ngIf="application">
-    <div>
+    <div class="pg-title-container">
       <h1>Application Details</h1>
-      <a class="btn btn-primary btn-sm float-right" [routerLink]="['/a', application._id, 'edit']">
-        <i class="material-icons">mode_edit</i>
-        <span>Edit Application</span>
-      </a>
+      <div class="pg-title-container__actions">
+        <a class="btn btn-primary" [routerLink]="['/a', application._id, 'edit']">
+          <span>Edit Application</span>
+        </a>
+      </div>
     </div>
 
     <div class="row">
       <main class="col-lg-8">
+        
         <!-- HEADER -->
-        <section class="p-0">
-          <div class="application-detail__client-card card bg-light">
-            <div class="card-header">
-              <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
-              <h3>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</h3>
-              <h3>{{applicationService.getStatus(application) || '-'}}</h3>
-              <h3>CL File(s) &nbsp;{{application.cl_files ? application.cl_files.join(', ') : '-'}}</h3>
-              <h3 *ngIf="application.features?.length > 0">Disp ID: &nbsp; {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</h3>
-            </div>
+        <section class="bg-dark">
+          <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
+          <div>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</div>
+          <!--
+          <h3>{{applicationService.getStatus(application) || '-'}}</h3>
+          -->
+          <ul class="application-detail__list">
+            <li>CL File(s): {{application.cl_files ? application.cl_files.join(', ') : '-'}}</li>
+            <li *ngIf="application.features?.length > 0">Disp ID: {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</li>
+          </ul>
+        </section>
 
-            <div class="card-body">
-              <h2>BASIC INFORMATION</h2>
-
-              <div *ngIf="!application.features || application.features.length === 0">
-                <em>No features have been loaded.</em>
-              </div>
-
-              <ul class="application-detail__list" *ngIf="application.features?.length > 0">
-                <li>
-                  <span class="name">Type / Subtype</span>
-                  <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE
-                    || '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Status</span>
-                  <span class="value">{{application.features[0].properties.TENURE_STATUS || '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Stage</span>
-                  <span class="value">{{application.features[0].properties.TENURE_STAGE || '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Agency</span>
-                  <span class="value">{{application.agency || '-'}}</span>
-                </li>
-                <!-- TODO: need border here -->
-                <li>
-                  <span class="name">Business Unit</span>
-                  <span class="value">{{application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT || '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Region</span>
-                  <span class="value">{{application.region || '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Location</span>
-                  <span class="value">{{application.features[0].properties.TENURE_LOCATION || '-'}}</span>
-                </li>
-                <li>
-                  <span class="name">Total Area (hectares)</span>
-                  <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
-                </li>
-              </ul>
-            </div>
+        <!-- BASIC INFORMATION -->
+        <section>
+          <h3>Basic Information</h3>
+          <div *ngIf="!application.features || application.features.length === 0">
+            <em>No features have been loaded.</em>
+          </div>
+          <div *ngIf="application.features?.length > 0">
+            <ul class="application-detail__list">
+              <li class="pt-0">
+                <span class="name">Type / Subtype</span>
+                <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE
+                  || '-'}}</span>
+              </li>
+              <li class="pt-0">
+                <span class="name">Status</span>
+                <span class="value">{{application.features[0].properties.TENURE_STATUS || '-'}}</span>
+              </li>
+              <li>
+                <span class="name">Stage</span>
+                <span class="value">{{application.features[0].properties.TENURE_STAGE || '-'}}</span>
+              </li>
+              <li>
+                <span class="name">Agency</span>
+                <span class="value">{{application.agency || '-'}}</span>
+              </li>
+            </ul>
+            <hr>
+            <ul class="application-detail__list">
+              <li class="pt-0">
+                <span class="name">Business Unit</span>
+                <span class="value">{{application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT || '-'}}</span>
+              </li>
+              <li class="pt-0">
+                <span class="name">Region</span>
+                <span class="value">{{application.region || '-'}}</span>
+              </li>
+              <li>
+                <span class="name">Location</span>
+                <span class="value">{{application.features[0].properties.TENURE_LOCATION || '-'}}</span>
+              </li>
+              <li>
+                <span class="name">Total Area (hectares)</span>
+                <span class="value">{{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}</span>
+              </li>
+            </ul>
           </div>
         </section>
 
         <!-- APPLICATION -->
         <section>
-          <h2>APPLICATION</h2>
-
-          <h3>Description</h3>
-          <p [innerHTML]="(application.description | newlines) || '-'"></p>
-
+          <h3>Application</h3>
+          <section>
+            <h4>Description</h4>
+            <p [innerHTML]="(application.description | newlines) || '-'"></p>
+          </section>
           <section class="application-detail__documents mt-2">
-            <h3>Application Documents</h3>
+            <h4>Application Documents</h4>
             <div *ngIf="!application.documents || application.documents.length === 0">
               <em>This application has no documents.</em>
             </div>
@@ -94,16 +99,13 @@
 
         <!-- DECISION -->
         <section>
-          <h2>DECISION</h2>
-
+          <h3>Decision</h3>
           <div *ngIf="!application.decision">
             <em>No decisions have been made for this application at this time.</em>
           </div>
-
           <section *ngIf="application.decision" class="application-detail__documents mt-2">
             <h3>Description</h3>
             <p [innerHTML]="(application.decision.description | newlines) || '-'"></p>
-
             <h3>Decision Documents</h3>
             <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
               <em>This decision has no documents.</em>
@@ -122,16 +124,14 @@
 
         <!-- GEOGRAPHIC SHAPE DATA -->
         <section class="application-detail__geo-shape-data">
-          <h2>GEOGRAPHIC SHAPE DATA</h2>
-          <label *ngIf="application.features">This application has
-            <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.
-          </label>
+          <h3 class="mb-0">Geographic Shape Data</h3>
+          <span *ngIf="application.features">This application has <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
           <span class="hover" (click)="launchMap()">
             <label class="float-right">See on map</label>
             <i class="material-icons float-right">place</i>
           </span>
+          <hr>
           <ul class="application-detail__list" *ngFor="let shape of application.features">
-            <hr>
             <li class="full-width">
               <span class="name main-label">Interest ID: {{shape.properties.INTRID_SID}}</span>
             </li>
