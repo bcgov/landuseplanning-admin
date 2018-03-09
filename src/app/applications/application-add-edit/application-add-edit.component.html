@@ -1,10 +1,14 @@
 <div class="container" id="anchor-point" *ngIf="application">
-  <div>
-    <h1>Edit Application</h1>
-    <a class="btn btn-primary float-right" [routerLink]="['/a', application._id]">
-      <i class="material-icons">info_outline</i>
-      <span>Application Details</span>
-    </a>
+  <div class="application-edit row mb-3">
+    <div class="col-sm-8">
+      <h1>Edit Application</h1>
+    </div>
+    <div class="col-sm-4">
+      <a class="btn btn-primary float-md-right" [routerLink]="['/a', application._id]">
+        <i class="material-icons">info_outline</i>
+        <span>Application Details</span>
+      </a>
+    </div>
   </div>
 
   <div class="row">
@@ -131,8 +135,7 @@
         <section class="application-notes card" *ngIf="application.internal">
           <h2 class="card-header">Internal Notes</h2>
           <div class="form-group">
-            <textarea type="text" class="form-control" id="internal.notes" name="internal.notes" rows="5" [(ngModel)]="application.internal.notes"
-              required></textarea>
+            <textarea type="text" class="form-control" id="internal.notes" name="internal.notes" rows="5" [(ngModel)]="application.internal.notes"></textarea>
           </div>
         </section>
 
