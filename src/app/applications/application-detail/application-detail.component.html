@@ -1,11 +1,15 @@
 <div class="application-detail">
   <div class="container" *ngIf="application">
-    <div>
-      <h1>Application Details</h1>
-      <a class="btn btn-primary float-right" [routerLink]="['/a', application._id, 'edit']">
-        <i class="material-icons">mode_edit</i>
-        <span>Edit Application</span>
-      </a>
+    <div class="application-detail__title row mb-3">
+      <div class="col-sm-8">
+        <h1>Application Details</h1>
+      </div>
+      <div class="col-sm-4">
+        <a class="btn btn-primary float-md-right" [routerLink]="['/a', application._id, 'edit']">
+          <i class="material-icons">mode_edit</i>
+          <span>Edit Application</span>
+        </a>
+      </div>
     </div>
 
     <div class="row">
