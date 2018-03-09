@@ -2,7 +2,7 @@
   <div class="container" *ngIf="application">
     <div>
       <h1>Application Details</h1>
-      <a class="btn btn-primary btn-sm float-right" [routerLink]="['/a', application._id, 'edit']">
+      <a class="btn btn-primary float-right" [routerLink]="['/a', application._id, 'edit']">
         <i class="material-icons">mode_edit</i>
         <span>Edit Application</span>
       </a>
@@ -100,7 +100,7 @@
             <em>No decisions have been made for this application at this time.</em>
           </div>
 
-          <section *ngIf="application.decision" class="application-detail__documents mt-2">
+          <section *ngIf="application.decision" class="application-detail__decision mt-2">
             <h3>Description</h3>
             <p [innerHTML]="(application.decision.description | newlines) || '-'"></p>
 
