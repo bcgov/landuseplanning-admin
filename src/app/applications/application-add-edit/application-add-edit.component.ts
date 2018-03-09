@@ -15,11 +15,15 @@ import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
 import { Organization } from 'app/models/organization';
 import { Feature } from 'app/models/feature';
+import { Decision } from 'app/models/decision';
 import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
 import { OrganizationService } from 'app/services/organization.service';
 import { SearchService } from 'app/services/search.service';
+import { DecisionService } from 'app/services/decision.service';
+import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { CommentService } from 'app/services/comment.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -34,6 +38,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public statuses = Constants.statuses;
 
   public application: Application = null;
+  private daysRemaining = '?';
+  private numComments = '?';
   public error = false;
   public showMsg = false;
   public status: string;
@@ -48,7 +54,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private orgService: OrganizationService,
     private applicationService: ApplicationService,
     private dialogService: DialogService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private decisionService: DecisionService,
+    private commentPeriodService: CommentPeriodService, // used in template
+    private commentService: CommentService
   ) { }
 
   ngOnInit() {
@@ -65,10 +74,35 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           if (data.application) {
             this.application = data.application;
 
-            if (!this.application.projectDate) {
-              this.application.projectDate = new Date();
+            //
+            // TODO: create separate component for aside items
+            //       which can be used here and in application-detail
+            //
+
+            // get comment period days remaining
+            if (this.application.currentPeriod) {
+              const now = new Date();
+              const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+              const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
+              this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
             }
-            this.application.projectDate = moment(this.application.projectDate).format();
+
+            // get number of pending comments
+            this.commentService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                comments => {
+                  const pending = comments.filter(comment => this.commentService.isPending(comment));
+                  const count = pending.length;
+                  this.numComments = count.toString();
+                },
+                error => console.log('couldn\'t get pending comments, error =', error)
+              );
+
+            if (!this.application.publishDate) {
+              this.application.publishDate = new Date();
+            }
+            this.application.publishDate = moment(this.application.publishDate).format();
           } else {
             // application not found --> navigate back to application list
             alert('Uh-oh, couldn\'t load application');
@@ -89,27 +123,27 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   applyDisposition() {
-    // // Fetch the new feature data, update current UI.
-    // this.searchService.getByDTID(this.application.tantalisID.toString())
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe((features: Feature[]) => {
-    //     this.application.features = features;
-    //   });
-
-    // reload cached app data
-    this.applicationService.getById(this.application._id, true)
+    // (re)load the shapes
+    // TODO: user needs to SAVE the application
+    this.searchService.getByDTID(this.application.tantalisID.toString())
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((application: Application) => {
-        this.application = application;
-      });
-  }
-
-  typeChange(obj) {
-    this.application.subtype = Constants.subtypes[obj][0];
-  }
-
-  purposeChange(obj) {
-    this.application.subpurpose = Constants.subpurposes[obj][0];
+      .subscribe(
+        (features: Feature[]) => {
+          this.application.features = features;
+          // calculate areaHectares
+          let areaHectares = 0;
+          _.each(this.application.features, function (f) {
+            if (f['properties']) {
+              areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+            }
+          });
+          this.application.areaHectares = areaHectares;
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error loading shapes');
+        }
+      );
   }
 
   selectClient() {
@@ -150,16 +184,19 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit() {
+  addDecision() {
+    // TODO
+  }
+
+  saveApplication() {
     // adjust for current tz
-    this.application.projectDate = moment(this.application.projectDate).format();
+    this.application.publishDate = moment(this.application.publishDate).format();
 
     const self = this;
     this.applicationService.save(this.application)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (app: Application) => {
-          // console.log('application =', app);
+        (application: Application) => {
           self.showMessage(false, 'Saved application!');
           // reload cached app data
           this.applicationService.getById(this.application._id, true)
@@ -171,6 +208,26 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           self.showMessage(true, 'Error saving application');
         }
       );
+  }
+
+  saveDecision() {
+    // const self = this;
+    // this.decisionService.save(this.application.decision)
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe(
+    //     (decision: Decision) => {
+    //       console.log('decision =', decision);
+    //       self.showMessage(false, 'Saved decision!');
+    //       // reload cached app data // TODO: or just rebind decision?
+    //       this.applicationService.getById(this.application._id, true)
+    //         .takeUntil(this.ngUnsubscribe)
+    //         .subscribe();
+    //     },
+    //     error => {
+    //       console.log('error =', error);
+    //       self.showMessage(true, 'Error saving decision');
+    //     }
+    //   );
   }
 
   uploadFiles(fileList: FileList, documents: Document[]) {
@@ -189,12 +246,13 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         this.api.uploadDocument(formData)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
-            (doc: Response) => {
+            value => {
               // add uploaded file to specified document array
-              documents.push(doc.json());
+              documents.push(value.json());
             },
             error => {
               console.log('error =', error);
+              this.showMessage(true, 'Error uploading file');
             }
           );
       }
@@ -204,37 +262,55 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   publishDocument(document: Document, documents: Document[]) {
     this.api.publishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(res => {
-        const doc = res.json();
-        const f = _.find(documents, function (item) {
-          return (item._id === doc._id);
-        });
-        f.isPublished = true;
-      });
+      .subscribe(
+        value => {
+          const doc = value.json();
+          const f = _.find(documents, function (item) {
+            return (item._id === doc._id);
+          });
+          f.isPublished = true;
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error publishing document');
+        }
+      );
   }
 
   unPublishDocument(document: Document, documents: Document[]) {
     this.api.unPublishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(res => {
-        const doc = res.json();
-        const f = _.find(documents, function (item) {
-          return (item._id === doc._id);
-        });
-        f.isPublished = false;
-      });
+      .subscribe(
+        value => {
+          const doc = value.json();
+          const f = _.find(documents, function (item) {
+            return (item._id === doc._id);
+          });
+          f.isPublished = false;
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error un-publishing document');
+        }
+      );
   }
 
-  removeDocument(document: Document, documents: Document[]) {
+  deleteDocument(document: Document, documents: Document[]) {
     this.api.deleteDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(res => {
-        const doc = res.json();
-        // remove file from specified document array
-        _.remove(documents, function (item) {
-          return (item._id === doc._id);
-        });
-      });
+      .subscribe(
+        value => {
+          const doc = value.json();
+          // remove file from specified document array
+          _.remove(documents, function (item) {
+            return (item._id === doc._id);
+          });
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error deleting document');
+        }
+      );
   }
 
   publishApplication(app: Application) {
@@ -251,20 +327,57 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         title: 'Confirm deletion',
         message: 'Do you really want to delete this application?'
       }, {
-        // index: 0,
-        // autoCloseTimeout: 10000,
-        // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
       .subscribe((isConfirmed: boolean) => {
-        // we get dialog result
         if (isConfirmed) {
           this.applicationService.delete(app)
             .takeUntil(this.ngUnsubscribe)
-            .subscribe(res => {
-              this.router.navigate(['/applications']);
-            });
+            .subscribe(
+              value => {
+                this.application = null;
+                this.router.navigate(['/applications']);
+              },
+              error => {
+                console.log('error =', error);
+                this.showMessage(true, 'Error deleting application');
+              }
+            );
+        }
+      });
+  }
+
+  publishDecision(decision: Decision) {
+    this.decisionService.publish(decision);
+  }
+
+  unPublishDecision(decision: Decision) {
+    this.decisionService.unPublish(decision);
+  }
+
+  deleteDecision(decision: Decision) {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Confirm deletion',
+        message: 'Do you really want to delete this decision?'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isConfirmed: boolean) => {
+        if (isConfirmed) {
+          this.decisionService.delete(decision)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe(
+              value => {
+                this.application.decision = null;
+              },
+              error => {
+                console.log('error =', error);
+                this.showMessage(true, 'Error deleting decision');
+              }
+            );
         }
       });
   }
