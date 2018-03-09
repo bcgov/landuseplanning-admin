@@ -68,10 +68,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           if (data.application) {
             this.application = data.application;
 
-            if (!this.application.projectDate) {
-              this.application.projectDate = new Date();
+            if (!this.application.publishDate) {
+              this.application.publishDate = new Date();
             }
-            this.application.projectDate = moment(this.application.projectDate).format();
+            this.application.publishDate = moment(this.application.publishDate).format();
           } else {
             // application not found --> navigate back to application list
             alert('Uh-oh, couldn\'t load application');
@@ -167,7 +167,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
 
   saveApplication() {
     // adjust for current tz
-    this.application.projectDate = moment(this.application.projectDate).format(); // TODO: change projectDate to publishDate
+    this.application.publishDate = moment(this.application.publishDate).format();
 
     const self = this;
     this.applicationService.save(this.application)
@@ -195,7 +195,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     //     (decision: Decision) => {
     //       console.log('decision =', decision);
     //       self.showMessage(false, 'Saved decision!');
-    //       // reload cached app data
+    //       // reload cached app data // TODO: or just rebind decision?
     //       this.applicationService.getById(this.application._id, true)
     //         .takeUntil(this.ngUnsubscribe)
     //         .subscribe();

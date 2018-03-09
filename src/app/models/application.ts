@@ -29,7 +29,7 @@ export class Application {
   longitude: number;
   mapsheet: string;
   postID: number;
-  projectDate: Date;
+  publishDate: Date;
   _organization: string; // objectid -> Organization
   purpose: string;
   subpurpose: string;
@@ -83,7 +83,7 @@ export class Application {
     this.longitude               = obj && obj.longitude               || 0.00;
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
-    this.projectDate             = obj && obj.projectDate             || null;
+    this.publishDate             = obj && obj.projectDate             || null; // TODO: change to publishDate
     this._organization           = obj && obj._proponent              || null; // TODO: change to _organization
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
