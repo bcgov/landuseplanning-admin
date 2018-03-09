@@ -584,7 +584,7 @@ export class ApiService {
     return this.getDocumentBlob(document)
       .subscribe((value: Blob) => {
         const blob = new Blob([value], { type: document.internalMime });
-        FileSaver.saveAs(blob, document.displayName);
+        FileSaver.saveAs(blob, document.documentFileName);
       });
   }
 
