@@ -125,7 +125,9 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
             // reload page
             this.refreshUI();
             // reload cached app data
-            this.applicationService.getById(this.application._id, true).subscribe();
+            this.applicationService.getById(this.application._id, true)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe();
           }
         });
     } else {
@@ -147,7 +149,9 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
             // reload page
             this.refreshUI();
             // reload cached app data
-            this.applicationService.getById(this.application._id, true).subscribe();
+            this.applicationService.getById(this.application._id, true)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe();
           }
         });
     }
@@ -173,7 +177,9 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
               // reload page
               this.refreshUI();
               // reload cached app data
-              this.applicationService.getById(this.application._id, true).subscribe();
+              this.applicationService.getById(this.application._id, true)
+                .takeUntil(this.ngUnsubscribe)
+                .subscribe();
             },
             error => {
               // TODO: add alert
@@ -191,7 +197,9 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         // HACK: refresh UI because template item isn't being refreshed otherwise
         this.refreshUI();
         // reload cached app data
-        this.applicationService.getById(this.application._id, true).subscribe();
+        this.applicationService.getById(this.application._id, true)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe();
       });
   }
 
@@ -202,7 +210,9 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
         // HACK: refresh UI because template item isn't being refreshed otherwise
         this.refreshUI();
         // reload cached app data
-        this.applicationService.getById(this.application._id, true).subscribe();
+        this.applicationService.getById(this.application._id, true)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe();
       });
   }
 

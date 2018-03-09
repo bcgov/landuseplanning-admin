@@ -76,12 +76,14 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
 
             // TODO: this should be cleaned up (does this in service already) -- see list page for example
             this.documentService.getAllByApplicationId(this.application._id)
+              .takeUntil(this.ngUnsubscribe)
               .subscribe((documents: Document[]) => {
                 this.applicationDocuments = documents;
               });
 
             if (this.application._organization) {
               this.orgService.getById(this.application._organization)
+                .takeUntil(this.ngUnsubscribe)
                 .subscribe((organization: Organization) => {
                   this.application.organization = organization;
                 });
@@ -101,10 +103,18 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   applyDisposition() {
-    // Fetch the new feature data, update current UI.
-    this.searchService.getByDTID(this.application.tantalisID.toString())
-      .subscribe((features: Feature[]) => {
-        this.application.features = features;
+    // // Fetch the new feature data, update current UI.
+    // this.searchService.getByDTID(this.application.tantalisID.toString())
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe((features: Feature[]) => {
+    //     this.application.features = features;
+    //   });
+
+    // reload cached app data
+    this.applicationService.getById(this.application._id, true)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((application: Application) => {
+        this.application = application;
       });
   }
 
@@ -143,6 +153,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         if (selectedOrgId) {
           // Fetch the org from the service, and bind to this instance of an application.
           self.orgService.getById(selectedOrgId)
+            .takeUntil(this.ngUnsubscribe)
             .subscribe(
               (org: Organization) => {
                 self.application.organization = new Organization(org);
@@ -185,7 +196,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           // console.log('application =', app);
           self.showMessage(false, 'Saved application!');
           // reload cached app data
-          this.applicationService.getById(this.application._id, true).subscribe();
+          this.applicationService.getById(this.application._id, true)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe();
         },
         error => {
           console.log('error =', error);
@@ -213,6 +226,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         formData.append('displayName', file.name);
         formData.append('upfile', file);
         self.api.uploadDocument(formData)
+          .takeUntil(this.ngUnsubscribe)
           .subscribe(
             (doc: Response) => {
               // do stuff w/my uploaded file
@@ -230,6 +244,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   removeDocument(document: Document) {
     const self = this;
     this.api.deleteDocument(document) // TODO: should call service instead of API
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
         const doc = res.json();
         // In-memory removal on successful delete.
@@ -242,6 +257,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   publishDocument(document: Document) {
     const self = this;
     this.api.publishDocument(document)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
         const doc = res.json();
         const f = _.find(self.applicationDocuments, function (item) {
@@ -254,6 +270,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   unPublishDocument(document: Document) {
     const self = this;
     this.api.unPublishDocument(document)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
         const doc = res.json();
         const f = _.find(self.applicationDocuments, function (item) {
@@ -287,6 +304,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         // we get dialog result
         if (isConfirmed) {
           this.applicationService.delete(app)
+            .takeUntil(this.ngUnsubscribe)
             .subscribe(res => {
               this.router.navigate(['/applications']);
             });

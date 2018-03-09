@@ -1,7 +1,48 @@
 @import "~assets/styles/base.scss";
-.application-description {
-    height: 200px;
-    textarea {
-        height: 200px;
+h1 {
+    display: inline-block;
+    margin-bottom: 2rem;
+}
+
+section {
+    h2.card-header {
+        font-size: 1rem;
+    }
+    h3 {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 0;
+    }
+}
+
+.application-details {
+    .nv-list {
+        span.name {
+            font-weight: bold;
+        }
+    }
+}
+
+.form-group.required .control-label:after {
+    white-space: pre;
+    content: " *";
+    color: red;
+}
+
+.form-group.optional .control-label:after {
+    white-space: pre;
+    content: " (optional)";
+    font-weight: normal;
+}
+
+.tantalisID {
+    // sadly, this doesn't work in Chrome 64
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
     }
 }
