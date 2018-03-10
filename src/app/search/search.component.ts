@@ -93,8 +93,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       maxZoom: 16
     });
     this.map = L.map('map', {
-      layers: [Esri_NatGeoWorldMap, World_Topo_Map, OpenMapSurfer_Roads, Esri_OceanBasemap, World_Imagery]
+      layers: [Esri_NatGeoWorldMap, OpenMapSurfer_Roads, Esri_OceanBasemap, World_Imagery, World_Topo_Map]
     });
+    this.map.setView(new L.LatLng(53.7267, -127.6476), 5);
 
     // Setup the controls
     this.baseMaps = {

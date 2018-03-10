@@ -60,7 +60,6 @@ export class CommentService {
         comments.forEach((comment, i) => {
           comments[i] = new Comment(comment);
         });
-
         return comments;
       })
       .map((comments: Comment[]) => {

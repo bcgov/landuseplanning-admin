@@ -84,6 +84,7 @@ export class ApiService {
       'cl_files',
       'code',
       'name',
+      'client',
       'description',
       'interestID',
       'internalID',
@@ -94,7 +95,6 @@ export class ApiService {
       'mapsheet',
       'postID',
       'projectDate', // TODO: change to publishDate
-      '_proponent', // TODO: change to _organization
       'purpose',
       'subpurpose',
       'region',
@@ -133,6 +133,7 @@ export class ApiService {
       'cl_files',
       'code',
       'name',
+      'client',
       'description',
       'interestID',
       'internalID',
@@ -143,7 +144,6 @@ export class ApiService {
       'mapsheet',
       'postID',
       'projectDate', // TODO: change to publishDate
-      '_proponent', // TODO: change to _organization
       'purpose',
       'subpurpose',
       'region',
@@ -199,6 +199,7 @@ export class ApiService {
       'cl_files',
       'code',
       'name',
+      'client',
       'description',
       'interestID',
       'internalID',
@@ -209,7 +210,6 @@ export class ApiService {
       'mapsheet',
       'postID',
       'projectDate', // TODO: change to publishDate
-      '_proponent', // TODO: change to _organization
       'purpose',
       'subpurpose',
       'region',
@@ -625,6 +625,17 @@ export class ApiService {
   getBCGWDispositionTransactionId(id: string) {
     const fields = ['name'];
     let queryString = 'public/search/bcgw/dispositionTransactionId/' + id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+  getClientsInfoByDispositionId(id: number) {
+    const fields = ['name'];
+    let queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });

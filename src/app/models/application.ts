@@ -30,7 +30,7 @@ export class Application {
   mapsheet: string;
   postID: number;
   publishDate: Date;
-  _organization: string; // objectid -> Organization
+  client: string;
   purpose: string;
   subpurpose: string;
   region: string;
@@ -74,6 +74,7 @@ export class Application {
     this.cl_files                = obj && obj.cl_files                || [];
     this.code                    = obj && obj.code                    || null;
     this.name                    = obj && obj.name                    || null;
+    this.client                  = obj && obj.client                  || null;
     this.description             = obj && obj.description             || null;
     this.interestID              = obj && obj.interestID              || 0;
     this.internalID              = obj && obj.internalID              || 0;
@@ -84,7 +85,6 @@ export class Application {
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
     this.publishDate             = obj && obj.projectDate             || null; // TODO: change to publishDate
-    this._organization           = obj && obj._proponent              || null; // TODO: change to _organization
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;

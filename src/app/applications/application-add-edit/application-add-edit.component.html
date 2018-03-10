@@ -10,14 +10,14 @@
       </div>
     </div>
 
-    <div class="row">
-      <main class="col-lg-8">
-        <form #applicationForm="ngForm">
-
+  <div class="row">
+    <main class="col-lg-8">
+      <form #applicationForm="ngForm">
+        
           <!-- HEADER -->
           <section class="card bg-dark">
             <span class="d-flex justify-content-between">
-              <h2 class="mb-0">{{application.organization?.name || 'Unknown'}}</h2>
+                <h2 class="mb-0">{{application.client || '-'}}</h2>
               <button type="button" class="btn btn-primary float-right" (click)="selectClient()">
                 <i class="material-icons">contacts</i>
                 <span>Select Client</span>
@@ -252,7 +252,7 @@
         <!-- <section class="geo-shape-data card bg-light">
             <div class="title-container">
               <h3 class="title-container__title mb-0">Geographic Shape Data</h3>
-
+  
               <div class="title-container__actions">
                 <button class="btn btn-white slide-r-btn" (click)="launchMap()">
                   <span>See on map</span>
@@ -284,7 +284,7 @@
               </section>
             </div>
           </section> -->
-
+  
         <hr>
 
         <div class="application-buttons">
@@ -318,40 +318,41 @@
       </main>
 
       <aside class="col-lg-4">
-        <!-- MAP THUMBNAIL -->
-        <section class="map-thumbnail card p-0">
-          <div class="map-container">
-            <div class="map" id="map"></div>
-          </div>
-        </section>
+          <!-- MAP THUMBNAIL -->
+          <section class="map-thumbnail card p-0">
+            <div class="map-container">
+              <div class="map" id="map"></div>
+            </div>
+          </section>
+  
+          <!-- COMMENTING INFO -->
+          <section class="comment-status card bg-light">
+            <h4 class="title mb-0">{{commentPeriodService.getStatus(application.currentPeriod)}}</h4>
+            <div class="mt-1" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
+              <span>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</span>
+              <span class="badge badge-dark">{{daysRemaining}}</span>
+            </div>
+            <div class="comment-status__actions mt-4">
+              <a class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]">
+                <span>Click to Modify</span>
+                <i class="material-icons">arrow_forward</i>
+              </a>
+            </div>
+          </section>
+  
+          <!-- NEW COMMENTS INFO -->
+          <section class="comment-count card bg-light">
+            <h4 class="title mb-3">New Comments</h4>
+            <span class="badge badge-dark">{{numComments}}</span>
+            <div class="comment-status__actions mt-4">
+              <a class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]">
+                <span>Click to Review</span> 
+                <i class="material-icons">arrow_forward</i>
+              </a>
+            </div>
+          </section>
+        </aside>
 
-        <!-- COMMENTING INFO -->
-        <section class="comment-status card bg-light">
-          <h4 class="title mb-0">{{commentPeriodService.getStatus(application.currentPeriod)}}</h4>
-          <div class="mt-1" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
-            <span>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</span>
-            <span class="badge badge-dark">{{daysRemaining}}</span>
-          </div>
-          <div class="comment-status__actions mt-4">
-            <a class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]">
-              <span>Click to Modify</span>
-              <i class="material-icons">arrow_forward</i>
-            </a>
-          </div>
-        </section>
-
-        <!-- NEW COMMENTS INFO -->
-        <section class="comment-count card bg-light">
-          <h4 class="title mb-3">New Comments</h4>
-          <span class="badge badge-dark">{{numComments}}</span>
-          <div class="comment-status__actions mt-4">
-            <a class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]">
-              <span>Click to Review</span>
-              <i class="material-icons">arrow_forward</i>
-            </a>
-          </div>
-        </section>
-      </aside>
-    </div>
+      </div>
   </div>
 </div>

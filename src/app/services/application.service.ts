@@ -55,13 +55,13 @@ export class ApplicationService {
         const promises: Array<Promise<any>> = [];
 
         // now get the organization for each application
-        applications.forEach((application, i) => {
-          if (applications[i]._organization) {
-            promises.push(this.organizationService.getById(applications[i]._organization)
-              .toPromise()
-              .then(organization => application.organization = organization));
-          }
-        });
+        // applications.forEach((application, i) => {
+        //   if (applications[i]._organization) {
+        //     promises.push(this.organizationService.getById(applications[i]._organization)
+        //       .toPromise()
+        //       .then(organization => application.organization = organization));
+        //   }
+        // });
 
         // now get the current comment period for each application
         applications.forEach((application, i) => {
@@ -111,12 +111,12 @@ export class ApplicationService {
         const promises: Array<Promise<any>> = [];
 
         // now get the organization
-        if (application._organization) {
-          promises.push(this.organizationService.getById(application._organization, forceReload)
-            .toPromise()
-            .then(organization => application.organization = organization)
-          );
-        }
+        // if (application._organization) {
+        //   promises.push(this.organizationService.getById(application._organization, forceReload)
+        //     .toPromise()
+        //     .then(organization => application.organization = organization)
+        //   );
+        // }
 
         // now get the documents
         promises.push(this.documentService.getAllByApplicationId(application._id)

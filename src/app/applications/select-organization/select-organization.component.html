@@ -11,19 +11,18 @@
           <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">code</th>
-                  <th scope="col">_id</th>
+                  <th scope="col">Client Name</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let o of organizations | paginate: { itemsPerPage: 5, currentPage: page }"
+                <tr *ngFor="let client of clients | paginate: { itemsPerPage: 5, currentPage: page }"
                     class="clickable-row"
-                    [ngClass]="(selectedOrg !== null && o._id === selectedOrg._id) ? 'active' : ''"
-                    (click)="selectOrganization(o)">
-                  <td scope="row">{{o.name}}</td>
-                  <td>{{o.code}}</td>
-                  <td>{{o._id}}</td>
+                    [ngClass]="isClientSelected(client) ? 'active' : ''"
+                    (click)="toggleClient(client)">
+                  <td *ngIf="client.ORGANIZATIONS_LEGAL_NAME">{{client.ORGANIZATIONS_LEGAL_NAME}}</td>
+                  <td scope="row" *ngIf="!client.ORGANIZATIONS_LEGAL_NAME">
+                      <span>{{client.INDIVIDUALS_FIRST_NAME}} {{client.INDIVIDUALS_LAST_NAME}}</span>
+                  </td>
                 </tr>
               </tbody>
             </table>
