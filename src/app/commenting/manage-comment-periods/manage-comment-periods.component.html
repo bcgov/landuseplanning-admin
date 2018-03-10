@@ -15,7 +15,7 @@
         <section class="p-0">
           <div class="review-comments__client-card card bg-light">
             <div class="card-header">
-              <h2 class="mb-0">{{application.client '-'}}</h2>
+              <h2 class="mb-0">{{application.client || '-'}}</h2>
               <h3>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</h3>
               <h3>CL # &nbsp;{{application.cl_files ? application.cl_files.join(', ') : '-'}}</h3>
               <h3 *ngIf="application.features?.length > 0">Disp ID: &nbsp; {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</h3>
