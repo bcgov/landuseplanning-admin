@@ -90,8 +90,8 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
         res += c.INDIVIDUALS_LAST_NAME + ", ";
       }
     });
-    this.result = res.replace(/\|$/, '');
-    console.log(this.result);
+    this.result = res.replace(/,\s*$/, '');
+    // console.log(this.result);
     // alert('Save is not yet implemented');
     this.close();
   }

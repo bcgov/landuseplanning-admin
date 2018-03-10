@@ -13,23 +13,12 @@
   <div class="row">
     <main class="col-lg-8">
       <form #appEditForm="ngForm">
-        <section class="application-client card">
-          <h2 class="card-header">Client</h2>
-          <span>
-            <label>{{application.client}}</label>
-            <button type="button" class="btn btn-primary float-right" (click)="selectClient()">
-              <i class="material-icons">contacts</i>
-              <span>Select Client</span>
-            </button>
-          </span>
-        </section>
-
           <!-- HEADER -->
           <section class="card bg-dark">
             <h2 class="mb-0">Client</h2>
 
             <span>
-              <label>{{application.organization?.name || '-'}}</label>
+              <label>{{application.client || '-'}}</label>
               <button type="button" class="btn btn-primary float-right" (click)="selectClient()">
                 <i class="material-icons">contacts</i>
                 <span>Select Client</span>
