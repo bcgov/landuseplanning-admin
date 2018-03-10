@@ -15,8 +15,8 @@
       <table class="table application-table">
         <thead class="application-table__sort-header">
           <tr>
-            <th class="application-table__name-col sortable" (click)="sort('organization')">Client Name
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'organization' && isDesc), 'sort-desc': (column == 'organization' && !isDesc) }"
+            <th class="application-table__name-col sortable" (click)="sort('client')">Client Name
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && isDesc), 'sort-desc': (column == 'client' && !isDesc) }"
                 aria-hidden="true"></i>
             </th>
             <th class="application-table__cl_file-col sortable" (click)="sort('cl_files')">CL File(s)
@@ -44,7 +44,7 @@
                   <i class="material-icons open-icon">arrow_drop_down</i>
                   <i class="material-icons close-icon">arrow_drop_up</i>
                 </a>
-                <span class="accordion__collapse-header--column application-table__name-col">{{item.organization?.name || '-'}}</span>
+                <span class="accordion__collapse-header--column application-table__name-col">{{item.client || '-'}}</span>
                 <span class="accordion__collapse-header--column application-table__cl_file-col">
                   <a [routerLink]="['/a', item._id]">{{item.cl_files ? item.cl_files.join(', ') : '-'}}</a>
                 </span>

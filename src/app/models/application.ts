@@ -1,5 +1,4 @@
 import { Document } from './document';
-import { Organization } from './organization';
 import { CommentPeriod } from './commentperiod';
 import { Decision } from './decision';
 import { Feature } from './feature';
@@ -54,7 +53,6 @@ export class Application {
   isPublished = false;
 
   documents: Array<Document>;
-  organization: Organization;
   currentPeriod: CommentPeriod;
   decision: Decision;
   features: Feature[];
@@ -109,7 +107,6 @@ export class Application {
     }
 
     this.documents = [];
-    this.organization = null;
     this.currentPeriod = null;
     this.decision = null;
     this.features = [];
