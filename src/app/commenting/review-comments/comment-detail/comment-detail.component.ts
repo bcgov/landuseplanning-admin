@@ -92,8 +92,9 @@ export class CommentDetailComponent implements OnChanges {
     this.commentService.save(this.comment)
       .toPromise()
       .then(
-        value => {
-          // save succeeded - accept new record
+        (value: Comment) => {
+          // save succeeded - reload comment with documents
+          // TODO: use getById() to reload it with documents
           this.comment = value;
           this.commentChange.emit(this.comment);
         },
@@ -102,7 +103,7 @@ export class CommentDetailComponent implements OnChanges {
         }
       )
       .then(
-        value => {
+        () => {
           if (doPublish && !this.comment.isPublished) {
             this.commentService.publish(this.comment);
             this.documents.forEach((document) => this.documentService.publish(document));

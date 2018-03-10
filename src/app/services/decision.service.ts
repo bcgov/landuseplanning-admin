@@ -32,6 +32,11 @@ export class DecisionService {
       .map((decision: Decision) => {
         if (!decision) { return null; }
 
+        // replace \\n (JSON format) with newlines
+        if (decision.description) {
+          decision.description = decision.description.replace(/\\n/g, '\n');
+        }
+
         // now grab the decision documents
         this.documentService.getAllByDecisionId(decision._id).subscribe(
           documents => decision.documents = documents,
@@ -59,6 +64,11 @@ export class DecisionService {
       .map((decision: Decision) => {
         if (!decision) { return null; }
 
+        // replace \\n (JSON format) with newlines
+        if (decision.description) {
+          decision.description = decision.description.replace(/\\n/g, '\n');
+        }
+
         // now grab the decision documents
         this.documentService.getAllByDecisionId(decision._id).subscribe(
           documents => decision.documents = documents,
@@ -72,6 +82,17 @@ export class DecisionService {
   }
 
   add(decision: Decision): Observable<Decision> {
+    // ID must not exist on POST
+    delete decision._id;
+
+    // don't send documents
+    delete decision.documents;
+
+    // replace newlines with \\n (JSON format)
+    if (decision.description) {
+      decision.description = decision.description.replace(/\n/g, '\\n');
+    }
+
     return this.api.addDecision(decision)
       .map((res: Response) => {
         const c = res.text() ? res.json() : null;
@@ -81,6 +102,14 @@ export class DecisionService {
   }
 
   save(decision: Decision): Observable<Decision> {
+    // don't send documents
+    delete decision.documents;
+
+    // replace newlines with \\n (JSON format)
+    if (decision.description) {
+      decision.description = decision.description.replace(/\n/g, '\\n');
+    }
+
     return this.api.saveDecision(decision)
       .map((res: Response) => {
         const c = res.text() ? res.json() : null;

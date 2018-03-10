@@ -17,14 +17,23 @@ export class SearchService {
 
   constructor(private api: ApiService) { }
 
-  getClientsByDispositionId(dispositionId: number): Observable<Client[]> {
+  getClientsByDispositionId(dispositionId: number, forceReload: boolean = false): Observable<Client[]> {
+    if (this.clients && this.clients.length > 0 && +this.clients[0].ORGANIZATIONS_LEGAL_NAME === dispositionId && !forceReload) {
+      return Observable.of(this.clients);
+    }
+
     return this.api.getClientsInfoByDispositionId(dispositionId)
       .map((res: Response) => {
-        const results = res.text() ? res.json() : null;
-        return results;
+        const clients = res.text() ? res.json() : [];
+        clients.forEach((client, i) => {
+          clients[i] = new Client(client);
+        });
+        return clients;
       })
       .map((clients: Client[]) => {
-        if (!clients) { return null; }
+        if (clients.length === 0) {
+          return [];
+        }
 
         // console.log('new clients =', clients);
         this.clients = clients;

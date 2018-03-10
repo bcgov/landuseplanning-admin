@@ -44,7 +44,7 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
   }
 
   isClientSelected(client) {
-    var foundClient = _.find(this.selectedClients, function (c) {
+    const foundClient = _.find(this.selectedClients, function (c) {
       return (c === client);
     });
     if (foundClient) {
@@ -77,17 +77,17 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
   }
 
   save() {
-    var res = "";
+    let res = '';
     _.each(this.selectedClients, function (client) {
-      let c = new Client(client);
+      const c = new Client(client);
       if (c.ORGANIZATIONS_LEGAL_NAME) {
-        res += c.ORGANIZATIONS_LEGAL_NAME + ", ";
+        res += c.ORGANIZATIONS_LEGAL_NAME + ', ';
       }
       if (c.INDIVIDUALS_FIRST_NAME) {
-        res += c.INDIVIDUALS_FIRST_NAME + ", ";
+        res += c.INDIVIDUALS_FIRST_NAME + ', ';
       }
       if (c.INDIVIDUALS_LAST_NAME) {
-        res += c.INDIVIDUALS_LAST_NAME + ", ";
+        res += c.INDIVIDUALS_LAST_NAME + ', ';
       }
     });
     this.result = res.replace(/,\s*$/, '');

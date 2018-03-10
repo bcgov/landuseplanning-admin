@@ -149,7 +149,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   selectClient() {
     const self = this;
     let dispId = null;
-    let intrId = null;
 
     if (this.application && this.application.tantalisID) {
       dispId = this.application.tantalisID;
@@ -164,8 +163,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe((clientString: string) => {
         if (clientString) {
           self.application.client = clientString;
-        } else {
-          console.log('org selection cancelled');
         }
       });
   }
@@ -182,10 +179,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     _.remove(this.application.cl_files, function (item) {
       return (item === clFile);
     });
-  }
-
-  addDecision() {
-    // TODO
   }
 
   saveApplication() {
@@ -210,24 +203,42 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
+  addDecision() {
+    const d = new Decision();
+    d._application = this.application._id;
+
+    this.decisionService.add(d)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (decision: Decision) => {
+          console.log('decision =', decision);
+          // add succeeded - accept new record
+          this.application.decision = decision;
+          this.showMessage(false, 'Added decision!');
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error adding decision');
+        }
+      );
+  }
+
   saveDecision() {
-    // const self = this;
-    // this.decisionService.save(this.application.decision)
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe(
-    //     (decision: Decision) => {
-    //       console.log('decision =', decision);
-    //       self.showMessage(false, 'Saved decision!');
-    //       // reload cached app data // TODO: or just rebind decision?
-    //       this.applicationService.getById(this.application._id, true)
-    //         .takeUntil(this.ngUnsubscribe)
-    //         .subscribe();
-    //     },
-    //     error => {
-    //       console.log('error =', error);
-    //       self.showMessage(true, 'Error saving decision');
-    //     }
-    //   );
+    this.decisionService.save(this.application.decision)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (decision: Decision) => {
+          console.log('decision =', decision);
+          // save succeeded - reload decision with documents
+          // TODO: use getById() to reload it with documents
+          this.application.decision = decision;
+          this.showMessage(false, 'Saved decision!');
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error saving decision');
+        }
+      );
   }
 
   uploadFiles(fileList: FileList, documents: Document[]) {
@@ -246,7 +257,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         this.api.uploadDocument(formData)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
-            value => {
+            (value: Response) => {
               // add uploaded file to specified document array
               documents.push(value.json());
             },
@@ -263,7 +274,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.publishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        value => {
+        (value: Response) => {
           const doc = value.json();
           const f = _.find(documents, function (item) {
             return (item._id === doc._id);
@@ -281,7 +292,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.unPublishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        value => {
+        (value: Response) => {
           const doc = value.json();
           const f = _.find(documents, function (item) {
             return (item._id === doc._id);
@@ -299,7 +310,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.deleteDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        value => {
+        (value: Response) => {
           const doc = value.json();
           // remove file from specified document array
           _.remove(documents, function (item) {
@@ -335,7 +346,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           this.applicationService.delete(app)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
-              value => {
+              () => {
                 this.application = null;
                 this.router.navigate(['/applications']);
               },
@@ -370,7 +381,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           this.decisionService.delete(decision)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
-              value => {
+              () => {
                 this.application.decision = null;
               },
               error => {
