@@ -42,8 +42,15 @@ export class ApplicationService {
     return this.getAllInternal()
       .mergeMap((applications: Application[]) => {
         if (applications.length === 0) {
-          return [];
+          return Observable.of([]);
         }
+
+        // replace \\n (JSON format) with newlines in each application
+        applications.forEach((application, i) => {
+          if (applications[i].description) {
+            applications[i].description = applications[i].description.replace(/\\n/g, '\n');
+          }
+        });
 
         const promises: Array<Promise<any>> = [];
 
@@ -95,6 +102,11 @@ export class ApplicationService {
       })
       .mergeMap((application: Application) => {
         if (!application) { return null; }
+
+        // replace \\n (JSON format) with newlines
+        if (application.description) {
+          application.description = application.description.replace(/\\n/g, '\n');
+        }
 
         const promises: Array<Promise<any>> = [];
 
@@ -171,6 +183,11 @@ export class ApplicationService {
   }
 
   addApplication(item: any): Observable<Application> {
+    // replace newlines with \\n (JSON format)
+    if (item.description) {
+      item.description = item.description ? item.description.replace(/\n/g, '\\n') : null;
+    }
+
     return this.api.addApplication(this.sanitizeApplication(item))
       .map((res: Response) => {
         const application = res.text() ? res.json() : [];
@@ -195,8 +212,6 @@ export class ApplicationService {
       app.location = item.properties.TENURE_LOCATION;
       app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
       app.agency = 'Crown Land Allocation';
-      // replace newlines with \\n (JSON format)
-      app.description = app.description ? app.description.replace(/\n/g, '\\n') : null;
       app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
       app.interestID = item.properties.INTRID_SID;
     } else {
@@ -220,7 +235,9 @@ export class ApplicationService {
 
   save(application: Application): Observable<Application> {
     // replace newlines with \\n (JSON format)
-    application.description = application.description.replace(/\n/g, '\\n');
+    if (application.description) {
+      application.description = application.description.replace(/\n/g, '\\n');
+    }
 
     return this.api.saveApplication(application)
       .map((res: Response) => {

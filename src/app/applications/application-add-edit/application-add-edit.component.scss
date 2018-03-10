@@ -29,8 +29,20 @@ textarea {
     main {
         section {
             padding: 1.5rem;
-            >section {
+            section {
                 padding: 0;
+            }
+        }
+    }
+    aside {
+        section {
+            padding: 1.5rem;
+            padding-top: 1.25rem;
+            .title {
+                letter-spacing: -0.02rem;
+                text-transform: uppercase;
+                font-size: 1.1em;
+                font-weight: 700;
             }
         }
     }
@@ -48,9 +60,6 @@ textarea {
             width: 50%;
             float: left;
             padding-top: 1rem;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
             &.full-width {
                 width: 100%;
             }
@@ -63,42 +72,6 @@ textarea {
             }
         }
     }
-    aside {
-        section {
-            text-align: center;
-            padding: 1.5rem;
-            h2 {
-                font-size: 1.5rem;
-            }
-            p {
-                margin-bottom: 0.5rem;
-            }
-            .badge {
-                position: unset;
-                text-transform: none;
-                margin-bottom: 0.5rem;
-                padding: 1rem;
-            }
-        }
-        section.aside-map {
-            padding: 0;
-        }
-        section.aside-commenting {
-            .badge {
-                font-size: large;
-            }
-        }
-        section.aside-comments {
-            .badge {
-                font-size: larger;
-                text-align: center;
-                line-height: unset;
-                border-radius: 50%;
-                height: 4rem;
-                width: 4rem;
-            }
-        }
-    }
 }
 
 .document-list {
@@ -107,14 +80,18 @@ textarea {
     li {
         display: table-row;
         width: 100%;
+        background: transparent;
         .cell {
             display: table-cell;
             padding: 0.5rem;
             vertical-align: middle;
             border-top: 1px solid #ccc;
             &.icon {
-                width: 3rem;
+                width: 2rem;
                 text-align: center;
+                i {
+                    margin-top: 0.4rem;
+                }
             }
         }
         +li {
@@ -124,6 +101,80 @@ textarea {
     .actions {
         width: 15rem;
         text-align: right;
+    }
+}
+
+.map-thumbnail {
+    .map {
+        position: relative;
+        height: 300px;
+        outline: none;
+        touch-action: none;
+        background-color: #445a71;
+    }
+}
+
+.comment-status {
+    text-align: center;
+    .badge {
+        margin-top: 0.75rem;
+        padding: 1.25rem;
+        display: block;
+        text-align: center;
+        font-size: 1rem;
+    }
+    &__actions {
+        .btn {
+            border: none;
+            background: #eee;
+            font-size: 0.9375rem;
+            font-weight: bold;
+            i {
+                margin-top: -0.15rem;
+            }
+        }
+    }
+}
+
+// TODO: copy this block to App Details page
+.pg-title-container {
+    &__actions {
+        .btn {
+            border: none;
+            background: #eee;
+            font-size: 0.9375rem;
+            font-weight: bold;
+            i {
+                margin-top: -0.15rem;
+            }
+        }
+    }
+}
+
+.comment-count {
+    text-align: center;
+    .badge {
+        margin: 0 auto;
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        line-height: 2.8rem;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+}
+
+.geo-shape-data {
+    .btn {
+        border: none;
+        background: #eee;
+    }
+    &__list {
+        section {
+            margin-top: 1.5rem;
+            border-top: 2px solid #ddd;
+        }
     }
 }
 

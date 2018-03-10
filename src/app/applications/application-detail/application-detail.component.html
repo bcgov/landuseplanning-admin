@@ -88,7 +88,7 @@
           <section class="application-detail__documents mt-1">
             <h4 class="mb-3">Application Documents</h4>
 
-            <div *ngIf="!application.documents || application.documents.length === 0">
+            <div *ngIf="!application.documents || (application.documents | published).length === 0">
               <em>This application has no documents.</em>
             </div>
 
@@ -129,7 +129,7 @@
             <section class="application-detail__documents mt-1">
               <h4 class="mb-3">Decision Documents</h4>
 
-              <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
+              <div *ngIf="!application.decision.documents || (application.decision.documents | published).length === 0">
                 <em>This decision has no documents.</em>
               </div>
 
