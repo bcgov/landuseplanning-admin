@@ -3,7 +3,8 @@
     <div class="title-container mb-4">
       <h1 class="title-container__title">Application Details</h1>
       <div class="pg-title-container__actions">
-        <a class="btn btn-default" [routerLink]="['/a', application._id, 'edit']">
+        <a class="btn btn-light" [routerLink]="['/a', application._id, 'edit']">
+          <i class="material-icons">&#xE254;</i>
           <i class="material-icons">mode_edit</i>
           <span>Edit Application</span>
         </a>
@@ -154,69 +155,78 @@
         </section>
 
         <!-- GEOGRAPHIC SHAPE DATA -->
-        <section class="bg-light">
+        <section class="geo-shape-data card bg-light">
           <div class="title-container">
             <h3 class="title-container__title mb-0">Geographic Shape Data</h3>
 
             <div class="title-container__actions">
-              <button class="btn btn-default" (click)="launchMap()">
-                <i class="material-icons">place</i>
+              <button class="btn btn-white slide-r-btn" (click)="launchMap()">
                 <span>See on map</span>
+                <i class="material-icons">place</i>
               </button>
             </div>
           </div>
-          <span *ngIf="application.features">This application has
-            <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
-          <hr>
-          <ul class="application-detail__list" *ngFor="let shape of application.features">
-            <li class="full-width pt-0">
-              <span class="name">Interest ID: {{shape.properties.INTRID_SID}}</span>
-            </li>
-            <li>
-              <span class="name">Type/Subtype</span>
-              <span class="value">{{shape.properties.TENURE_TYPE}}/{{shape.properties.TENURE_SUBTYPE}}</span>
-            </li>
-            <li>
-              <span class="name">Area (ha)</span>
-              <span class="value">
-                {{shape.properties.TENURE_AREA_IN_HECTARES ? (shape.properties.TENURE_AREA_IN_HECTARES | number:'1.2-2') : '-'}}
-              </span>
-            </li>
-            <li class="full-width">
-              <span class="name">Legal Description</span>
-              <span class="value">{{shape.properties.TENURE_LEGAL_DESCRIPTION}}</span>
-            </li>
-          </ul>
+          <span *ngIf="application.features">This application has <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
+          <div class="geo-shape-data__list">
+            <section class="pt-3" *ngFor="let shape of application.features">
+              <h4 class="mb-3">Interest ID: {{shape.properties.INTRID_SID}}</h4>
+              <ul class="application-detail__list">
+                <li class="pt-0">
+                  <span class="name">Type/Subtype</span>
+                  <span class="value">{{shape.properties.TENURE_TYPE}}/{{shape.properties.TENURE_SUBTYPE}}</span>
+                </li>
+                <li class="pt-0">
+                  <span class="name">Area (ha)</span>
+                  <span class="value">
+                    {{shape.properties.TENURE_AREA_IN_HECTARES ? (shape.properties.TENURE_AREA_IN_HECTARES | number:'1.2-2') : '-'}}
+                  </span>
+                </li>
+                <li class="full-width">
+                  <span class="name">Legal Description</span>
+                  <span class="value">{{shape.properties.TENURE_LEGAL_DESCRIPTION}}</span>
+                </li>
+              </ul>
+            </section>
+          </div>
         </section>
       </main>
 
       <aside class="col-lg-4">
         <!-- MAP THUMBNAIL -->
-        <section class="aside-map card">
+        <section class="map-thumbnail card p-0">
           <div class="map-container">
-            <div class="map" style="height: 300px;" id="map"></div>
+            <div class="map" id="map"></div>
           </div>
         </section>
 
         <!-- COMMENTING INFO -->
-        <section class="aside-commenting card bg-light">
-          <h2>{{commentPeriodService.getStatus(application.currentPeriod)}}</h2>
-          <div *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
-            <p>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</p>
-            <div class="badge badge-secondary">{{daysRemaining}}</div>
+        <section class="comment-status card bg-light">
+          <h4 class="title mb-0">{{commentPeriodService.getStatus(application.currentPeriod)}}</h4>
+          <div class="mt-1" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
+            <span>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</span>
+            <span class="badge badge-dark">{{daysRemaining}}</span>
           </div>
-          <a [routerLink]="['/periods', application._id]">Click to Modify &nbsp; &rsaquo;</a>
+          <div class="comment-status__actions mt-4">
+            <a class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]">
+              <span>Click to Modify</span>
+              <i class="material-icons">&#xE5C8;</i>
+            </a>
+          </div>
         </section>
 
         <!-- NEW COMMENTS INFO -->
-        <section class="aside-comments card bg-light">
-          <h2>New Comments</h2>
-          <div>
-            <div class="badge badge-secondary">{{numComments}}</div>
+        <section class="comment-count card bg-light">
+          <h4 class="title mb-3">New Comments</h4>
+          <span class="badge badge-dark">{{numComments}}</span>
+          <div class="comment-status__actions mt-4">
+            <a class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]">
+              <span>Click to Review</span> 
+              <i class="material-icons">&#xE5C8;</i>
+            </a>
           </div>
-          <a [routerLink]="['/comments', application._id]">Click to Review &nbsp; &rsaquo;</a>
         </section>
       </aside>
+
     </div>
   </div>
 </div>
