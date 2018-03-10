@@ -44,7 +44,7 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
   }
 
   isClientSelected(client) {
-    var foundClient = _.find(this.selectedClients, function (c) {
+    const foundClient = _.find(this.selectedClients, function (c) {
       return (c === client);
     });
     if (foundClient) {
