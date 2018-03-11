@@ -29,6 +29,20 @@ export class CommentPeriodService {
         });
         return periods;
       })
+      .map((periods: CommentPeriod[]) => {
+        if (periods.length === 0) {
+          return [] as CommentPeriod[];
+        }
+
+        // replace \\n (JSON format) with newlines in each comment period
+        periods.forEach((period, i) => {
+          if (periods[i].description) {
+            periods[i].description = periods[i].description.replace(/\\n/g, '\n');
+          }
+        });
+
+        return periods;
+      })
       .catch(this.api.handleError);
   }
 
@@ -44,17 +58,30 @@ export class CommentPeriodService {
         // return the first (only) comment period
         return periods.length > 0 ? new CommentPeriod(periods[0]) : null;
       })
-      .map((commentPeriod: CommentPeriod) => {
-        if (!commentPeriod) { return null; }
+      .map((period: CommentPeriod) => {
+        if (!period) { return null; }
 
-        this.commentPeriod = commentPeriod;
+        // replace \\n (JSON format) with newlines
+        if (period.description) {
+          period.description = period.description.replace(/\\n/g, '\n');
+        }
+
+        this.commentPeriod = period;
         return this.commentPeriod;
       })
       .catch(this.api.handleError);
   }
 
-  add(commentperiod: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.addCommentPeriod(commentperiod)
+  add(period: CommentPeriod): Observable<CommentPeriod> {
+    // ID must not exist on POST
+    delete period._id;
+
+    // replace newlines with \\n (JSON format)
+    if (period.description) {
+      period.description = period.description.replace(/\n/g, '\\n');
+    }
+
+    return this.api.addCommentPeriod(period)
       .map((res: Response) => {
         const cp = res.text() ? res.json() : null;
         return cp ? new CommentPeriod(cp) : null;
@@ -62,8 +89,13 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  save(commentperiod: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.saveCommentPeriod(commentperiod)
+  save(period: CommentPeriod): Observable<CommentPeriod> {
+    // replace newlines with \\n (JSON format)
+    if (period.description) {
+      period.description = period.description.replace(/\n/g, '\\n');
+    }
+
+    return this.api.saveCommentPeriod(period)
       .map((res: Response) => {
         const cp = res.text() ? res.json() : null;
         return cp ? new CommentPeriod(cp) : null;
@@ -71,29 +103,29 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  delete(commentperiod: CommentPeriod): Observable<any> {
-    return this.api.deleteCommentPeriod(commentperiod)
+  delete(period: CommentPeriod): Observable<any> {
+    return this.api.deleteCommentPeriod(period)
       .map(res => { return res; })
       .catch(this.api.handleError);
   }
 
-  publish(commentperiod: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.publishCommentPeriod(commentperiod)
+  publish(period: CommentPeriod): Observable<CommentPeriod> {
+    return this.api.publishCommentPeriod(period)
       .map(
         project => {
-          commentperiod.isPublished = true;
-          return commentperiod;
+          period.isPublished = true;
+          return period;
         }
       )
       .catch(this.api.handleError);
   }
 
-  unPublish(commentperiod: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.unPublishCommentPeriod(commentperiod)
+  unPublish(period: CommentPeriod): Observable<CommentPeriod> {
+    return this.api.unPublishCommentPeriod(period)
       .map(
         project => {
-          commentperiod.isPublished = false;
-          return commentperiod;
+          period.isPublished = false;
+          return period;
         }
       )
       .catch(this.api.handleError);
