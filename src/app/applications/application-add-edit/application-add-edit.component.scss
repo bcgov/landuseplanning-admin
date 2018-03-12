@@ -25,6 +25,10 @@ textarea {
     }
 }
 
+.application-buttons {
+    margin: 2rem 0;
+}
+
 .application-edit {
     main {
         section {
@@ -165,6 +169,7 @@ textarea {
 }
 
 .geo-shape-data {
+    margin-top: 2rem;
     .btn {
         border: none;
         background: #eee;

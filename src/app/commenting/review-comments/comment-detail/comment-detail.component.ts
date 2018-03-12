@@ -42,7 +42,7 @@ export class CommentDetailComponent implements OnChanges {
 
       // get the comment documents
       this.documentService.getAllByCommentId(this.comment._id).subscribe(
-        documents => this.documents = documents,
+        (documents: Document[]) => this.documents = documents,
         error => console.log(error)
       );
     }
@@ -92,10 +92,9 @@ export class CommentDetailComponent implements OnChanges {
     this.commentService.save(this.comment)
       .toPromise()
       .then(
-        (value: Comment) => {
-          // save succeeded - reload comment with documents
-          // TODO: use getById() to reload it with documents
-          this.comment = value;
+        () => {
+          // save succeeded
+          // just hold on to existing comment instead of reloading it
           this.commentChange.emit(this.comment);
         },
         reason => {

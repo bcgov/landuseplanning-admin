@@ -165,7 +165,8 @@
               </button>
             </div>
           </div>
-          <span *ngIf="application.features">This application has <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
+          <span *ngIf="application.features">This application has
+            <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
           <div class="geo-shape-data__list">
             <section class="pt-3" *ngFor="let shape of application.features">
               <h4 class="mb-3">Interest ID: {{shape.properties.INTRID_SID}}</h4>
@@ -219,7 +220,7 @@
           <span class="badge badge-dark">{{numComments}}</span>
           <div class="comment-status__actions mt-4">
             <a class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]">
-              <span>Click to Review</span> 
+              <span>Click to Review</span>
               <i class="material-icons">&#xE5C8;</i>
             </a>
           </div>
