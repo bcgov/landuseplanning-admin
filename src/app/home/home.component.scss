@@ -1,139 +1,118 @@
-// Base
 @import "~assets/styles/base.scss";
-
-$ff-metric-bg-1: #002663;
-$ff-metric-bg-2: #f7f7f7;
-$ff-metric-color-1: #FFF;
-$ff-metric-color-2: #494949;
-
-
-@media (max-width: 574px) {
-    .hero-banner {
-        height: 24rem;
-        background-position: -12rem top;
-        background-size: 290%;
-    }
-}
-
-.fast-facts {
-    margin-top: 2rem;
-
-    h4 {
-        margin-bottom: 1.4rem;
-        font-size: 1.4rem;
-        line-height: 1.75rem;
-    }
-
-    ul.row {
-        margin-right: -0.5rem;
-        margin-bottom: 1rem;
-        margin-left: -0.5rem;
-        padding: 0;
-        list-style-type: none;
-
-        li {
-            display: table;
-            padding-right: 0.5rem;
-            padding-left: 0.5rem;
-            margin-bottom: 0.5rem;
-            width: 100%;
-
-            div {
-                display: table-row;
+main {
+    color: $font-gray;
+    // background-color: #fff;
+    .home-banner {
+        display: table;
+        // height: 30rem;
+        background-position: center;
+        background-size: cover;
+        background-image: url("~assets/images/map.jpg");
+        background-repeat: no-repeat;
+        &__content {
+            margin-top: 1rem;
+            h1 {
+                font-size: 2rem;
+                line-height: 2rem;
+                span {
+                    display: inline-block;
+                }
             }
-
-            &:nth-child(4) {
-                margin-bottom: 0;
+            h2 {
+                font-size: 1.5rem;
+                line-height: 1.5rem;
+                span {
+                    display: inline-block;
+                }
+            }
+            .badge {
+                color: $gold;
             }
         }
+    }
+    .feature-blocks>div {
+        margin-top: 0.5rem;
+    }
+    .feature-block,
+    .feature-block-inverted {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        h3,
+        p {
+            margin: 0;
+        }
+        label {
+            display: flex;
+        }
+        .btn {
+            font-size: 14px;
+        }
+        .badge {
+            position: static;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            background-color: #999;
+        }
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        li {
+            border-top: 1px #999 solid;
+            border-bottom: 1px #999 solid;
+            margin: -1px 0;
+            display: flex;
+            justify-content: space-between;
+            span {
+                margin: 2px 10px;
+            }
+        }
+    }
+    .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-20deg);
+        z-index: 99;
+        color: $gold;
+        font-size: 2rem;
+        font-weight: bold;
+        white-space: nowrap;
+        text-shadow: 3px 3px 6px #999;
     }
 }
 
 @media (min-width: 768px) {
-    .fast-facts {
-        ul.row {
-            li {
-                width: auto;
-                margin-bottom: 1rem;
-
-                &:nth-child(3),
-                &:nth-child(4) {
-                    margin-bottom: 0;
-                }
+    main {
+        .feature-blocks>div {
+            margin-top: 1rem;
+        }
+        .feature-block,
+        .feature-block-inverted {
+            .btn {
+                font-size: 12px;
             }
         }
     }
 }
 
 @media (min-width: 992px) {
-    .fast-facts {
-        margin-top: 0.25rem;
-
-        h4 {
-            font-size: 1.25rem;
-            line-height: 1.65rem;
+    main {
+        .feature-blocks>div {
+            margin-top: 2rem;
         }
-
-        ul.row {
-            li {
-                margin-bottom: 0.5rem;
-
-                &:nth-child(3),
-                &:nth-child(4) {
-                    margin-bottom: 0.5rem;
-                }
+        .feature-block,
+        .feature-block-inverted {
+            .btn {
+                font-size: 14px;
             }
         }
-    }
-}
-
-@media (min-width: 1200px) {
-    .fast-facts {
-        h4 {
-            span {
-                display: block;
-            }
-        }
-    }
-}
-
-.metric,
-.metric-desc {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.metric {
-    padding-right: 0.25rem;
-    padding-left: 0.25rem;
-    width: 4.75rem;
-    height: 4.5rem;
-    background: $ff-metric-bg-1;
-    color: $ff-metric-color-1;
-    font-family: "Arial Black", "Arial Bold", Gadget, sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-
-    sup {
-        top: 0;
-        font-size: 100%;
-    }
-}
-
-.metric-desc {
-    padding-right: 1rem;
-    padding-bottom: 0.2rem;
-    padding-left: 1rem;
-    font-size: 0.75rem;
-    font-style: italic;
-    line-height: 1rem;
-    background-color: $ff-metric-bg-2;
-    color: $ff-metric-color-2;
-}
-
-@media (min-width: 1200px) {
-    .metric-desc {
-        font-size: 0.825rem;
     }
 }

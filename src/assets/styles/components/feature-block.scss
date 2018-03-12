@@ -1,5 +1,6 @@
 @import "~assets/styles/base.scss";
-.feature-block {
+.feature-block,
+.feature-block-inverted {
     margin-bottom: 1rem;
     padding: 1rem 1rem;
     background-size: 200%;
@@ -30,6 +31,11 @@
         padding: 0.65rem;
         font-size: 0.875rem;
     }
+}
+
+.feature-block-inverted {
+    background-color: #eee;
+    color: #999;
 }
 
 @media (min-width: 768px) and (orientation: portrait) {
