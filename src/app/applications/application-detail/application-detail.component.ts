@@ -7,6 +7,7 @@ import * as L from 'leaflet';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
+import { Comment } from 'app/models/comment';
 import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
@@ -52,6 +53,11 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           if (data.application) {
             this.application = data.application;
 
+            //
+            // TODO: create separate component for aside items
+            //       which can be used here and in application-detail
+            //
+
             // get comment period days remaining
             if (this.application.currentPeriod) {
               const now = new Date();
@@ -64,7 +70,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
             this.commentService.getAllByApplicationId(this.application._id)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
-                comments => {
+                (comments: Comment[]) => {
                   const pending = comments.filter(comment => this.commentService.isPending(comment));
                   const count = pending.length;
                   this.numComments = count.toString();
