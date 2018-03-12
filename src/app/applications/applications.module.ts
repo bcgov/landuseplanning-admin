@@ -11,13 +11,13 @@ import { MapModule } from '../map/map.module';
 // components
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
+import { ApplicationAsideComponent } from './application-aside/application-aside.component';
+import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
+import { SelectOrganizationComponent } from './select-organization/select-organization.component';
 
 // services
 import { ApiService } from '../services/api';
-// import { DocumentService } from '../services/document.service';
 import { ApplicationService } from '../services/application.service';
-import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
-import { SelectOrganizationComponent } from './select-organization/select-organization.component';
 
 @NgModule({
   imports: [
@@ -31,15 +31,17 @@ import { SelectOrganizationComponent } from './select-organization/select-organi
   declarations: [
     ApplicationListComponent,
     ApplicationDetailComponent,
+    ApplicationAsideComponent,
     ApplicationAddEditComponent
   ],
   exports: [
     ApplicationListComponent,
-    ApplicationDetailComponent
+    ApplicationDetailComponent,
+    ApplicationAsideComponent,
+    ApplicationAddEditComponent
   ],
   providers: [
     ApiService,
-    // DocumentService,
     ApplicationService
   ],
   entryComponents: [

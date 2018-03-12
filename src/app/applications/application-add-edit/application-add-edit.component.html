@@ -34,6 +34,35 @@
             </ul>
           </section>
 
+          <div class="application-buttons">
+            <!-- to save, application form must be valid -->
+            <button type="button" class="btn btn-primary" (click)="saveApplication()" [disabled]="!applicationForm.form.valid" title="Save application">
+              <i class="material-icons">save</i>
+              <span>Save</span>
+            </button>
+            <!-- to publish, application form must be valid -->
+            <button type="button" *ngIf="!application.isPublished" class="btn btn-success" (click)="publishApplication(application)"
+              [disabled]="!applicationForm.form.valid" title="Publish application">
+              <i class="material-icons">play_arrow</i>
+              <span>Publish</span>
+            </button>
+            <button type="button" *ngIf="application.isPublished" class="btn btn-dark" (click)="unPublishApplication(application)" title="Un-publish application">
+              <i class="material-icons">pause</i>
+              <span>Un-Publish</span>
+            </button>
+            <!-- to delete, there must be no application documents -->
+            <button type="button" *ngIf="!application.isPublished" class="btn btn-danger" (click)="deleteApplication(application)" [disabled]="application.documents?.length > 0"
+              title="Delete application">
+              <i class="material-icons">delete</i>
+              <span>Delete</span>
+            </button>
+          </div>
+
+          <div *ngIf="showMsg">
+            <div *ngIf="error" class="alert alert-danger">{{status}}</div>
+            <div *ngIf="!error" class="alert alert-success">{{status}}</div>
+          </div>
+
           <!-- DISPOSITION -->
           <section class="card bg-light">
             <h3>Disposition</h3>
@@ -265,7 +294,7 @@
           <div class="geo-shape-data__list">
             <section class="pt-3" *ngFor="let shape of application.features">
               <h4 class="mb-3">Interest ID: {{shape.properties.INTRID_SID}}</h4>
-              <ul class="application-detail__list">
+              <ul class="application-edit__list">
                 <li class="pt-0">
                   <span class="name">Type/Subtype</span>
                   <span class="value">{{shape.properties.TENURE_TYPE}}/{{shape.properties.TENURE_SUBTYPE}}</span>
@@ -284,73 +313,10 @@
             </section>
           </div>
         </section>
-
-        <hr>
-
-        <div class="application-buttons">
-          <!-- to save, application form must be valid -->
-          <button type="button" class="btn btn-primary" (click)="saveApplication()" [disabled]="!applicationForm.form.valid" title="Save application">
-            <i class="material-icons">save</i>
-            <span>Save</span>
-          </button>
-          <!-- to publish, application form must be valid -->
-          <button type="button" *ngIf="!application.isPublished" class="btn btn-success" (click)="publishApplication(application)"
-            [disabled]="!applicationForm.form.valid" title="Publish application">
-            <i class="material-icons">play_arrow</i>
-            <span>Publish</span>
-          </button>
-          <button type="button" *ngIf="application.isPublished" class="btn btn-dark" (click)="unPublishApplication(application)" title="Un-publish application">
-            <i class="material-icons">pause</i>
-            <span>Un-Publish</span>
-          </button>
-          <!-- to delete, there must be no application documents -->
-          <button type="button" *ngIf="!application.isPublished" class="btn btn-danger" (click)="deleteApplication(application)" [disabled]="application.documents?.length > 0"
-            title="Delete application">
-            <i class="material-icons">delete</i>
-            <span>Delete</span>
-          </button>
-        </div>
-
-        <div *ngIf="showMsg">
-          <div *ngIf="error" class="alert alert-danger">{{status}}</div>
-          <div *ngIf="!error" class="alert alert-success">{{status}}</div>
-        </div>
       </main>
 
       <aside class="col-lg-4">
-        <!-- MAP THUMBNAIL -->
-        <section class="map-thumbnail card p-0">
-          <div class="map-container">
-            <div class="map" id="map"></div>
-          </div>
-        </section>
-
-        <!-- COMMENTING INFO -->
-        <section class="comment-status card bg-light">
-          <h4 class="title mb-0">{{commentPeriodService.getStatus(application.currentPeriod)}}</h4>
-          <div class="mt-1" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
-            <span>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</span>
-            <span class="badge badge-dark">{{daysRemaining}}</span>
-          </div>
-          <div class="comment-status__actions mt-4">
-            <a class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]">
-              <span>Click to Modify</span>
-              <i class="material-icons">arrow_forward</i>
-            </a>
-          </div>
-        </section>
-
-        <!-- NEW COMMENTS INFO -->
-        <section class="comment-count card bg-light">
-          <h4 class="title mb-3">New Comments</h4>
-          <span class="badge badge-dark">{{numComments}}</span>
-          <div class="comment-status__actions mt-4">
-            <a class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]">
-              <span>Click to Review</span>
-              <i class="material-icons">arrow_forward</i>
-            </a>
-          </div>
-        </section>
+        <app-application-aside></app-application-aside>
       </aside>
 
     </div>

@@ -8,22 +8,18 @@ import * as moment from 'moment-timezone';
 import * as _ from 'lodash';
 
 import { Constants } from 'app/utils/constants';
-import { AppComponent } from 'app/app.component';
 import { SelectOrganizationComponent } from '../select-organization/select-organization.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
+import { Comment } from 'app/models/comment';
 import { Organization } from 'app/models/organization';
 import { Feature } from 'app/models/feature';
 import { Decision } from 'app/models/decision';
 import { ApiService } from 'app/services/api';
-import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
-import { OrganizationService } from 'app/services/organization.service';
 import { SearchService } from 'app/services/search.service';
 import { DecisionService } from 'app/services/decision.service';
-import { CommentPeriodService } from 'app/services/commentperiod.service';
-import { CommentService } from 'app/services/comment.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -38,8 +34,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public statuses = Constants.statuses;
 
   public application: Application = null;
-  private daysRemaining = '?';
-  private numComments = '?';
   public error = false;
   public showMsg = false;
   public status: string;
@@ -50,14 +44,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService, // also used in template
-    private documentService: DocumentService,
-    private orgService: OrganizationService,
     private applicationService: ApplicationService,
     private dialogService: DialogService,
     private searchService: SearchService,
-    private decisionService: DecisionService,
-    private commentPeriodService: CommentPeriodService, // used in template
-    private commentService: CommentService
+    private decisionService: DecisionService
   ) { }
 
   ngOnInit() {
@@ -73,31 +63,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         (data: { application: Application }) => {
           if (data.application) {
             this.application = data.application;
-
-            //
-            // TODO: create separate component for aside items
-            //       which can be used here and in application-detail
-            //
-
-            // get comment period days remaining
-            if (this.application.currentPeriod) {
-              const now = new Date();
-              const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-              const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
-              this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
-            }
-
-            // get number of pending comments
-            this.commentService.getAllByApplicationId(this.application._id)
-              .takeUntil(this.ngUnsubscribe)
-              .subscribe(
-                comments => {
-                  const pending = comments.filter(comment => this.commentService.isPending(comment));
-                  const count = pending.length;
-                  this.numComments = count.toString();
-                },
-                error => console.log('couldn\'t get pending comments, error =', error)
-              );
 
             if (!this.application.publishDate) {
               this.application.publishDate = new Date();
@@ -120,6 +85,13 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  public launchMap() {
+    // pass along the id of the current application if available
+    // so that the map component can show the popup for it.
+    const appId = this.application ? this.application._id : null;
+    this.router.navigate(['/map', { application: appId }]);
   }
 
   applyDisposition() {
@@ -189,7 +161,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.applicationService.save(this.application)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (application: Application) => {
+        () => {
           self.showMessage(false, 'Saved application!');
           // reload cached app data
           this.applicationService.getById(this.application._id, true)
@@ -211,7 +183,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         (decision: Decision) => {
-          console.log('decision =', decision);
           // add succeeded - accept new record
           this.application.decision = decision;
           this.showMessage(false, 'Added decision!');
@@ -227,11 +198,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.decisionService.save(this.application.decision)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (decision: Decision) => {
-          console.log('decision =', decision);
-          // save succeeded - reload decision with documents
-          // TODO: use getById() to reload it with documents
-          this.application.decision = decision;
+        () => {
+          // save succeeded
+          // just hold on to existing decision instead of reloading it
           this.showMessage(false, 'Saved decision!');
         },
         error => {
@@ -257,9 +226,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         this.api.uploadDocument(formData)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
-            (value: Response) => {
+            (res: Response) => {
               // add uploaded file to specified document array
-              documents.push(value.json());
+              documents.push(res.json());
             },
             error => {
               console.log('error =', error);
@@ -274,8 +243,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.publishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (value: Response) => {
-          const doc = value.json();
+        (res: Response) => {
+          const doc = res.json();
           const f = _.find(documents, function (item) {
             return (item._id === doc._id);
           });
@@ -292,8 +261,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.unPublishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (value: Response) => {
-          const doc = value.json();
+        (res: Response) => {
+          const doc = res.json();
           const f = _.find(documents, function (item) {
             return (item._id === doc._id);
           });
@@ -310,8 +279,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.deleteDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (value: Response) => {
-          const doc = value.json();
+        (res: Response) => {
+          const doc = res.json();
           // remove file from specified document array
           _.remove(documents, function (item) {
             return (item._id === doc._id);
