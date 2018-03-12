@@ -21,17 +21,17 @@ import { SearchService } from '../../services/search.service';
 export class ApplicationAsideComponent implements OnInit, OnDestroy {
   public application: Application = null;
   private daysRemaining = '?';
-  private numComments = '?';
+  public numComments = '?';
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  fg: L.FeatureGroup;
-  map: L.Map;
-  layers: L.Layer[];
+  public fg: L.FeatureGroup;
+  public map: L.Map;
+  public layers: L.Layer[];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
-    private commentPeriodService: CommentPeriodService, // used in template
+    public commentPeriodService: CommentPeriodService, // used in template
     private commentService: CommentService
   ) { }
 

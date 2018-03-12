@@ -28,7 +28,7 @@ export class CommentDetailComponent implements OnChanges {
   private documents: Array<Document>;
 
   constructor(
-    private api: ApiService, // used in template
+    public api: ApiService, // used in template
     private commentService: CommentService,
     private documentService: DocumentService
   ) { }

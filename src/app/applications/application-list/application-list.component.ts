@@ -35,7 +35,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private applicationService: ApplicationService,
-    private commentPeriodService: CommentPeriodService // used in template
+    public commentPeriodService: CommentPeriodService // used in template
   ) { }
 
   ngOnInit() {
