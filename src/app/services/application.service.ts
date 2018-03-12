@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/observable/of';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
@@ -42,13 +44,16 @@ export class ApplicationService {
     return this.getAllInternal()
       .mergeMap((applications: Application[]) => {
         if (applications.length === 0) {
-          return Observable.of([]);
+          return Observable.of([] as Application[]);
         }
 
         // replace \\n (JSON format) with newlines in each application
         applications.forEach((application, i) => {
           if (applications[i].description) {
             applications[i].description = applications[i].description.replace(/\\n/g, '\n');
+          }
+          if (applications[i].legalDescription) {
+            applications[i].legalDescription = applications[i].legalDescription.replace(/\\n/g, '\n');
           }
         });
 
@@ -101,11 +106,14 @@ export class ApplicationService {
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
       .mergeMap((application: Application) => {
-        if (!application) { return null; }
+        if (!application) { return Observable.of(null as Application); }
 
         // replace \\n (JSON format) with newlines
         if (application.description) {
           application.description = application.description.replace(/\\n/g, '\n');
+        }
+        if (application.legalDescription) {
+          application.legalDescription = application.legalDescription.replace(/\\n/g, '\n');
         }
 
         const promises: Array<Promise<any>> = [];
@@ -185,7 +193,10 @@ export class ApplicationService {
   addApplication(item: any): Observable<Application> {
     // replace newlines with \\n (JSON format)
     if (item.description) {
-      item.description = item.description ? item.description.replace(/\n/g, '\\n') : null;
+      item.description = item.description.replace(/\n/g, '\\n');
+    }
+    if (item.legalDescription) {
+      item.legalDescription = item.legalDescription.replace(/\n/g, '\\n');
     }
 
     return this.api.addApplication(this.sanitizeApplication(item))
@@ -200,6 +211,9 @@ export class ApplicationService {
   // and initializes defaults
   private sanitizeApplication(item: any): Application {
     const app = new Application();
+
+    // ID must not exist on POST
+    delete app._id;
 
     if (item && item.properties) {
       app.purpose = item.properties.TENURE_PURPOSE;
@@ -216,6 +230,7 @@ export class ApplicationService {
       app.interestID = item.properties.INTRID_SID;
     } else {
       // boilerplate for new application
+      app.name = 'New Application';
       app.purpose = 'TENURE_PURPOSE';
       app.subpurpose = 'TENURE_SUBPURPOSE';
       app.type = 'TENURE_TYPE';
@@ -225,10 +240,7 @@ export class ApplicationService {
       app.location = 'TENURE_LOCATION';
       app.businessUnit = 'RESPONSIBLE_BUSINESS_UNIT';
       app.agency = 'Crown Land Allocation';
-      app.name = 'New Application';
-      app.interestID = 0;
     }
-    delete app._id;
 
     return app;
   }
@@ -237,6 +249,9 @@ export class ApplicationService {
     // replace newlines with \\n (JSON format)
     if (application.description) {
       application.description = application.description.replace(/\n/g, '\\n');
+    }
+    if (application.legalDescription) {
+      application.legalDescription = application.legalDescription.replace(/\n/g, '\\n');
     }
 
     return this.api.saveApplication(application)

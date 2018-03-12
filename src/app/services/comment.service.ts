@@ -35,7 +35,7 @@ export class CommentService {
     return this.commentPeriodService.getAllByApplicationId(appId)
       .mergeMap((periods: CommentPeriod[]) => {
         if (periods.length === 0) {
-          return Observable.of([]);
+          return Observable.of([] as Comment[]);
         }
 
         const promises: Array<Promise<any>> = [];
@@ -64,7 +64,7 @@ export class CommentService {
       })
       .map((comments: Comment[]) => {
         if (comments.length === 0) {
-          return Observable.of([]);
+          return [] as Comment[];
         }
 
         // replace \\n (JSON format) with newlines in each comment
@@ -95,7 +95,7 @@ export class CommentService {
         return comments.length > 0 ? new Comment(comments[0]) : null;
       })
       .map((comment: Comment) => {
-        if (!comment) { return null; }
+        if (!comment) { return null as Comment; }
 
         // replace \\n (JSON format) with newlines
         if (comment.comment) {

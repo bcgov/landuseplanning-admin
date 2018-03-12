@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/of';
 
 import { ApiService } from './api';
 import { Document } from 'app/models/document';
@@ -67,7 +67,7 @@ export class DocumentService {
         return document.length > 0 ? new Document(document[0]) : null;
       })
       .map((document: Document) => {
-        if (!document) { return null; }
+        if (!document) { return null as Document; }
 
         this.document = document;
         return this.document;
