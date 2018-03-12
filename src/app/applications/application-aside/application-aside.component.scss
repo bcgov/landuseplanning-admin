@@ -1,0 +1,57 @@
+@import "~assets/styles/base.scss";
+section {
+    padding: 1.5rem;
+    padding-top: 1.25rem;
+    .title {
+        letter-spacing: -0.02rem;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        font-weight: 700;
+    }
+}
+
+.map-thumbnail {
+    .map {
+        position: relative;
+        height: 300px;
+        outline: none;
+        touch-action: none;
+        background-color: #445a71;
+    }
+}
+
+.comment-status {
+    text-align: center;
+    .badge {
+        margin-top: 0.75rem;
+        padding: 1.25rem;
+        display: block;
+        text-align: center;
+        font-size: 1rem;
+    }
+    &__actions {
+        .btn {
+            border: none;
+            background: #eee;
+            font-size: 0.9375rem;
+            font-weight: bold;
+            i {
+                margin-top: -0.15rem;
+            }
+        }
+    }
+}
+
+.comment-count {
+    text-align: center;
+    .badge {
+        margin: 0 auto;
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        line-height: 2.8rem;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+}

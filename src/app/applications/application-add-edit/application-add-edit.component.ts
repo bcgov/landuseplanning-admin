@@ -5,7 +5,6 @@ import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
-import * as L from 'leaflet';
 import * as _ from 'lodash';
 
 import { Constants } from 'app/utils/constants';
@@ -18,13 +17,9 @@ import { Organization } from 'app/models/organization';
 import { Feature } from 'app/models/feature';
 import { Decision } from 'app/models/decision';
 import { ApiService } from 'app/services/api';
-import { DocumentService } from 'app/services/document.service';
 import { ApplicationService } from 'app/services/application.service';
-import { OrganizationService } from 'app/services/organization.service';
 import { SearchService } from 'app/services/search.service';
 import { DecisionService } from 'app/services/decision.service';
-import { CommentPeriodService } from 'app/services/commentperiod.service';
-import { CommentService } from 'app/services/comment.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -39,29 +34,20 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public statuses = Constants.statuses;
 
   public application: Application = null;
-  private daysRemaining = '?';
-  private numComments = '?';
   public error = false;
   public showMsg = false;
   public status: string;
   public clFile: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  fg: L.FeatureGroup;
-  map: L.Map;
-  layers: L.Layer[];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService, // also used in template
-    private documentService: DocumentService,
-    private orgService: OrganizationService,
     private applicationService: ApplicationService,
     private dialogService: DialogService,
     private searchService: SearchService,
-    private decisionService: DecisionService,
-    private commentPeriodService: CommentPeriodService, // used in template
-    private commentService: CommentService
+    private decisionService: DecisionService
   ) { }
 
   ngOnInit() {
@@ -78,94 +64,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           if (data.application) {
             this.application = data.application;
 
-            //
-            // TODO: create separate component for aside items
-            //       which can be used here and in application-detail
-            //
-
-            // get comment period days remaining
-            if (this.application.currentPeriod) {
-              const now = new Date();
-              const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-              const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
-              this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
-            }
-
-            // get number of pending comments
-            this.commentService.getAllByApplicationId(this.application._id)
-              .takeUntil(this.ngUnsubscribe)
-              .subscribe(
-                (comments: Comment[]) => {
-                  const pending = comments.filter(comment => this.commentService.isPending(comment));
-                  const count = pending.length;
-                  this.numComments = count.toString();
-                },
-                error => console.log('couldn\'t get pending comments, error =', error)
-              );
-
             if (!this.application.publishDate) {
               this.application.publishDate = new Date();
             }
             this.application.publishDate = moment(this.application.publishDate).format();
-
-            const self = this;
-            this.searchService.getByDTID(this.application.tantalisID.toString()).subscribe(
-              features => {
-                self.map = L.map('map').setView([53.505, -127.09], 6);
-                console.log('map');
-                const World_Topo_Map = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-                  attribution: 'Tiles &copy; Esri &mdash; and the GIS User Community'
-                }).addTo(self.map);
-
-                if (self.fg) {
-                  _.each(self.layers, function (layer) {
-                    self.map.removeLayer(layer);
-                  });
-                  self.fg.clearLayers();
-                } else {
-                  self.fg = L.featureGroup();
-                }
-
-                _.each(features, function (feature) {
-                  const f = JSON.parse(JSON.stringify(feature));
-                  // Needed to be valid GeoJSON
-                  delete f.geometry_name;
-                  const featureObj: GeoJSON.Feature<any> = f;
-                  const layer = L.geoJSON(featureObj);
-                  const options = { maxWidth: 400 };
-                  // const content = '<h3>' + featureObj.properties.TENURE_TYPE
-                  //   + '<br />'
-                  //   + featureObj.properties.TENURE_SUBTYPE + '</h3>'
-                  //   + '<strong>ShapeID: </strong>' + featureObj.properties.INTRID_SID
-                  //   + '<br />'
-                  //   + '<strong>Disposition: </strong>' + featureObj.properties.DISPOSITION_TRANSACTION_SID
-                  //   + '<br />'
-                  //   + '<strong>Purpose: </strong>' + featureObj.properties.TENURE_PURPOSE
-                  //   + '<br />'
-                  //   + '<strong>Sub Purpose: </strong>' + featureObj.properties.TENURE_SUBPURPOSE
-                  //   + '<br />'
-                  //   + '<strong>Stage: </strong>' + featureObj.properties.TENURE_STAGE
-                  //   + '<br />'
-                  //   + '<strong>Status: </strong>' + featureObj.properties.TENURE_STATUS
-                  //   + '<br />'
-                  //   + '<strong>Hectares: </strong>' + featureObj.properties.TENURE_AREA_IN_HECTARES
-                  //   + '<br />'
-                  //   + '<br />'
-                  //   + '<strong>Legal Description: </strong>' + featureObj.properties.TENURE_LEGAL_DESCRIPTION;
-                  // const popup = L.popup(options).setContent(content);
-                  // layer.bindPopup(popup);
-                  self.fg.addLayer(layer);
-                  layer.addTo(self.map);
-                });
-
-                const bounds = self.fg.getBounds();
-                if (!_.isEmpty(bounds)) {
-                  self.map.fitBounds(bounds);
-                }
-              },
-              error => {
-                console.log('error =', error);
-              });
           } else {
             // application not found --> navigate back to application list
             alert('Uh-oh, couldn\'t load application');
@@ -186,11 +88,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   public launchMap() {
-    const appId = this.application ? this.application._id : null;
-    this.router.navigate(['/map', { application: appId }]);
-  }
-
-  public gotoMap() {
     // pass along the id of the current application if available
     // so that the map component can show the popup for it.
     const appId = this.application ? this.application._id : null;
