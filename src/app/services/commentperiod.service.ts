@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/of';
 
 import { ApiService } from './api';
 import { CommentPeriod } from 'app/models/commentperiod';
@@ -59,7 +60,7 @@ export class CommentPeriodService {
         return periods.length > 0 ? new CommentPeriod(periods[0]) : null;
       })
       .map((period: CommentPeriod) => {
-        if (!period) { return null; }
+        if (!period) { return null as CommentPeriod; }
 
         // replace \\n (JSON format) with newlines
         if (period.description) {

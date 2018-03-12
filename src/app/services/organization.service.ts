@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/of';
 
 import { ApiService } from './api';
 import { Organization } from 'app/models/organization';
@@ -39,7 +40,7 @@ export class OrganizationService {
         return organizations.length > 0 ? new Organization(organizations[0]) : null;
       })
       .map((organization: Organization) => {
-        if (!organization) { return null; }
+        if (!organization) { return null as Organization; }
 
         this.organization = organization;
         return this.organization;

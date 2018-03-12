@@ -633,6 +633,7 @@ export class ApiService {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
+
   getClientsInfoByDispositionId(id: number) {
     const fields = ['name'];
     let queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + id + '?fields=';

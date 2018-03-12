@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/observable/of';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
@@ -104,7 +106,7 @@ export class ApplicationService {
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
       .mergeMap((application: Application) => {
-        if (!application) { return null; }
+        if (!application) { return Observable.of(null as Application); }
 
         // replace \\n (JSON format) with newlines
         if (application.description) {

@@ -95,7 +95,7 @@ export class CommentService {
         return comments.length > 0 ? new Comment(comments[0]) : null;
       })
       .map((comment: Comment) => {
-        if (!comment) { return null; }
+        if (!comment) { return null as Comment; }
 
         // replace \\n (JSON format) with newlines
         if (comment.comment) {
