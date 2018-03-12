@@ -27,7 +27,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     itemsPerPage: 25,
     currentPage: 1
   };
-
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(

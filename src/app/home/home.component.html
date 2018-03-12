@@ -3,16 +3,10 @@
 		<div class="container__inner-container">
 			<div class="hero-banner__content">
 				<h1 id="pgTitle">
-					<i class="material-icons">security</i> <span>Authenticated Access</span><br />
-					<span>NRTS Public Review & Comment</span> <span class="badge" id="alpha">ALPHA</span>
+					<span>NRTS Public Review & Comment</span>
+					<span class="badge" id="alpha">ALPHA</span>
 				</h1>
-				<p>This is for authenticated access to NRTS PRC only.</p>
-				<div class="hero-banner__content--cta-btns">
-					<strong>Find Applications in British Columbia...</strong>
-					<a class="btn slide-l-btn hero-btn inverted" href="/applications" routerLink="/applications"><i class="material-icons">list</i><span>View List</span></a>
-					<span>or</span>
-					<a class="btn slide-l-btn hero-btn inverted" href="/map" routerLink="/map"><i class="material-icons">map</i><span>View Map</span></a>
-				</div>
+				<h2>Skeena Pilot Region - Authenticated Access</h2>
 			</div>
 		</div>
 	</div>
@@ -21,29 +15,47 @@
 <main id="anchor-point">
 	<div class="fb-container bg-faded">
 		<section class="container">
-			<h2>Public Review &amp; Comment in British Columbia</h2>
 			<div class="row feature-blocks">
 				<div class="col-md-4">
 					<div class="feature-block">
-						<h3>The Application Lifecycle</h3>
-						<p>It can take several seconds to fulfill an application, which is a lot.</p>
-						<a class="btn inverted" href="/lifecycle" routerLink="/lifecycle">Learn More</a>
+						<h3>Search the BCGW</h3>
+						<p>Search the BCGW for a Crown Lands File Number to identify the appropriate application to add.</p>
+						<a class="btn inverted" routerLink="/search">Search</a>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="feature-block">
-						<h3>Topics of Interest</h3>
-						<p>Profiling key topics of interest regarding application activities in British Columbia.</p>
-						<a class="btn inverted" href="/topics-of-interest" routerLink="/topics-of-interest">Learn More</a>
+						<h3>Create New</h3>
+						<p>Enter a Disposition ID below to create a new PRC disposition.</p>
+						<a class="btn inverted" (click)="createApplication()">Create New Application</a>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="feature-block">
-						<h3>Find Applications in B.C.</h3>
-						<p>The NRTS PRC website currently profiles <strong>{{numApplications}}</strong> applications.</p>
+						<h3>View All</h3>
+						<p>Explore all PRC dispositions already created on this site listed with all relevant information.</p>
 						<a class="btn inverted" href="/applications" routerLink="/applications">View List</a>
-						<span>&nbsp;</span>
-						<a class="btn inverted" href="/map" routerLink="/map">View Map</a>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="feature-block">
+						<h3>Applications Open for Commenting</h3>
+						<p>Blah blah blah</p>
+						<button type="button" class="btn" disabled aria-disabled="true">View List</button>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="feature-block">
+						<h3>Locate PRC Applications on the Map</h3>
+						<p>Blah blah blah</p>
+						<button type="button" class="btn" disabled aria-disabled="true">View Map</button>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="feature-block">
+						<h3>New Comments</h3>
+						<p>Blah blah blah</p>
+						<button type="button" class="btn" disabled aria-disabled="true">See All</button>
 					</div>
 				</div>
 			</div>
