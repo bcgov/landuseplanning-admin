@@ -20,8 +20,8 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private api: ApiService, // also used in template
-    private applicationService: ApplicationService // used in template
+    public api: ApiService, // also used in template
+    public applicationService: ApplicationService // used in template
   ) { }
 
   ngOnInit() {
