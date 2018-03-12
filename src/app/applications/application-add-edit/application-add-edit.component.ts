@@ -110,6 +110,19 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
             }
           });
           this.application.areaHectares = areaHectares;
+
+          // Pull in the application info.
+          if (this.application.features && this.application.features.length > 0) {
+            this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+            this.application.type = this.application.features[0].properties.TENURE_TYPE;
+            this.application.subtype = this.application.features[0].properties.TENURE_SUBTYPE;
+            this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
+            this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
+            this.application.status = this.application.features[0].properties.TENURE_STATUS;
+            this.application.location = this.application.features[0].properties.TENURE_LOCATION;
+            this.application.cl_files = [];
+            this.application.cl_files.push(parseInt(this.application.features[0].properties.CROWN_LANDS_FILE));
+          }
         },
         error => {
           console.log('error =', error);
