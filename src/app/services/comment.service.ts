@@ -132,7 +132,7 @@ export class CommentService {
       comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\n/g, '\\n');
     }
 
-    return this.api.addComment(this.comment)
+    return this.api.addComment(comment)
       .map((res: Response) => {
         const c = res.text() ? res.json() : null;
         return c ? new Comment(c) : null;
