@@ -92,6 +92,16 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
+  // get an application by it's disposition (tantalisId)
+  getByDispositionId(dispositionId: number): Observable<Application> {
+    return this.api.getApplicationByDisposition(dispositionId)
+    .map((res: Response) => {
+      const applications = res.text() ? res.json() : [];
+      return applications.length > 0 ? new Application(applications[0]) : null;
+    })
+    .catch(this.api.handleError);
+  }
+
   // get a specific application by its id
   getById(appId: string, forceReload: boolean = false): Observable<Application> {
     if (this.application && this.application._id === appId && !forceReload) {

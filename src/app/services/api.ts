@@ -190,6 +190,13 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  // For now, this is just a quick lookup by dispositionId
+  getApplicationByDisposition(dispositionId: number) {
+    const queryString = 'application?isDeleted=false&tantalisId=' + dispositionId;
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
   addApplication(app: Application) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, 'application/', app, { headers: headers });
