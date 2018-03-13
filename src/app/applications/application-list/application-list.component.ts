@@ -55,11 +55,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
             alert('Uh-oh, couldn\'t load applications');
             this.router.navigate(['/']);
           }
-        },
-        error => {
-          console.log(error);
-          alert('Uh-oh, couldn\'t load applications');
-          this.router.navigate(['/']);
         }
       );
   }

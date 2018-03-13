@@ -1,6 +1,7 @@
 @import "~assets/styles/base.scss";
 .feature-block,
-.feature-block-inverted {
+.feature-block-inverted,
+.feature-block-faded {
     margin-bottom: 1rem;
     padding: 1rem 1rem;
     background-size: 200%;
@@ -38,6 +39,10 @@
     color: #999;
 }
 
+.feature-block-faded {
+    opacity: 0.8;
+}
+
 @media (min-width: 768px) and (orientation: portrait) {
     .fb-container {
         .row {
@@ -52,7 +57,9 @@
 }
 
 @media (min-width: 992px) {
-    .feature-block {
+    .feature-block,
+    .feature-block-inverted,
+    .feature-block-faded {
         padding-top: 2rem;
         padding-bottom: 2rem;
         h3 {

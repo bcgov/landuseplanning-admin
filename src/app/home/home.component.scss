@@ -1,14 +1,14 @@
 @import "~assets/styles/base.scss";
 main {
     color: $font-gray;
-    .home-banner {
+    background-position: center;
+    background-size: cover;
+    background-image: url("~assets/images/map.jpg");
+    background-repeat: no-repeat;
+    .home-page {
         display: table;
         padding-top: 1rem;
-        background-position: center;
-        background-size: cover;
-        background-image: url("~assets/images/map.jpg");
-        background-repeat: no-repeat;
-        &__content {
+        &__header {
             margin-top: 1rem;
             h1 {
                 font-size: 2rem;
@@ -33,11 +33,12 @@ main {
         margin-top: 1rem;
     }
     .feature-block,
-    .feature-block-inverted {
+    .feature-block-faded {
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        box-shadow: 1px 1px 5px black;
         h3,
         p {
             margin: 0;
@@ -84,15 +85,15 @@ main {
         font-size: 2rem;
         font-weight: bold;
         white-space: nowrap;
-        text-shadow: 3px 3px 6px #999;
+        text-shadow: 2px 2px 2px #999;
     }
 }
 
 @media (min-width: 768px) {
     main {
-        .home-banner {
+        .home-page {
             padding-top: 2rem;
-            &__content {
+            &__header {
                 h1 {
                     font-size: 2.5rem;
                     line-height: 2.5rem;
@@ -107,7 +108,7 @@ main {
             margin-top: 1.5rem;
         }
         .feature-block,
-        .feature-block-inverted {
+        .feature-block-faded {
             .btn {
                 font-size: 12px;
             }
@@ -121,13 +122,13 @@ main {
             margin-top: 2rem;
         }
         .feature-block,
-        .feature-block-inverted {
+        .feature-block-faded {
             .btn {
                 font-size: 14px;
             }
         }
-        .home-banner {
-            &__content {
+        .home-page {
+            &__header {
                 h1 {
                     font-size: 2.8rem;
                     line-height: 2.8rem;

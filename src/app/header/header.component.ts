@@ -23,7 +23,7 @@ export class HeaderComponent {
       // TODO: Change this to observe the change in the _api.token
       if (val instanceof NavigationEnd && val.url !== '/login' && this._api.token) {
         const jwt = new JwtUtil().decodeToken(this._api.token);
-        this.welcomeMsg = 'Hello ' + jwt.username;
+        this.welcomeMsg = jwt ? ('Hello ' + jwt.username) : 'Login';
         this.jwt = jwt;
       } else {
         this.welcomeMsg = 'Login';
