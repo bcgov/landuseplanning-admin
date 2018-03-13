@@ -38,6 +38,7 @@ main {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        box-shadow: 1px 1px 5px black;
         h3,
         p {
             margin: 0;
