@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddEditUserComponent } from './add-edit-comment-period.component';
+import { AddEditUserComponent } from './add-edit-user.component';
 
 describe('AddEditUserComponent', () => {
   let component: AddEditUserComponent;

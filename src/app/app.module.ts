@@ -16,7 +16,6 @@ import { SharedModule } from 'app/shared/shared.module';
 // components
 import { AppComponent } from 'app/app.component';
 import { HomeComponent } from 'app/home/home.component';
-import { ObjectFilterPipe } from 'app/object-filter.pipe';
 import { SearchComponent } from 'app/search/search.component';
 import { LoginComponent } from 'app/login/login.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
@@ -47,7 +46,6 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
   declarations: [
     AppComponent,
     HomeComponent,
-    ObjectFilterPipe,
     SearchComponent,
     LoginComponent,
     ConfirmComponent,

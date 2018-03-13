@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
 import { Comment } from 'app/models/comment';
+import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { CommentService } from 'app/services/comment.service';
 import { SearchService } from '../../services/search.service';
@@ -28,6 +29,7 @@ export class ApplicationAsideComponent implements OnInit, OnDestroy {
   public layers: L.Layer[];
 
   constructor(
+    private api: ApiService,
     private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
@@ -36,6 +38,10 @@ export class ApplicationAsideComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    // if we're not logged in, redirect
+    if (!this.api.ensureLoggedIn()) {
+      return false;
+    }
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
