@@ -82,7 +82,10 @@ export class DecisionService {
       .catch(this.api.handleError);
   }
 
-  add(decision: Decision): Observable<Decision> {
+  add(orig: Decision): Observable<Decision> {
+    // make a copy of the passed-in decision so we don't change it
+    const decision = Object.assign({}, orig);
+
     // ID must not exist on POST
     delete decision._id;
 
@@ -102,7 +105,10 @@ export class DecisionService {
       .catch(this.api.handleError);
   }
 
-  save(decision: Decision): Observable<Decision> {
+  save(orig: Decision): Observable<Decision> {
+    // make a copy of the passed-in decision so we don't change it
+    const decision = Object.assign({}, orig);
+
     // don't send documents
     delete decision.documents;
 

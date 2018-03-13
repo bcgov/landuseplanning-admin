@@ -117,7 +117,10 @@ export class CommentService {
       .catch(this.api.handleError);
   }
 
-  add(comment: Comment): Observable<Comment> {
+  add(orig: Comment): Observable<Comment> {
+    // make a copy of the passed-in comment so we don't change it
+    const comment = Object.assign({}, orig);
+
     // ID must not exist on POST
     delete comment._id;
 
@@ -140,7 +143,10 @@ export class CommentService {
       .catch(this.api.handleError);
   }
 
-  save(comment: Comment): Observable<Comment> {
+  save(orig: Comment): Observable<Comment> {
+    // make a copy of the passed-in comment so we don't change it
+    const comment = Object.assign({}, orig);
+
     // don't send documents
     delete comment.documents;
 

@@ -73,7 +73,10 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  add(period: CommentPeriod): Observable<CommentPeriod> {
+  add(orig: CommentPeriod): Observable<CommentPeriod> {
+    // make a copy of the passed-in comment period so we don't change it
+    const period = Object.assign({}, orig);
+
     // ID must not exist on POST
     delete period._id;
 
@@ -90,7 +93,10 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  save(period: CommentPeriod): Observable<CommentPeriod> {
+  save(orig: CommentPeriod): Observable<CommentPeriod> {
+    // make a copy of the passed-in comment period so we don't change it
+    const period = Object.assign({}, orig);
+
     // replace newlines with \\n (JSON format)
     if (period.description) {
       period.description = period.description.replace(/\n/g, '\\n');

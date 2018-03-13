@@ -245,7 +245,10 @@ export class ApplicationService {
     return app;
   }
 
-  save(application: Application): Observable<Application> {
+  save(orig: Application): Observable<Application> {
+    // make a copy of the passed-in application so we don't change it
+    const application = Object.assign({}, orig);
+
     // replace newlines with \\n (JSON format)
     if (application.description) {
       application.description = application.description.replace(/\n/g, '\\n');
