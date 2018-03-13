@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Application } from './models/application';
+import { Application } from 'app/models/application';
 
 @Pipe({
     name: 'objectFilter'

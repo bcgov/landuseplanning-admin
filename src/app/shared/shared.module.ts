@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { OrderByPipe } from '../pipes/order-by.pipe';
 import { NewlinesPipe } from '../pipes/newlines.pipe';
 import { PublishedPipe } from '../pipes/published.pipe';
+import { ObjectFilterPipe } from 'app/pipes/object-filter.pipe';
 
 import { FileUploadComponent } from 'app/file-upload/file-upload.component';
 
@@ -19,6 +20,7 @@ import { FileUploadComponent } from 'app/file-upload/file-upload.component';
     OrderByPipe,
     NewlinesPipe,
     PublishedPipe,
+    ObjectFilterPipe,
     FileUploadComponent
   ],
   exports: [
