@@ -69,9 +69,18 @@
 
             <div class="form-group mb-0 required">
               <h4 for="tantalisID" class="control-label mb-0">Disposition ID</h4>
-              <input type="number" class="form-control" id="tantalisID" name="tantalisID" required area-required="true" [(ngModel)]="application.tantalisID"
-                #tantalisID="ngModel" (keyup.enter)="applyDisposition()">
-              <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()">
+              <input type="number"
+                    class="form-control"
+                    id="tantalisID"
+                    name="tantalisID"
+                    required area-required="true"
+                    [(ngModel)]="application.tantalisID"
+                    #tantalisID="ngModel"
+                    (keyup.enter)="applyDisposition()">
+              <button type="button"
+                      class="btn btn-primary float-left"
+                      [disabled]="application.tantalisID === originalTantalisId"
+                      (click)="applyDisposition()">
                 <i class="material-icons">system_update_alt</i>
                 <span>Fetch Disposition Data</span>
               </button>
