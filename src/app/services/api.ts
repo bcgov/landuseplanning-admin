@@ -65,6 +65,30 @@ export class ApiService {
     return true;
   }
 
+  login(username: string, password: string): Observable<boolean> {
+    return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
+      .map((response: Response) => {
+        // login successful if there's a jwt token in the response
+        const token = response.json() && response.json().accessToken;
+        if (token) {
+          // set token property
+          this.token = token;
+
+          // store username and jwt token in local storage to keep user logged in between page refreshes
+          localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
+
+          return true; // successful login
+        }
+        return false; // failed login
+      });
+  }
+
+  logout() {
+    // clear token + remove user from local storage to log user out
+    this.token = null;
+    localStorage.removeItem('currentUser');
+  }
+
   //
   // Applications
   //
@@ -683,30 +707,6 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, queryString, user, { headers: headers });
-  }
-
-  login(username: string, password: string): Observable<boolean> {
-    return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
-      .map((response: Response) => {
-        // login successful if there's a jwt token in the response
-        const token = response.json() && response.json().accessToken;
-        if (token) {
-          // set token property
-          this.token = token;
-
-          // store username and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
-
-          return true; // successful login
-        }
-        return false; // failed login
-      });
-  }
-
-  logout() {
-    // clear token + remove user from local storage to log user out
-    this.token = null;
-    localStorage.removeItem('currentUser');
   }
 
   handleError(error: any): ErrorObservable {

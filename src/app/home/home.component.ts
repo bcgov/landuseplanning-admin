@@ -15,7 +15,7 @@ import { AuthenticationService } from 'app/services/authentication.service';
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
-  // numApplications: number;
+  numApplications: number;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -31,13 +31,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    //   this.applicationService.getCount().subscribe(
-    //     value => { this.numApplications = value; },
-    //     error => {
-    //       this.router.navigate(['/login']);
-    //       console.log('ERROR =', 'could not count applications');
-    //     }
-    //   );
+    // although we aren't currently using numApplications,
+    // this verifies our login token and redirects in case of error
+    this.applicationService.getCount().subscribe(
+      value => { this.numApplications = value; },
+      error => {
+        console.log('error =', 'could not count applications');
+        this.router.navigate(['/login']);
+      }
+    );
   }
 
   ngOnDestroy() {

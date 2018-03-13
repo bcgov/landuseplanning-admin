@@ -114,11 +114,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             alert('Uh-oh, couldn\'t load application');
             this.router.navigate(['/applications']);
           }
-        },
-        error => {
-          console.log(error);
-          alert('Uh-oh, couldn\'t load application');
-          this.router.navigate(['/applications']);
         }
       );
   }
