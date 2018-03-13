@@ -1,10 +1,9 @@
 @import "~assets/styles/base.scss";
 main {
     color: $font-gray;
-    // background-color: #fff;
     .home-banner {
         display: table;
-        // height: 30rem;
+        padding-top: 1rem;
         background-position: center;
         background-size: cover;
         background-image: url("~assets/images/map.jpg");
@@ -31,7 +30,7 @@ main {
         }
     }
     .feature-blocks>div {
-        margin-top: 0.5rem;
+        margin-top: 1rem;
     }
     .feature-block,
     .feature-block-inverted {
@@ -91,8 +90,21 @@ main {
 
 @media (min-width: 768px) {
     main {
+        .home-banner {
+            padding-top: 2rem;
+            &__content {
+                h1 {
+                    font-size: 2.5rem;
+                    line-height: 2.5rem;
+                }
+                h2 {
+                    font-size: 1.8rem;
+                    line-height: 1.8rem;
+                }
+            }
+        }
         .feature-blocks>div {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
         .feature-block,
         .feature-block-inverted {
@@ -112,6 +124,18 @@ main {
         .feature-block-inverted {
             .btn {
                 font-size: 14px;
+            }
+        }
+        .home-banner {
+            &__content {
+                h1 {
+                    font-size: 2.8rem;
+                    line-height: 2.8rem;
+                }
+                h2 {
+                    line-height: 2rem;
+                    font-size: 2rem;
+                }
             }
         }
     }
