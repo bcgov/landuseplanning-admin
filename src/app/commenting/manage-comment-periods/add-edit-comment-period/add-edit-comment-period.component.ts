@@ -62,19 +62,25 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
   }
 
   onDate1Chg(startDate: NgbDateStruct) {
-    this.cp.startDate = new Date(startDate.year, (startDate.month - 1), startDate.day);
-    this.setDates(true, false, false);
+    if (startDate !== null) {
+      this.cp.startDate = new Date(startDate.year, (startDate.month - 1), startDate.day);
+      this.setDates(true, false, false);
+    }
   }
 
   onDeltaChg(delta: number) {
-    this.delta = delta;
-    this.setDates(false, true, false);
+    if (delta !== null) {
+      this.delta = delta;
+      this.setDates(false, true, false);
+    }
   }
 
   onDate2Chg(endDate: NgbDateStruct) {
-    this.endDate = endDate;
-    this.cp.endDate = new Date(endDate.year, (endDate.month - 1), endDate.day);
-    this.setDates(false, false, true);
+    if (endDate !== null) {
+      this.endDate = endDate;
+      this.cp.endDate = new Date(endDate.year, (endDate.month - 1), endDate.day);
+      this.setDates(false, false, true);
+    }
   }
 
   private setDates(start?: boolean, delta?: boolean, end?: boolean) {
