@@ -6,16 +6,16 @@
 </section>
 
 <!-- COMMENTING INFO -->
-<section class="comment-status card bg-light">
+<section class="comment-status card bg-light" *ngIf="application">
     <h4 class="title mb-0">{{commentPeriodService.getStatus(application.currentPeriod)}}</h4>
-    <div class="mt-1" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
+    <div class="mt-1" *ngIf="application.currentPeriod">
         <span>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</span>
-        <span class="badge badge-dark">{{daysRemaining}}</span>
+        <span class="badge badge-dark" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">{{daysRemaining}}</span>
     </div>
     <div class="comment-status__actions mt-4">
         <a class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]">
             <span>Click to Modify</span>
-            <i class="material-icons">&#xE5C8;</i>
+            <i class="material-icons">arrow_forward</i>
         </a>
     </div>
 </section>
@@ -27,7 +27,7 @@
     <div class="comment-status__actions mt-4">
         <a class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]">
             <span>Click to Review</span>
-            <i class="material-icons">&#xE5C8;</i>
+            <i class="material-icons">arrow_forward</i>
         </a>
     </div>
 </section>
