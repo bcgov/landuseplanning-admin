@@ -6,23 +6,23 @@
 
 <div class="comment-periods">
   <div class="container" *ngIf="application">
-    <div class="comment-periods__title mb-3">
+    <div class="title-container mb-4">
       <h1>Manage Comment Periods</h1>
     </div>
 
     <div class="row">
       <main class="col-md-8">
-        <section class="p-0">
-          <div class="review-comments__client-card card bg-light">
-            <div class="card-header">
-              <h2 class="mb-0">{{application.client || '-'}}</h2>
-              <h3>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</h3>
-              <h3>CL # &nbsp;{{application.cl_files ? application.cl_files.join(', ') : '-'}}</h3>
-              <h3 *ngIf="application.features?.length > 0">Disp ID: &nbsp; {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</h3>
-            </div>
-          </div>
+        <!-- HEADER -->
+        <section class="card bg-dark">
+          <h2 class="mb-0">{{application.client || '-'}}</h2>
+          <div>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</div>
+          <ul class="comment-periods__list">
+            <li>CL File(s): {{application.cl_files ? application.cl_files.join(', ') : '-'}}</li>
+            <li *ngIf="application.features?.length > 0">Disp ID: {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</li>
+          </ul>
         </section>
       </main>
+
       <nav class="col-md-4">
         <section class="d-flex flex-column">
           <a class="btn content-btn slide-l-btn btn-sm p-1 my-1" [routerLink]="['/a', application._id]">

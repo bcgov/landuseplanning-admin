@@ -287,12 +287,12 @@
 
             <!-- Decision Form Buttons -->
             <div class="section-form-btns mt-4">
-              <!-- to save, application form must be valid -->
+              <!-- to save, decision form must be valid -->
               <button class="btn btn-primary" type="button" (click)="saveDecision()" [disabled]="!decisionForm.form.valid" title="Save decision">
                 <i class="material-icons">save</i>
                 <span>Save</span>
               </button>
-              <!-- to publish, application form must be valid -->
+              <!-- to publish, decision form must be valid -->
               <button class="btn btn-primary" type="button" *ngIf="!application.decision.isPublished" (click)="publishDecision(application.decision)"
                 [disabled]="!decisionForm.form.valid" title="Publish decision">
                 <i class="material-icons">play_arrow</i>
