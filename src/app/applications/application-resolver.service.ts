@@ -17,7 +17,8 @@ export class ApplicationListResolver implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Application[] | ErrorObservable> {
     return this.applicationService.getAll()
       .catch(err => {
-        if (err.startsWith('403')) { this.router.navigate(['/login']); }
+          // if 403, redir to login page
+          if (err.startsWith('403')) { this.router.navigate(['/login']); }
         return Observable.of(null);
       });
   }
@@ -35,7 +36,8 @@ export class ApplicationDetailResolver implements Resolve<Application> {
     const appId = route.paramMap.get('appId');
     return this.applicationService.getById(appId)
       .catch(err => {
-        if (err.startsWith('403')) { this.router.navigate(['/login']); }
+          // if 403, redir to login page
+          if (err.startsWith('403')) { this.router.navigate(['/login']); }
         return Observable.of(null);
       });
   }

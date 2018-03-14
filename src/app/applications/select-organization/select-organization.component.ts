@@ -68,10 +68,8 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
           });
         },
         error => {
-          // If 403, redir to /login.
-          if (error.startsWith('403')) {
-            this.router.navigate(['/login']);
-          }
+          // if 403, redir to login page
+          if (error.startsWith('403')) { this.router.navigate(['/login']); }
           alert('Error loading users');
         });
   }

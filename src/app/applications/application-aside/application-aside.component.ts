@@ -21,7 +21,7 @@ import { SearchService } from '../../services/search.service';
 
 export class ApplicationAsideComponent implements OnInit, OnDestroy {
   public application: Application = null;
-  private daysRemaining = '?';
+  public daysRemaining = '?';
   public numComments = '?';
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fg: L.FeatureGroup;
