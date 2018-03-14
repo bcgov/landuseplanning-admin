@@ -41,3 +41,12 @@ textarea {
     resize: vertical;
     box-shadow: $fc-inner-shadow inset;
 }
+
+.control-label {
+  vertical-align: middle;
+
+  em {
+    font-size: 0.875rem;
+    vertical-align: top;
+  }
+}
