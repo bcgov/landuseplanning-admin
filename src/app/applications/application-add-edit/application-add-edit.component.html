@@ -58,7 +58,10 @@
                   required area-required="true"
                   [(ngModel)]="application.tantalisID"
                   #tantalisID="ngModel"
-                  (keyup.enter)="applyDisposition()">
+                  (keyup.enter)="applyDisposition()"
+                  (mousewheel)="$event.preventDefault()"
+                  (keydown.arrowup)="$event.preventDefault()"
+                  (keydown.arrowdown)="$event.preventDefault()">
                 <button type="button"
                   class="btn btn-primary float-left"
                   [disabled]="application.tantalisID === originalTantalisId"
