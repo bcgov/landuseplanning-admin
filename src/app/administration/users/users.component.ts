@@ -62,10 +62,8 @@ export class UsersComponent implements OnInit, OnDestroy {
         },
         error => {
           this.loading = false;
-          // If 403, redir to /login.
-          if (error.startsWith('403')) {
-            this.router.navigate(['/login']);
-          }
+          // if 403, redir to login page
+          if (error.startsWith('403')) { this.router.navigate(['/login']); }
           alert('Error loading users');
         });
   }
