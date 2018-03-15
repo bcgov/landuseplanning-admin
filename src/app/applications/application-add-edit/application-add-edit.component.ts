@@ -87,6 +87,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   // TODO: PRC-256: check for unsaved changes
+  // ref: https://angular.io/guide/router#candeactivate-handling-unsaved-changes
   canDeactivate(): Observable<boolean> | boolean {
     // TODO: check if forms are pristine?
 
@@ -119,7 +120,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           this.dialogService.addDialog(ConfirmComponent,
             {
               title: 'Disposition Already Exists',
-              message: 'This Disposition alreads exists in a Public Review and Comment.  Click OK to go to the existing application, or cancel to return to the current application.'
+              message: 'This Disposition alreads exists in a Public Review &amp; Comment.  Click OK to go to the existing application, or cancel to return to the current application.'
             }, {
               backdropColor: 'rgba(0, 0, 0, 0.5)'
             })
