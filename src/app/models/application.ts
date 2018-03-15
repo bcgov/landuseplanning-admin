@@ -84,7 +84,7 @@ export class Application {
     this.longitude               = obj && obj.longitude               || 0.00;
     this.mapsheet                = obj && obj.mapsheet                || null;
     this.postID                  = obj && obj.postID                  || null;
-    this.publishDate             = obj && obj.projectDate             || null; // TODO: change to publishDate
+    this.publishDate             = obj && obj.publishDate             || null;
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
     this.region                  = obj && obj.region                  || null;

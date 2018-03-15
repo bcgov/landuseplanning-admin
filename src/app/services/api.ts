@@ -118,7 +118,7 @@ export class ApiService {
       'longitude',
       'mapsheet',
       'postID',
-      'projectDate', // TODO: change to publishDate
+      'publishDate',
       'purpose',
       'subpurpose',
       'region',
@@ -167,7 +167,7 @@ export class ApiService {
       'longitude',
       'mapsheet',
       'postID',
-      'projectDate', // TODO: change to publishDate
+      'publishDate',
       'purpose',
       'subpurpose',
       'region',
@@ -240,7 +240,7 @@ export class ApiService {
       'longitude',
       'mapsheet',
       'postID',
-      'projectDate', // TODO: change to publishDate
+      'publishDate',
       'purpose',
       'subpurpose',
       'region',
@@ -506,7 +506,6 @@ export class ApiService {
   }
 
   addComment(comment: Comment) {
-    // TODO: add comment documents
     const fields = ['comment', 'commentAuthor'];
     let queryString = 'comment?fields=';
     _.each(fields, function (f) {

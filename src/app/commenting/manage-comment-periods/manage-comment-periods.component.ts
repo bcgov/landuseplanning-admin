@@ -167,8 +167,8 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((result: boolean) => {
         if (result) {
-          // TODO: should use service
-          this.api.deleteCommentPeriod(commentPeriod).subscribe( // TODO: should call service instead of API
+          // TODO: should call service instead of API
+          this.api.deleteCommentPeriod(commentPeriod).subscribe(
             data => {
               // HACK: refresh UI because template item isn't being refreshed otherwise
               this.refreshUI();

@@ -151,7 +151,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
         .subscribe((isConfirmed) => {
           // we get dialog result
           if (isConfirmed) {
-            // TODO: reload page?
+            // TODO: reload page or rebind list?
             console.log('saved');
           } else {
             console.log('canceled');
