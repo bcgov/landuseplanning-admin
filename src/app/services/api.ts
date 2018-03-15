@@ -51,7 +51,7 @@ export class ApiService {
 
       default:
         // Prod
-        this.pathAPI = 'https://';
+        this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
         this.env = 'prod';
     };
   }
