@@ -1,6 +1,19 @@
 @import "~assets/styles/base.scss";
 @import "~assets/styles/components/drag-drop-target.scss";
 
+.spinner-container {
+  .alert {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    width: 250px;
+    height: 50px;
+    margin-top: calc(-#{$spinner-width} / 1.5);
+    margin-left: calc(-#{$spinner-width} / 2);
+  }
+}
+
 .title-container {
   @include flex-box();
   
