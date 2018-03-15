@@ -16,7 +16,7 @@
         <!-- HEADER -->
         <section class="card bg-dark">
           <h2 class="mb-0">{{application.client || '-'}}</h2>
-          <div>{{application.purpose || '-'}} &nbsp; / &nbsp; {{application.subpurpose || '-'}}</div>
+          <div>{{application.purpose || '-'}} / {{application.subpurpose || '-'}}</div>
           <!--
           <h3>{{applicationService.getStatus(application) || '-'}}</h3>
           -->
@@ -38,8 +38,7 @@
             <ul class="application-detail__list">
               <li class="pt-0">
                 <span class="name">Type / Subtype</span>
-                <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE
-                  || '-'}}</span>
+                <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE || '-'}}</span>
               </li>
               <li class="pt-0">
                 <span class="name">Status</span>
@@ -172,8 +171,8 @@
               <h4 class="mb-3">Interest ID: {{shape.properties.INTRID_SID}}</h4>
               <ul class="application-detail__list">
                 <li class="pt-0">
-                  <span class="name">Type/Subtype</span>
-                  <span class="value">{{shape.properties.TENURE_TYPE}}/{{shape.properties.TENURE_SUBTYPE}}</span>
+                  <span class="name">Type / Subtype</span>
+                  <span class="value">{{shape.properties.TENURE_TYPE || '-'}} / {{shape.properties.TENURE_SUBTYPE || '-'}}</span>
                 </li>
                 <li class="pt-0">
                   <span class="name">Area (ha)</span>
@@ -183,7 +182,7 @@
                 </li>
                 <li class="full-width">
                   <span class="name">Legal Description</span>
-                  <span class="value">{{shape.properties.TENURE_LEGAL_DESCRIPTION}}</span>
+                  <span class="value" [innerHTML]="(shape.properties.TENURE_LEGAL_DESCRIPTION | newlines) || '-'"></span>
                 </li>
               </ul>
             </section>
