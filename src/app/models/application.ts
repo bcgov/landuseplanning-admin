@@ -4,6 +4,16 @@ import { Decision } from './decision';
 import { Feature } from './feature';
 import * as _ from 'lodash';
 
+class Content {
+  type: string;
+  page: string;
+  html: string;
+}
+
+class Internal {
+  notes: string;
+}
+
 export class Application {
   _id: string;
   id: string; // objectid
@@ -40,16 +50,8 @@ export class Application {
   type: string;
   subtype: string;
 
-  content: {
-    type: string;
-    page: string;
-    html: string;
-  }[];
-
-  internal: {
-    notes: string;
-  };
-
+  content: Array<Content>;
+  internal: Internal;
   isPublished = false;
 
   documents: Array<Document>;
@@ -94,7 +96,7 @@ export class Application {
     this.subtype                 = obj && obj.subtype                 || null;
 
     this.content                 = obj && obj.content                 || [];
-    this.internal                = obj && obj.internal                || null;
+    this.internal                = obj && obj.internal                || new Internal();
 
     // Wrap isPublished around the tags we receive for this object.
     if (obj && obj.tags) {

@@ -1,5 +1,10 @@
 import * as _ from 'lodash';
 
+class Internal {
+  notes: string;
+  _addedBy: string;
+}
+
 export class CommentPeriod {
   _id: string;
   _addedBy: string;
@@ -8,10 +13,7 @@ export class CommentPeriod {
   startDate: Date;
   endDate: Date;
   description: string;
-  internal: {
-    notes: string;
-    _addedBy: string;
-  };
+  internal: Internal;
 
   isPublished = false;
 
@@ -23,7 +25,7 @@ export class CommentPeriod {
     this.startDate    = obj && obj.startDate    || null;
     this.endDate      = obj && obj.endDate      || null;
     this.description  = obj && obj.description  || null;
-    this.internal     = obj && obj.internal     || null;
+    this.internal     = obj && obj.internal     || new Internal();
 
     // Wrap isPublished around the tags we receive for this object.
     if (obj && obj.tags) {

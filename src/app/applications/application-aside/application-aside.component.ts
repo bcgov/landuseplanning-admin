@@ -54,6 +54,7 @@ export class ApplicationAsideComponent implements OnInit, OnDestroy {
             if (this.application.currentPeriod) {
               const now = new Date();
               const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+              // use moment to handle Daylight Saving Time changes
               const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
               this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
             }
