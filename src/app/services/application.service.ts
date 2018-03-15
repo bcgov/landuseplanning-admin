@@ -256,8 +256,8 @@ export class ApplicationService {
   }
 
   save(orig: Application): Observable<Application> {
-    // make a copy of the passed-in application so we don't change it
-    const application = Object.assign({}, orig);
+    // make a (deep) copy of the passed-in application so we don't change it
+    const application = _.cloneDeep(orig);
 
     // replace newlines with \\n (JSON format)
     if (application.description) {

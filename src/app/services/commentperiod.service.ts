@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
+import * as _ from 'lodash';
 
 import { ApiService } from './api';
 import { CommentPeriod } from 'app/models/commentperiod';
@@ -74,8 +75,8 @@ export class CommentPeriodService {
   }
 
   add(orig: CommentPeriod): Observable<CommentPeriod> {
-    // make a copy of the passed-in comment period so we don't change it
-    const period = Object.assign({}, orig);
+    // make a (deep) copy of the passed-in comment period so we don't change it
+    const period = _.cloneDeep(orig);
 
     // ID must not exist on POST
     delete period._id;
@@ -94,8 +95,8 @@ export class CommentPeriodService {
   }
 
   save(orig: CommentPeriod): Observable<CommentPeriod> {
-    // make a copy of the passed-in comment period so we don't change it
-    const period = Object.assign({}, orig);
+    // make a (deep) copy of the passed-in comment period so we don't change it
+    const period = _.cloneDeep(orig);
 
     // replace newlines with \\n (JSON format)
     if (period.description) {

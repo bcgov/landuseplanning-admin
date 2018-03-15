@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
+import * as _ from 'lodash';
 
 import { ApiService } from './api';
 import { DocumentService } from './document.service';
@@ -83,8 +84,8 @@ export class DecisionService {
   }
 
   add(orig: Decision): Observable<Decision> {
-    // make a copy of the passed-in decision so we don't change it
-    const decision = Object.assign({}, orig);
+    // make a (deep) copy of the passed-in decision so we don't change it
+    const decision = _.cloneDeep(orig);
 
     // ID must not exist on POST
     delete decision._id;
@@ -106,8 +107,8 @@ export class DecisionService {
   }
 
   save(orig: Decision): Observable<Decision> {
-    // make a copy of the passed-in decision so we don't change it
-    const decision = Object.assign({}, orig);
+    // make a (deep) copy of the passed-in decision so we don't change it
+    const decision = _.cloneDeep(orig);
 
     // don't send documents
     delete decision.documents;

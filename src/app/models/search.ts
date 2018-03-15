@@ -27,6 +27,7 @@ export class Search {
     this.hostname       = hostname;
 
     this.features = [];
+
     if (search && search.features) {
       search.features.forEach(feature => {
         this.features.push(feature);
