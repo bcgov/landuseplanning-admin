@@ -83,17 +83,10 @@
   }
 }
 
-
-#tantalisID {
-  // sadly, this doesn't work in Chrome 64
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  input[type="number"] {
-    -moz-appearance: textfield;
-  }
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
 
 .title-container {
