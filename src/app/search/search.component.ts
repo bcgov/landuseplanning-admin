@@ -168,7 +168,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
 
     this.searchService.getByCLFile(this.terms.clfile)
-      // .finally(() => this.loading = false) // TODO: make this work
       .subscribe(
         data => {
           this.loading = false;
