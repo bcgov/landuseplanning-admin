@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
 import * as _ from 'lodash';
@@ -85,6 +86,20 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  // TODO: PRC-256: check for unsaved changes
+  canDeactivate(): Observable<boolean> | boolean {
+    // TODO: check if forms are pristine?
+
+    // allow synchronous navigation (`true`) if everything is OK
+    // if (!this.crisis || this.crisis.name === this.editName) {
+      return true;
+    // }
+
+    // otherwise ask the user to confirm
+    // using observable which resolves to true or false when the user decides
+    // return this.dialogService.confirm('Discard changes?');
+  }
+
   public launchMap() {
     // pass along the id of the current application if available
     // so that the map component can show the popup for it.
@@ -118,42 +133,42 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         } else {
           // Fall through
           this.searchService.getByDTID(this.application.tantalisID.toString())
-          .takeUntil(this.ngUnsubscribe)
-          .subscribe(
-            (features: Feature[]) => {
-              this.application.features = features;
-              // calculate areaHectares
-              let areaHectares = 0;
-              _.each(this.application.features, function (f) {
-                if (f['properties']) {
-                  areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-                }
-              });
-              this.application.areaHectares = areaHectares;
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe(
+              (features: Feature[]) => {
+                this.application.features = features;
+                // calculate areaHectares
+                let areaHectares = 0;
+                _.each(this.application.features, function (f) {
+                  if (f['properties']) {
+                    areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+                  }
+                });
+                this.application.areaHectares = areaHectares;
 
-              // Pull in the application info.
-              if (this.application.features && this.application.features.length > 0) {
-                this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
-                this.application.type = this.application.features[0].properties.TENURE_TYPE;
-                this.application.subtype = this.application.features[0].properties.TENURE_SUBTYPE;
-                this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
-                this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
-                this.application.status = this.application.features[0].properties.TENURE_STATUS;
-                this.application.location = this.application.features[0].properties.TENURE_LOCATION;
-                this.application.cl_files = [];
-                this.application.cl_files.push(parseInt(this.application.features[0].properties.CROWN_LANDS_FILE, 10));
+                // Pull in the application info.
+                if (this.application.features && this.application.features.length > 0) {
+                  this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+                  this.application.type = this.application.features[0].properties.TENURE_TYPE;
+                  this.application.subtype = this.application.features[0].properties.TENURE_SUBTYPE;
+                  this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
+                  this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
+                  this.application.status = this.application.features[0].properties.TENURE_STATUS;
+                  this.application.location = this.application.features[0].properties.TENURE_LOCATION;
+                  this.application.cl_files = [];
+                  this.application.cl_files.push(parseInt(this.application.features[0].properties.CROWN_LANDS_FILE, 10));
+                }
+              },
+              error => {
+                console.log('error =', error);
+                this.showMessage(true, 'Error loading shapes');
               }
-            },
-            error => {
-              console.log('error =', error);
-              this.showMessage(true, 'Error loading shapes');
-            }
-          );
+            );
         }
       },
-      error => {
-        console.log('Error retreiving applications.');
-      });
+        error => {
+          console.log('Error retreiving applications.');
+        });
   }
 
   selectClient() {
@@ -404,6 +419,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.error = isError;
     this.showMsg = true;
     this.status = msg;
-    setTimeout(() => this.showMsg = false, 5000);
+    setTimeout(() => this.showMsg = false, 3000);
   }
 }
