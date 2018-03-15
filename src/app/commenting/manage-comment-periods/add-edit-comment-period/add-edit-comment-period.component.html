@@ -4,20 +4,20 @@
 
       <div class="modal-header">
         <h4 class="modal-title">{{title}}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="close()">
+        <button class="close" type="button" aria-label="Close" (click)="close()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
       <div class="modal-body">
-        <label>Date Range</label>
+        <label>Date Range<span style="color:red"> *</span></label>
         <div class="form-inline dates">
           <div class="form-group start-date">
             <div class="input-group">
               <label class="sr-only" for="d1">Start Date</label>
               <input class="form-control date-range_start" placeholder="yyyy-mm-dd" name="d1" id="d1" ngbDatepicker #d1="ngbDatepicker"
                 [firstDayOfWeek]="7" navigation="arrows" [(ngModel)]="startDate" (ngModelChange)="onDate1Chg($event)" (click)="d1.close(); d2.close();"
-              />
+                required aria-readonly="true">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button" tabindex="-1">
                   <i class="material-icons">date_range</i>
@@ -27,13 +27,10 @@
           </div>
 
           <div class="form-group delta">
-            <span>
-              <i class="material-icons">add</i>
-            </span>
-            <input type="number" class="form-control" min="1" max="365" name="delta" [(ngModel)]="delta" (ngModelChange)="onDeltaChg($event)">
-            <span>
-              <i class="material-icons">drag_handle</i>
-            </span>
+            <span><i class="material-icons">add</i></span>
+            <input class="form-control" type="number" min="1" max="365" name="delta" [(ngModel)]="delta" (ngModelChange)="onDeltaChg($event)"
+              required aria-readonly="true">
+            <span><i class="material-icons">drag_handle</i></span>
           </div>
 
           <div class="form-group end-date">
@@ -41,7 +38,7 @@
               <label class="sr-only" for="d2">End Date</label>
               <input class="form-control date-range__end" placeholder="yyyy-mm-dd" name="d2" id="d2" ngbDatepicker #d2="ngbDatepicker"
                 [firstDayOfWeek]="7" navigation="arrows" [(ngModel)]="endDate" (ngModelChange)="onDate2Chg($event)" (click)="d1.close(); d2.close();"
-              />
+                required aria-readonly="true">
               <div class="input-group-append" tabindex="-1">
                 <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button" tabindex="-1">
                   <i class="material-icons">date_range</i>
@@ -52,21 +49,21 @@
         </div>
 
         <div class="form-group description required">
-          <label for="description" class="control-label">Description</label>
-          <textarea rows="5" class="form-control" id="description" name="description" required area-required="true" [(ngModel)]="cp.description"
+          <label class="control-label" for="description">Description</label>
+          <textarea class="form-control" rows="5" id="description" name="description" required area-required="true" [(ngModel)]="cp.description"
             #description="ngModel"></textarea>
-          <div [hidden]="description.valid || description.untouched" class="alert alert-danger">Description is required</div>
+          <div class="alert alert-danger" [hidden]="description.valid || description.untouched">Description is required</div>
         </div>
 
-        <div *ngIf="cp.internal" class="form-group notes optional">
-          <label for="internal.notes" class="control-label">Internal Notes</label>
-          <textarea rows="5" class="form-control" id="notes" name="notes" area-required="false" [(ngModel)]="cp.internal.notes" #notes="ngModel"></textarea>
+        <div class="form-group notes optional">
+          <label class="control-label" for="notes">Internal Notes</label>
+          <textarea class="form-control" rows="5" id="notes" name="notes" [(ngModel)]="cp.internal.notes" #notes="ngModel"></textarea>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!commentPeriodForm.form.valid">{{message}}</button>
-        <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
+        <button class="btn btn-primary" type="button" (click)="save()" [disabled]="!commentPeriodForm.form.valid">{{message}}</button>
+        <button class="btn btn-secondary" type="button" (click)="close()">Cancel</button>
       </div>
 
     </div>
