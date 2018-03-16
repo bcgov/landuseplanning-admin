@@ -62,7 +62,7 @@ export class MapConfigService {
     return `${protocol}//${host}/a/${code}`;
   }
 
-  private webmapForEnv(env: 'local' | 'dev' | 'test' | 'prod'): string {
+  private webmapForEnv(env: 'local' | 'dev' | 'test' | 'demo ' | 'prod'): string {
     switch (env) {
       // local
       case 'local':
@@ -74,6 +74,10 @@ export class MapConfigService {
 
       // test
       case 'test':
+        return webmaps.test;
+
+      // demo
+      case 'demo':
         return webmaps.test;
 
       // prod
