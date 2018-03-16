@@ -24,7 +24,7 @@ export class ApiService {
   public token: string;
   pathAPI: string;
   params: Params;
-  env: 'local' | 'dev' | 'test' | 'prod';
+  env: 'local' | 'dev' | 'test' | 'demo' | 'prod';
 
   constructor(private http: Http, private router: Router) {
     const { hostname } = window.location;
@@ -43,13 +43,19 @@ export class ApiService {
         this.env = 'dev';
         break;
 
-      case 'nrts-prc-admin-test.pathfinder.gov.bc.ca':
+        case 'nrts-prc-admin-test.pathfinder.gov.bc.ca':
         // Test
         this.pathAPI = 'https://prc-api-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
-      default:
+        case 'nrts-prc-admin-demo.pathfinder.gov.bc.ca':
+        // Test
+        this.pathAPI = 'https://prc-api-demo.pathfinder.gov.bc.ca/api';
+        this.env = 'demo';
+        break;
+
+        default:
         // Prod
         this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
         this.env = 'prod';
