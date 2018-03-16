@@ -6,12 +6,12 @@
     "ng": "ng",
     "prestart": "npm run lint",
     "start": "ng serve -o",
-    "build": "npm run lint && ng build --prod",
+    "build": "npm run lint && ng build --prod --base-href /admin/",
     "pretest": "npm run lint",
     "test": "ng test",
     "lint": "ng lint --format=stylish",
     "e2e": "ng e2e",
-    "postinstall": "ng build --prod"
+    "postinstall": "ng build --prod --base-href /admin/"
   },
   "private": true,
   "dependencies": {
