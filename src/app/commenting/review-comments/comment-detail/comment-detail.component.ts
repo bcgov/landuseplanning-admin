@@ -78,6 +78,8 @@ export class CommentDetailComponent implements OnChanges {
 
   private isNotesPristine(): boolean {
     // TODO: debounce this?
+    // ref: https://stackoverflow.com/questions/32051273/angular-and-debounce
+    // ref: https://ng-bootstrap.github.io/#/components/typeahead/examples
     return (this.comment.review.reviewerNotes === this.internalNotes);
   }
 

@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { FormsModule } from '@angular/forms';
-
 // modules
-import { SharedModule } from '../shared/shared.module';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { SharedModule } from 'app/shared/shared.module';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsRoutingModule } from './applications-routing.module';
 import { MapModule } from '../map/map.module';
 
@@ -21,12 +21,13 @@ import { ApplicationService } from '../services/application.service';
 
 @NgModule({
   imports: [
+    FormsModule,
     CommonModule,
-    NgxPaginationModule,
     SharedModule,
+    NgxPaginationModule,
+    NgbModule.forRoot(),
     ApplicationsRoutingModule,
-    MapModule,
-    FormsModule
+    MapModule
   ],
   declarations: [
     ApplicationListComponent,
