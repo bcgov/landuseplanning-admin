@@ -33,7 +33,12 @@ import { AddCommentComponent } from './add-comment/add-comment.component';
 })
 
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
-  readonly sortKeys = ['Date', 'Name', 'Status'];
+  readonly sortKeys = [
+    '&uarr; Date',
+    '&darr; Name',
+    // PRC-272: temporarily removed
+    // '&darr; Status'
+  ];
 
   public loading = true;
   public application: Application = null;
@@ -126,11 +131,12 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   }
 
   private sort(key: string): Comment[] {
+    const self = this;
     return this.comments.sort(function (a: Comment, b: Comment) {
       switch (key) {
-        case 'Date': return (a.dateAdded > b.dateAdded) ? 1 : -1;
-        case 'Name': return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
-        case 'Status': return (a.commentStatus > b.commentStatus) ? 1 : -1;
+        case self.sortKeys[0]: return (a.dateAdded < b.dateAdded) ? 1 : -1;
+        case self.sortKeys[1]: return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
+        case self.sortKeys[2]: return (a.commentStatus > b.commentStatus) ? 1 : -1;
         default: return 0;
       }
     });

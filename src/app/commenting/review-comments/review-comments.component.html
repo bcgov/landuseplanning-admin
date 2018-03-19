@@ -52,7 +52,7 @@
         <div class="review-comments-sort">
           <label>Order by</label>
           <select #t (change)="sort(t.value)">
-            <option *ngFor="let sortKey of sortKeys" [value]="sortKey">{{sortKey}}</option>
+            <option *ngFor="let sortKey of sortKeys" [value]="sortKey" [innerHTML]="sortKey"></option>
           </select>
         </div>
 
