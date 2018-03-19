@@ -93,7 +93,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
 
     // allow synchronous navigation (`true`) if everything is OK
     // if (!this.crisis || this.crisis.name === this.editName) {
-      return true;
+    return true;
     // }
 
     // otherwise ask the user to confirm
@@ -120,7 +120,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           this.dialogService.addDialog(ConfirmComponent,
             {
               title: 'Disposition Already Exists',
-              message: 'This Disposition alreads exists in a Public Review &amp; Comment.  Click OK to go to the existing application, or cancel to return to the current application.'
+              message: 'This Disposition alreads exists in a Public Review &amp; Comment.  Click OK to go to the existing application, or Cancel to return to the current application.'
             }, {
               backdropColor: 'rgba(0, 0, 0, 0.5)'
             })
@@ -169,7 +169,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       },
         error => {
           console.log('Error retreiving applications.');
-        });
+        }
+      );
   }
 
   selectClient() {

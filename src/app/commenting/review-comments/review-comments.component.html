@@ -52,7 +52,7 @@
         <div class="review-comments-sort">
           <label>Order by</label>
           <select #t (change)="sort(t.value)">
-            <option *ngFor="let sortKey of sortKeys" [value]="sortKey">{{sortKey}}</option>
+            <option *ngFor="let sortKey of sortKeys" [value]="sortKey" [innerHTML]="sortKey"></option>
           </select>
         </div>
 
@@ -70,12 +70,13 @@
               <p class="mb-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 <small>{{item.comment}}</small>
               </p>
-              <div class="d-flex w-100 justify-content-end">
+              <!-- PRC-272: temporarily removed -->
+              <!-- <div class="d-flex w-100 justify-content-end">
                 <div class="badge" [ngClass]="commentService.isAccepted(item) ? 'badge-success'
               : commentService.isPending(item) ? 'badge-secondary'
               : commentService.isRejected(item) ? 'badge-danger'
               : 'badge-light'">{{item.commentStatus}}</div>
-              </div>
+              </div> -->
             </a>
           </ng-template>
         </div>

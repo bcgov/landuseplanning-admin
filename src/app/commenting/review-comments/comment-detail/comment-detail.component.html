@@ -29,10 +29,11 @@
       </div>
       <div class="col-6 comment-detail__status">
         <!-- <p style="font-size: small"><span *ngIf="!comment.isPublished">Not </span>Published</p> -->
-        <span class="badge" [ngClass]="commentService.isAccepted(comment) ? 'badge-success'
+        <!-- PRC-272: temporarily removed -->
+        <!-- <span class="badge" [ngClass]="commentService.isAccepted(comment) ? 'badge-success'
         : commentService.isPending(comment) ? 'badge-secondary'
         : commentService.isRejected(comment) ? 'badge-danger'
-        : 'badge-light'">{{comment.commentStatus}}</span>
+        : 'badge-light'">{{comment.commentStatus}}</span> -->
       </div>
     </div>
 
@@ -79,7 +80,8 @@
             <span>Rejected</span>
           </label>
         </div> -->
-        <button class="btn btn-success" data-toggle="button" [class.active]="commentService.isAccepted(comment)" [attr.aria-pressed]="commentService.isAccepted(comment)"
+        <!-- PRC-272: temporarily removed -->
+        <!-- <button class="btn btn-success" data-toggle="button" [class.active]="commentService.isAccepted(comment)" [attr.aria-pressed]="commentService.isAccepted(comment)"
           (click)="doAccept(comment)" title="Change this comment to Accepted">
           <i class="material-icons">check_circle</i>
           <span>Accept</span>
@@ -93,7 +95,7 @@
           (click)="doReject(comment)" title="Change this comment to Rejected">
           <i class="material-icons">cancel</i>
           <span>Reject</span>
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
