@@ -44,7 +44,7 @@
 
             <div class="form-group">
               <h4 class="control-label mb-2" for="tantalisID">Disposition ID <em>(Required)</em></h4>
-              <div class="disp-input">
+              <div class="disp-input" (keydown.enter)="false">
                 <input type="number"
                   class="form-control"
                   [ngClass]="{'is-invalid': !tantalisID.valid && !tantalisID.untouched}"
@@ -54,9 +54,9 @@
                   [(ngModel)]="application.tantalisID"
                   #tantalisID="ngModel"
                   (keyup.enter)="applyDisposition()"
-                  (mousewheel)="$event.preventDefault()"
                   (keydown.arrowup)="$event.preventDefault()"
-                  (keydown.arrowdown)="$event.preventDefault()">
+                  (keydown.arrowdown)="$event.preventDefault()"
+                  (mousewheel)="$event.preventDefault()">
                 <button type="button"
                   class="btn btn-primary float-left"
                   [disabled]="application.tantalisID === originalTantalisId"
