@@ -4,14 +4,14 @@
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
-    "prestart": "npm run lint",
-    "start": "ng serve -o",
-    "build": "npm run lint && ng build --prod",
-    "pretest": "npm run lint",
+    "prestart": "",
+    "start": "ng serve -o --base-href /admin/ --deploy-url /admin/",
+    "build": "npm run lint && ng build --prod --deploy-url /admin/ --base-href /admin/",
+    "pretest": "",
     "test": "ng test",
     "lint": "ng lint --format=stylish",
     "e2e": "ng e2e",
-    "postinstall": "ng build --prod"
+    "postinstall": "ng build --prod --deploy-url /admin/ --base-href /admin/"
   },
   "private": true,
   "dependencies": {
