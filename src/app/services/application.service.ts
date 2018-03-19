@@ -232,7 +232,7 @@ export class ApplicationService {
       app.subtype = item.properties.TENURE_SUBTYPE;
       app.status = item.properties.TENURE_STATUS;
       app.cl_files = item.properties.CROWN_LANDS_FILE;
-      app.region = item.properties.REGION;
+      app.region = 'Skeena';
       app.location = item.properties.TENURE_LOCATION;
       app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
       app.agency = 'Crown Land Allocation';
@@ -241,14 +241,14 @@ export class ApplicationService {
     } else {
       // boilerplate for new application
       app.name = 'New Application';
-      app.purpose = 'TENURE_PURPOSE';
-      app.subpurpose = 'TENURE_SUBPURPOSE';
-      app.type = 'TENURE_TYPE';
-      app.subtype = 'TENURE_SUBTYPE';
-      app.status = 'TENURE_STATUS';
+      // app.purpose = 'TENURE_PURPOSE';
+      // app.subpurpose = 'TENURE_SUBPURPOSE';
+      // app.type = 'TENURE_TYPE';
+      // app.subtype = 'TENURE_SUBTYPE';
+      // app.status = 'TENURE_STATUS';
       app.region = 'Skeena';
-      app.location = 'TENURE_LOCATION';
-      app.businessUnit = 'RESPONSIBLE_BUSINESS_UNIT';
+      // app.location = 'TENURE_LOCATION';
+      // app.businessUnit = 'RESPONSIBLE_BUSINESS_UNIT';
       app.agency = 'Crown Land Allocation';
     }
 

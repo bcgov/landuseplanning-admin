@@ -120,7 +120,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           this.dialogService.addDialog(ConfirmComponent,
             {
               title: 'Disposition Already Exists',
-              message: 'This Disposition alreads exists in a Public Review &amp; Comment.  Click OK to go to the existing application, or Cancel to return to the current application.'
+              message: 'This Disposition alreads exists in a Public Review &amp; Comment application.'
+                + ' Click OK to go to the existing application, or Cancel to return to the current application.'
             }, {
               backdropColor: 'rgba(0, 0, 0, 0.5)'
             })
@@ -407,6 +408,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
             .subscribe(
               () => {
                 this.application.decision = null;
+                this.showMessage(false, 'Deleted decision!');
               },
               error => {
                 console.log('error =', error);
