@@ -4,6 +4,7 @@ import { Document } from './document';
 class Internal {
   email: string;
   phone: string;
+  tags: Array<string>;
 
   constructor(obj?: any) {
     this.email = obj && obj.email || null;
@@ -18,6 +19,7 @@ class CommentAuthor {
   location: string;
   requestedAnonymous: boolean;
   internal: Internal;
+  tags: Array<string>;
 
   constructor(obj?: any) {
     this._userId            = obj && obj._userId            || null;
@@ -33,6 +35,7 @@ class Review {
   _reviewerId: string; // object id -> User
   reviewerNotes: string;
   reviewerDate: Date;
+  tags: Array<string>;
 
   constructor(obj?: any) {
     this._reviewerId    = obj && obj._reviewerId    || null;
@@ -51,6 +54,7 @@ export class Comment {
   review: Review;
   dateAdded: Date;
   commentStatus: string;
+  tags: Array<string>;
 
   documents: Array<Document>;
   isPublished = false;

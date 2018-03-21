@@ -20,6 +20,7 @@ import { AddCommentComponent } from './review-comments/add-comment/add-comment.c
 // import { ApplicationService } from '../services/application.service';
 // import { CommentPeriodService } from '../services/commentperiod.service';
 // import { CommentService } from '../services/comment.service';
+import { ExcelService } from 'app/services/excel.service';
 
 @NgModule({
   imports: [
@@ -50,6 +51,7 @@ import { AddCommentComponent } from './review-comments/add-comment/add-comment.c
     // ApplicationService,
     // CommentPeriodService,
     // CommentService,
+    ExcelService
   ],
   entryComponents: [
     AddEditCommentPeriodComponent,

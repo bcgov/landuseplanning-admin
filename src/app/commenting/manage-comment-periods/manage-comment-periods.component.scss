@@ -3,6 +3,17 @@
     .title-container {
         height: 50px; // to match app details/edit pages
     }
+    .header-row {
+        .btn {
+            border: none;
+            background: #eee;
+            font-size: 0.9375rem;
+            font-weight: bold;
+            img, i {
+                margin-top: -0.15rem;
+            }
+        }
+    }
     main {
         section {
             padding: 1.5rem;

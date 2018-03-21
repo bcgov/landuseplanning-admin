@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import * as moment from 'moment-timezone';
+import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import { CommentPeriod } from 'app/models/commentperiod';
