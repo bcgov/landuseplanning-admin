@@ -37,21 +37,21 @@ export class ApiService {
         this.env = 'local';
         break;
 
-      case 'nrts-prc-admin-dev.pathfinder.gov.bc.ca':
+      case 'nrts-prc-dev.pathfinder.gov.bc.ca':
         // Dev
-        this.pathAPI = 'https://prc-api-dev.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://nrts-prc-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
         break;
 
-        case 'nrts-prc-admin-test.pathfinder.gov.bc.ca':
+        case 'nrts-prc-test.pathfinder.gov.bc.ca':
         // Test
-        this.pathAPI = 'https://prc-api-test.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://nrts-prc-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
-        case 'nrts-prc-admin-demo.pathfinder.gov.bc.ca':
+        case 'nrts-prc-demo.pathfinder.gov.bc.ca':
         // Test
-        this.pathAPI = 'https://prc-api-demo.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://nrts-prc-demo.pathfinder.gov.bc.ca/api';
         this.env = 'demo';
         break;
 
@@ -65,7 +65,7 @@ export class ApiService {
   ensureLoggedIn() {
     if (!this.token) {
       console.log('not logged in, redirecting');
-      this.router.navigate(['/login']);
+      this.router.navigate(['login']);
       return false;
     }
     return true;
