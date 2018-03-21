@@ -197,8 +197,10 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         (allComments: Comment[]) => {
+          // FUTURE: instead of flattening, copy to new 'export object' with user-friendly keys?
           const flatComments = allComments.map(comment => {
             // sanitize and flatten each comment object
+            delete comment._commentPeriod;
             delete comment.commentAuthor.internal.tags;
             delete comment.commentAuthor.tags;
             delete comment.commentNumber;
@@ -206,9 +208,14 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             delete comment.tags;
             // sanitize documents
             comment.documents.forEach(document => {
-              // TODO: test whether we need the following
+              delete document._id;
+              delete document._addedBy;
               delete document._application;
               delete document._decision;
+              delete document._comment;
+              delete document.internalURL;
+              delete document.internalMime;
+              delete document.isDeleted;
               delete document.tags;
             });
             // add some properties
@@ -216,12 +223,29 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             comment['cl_file'] = this.application.cl_file;
             return this.flatten_fastest(comment);
           });
-          console.log('flatComments =', flatComments); // DEBUGGING
 
           const excelFileName = 'comments-'
             + this.application.client.replace(/\s/g, '_')
             + moment(new Date()).format('-YYYYMMDD');
-          this.excelService.exportAsExcelFile(flatComments, excelFileName);
+          const columnOrder: Array<string> = [
+            'cl_file',
+            '_id',
+            '_addedBy',
+            'dateAdded',
+            'commentAuthor.contactName',
+            'commentAuthor.orgName',
+            'commentAuthor.location',
+            'commentAuthor.requestedAnonymous',
+            'commentAuthor.internal.email',
+            'commentAuthor.internal.phone',
+            'comment',
+            'review.reviewerDate',
+            'review.reviewerNotes',
+            'commentStatus',
+            'isPublished'
+            // document columns go here
+          ];
+          this.excelService.exportAsExcelFile(flatComments, excelFileName, columnOrder);
         },
         error => {
           // if 403, redir to login page
@@ -248,7 +272,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           recurse(cur[i], prop ? prop + '.' + i : '' + i);
         }
         if (l === 0) {
-          result[prop] = null; // []; // empty arrays should be null not []
+          // result[prop] = []; // ignore empty arrays
         }
       } else {
         let isEmpty = true;

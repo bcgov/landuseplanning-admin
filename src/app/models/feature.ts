@@ -1,5 +1,8 @@
 export class Feature {
-    geometry: any;
+    geometry: {
+        type: string;
+        coordinates: any;
+    };
     geometry_name: string;
     id: string;
     properties: {

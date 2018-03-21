@@ -3,7 +3,6 @@ import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -31,11 +30,11 @@ export class CommentService {
   ) { }
 
   // get all comments for the specified application id
-  // without documents
+  // (without documents)
   getAllByApplicationId(appId: string): Observable<Comment[]> {
     // first get the comment periods
     return this.commentPeriodService.getAllByApplicationId(appId)
-      .mergeMap((periods: CommentPeriod[]) => {
+      .mergeMap(periods => {
         if (periods.length === 0) {
           return Observable.of([] as Comment[]);
         }
@@ -55,10 +54,10 @@ export class CommentService {
   }
 
   // get all comments for the specified comment period id
-  // without documents
+  // (without documents)
   getAllByPeriodId(periodId: string): Observable<Comment[]> {
     return this.api.getCommentsByPeriodId(periodId)
-      .map((res: Response) => {
+      .map(res => {
         const comments = res.text() ? res.json() : [];
         comments.forEach((comment, i) => {
           comments[i] = new Comment(comment);
@@ -86,37 +85,21 @@ export class CommentService {
   }
 
   // get a specific comment by its id
+  // (including documents)
   getById(commentId: string, forceReload: boolean = false): Observable<Comment> {
-    return this.getByIdInternal(commentId, forceReload)
-      .map((comment: Comment) => {
-      // .switchMap((comment: Comment) => {
-      // .mergeMap((comment: Comment) => {
-
-        // now get the comment documents
-        const promise = this.documentService.getAllByCommentId(comment._id)
-          .toPromise()
-          .then(documents => comment.documents = documents);
-
-        // return Promise.all
-        this.comment = comment;
-        return this.comment;
-      });
-  }
-
-  // get just the specific comment by its id
-  private getByIdInternal(commentId: string, forceReload: boolean): Observable<Comment> {
     if (this.comment && this.comment._id === commentId && !forceReload) {
       return Observable.of(this.comment);
     }
 
+    // first get the comment data
     return this.api.getComment(commentId)
-      .map((res: Response) => {
+      .map(res => {
         const comments = res.text() ? res.json() : [];
         // return the first (only) comment
         return comments.length > 0 ? new Comment(comments[0]) : null;
       })
-      .map((comment: Comment) => {
-        if (!comment) { return null as Comment; }
+      .mergeMap(comment => {
+        if (!comment) { return Observable.of(null as Comment); }
 
         // replace \\n (JSON format) with newlines
         if (comment.comment) {
@@ -126,9 +109,16 @@ export class CommentService {
           comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\\n/g, '\n');
         }
 
-        return comment;
-      })
-      .catch(this.api.handleError);
+        // now get the comment documents
+        const promise = this.documentService.getAllByCommentId(comment._id)
+          .toPromise()
+          .then(documents => comment.documents = documents);
+
+        return Promise.resolve(promise).then(() => {
+          this.comment = comment;
+          return this.comment;
+        });
+      });
   }
 
   add(orig: Comment): Observable<Comment> {
@@ -150,7 +140,7 @@ export class CommentService {
     }
 
     return this.api.addComment(comment)
-      .map((res: Response) => {
+      .map(res => {
         const c = res.text() ? res.json() : null;
         return c ? new Comment(c) : null;
       })
@@ -173,7 +163,7 @@ export class CommentService {
     }
 
     return this.api.saveComment(comment)
-      .map((res: Response) => {
+      .map(res => {
         const c = res.text() ? res.json() : null;
         return c ? new Comment(c) : null;
       })
@@ -183,7 +173,7 @@ export class CommentService {
   publish(comment: Comment): Subscription {
     return this.api.publishComment(comment)
       .subscribe(
-        value => comment.isPublished = true,
+        () => comment.isPublished = true,
         error => console.log('publish error =', error)
       );
   }
@@ -191,7 +181,7 @@ export class CommentService {
   unPublish(comment: Comment): Subscription {
     return this.api.unPublishComment(comment)
       .subscribe(
-        value => comment.isPublished = false,
+        () => comment.isPublished = false,
         error => console.log('unpublish error =', error)
       );
   }

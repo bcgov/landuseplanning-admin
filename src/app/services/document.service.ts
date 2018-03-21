@@ -18,7 +18,7 @@ export class DocumentService {
   // get all documents for the specified application id
   getAllByApplicationId(id: string): Observable<Document[]> {
     return this.api.getDocumentsByAppId(id)
-      .map((res: Response) => {
+      .map(res => {
         const documents = res.text() ? res.json() : [];
         documents.forEach((document, index) => {
           documents[index] = new Document(document);
@@ -31,7 +31,7 @@ export class DocumentService {
   // get all documents for the specified comment id
   getAllByCommentId(commentId: string): Observable<Document[]> {
     return this.api.getDocumentsByCommentId(commentId)
-      .map((res: Response) => {
+      .map(res => {
         const documents = res.text() ? res.json() : [];
         documents.forEach((document, i) => {
           documents[i] = new Document(document);
@@ -44,7 +44,7 @@ export class DocumentService {
   // get all documents for the specified decision id
   getAllByDecisionId(decisionId: string): Observable<Document[]> {
     return this.api.getDocumentsByDecisionId(decisionId)
-      .map((res: Response) => {
+      .map(res => {
         const documents = res.text() ? res.json() : [];
         documents.forEach((document, i) => {
           documents[i] = new Document(document);
@@ -61,7 +61,7 @@ export class DocumentService {
     }
 
     return this.api.getDocument(documentId)
-      .map((res: Response) => {
+      .map(res => {
         const document = res.text() ? res.json() : [];
         // return the first (only) document
         return document.length > 0 ? new Document(document[0]) : null;
@@ -84,7 +84,7 @@ export class DocumentService {
   publish(document: Document): Subscription {
     return this.api.publishDocument(document)
       .subscribe(
-        value => document.isPublished = true,
+        () => document.isPublished = true,
         error => console.log('publish error =', error)
       );
   }
@@ -92,7 +92,7 @@ export class DocumentService {
   unPublish(document: Document): Subscription {
     return this.api.unPublishDocument(document)
       .subscribe(
-        value => document.isPublished = false,
+        () => document.isPublished = false,
         error => console.log('unpublish error =', error)
       );
   }

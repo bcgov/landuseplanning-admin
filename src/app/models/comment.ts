@@ -65,7 +65,7 @@ export class Comment {
     this._commentPeriod = obj && obj._commentPeriod || null;
     this.commentNumber  = obj && obj.commentNumber  || 0;
     this.comment        = obj && obj.comment        || null;
-    this.commentAuthor  = obj && obj.commentAuthor  || new Comment();
+    this.commentAuthor  = obj && obj.commentAuthor  || new CommentAuthor();
     this.review         = obj && obj.review         || new Review();
     this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;
