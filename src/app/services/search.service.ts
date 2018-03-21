@@ -59,7 +59,7 @@ export class SearchService {
   }
 
   getByDTID(dtid: string, forceReload: boolean = false): Observable<Feature[]> {
-    // TODO: fix - map error when using cached data!?
+    // TODO: fix - map error when using cached data
     // if (this.features && this.features[0].properties.DISPOSITION_TRANSACTION_SID === +dtid && !forceReload) {
     //   console.log('cached features =', this.features);
     //   return Observable.of(this.features);

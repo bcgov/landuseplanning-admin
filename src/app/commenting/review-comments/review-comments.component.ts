@@ -206,13 +206,17 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             delete comment.tags;
             // sanitize documents
             comment.documents.forEach(document => {
+              // TODO: test whether we need the following
               delete document._application;
               delete document._decision;
               delete document.tags;
             });
+            // add some properties
+            // comment['client'] = this.application.client;
+            comment['cl_files'] = this.application.cl_files;
             return this.flatten_fastest(comment);
           });
-          // console.log('flatComments =', flatComments);
+          console.log('flatComments =', flatComments); // DEBUGGING
 
           const excelFileName = 'comments-'
             + this.application.client.replace(/\s/g, '_')
