@@ -26,7 +26,7 @@ export class Application {
   agency: string;
   areaHectares: number;
   businessUnit: string;
-  cl_files: number[];
+  cl_file: number;
   code: string;
   name: string;
   description: string;
@@ -71,7 +71,7 @@ export class Application {
     this.agency                  = obj && obj.agency                  || null;
     this.areaHectares            = obj && obj.areaHectares            || null;
     this.businessUnit            = obj && obj.businessUnit            || null;
-    this.cl_files                = obj && obj.cl_files                || [];
+    this.cl_file                 = obj && obj.cl_file                 || null;
     this.code                    = obj && obj.code                    || null;
     this.name                    = obj && obj.name                    || null;
     this.client                  = obj && obj.client                  || null;

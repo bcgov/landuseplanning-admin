@@ -17,7 +17,7 @@
           <h2 class="mb-0">{{application.client || '-'}}</h2>
           <div>{{application.purpose || '-'}} / {{application.subpurpose || '-'}}</div>
           <ul class="comment-periods__list">
-            <li>CL File(s): {{application.cl_files ? application.cl_files.join(', ') : '-'}}</li>
+            <li>CL File: {{application.cl_file || '-'}}</li>
             <li *ngIf="application.features?.length > 0">Disp ID: {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</li>
           </ul>
         </section>

@@ -213,7 +213,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             });
             // add some properties
             // comment['client'] = this.application.client;
-            comment['cl_files'] = this.application.cl_files;
+            comment['cl_file'] = this.application.cl_file;
             return this.flatten_fastest(comment);
           });
           console.log('flatComments =', flatComments); // DEBUGGING

@@ -33,7 +33,7 @@
             <h3>{{applicationService.getStatus(application) || '-'}}</h3>
             -->
             <ul class="application-edit__list">
-              <li>CL File(s): {{application.cl_files ? application.cl_files.join(', ') : '-'}}</li>
+              <li>CL File: {{application.cl_file || '-'}}</li>
               <li *ngIf="application.features?.length > 0">Disp ID: {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</li>
             </ul>
           </section>

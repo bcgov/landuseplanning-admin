@@ -19,8 +19,8 @@
               <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && isDesc), 'sort-desc': (column == 'client' && !isDesc) }"
                 aria-hidden="true"></i>
             </th>
-            <th class="application-table__cl_file-col sortable" (click)="sort('cl_files')">CL File(s)
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_files' && isDesc), 'sort-desc': (column == 'cl_files' && !isDesc) }"
+            <th class="application-table__cl_file-col sortable" (click)="sort('cl_file')">CL File
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && isDesc), 'sort-desc': (column == 'cl_file' && !isDesc) }"
                 aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
@@ -46,7 +46,7 @@
                 </a>
                 <span class="accordion__collapse-header--column application-table__name-col">{{item.client || '-'}}</span>
                 <span class="accordion__collapse-header--column application-table__cl_file-col">
-                  <a [routerLink]="['/a', item._id]">{{item.cl_files ? item.cl_files.join(', ') : '-'}}</a>
+                  <a [routerLink]="['/a', item._id]">{{item.cl_file || '-'}}</a>
                 </span>
                 <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
                 <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
