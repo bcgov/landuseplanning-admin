@@ -5,7 +5,7 @@ export class User {
   firstName: string;
   lastName: string;
   password: string;
-  roles: string[][];
+  roles: Array<Array<string>>;
 
   constructor(obj?: any) {
     console.log('o:', obj);

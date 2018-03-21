@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
@@ -25,31 +28,31 @@ export class DecisionService {
       return Observable.of(this.decision);
     }
 
+    // first get the decision data
     return this.api.getDecisionByAppId(appId)
-      .map((res: Response) => {
+      .map(res => {
         const decisions = res.text() ? res.json() : [];
         // return the first (only) decision
         return decisions.length > 0 ? new Decision(decisions[0]) : null;
       })
-      .map((decision: Decision) => {
-        if (!decision) { return null as Decision; }
+      .mergeMap(decision => {
+        if (!decision) { return Observable.of(null as Decision); }
 
         // replace \\n (JSON format) with newlines
         if (decision.description) {
           decision.description = decision.description.replace(/\\n/g, '\n');
         }
 
-        // TODO: this needs to use mergeMap and a promise!
-        // now grab the decision documents
-        this.documentService.getAllByDecisionId(decision._id).subscribe(
-          documents => decision.documents = documents,
-          error => console.log(error)
-        );
+        // now get the decision documents
+        const promise = this.documentService.getAllByDecisionId(decision._id)
+          .toPromise()
+          .then(documents => decision.documents = documents);
 
-        this.decision = decision;
-        return decision;
-      })
-      .catch(this.api.handleError);
+        return Promise.resolve(promise).then(() => {
+          this.decision = decision;
+          return decision;
+        });
+      });
   }
 
   // get a specific decision by its id
@@ -58,29 +61,30 @@ export class DecisionService {
       return Observable.of(this.decision);
     }
 
+    // first get the decision data
     return this.api.getDecision(decisionId)
-      .map((res: Response) => {
+      .map(res => {
         const decisions = res.text() ? res.json() : [];
         // return the first (only) decision
         return decisions.length > 0 ? new Decision(decisions[0]) : null;
       })
-      .map((decision: Decision) => {
-        if (!decision) { return null as Decision; }
+      .mergeMap(decision => {
+        if (!decision) { return Observable.of(null as Decision); }
 
         // replace \\n (JSON format) with newlines
         if (decision.description) {
           decision.description = decision.description.replace(/\\n/g, '\n');
         }
 
-        // TODO: this needs to use mergeMap and a promise!
-        // now grab the decision documents
-        this.documentService.getAllByDecisionId(decision._id).subscribe(
-          documents => decision.documents = documents,
-          error => console.log(error)
-        );
+        // now get the decision documents
+        const promise = this.documentService.getAllByDecisionId(decision._id)
+          .toPromise()
+          .then(documents => decision.documents = documents);
 
-        this.decision = decision;
-        return this.decision;
+        return Promise.resolve(promise).then(() => {
+          this.decision = decision;
+          return decision;
+        });
       })
       .catch(this.api.handleError);
   }
@@ -101,7 +105,7 @@ export class DecisionService {
     }
 
     return this.api.addDecision(decision)
-      .map((res: Response) => {
+      .map(res => {
         const c = res.text() ? res.json() : null;
         return c ? new Decision(c) : null;
       })
@@ -121,7 +125,7 @@ export class DecisionService {
     }
 
     return this.api.saveDecision(decision)
-      .map((res: Response) => {
+      .map(res => {
         const c = res.text() ? res.json() : null;
         return c ? new Decision(c) : null;
       })
@@ -134,18 +138,18 @@ export class DecisionService {
       .catch(this.api.handleError);
   }
 
-  publish(decision: Decision) {
-    this.api.publishDecision(decision)
+  publish(decision: Decision): Subscription {
+    return this.api.publishDecision(decision)
       .subscribe(
-        value => decision.isPublished = true,
+        () => decision.isPublished = true,
         error => console.log('publish error =', error)
       );
   }
 
-  unPublish(decision: Decision) {
-    this.api.unPublishDecision(decision)
+  unPublish(decision: Decision): Subscription {
+    return this.api.unPublishDecision(decision)
       .subscribe(
-        value => decision.isPublished = false,
+        () => decision.isPublished = false,
         error => console.log('unpublish error =', error)
       );
   }

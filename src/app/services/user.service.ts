@@ -12,34 +12,32 @@ export class UserService {
 
   constructor(private api: ApiService) { }
 
-  getAll() {
+  getAll(): Observable<User[]> {
     return this.api.getAllUsers()
-      .map((res: Response) => {
+      .map(res => {
         const users = res.text() ? res.json() : [];
-
         users.forEach((user, index) => {
           users[index] = new User(user);
         });
-
         return users;
       })
       .catch(this.api.handleError);
   }
 
-  saveUser(user: User) {
+  save(user: User): Observable<User> {
     return this.api.saveUser(user)
-      .map((res: Response) => {
-        const users = res.text() ? res.json() : [];
-        return users;
+      .map(res => {
+        const u = res.text() ? res.json() : [];
+        return u ? new User(u) : null;
       })
       .catch(this.api.handleError);
   }
 
-  addUser(user: User) {
+  add(user: User): Observable<User> {
     return this.api.addUser(user)
-      .map((res: Response) => {
-        const users = res.text() ? res.json() : [];
-        return users;
+      .map(res => {
+        const u = res.text() ? res.json() : [];
+        return u ? new User(u) : null;
       })
       .catch(this.api.handleError);
   }

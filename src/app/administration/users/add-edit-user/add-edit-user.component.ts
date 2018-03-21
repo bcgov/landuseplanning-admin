@@ -50,27 +50,27 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
     // console.log('submitted form', this.user);
     this.networkMsg = '';
     if (this.isNew) {
-      this.userService.addUser(this.user)
+      this.userService.add(this.user)
         .subscribe(
-        data => {
-          this.result = true;
-          this.isNew = false;
-          this.close();
-        },
-        error => {
-          this.networkMsg = error;
-        });
+          data => {
+            this.result = true;
+            this.isNew = false;
+            this.close();
+          },
+          error => {
+            this.networkMsg = error;
+          });
     } else {
-      this.userService.saveUser(this.user)
+      this.userService.save(this.user)
         .subscribe(
-        data => {
-          this.result = true;
-          this.isNew = false;
-          this.close();
-        },
-        error => {
-          this.networkMsg = error;
-        });
+          data => {
+            this.result = true;
+            this.isNew = false;
+            this.close();
+          },
+          error => {
+            this.networkMsg = error;
+          });
     }
   }
 }

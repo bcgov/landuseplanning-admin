@@ -23,7 +23,7 @@ export class SearchService {
     }
 
     return this.api.getClientsInfoByDispositionId(dispositionId)
-      .map((res: Response) => {
+      .map(res => {
         const clients = res.text() ? res.json() : [];
         clients.forEach((client, i) => {
           clients[i] = new Client(client);
@@ -35,7 +35,6 @@ export class SearchService {
           return [];
         }
 
-        // console.log('new clients =', clients);
         this.clients = clients;
         return this.clients;
       });
@@ -47,7 +46,7 @@ export class SearchService {
     }
 
     return this.api.getBCGWCrownLands(clfile)
-      .map((res: Response) => {
+      .map(res => {
         return res.text() ? new Search(res.json()) : null;
       })
       .map((search: Search) => {
@@ -68,7 +67,7 @@ export class SearchService {
     console.log('dtid =', dtid);
 
     return this.api.getBCGWDispositionTransactionId(dtid)
-      .map((res: Response) => {
+      .map(res => {
         const results = res.text() ? new Search(res.json()) : null;
         return results.features;
       })

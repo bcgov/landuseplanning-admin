@@ -33,7 +33,7 @@ export class ApplicationService {
   // get count of applications
   getCount(): Observable<number> {
     return this.getAllInternal()
-      .map((applications: Application[]) => {
+      .map(applications => {
         return applications.length;
       });
   }
@@ -42,7 +42,7 @@ export class ApplicationService {
   getAll(): Observable<Application[]> {
     // first get the applications
     return this.getAllInternal()
-      .mergeMap((applications: Application[]) => {
+      .mergeMap(applications => {
         if (applications.length === 0) {
           return Observable.of([] as Application[]);
         }
@@ -82,7 +82,7 @@ export class ApplicationService {
   // get just the applications
   private getAllInternal(): Observable<Application[]> {
     return this.api.getApplications()
-      .map((res: Response) => {
+      .map(res => {
         const applications = res.text() ? res.json() : [];
         applications.forEach((application, i) => {
           applications[i] = new Application(application);
@@ -95,11 +95,11 @@ export class ApplicationService {
   // get an application by it's disposition (tantalisId)
   getByDispositionId(dispositionId: number): Observable<Application> {
     return this.api.getApplicationByDisposition(dispositionId)
-    .map((res: Response) => {
-      const applications = res.text() ? res.json() : [];
-      return applications.length > 0 ? new Application(applications[0]) : null;
-    })
-    .catch(this.api.handleError);
+      .map(res => {
+        const applications = res.text() ? res.json() : [];
+        return applications.length > 0 ? new Application(applications[0]) : null;
+      })
+      .catch(this.api.handleError);
   }
 
   // get a specific application by its id
@@ -110,12 +110,12 @@ export class ApplicationService {
 
     // first get the application data
     return this.api.getApplication(appId)
-      .map((res: Response) => {
+      .map(res => {
         const applications = res.text() ? res.json() : [];
         // return the first (only) application
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
-      .mergeMap((application: Application) => {
+      .mergeMap(application => {
         if (!application) { return Observable.of(null as Application); }
 
         // replace \\n (JSON format) with newlines
@@ -181,7 +181,7 @@ export class ApplicationService {
   publish(app: Application): Subscription {
     return this.api.publishApplication(app)
       .subscribe(
-        value => app.isPublished = true,
+        () => app.isPublished = true,
         error => console.log('publish error =', error)
       );
   }
@@ -189,7 +189,7 @@ export class ApplicationService {
   unPublish(app: Application): Subscription {
     return this.api.unPublishApplication(app)
       .subscribe(
-        value => app.isPublished = false,
+        () => app.isPublished = false,
         error => console.log('unpublish error =', error)
       );
   }
@@ -210,7 +210,7 @@ export class ApplicationService {
     }
 
     return this.api.addApplication(this.sanitizeApplication(item))
-      .map((res: Response) => {
+      .map(res => {
         const application = res.text() ? res.json() : [];
         return new Application(application);
       })
@@ -231,7 +231,7 @@ export class ApplicationService {
       app.type = item.properties.TENURE_TYPE;
       app.subtype = item.properties.TENURE_SUBTYPE;
       app.status = item.properties.TENURE_STATUS;
-      app.cl_file = +item.properties.CROWN_LANDS_FILE;
+      app.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
       app.region = 'Skeena';
       app.location = item.properties.TENURE_LOCATION;
       app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
@@ -268,7 +268,7 @@ export class ApplicationService {
     }
 
     return this.api.saveApplication(application)
-      .map((res: Response) => {
+      .map(res => {
         const a = res.text() ? res.json() : null;
         return a ? new Application(a) : null;
       })
@@ -293,7 +293,7 @@ export class ApplicationService {
       case 'SUSPENDED': return 'Tenure: Suspended';
     }
 
-    // return status in title case
+    // else return current status in title case
     return _.startCase(_.camelCase(application.status));
   }
 }

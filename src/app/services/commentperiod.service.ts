@@ -24,7 +24,7 @@ export class CommentPeriodService {
   // get all comment periods for the specified application id
   getAllByApplicationId(appId: string): Observable<CommentPeriod[]> {
     return this.api.getPeriodsByAppId(appId)
-      .map((res: Response) => {
+      .map(res => {
         const periods = res.text() ? res.json() : [];
         periods.forEach((period, index) => {
           periods[index] = new CommentPeriod(period);
@@ -55,7 +55,7 @@ export class CommentPeriodService {
     }
 
     return this.api.getPeriod(periodId)
-      .map((res: Response) => {
+      .map(res => {
         const periods = res.text() ? res.json() : [];
         // return the first (only) comment period
         return periods.length > 0 ? new CommentPeriod(periods[0]) : null;
@@ -87,7 +87,7 @@ export class CommentPeriodService {
     }
 
     return this.api.addCommentPeriod(period)
-      .map((res: Response) => {
+      .map(res => {
         const cp = res.text() ? res.json() : null;
         return cp ? new CommentPeriod(cp) : null;
       })
@@ -104,7 +104,7 @@ export class CommentPeriodService {
     }
 
     return this.api.saveCommentPeriod(period)
-      .map((res: Response) => {
+      .map(res => {
         const cp = res.text() ? res.json() : null;
         return cp ? new CommentPeriod(cp) : null;
       })
@@ -119,23 +119,19 @@ export class CommentPeriodService {
 
   publish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.publishCommentPeriod(period)
-      .map(
-        project => {
-          period.isPublished = true;
-          return period;
-        }
-      )
+      .map(() => {
+        period.isPublished = true;
+        return period;
+      })
       .catch(this.api.handleError);
   }
 
   unPublish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.unPublishCommentPeriod(period)
-      .map(
-        project => {
-          period.isPublished = false;
-          return period;
-        }
-      )
+      .map(() => {
+        period.isPublished = false;
+        return period;
+      })
       .catch(this.api.handleError);
   }
 

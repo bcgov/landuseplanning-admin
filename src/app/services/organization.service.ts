@@ -17,7 +17,7 @@ export class OrganizationService {
   // get all organizations
   getAll(): Observable<Organization[]> {
     return this.api.getOrganizations()
-      .map((res: Response) => {
+      .map(res => {
         const organizations = res.text() ? res.json() : [];
         organizations.forEach((org, index) => {
           organizations[index] = new Organization(org);
@@ -34,7 +34,7 @@ export class OrganizationService {
     }
 
     return this.api.getOrganization(orgId)
-      .map((res: Response) => {
+      .map(res => {
         const organizations = res.text() ? res.json() : [];
         // return the first (only) organization
         return organizations.length > 0 ? new Organization(organizations[0]) : null;
