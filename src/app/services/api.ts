@@ -50,7 +50,7 @@ export class ApiService {
         break;
 
         case 'nrts-prc-demo.pathfinder.gov.bc.ca':
-        // Test
+        // Demo
         this.pathAPI = 'https://nrts-prc-demo.pathfinder.gov.bc.ca/api';
         this.env = 'demo';
         break;
@@ -111,7 +111,7 @@ export class ApiService {
       'agency',
       'areaHectares',
       'businessUnit',
-      'cl_files',
+      'cl_file',
       'code',
       'name',
       'client',
@@ -160,7 +160,7 @@ export class ApiService {
       'agency',
       'areaHectares',
       'businessUnit',
-      'cl_files',
+      'cl_file',
       'code',
       'name',
       'client',
@@ -233,7 +233,7 @@ export class ApiService {
       'agency',
       'areaHectares',
       'businessUnit',
-      'cl_files',
+      'cl_file',
       'code',
       'name',
       'client',

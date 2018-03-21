@@ -157,8 +157,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                   this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
                   this.application.status = this.application.features[0].properties.TENURE_STATUS;
                   this.application.location = this.application.features[0].properties.TENURE_LOCATION;
-                  this.application.cl_files = [];
-                  this.application.cl_files.push(parseInt(this.application.features[0].properties.CROWN_LANDS_FILE, 10));
+                  this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE;
                 }
               },
               error => {
@@ -193,20 +192,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           self.application.client = clientString;
         }
       });
-  }
-
-  addCLFile() {
-    if (this.application.cl_files === null) {
-      this.application.cl_files = [];
-    }
-    this.application.cl_files.push(this.clFile);
-    this.clFile = null;
-  }
-
-  removeCLFile(clFile) {
-    _.remove(this.application.cl_files, function (item) {
-      return (item === clFile);
-    });
   }
 
   saveApplication() {

@@ -10,14 +10,14 @@
       <h1>Manage Comment Periods</h1>
     </div>
 
-    <div class="row">
+    <div class="header-row row">
       <main class="col-md-8">
         <!-- HEADER -->
         <section class="card bg-dark">
           <h2 class="mb-0">{{application.client || '-'}}</h2>
           <div>{{application.purpose || '-'}} / {{application.subpurpose || '-'}}</div>
           <ul class="comment-periods__list">
-            <li>CL File(s): {{application.cl_files ? application.cl_files.join(', ') : '-'}}</li>
+            <li>CL File: {{application.cl_file || '-'}}</li>
             <li *ngIf="application.features?.length > 0">Disp ID: {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</li>
           </ul>
         </section>
@@ -25,15 +25,15 @@
 
       <nav class="col-md-4">
         <section class="d-flex flex-column">
-          <a class="btn content-btn slide-l-btn btn-sm p-1 my-1" [routerLink]="['/a', application._id]">
+          <a class="btn btn-light slide-l-btn p-1 my-1" [routerLink]="['/a', application._id]">
             <i class="material-icons">info_outline</i>
             <span>Application Details</span>
           </a>
-          <a class="btn content-btn slide-l-btn btn-sm p-1 my-1" [routerLink]="['/comments', application._id]">
+          <a class="btn btn-light slide-l-btn p-1 my-1" [routerLink]="['/comments', application._id]">
             <i class="material-icons">message</i>
             <span>Review Comments</span>
           </a>
-          <button class="btn btn-primary p-1 my-1" (click)="openCommentPeriod(null, application._id)" [disabled]="commentPeriods.length > 0">
+          <button class="btn btn-light slide-l-btn p-1 my-1" (click)="openCommentPeriod(null, application._id)" [disabled]="commentPeriods.length > 0">
             <i class="material-icons">add</i>
             <span>Add Comment Period</span>
           </button>

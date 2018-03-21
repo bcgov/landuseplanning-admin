@@ -231,7 +231,7 @@ export class ApplicationService {
       app.type = item.properties.TENURE_TYPE;
       app.subtype = item.properties.TENURE_SUBTYPE;
       app.status = item.properties.TENURE_STATUS;
-      app.cl_files = item.properties.CROWN_LANDS_FILE;
+      app.cl_file = +item.properties.CROWN_LANDS_FILE;
       app.region = 'Skeena';
       app.location = item.properties.TENURE_LOCATION;
       app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;

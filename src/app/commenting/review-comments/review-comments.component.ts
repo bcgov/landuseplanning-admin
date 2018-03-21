@@ -1,9 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
 import { DialogService } from 'ng2-bootstrap-modal';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/operator/toPromise';
+import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
@@ -11,6 +15,7 @@ import { CommentPeriod } from 'app/models/commentperiod';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
+import { ExcelService } from 'app/services/excel.service';
 import { ApiService } from 'app/services/api';
 
 import { CommentDetailComponent } from './comment-detail/comment-detail.component';
@@ -57,6 +62,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     private router: Router,
     private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
+    private excelService: ExcelService,
     private api: ApiService,
     private dialogService: DialogService
   ) { }
@@ -176,5 +182,100 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   private isCurrentComment(item: Comment): boolean {
     return (item === this.currentComment);
+  }
+
+  private exportToExcel() {
+    const observables: Array<Observable<Comment>> = [];
+
+    // get full comments
+    this.comments.forEach(comment => {
+      observables.push(this.commentService.getById(comment._id, true));
+    });
+
+    // run all observables in parallel
+    forkJoin(observables)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (allComments: Comment[]) => {
+          const flatComments = allComments.map(comment => {
+            // sanitize and flatten each comment object
+            delete comment.commentAuthor.internal.tags;
+            delete comment.commentAuthor.tags;
+            delete comment.commentNumber;
+            delete comment.review.tags;
+            delete comment.tags;
+            // sanitize documents
+            comment.documents.forEach(document => {
+              // TODO: test whether we need the following
+              delete document._application;
+              delete document._decision;
+              delete document.tags;
+            });
+            // add some properties
+            // comment['client'] = this.application.client;
+            comment['cl_file'] = this.application.cl_file;
+            return this.flatten_fastest(comment);
+          });
+          console.log('flatComments =', flatComments); // DEBUGGING
+
+          const excelFileName = 'comments-'
+            + this.application.client.replace(/\s/g, '_')
+            + moment(new Date()).format('-YYYYMMDD');
+          this.excelService.exportAsExcelFile(flatComments, excelFileName);
+        },
+        error => {
+          // if 403, redir to login page
+          if (error.startsWith('403')) { this.router.navigate(['/login']); }
+          this.alerts.push('Error exporting comments');
+        });
+  }
+
+  //
+  // flatten utilities
+  // ref: https://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
+  //
+
+  // current fastest
+  private flatten_fastest(data: Object): Object {
+    const result = {};
+
+    function recurse(cur: Object, prop: string) {
+      if (Object(cur) !== cur) {
+        result[prop] = cur;
+      } else if (Array.isArray(cur)) {
+        const l = cur.length;
+        for (let i = 0; i < l; i++) {
+          recurse(cur[i], prop ? prop + '.' + i : '' + i);
+        }
+        if (l === 0) {
+          result[prop] = null; // []; // empty arrays should be null not []
+        }
+      } else {
+        let isEmpty = true;
+        for (const p of Object.keys(cur)) {
+          isEmpty = false;
+          recurse(cur[p], prop ? prop + '.' + p : p);
+        }
+        if (isEmpty) {
+          result[prop] = {};
+        }
+      }
+    }
+
+    recurse(data, '');
+    return result;
+  }
+
+  // ES6 version
+  // NB: doesn't return empty arrays
+  private flatten_es6(obj: Object, path: string = ''): Object {
+    if (!(obj instanceof Object)) {
+      return { [path.replace(/\.$/g, '')]: obj };
+    }
+    return Object.keys(obj).reduce((output, key) => {
+      return (obj instanceof Array) ?
+        { ...output, ...this.flatten_es6(obj[key], path + '[' + key + '].') } :
+        { ...output, ...this.flatten_es6(obj[key], path + key + '.') };
+    }, {});
   }
 }

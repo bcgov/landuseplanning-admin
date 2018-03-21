@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import * as moment from 'moment-timezone';
+import * as moment from 'moment';
 import * as L from 'leaflet';
 import * as _ from 'lodash';
 

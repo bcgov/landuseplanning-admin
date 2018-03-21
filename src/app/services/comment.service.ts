@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -30,6 +31,7 @@ export class CommentService {
   ) { }
 
   // get all comments for the specified application id
+  // without documents
   getAllByApplicationId(appId: string): Observable<Comment[]> {
     // first get the comment periods
     return this.commentPeriodService.getAllByApplicationId(appId)
@@ -53,6 +55,7 @@ export class CommentService {
   }
 
   // get all comments for the specified comment period id
+  // without documents
   getAllByPeriodId(periodId: string): Observable<Comment[]> {
     return this.api.getCommentsByPeriodId(periodId)
       .map((res: Response) => {
@@ -84,6 +87,24 @@ export class CommentService {
 
   // get a specific comment by its id
   getById(commentId: string, forceReload: boolean = false): Observable<Comment> {
+    return this.getByIdInternal(commentId, forceReload)
+      .map((comment: Comment) => {
+      // .switchMap((comment: Comment) => {
+      // .mergeMap((comment: Comment) => {
+
+        // now get the comment documents
+        const promise = this.documentService.getAllByCommentId(comment._id)
+          .toPromise()
+          .then(documents => comment.documents = documents);
+
+        // return Promise.all
+        this.comment = comment;
+        return this.comment;
+      });
+  }
+
+  // get just the specific comment by its id
+  private getByIdInternal(commentId: string, forceReload: boolean): Observable<Comment> {
     if (this.comment && this.comment._id === commentId && !forceReload) {
       return Observable.of(this.comment);
     }
@@ -105,14 +126,7 @@ export class CommentService {
           comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\\n/g, '\n');
         }
 
-        // now grab the comment documents
-        this.documentService.getAllByCommentId(comment._id).subscribe(
-          documents => comment.documents = documents,
-          error => console.log(error)
-        );
-
-        this.comment = comment;
-        return this.comment;
+        return comment;
       })
       .catch(this.api.handleError);
   }
@@ -182,11 +196,17 @@ export class CommentService {
       );
   }
 
-  isAccepted(comment: Comment): boolean { return comment.commentStatus === this.accepted; }
+  isAccepted(comment: Comment): boolean {
+    return comment.commentStatus.toLowerCase() === this.accepted.toLowerCase();
+  }
 
-  isPending(comment: Comment): boolean { return comment.commentStatus === this.pending; }
+  isPending(comment: Comment): boolean {
+    return comment.commentStatus.toLowerCase() === this.pending.toLowerCase();
+  }
 
-  isRejected(comment: Comment): boolean { return comment.commentStatus === this.rejected; }
+  isRejected(comment: Comment): boolean {
+    return comment.commentStatus.toLowerCase() === this.rejected.toLowerCase();
+  }
 
   doAccept(comment: Comment): Comment {
     comment.commentStatus = this.accepted;

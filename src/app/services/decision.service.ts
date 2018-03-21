@@ -39,6 +39,7 @@ export class DecisionService {
           decision.description = decision.description.replace(/\\n/g, '\n');
         }
 
+        // TODO: this needs to use mergeMap and a promise!
         // now grab the decision documents
         this.documentService.getAllByDecisionId(decision._id).subscribe(
           documents => decision.documents = documents,
@@ -71,6 +72,7 @@ export class DecisionService {
           decision.description = decision.description.replace(/\\n/g, '\n');
         }
 
+        // TODO: this needs to use mergeMap and a promise!
         // now grab the decision documents
         this.documentService.getAllByDecisionId(decision._id).subscribe(
           documents => decision.documents = documents,

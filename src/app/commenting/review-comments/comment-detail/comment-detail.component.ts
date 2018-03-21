@@ -107,11 +107,11 @@ export class CommentDetailComponent implements OnChanges {
         () => {
           if (doPublish && !this.comment.isPublished) {
             this.commentService.publish(this.comment);
-            this.documents.forEach((document) => this.documentService.publish(document));
+            this.documents.forEach(document => this.documentService.publish(document));
           }
           if (doUnpublish && this.comment.isPublished) {
             this.commentService.unPublish(this.comment);
-            this.documents.forEach((document) => this.documentService.unPublish(document));
+            this.documents.forEach(document => this.documentService.unPublish(document));
           }
         },
         reason => {
