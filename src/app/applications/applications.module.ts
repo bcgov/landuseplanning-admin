@@ -6,7 +6,6 @@ import { SharedModule } from 'app/shared/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsRoutingModule } from './applications-routing.module';
-import { MapModule } from '../map/map.module';
 
 // components
 import { ApplicationListComponent } from './application-list/application-list.component';
@@ -26,8 +25,7 @@ import { ApplicationService } from '../services/application.service';
     SharedModule,
     NgxPaginationModule,
     NgbModule.forRoot(),
-    ApplicationsRoutingModule,
-    MapModule
+    ApplicationsRoutingModule
   ],
   declarations: [
     ApplicationListComponent,
