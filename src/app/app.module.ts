@@ -8,7 +8,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2PageScrollModule } from 'ng2-page-scroll';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { CookieService } from 'ngx-cookie-service';
-import { TagInputModule } from 'ngx-chips';
 
 import { AppRoutingModule } from 'app/app-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
@@ -58,7 +57,6 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
     SelectOrganizationComponent
   ],
   imports: [
-    TagInputModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,

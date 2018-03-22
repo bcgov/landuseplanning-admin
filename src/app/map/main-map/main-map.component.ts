@@ -1,6 +1,6 @@
 import { Component, Inject, Input, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { EsriLoaderService } from 'angular-esri-loader';
+import { EsriLoaderService } from 'angular2-esri-loader';
 
 import { MapConfigService } from '../config/map-config.service';
 
