@@ -34,7 +34,6 @@ import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 // feature modules
 import { ApplicationsModule } from 'app/applications/applications.module';
 import { CommentingModule } from 'app/commenting/commenting.module';
-import { MapModule } from 'app/map/map.module';
 import { HeaderComponent } from 'app/header/header.component';
 import { FooterComponent } from 'app/footer/footer.component';
 import { AdministrationComponent } from 'app/administration/administration.component';
@@ -68,9 +67,7 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
     NgbModule.forRoot(),
     NgxPaginationModule,
     Ng2PageScrollModule.forRoot(),
-    BootstrapModalModule,
-    MapModule,
-
+    BootstrapModalModule
   ],
   providers: [
     CookieService,
