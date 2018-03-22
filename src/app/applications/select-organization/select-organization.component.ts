@@ -82,7 +82,7 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
         res += c.ORGANIZATIONS_LEGAL_NAME + ', ';
       }
       if (c.INDIVIDUALS_FIRST_NAME) {
-        res += c.INDIVIDUALS_FIRST_NAME + ', ';
+        res += c.INDIVIDUALS_FIRST_NAME + ' ';
       }
       if (c.INDIVIDUALS_LAST_NAME) {
         res += c.INDIVIDUALS_LAST_NAME + ', ';
