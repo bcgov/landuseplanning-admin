@@ -145,7 +145,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.applicationService.addApplication(item)
       .subscribe(application => {
         // console.log('ADDED:', application._id);
-        this.router.navigate(['a/', application._id]);
+        this.router.navigate(['/a', application._id]);
       });
   }
 
