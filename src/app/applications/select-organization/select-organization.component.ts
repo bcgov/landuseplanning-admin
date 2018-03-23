@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import { Router, ActivatedRoute } from '@angular/router';
-import { OrganizationService } from 'app/services/organization.service';
-import { SearchService } from 'app/services/search.service';
-import { Organization } from 'app/models/organization';
-import { Client } from 'app/models/client';
 import * as _ from 'lodash';
+
+import { SearchService } from 'app/services/search.service';
+import { Client } from 'app/models/client';
 
 export interface DataModel {
   dispositionId: number;
-  interestedPartyId: number;
 }
 
 @Component({
@@ -17,41 +15,21 @@ export interface DataModel {
   templateUrl: './select-organization.component.html',
   styleUrls: ['./select-organization.component.scss']
 })
+
+// NOTE: dialog components must not implement OnDestroy
+//       otherwise they don't return a result
 export class SelectOrganizationComponent extends DialogComponent<DataModel, string> implements DataModel, OnInit {
-  public dispositionId: number;
-  public interestedPartyId: number;
-  public clients: Client[] = [];
-  public selectedClients: string[];
+  public dispositionId: number = null;
+  public clients: Array<Client> = [];
+  public selectedClients: Array<Client> = [];
   public page = 1;
-  public selectedOrg: Organization = null;
 
   constructor(
     public dialogService: DialogService,
     private router: Router,
-    private orgService: OrganizationService,
     private searchService: SearchService
   ) {
     super(dialogService);
-    this.selectedClients = [];
-  }
-
-  toggleClient(client) {
-    if (this.isClientSelected(client)) {
-      _.remove(this.selectedClients, client);
-    } else {
-      this.selectedClients.push(client);
-    }
-  }
-
-  isClientSelected(client) {
-    const foundClient = _.find(this.selectedClients, function (c) {
-      return (c === client);
-    });
-    if (foundClient) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   ngOnInit() {
@@ -61,17 +39,33 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
         data => {
           _.each(data, function (i) {
             self.clients.push(new Client(i));
-            // Pre-select the existing org if it's in the list
+            // Pre-select the existing clients if they're in the list
             // if (i._id === self.dispositionId) {
-            //   self.selectedOrg = i;
+            //   self.selectedClients = i;
             // }
           });
         },
         error => {
           // if 403, redir to login page
           if (error.startsWith('403')) { this.router.navigate(['/login']); }
-          alert('Error loading users');
+          alert('Error loading clients');
         });
+  }
+
+  toggleClient(client: Client) {
+    if (this.isClientSelected(client)) {
+      _.remove(this.selectedClients, client);
+    } else {
+      this.selectedClients.push(client);
+    }
+  }
+
+  isClientSelected(client: Client): boolean {
+    // TODO: this should be debounced as it's called a lot! (mouse over clickable row to see this)
+    const foundClient = _.find(this.selectedClients, function (c) {
+      return (c === client);
+    });
+    return foundClient ? true : false;
   }
 
   save() {
@@ -88,9 +82,8 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
         res += c.INDIVIDUALS_LAST_NAME + ', ';
       }
     });
+    // trim the last comma
     this.result = res.replace(/,\s*$/, '');
-    // console.log(this.result);
-    // alert('Save is not yet implemented');
     this.close();
   }
 }

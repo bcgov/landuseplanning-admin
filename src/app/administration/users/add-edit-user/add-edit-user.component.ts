@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 
 import { User } from 'app/models/user';
@@ -15,7 +15,9 @@ export interface DataModel {
   styleUrls: ['./add-edit-user.component.scss']
 })
 
-export class AddEditUserComponent extends DialogComponent<DataModel, boolean> implements DataModel {
+// NOTE: dialog components must not implement OnDestroy
+//       otherwise they don't return a result
+export class AddEditUserComponent extends DialogComponent<DataModel, boolean> implements DataModel, OnInit {
   title: string;
   message: string;
   model: User;
@@ -29,7 +31,6 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
     super(dialogService);
   }
 
-  // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     // console.log("this.model:", this.user);
     // TODO: Current is simple method of assigning roles

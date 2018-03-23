@@ -9,7 +9,7 @@ import * as moment from 'moment-timezone';
 import * as _ from 'lodash';
 
 import { Constants } from 'app/utils/constants';
-import { SelectOrganizationComponent } from '../select-organization/select-organization.component';
+import { SelectOrganizationComponent } from 'app/applications/select-organization/select-organization.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
@@ -187,11 +187,16 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((clientString: string) => {
-        if (clientString) {
-          self.application.client = clientString;
+      .subscribe(
+        clientString => {
+          if (clientString && clientString.length > 0) {
+            self.application.client = clientString;
+          }
+        },
+        error => {
+          console.log('error =', error);
         }
-      });
+      );
   }
 
   saveApplication() {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 
@@ -16,7 +16,9 @@ export interface DataModel {
   styleUrls: ['./add-comment.component.scss']
 })
 
-export class AddCommentComponent extends DialogComponent<DataModel, boolean> implements DataModel {
+// NOTE: dialog components must not implement OnDestroy
+//       otherwise they don't return a result
+export class AddCommentComponent extends DialogComponent<DataModel, boolean> implements DataModel, OnInit {
   public title: string;
   public message: string;
   public periodId: string;
@@ -33,7 +35,6 @@ export class AddCommentComponent extends DialogComponent<DataModel, boolean> imp
     this.showAlert = false;
   }
 
-  // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     console.log('period id=', this.periodId);
   }

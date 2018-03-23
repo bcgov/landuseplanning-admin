@@ -11,9 +11,9 @@ import { Client } from 'app/models/client';
 
 @Injectable()
 export class SearchService {
+  private clients: Array<Client> = null;
   private search: Search = null;
-  private features: Feature[] = null;
-  private clients: Client[] = null;
+  private features: Array<Feature> = null;
 
   constructor(private api: ApiService) { }
 
