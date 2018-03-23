@@ -200,16 +200,23 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
+  // create new application
+  // mandatory fields:
+  // - disp ID (and related data)
+  // - description
+  // - client
   addApplication(item: any): Observable<Application> {
+    const app = this.sanitizeApplication(item);
+
     // replace newlines with \\n (JSON format)
-    if (item.description) {
-      item.description = item.description.replace(/\n/g, '\\n');
+    if (app.description) {
+      app.description = app.description.replace(/\n/g, '\\n');
     }
-    if (item.legalDescription) {
-      item.legalDescription = item.legalDescription.replace(/\n/g, '\\n');
+    if (app.legalDescription) {
+      app.legalDescription = app.legalDescription.replace(/\n/g, '\\n');
     }
 
-    return this.api.addApplication(this.sanitizeApplication(item))
+    return this.api.addApplication(app)
       .map(res => {
         const application = res.text() ? res.json() : [];
         return new Application(application);
@@ -257,17 +264,17 @@ export class ApplicationService {
 
   save(orig: Application): Observable<Application> {
     // make a (deep) copy of the passed-in application so we don't change it
-    const application = _.cloneDeep(orig);
+    const app = _.cloneDeep(orig);
 
     // replace newlines with \\n (JSON format)
-    if (application.description) {
-      application.description = application.description.replace(/\n/g, '\\n');
+    if (app.description) {
+      app.description = app.description.replace(/\n/g, '\\n');
     }
-    if (application.legalDescription) {
-      application.legalDescription = application.legalDescription.replace(/\n/g, '\\n');
+    if (app.legalDescription) {
+      app.legalDescription = app.legalDescription.replace(/\n/g, '\\n');
     }
 
-    return this.api.saveApplication(application)
+    return this.api.saveApplication(app)
       .map(res => {
         const a = res.text() ? res.json() : null;
         return a ? new Application(a) : null;

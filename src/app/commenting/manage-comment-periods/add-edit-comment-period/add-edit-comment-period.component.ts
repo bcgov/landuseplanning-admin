@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import * as moment from 'moment';
@@ -19,7 +19,9 @@ export interface DataModel {
   styleUrls: ['./add-edit-comment-period.component.scss']
 })
 
-export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, boolean> implements DataModel {
+// NOTE: dialog components must not implement OnDestroy
+//       otherwise they don't return a result
+export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, boolean> implements DataModel, OnInit {
   public title: string;
   public message: string;
   public commentPeriod: CommentPeriod;
@@ -38,7 +40,6 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
     super(dialogService);
   }
 
-  // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     if (!this.commentPeriod) {
       this.isNew = true;
@@ -46,12 +47,10 @@ export class AddEditCommentPeriodComponent extends DialogComponent<DataModel, bo
       this.cp = new CommentPeriod();
       this.cp._application = this.appId;
 
-
       // set initial start date and duration
       const n = new Date();
       this.onDate1Chg({ 'year': n.getFullYear(), 'month': n.getMonth() + 1, 'day': n.getDate() });
       this.onDeltaChg(this.delta);
-
     } else {
       this.isNew = false;
       // make a **deep copy** of the passed-in comment period so we don't change it

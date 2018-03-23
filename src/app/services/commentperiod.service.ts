@@ -12,7 +12,7 @@ import { CommentPeriod } from 'app/models/commentperiod';
 @Injectable()
 export class CommentPeriodService {
   private commentPeriod: CommentPeriod = null;
-  commentStatuses = {};
+  public commentStatuses = {};
 
   constructor(private api: ApiService) {
     this.commentStatuses['NOT STARTED'] = 'Commenting Not Started';

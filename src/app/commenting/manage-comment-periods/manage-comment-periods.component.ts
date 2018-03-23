@@ -110,7 +110,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((result: boolean) => {
+        .subscribe(result => {
           if (result) {
             // HACK: refresh UI because template item isn't being refreshed otherwise
             this.refreshUI();
@@ -137,7 +137,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((result: boolean) => {
+        .subscribe(result => {
           if (result) {
             // HACK: refresh UI because template item isn't being refreshed otherwise
             this.refreshUI();
