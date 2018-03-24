@@ -6,12 +6,12 @@
   <div class="container">
     <div class="container__inner-container">
       <div >
-        <h1 id="pgTitle">Search Crown Lands File&nbsp;</h1>
+        <h1 id="pgTitle">Search Crown Land Files</h1>
         <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
 
           <div class="search-form__basic-search-fields">
             <div class="form-group mb-0">
-              <input class="form-control" type="text" placeholder="Enter Crown Lands Number..." name="keywordInput" id="keywordInput"
+              <input class="form-control" type="text" placeholder="Enter CL File Number..." name="keywordInput" id="keywordInput"
                 [disabled]="protoSearchActive" [(ngModel)]="terms.clfile"/>
             </div>
           </div>
