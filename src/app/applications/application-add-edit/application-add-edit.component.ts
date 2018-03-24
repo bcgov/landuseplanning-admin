@@ -129,7 +129,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
             .subscribe((isConfirmed: boolean) => {
               if (isConfirmed) {
                 // Go to the other application
-                this.router.navigate(['/a/', application._id]);
+                this.router.navigate(['/a', application._id]);
               }
             });
         } else {

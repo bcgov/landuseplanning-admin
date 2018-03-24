@@ -32,7 +32,7 @@ const routes: Routes = [
   {
     // wildcard route
     path: '**',
-    redirectTo: '/admin/',
+    redirectTo: '/',
     pathMatch: 'full'
   }
 ];

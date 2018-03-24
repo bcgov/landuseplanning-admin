@@ -68,7 +68,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.applicationService.addApplication(new Application())
       .takeUntil(this.ngUnsubscribe)
       .subscribe(application => {
-        this.router.navigate(['/a/', application._id, 'edit']);
+        this.router.navigate(['/a', application._id, 'edit']);
       });
   }
 

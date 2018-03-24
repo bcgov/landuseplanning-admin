@@ -1,71 +1,57 @@
 @import "~assets/styles/base.scss";
 .hero-banner {
     position: relative;
-    background-color: rgba(#00245a, 1);
-    background-image: url("~assets/images/hero-banner.jpg");
+    height: 14rem;
+    padding-top: 0;
+    background-position: center;
+    background-size: cover;
+    background-image: url("~assets/images/map.jpg");
     background-repeat: no-repeat;
-    box-shadow: 0 0 4rem #00264d inset;
     &__content {
-        color: #FFF;
-        padding-right: 1.5rem;
-        padding-left: 1.5rem;
+        // display: table-cell;
+        // vertical-align: middle;
+        color: $font-gray;
         h1 {
-            margin-top: -0.25rem;
-            margin-bottom: 1.5rem;
             font-size: 2rem;
             line-height: 2rem;
             span {
                 display: inline-block;
             }
         }
+        h2 {
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+            span {
+                display: inline-block;
+            }
+        }
         p {
-            margin-bottom: 1.5rem;
             font-size: 0.9375rem;
             font-weight: 300;
             line-height: 1.4rem;
+            margin-bottom: 1.5rem;
         }
         strong {
             color: $gold;
             font-weight: 700;
         }
         .badge {
-            position: relative;
             color: $gold;
-            vertical-align: top;
-            text-align: left;
-            text-transform: uppercase;
-            font-size: 0.875rem;
         }
         &--cta-btns {
             @include clearfix();
-            strong {
-                display: block;
-                color: #fff;
-                font-size: 1rem;
-                font-weight: 600;
-            }
+            margin-top: 2rem;
             .btn {
-                margin-top: 0.4rem;
                 padding: 0.5rem;
                 min-width: 7rem;
                 text-transform: uppercase;
-                font-size: 0.7rem;
+                font-size: 0.85rem;
                 font-weight: 700;
                 +span {
                     display: inline-block;
                     margin: 0.25rem;
                 }
             }
-        }
-    }
-    .container {
-        display: table;
-        padding: 0;
-        height: 100%;
-        max-width: 1100px;
-        &__inner-container {
-            display: table-cell;
-            vertical-align: middle;
         }
     }
     a:not[class^="btn"] {
@@ -77,45 +63,27 @@
     }
 }
 
-@media (max-width: 574px) {
-    .hero-banner {
-        height: 18rem;
-        background-position: 0 0;
-        background-size: 160%;
-    }
-}
-
-@media (min-width: 575px) {
-    .hero-banner {
-        height: 20rem;
-        background-position: 0 0;
-        background-size: 140%;
-    }
-}
+@media (min-width: 575px) {}
 
 @media (min-width: 768px) {
     .hero-banner {
-        height: 24rem;
-        background-position: 0 0;
-        background-size: 125%;
+        height: 17rem;
+        padding-top: 2rem;
         &__content {
-            margin-bottom: 1rem;
-            padding-right: 4rem;
-            padding-left: 4rem;
             h1 {
+                font-size: 2.5rem;
                 line-height: 2.5rem;
-                font-size: 2.4rem;
+            }
+            h2 {
+                font-size: 1.8rem;
+                line-height: 1.8rem;
             }
             p {
-                margin-bottom: 1.5rem;
-                line-height: 1.8rem;
                 font-size: 1.2rem;
+                line-height: 1.8rem;
             }
             &--cta-btns {
-                @include clearfix();
-                .btn {
-                    font-size: 0.85rem;
-                }
+                margin-top: 2.4rem;
             }
         }
     }
@@ -123,39 +91,30 @@
 
 @media (min-width: 992px) {
     .hero-banner {
-        height: 28rem;
-        background-position: 0 0;
-        background-size: 115%;
-    }
-    &__content {
-        margin: 0;
-        padding-top: 2rem;
-        padding-right: 2rem;
-        padding-left: 2rem;
-        h1 {
-            font-size: 2.8rem;
-        }
-        p {
-            margin-bottom: 1.75rem;
+        height: 22rem;
+        padding-top: 4rem;
+        &__content {
+            h1 {
+                font-size: 2.8rem;
+                line-height: 2.8rem;
+            }
+            h2 {
+                line-height: 2rem;
+                font-size: 2rem;
+            }
+            &--cta-btns {
+                margin-top: 3rem;
+            }
         }
     }
 }
 
 @media (min-width: 1200px) {
     .hero-banner {
-        height: 30rem;
-        background-position: 0 0;
-        background-size: 100%;
+        height: 24rem;
         &__content {
-            margin: 0;
-            padding-top: 2rem;
-            padding-right: 2rem;
-            padding-left: 2rem;
-            h1 {
-                font-size: 2.8rem;
-            }
-            p {
-                margin-bottom: 1.75rem;
+            &--cta-btns {
+                margin-top: 4rem;
             }
         }
     }
