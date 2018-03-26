@@ -54,6 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   baseMaps: {};
   control: L.Control;
   private sub: Subscription;
+  private maxZoom = { maxZoom: 17 };
 
   constructor(
     private applicationService: ApplicationService,
@@ -93,7 +94,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       maxZoom: 16
     });
     this.map = L.map('map', {
-      layers: [Esri_NatGeoWorldMap, OpenMapSurfer_Roads, Esri_OceanBasemap, World_Imagery, World_Topo_Map]
+      layers: [World_Imagery]
     });
     this.map.setView(new L.LatLng(53.7267, -127.6476), 5);
 
@@ -102,8 +103,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       'Ocean Base': Esri_OceanBasemap,
       'Nat Geo World Map': Esri_NatGeoWorldMap,
       'Open Surfer Roads': OpenMapSurfer_Roads,
-      'World Imagery': World_Imagery,
-      'World Topographic': World_Topo_Map
+      'World Topographic': World_Topo_Map,
+      'World Imagery': World_Imagery
     };
 
     if (!this.layers) {
@@ -246,7 +247,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
           self.control = L.control.layers(self.baseMaps, overlayMaps, { collapsed: false }).addTo(self.map);
 
-          self.map.fitBounds(self.fg.getBounds());
+          self.map.fitBounds(self.fg.getBounds(), self.maxZoom);
 
           if (self.groupByResults) {
             this.count = self.groupByResults.length;
