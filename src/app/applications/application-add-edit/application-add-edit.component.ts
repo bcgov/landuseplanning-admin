@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -21,6 +21,7 @@ import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 import { SearchService } from 'app/services/search.service';
 import { DecisionService } from 'app/services/decision.service';
+import { ApplicationAsideComponent } from 'app/applications/application-aside/application-aside.component';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -28,6 +29,7 @@ import { DecisionService } from 'app/services/decision.service';
   styleUrls: ['./application-add-edit.component.scss']
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
+  @ViewChild(ApplicationAsideComponent) child: ApplicationAsideComponent;
   public types = Constants.types;
   public subtypes = Constants.subtypes;
   public purposes = Constants.purposes;
@@ -159,6 +161,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                   this.application.location = this.application.features[0].properties.TENURE_LOCATION;
                   this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
                 }
+                this.child.drawMap(this.application);
               },
               error => {
                 console.log('error =', error);
