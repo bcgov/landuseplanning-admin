@@ -201,10 +201,6 @@ export class ApplicationService {
   }
 
   // create new application
-  // mandatory fields:
-  // - disp ID (and related data)
-  // - description
-  // - client
   addApplication(item: any): Observable<Application> {
     const app = this.sanitizeApplication(item);
 
@@ -232,6 +228,18 @@ export class ApplicationService {
     // ID must not exist on POST
     delete app._id;
 
+    // boilerplate for new application
+    app.name = 'New Application'; // TODO: remove if not needed
+    app.region = 'Skeena';
+    app.agency = 'Crown Land Allocation';
+
+    // copy over properties
+    app.client = item.client;
+    app.description = item.description;
+    app.dispositionID = item.dispositionID;
+    if (item.internal) { app.internal.notes = item.internal.notes; }
+
+    // copy over disposition properties
     if (item && item.properties) {
       app.purpose = item.properties.TENURE_PURPOSE;
       app.subpurpose = item.properties.TENURE_SUBPURPOSE;
@@ -239,24 +247,10 @@ export class ApplicationService {
       app.subtype = item.properties.TENURE_SUBTYPE;
       app.status = item.properties.TENURE_STATUS;
       app.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
-      app.region = 'Skeena';
       app.location = item.properties.TENURE_LOCATION;
       app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
-      app.agency = 'Crown Land Allocation';
       app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
       app.interestID = item.properties.INTRID_SID;
-    } else {
-      // boilerplate for new application
-      app.name = 'New Application';
-      // app.purpose = 'TENURE_PURPOSE';
-      // app.subpurpose = 'TENURE_SUBPURPOSE';
-      // app.type = 'TENURE_TYPE';
-      // app.subtype = 'TENURE_SUBTYPE';
-      // app.status = 'TENURE_STATUS';
-      app.region = 'Skeena';
-      // app.location = 'TENURE_LOCATION';
-      // app.businessUnit = 'RESPONSIBLE_BUSINESS_UNIT';
-      app.agency = 'Crown Land Allocation';
     }
 
     return app;

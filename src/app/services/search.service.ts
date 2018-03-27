@@ -18,7 +18,7 @@ export class SearchService {
   constructor(private api: ApiService) { }
 
   getClientsByDispositionId(dispositionId: number, forceReload: boolean = false): Observable<Client[]> {
-    if (this.clients && this.clients.length > 0 && +this.clients[0].ORGANIZATIONS_LEGAL_NAME === dispositionId && !forceReload) {
+    if (!forceReload && this.clients && this.clients.length > 0 && this.clients[0].DISPOSITION_TRANSACTION_SID === dispositionId) {
       return Observable.of(this.clients);
     }
 
@@ -41,7 +41,8 @@ export class SearchService {
   }
 
   getByCLFile(clfile: string, forceReload: boolean = false): Observable<Search> {
-    if (this.search && this.search._id === clfile && !forceReload) {
+    if (!forceReload && this.search && this.search.features && this.search.features.length > 0 && this.search.features[0].properties
+      && this.search.features[0].properties.CROWN_LANDS_FILE === clfile) {
       return Observable.of(this.search);
     }
 
@@ -58,13 +59,13 @@ export class SearchService {
   }
 
   getByDTID(dtid: string, forceReload: boolean = false): Observable<Feature[]> {
-    // TODO: fix - map error when using cached data
-    // if (this.features && this.features[0].properties.DISPOSITION_TRANSACTION_SID === +dtid && !forceReload) {
-    //   console.log('cached features =', this.features);
-    //   return Observable.of(this.features);
-    // }
+    console.log('dtid = ', dtid);
 
-    console.log('dtid =', dtid);
+    if (!forceReload && this.features && this.features.length > 0 && this.features[0].properties
+      && this.features[0].properties.DISPOSITION_TRANSACTION_SID === +dtid) {
+      console.log('cached features =', this.features);
+      return Observable.of(this.features);
+    }
 
     return this.api.getBCGWDispositionTransactionId(dtid)
       .map(res => {
