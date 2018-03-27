@@ -118,26 +118,29 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  delete(period: CommentPeriod): Observable<any> {
+  delete(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.deleteCommentPeriod(period)
-      .map(res => { return res; })
+      .map(res => {
+        const cp = res.text() ? res.json() : null;
+        return cp ? new CommentPeriod(cp) : null;
+      })
       .catch(this.api.handleError);
   }
 
   publish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.publishCommentPeriod(period)
-      .map(() => {
-        period.isPublished = true;
-        return period;
+      .map(res => {
+        const cp = res.text() ? res.json() : null;
+        return cp ? new CommentPeriod(cp) : null;
       })
       .catch(this.api.handleError);
   }
 
   unPublish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.unPublishCommentPeriod(period)
-      .map(() => {
-        period.isPublished = false;
-        return period;
+      .map(res => {
+        const cp = res.text() ? res.json() : null;
+        return cp ? new CommentPeriod(cp) : null;
       })
       .catch(this.api.handleError);
   }

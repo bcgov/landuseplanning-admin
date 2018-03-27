@@ -69,6 +69,32 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
 
       if (this.application._id !== '0' && this.application.tantalisID) {
         const self = this;
+        const resetViewControl = L.Control.extend({
+          options: {
+            position: 'topleft'
+          },
+          onAdd: function (map) {
+            const container = L.DomUtil.create('i', 'material-icons leaflet-bar leaflet-control leaflet-control-custom');
+            container.style.backgroundColor = 'white';
+            container.title = 'Reset Map';
+            container.innerText = 'refresh';
+            container.style.width = '34px';
+            container.style.height = '34px';
+            container.style.lineHeight = '30px';
+            container.style.textAlign = 'center';
+            container.style.cursor = 'pointer';
+            container.onclick = function () {
+              const bounds = self.fg.getBounds();
+              if (!_.isEmpty(bounds)) {
+                self.map.fitBounds(bounds, self.maxZoom);
+              }
+            };
+            return container;
+          },
+        });
+
+        // NB: always reload results to reduce chance of race condition
+        //     with drawing map and features
         this.searchService.getByDTID(this.application.tantalisID)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
@@ -106,6 +132,7 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
                   'World Imagery': World_Imagery
                 };
                 self.control = L.control.layers(self.baseMaps, null, { collapsed: true }).addTo(self.map);
+                self.map.addControl(new resetViewControl());
 
                 if (self.fg) {
                   _.each(self.layers, function (layer) {

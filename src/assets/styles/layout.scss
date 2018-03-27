@@ -97,7 +97,7 @@ main {
     .main-footer {
         padding: 1.5rem;
         background-color: rgba(0, 51, 102, 0.8);
-        color: #FFF;
+        color: $white;
 
         a {
             color: $gold;
@@ -135,11 +135,11 @@ hr {
 
 /* class to make divs look like anchors */
 .clickable {
-    cursor: pointer;
-    color: $link-color;
+    cursor: pointer !important;
+    color: $link-color !important;
     &:focus,
     &:hover {
-        text-decoration: underline;
+        text-decoration: underline !important;
     }
 }
 

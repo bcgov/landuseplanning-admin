@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
@@ -75,25 +74,39 @@ export class DocumentService {
       .catch(this.api.handleError);
   }
 
-  delete(file: any): Observable<any> {
-    return this.api.deleteDocument(file)
-      .map(res => { return res; })
+  add(formData: FormData): Observable<Document> {
+    return this.api.uploadDocument(formData)
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Document(d) : null;
+      })
       .catch(this.api.handleError);
   }
 
-  publish(document: Document): Subscription {
-    return this.api.publishDocument(document)
-      .subscribe(
-        () => document.isPublished = true,
-        error => console.log('publish error =', error)
-      );
+  delete(document: Document): Observable<Document> {
+    return this.api.deleteDocument(document)
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Document(d) : null;
+      })
+      .catch(this.api.handleError);
   }
 
-  unPublish(document: Document): Subscription {
+  publish(document: Document): Observable<Document> {
+    return this.api.publishDocument(document)
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Document(d) : null;
+      })
+      .catch(this.api.handleError);
+  }
+
+  unPublish(document: Document): Observable<Document> {
     return this.api.unPublishDocument(document)
-      .subscribe(
-        () => document.isPublished = false,
-        error => console.log('unpublish error =', error)
-      );
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Document(d) : null;
+      })
+      .catch(this.api.handleError);
   }
 }

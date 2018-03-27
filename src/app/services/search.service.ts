@@ -38,7 +38,8 @@ export class SearchService {
 
         this.clients = clients;
         return this.clients;
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get search results by CL file #
@@ -57,7 +58,8 @@ export class SearchService {
 
         this.search = search;
         return this.search;
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get features by disposition ID (transaction ID)
@@ -79,6 +81,7 @@ export class SearchService {
         // console.log('new features =', features);
         this.features = features;
         return this.features;
-      });
+      })
+      .catch(this.api.handleError);
   }
 }

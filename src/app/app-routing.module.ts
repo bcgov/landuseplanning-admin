@@ -40,9 +40,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-  providers: [CanDeactivateGuard]
+  imports: [
+    RouterModule.forRoot(routes)
+  ],
+  exports: [
+    RouterModule
+  ],
+  providers: [
+    CanDeactivateGuard
+  ]
 })
 
 export class AppRoutingModule { }

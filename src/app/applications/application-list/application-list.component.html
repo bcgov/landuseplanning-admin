@@ -1,5 +1,9 @@
 <div class="container" id="anchor-point">
-  <main>
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+
+  <main *ngIf="!loading">
     <section>
       <h2>Crown Lands Applications in British Columbia</h2>
       <p class="tab-intro">Use the list below to navigate to individual applications. Click on any application to go directly to its details page
@@ -21,22 +25,22 @@
         <thead class="application-table__sort-header">
           <tr>
             <th class="application-table__name-col sortable" (click)="sort('client')">Client Name
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && !isDesc), 'sort-desc': (column == 'client' && isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && direction < 0), 'sort-desc': (column == 'client' && direction > 0) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__cl_file-col sortable" (click)="sort('cl_file')">CL File
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && !isDesc), 'sort-desc': (column == 'cl_file' && isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && direction < 0), 'sort-desc': (column == 'cl_file' && direction > 0) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && !isDesc), 'sort-desc': (column == 'purpose' && isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && direction < 0), 'sort-desc': (column == 'purpose' && direction > 0) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__region-col sortable" (click)="sort('region')">Region
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && !isDesc), 'sort-desc': (column == 'region' && isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && direction < 0), 'sort-desc': (column == 'region' && direction > 0) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__status-col sortable" (click)="sort('appStatus')">Status
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'appStatus' && !isDesc), 'sort-desc': (column == 'appStatus' && isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'appStatus' && direction < 0), 'sort-desc': (column == 'appStatus' && direction > 0) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__commenting-col sortable" (click)="sort('cpStatus')">PRC Status
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cpStatus' && !isDesc), 'sort-desc': (column == 'cpStatus' && isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cpStatus' && direction < 0), 'sort-desc': (column == 'cpStatus' && direction > 0) }" aria-hidden="true"></i>
             </th>
           </tr>
         </thead>

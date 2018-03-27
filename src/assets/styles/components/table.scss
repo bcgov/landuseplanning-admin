@@ -22,7 +22,7 @@
 
     thead {
         background: $table-header-bg;
-        border-bottom: 2px solid #fff;
+        border-bottom: 2px solid $white;
 
         th {
             padding: 0.5rem;
@@ -43,7 +43,7 @@
 
                 &.sort-asc,
                 &.sort-desc {
-                    color: #000;
+                    color: $black;
                     border-bottom-color: $table-header-sort-active;
                     background: transparent;
                     text-shadow: none;
