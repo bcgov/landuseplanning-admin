@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 // import { Router } from '@angular/router';
 import { PageScrollConfig } from 'ng2-page-scroll';
 import { CookieService } from 'ngx-cookie-service';
-import { Subscription } from 'rxjs/Subscription';
 
 import { DocumentService } from './services/document.service';
 import { ApiService } from './services/api';
@@ -17,7 +16,6 @@ import { ApiService } from './services/api';
 export class AppComponent implements OnInit {
   loggedIn: String;
   hostname: String;
-  private sub: Subscription;
 
   constructor(
     // private _router: Router,
@@ -49,4 +47,3 @@ export class AppComponent implements OnInit {
     this.loggedIn = this.cookieService.get('loggedIn');
   }
 }
-

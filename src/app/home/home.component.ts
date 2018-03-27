@@ -33,13 +33,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // although we aren't currently using numApplications,
     // this verifies our login token and redirects in case of error
-    this.applicationService.getCount().subscribe(
-      value => { this.numApplications = value; },
-      error => {
-        console.log('error =', 'could not count applications');
-        this.router.navigate(['login']);
-      }
-    );
+    this.applicationService.getCount()
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        value => { this.numApplications = value; },
+        error => {
+          console.log('error =', 'could not count applications');
+          this.router.navigate(['login']);
+        }
+      );
   }
 
   ngOnDestroy() {

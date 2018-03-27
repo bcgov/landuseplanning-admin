@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -50,7 +49,8 @@ export class CommentService {
           .then((allComments: Comment[][]) => {
             return _.flatten(allComments);
           });
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get all comments for the specified comment period id
@@ -118,7 +118,8 @@ export class CommentService {
           this.comment = comment;
           return this.comment;
         });
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   add(orig: Comment): Observable<Comment> {
@@ -170,20 +171,22 @@ export class CommentService {
       .catch(this.api.handleError);
   }
 
-  publish(comment: Comment): Subscription {
+  publish(comment: Comment): Observable<Comment> {
     return this.api.publishComment(comment)
-      .subscribe(
-        () => comment.isPublished = true,
-        error => console.log('publish error =', error)
-      );
+      .map(res => {
+        const c = res.text() ? res.json() : null;
+        return c ? new Comment(c) : null;
+      })
+      .catch(this.api.handleError);
   }
 
-  unPublish(comment: Comment): Subscription {
+  unPublish(comment: Comment): Observable<Comment> {
     return this.api.unPublishComment(comment)
-      .subscribe(
-        () => comment.isPublished = false,
-        error => console.log('unpublish error =', error)
-      );
+      .map(res => {
+        const c = res.text() ? res.json() : null;
+        return c ? new Comment(c) : null;
+      })
+      .catch(this.api.handleError);
   }
 
   isAccepted(comment: Comment): boolean {

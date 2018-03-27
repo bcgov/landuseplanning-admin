@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -68,7 +67,8 @@ export class ApplicationService {
     return this.getAllInternal()
       .map(applications => {
         return applications.length;
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get all applications
@@ -132,14 +132,13 @@ export class ApplicationService {
             .then(features => {
               application.features = features;
 
-              // calculate Total Area (hectares)
-              let areaHectares = 0;
+              // calculate Total Area (hectares) from all features
+              application.areaHectares = 0;
               _.each(application.features, function (f) {
                 if (f['properties']) {
-                  areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+                  application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
                 }
               });
-              application.areaHectares = areaHectares;
 
               // cache application properties from first feature
               if (application.features && application.features.length > 0) {
@@ -160,7 +159,8 @@ export class ApplicationService {
         });
 
         return Promise.all(promises).then(() => { return applications; });
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get just the applications
@@ -246,14 +246,13 @@ export class ApplicationService {
           .then(features => {
             application.features = features;
 
-            // calculate Total Area (hectares)
-            let areaHectares = 0;
+            // calculate Total Area (hectares) from all features
+            application.areaHectares = 0;
             _.each(application.features, function (f) {
               if (f['properties']) {
-                areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+                application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
               }
             });
-            application.areaHectares = areaHectares;
 
             // cache application properties from first feature
             if (application.features && application.features.length > 0) {
@@ -274,28 +273,6 @@ export class ApplicationService {
           return this.application;
         });
       })
-      .catch(this.api.handleError);
-  }
-
-  publish(app: Application): Subscription {
-    return this.api.publishApplication(app)
-      .subscribe(
-        () => app.isPublished = true,
-        error => console.log('publish error =', error)
-      );
-  }
-
-  unPublish(app: Application): Subscription {
-    return this.api.unPublishApplication(app)
-      .subscribe(
-        () => app.isPublished = false,
-        error => console.log('unpublish error =', error)
-      );
-  }
-
-  delete(app: Application): Observable<any> {
-    return this.api.deleteApplication(app)
-      .map(res => { return res; })
       .catch(this.api.handleError);
   }
 
@@ -348,6 +325,33 @@ export class ApplicationService {
     }
 
     return this.api.saveApplication(app)
+      .map(res => {
+        const a = res.text() ? res.json() : null;
+        return a ? new Application(a) : null;
+      })
+      .catch(this.api.handleError);
+  }
+
+  delete(app: Application): Observable<Application> {
+    return this.api.deleteApplication(app)
+      .map(res => {
+        const a = res.text() ? res.json() : null;
+        return a ? new Application(a) : null;
+      })
+      .catch(this.api.handleError);
+  }
+
+  publish(app: Application): Observable<Application> {
+    return this.api.publishApplication(app)
+      .map(res => {
+        const a = res.text() ? res.json() : null;
+        return a ? new Application(a) : null;
+      })
+      .catch(this.api.handleError);
+  }
+
+  unPublish(app: Application): Observable<Application> {
+    return this.api.unPublishApplication(app)
       .map(res => {
         const a = res.text() ? res.json() : null;
         return a ? new Application(a) : null;

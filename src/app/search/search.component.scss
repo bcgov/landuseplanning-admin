@@ -1,4 +1,3 @@
-// Base
 @import "~assets/styles/base.scss";
 
 $search-input-font-size: 0.9375rem;
@@ -66,7 +65,7 @@ $search-input-font-size: 0.9375rem;
 
     &__search-btn {
         width: 100%;
-        color: #fff;
+        color: $white;
         border-color: $gold;
         background: darken($gold, 5%);
         text-transform: uppercase;
@@ -266,7 +265,7 @@ tag-input {
             tag {
                 padding: 0.2rem 0.6rem;
                 height: auto;
-                color: #fff;
+                color: $white;
                 border-radius: 0.2rem;
                 background: #5091cd;
                 letter-spacing: 0;
@@ -274,7 +273,7 @@ tag-input {
                 font-weight: 400;
 
                 &:hover {
-                    color: #fff !important;
+                    color: $white !important;
                     background: #5091cd !important; 
                 }
 
@@ -286,7 +285,7 @@ tag-input {
                     margin-top: 1px;
 
                     path {
-                        fill: #fff;
+                        fill: $white;
                     }
                 }
             }

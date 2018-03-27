@@ -3,13 +3,13 @@
 .btn {
     border-radius: 0.25rem;
     //background: transparent;
-    //color: #003366;
+    //color: $primary;
     font-weight: 400;
     transition: all linear 0.2s;
 
     &.inverted {
-        color: #fff;
-        border: 2px solid #fff;
+        color: $white;
+        border: 2px solid $white;
         background: transparent;
         text-transform: uppercase;
         font-weight: 700;
@@ -166,7 +166,7 @@ main {
 
     &:focus,
     &:hover {
-        color: #fff;
+        color: $white;
         border-color: #5091cd;
         background: #5091cd;
     }
