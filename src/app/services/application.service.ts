@@ -239,14 +239,6 @@ export class ApplicationService {
     app.name = 'New Application'; // TODO: remove if not needed
     app.region = 'Skeena';
 
-    // copy over main properties
-    app.areaHectares = item.areaHectares;
-    app.client = item.client;
-    app.description = item.description;
-    if (item.internal) { app.internal.notes = item.internal.notes; }
-    app.publishDate = item.publishDate;
-    app.tantalisID = item.tantalisID;
-
     // copy over disposition properties
     if (item.properties) {
       app.purpose = item.properties.TENURE_PURPOSE;

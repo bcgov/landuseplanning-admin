@@ -169,8 +169,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                     this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
                     this.application.location = this.application.features[0].properties.TENURE_LOCATION;
                     this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
-                    // this.application.tantalisID = 0;
-                    // this.application.interestID = 0;
                   }
 
                   this.child.drawMap(this.application);
