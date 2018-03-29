@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { Constants } from 'app/utils/constants';
 import { SelectOrganizationComponent } from 'app/applications/select-organization/select-organization.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { ApplicationAsideComponent } from 'app/applications/application-aside/application-aside.component';
 import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
 import { Comment } from 'app/models/comment';
@@ -28,6 +29,8 @@ import { DecisionService } from 'app/services/decision.service';
   styleUrls: ['./application-add-edit.component.scss']
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
+  @ViewChild(ApplicationAsideComponent) child: ApplicationAsideComponent;
+
   public types = Constants.types;
   public subtypes = Constants.subtypes;
   public purposes = Constants.purposes;
@@ -169,6 +172,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                     // this.application.tantalisID = 0;
                     // this.application.interestID = 0;
                   }
+
+                  this.child.drawMap(this.application);
                 },
                 error => {
                   console.log('error =', error);
