@@ -17,6 +17,7 @@ export class SearchService {
 
   constructor(private api: ApiService) { }
 
+  // get clients by disposition ID (transaction ID)
   getClientsByDispositionId(dispositionId: number, forceReload: boolean = false): Observable<Client[]> {
     if (!forceReload && this.clients && this.clients.length > 0 && this.clients[0].DISPOSITION_TRANSACTION_SID === dispositionId) {
       return Observable.of(this.clients);
@@ -40,6 +41,7 @@ export class SearchService {
       });
   }
 
+  // get search results by CL file #
   getByCLFile(clfile: string, forceReload: boolean = false): Observable<Search> {
     if (!forceReload && this.search && this.search.features && this.search.features.length > 0 && this.search.features[0].properties
       && this.search.features[0].properties.CROWN_LANDS_FILE === clfile) {
@@ -58,6 +60,7 @@ export class SearchService {
       });
   }
 
+  // get features by disposition ID (transaction ID)
   getByDTID(dtid: string, forceReload: boolean = false): Observable<Feature[]> {
     console.log('dtid = ', dtid);
 
@@ -67,7 +70,7 @@ export class SearchService {
       return Observable.of(this.features);
     }
 
-    return this.api.getBCGWDispositionTransactionId(dtid)
+    return this.api.getBCGWDispositionByTransactionId(dtid)
       .map(res => {
         const results = res.text() ? new Search(res.json()) : null;
         return results.features;

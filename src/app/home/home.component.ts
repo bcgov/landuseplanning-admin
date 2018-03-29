@@ -46,12 +46,4 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
-
-  createApplication() {
-    this.applicationService.addApplication(new Application())
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(application => {
-        this.router.navigate(['/a', application._id, 'edit']);
-      });
-  }
 }

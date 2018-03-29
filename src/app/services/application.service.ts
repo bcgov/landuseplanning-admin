@@ -92,11 +92,13 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
-  // get an application by it's disposition (tantalisId)
-  getByDispositionId(dispositionId: number): Observable<Application> {
-    return this.api.getApplicationByDisposition(dispositionId)
+  // get a specific application by its Tantalis ID
+  // without related data
+  getByTantalisId(tantalisId: number): Observable<Application> {
+    return this.api.getApplicationByTantalisId(tantalisId)
       .map(res => {
         const applications = res.text() ? res.json() : [];
+        // return the first (only) application
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
       .catch(this.api.handleError);
@@ -236,7 +238,6 @@ export class ApplicationService {
     // copy over properties
     app.client = item.client;
     app.description = item.description;
-    app.dispositionID = item.dispositionID;
     if (item.internal) { app.internal.notes = item.internal.notes; }
 
     // copy over disposition properties

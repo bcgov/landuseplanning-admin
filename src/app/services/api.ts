@@ -131,7 +131,6 @@ export class ApiService {
       'status',
       'tenureStage',
       'tantalisID',
-      'dispositionID',
       'type',
       'subtype',
 
@@ -180,7 +179,6 @@ export class ApiService {
       'status',
       'tenureStage',
       'tantalisID',
-      'dispositionID',
       'type',
       'subtype',
 
@@ -196,9 +194,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  // For now, this is just a quick lookup by dispositionId
-  getApplicationByDisposition(dispositionId: number) {
-    const queryString = 'application?isDeleted=false&tantalisId=' + dispositionId;
+  // for now, this is just a quick lookup by Tantalis ID
+  getApplicationByTantalisId(tantalisId: number) {
+    const queryString = 'application?isDeleted=false&tantalisId=' + tantalisId;
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
@@ -253,7 +251,6 @@ export class ApiService {
       'status',
       'tenureStage',
       'tantalisID',
-      'dispositionID',
       'type',
       'subtype',
 
@@ -658,9 +655,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getBCGWDispositionTransactionId(id: string) {
+  getBCGWDispositionByTransactionId(transactionId: string) {
     const fields = ['name'];
-    let queryString = 'public/search/bcgw/dispositionTransactionId/' + id + '?fields=';
+    let queryString = 'public/search/bcgw/dispositionTransactionId/' + transactionId + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -670,9 +667,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getClientsInfoByDispositionId(id: number) {
+  getClientsInfoByDispositionId(dispositionId: number) {
     const fields = ['name'];
-    let queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + id + '?fields=';
+    let queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + dispositionId + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
