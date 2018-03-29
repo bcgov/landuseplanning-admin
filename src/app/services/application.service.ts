@@ -225,23 +225,30 @@ export class ApplicationService {
   // deletes object keys the API doesn't want on POST
   // and initializes defaults
   private sanitizeApplication(item: any): Application {
-    const app = new Application();
+    const app = new Application(item);
 
     // ID must not exist on POST
     delete app._id;
 
+    // don't send features or documents
+    delete app.features;
+    delete app.documents;
+
     // boilerplate for new application
+    app.agency = 'Crown Land Allocation';
     app.name = 'New Application'; // TODO: remove if not needed
     app.region = 'Skeena';
-    app.agency = 'Crown Land Allocation';
 
-    // copy over properties
+    // copy over main properties
+    app.areaHectares = item.areaHectares;
     app.client = item.client;
     app.description = item.description;
     if (item.internal) { app.internal.notes = item.internal.notes; }
+    app.publishDate = item.publishDate;
+    app.tantalisID = item.tantalisID;
 
     // copy over disposition properties
-    if (item && item.properties) {
+    if (item.properties) {
       app.purpose = item.properties.TENURE_PURPOSE;
       app.subpurpose = item.properties.TENURE_SUBPURPOSE;
       app.type = item.properties.TENURE_TYPE;
@@ -260,6 +267,10 @@ export class ApplicationService {
   save(orig: Application): Observable<Application> {
     // make a (deep) copy of the passed-in application so we don't change it
     const app = _.cloneDeep(orig);
+
+    // don't send features or documents
+    delete app.features;
+    delete app.documents;
 
     // replace newlines with \\n (JSON format)
     if (app.description) {

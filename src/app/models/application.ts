@@ -12,6 +12,10 @@ class Content {
 
 class Internal {
   notes: string;
+
+  constructor(obj?: any) {
+    this.notes = obj && obj.notes || null;
+  }
 }
 
 export class Application {
@@ -94,7 +98,7 @@ export class Application {
     this.subtype                 = obj && obj.subtype                 || null;
 
     this.content                 = obj && obj.content                 || [];
-    this.internal                = obj && obj.internal                || new Internal();
+    this.internal                = obj && obj.internal                || new Internal(obj.internal);
 
     // Wrap isPublished around the tags we receive for this object.
     if (obj && obj.tags) {

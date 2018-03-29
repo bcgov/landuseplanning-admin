@@ -138,47 +138,50 @@ export class ApplicationAsideComponent implements OnInit, OnDestroy {
                 },
                 error => {
                   console.log('error =', error);
-                });
-            } else {
-              // application not found --> navigate back to application list
-              alert('Uh-oh, couldn\'t load application');
-              this.router.navigate(['/applications']);
+                }
+              );
             }
+          } else {
+            // application not found --> navigate back to application list
+            alert('Uh-oh, couldn\'t load application');
+            this.router.navigate(['/applications']);
           }
         }
       );
   }
 
   drawMap(app: Application) {
-    const self = this;
-    this.searchService.getByDTID(app.tantalisID.toString()).subscribe(
-      features => {
-        if (self.fg) {
-          _.each(self.layers, function (layer) {
-            self.map.removeLayer(layer);
+    if (app._id !== '0') {
+      const self = this;
+      this.searchService.getByDTID(app.tantalisID.toString()).subscribe(
+        features => {
+          if (self.fg) {
+            _.each(self.layers, function (layer) {
+              self.map.removeLayer(layer);
+            });
+            self.fg.clearLayers();
+          }
+          _.each(features, function (feature) {
+            const f = JSON.parse(JSON.stringify(feature));
+            // Needed to be valid GeoJSON
+            delete f.geometry_name;
+            const featureObj: GeoJSON.Feature<any> = f;
+            const layer = L.geoJSON(featureObj);
+            const options = { maxWidth: 400 };
+            self.fg.addLayer(layer);
+            layer.addTo(self.map);
           });
-          self.fg.clearLayers();
-        }
-        _.each(features, function (feature) {
-          const f = JSON.parse(JSON.stringify(feature));
-          // Needed to be valid GeoJSON
-          delete f.geometry_name;
-          const featureObj: GeoJSON.Feature<any> = f;
-          const layer = L.geoJSON(featureObj);
-          const options = { maxWidth: 400 };
-          self.fg.addLayer(layer);
-          layer.addTo(self.map);
-        });
 
-        const bounds = self.fg.getBounds();
-        if (!_.isEmpty(bounds)) {
-          self.map.fitBounds(bounds, self.maxZoom);
+          const bounds = self.fg.getBounds();
+          if (!_.isEmpty(bounds)) {
+            self.map.fitBounds(bounds, self.maxZoom);
+          }
+        },
+        error => {
+          console.log('error =', error);
         }
-      },
-      error => {
-        console.log('error =', error);
-      }
-    );
+      );
+    }
   }
 
   ngOnDestroy() {
