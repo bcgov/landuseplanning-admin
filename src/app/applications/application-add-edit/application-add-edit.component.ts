@@ -43,7 +43,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public status: string;
   public clFile: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  private originalTantalisId = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,8 +67,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         (data: { application: Application }) => {
           if (data.application) {
             this.application = data.application;
-
-            this.originalTantalisId = this.application.tantalisID;
 
             if (!this.application.publishDate) {
               this.application.publishDate = new Date();
@@ -121,12 +118,12 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   applyDisposition() {
     // (re)load the shapes
 
-    // first check if the disp is already used by an existing application
+    // first check if the disp is already used by another application
     this.applicationService.getByTantalisId(this.application.tantalisID)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         application => {
-          if (application) {
+          if (application && application._id !== this.application._id) {
             // found it
             this.dialogService.addDialog(ConfirmComponent,
               {
@@ -142,15 +139,16 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                   // go to the other application
                   this.router.navigate(['/a', application._id]);
                 }
+                // otherwise return to current application
               });
           } else {
-            // Fall through
+            // fall through: (re)load data
             this.searchService.getByDTID(this.application.tantalisID.toString())
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
                 features => {
                   this.application.features = features;
-                  // calculate areaHectares
+                  // calculate Total Area (hectares)
                   let areaHectares = 0;
                   _.each(this.application.features, function (f) {
                     if (f['properties']) {
@@ -159,7 +157,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                   });
                   this.application.areaHectares = areaHectares;
 
-                  // copy over the application info from first feature
+                  // copy over application info from first feature
                   if (this.application.features && this.application.features.length > 0) {
                     this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
                     this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
@@ -232,6 +230,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           }
         );
     } else {
+      // save current application
       this.applicationService.save(this.application)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(

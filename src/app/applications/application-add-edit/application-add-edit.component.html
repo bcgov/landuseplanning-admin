@@ -52,7 +52,7 @@
                   [ngClass]="{'is-invalid': tantalisID.invalid}"
                   id="tantalisID"
                   name="tantalisID"
-                  required area-required="true"
+                  required aria-required="true"
                   #tantalisID="ngModel"
                   [(ngModel)]="application.tantalisID"
                   (keyup.enter)="applyDisposition()"
@@ -61,7 +61,6 @@
                   (mousewheel)="$event.preventDefault()">
                 <button type="button"
                   class="btn btn-primary float-left"
-                  [disabled]="application.tantalisID === originalTantalisId"
                   (click)="applyDisposition()">
                   <i class="material-icons">system_update_alt</i>
                   <span>Fetch Disposition Data</span>
