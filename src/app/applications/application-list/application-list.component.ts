@@ -64,14 +64,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  createApplication() {
-    this.applicationService.addApplication(new Application())
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(application => {
-        this.router.navigate(['/a', application._id, 'edit']);
-      });
-  }
-
   public sort(property) {
     this.isDesc = !this.isDesc;
     this.column = property;

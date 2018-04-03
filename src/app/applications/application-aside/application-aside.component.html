@@ -13,21 +13,23 @@
         <span class="badge badge-dark" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">{{daysRemaining}}</span>
     </div>
     <div class="comment-status__actions mt-4">
-        <a class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]">
+        <!-- prevent navigation if application hasn't been created yet -->
+        <button class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]" [disabled]="application._id === '0'">
             <span>Click to Modify</span>
             <i class="material-icons">arrow_forward</i>
-        </a>
+        </button>
     </div>
 </section>
 
 <!-- COMMENTS INFO -->
-<section class="comment-count card bg-light">
+<section class="comment-count card bg-light" *ngIf="application">
     <h4 class="title mb-3">Comments Received</h4>
     <span class="badge badge-dark">{{numComments}}</span>
     <div class="comment-status__actions mt-4">
-        <a class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]">
+        <!-- prevent navigation if application hasn't been created yet -->
+        <button class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]" [disabled]="application._id === '0'">
             <span>Click to Review</span>
             <i class="material-icons">arrow_forward</i>
-        </a>
+        </button>
     </div>
 </section>

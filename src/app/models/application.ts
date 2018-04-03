@@ -12,6 +12,10 @@ class Content {
 
 class Internal {
   notes: string;
+
+  constructor(obj?: any) {
+    this.notes = obj && obj.notes || null;
+  }
 }
 
 export class Application {
@@ -46,7 +50,6 @@ export class Application {
   status: string;
   tenureStage: string;
   tantalisID: number;
-  dispositionID: number;
   type: string;
   subtype: string;
 
@@ -90,13 +93,12 @@ export class Application {
     this.region                  = obj && obj.region                  || null;
     this.status                  = obj && obj.status                  || null;
     this.tenureStage             = obj && obj.tenureStage             || null;
-    this.tantalisID              = obj && obj.tantalisID              || 0;
-    this.dispositionID           = obj && obj.dispositionID           || 0;
+    this.tantalisID              = obj && obj.tantalisID              || null; // not zero
     this.type                    = obj && obj.type                    || null;
     this.subtype                 = obj && obj.subtype                 || null;
 
     this.content                 = obj && obj.content                 || [];
-    this.internal                = obj && obj.internal                || new Internal();
+    this.internal                = obj && obj.internal                || new Internal(obj.internal);
 
     // Wrap isPublished around the tags we receive for this object.
     if (obj && obj.tags) {

@@ -92,11 +92,13 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
-  // get an application by it's disposition (tantalisId)
-  getByDispositionId(dispositionId: number): Observable<Application> {
-    return this.api.getApplicationByDisposition(dispositionId)
+  // get a specific application by its Tantalis ID
+  // without related data
+  getByTantalisId(tantalisId: number): Observable<Application> {
+    return this.api.getApplicationByTantalisId(tantalisId)
       .map(res => {
         const applications = res.text() ? res.json() : [];
+        // return the first (only) application
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
       .catch(this.api.handleError);
@@ -201,10 +203,6 @@ export class ApplicationService {
   }
 
   // create new application
-  // mandatory fields:
-  // - disp ID (and related data)
-  // - description
-  // - client
   addApplication(item: any): Observable<Application> {
     const app = this.sanitizeApplication(item);
 
@@ -227,36 +225,32 @@ export class ApplicationService {
   // deletes object keys the API doesn't want on POST
   // and initializes defaults
   private sanitizeApplication(item: any): Application {
-    const app = new Application();
+    const app = new Application(item);
 
     // ID must not exist on POST
     delete app._id;
 
-    if (item && item.properties) {
+    // don't send features or documents
+    delete app.features;
+    delete app.documents;
+
+    // boilerplate for new application
+    app.agency = 'Crown Land Allocation';
+    app.name = 'New Application'; // TODO: remove if not needed
+    app.region = 'Skeena';
+
+    // copy over disposition properties
+    if (item.properties) {
       app.purpose = item.properties.TENURE_PURPOSE;
       app.subpurpose = item.properties.TENURE_SUBPURPOSE;
       app.type = item.properties.TENURE_TYPE;
       app.subtype = item.properties.TENURE_SUBTYPE;
       app.status = item.properties.TENURE_STATUS;
       app.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
-      app.region = 'Skeena';
       app.location = item.properties.TENURE_LOCATION;
       app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
-      app.agency = 'Crown Land Allocation';
       app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
       app.interestID = item.properties.INTRID_SID;
-    } else {
-      // boilerplate for new application
-      app.name = 'New Application';
-      // app.purpose = 'TENURE_PURPOSE';
-      // app.subpurpose = 'TENURE_SUBPURPOSE';
-      // app.type = 'TENURE_TYPE';
-      // app.subtype = 'TENURE_SUBTYPE';
-      // app.status = 'TENURE_STATUS';
-      app.region = 'Skeena';
-      // app.location = 'TENURE_LOCATION';
-      // app.businessUnit = 'RESPONSIBLE_BUSINESS_UNIT';
-      app.agency = 'Crown Land Allocation';
     }
 
     return app;
@@ -265,6 +259,10 @@ export class ApplicationService {
   save(orig: Application): Observable<Application> {
     // make a (deep) copy of the passed-in application so we don't change it
     const app = _.cloneDeep(orig);
+
+    // don't send features or documents
+    delete app.features;
+    delete app.documents;
 
     // replace newlines with \\n (JSON format)
     if (app.description) {
