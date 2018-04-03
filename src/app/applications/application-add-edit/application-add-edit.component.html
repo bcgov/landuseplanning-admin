@@ -78,6 +78,7 @@
               <span>Save</span>
             </button>
             <!-- to publish, application form must be valid -->
+            <!-- TODO: should not be able to publish when there are unsaved changes -->
             <button class="btn btn-primary" type="button" *ngIf="application._id !== '0' && !application.isPublished" (click)="publishApplication(application)" [disabled]="applicationForm.form.invalid"
               title="Publish application">
               <i class="material-icons">play_arrow</i>
@@ -89,12 +90,13 @@
               <span>Unpublish</span>
             </button>
             <!-- to delete, there must be no application documents -->
+            <!-- TODO: only enable Cancel when there are unsaved changes -->
             <button class="btn btn-danger" type="button" *ngIf="application._id !== '0' && !application.isPublished" (click)="deleteApplication(application)" [disabled]="application.documents?.length > 0"
               title="Delete application">
               <i class="material-icons">delete</i>
               <span>Delete</span>
             </button>
-            <button class="btn btn-danger" type="button" [routerLink]="['/applications']" title="Ignore changes and return to application list">
+            <button class="btn btn-danger" type="button" (click)="cancelApplication()" title="Ignore changes and return to application list">
               <i class="material-icons">cancel</i>
               <span>Cancel</span>
             </button>

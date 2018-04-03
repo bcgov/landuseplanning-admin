@@ -7,6 +7,8 @@ import { AdministrationComponent } from './administration/administration.compone
 import { UsersComponent } from './administration/users/users.component';
 import { HomeComponent } from './home/home.component';
 
+import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
+
 const routes: Routes = [
   {
     path: 'login',
@@ -39,7 +41,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [CanDeactivateGuard]
 })
 
 export class AppRoutingModule { }

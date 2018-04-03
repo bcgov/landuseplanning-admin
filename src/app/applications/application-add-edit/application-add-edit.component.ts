@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -29,7 +30,8 @@ import { DecisionService } from 'app/services/decision.service';
   styleUrls: ['./application-add-edit.component.scss']
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
-  @ViewChild(ApplicationAsideComponent) child: ApplicationAsideComponent;
+  @ViewChild('applicationForm') applicationForm: NgForm;
+  @ViewChild(ApplicationAsideComponent) applicationAside: ApplicationAsideComponent;
 
   public types = Constants.types;
   public subtypes = Constants.subtypes;
@@ -43,6 +45,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public status: string;
   public clFile: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  private isCanceling = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -86,26 +89,22 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  // TODO: PRC-256: check for unsaved changes
-  // ref: https://angular.io/guide/router#candeactivate-handling-unsaved-changes
+  // check for unsaved changes before navigating away from current route/page
   canDeactivate(): Observable<boolean> | boolean {
-    // TODO: check if forms are pristine?
+    // allow synchronous navigation if everything is OK
+    if (this.isCanceling || !this.applicationForm.dirty) {
+      return true;
+    }
 
-    // allow synchronous navigation (`true`) if everything is OK
-    // if (!this.crisis || this.crisis.name === this.editName) {
-    return true;
-    // }
-
-    // otherwise ask the user to confirm
-    // using observable which resolves to true or false when the user decides
-    // return this.dialogService.addDialog(ConfirmComponent,
-    //   {
-    //     title: 'Unsaved changes',
-    //     message: 'Do you really want to discard changes?'
-    //   }, {
-    //     backdropColor: 'rgba(0, 0, 0, 0.5)'
-    //   }
-    // );
+    // otherwise prompt the user
+    return this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Unsaved changes',
+        message: 'Click OK to discard your changes or Cancel to return to the application.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      }
+    );
   }
 
   public launchMap() {
@@ -134,7 +133,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                 backdropColor: 'rgba(0, 0, 0, 0.5)'
               })
               .takeUntil(this.ngUnsubscribe)
-              .subscribe((isConfirmed: boolean) => {
+              .subscribe(isConfirmed => {
                 if (isConfirmed) {
                   // go to the other application
                   this.router.navigate(['/a', application._id]);
@@ -169,7 +168,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                     this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
                   }
 
-                  this.child.drawMap(this.application);
+                  this.applicationAside.drawMap(this.application);
                 },
                 error => {
                   console.log('error =', error);
@@ -247,6 +246,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           }
         );
     }
+  }
+
+  cancelApplication() {
+    this.isCanceling = true;
+    this.router.navigate(['/applications']);
   }
 
   addDecision() {
