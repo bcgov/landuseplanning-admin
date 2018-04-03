@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
@@ -57,6 +57,32 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private decisionService: DecisionService
   ) { }
 
+  // check for unsaved changes before closing (or refreshing) tab/window
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(event) {
+    if (this.applicationForm.dirty) {
+      event.returnValue = true;
+    }
+  }
+
+  // check for unsaved changes before navigating away from current route (ie, page)
+  canDeactivate(): Observable<boolean> | boolean {
+    // allow synchronous navigation if everything is OK
+    if (this.isCanceling || !this.applicationForm.dirty) {
+      return true;
+    }
+
+    // otherwise prompt the user with observable (asynchronous) dialog
+    return this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Unsaved changes',
+        message: 'Click OK to discard your changes or Cancel to return to the application.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      }
+    );
+  }
+
   ngOnInit() {
     // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
@@ -87,24 +113,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-  }
-
-  // check for unsaved changes before navigating away from current route/page
-  canDeactivate(): Observable<boolean> | boolean {
-    // allow synchronous navigation if everything is OK
-    if (this.isCanceling || !this.applicationForm.dirty) {
-      return true;
-    }
-
-    // otherwise prompt the user
-    return this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Unsaved changes',
-        message: 'Click OK to discard your changes or Cancel to return to the application.'
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      }
-    );
   }
 
   public launchMap() {
