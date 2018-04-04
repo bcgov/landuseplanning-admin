@@ -33,8 +33,6 @@
             </div>
             <ul class="application-edit__list">
               <li>CL File: {{application.cl_file || '-'}}</li>
-              <!-- <input type="hidden" name="cl_file" [(ngModel)]="application.cl_file" required aria-required="true"> -->
-              <!-- <li>Disp ID: {{application.features?.length > 0 ? application.features[0].properties.DISPOSITION_TRANSACTION_SID : '-'}}</li> -->
               <li>Disp ID: {{application.tantalisID || '-'}}</li>
             </ul>
           </section>
@@ -46,21 +44,10 @@
             <div class="form-group">
               <label class="h4 control-label mb-2" for="tantalisID">Disposition ID <em>(Required)</em></label>
               <div class="disp-input" (keydown.enter)="false">
-                <input type="number"
-                  class="form-control"
-                  [ngClass]="{'is-invalid': tantalisID.invalid}"
-                  id="tantalisID"
-                  name="tantalisID"
-                  required aria-required="true"
-                  #tantalisID="ngModel"
-                  [(ngModel)]="application.tantalisID"
-                  (keyup.enter)="applyDisposition()"
-                  (keydown.arrowup)="$event.preventDefault()"
-                  (keydown.arrowdown)="$event.preventDefault()"
-                  (mousewheel)="$event.preventDefault()">
-                <button type="button"
-                  class="btn btn-primary float-left"
-                  (click)="applyDisposition()">
+                <input type="number" class="form-control" [ngClass]="{'is-invalid': tantalisID.invalid}" required aria-required="true"
+                  id="tantalisID" name="tantalisID" #tantalisID="ngModel" [(ngModel)]="application.tantalisID" (keyup.enter)="applyDisposition()"
+                  (keydown.arrowup)="$event.preventDefault()" (keydown.arrowdown)="$event.preventDefault()" (mousewheel)="$event.preventDefault()">
+                <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()" title="Retrieve basic information / features from BCGW">
                   <i class="material-icons">system_update_alt</i>
                   <span>Fetch Disposition Data</span>
                 </button>
@@ -71,23 +58,19 @@
   
           <!-- APPLICATION BUTTONS -->
           <div class="section-form-btns mt-3 mb-3">
-            <!-- to save, application form must be valid and there must be unsaved changes -->
-            <!-- TODO: to save, must have disposition (not desc) -->
             <button class="btn btn-success" type="button" (click)="saveApplication()" title="Save application">
               <i class="material-icons">save</i>
               <span>Save</span>
             </button>
-            <!-- to publish, application form must be valid and there must be no unsaved changes -->
-            <!-- TODO: to publish, must have disposition, description and client -->
-            <button class="btn btn-primary" type="button" *ngIf="application._id !== '0' && !application.isPublished" (click)="publishApplication(application)" title="Publish application">
+            <button class="btn btn-primary" type="button" *ngIf="application._id !== '0' && !application.isPublished" (click)="publishApplication()" title="Publish application">
               <i class="material-icons">play_arrow</i>
               <span>Publish</span>
             </button>
-            <button class="btn btn-danger" type="button" *ngIf="application._id !== '0' && application.isPublished" (click)="unPublishApplication(application)" title="Un-publish application">
+            <button class="btn btn-danger" type="button" *ngIf="application._id !== '0' && application.isPublished" (click)="unPublishApplication()" title="Un-publish application">
               <i class="material-icons">pause</i>
               <span>Unpublish</span>
             </button>
-            <button class="btn btn-danger" type="button" *ngIf="application._id !== '0' && !application.isPublished" (click)="deleteApplication(application)" title="Delete application">
+            <button class="btn btn-danger" type="button" *ngIf="application._id !== '0' && !application.isPublished" (click)="deleteApplication()" title="Delete application">
               <i class="material-icons">delete</i>
               <span>Delete</span>
             </button>
@@ -95,7 +78,7 @@
               <i class="material-icons">cancel</i>
               <span>Cancel</span>
             </button>
-            <button class="btn btn-danger" type="button" *ngIf="application._id !== '0'" (click)="resetApplication()" title="Reset application fields to original values">
+            <button class="btn btn-danger" type="button" *ngIf="application._id !== '0'" [disabled]="applicationForm.form.pristine" (click)="resetApplication()" title="Reset application fields to original values">
               <i class="material-icons">cancel</i>
               <span>Reset</span>
             </button>
@@ -156,12 +139,12 @@
 
             <!-- Description -->
             <section>
-                <label class="h4 control-label mb-2" for="description">
-                  Description
-                  <span ngbTooltip="Description is displayed publicly" placement="top"><i class="material-icons md-18">help</i></span>
-                </label>
-                <textarea class="form-control app-desc" type="text" id="description" name="description" rows="5" #description="ngModel" [(ngModel)]="application.description"></textarea>
-              </section>
+              <label class="h4 control-label mb-2" for="description">
+                Description
+                <span ngbTooltip="Description is displayed publicly" placement="top"><i class="material-icons md-18">help</i></span>
+              </label>
+              <textarea class="form-control app-desc" type="text" id="description" name="description" rows="5" #description="ngModel" [(ngModel)]="application.description"></textarea>
+            </section>
   
             <!-- Application Documents -->
             <section class="application-detail__documents">

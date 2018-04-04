@@ -40,8 +40,8 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       return Observable.of(new Application({ _id: appId }));
     }
 
-    // edit existing application
-    // force reload (in case of stale data)
+    // view/edit existing application
+    // force reload to prevent stale data
     return this.applicationService.getById(appId, true)
       .catch(err => {
         // if 403, redir to login page

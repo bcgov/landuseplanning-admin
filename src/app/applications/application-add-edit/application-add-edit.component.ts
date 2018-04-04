@@ -57,7 +57,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private decisionService: DecisionService
   ) { }
 
-  // check for unsaved changes before closing (or refreshing) tab/window
+  // check for unsaved changes before closing (or refreshing) current tab/window
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(event) {
     if (!this.allowDeactivate && this.applicationForm.dirty) {
@@ -65,7 +65,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  // check for unsaved changes before navigating away from current route (ie, page)
+  // check for unsaved changes before navigating away from current route (ie, this page)
   canDeactivate(): Observable<boolean> | boolean {
     // allow synchronous navigation if everything is OK
     if (this.allowDeactivate || this.applicationForm.pristine) {
@@ -129,8 +129,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   applyDisposition() {
-    // (re)load the shapes
-
     // first check if the disp is already used by another application
     this.applicationService.getByTantalisId(this.application.tantalisID)
       .takeUntil(this.ngUnsubscribe)
@@ -155,7 +153,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                 // otherwise return to current application
               });
           } else {
-            // fall through: (re)load features/shapes
+            // (re)load features/shapes
             this.searchService.getByDTID(this.application.tantalisID)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
@@ -186,6 +184,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                     this.application.interestID = this.application.features[0].properties.INTRID_SID;
                   }
 
+                  // unset old client
+                  this.application.client = null;
+
                   this.applicationAside.drawMap(this.application);
                 },
                 error => {
@@ -207,6 +208,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     if (this.application && this.application.tantalisID) {
       dispId = this.application.tantalisID;
     }
+
     this.dialogService.addDialog(SelectOrganizationComponent,
       {
         dispositionId: dispId
@@ -217,6 +219,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe(
         clientString => {
           if (clientString && clientString.length > 0) {
+            if (clientString !== this.application.client) {
+              this.applicationForm.form.markAsDirty();
+            }
             this.application.client = clientString;
           }
         },
@@ -237,6 +242,16 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe);
+    } else if (!this.isDispositionValid()) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Save Application',
+          message: 'Please check that disposition data (basic information) has been successfully loaded.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
     } else {
       if (this.application._id === '0') {
         this.internalAddApplication();
@@ -244,6 +259,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         this.internalSaveApplication();
       }
     }
+  }
+
+  private isDispositionValid() {
+    return (this.application.features && this.application.features.length > 0
+      && this.application.features[0].properties.DISPOSITION_TRANSACTION_SID === this.application.tantalisID);
   }
 
   private internalAddApplication() {
@@ -279,7 +299,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           // reload cached app data
           this.applicationService.getById(this.application._id, true)
             .takeUntil(this.ngUnsubscribe)
-            .subscribe();
+            .subscribe(() => this.applicationForm.form.markAsPristine());
         },
         error => {
           console.log('error =', error);
@@ -412,27 +432,37 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  publishApplication(app: Application) {
+  publishApplication() {
     if (this.applicationForm.dirty) {
       this.dialogService.addDialog(ConfirmComponent,
         {
           title: 'Cannot Publish Application',
-          message: 'Please save application first.',
+          message: 'Please save pending application changes first.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else if (!this.application.client || !this.application.description) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Publish Application',
+          message: 'Please check that client and description have been entered.',
           okOnly: true
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe);
     } else {
-      this.applicationService.publish(app);
+      this.applicationService.publish(this.application);
     }
   }
 
-  unPublishApplication(app: Application) {
-    this.applicationService.unPublish(app);
+  unPublishApplication() {
+    this.applicationService.unPublish(this.application);
   }
 
-  deleteApplication(app: Application) {
+  deleteApplication() {
     if (this.application.documents && this.application.documents.length > 0) {
       this.dialogService.addDialog(ConfirmComponent,
         {
@@ -454,7 +484,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe((isConfirmed: boolean) => {
           if (isConfirmed) {
-            this.applicationService.delete(app)
+            this.applicationService.delete(this.application)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
                 () => {
