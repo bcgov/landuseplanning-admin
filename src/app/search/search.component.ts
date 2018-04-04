@@ -140,12 +140,25 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   importProject(item: any) {
-    // console.log('IMPORT:', item);
+    // populate application properties from search results
+    if (item.properties) {
+      item.purpose = item.properties.TENURE_PURPOSE;
+      item.subpurpose = item.properties.TENURE_SUBPURPOSE;
+      item.type = item.properties.TENURE_TYPE;
+      item.subtype = item.properties.TENURE_SUBTYPE;
+      item.status = item.properties.TENURE_STATUS;
+      item.tenureStage = item.properties.TENURE_STAGE;
+      item.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
+      item.location = item.properties.TENURE_LOCATION;
+      item.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
+      item.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
+      item.interestID = item.properties.INTRID_SID;
+    }
 
-    // Call the API and create the project, upon success redirect to the edit.
+    // add the application
+    // on success go to edit page
     this.applicationService.addApplication(item)
       .subscribe(application => {
-        // console.log('ADDED:', application._id);
         this.router.navigate(['/a', application._id]);
       });
   }

@@ -155,7 +155,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                 // otherwise return to current application
               });
           } else {
-            // fall through: (re)load data
+            // fall through: (re)load features/shapes
             this.searchService.getByDTID(this.application.tantalisID)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
@@ -171,7 +171,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                   });
                   this.application.areaHectares = areaHectares;
 
-                  // copy over properties from first feature
+                  // populate application properties from first feature
                   if (this.application.features && this.application.features.length > 0) {
                     this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
                     this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
@@ -182,6 +182,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                     this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
                     this.application.location = this.application.features[0].properties.TENURE_LOCATION;
                     this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+                    this.application.tantalisID = this.application.features[0].properties.DISPOSITION_TRANSACTION_SID;
+                    this.application.interestID = this.application.features[0].properties.INTRID_SID;
                   }
 
                   this.applicationAside.drawMap(this.application);

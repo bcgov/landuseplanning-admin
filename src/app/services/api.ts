@@ -43,19 +43,19 @@ export class ApiService {
         this.env = 'dev';
         break;
 
-        case 'nrts-prc-test.pathfinder.gov.bc.ca':
+      case 'nrts-prc-test.pathfinder.gov.bc.ca':
         // Test
         this.pathAPI = 'https://nrts-prc-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
-        case 'nrts-prc-demo.pathfinder.gov.bc.ca':
+      case 'nrts-prc-demo.pathfinder.gov.bc.ca':
         // Demo
         this.pathAPI = 'https://nrts-prc-demo.pathfinder.gov.bc.ca/api';
         this.env = 'demo';
         break;
 
-        default:
+      default:
         // Prod
         this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
         this.env = 'prod';
@@ -260,11 +260,6 @@ export class ApiService {
     _.each(fields, function (f) {
       queryString += f + '|';
     });
-    // Remove features since we don't really save them in the back-end, they are
-    // referencial.
-    if (app.features) {
-      delete app.features;
-    }
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
@@ -738,6 +733,7 @@ export class ApiService {
   private post(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
     return this.http.post(`${apiPath}/${apiRoute}`, body || null, options || null);
   }
+
   private delete(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
     return this.http.delete(`${apiPath}/${apiRoute}`, options || null);
   }
