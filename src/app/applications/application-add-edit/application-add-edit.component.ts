@@ -45,7 +45,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public status: string;
   public clFile: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  private isCanceling = false;
+  private allowDeactivate = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,7 +60,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   // check for unsaved changes before closing (or refreshing) tab/window
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(event) {
-    if (this.applicationForm.dirty) {
+    if (!this.allowDeactivate && this.applicationForm.dirty) {
       event.returnValue = true;
     }
   }
@@ -68,14 +68,14 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   // check for unsaved changes before navigating away from current route (ie, page)
   canDeactivate(): Observable<boolean> | boolean {
     // allow synchronous navigation if everything is OK
-    if (this.isCanceling || !this.applicationForm.dirty) {
+    if (this.allowDeactivate || this.applicationForm.pristine) {
       return true;
     }
 
     // otherwise prompt the user with observable (asynchronous) dialog
     return this.dialogService.addDialog(ConfirmComponent,
       {
-        title: 'Unsaved changes',
+        title: 'Unsaved Changes',
         message: 'Click OK to discard your changes or Cancel to return to the application.'
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
@@ -88,6 +88,12 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
+
+    // trick router to reload current URL in resetApplication()
+    // ref: https://github.com/angular/angular/issues/13831#issuecomment-350095719
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
 
     // get data from route resolver
     this.route.data
@@ -150,11 +156,12 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
               });
           } else {
             // fall through: (re)load data
-            this.searchService.getByDTID(this.application.tantalisID.toString())
+            this.searchService.getByDTID(this.application.tantalisID)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
                 features => {
                   this.application.features = features;
+
                   // calculate Total Area (hectares)
                   let areaHectares = 0;
                   _.each(this.application.features, function (f) {
@@ -164,13 +171,14 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                   });
                   this.application.areaHectares = areaHectares;
 
-                  // copy over application info from first feature
+                  // copy over properties from first feature
                   if (this.application.features && this.application.features.length > 0) {
                     this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
                     this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
                     this.application.type = this.application.features[0].properties.TENURE_TYPE;
                     this.application.subtype = this.application.features[0].properties.TENURE_SUBTYPE;
                     this.application.status = this.application.features[0].properties.TENURE_STATUS;
+                    this.application.tenureStage = this.application.features[0].properties.TENURE_STAGE;
                     this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
                     this.application.location = this.application.features[0].properties.TENURE_LOCATION;
                     this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
@@ -186,7 +194,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           }
         },
         error => {
-          console.log('Error retreiving applications.');
+          console.log('Error retrieving application.');
         }
       );
   }
@@ -217,48 +225,71 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   saveApplication() {
-    // adjust for current tz
-    this.application.publishDate = moment(this.application.publishDate).format();
-
-    if (this.application._id === '0') {
-      // create new application
-      // then reload the page
-      console.log('application = ', this.application);
-      this.applicationService.addApplication(this.application)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          application => {
-            console.log('added application = ', application);
-            this.router.navigate(['/a', application._id, 'edit']);
-          },
-          error => {
-            console.log('error =', error);
-            this.showMessage(true, 'Error adding application');
-          }
-        );
+    if (this.applicationForm.invalid) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Save Application',
+          message: 'Please check for required fields or errors.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
     } else {
-      // save current application
-      this.applicationService.save(this.application)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          () => {
-            this.showMessage(false, 'Application saved!');
-            // reload cached app data
-            this.applicationService.getById(this.application._id, true)
-              .takeUntil(this.ngUnsubscribe)
-              .subscribe();
-          },
-          error => {
-            console.log('error =', error);
-            this.showMessage(true, 'Error saving application');
-          }
-        );
+      if (this.application._id === '0') {
+        this.internalAddApplication();
+      } else {
+        this.internalSaveApplication();
+      }
     }
   }
 
-  cancelApplication() {
-    this.isCanceling = true;
-    this.router.navigate(['/applications']);
+  private internalAddApplication() {
+    // adjust for current tz
+    this.application.publishDate = moment(this.application.publishDate).format();
+
+    // create new application
+    // then reload the page
+    this.applicationService.addApplication(this.application)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        application => {
+          this.allowDeactivate = true;
+          this.router.navigate(['/a', application._id, 'edit']);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error adding application');
+        }
+      );
+  }
+
+  private internalSaveApplication() {
+    // adjust for current tz
+    this.application.publishDate = moment(this.application.publishDate).format();
+
+    // save current application
+    this.applicationService.save(this.application)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          this.showMessage(false, 'Application saved!');
+          // reload cached app data
+          this.applicationService.getById(this.application._id, true)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe();
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error saving application');
+        }
+      );
+  }
+
+  resetApplication() {
+    // trick router to reload current URL
+    this.router.navigated = false;
+    this.router.navigate([this.router.url]);
   }
 
   addDecision() {
@@ -380,7 +411,19 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   publishApplication(app: Application) {
-    this.applicationService.publish(app);
+    if (this.applicationForm.dirty) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Publish Application',
+          message: 'Please save application first.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      this.applicationService.publish(app);
+    }
   }
 
   unPublishApplication(app: Application) {
@@ -388,30 +431,43 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   deleteApplication(app: Application) {
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Confirm deletion',
-        message: 'Do you really want to delete this application?'
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed: boolean) => {
-        if (isConfirmed) {
-          this.applicationService.delete(app)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-              () => {
-                this.application = null;
-                this.router.navigate(['/applications']);
-              },
-              error => {
-                console.log('error =', error);
-                this.showMessage(true, 'Error deleting application');
-              }
-            );
-        }
-      });
+    if (this.application.documents && this.application.documents.length > 0) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Delete Application',
+          message: 'Please delete all documents first.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Confirm Deletion',
+          message: 'Do you really want to delete this application?'
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((isConfirmed: boolean) => {
+          if (isConfirmed) {
+            this.applicationService.delete(app)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                () => {
+                  this.application = null;
+                  this.allowDeactivate = true;
+                  this.router.navigate(['/applications']);
+                },
+                error => {
+                  console.log('error =', error);
+                  this.showMessage(true, 'Error deleting application');
+                }
+              );
+          }
+        });
+    }
   }
 
   publishDecision(decision: Decision) {
@@ -425,7 +481,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   deleteDecision(decision: Decision) {
     this.dialogService.addDialog(ConfirmComponent,
       {
-        title: 'Confirm deletion',
+        title: 'Confirm Deletion',
         message: 'Do you really want to delete this decision?'
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'

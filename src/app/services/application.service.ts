@@ -157,7 +157,7 @@ export class ApplicationService {
         );
 
         // now get the shapes
-        promises.push(this.searchService.getByDTID(application.tantalisID.toString())
+        promises.push(this.searchService.getByDTID(application.tantalisID)
           .toPromise()
           .then(features => {
             application.features = features;
@@ -239,13 +239,14 @@ export class ApplicationService {
     app.name = 'New Application'; // TODO: remove if not needed
     app.region = 'Skeena';
 
-    // copy over disposition properties
+    // copy over properties from import
     if (item.properties) {
       app.purpose = item.properties.TENURE_PURPOSE;
       app.subpurpose = item.properties.TENURE_SUBPURPOSE;
       app.type = item.properties.TENURE_TYPE;
       app.subtype = item.properties.TENURE_SUBTYPE;
       app.status = item.properties.TENURE_STATUS;
+      app.tenureStage = item.properties.TENURE_STAGE;
       app.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
       app.location = item.properties.TENURE_LOCATION;
       app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;

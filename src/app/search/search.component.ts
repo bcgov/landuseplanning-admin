@@ -269,5 +269,4 @@ export class SearchComponent implements OnInit, OnDestroy {
   loadMore() {
     this.doSearch(false);
   }
-
 }

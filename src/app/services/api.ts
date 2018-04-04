@@ -655,7 +655,7 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getBCGWDispositionByTransactionId(transactionId: string) {
+  getBCGWDispositionByTransactionId(transactionId: number) {
     const fields = ['name'];
     let queryString = 'public/search/bcgw/dispositionTransactionId/' + transactionId + '?fields=';
     _.each(fields, function (f) {
