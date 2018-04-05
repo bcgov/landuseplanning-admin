@@ -61,12 +61,10 @@ export class SearchService {
   }
 
   // get features by disposition ID (transaction ID)
-  getByDTID(dtid: string, forceReload: boolean = false): Observable<Feature[]> {
-    console.log('dtid = ', dtid);
-
+  getByDTID(dtid: number, forceReload: boolean = false): Observable<Feature[]> {
     if (!forceReload && this.features && this.features.length > 0 && this.features[0].properties
-      && this.features[0].properties.DISPOSITION_TRANSACTION_SID === +dtid) {
-      console.log('cached features =', this.features);
+      && this.features[0].properties.DISPOSITION_TRANSACTION_SID === dtid) {
+      // console.log('cached features =', this.features);
       return Observable.of(this.features);
     }
 
@@ -78,7 +76,7 @@ export class SearchService {
       .map((features: Feature[]) => {
         if (!features) { return null; }
 
-        console.log('new features =', features);
+        // console.log('new features =', features);
         this.features = features;
         return this.features;
       });

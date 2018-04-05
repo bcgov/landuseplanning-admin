@@ -156,12 +156,13 @@ export class ApplicationService {
           .then(decision => application.decision = decision)
         );
 
-        // now get the shapes
-        promises.push(this.searchService.getByDTID(application.tantalisID.toString())
+        // now get the features/shapes
+        promises.push(this.searchService.getByDTID(application.tantalisID, forceReload)
           .toPromise()
           .then(features => {
             application.features = features;
-            // calculate areaHectares
+
+            // calculate Total Area (hectares)
             let areaHectares = 0;
             _.each(application.features, function (f) {
               if (f['properties']) {
@@ -169,6 +170,21 @@ export class ApplicationService {
               }
             });
             application.areaHectares = areaHectares;
+
+            // update application properties from first feature
+            if (application.features && application.features.length > 0) {
+              application.purpose = application.features[0].properties.TENURE_PURPOSE;
+              application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
+              application.type = application.features[0].properties.TENURE_TYPE;
+              application.subtype = application.features[0].properties.TENURE_SUBTYPE;
+              application.status = application.features[0].properties.TENURE_STATUS;
+              application.tenureStage = application.features[0].properties.TENURE_STAGE;
+              application.cl_file = +application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
+              application.location = application.features[0].properties.TENURE_LOCATION;
+              application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+              application.tantalisID = application.features[0].properties.DISPOSITION_TRANSACTION_SID;
+              application.interestID = application.features[0].properties.INTRID_SID;
+            }
           })
         );
 
@@ -204,7 +220,19 @@ export class ApplicationService {
 
   // create new application
   addApplication(item: any): Observable<Application> {
-    const app = this.sanitizeApplication(item);
+    const app = new Application(item);
+
+    // boilerplate for new application
+    app.agency = 'Crown Land Allocation';
+    app.name = 'New Application'; // TODO: remove if not needed
+    app.region = 'Skeena';
+
+    // id must not exist on POST
+    delete app._id;
+
+    // don't send features or documents
+    delete app.features;
+    delete app.documents;
 
     // replace newlines with \\n (JSON format)
     if (app.description) {
@@ -220,40 +248,6 @@ export class ApplicationService {
         return new Application(application);
       })
       .catch(this.api.handleError);
-  }
-
-  // deletes object keys the API doesn't want on POST
-  // and initializes defaults
-  private sanitizeApplication(item: any): Application {
-    const app = new Application(item);
-
-    // ID must not exist on POST
-    delete app._id;
-
-    // don't send features or documents
-    delete app.features;
-    delete app.documents;
-
-    // boilerplate for new application
-    app.agency = 'Crown Land Allocation';
-    app.name = 'New Application'; // TODO: remove if not needed
-    app.region = 'Skeena';
-
-    // copy over disposition properties
-    if (item.properties) {
-      app.purpose = item.properties.TENURE_PURPOSE;
-      app.subpurpose = item.properties.TENURE_SUBPURPOSE;
-      app.type = item.properties.TENURE_TYPE;
-      app.subtype = item.properties.TENURE_SUBTYPE;
-      app.status = item.properties.TENURE_STATUS;
-      app.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
-      app.location = item.properties.TENURE_LOCATION;
-      app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
-      app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
-      app.interestID = item.properties.INTRID_SID;
-    }
-
-    return app;
   }
 
   save(orig: Application): Observable<Application> {

@@ -1,4 +1,14 @@
 @import "~assets/styles/base.scss";
+.application-list {
+    &__options {
+        @include flex(0 0 auto);
+        padding: 1rem 0rem;
+        mat-slide-toggle {
+            white-space: normal;
+        }
+    }
+}
+
 .application-table {
     tbody {
         tr {
@@ -43,6 +53,9 @@
                 margin: 0;
                 padding: 0.5rem 0.75rem;
                 width: 50%;
+            }
+            .name {
+                font-weight: bold;
             }
         }
     }

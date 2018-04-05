@@ -6,7 +6,7 @@ import { ApplicationDetailComponent } from './application-detail/application-det
 import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
 import { ApplicationListResolver, ApplicationDetailResolver } from './application-resolver.service';
 
-import { TAB_NAV_ROUTES } from './application-detail/application-detail-routes';
+import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 
 const routes: Routes = [
   {
@@ -21,17 +21,17 @@ const routes: Routes = [
     component: ApplicationDetailComponent,
     resolve: {
       application: ApplicationDetailResolver
-    },
-    // each tab within the page navigates to a separate route
-    // e.g. /a/:id/(overview|authorizations|compliance|docs)
-    children: TAB_NAV_ROUTES
+    }
   },
   {
     path: 'a/:appId/edit',
     component: ApplicationAddEditComponent,
     resolve: {
       application: ApplicationDetailResolver
-    }
+    },
+    canDeactivate: [CanDeactivateGuard],
+    // always run resolvers -- to allow reloading same route
+    runGuardsAndResolvers: 'always'
   }
 ];
 

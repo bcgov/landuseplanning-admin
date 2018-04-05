@@ -40,7 +40,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       return Observable.of(new Application({ _id: appId }));
     }
 
-    // edit existing application
+    // view/edit existing application
     return this.applicationService.getById(appId)
       .catch(err => {
         // if 403, redir to login page

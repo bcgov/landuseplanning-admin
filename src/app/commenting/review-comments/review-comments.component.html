@@ -18,7 +18,7 @@
           <div>{{application.purpose || '-'}} / {{application.subpurpose || '-'}}</div>
           <ul class="review-comments__list">
             <li>CL File: {{application.cl_file || '-'}}</li>
-            <li *ngIf="application.features?.length > 0">Disp ID: {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</li>
+            <li>Disp ID: {{application.tantalisID || '-'}}</li>
           </ul>
         </section>
       </main>
