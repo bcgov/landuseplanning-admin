@@ -44,7 +44,7 @@
             <div class="form-group">
               <label class="h4 control-label mb-2" for="tantalisID">Disposition ID <em>(Required)</em></label>
               <div class="disp-input" (keydown.enter)="false">
-                <input type="number" class="form-control" [ngClass]="{'is-invalid': tantalisID.invalid}" required aria-required="true"
+                <input type="number" class="form-control" [ngClass]="{'is-invalid': tantalisID.invalid}" required aria-required="true" autofocus
                   id="tantalisID" name="tantalisID" #tantalisID="ngModel" [(ngModel)]="application.tantalisID" (keyup.enter)="applyDisposition()"
                   (keydown.arrowup)="$event.preventDefault()" (keydown.arrowdown)="$event.preventDefault()" (mousewheel)="$event.preventDefault()">
                 <button type="button" class="btn btn-primary float-left" (click)="applyDisposition()" title="Retrieve basic information / features from BCGW">

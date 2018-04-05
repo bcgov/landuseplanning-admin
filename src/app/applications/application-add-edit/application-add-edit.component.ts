@@ -89,12 +89,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // trick router to reload current URL in resetApplication()
-    // ref: https://github.com/angular/angular/issues/13831#issuecomment-350095719
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
-      return false;
-    };
-
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -309,9 +303,13 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   resetApplication() {
-    // trick router to reload current URL
-    this.router.navigated = false;
-    this.router.navigate([this.router.url]);
+    // reload cached app data
+    this.applicationService.getById(this.application._id, true)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(application => {
+        this.application = application;
+        this.applicationForm.form.markAsPristine();
+      });
   }
 
   addDecision() {
