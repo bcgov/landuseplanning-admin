@@ -60,6 +60,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   // check for unsaved changes before closing (or refreshing) current tab/window
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(event) {
+    // display browser alert if needed
     if (!this.allowDeactivate && this.applicationForm.dirty) {
       event.returnValue = true;
     }
@@ -79,8 +80,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         message: 'Click OK to discard your changes or Cancel to return to the application.'
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
-      }
-    );
+      })
+      .takeUntil(this.ngUnsubscribe);
   }
 
   ngOnInit() {
@@ -95,7 +96,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe(
         (data: { application: Application }) => {
           if (data.application) {
-            this.application = data.application;
+            // make a (deep) copy of the in-memory application so we don't change it
+            // this allows us to abort editing
+            this.application = _.cloneDeep(data.application);
 
             if (!this.application.publishDate) {
               this.application.publishDate = new Date();
@@ -225,7 +228,50 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  saveApplication() {
+  public createApplication() {
+    if (this.applicationForm.invalid) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Create Application',
+          message: 'Please check for required fields or errors.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else if (!this.isDispositionValid()) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Create Application',
+          message: 'Please check that disposition data (basic information) has been successfully loaded.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      // adjust for current tz
+      this.application.publishDate = moment(this.application.publishDate).format();
+
+      this.applicationService.addApplication(this.application)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          application => {
+            this.showMessage(false, 'Application created!');
+            // reload page so aside updates too
+            this.allowDeactivate = true;
+            this.router.navigate(['/a', application._id, 'edit']);
+            this.applicationForm.form.markAsPristine();
+          },
+          error => {
+            console.log('error =', error);
+            this.showMessage(true, 'Error creating application');
+          }
+        );
+    }
+  }
+
+  public saveApplication() {
     if (this.applicationForm.invalid) {
       this.dialogService.addDialog(ConfirmComponent,
         {
@@ -247,11 +293,22 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         })
         .takeUntil(this.ngUnsubscribe);
     } else {
-      if (this.application._id === '0') {
-        this.internalAddApplication();
-      } else {
-        this.internalSaveApplication();
-      }
+      // adjust for current tz
+      this.application.publishDate = moment(this.application.publishDate).format();
+
+      // save current application
+      this.applicationService.save(this.application)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          application => {
+            this.showMessage(false, 'Application saved!');
+            this.reloadData(application._id);
+          },
+          error => {
+            console.log('error =', error);
+            this.showMessage(true, 'Error saving application');
+          }
+        );
     }
   }
 
@@ -260,54 +317,34 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       && this.application.features[0].properties.DISPOSITION_TRANSACTION_SID === this.application.tantalisID);
   }
 
-  private internalAddApplication() {
-    // adjust for current tz
-    this.application.publishDate = moment(this.application.publishDate).format();
-
-    // create new application
-    // then reload the page
-    this.applicationService.addApplication(this.application)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        application => {
-          this.allowDeactivate = true;
-          this.router.navigate(['/a', application._id, 'edit']);
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error adding application');
-        }
-      );
+  public resetApplication() {
+    if (this.applicationForm.pristine) {
+      this.reloadData(this.application._id);
+    } else {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Confirm Reset',
+          message: 'Click OK to discard your changes or Cancel to return to the application.'
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(isConfirmed => {
+          if (isConfirmed) {
+            this.reloadData(this.application._id);
+          }
+        });
+    }
   }
 
-  private internalSaveApplication() {
-    // adjust for current tz
-    this.application.publishDate = moment(this.application.publishDate).format();
-
-    // save current application
-    this.applicationService.save(this.application)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        () => {
-          this.showMessage(false, 'Application saved!');
-          // reload cached app data
-          this.applicationService.getById(this.application._id, true)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(() => this.applicationForm.form.markAsPristine());
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error saving application');
-        }
-      );
-  }
-
-  resetApplication() {
-    // reload cached app data
-    this.applicationService.getById(this.application._id, true)
+  private reloadData(id: string) {
+    // force-reload app data
+    this.applicationService.getById(id, true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(application => {
-        this.application = application;
+        // make a (deep) copy of the in-memory application so we don't change it
+        // this allows us to abort editing
+        this.application = _.cloneDeep(application);
         this.applicationForm.form.markAsPristine();
       });
   }
@@ -539,6 +576,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.error = isError;
     this.showMsg = true;
     this.status = msg;
-    setTimeout(() => this.showMsg = false, 3000);
+    setTimeout(() => this.showMsg = false, 2000);
   }
 }
