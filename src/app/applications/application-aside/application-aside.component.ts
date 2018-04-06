@@ -92,44 +92,47 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
                 attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
                 maxZoom: 16
               });
-              self.map = L.map('map', {
-                layers: [World_Imagery]
-              });
 
-              // set up the controls
-              self.baseMaps = {
-                'Ocean Base': Esri_OceanBasemap,
-                'Nat Geo World Map': Esri_NatGeoWorldMap,
-                'Open Surfer Roads': OpenMapSurfer_Roads,
-                'World Topographic': World_Topo_Map,
-                'World Imagery': World_Imagery
-              };
-              self.control = L.control.layers(self.baseMaps, null, { collapsed: true }).addTo(self.map);
-
-              if (self.fg) {
-                _.each(self.layers, function (layer) {
-                  self.map.removeLayer(layer);
+              try {
+                self.map = L.map('map', {
+                  layers: [World_Imagery]
                 });
-                self.fg.clearLayers();
-              } else {
-                self.fg = L.featureGroup();
-              }
 
-              _.each(features, function (feature) {
-                const f = JSON.parse(JSON.stringify(feature));
-                // Needed to be valid GeoJSON
-                delete f.geometry_name;
-                const featureObj: GeoJSON.Feature<any> = f;
-                const layer = L.geoJSON(featureObj);
-                const options = { maxWidth: 400 };
-                self.fg.addLayer(layer);
-                layer.addTo(self.map);
-              });
+                // set up the controls
+                self.baseMaps = {
+                  'Ocean Base': Esri_OceanBasemap,
+                  'Nat Geo World Map': Esri_NatGeoWorldMap,
+                  'Open Surfer Roads': OpenMapSurfer_Roads,
+                  'World Topographic': World_Topo_Map,
+                  'World Imagery': World_Imagery
+                };
+                self.control = L.control.layers(self.baseMaps, null, { collapsed: true }).addTo(self.map);
 
-              const bounds = self.fg.getBounds();
-              if (!_.isEmpty(bounds)) {
-                self.map.fitBounds(bounds, self.maxZoom);
-              }
+                if (self.fg) {
+                  _.each(self.layers, function (layer) {
+                    self.map.removeLayer(layer);
+                  });
+                  self.fg.clearLayers();
+                } else {
+                  self.fg = L.featureGroup();
+                }
+
+                _.each(features, function (feature) {
+                  const f = JSON.parse(JSON.stringify(feature));
+                  // Needed to be valid GeoJSON
+                  delete f.geometry_name;
+                  const featureObj: GeoJSON.Feature<any> = f;
+                  const layer = L.geoJSON(featureObj);
+                  const options = { maxWidth: 400 };
+                  self.fg.addLayer(layer);
+                  layer.addTo(self.map);
+                });
+
+                const bounds = self.fg.getBounds();
+                if (!_.isEmpty(bounds)) {
+                  self.map.fitBounds(bounds, self.maxZoom);
+                }
+              } catch (e) { }
             },
             error => {
               console.log('error =', error);
