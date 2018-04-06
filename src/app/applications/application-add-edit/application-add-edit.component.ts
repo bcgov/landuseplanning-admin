@@ -228,6 +228,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
+  // create new application
   public createApplication() {
     if (this.applicationForm.invalid) {
       this.dialogService.addDialog(ConfirmComponent,
@@ -253,15 +254,13 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       // adjust for current tz
       this.application.publishDate = moment(this.application.publishDate).format();
 
-      this.applicationService.addApplication(this.application)
+      this.applicationService.add(this.application)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           application => {
             this.showMessage(false, 'Application created!');
-            // reload page so aside updates too
-            this.allowDeactivate = true;
-            this.router.navigate(['/a', application._id, 'edit']);
-            this.applicationForm.form.markAsPristine();
+            // reload cached data
+            this.reloadData(application._id);
           },
           error => {
             console.log('error =', error);
@@ -271,6 +270,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  // save current application
   public saveApplication() {
     if (this.applicationForm.invalid) {
       this.dialogService.addDialog(ConfirmComponent,
@@ -296,12 +296,12 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       // adjust for current tz
       this.application.publishDate = moment(this.application.publishDate).format();
 
-      // save current application
       this.applicationService.save(this.application)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           application => {
             this.showMessage(false, 'Application saved!');
+            // reload cached data
             this.reloadData(application._id);
           },
           error => {

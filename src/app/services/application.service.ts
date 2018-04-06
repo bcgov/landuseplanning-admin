@@ -219,7 +219,7 @@ export class ApplicationService {
   }
 
   // create new application
-  addApplication(item: any): Observable<Application> {
+  add(item: any): Observable<Application> {
     const app = new Application(item);
 
     // boilerplate for new application

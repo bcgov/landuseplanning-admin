@@ -1,10 +1,11 @@
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import * as _ from 'lodash';
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/map';
 import * as L from 'leaflet';
+import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
 import { Organization } from 'app/models/organization';
@@ -53,7 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   tileLayers: L.TileLayer[];
   baseMaps: {};
   control: L.Control;
-  private sub: Subscription;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   private maxZoom = { maxZoom: 17 };
 
   constructor(
@@ -98,7 +99,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
     this.map.setView(new L.LatLng(53.7267, -127.6476), 5);
 
-    // Setup the controls
+    // set up the controls
     this.baseMaps = {
       'Ocean Base': Esri_OceanBasemap,
       'Nat Geo World Map': Esri_NatGeoWorldMap,
@@ -111,32 +112,30 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.layers = [];
     }
 
-    this.sub = this.route.params.subscribe(
-      (params: Params) => {
-        /*
-          TBD: Deal with meta search terms?
-            this.params.type
-            this.params.page
-            this.params.limit
-        */
-        this.params = params;
-        this.terms = new SearchTerms();
+    this.route.params
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (params: Params) => {
+          /*
+            TBD: Deal with meta search terms?
+              this.params.type
+              this.params.page
+              this.params.limit
+          */
+          this.params = params;
+          this.terms = new SearchTerms();
 
-        if (this.params.clfile) {
-          this.terms.clfile = this.params.clfile.split(',').join(' ');
+          if (this.params.clfile) {
+            this.terms.clfile = this.params.clfile.split(',').join(' ');
+          }
+
+          this._changeDetectionRef.detectChanges();
+
+          if (!_.isEmpty(this.terms.getParams())) {
+            this.doSearch(true);
+          }
         }
-
-        this._changeDetectionRef.detectChanges();
-
-        if (!_.isEmpty(this.terms.getParams())) {
-          this.doSearch(true);
-        }
-      }
-    );
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
+      );
   }
 
   importProject(item: any) {
@@ -157,7 +156,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // add the application
     // on success go to edit page
-    this.applicationService.addApplication(item)
+    this.applicationService.add(item)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(application => {
         this.router.navigate(['/a', application._id]);
       });
@@ -182,6 +182,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
 
     this.searchService.getByCLFile(this.terms.clfile)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
         data => {
           this.loading = false;
@@ -281,5 +282,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   loadMore() {
     this.doSearch(false);
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }
