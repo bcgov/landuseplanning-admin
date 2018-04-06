@@ -55,6 +55,8 @@ export class ApplicationService {
           if (applications[i].legalDescription) {
             applications[i].legalDescription = applications[i].legalDescription.replace(/\\n/g, '\n');
           }
+          // derive application status for app list display + sorting
+          applications[i]['appStatus'] = this.getStatus(applications[i]);
         });
 
         const promises: Array<Promise<any>> = [];
@@ -72,7 +74,13 @@ export class ApplicationService {
         applications.forEach((application, i) => {
           promises.push(this.commentPeriodService.getAllByApplicationId(applications[i]._id)
             .toPromise()
-            .then(periods => applications[i].currentPeriod = this.commentPeriodService.getCurrent(periods)));
+            .then(periods => {
+              const cp = this.commentPeriodService.getCurrent(periods);
+              applications[i].currentPeriod = cp;
+              // derive comment period status for app list display + sorting
+              applications[i]['cpStatus'] = this.commentPeriodService.getStatus(cp);
+            })
+          );
         });
 
         return Promise.all(promises).then(() => { return applications; });
@@ -178,6 +186,7 @@ export class ApplicationService {
               application.type = application.features[0].properties.TENURE_TYPE;
               application.subtype = application.features[0].properties.TENURE_SUBTYPE;
               application.status = application.features[0].properties.TENURE_STATUS;
+              console.log('TENURE_STATUS =', application.features[0].properties.TENURE_STATUS);
               application.tenureStage = application.features[0].properties.TENURE_STAGE;
               application.cl_file = +application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
               application.location = application.features[0].properties.TENURE_LOCATION;

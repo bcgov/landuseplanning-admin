@@ -7,7 +7,6 @@ import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
 import { ApiService } from 'app/services/api';
-import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 @Component({
@@ -34,8 +33,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private api: ApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private applicationService: ApplicationService,
-    public commentPeriodService: CommentPeriodService // used in template
+    public commentPeriodService: CommentPeriodService
   ) { }
 
   ngOnInit() {
@@ -70,7 +68,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  public sort(property) {
+  public sort(property: string) {
     this.isDesc = !this.isDesc;
     this.column = property;
     this.direction = this.isDesc ? 1 : -1;

@@ -24,18 +24,19 @@
               <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && !isDesc), 'sort-desc': (column == 'client' && isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__cl_file-col sortable" (click)="sort('cl_file')">CL File
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && !isDesc), 'sort-desc': (column == 'cl_file' && isDesc) }"
-                aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && !isDesc), 'sort-desc': (column == 'cl_file' && isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && !isDesc), 'sort-desc': (column == 'purpose' && isDesc) }"
-                aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && !isDesc), 'sort-desc': (column == 'purpose' && isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__region-col sortable" (click)="sort('region')">Region
               <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && !isDesc), 'sort-desc': (column == 'region' && isDesc) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__status-col sortable" (click)="sort('status')">Status
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'status' && !isDesc), 'sort-desc': (column == 'status' && isDesc) }" aria-hidden="true"></i>
+            <th class="application-table__status-col sortable" (click)="sort('appStatus')">Status
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'appStatus' && !isDesc), 'sort-desc': (column == 'appStatus' && isDesc) }" aria-hidden="true"></i>
+            </th>
+            <th class="application-table__commenting-col sortable" (click)="sort('cpStatus')">Cmnt'ing
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cpStatus' && !isDesc), 'sort-desc': (column == 'cpStatus' && isDesc) }" aria-hidden="true"></i>
             </th>
           </tr>
         </thead>
@@ -43,7 +44,7 @@
         <tbody class="application-table__content">
           <ng-template ngFor let-item [ngForOf]="applications | orderBy: {property: column, direction: direction} | paginate: config">
             <tr *ngIf="showThisApp(item)">
-              <td class="accordion__collapse-item p-0" colspan="5">
+              <td class="accordion__collapse-item p-0" colspan="6">
                 <div class="accordion__collapse-header" role="tab">
                   <a role="button" class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item._id}}">
                     <i class="material-icons open-icon">arrow_drop_down</i>
@@ -55,7 +56,8 @@
                   </span>
                   <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
-                  <span class="accordion__collapse-header--column application-table__status-col">{{applicationService.getStatus(item) || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__status-col">{{item.appStatus || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__commenting-col">{{item.cpStatus}}</span>
                 </div>
 
                 <div class="collapse" id="accordCollapse{{item._id}}" role="tabpanel">
@@ -68,7 +70,8 @@
                         </li> -->
                         <li class="p-0">
                           <span class="name">Comment Period Status:</span>
-                          <span class="value">{{commentPeriodService.getStatus(item.currentPeriod)}}</span>
+                          <!-- <span class="value">{{commentPeriodService.getStatus(item.currentPeriod)}}</span> -->
+                          <span class="value">{{item.cpStatus}}</span>
                         </li>
                         <li class="p-0" *ngIf="item.currentPeriod">
                           <span class="name">Comment Period Dates:</span>
