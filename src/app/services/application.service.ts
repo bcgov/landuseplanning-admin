@@ -14,6 +14,7 @@ import { ApiService } from './api';
 import { DocumentService } from './document.service';
 import { OrganizationService } from './organization.service';
 import { CommentPeriodService } from './commentperiod.service';
+import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
 import { SearchService } from './search.service';
 
@@ -26,6 +27,7 @@ export class ApplicationService {
     private documentService: DocumentService,
     private organizationService: OrganizationService,
     private commentPeriodService: CommentPeriodService,
+    private commentService: CommentService,
     private decisionService: DecisionService,
     private searchService: SearchService
   ) { }
@@ -79,6 +81,17 @@ export class ApplicationService {
               applications[i].currentPeriod = cp;
               // derive comment period status for app list display + sorting
               applications[i]['cpStatus'] = this.commentPeriodService.getStatus(cp);
+            })
+          );
+        });
+
+        // now get the number of pending comments for each application
+        applications.forEach((application, i) => {
+          promises.push(this.commentService.getAllByApplicationId(applications[i]._id)
+            .toPromise()
+            .then(comments => {
+              const pending = comments.filter(comment => this.commentService.isPending(comment));
+              applications[i]['numComments'] = pending.length.toString();
             })
           );
         });

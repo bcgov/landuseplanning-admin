@@ -70,12 +70,15 @@
                         </li> -->
                         <li class="p-0">
                           <span class="name">Comment Period Status:</span>
-                          <!-- <span class="value">{{commentPeriodService.getStatus(item.currentPeriod)}}</span> -->
                           <span class="value">{{item.cpStatus}}</span>
                         </li>
                         <li class="p-0" *ngIf="item.currentPeriod">
                           <span class="name">Comment Period Dates:</span>
                           <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}</span>
+                        </li>
+                        <li class="p-0" *ngIf="item.currentPeriod">
+                          <span class="name">Comments Received:</span>
+                          <span class="value">{{item.numComments}}</span>
                         </li>
                         <li class="p-0">
                           <span class="name">Location:</span>
