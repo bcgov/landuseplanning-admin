@@ -199,7 +199,6 @@ export class ApplicationService {
               application.type = application.features[0].properties.TENURE_TYPE;
               application.subtype = application.features[0].properties.TENURE_SUBTYPE;
               application.status = application.features[0].properties.TENURE_STATUS;
-              console.log('TENURE_STATUS =', application.features[0].properties.TENURE_STATUS);
               application.tenureStage = application.features[0].properties.TENURE_STAGE;
               application.cl_file = +application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
               application.location = application.features[0].properties.TENURE_LOCATION;

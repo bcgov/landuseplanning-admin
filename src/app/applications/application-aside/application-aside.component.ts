@@ -21,8 +21,8 @@ import { SearchService } from '../../services/search.service';
 
 export class ApplicationAsideComponent implements OnChanges, OnDestroy {
   @Input() application: Application = null;
-  public daysRemaining = '?';
-  public numComments = '?';
+  public daysRemaining = '-';
+  public numComments = '-';
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fg: L.FeatureGroup;
   public map: L.Map;
@@ -61,8 +61,7 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
           .subscribe(
             (comments: Comment[]) => {
               const pending = comments.filter(comment => this.commentService.isPending(comment));
-              const count = pending.length;
-              this.numComments = count.toString();
+              this.numComments = pending.length.toString();
             },
             error => console.log('couldn\'t get pending comments, error =', error)
           );
