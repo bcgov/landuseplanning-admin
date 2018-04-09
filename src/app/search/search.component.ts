@@ -151,7 +151,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       item.location = item.properties.TENURE_LOCATION;
       item.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
       item.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
-      item.interestID = item.properties.INTRID_SID;
     }
 
     // add the application

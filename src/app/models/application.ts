@@ -34,7 +34,6 @@ export class Application {
   code: string;
   name: string;
   description: string;
-  interestID: number;
   internalID: number;
   legalDescription: string;
   location: string;
@@ -79,7 +78,6 @@ export class Application {
     this.name                    = obj && obj.name                    || null;
     this.client                  = obj && obj.client                  || null;
     this.description             = obj && obj.description             || null;
-    this.interestID              = obj && obj.interestID              || 0;
     this.internalID              = obj && obj.internalID              || 0;
     this.legalDescription        = obj && obj.legalDescription        || null;
     this.location                = obj && obj.location                || null;

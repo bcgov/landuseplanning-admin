@@ -204,7 +204,6 @@ export class ApplicationService {
               application.location = application.features[0].properties.TENURE_LOCATION;
               application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
               application.tantalisID = application.features[0].properties.DISPOSITION_TRANSACTION_SID;
-              application.interestID = application.features[0].properties.INTRID_SID;
             }
           })
         );

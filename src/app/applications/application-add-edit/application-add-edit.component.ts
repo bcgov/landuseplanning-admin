@@ -178,7 +178,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                     this.application.location = this.application.features[0].properties.TENURE_LOCATION;
                     this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
                     this.application.tantalisID = this.application.features[0].properties.DISPOSITION_TRANSACTION_SID;
-                    this.application.interestID = this.application.features[0].properties.INTRID_SID;
                   }
 
                   // unset old client
