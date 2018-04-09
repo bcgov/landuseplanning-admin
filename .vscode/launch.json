@@ -3,18 +3,18 @@
   // Ref: https://github.com/Microsoft/vscode-chrome-debug
   "version": "0.2.0",
   "configurations": [
-    {
-      "name": "Launch Chrome",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:4200/#",
-      "webRoot": "${workspaceRoot}"
-    },
+    // {
+    //   "name": "Launch Chrome",
+    //   "type": "chrome",
+    //   "request": "launch",
+    //   "url": "http://localhost:4200/admin/#",
+    //   "webRoot": "${workspaceRoot}"
+    // },
     {
       "name": "Attach Chrome",
       "type": "chrome",
       "request": "attach",
-      "url": "http://localhost:4200",
+      "url": "http://localhost:4200/admin",
       "webRoot": "${workspaceRoot}",
       "port": 9222
     // },

@@ -58,7 +58,11 @@
   
           <!-- APPLICATION BUTTONS -->
           <div class="section-form-btns mt-3 mb-3">
-            <button class="btn btn-success" type="button" (click)="saveApplication()" title="Save application">
+            <button class="btn btn-success" type="button" *ngIf="application._id === '0'" (click)="createApplication()" title="Create application">
+              <i class="material-icons">save</i>
+              <span>Create</span>
+            </button>
+            <button class="btn btn-success" type="button" *ngIf="application._id !== '0'" (click)="saveApplication()" title="Save application">
               <i class="material-icons">save</i>
               <span>Save</span>
             </button>
@@ -350,7 +354,7 @@
       </main>
 
       <aside class="col-lg-4">
-        <app-application-aside></app-application-aside>
+        <app-application-aside [application]="application"></app-application-aside>
       </aside>
 
     </div>

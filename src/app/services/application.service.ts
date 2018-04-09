@@ -14,6 +14,7 @@ import { ApiService } from './api';
 import { DocumentService } from './document.service';
 import { OrganizationService } from './organization.service';
 import { CommentPeriodService } from './commentperiod.service';
+import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
 import { SearchService } from './search.service';
 
@@ -26,6 +27,7 @@ export class ApplicationService {
     private documentService: DocumentService,
     private organizationService: OrganizationService,
     private commentPeriodService: CommentPeriodService,
+    private commentService: CommentService,
     private decisionService: DecisionService,
     private searchService: SearchService
   ) { }
@@ -55,6 +57,8 @@ export class ApplicationService {
           if (applications[i].legalDescription) {
             applications[i].legalDescription = applications[i].legalDescription.replace(/\\n/g, '\n');
           }
+          // derive application status for app list display + sorting
+          applications[i]['appStatus'] = this.getStatus(applications[i]);
         });
 
         const promises: Array<Promise<any>> = [];
@@ -72,7 +76,24 @@ export class ApplicationService {
         applications.forEach((application, i) => {
           promises.push(this.commentPeriodService.getAllByApplicationId(applications[i]._id)
             .toPromise()
-            .then(periods => applications[i].currentPeriod = this.commentPeriodService.getCurrent(periods)));
+            .then(periods => {
+              const cp = this.commentPeriodService.getCurrent(periods);
+              applications[i].currentPeriod = cp;
+              // derive comment period status for app list display + sorting
+              applications[i]['cpStatus'] = this.commentPeriodService.getStatus(cp);
+            })
+          );
+        });
+
+        // now get the number of pending comments for each application
+        applications.forEach((application, i) => {
+          promises.push(this.commentService.getAllByApplicationId(applications[i]._id)
+            .toPromise()
+            .then(comments => {
+              const pending = comments.filter(comment => this.commentService.isPending(comment));
+              applications[i]['numComments'] = pending.length.toString();
+            })
+          );
         });
 
         return Promise.all(promises).then(() => { return applications; });
@@ -219,7 +240,7 @@ export class ApplicationService {
   }
 
   // create new application
-  addApplication(item: any): Observable<Application> {
+  add(item: any): Observable<Application> {
     const app = new Application(item);
 
     // boilerplate for new application
