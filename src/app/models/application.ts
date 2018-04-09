@@ -29,28 +29,28 @@ export class Application {
 
   agency: string;
   areaHectares: number;
-  businessUnit: string;
+  businessUnit: string; // cached from features[0].properties
   cl_file: number;
   code: string;
   name: string;
   description: string;
   internalID: number;
   legalDescription: string;
-  location: string;
+  location: string; // cached from features[0].properties
   latitude: number;
   longitude: number;
   mapsheet: string;
   postID: number;
   publishDate: Date;
   client: string;
-  purpose: string;
-  subpurpose: string;
+  purpose: string; // cached from features[0].properties
+  subpurpose: string; // cached from features[0].properties
   region: string;
-  status: string;
-  tenureStage: string;
+  status: string; // cached from features[0].properties
+  tenureStage: string; // cached from features[0].properties
   tantalisID: number;
-  type: string;
-  subtype: string;
+  type: string; // cached from features[0].properties
+  subtype: string; // cached from features[0].properties
 
   content: Array<Content>;
   internal: Internal;

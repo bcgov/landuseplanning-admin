@@ -110,7 +110,6 @@ export class ApiService {
 
       'agency',
       'areaHectares',
-      'businessUnit',
       'cl_file',
       'code',
       'name',
@@ -118,20 +117,13 @@ export class ApiService {
       'description',
       'internalID',
       'legalDescription',
-      'location',
       'latitude',
       'longitude',
       'mapsheet',
       'postID',
       'publishDate',
-      'purpose',
-      'subpurpose',
       'region',
-      'status',
-      'tenureStage',
       'tantalisID',
-      'type',
-      'subtype',
 
       'internal'
     ];
@@ -157,7 +149,6 @@ export class ApiService {
 
       'agency',
       'areaHectares',
-      'businessUnit',
       'cl_file',
       'code',
       'name',
@@ -165,20 +156,13 @@ export class ApiService {
       'description',
       'internalID',
       'legalDescription',
-      'location',
       'latitude',
       'longitude',
       'mapsheet',
       'postID',
       'publishDate',
-      'purpose',
-      'subpurpose',
       'region',
-      'status',
-      'tenureStage',
       'tantalisID',
-      'type',
-      'subtype',
 
       'internal'
     ];
@@ -226,9 +210,11 @@ export class ApiService {
       // 'dateAdded',
       // 'dateUpdated',
 
+      // TODO: figure out if we need these fields
+      //       in theory, they are the data returned by this PUT call
+      //       in practice, it looks like all fields are coming back even if not specified
       'agency',
       'areaHectares',
-      'businessUnit',
       'cl_file',
       'code',
       'name',
@@ -236,20 +222,13 @@ export class ApiService {
       'description',
       'internalID',
       'legalDescription',
-      'location',
       'latitude',
       'longitude',
       'mapsheet',
       'postID',
       'publishDate',
-      'purpose',
-      'subpurpose',
       'region',
-      'status',
-      'tenureStage',
       'tantalisID',
-      'type',
-      'subtype',
 
       'internal'
     ];
