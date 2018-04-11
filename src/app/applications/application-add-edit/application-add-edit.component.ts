@@ -166,19 +166,20 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                   });
                   this.application.areaHectares = areaHectares;
 
-                  // populate application properties from first feature
+                  // save application properties from first feature
                   if (this.application.features && this.application.features.length > 0) {
+                    // cached data
                     this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
                     this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
                     this.application.type = this.application.features[0].properties.TENURE_TYPE;
                     this.application.subtype = this.application.features[0].properties.TENURE_SUBTYPE;
                     this.application.status = this.application.features[0].properties.TENURE_STATUS;
                     this.application.tenureStage = this.application.features[0].properties.TENURE_STAGE;
-                    this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
                     this.application.location = this.application.features[0].properties.TENURE_LOCATION;
                     this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
-                    this.application.tantalisID = this.application.features[0].properties.DISPOSITION_TRANSACTION_SID;
-                    this.application.interestID = this.application.features[0].properties.INTRID_SID;
+                    // this is special
+                    // we will persist it to db as a search key
+                    this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
                   }
 
                   // unset old client

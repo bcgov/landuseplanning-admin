@@ -74,7 +74,11 @@
                         </li>
                         <li class="p-0" *ngIf="item.currentPeriod">
                           <span class="name">Comment Period Dates:</span>
-                          <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}</span>
+                          <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}
+                            <span *ngIf="commentPeriodService.getStatus(item.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
+                              &nbsp; ({{getDaysRemaining(item)}})
+                            </span>
+                          </span>
                         </li>
                         <li class="p-0" *ngIf="item.currentPeriod">
                           <span class="name">Comments Received:</span>
