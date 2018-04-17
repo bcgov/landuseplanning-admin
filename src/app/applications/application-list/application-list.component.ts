@@ -85,7 +85,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.direction = this.isDesc ? 1 : -1;
   }
 
-  private showThisApp(item: Application) {
-    return !this.showOnlyOpenApps || this.commentPeriodService.isOpenNotStarted(item.currentPeriod);
+  public showThisApp(item: Application) {
+    return !this.showOnlyOpenApps
+      || this.commentPeriodService.isOpen(item.currentPeriod)
+      || this.commentPeriodService.isNotStarted(item.currentPeriod);
   }
 }

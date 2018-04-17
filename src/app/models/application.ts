@@ -54,7 +54,7 @@ export class Application {
 
   content: Array<Content>;
   internal: Internal;
-  isPublished = false;
+  isPublished = false; // depends on tags; see below
 
   documents: Array<Document>;
   currentPeriod: CommentPeriod;
