@@ -12,7 +12,7 @@
       </button>
 
       <div class="application-list__options">
-        <mat-slide-toggle color="primary" [checked]="showOnlyOpenApps" (change)="showOnlyOpenApps = $event.checked">
+        <mat-slide-toggle color="primary" [checked]="showOnlyOpenApps" (change)="showOnlyOpenAppsChange($event.checked)">
           Only show applications with an open or future comment period
         </mat-slide-toggle>
       </div>
@@ -75,9 +75,7 @@
                         <li class="p-0" *ngIf="item.currentPeriod">
                           <span class="name">Comment Period Dates:</span>
                           <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}
-                            <span *ngIf="commentPeriodService.getStatus(item.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">
-                              &nbsp; ({{getDaysRemaining(item)}})
-                            </span>
+                            <span *ngIf="commentPeriodService.isOpen(item.currentPeriod)">&nbsp; ({{getDaysRemaining(item)}})</span>
                           </span>
                         </li>
                         <li class="p-0" *ngIf="item.currentPeriod">

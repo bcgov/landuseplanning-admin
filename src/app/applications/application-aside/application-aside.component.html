@@ -10,7 +10,7 @@
     <h4 class="title mb-0">{{commentPeriodService.getStatus(application.currentPeriod)}}</h4>
     <div class="mt-1" *ngIf="application.currentPeriod">
         <span>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</span>
-        <span class="badge badge-dark" *ngIf="commentPeriodService.getStatus(application.currentPeriod) === commentPeriodService.commentStatuses['OPEN']">{{daysRemaining}}</span>
+        <span class="badge badge-dark" *ngIf="commentPeriodService.isOpen(application.currentPeriod)">{{daysRemaining}}</span>
     </div>
     <div class="comment-status__actions mt-4">
         <!-- prevent navigation if application hasn't been created yet -->

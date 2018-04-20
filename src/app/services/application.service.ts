@@ -20,6 +20,22 @@ import { SearchService } from './search.service';
 
 @Injectable()
 export class ApplicationService {
+  // statuses / verbose strings
+  readonly UNKNOWN = 'Unknown Application Status';
+  readonly ABANDONED = 'Application Abandoned';
+  readonly ACCEPTED = 'Application Under Review';
+  readonly ALLOWED = 'Decision: Allowed';
+  readonly CANCELLED = 'Application Cancelled';
+  readonly DISALLOWED = 'Decision: Not Approved';
+  readonly DISPOSITION_GOOD_STANDING = 'Tenure: Disposition in Good Standing';
+  readonly OFFER_ACCEPTED = 'Decision: Offer Accepted';
+  readonly OFFER_NOT_ACCEPTED = 'Decision: Offer Not Accepted';
+  readonly OFFERED = 'Decision: Offered';
+  readonly SUSPENDED = 'Tenure: Suspended';
+
+  // special combination status (see isDecision below)
+  readonly DECISION_MADE = 'Decision Made';
+
   private application: Application = null;
 
   constructor(
@@ -327,22 +343,54 @@ export class ApplicationService {
   // returns application status based on status code
   getStatus(application: Application): string {
     if (!application || !application.status) {
-      return null; // 'Unknown Application Status';
+      return null; // this.UNKNOWN
     }
 
     switch (application.status.toUpperCase()) {
-      case 'ABANDONED': return 'Application Abandoned';
-      case 'ACCEPTED': return 'Application Under Review';
-      case 'ALLOWED': return 'Decision: Allowed';
-      case 'DISALLOWED': return 'Decision: Not Approved';
-      case 'DISPOSITION IN GOOD STANDING': return 'Tenure: Disposition in Good Standing';
-      case 'OFFER ACCEPTED': return 'Decision: Offer Accepted';
-      case 'OFFER NOT ACCEPTED': return 'Decision: Offer Not Accepted';
-      case 'OFFERED': return 'Decision: Offered';
-      case 'SUSPENDED': return 'Tenure: Suspended';
+      case 'ABANDONED': return this.ABANDONED;
+      case 'ACCEPTED': return this.ACCEPTED;
+      case 'ALLOWED': return this.ALLOWED;
+      case 'CANCELLED': return this.CANCELLED;
+      case 'DISALLOWED': return this.DISALLOWED;
+      case 'DISPOSITION IN GOOD STANDING': return this.DISPOSITION_GOOD_STANDING;
+      case 'OFFER ACCEPTED': return this.OFFER_ACCEPTED;
+      case 'OFFER NOT ACCEPTED': return this.OFFER_NOT_ACCEPTED;
+      case 'OFFERED': return this.OFFERED;
+      case 'SUSPENDED': return this.SUSPENDED;
     }
 
     // else return current status in title case
     return _.startCase(_.camelCase(application.status));
+  }
+
+  isAccepted(status: string): boolean {
+    return (status && status.toUpperCase() === 'ACCEPTED');
+  }
+
+  // NOTE: a decision may or may not include Cancelled
+  isDecision(status: string): boolean {
+    const s = (status && status.toUpperCase());
+    return (s === 'ALLOWED'
+      || s === 'CANCELLED'
+      || s === 'DISALLOWED'
+      || s === 'OFFER ACCEPTED'
+      || s === 'OFFER NOT ACCEPTED'
+      || s === 'OFFERED');
+  }
+
+  isCancelled(status: string): boolean {
+    return (status && status.toUpperCase() === 'CANCELLED');
+  }
+
+  isAbandoned(status: string): boolean {
+    return (status && status.toUpperCase() === 'ABANDONED');
+  }
+
+  isDispGoodStanding(status: string): boolean {
+    return (status && status.toUpperCase() === 'DISPOSITION IN GOOD STANDING');
+  }
+
+  isSuspended(status: string): boolean {
+    return (status && status.toUpperCase() === 'SUSPENDED');
   }
 }

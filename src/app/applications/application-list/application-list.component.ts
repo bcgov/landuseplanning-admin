@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Location } from '@angular/common';
 import { PaginationInstance } from 'ngx-pagination';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -17,7 +18,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 })
 
 export class ApplicationListComponent implements OnInit, OnDestroy {
-  public showOnlyOpenApps = false;
+  public showOnlyOpenApps: boolean;
   public applications: Array<Application> = [];
   public isDesc: boolean;
   public column: string;
@@ -31,9 +32,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
+    private location: Location,
     private api: ApiService,
-    private route: ActivatedRoute,
     private router: Router,
+    private route: ActivatedRoute,
     public commentPeriodService: CommentPeriodService
   ) { }
 
@@ -43,10 +45,12 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // get optional route parameter (matrix URL notation)
-    if (this.route.snapshot.paramMap.get('showOnlyOpenApps') === 'true') {
-      this.showOnlyOpenApps = true;
-    }
+    // get optional query parameter
+    this.route.queryParamMap
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(params => {
+        this.showOnlyOpenApps = (params.get('showOnlyOpenApps') === 'true');
+      });
 
     // get data from route resolver
     this.route.data
@@ -64,6 +68,16 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       );
   }
 
+  public showOnlyOpenAppsChange(checked: boolean) {
+    this.showOnlyOpenApps = checked;
+    // change browser URL without reloading page (so query param is saved in history)
+    if (checked) {
+      this.location.go(this.router.createUrlTree([], { relativeTo: this.route, queryParams: { showOnlyOpenApps: true } }).toString());
+    } else {
+      this.location.go(this.router.createUrlTree([], { relativeTo: this.route }).toString());
+    }
+  }
+
   public getDaysRemaining(item: Application): string {
     if (item._id !== '0' && item.currentPeriod) {
       const now = new Date();
@@ -72,7 +86,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       const days = moment(item.currentPeriod.endDate).diff(moment(today), 'days') + 1;
       return (days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining');
     }
-}
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -85,7 +99,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.direction = this.isDesc ? 1 : -1;
   }
 
-  private showThisApp(item: Application) {
-    return !this.showOnlyOpenApps || this.commentPeriodService.isOpenNotStarted(item.currentPeriod);
+  public showThisApp(item: Application) {
+    return !this.showOnlyOpenApps
+      || this.commentPeriodService.isOpen(item.currentPeriod)
+      || this.commentPeriodService.isNotStarted(item.currentPeriod);
   }
 }
