@@ -204,42 +204,44 @@ export class ApiService {
   }
 
   saveApplication(app: Application) {
-    const fields = [
-      // '_addedBy',
-      // '_updatedBy',
-      // 'dateAdded',
-      // 'dateUpdated',
+    // TODO: specify desired return fields
+    // (currently, all following fields are returned)
+    // NB: above applies to all POSTs and PUTs in this module
 
-      // TODO: figure out if we need these fields
-      //       in theory, they are the data returned by this PUT call
-      //       in practice, it looks like all fields are coming back even if not specified
-      'agency',
-      'areaHectares',
-      'cl_file',
-      'code',
-      'name',
-      'client',
-      'description',
-      'internalID',
-      'legalDescription',
-      'latitude',
-      'longitude',
-      'mapsheet',
-      'postID',
-      'publishDate',
-      'region',
-      'tantalisID',
+    // const fields = [
+    //   'agency',
+    //   'areaHectares',
+    //   'cl_file',
+    //   'client',
+    //   'code',
+    //   'description',
+    //   'id',
+    //   'interestID',
+    //   'internal',
+    //   'internalID',
+    //   'isDeleted',
+    //   'latitude',
+    //   'legalDescription',
+    //   'longitude'
+    //   'mapsheet',
+    //   'name',
+    //   'postID',
+    //   'publishDate',
+    //   'region',
+    //   'tags',
+    //   'tantalisID'
+    // ];
+    // let queryString = 'application/' + app._id + '?fields=';
+    // _.each(fields, function (f) {
+    //   queryString += f + '|';
+    // });
+    // // Trim the last |
+    // queryString = queryString.replace(/\|$/, '');
+    // const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    // return this.put(this.pathAPI, queryString, app, { headers: headers });
 
-      'internal'
-    ];
-    let queryString = 'application/' + app._id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, app, { headers: headers });
+    return this.put(this.pathAPI, 'application/' + app._id, null, { headers: headers });
   }
 
   //
