@@ -20,22 +20,23 @@ import { SearchService } from './search.service';
 
 @Injectable()
 export class ApplicationService {
-  // statuses / verbose strings
-  readonly UNKNOWN = 'Unknown Application Status';
-  readonly ABANDONED = 'Application Abandoned';
-  readonly ACCEPTED = 'Application Under Review';
-  readonly ALLOWED = 'Decision: Allowed';
-  readonly CANCELLED = 'Application Cancelled';
-  readonly DISALLOWED = 'Decision: Not Approved';
-  readonly DISPOSITION_GOOD_STANDING = 'Tenure: Disposition in Good Standing';
-  readonly OFFER_ACCEPTED = 'Decision: Offer Accepted';
-  readonly OFFER_NOT_ACCEPTED = 'Decision: Offer Not Accepted';
-  readonly OFFERED = 'Decision: Offered';
-  readonly SUSPENDED = 'Tenure: Suspended';
-
+  // statuses / query param options
+  readonly ABANDONED = 'AB';
+  readonly ACCEPTED = 'AC';
+  readonly ALLOWED = 'AL';
+  readonly CANCELLED = 'CA';
+  readonly DISALLOWED = 'DI';
+  readonly DISPOSITION_GOOD_STANDING = 'DG';
+  readonly OFFER_ACCEPTED = 'OA';
+  readonly OFFER_NOT_ACCEPTED = 'ON';
+  readonly OFFERED = 'OF';
+  readonly SUSPENDED = 'SU';
   // special combination status (see isDecision below)
-  readonly DECISION_MADE = 'Decision Made';
+  readonly DECISION_MADE = 'DE';
+  // special status when no data
+  readonly UNKNOWN = 'UN';
 
+  public applicationStatuses: Array<string> = [];
   private application: Application = null;
 
   constructor(
@@ -46,7 +47,21 @@ export class ApplicationService {
     private commentService: CommentService,
     private decisionService: DecisionService,
     private searchService: SearchService
-  ) { }
+  ) {
+    // display strings
+    this.applicationStatuses[this.ABANDONED] = 'Application Abandoned';
+    this.applicationStatuses[this.ACCEPTED] = 'Application Under Review';
+    this.applicationStatuses[this.ALLOWED] = 'Decision: Allowed';
+    this.applicationStatuses[this.CANCELLED] = 'Application Cancelled';
+    this.applicationStatuses[this.DISALLOWED] = 'Decision: Not Approved';
+    this.applicationStatuses[this.DISPOSITION_GOOD_STANDING] = 'Tenure: Disposition in Good Standing';
+    this.applicationStatuses[this.OFFER_ACCEPTED] = 'Decision: Offer Accepted';
+    this.applicationStatuses[this.OFFER_NOT_ACCEPTED] = 'Decision: Offer Not Accepted';
+    this.applicationStatuses[this.OFFERED] = 'Decision: Offered';
+    this.applicationStatuses[this.SUSPENDED] = 'Tenure: Suspended';
+    this.applicationStatuses[this.DECISION_MADE] = 'Decision Made';
+    this.applicationStatuses[this.UNKNOWN] = 'Unknown Application Status';
+  }
 
   // get count of applications
   getCount(): Observable<number> {
@@ -343,20 +358,20 @@ export class ApplicationService {
   // returns application status based on status code
   getStatus(application: Application): string {
     if (!application || !application.status) {
-      return null; // this.UNKNOWN
+      return null; // this.applicationStatuses[this.UNKNOWN]; // no data
     }
 
     switch (application.status.toUpperCase()) {
-      case 'ABANDONED': return this.ABANDONED;
-      case 'ACCEPTED': return this.ACCEPTED;
-      case 'ALLOWED': return this.ALLOWED;
-      case 'CANCELLED': return this.CANCELLED;
-      case 'DISALLOWED': return this.DISALLOWED;
-      case 'DISPOSITION IN GOOD STANDING': return this.DISPOSITION_GOOD_STANDING;
-      case 'OFFER ACCEPTED': return this.OFFER_ACCEPTED;
-      case 'OFFER NOT ACCEPTED': return this.OFFER_NOT_ACCEPTED;
-      case 'OFFERED': return this.OFFERED;
-      case 'SUSPENDED': return this.SUSPENDED;
+      case 'ABANDONED': return this.applicationStatuses[this.ABANDONED];
+      case 'ACCEPTED': return this.applicationStatuses[this.ACCEPTED];
+      case 'ALLOWED': return this.applicationStatuses[this.ALLOWED];
+      case 'CANCELLED': return this.applicationStatuses[this.CANCELLED];
+      case 'DISALLOWED': return this.applicationStatuses[this.DISALLOWED];
+      case 'DISPOSITION IN GOOD STANDING': return this.applicationStatuses[this.DISPOSITION_GOOD_STANDING];
+      case 'OFFER ACCEPTED': return this.applicationStatuses[this.OFFER_ACCEPTED];
+      case 'OFFER NOT ACCEPTED': return this.applicationStatuses[this.OFFER_NOT_ACCEPTED];
+      case 'OFFERED': return this.applicationStatuses[this.OFFERED];
+      case 'SUSPENDED': return this.applicationStatuses[this.SUSPENDED];
     }
 
     // else return current status in title case
@@ -368,6 +383,7 @@ export class ApplicationService {
   }
 
   // NOTE: a decision may or may not include Cancelled
+  // see code that uses this helper
   isDecision(status: string): boolean {
     const s = (status && status.toUpperCase());
     return (s === 'ALLOWED'
