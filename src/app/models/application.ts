@@ -20,7 +20,6 @@ class Internal {
 
 export class Application {
   _id: string;
-  id: string; // objectid
 
   _addedBy: string; // objectid -> User
   _updatedBy: string; // FUTURE
@@ -29,28 +28,31 @@ export class Application {
 
   agency: string;
   areaHectares: number;
-  businessUnit: string; // cached from features[0].properties
   cl_file: number;
+  client: string;
   code: string;
-  name: string;
   description: string;
+  id: string; // objectid (same as _id)
   internalID: number;
-  legalDescription: string;
-  location: string; // cached from features[0].properties
   latitude: number;
+  legalDescription: string;
   longitude: number;
   mapsheet: string;
+  name: string;
   postID: number;
   publishDate: Date;
-  client: string;
-  purpose: string; // cached from features[0].properties
-  subpurpose: string; // cached from features[0].properties
   region: string;
-  status: string; // cached from features[0].properties
-  tenureStage: string; // cached from features[0].properties
   tantalisID: number;
-  type: string; // cached from features[0].properties
-  subtype: string; // cached from features[0].properties
+
+  // the following are cached from features[0]..properties
+  businessUnit: string;
+  location: string;
+  purpose: string;
+  subpurpose: string;
+  status: string;
+  tenureStage: string;
+  type: string;
+  subtype: string;
 
   content: Array<Content>;
   internal: Internal;
@@ -63,7 +65,6 @@ export class Application {
 
   constructor(obj?: any) {
     this._id                     = obj && obj._id                     || null;
-    this.id                      = obj && obj.id                      || null;
 
     this._addedBy                = obj && obj._addedBy                || null;
     this._updatedBy              = obj && obj._updatedBy              || null;
@@ -72,26 +73,28 @@ export class Application {
 
     this.agency                  = obj && obj.agency                  || null;
     this.areaHectares            = obj && obj.areaHectares            || null;
-    this.businessUnit            = obj && obj.businessUnit            || null;
     this.cl_file                 = obj && obj.cl_file                 || null;
-    this.code                    = obj && obj.code                    || null;
-    this.name                    = obj && obj.name                    || null;
     this.client                  = obj && obj.client                  || null;
+    this.code                    = obj && obj.code                    || null;
     this.description             = obj && obj.description             || null;
+    this.id                      = obj && obj.id                      || null;
     this.internalID              = obj && obj.internalID              || 0;
-    this.legalDescription        = obj && obj.legalDescription        || null;
-    this.location                = obj && obj.location                || null;
     this.latitude                = obj && obj.latitude                || 0.00;
+    this.legalDescription        = obj && obj.legalDescription        || null;
     this.longitude               = obj && obj.longitude               || 0.00;
     this.mapsheet                = obj && obj.mapsheet                || null;
+    this.name                    = obj && obj.name                    || null;
     this.postID                  = obj && obj.postID                  || null;
     this.publishDate             = obj && obj.publishDate             || null;
+    this.region                  = obj && obj.region                  || null;
+    this.tantalisID              = obj && obj.tantalisID              || null; // not zero
+
+    this.businessUnit            = obj && obj.businessUnit            || null;
+    this.location                = obj && obj.location                || null;
     this.purpose                 = obj && obj.purpose                 || null;
     this.subpurpose              = obj && obj.subpurpose              || null;
-    this.region                  = obj && obj.region                  || null;
     this.status                  = obj && obj.status                  || null;
     this.tenureStage             = obj && obj.tenureStage             || null;
-    this.tantalisID              = obj && obj.tantalisID              || null; // not zero
     this.type                    = obj && obj.type                    || null;
     this.subtype                 = obj && obj.subtype                 || null;
 

@@ -70,6 +70,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   public showOnlyOpenAppsChange(checked: boolean) {
     this.showOnlyOpenApps = checked;
+
     // change browser URL without reloading page (so query param is saved in history)
     if (checked) {
       this.location.go(this.router.createUrlTree([], { relativeTo: this.route, queryParams: { showOnlyOpenApps: true } }).toString());
