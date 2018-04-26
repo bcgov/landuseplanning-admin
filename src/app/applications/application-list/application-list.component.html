@@ -1,5 +1,9 @@
 <div class="container" id="anchor-point">
-  <main>
+  <div class="spinner-container" *ngIf="loading" [@visibility]>
+    <div class="spinner-new rotating"></div>
+  </div>
+
+  <main *ngIf="!loading">
     <section>
       <h2>Crown Lands Applications in British Columbia</h2>
       <p class="tab-intro">Use the list below to navigate to individual applications. Click on any application to go directly to its details page

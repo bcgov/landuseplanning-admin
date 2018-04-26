@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { trigger, style, transition, animate } from '@angular/animations';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { PaginationInstance } from 'ngx-pagination';
@@ -9,21 +10,32 @@ import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
 import { ApiService } from 'app/services/api';
+import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 @Component({
   selector: 'app-application-list',
   templateUrl: './application-list.component.html',
-  styleUrls: ['./application-list.component.scss']
+  styleUrls: ['./application-list.component.scss'],
+  animations: [
+    trigger('visibility', [
+      transition(':enter', [   // :enter is alias to 'void => *'
+        animate('0.2s 0s', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [   // :leave is alias to '* => void'
+        animate('0.2s 0.75s', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 
 export class ApplicationListComponent implements OnInit, OnDestroy {
+  public loading = true;
   public showOnlyOpenApps: boolean;
   public applications: Array<Application> = [];
   public isDesc: boolean;
   public column: string;
   public direction: number;
-  public loading = true;
   public config: PaginationInstance = {
     id: 'custom',
     itemsPerPage: 25,
@@ -36,6 +48,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private api: ApiService,
     private router: Router,
     private route: ActivatedRoute,
+    private applicationService: ApplicationService,
     public commentPeriodService: CommentPeriodService
   ) { }
 
@@ -52,20 +65,19 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this.showOnlyOpenApps = (params.get('showOnlyOpenApps') === 'true');
       });
 
-    // get data from route resolver
-    this.route.data
+    // get data
+    this.applicationService.getAll()
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (data: { applications: Application[] }) => {
-          if (data.applications) {
-            this.applications = data.applications;
-          } else {
-            // applications not found --> navigate back to home
-            alert('Uh-oh, couldn\'t load applications');
-            this.router.navigate(['/']);
-          }
-        }
-      );
+      .subscribe(applications => {
+        this.applications = applications;
+        this.loading = false;
+      }, error => {
+        console.log(error);
+        alert('Uh-oh, couldn\'t load applications');
+        this.loading = false;
+        // applications not found --> navigate back to home
+        this.router.navigate(['/']);
+      });
   }
 
   public showOnlyOpenAppsChange(checked: boolean) {
