@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { trigger, style, transition, animate } from '@angular/animations';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { PaginationInstance } from 'ngx-pagination';
@@ -16,17 +15,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 @Component({
   selector: 'app-application-list',
   templateUrl: './application-list.component.html',
-  styleUrls: ['./application-list.component.scss'],
-  animations: [
-    trigger('visibility', [
-      transition(':enter', [   // :enter is alias to 'void => *'
-        animate('0.2s 0s', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [   // :leave is alias to '* => void'
-        animate('0.2s 0.75s', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+  styleUrls: ['./application-list.component.scss']
 })
 
 export class ApplicationListComponent implements OnInit, OnDestroy {
