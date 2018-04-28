@@ -136,7 +136,7 @@ header {
 
 @media (min-width: 768px) {
   .navbar {
-    background: transparent;
+    // background: transparent;
     
     .navbar-nav {
       margin-top: 0;
@@ -205,7 +205,7 @@ header {
   width: 233px; // use PX dimensions here to ensure exact match to image
   height: 3rem;
   background-image: url("~assets/images/bcgov-header-horiz-SM.png");
-  background-position: center;
+  background-position-y: 0.5rem;
   background-repeat: no-repeat;
   background-size: auto;
 }
@@ -213,25 +213,19 @@ header {
 .badge {
   color: $gold;
   padding: 0;
-  top: 12px;
+  top: 1rem;
   font-size: 0.65rem;
 }
 
 @media (min-width: 768px) {
   .navbar-brand {
-    height: 4rem;
-  }
-  .badge {
-    top: 20px;
-  }
-}
-
-@media (min-width: 992px) {
-  .navbar-brand {
     width: 342px; // use PX dimensions here to ensure exact match to image
+    height: 4rem;
     background-image: url("~assets/images/bcgov-header-horiz-LG.png");
+    background-position-y: 0.4rem;
   }
   .badge {
+    top: 1.5rem;
     font-size: 0.875rem;
   }
 }
