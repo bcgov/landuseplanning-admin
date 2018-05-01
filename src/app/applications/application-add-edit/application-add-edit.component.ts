@@ -33,11 +33,12 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   @ViewChild('applicationForm') applicationForm: NgForm;
   @ViewChild(ApplicationAsideComponent) applicationAside: ApplicationAsideComponent;
 
-  public types = Constants.types;
-  public subtypes = Constants.subtypes;
-  public purposes = Constants.purposes;
-  public subpurposes = Constants.subpurposes;
-  public statuses = Constants.statuses;
+  // NOT USED?
+  // public types = Constants.types;
+  // public subtypes = Constants.subtypes;
+  // public purposes = Constants.purposes;
+  // public subpurposes = Constants.subpurposes;
+  // public statuses = Constants.statuses;
 
   public application: Application = null;
   public error = false;

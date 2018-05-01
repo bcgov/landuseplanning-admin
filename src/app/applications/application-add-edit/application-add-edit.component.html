@@ -187,12 +187,14 @@
                 </li>
               </ul>
 
-              <div class="dd-target">
-                <button class="btn btn-light" type="button" onclick="document.getElementById('fileInput1').click()" [disabled]="application._id === '0'">
-                  <i class="material-icons">file_upload</i>
-                  <span>Drop files to attach, or <strong>browse</strong>.</span>
-                  </button>
-                <input type="file" id="fileInput1" style="display: none;" (change)="uploadFiles($event.target.files, application.documents)" multiple />
+              <div class="file-upload">
+                <input type="file" class="form-control" name="fileInput1" size="5000000" (change)="uploadFiles($event.target.files, application.documents)" multiple>
+                <div class="file-upload__target">
+                  <span class="file-upload__prompt">
+                    <i class="file-upload__prompt-icon material-icons">file_upload</i>
+                    <span class="file-upload__prompt-msg">Drop files to attach, or <strong>browse</strong>.</span>
+                  </span>
+                </div>
               </div>
             </section>
 
@@ -278,12 +280,14 @@
                   </li>
                 </ul>
 
-                <div class="dd-target">
-                  <button class="btn btn-light" onclick="document.getElementById('fileInput2').click()">
-                    <i class="material-icons">file_upload</i>
-                    <span>Drop files to attach, or <strong>browse</strong>.</span>
-                  </button>
-                  <input type="file" id="fileInput2" style="display: none;" (change)="uploadFiles($event.target.files, application.decision.documents)" multiple />
+                <div class="file-upload">
+                  <input type="file" class="form-control" name="fileInput2" size="5000000" (change)="uploadFiles($event.target.files, application.decision.documents)" multiple>
+                  <div class="file-upload__target">
+                    <span class="file-upload__prompt">
+                      <i class="file-upload__prompt-icon material-icons">file_upload</i>
+                      <span class="file-upload__prompt-msg">Drop files to attach, or <strong>browse</strong>.</span>
+                    </span>
+                  </div>
                 </div>
               </section>
 

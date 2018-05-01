@@ -15,7 +15,8 @@ input {
         height: $fc-height;
     }
     &[type="text"],
-    &[type="email"] {
+    &[type="email"],
+    &[type="number"] {
         @include placeholder {
             color: $fc-placeholder-color;
         }
