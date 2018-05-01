@@ -361,7 +361,7 @@ export class Constants {
     ],
     'WATERPOWER': [
       'CAMP',
-      'COMMUNICATION SITES',
+      'COMMUNICATION SITE',
       'GENERAL AREA',
       'INTAKE',
       'INVESTIGATIVE PHASE',
@@ -373,12 +373,15 @@ export class Constants {
       'TRANSMISSION LINE'
     ],
     'WINDPOWER': [
+      'COMMUNICATION SITE',
       'DEVELOPMENT PHASE',
       'GENERAL AREA',
       'INTENSIVE',
       'INVESTIGATIVE AND MONITORING PHASE',
       'INVESTIGATIVE PHASE',
       'OPERATING PHASE',
+      'QUARRY',
+      'ROAD',
       'TRANSMISSION LINE'
     ]
   };
