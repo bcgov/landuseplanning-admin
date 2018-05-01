@@ -10,7 +10,7 @@ import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { CookieService } from 'ngx-cookie-service';
 
 import { AppRoutingModule } from 'app/app-routing.module';
-import { SharedModule } from 'app/shared/shared.module';
+import { SharedModule } from 'app/shared.module';
 
 // components
 import { AppComponent } from 'app/app.component';
