@@ -14,7 +14,7 @@
     </div>
     <div class="comment-status__actions mt-4">
         <!-- prevent navigation if application hasn't been created yet -->
-        <button class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]" [disabled]="application._id === '0'">
+        <button type="button" class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]" [disabled]="application._id === '0'">
             <span>Click to Modify</span>
             <i class="material-icons">arrow_forward</i>
         </button>
@@ -27,7 +27,7 @@
     <span class="badge badge-dark">{{numComments}}</span>
     <div class="comment-status__actions mt-4">
         <!-- prevent navigation if application hasn't been created yet -->
-        <button class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]" [disabled]="application._id === '0'">
+        <button type="button" class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]" [disabled]="application._id === '0'">
             <span>Click to Review</span>
             <i class="material-icons">arrow_forward</i>
         </button>

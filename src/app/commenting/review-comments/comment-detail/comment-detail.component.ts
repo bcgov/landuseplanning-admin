@@ -10,7 +10,6 @@ import { CommentService } from 'app/services/comment.service';
 import { DocumentService } from 'app/services/document.service';
 
 interface SaveParameters {
-  comment: Comment;
   doPublish?: boolean;
   doUnpublish?: boolean;
 }
@@ -48,7 +47,7 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
       this.documentService.getAllByCommentId(this.comment._id)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          (documents: Document[]) => this.documents = documents,
+          documents => this.documents = documents,
           error => console.log(error)
         );
     }
@@ -57,28 +56,28 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
   private doAccept(comment: Comment) {
     if (!this.commentService.isAccepted(comment)) {
       this.commentService.doAccept(comment);
-      this.save({ comment: this.comment, doPublish: true });
+      this.save({ doPublish: true });
     }
   }
 
   private doPending(comment: Comment) {
     if (!this.commentService.isPending(comment)) {
       this.commentService.doPending(comment);
-      this.save({ comment: this.comment, doUnpublish: true });
+      this.save({ doUnpublish: true });
     }
   }
 
   private doReject(comment: Comment) {
     if (!this.commentService.isRejected(comment)) {
       this.commentService.doReject(comment);
-      this.save({ comment: this.comment, doUnpublish: true });
+      this.save({ doUnpublish: true });
     }
   }
 
   private saveNotes() {
     if (!this.isNotesPristine()) {
       this.comment.review.reviewerNotes = this.internalNotes;
-      this.save({ comment: this.comment });
+      this.save({});
     }
   }
 
@@ -93,36 +92,79 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
     this.internalNotes = this.comment.review.reviewerNotes;
   }
 
-  private save({ comment, doPublish = false, doUnpublish = false }: SaveParameters) {
-    comment.review.reviewerDate = new Date();
+  private save({ doPublish = false, doUnpublish = false }: SaveParameters) {
+    this.comment.review.reviewerDate = new Date();
 
     this.networkMsg = null;
     this.commentService.save(this.comment)
+      .takeUntil(this.ngUnsubscribe)
       .toPromise()
       .then(
         () => {
           // save succeeded
-          // just hold on to existing comment instead of reloading it
-          this.commentChange.emit(this.comment);
+          // don't bother reloading comment as then we'd need to reload documents too
         },
-        reason => {
-          this.networkMsg += reason;
-        }
+        reason => this.networkMsg += reason
       )
       .then(
         () => {
           if (doPublish && !this.comment.isPublished) {
-            this.commentService.publish(this.comment);
-            this.documents.forEach(document => this.documentService.publish(document));
+            // publish comment
+            this.commentService.publish(this.comment)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                () => {
+                  // publish succeeded
+                  this.comment.isPublished = true;
+                },
+                error => console.log('publish error =', error)
+              );
+            // publish comment documents
+            this.documents.forEach(document =>
+              this.documentService.publish(document)
+                .takeUntil(this.ngUnsubscribe)
+                .subscribe(
+                  () => {
+                    // publish succeeded
+                    document.isPublished = true;
+                  },
+                  error => console.log('publish error =', error)
+                )
+            );
           }
           if (doUnpublish && this.comment.isPublished) {
-            this.commentService.unPublish(this.comment);
-            this.documents.forEach(document => this.documentService.unPublish(document));
+            // unpublish comment
+            this.commentService.unPublish(this.comment)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                () => {
+                  // unpublish succeeded
+                  this.comment.isPublished = false;
+                },
+                error => console.log('unpublish error =', error)
+              );
+            // unpublish comment documents
+            this.documents.forEach(document =>
+              this.documentService.unPublish(document)
+                .takeUntil(this.ngUnsubscribe)
+                .subscribe(
+                  () => {
+                    // unpublish succeeded
+                    document.isPublished = false;
+                  },
+                  error => console.log('unpublish error =', error)
+                )
+            );
           }
         },
-        reason => {
-          this.networkMsg += reason;
-        }
+        reason => this.networkMsg += reason
+      )
+      .then(
+        () => {
+          // update parent component
+          this.commentChange.emit(this.comment);
+        },
+        reason => this.networkMsg += reason
       )
       .catch(reason => {
         this.networkMsg += reason;

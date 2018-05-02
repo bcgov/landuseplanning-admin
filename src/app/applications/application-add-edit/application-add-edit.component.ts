@@ -23,6 +23,7 @@ import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 import { SearchService } from 'app/services/search.service';
 import { DecisionService } from 'app/services/decision.service';
+import { DocumentService } from 'app/services/document.service';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -55,10 +56,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private dialogService: DialogService,
     private searchService: SearchService,
-    private decisionService: DecisionService
+    private decisionService: DecisionService,
+    private documentService: DocumentService
   ) { }
 
-  // check for unsaved changes before closing (or refreshing) current tab/window
+  // check for unsaved changes before closing (or reloading) current tab/window
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(event) {
     // display browser alert if needed
@@ -99,6 +101,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           if (data.application) {
             // make a (deep) copy of the in-memory application so we don't change it
             // this allows us to abort editing
+            // but forces us to reload in-memory application for certain changes
             this.application = _.cloneDeep(data.application);
 
             if (!this.application.publishDate) {
@@ -143,13 +146,15 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                 backdropColor: 'rgba(0, 0, 0, 0.5)'
               })
               .takeUntil(this.ngUnsubscribe)
-              .subscribe(isConfirmed => {
-                if (isConfirmed) {
-                  // go to the other application
-                  this.router.navigate(['/a', application._id]);
+              .subscribe(
+                isConfirmed => {
+                  if (isConfirmed) {
+                    // go to the other application
+                    this.router.navigate(['/a', application._id]);
+                  }
+                  // otherwise return to current application
                 }
-                // otherwise return to current application
-              });
+              );
           } else {
             // (re)load features/shapes
             this.searchService.getByDTID(this.application.tantalisID)
@@ -228,6 +233,33 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           console.log('error =', error);
         }
       );
+  }
+
+  private isDispositionValid() {
+    return (this.application.features && this.application.features.length > 0
+      && this.application.features[0].properties.DISPOSITION_TRANSACTION_SID === this.application.tantalisID);
+  }
+
+  public resetApplication() {
+    if (this.applicationForm.pristine) {
+      this.reloadData(this.application._id);
+    } else {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Confirm Reset',
+          message: 'Click OK to discard your changes or Cancel to return to the application.'
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          isConfirmed => {
+            if (isConfirmed) {
+              this.reloadData(this.application._id);
+            }
+          }
+        );
+    }
   }
 
   // create new application
@@ -314,159 +346,46 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isDispositionValid() {
-    return (this.application.features && this.application.features.length > 0
-      && this.application.features[0].properties.DISPOSITION_TRANSACTION_SID === this.application.tantalisID);
-  }
-
-  public resetApplication() {
-    if (this.applicationForm.pristine) {
-      this.reloadData(this.application._id);
+  deleteApplication() {
+    if (this.application.documents && this.application.documents.length > 0) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Delete Application',
+          message: 'Please delete all documents first.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
     } else {
       this.dialogService.addDialog(ConfirmComponent,
         {
-          title: 'Confirm Reset',
-          message: 'Click OK to discard your changes or Cancel to return to the application.'
+          title: 'Confirm Deletion',
+          message: 'Do you really want to delete this application?'
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe)
-        .subscribe(isConfirmed => {
-          if (isConfirmed) {
-            this.reloadData(this.application._id);
-          }
-        });
-    }
-  }
-
-  private reloadData(id: string) {
-    // force-reload app data
-    this.applicationService.getById(id, true)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(application => {
-        // make a (deep) copy of the in-memory application so we don't change it
-        // this allows us to abort editing
-        this.application = _.cloneDeep(application);
-        this.applicationForm.form.markAsPristine();
-      });
-  }
-
-  addDecision() {
-    const d = new Decision();
-    d._application = this.application._id;
-
-    this.decisionService.add(d)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        decision => {
-          // add succeeded - accept new record
-          this.application.decision = decision;
-          this.showMessage(false, 'Decision added!');
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error adding decision');
-        }
-      );
-  }
-
-  saveDecision() {
-    this.decisionService.save(this.application.decision)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        () => {
-          // save succeeded
-          // just hold on to existing decision instead of reloading it
-          this.showMessage(false, 'Decision saved!');
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error saving decision');
-        }
-      );
-  }
-
-  uploadFiles(fileList: FileList, documents: Document[]) {
-    for (let i = 0; i < fileList.length; i++) {
-      if (fileList[i]) {
-        const formData = new FormData();
-        if (documents === this.application.documents) {
-          formData.append('_application', this.application._id);
-        } else if (documents === this.application.decision.documents) {
-          formData.append('_decision', this.application.decision._id);
-        } else {
-          break; // error
-        }
-        formData.append('displayName', fileList[i].name);
-        formData.append('upfile', fileList[i]);
-        this.api.uploadDocument(formData) // TODO: should call service instead of API
-          .takeUntil(this.ngUnsubscribe)
-          .subscribe(
-            res => {
-              // add uploaded file to specified document array
-              documents.push(res.json());
-            },
-            error => {
-              console.log('error =', error);
-              this.showMessage(true, 'Error uploading file');
+        .subscribe(
+          isConfirmed => {
+            if (isConfirmed) {
+              this.applicationService.delete(this.application)
+                .takeUntil(this.ngUnsubscribe)
+                .subscribe(
+                  () => {
+                    this.application = null;
+                    this.allowDeactivate = true;
+                    this.router.navigate(['/applications']);
+                  },
+                  error => {
+                    console.log('error =', error);
+                    this.showMessage(true, 'Error deleting application');
+                  }
+                );
             }
-          );
-      }
+          }
+        );
     }
-  }
-
-  publishDocument(document: Document, documents: Document[]) {
-    this.api.publishDocument(document) // TODO: should call service instead of API
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        res => {
-          const doc = res.json();
-          const f = _.find(documents, function (item) {
-            return (item._id === doc._id);
-          });
-          f.isPublished = true;
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error publishing document');
-        }
-      );
-  }
-
-  unPublishDocument(document: Document, documents: Document[]) {
-    this.api.unPublishDocument(document) // TODO: should call service instead of API
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        res => {
-          const doc = res.json();
-          const f = _.find(documents, function (item) {
-            return (item._id === doc._id);
-          });
-          f.isPublished = false;
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error un-publishing document');
-        }
-      );
-  }
-
-  deleteDocument(document: Document, documents: Document[]) {
-    this.api.deleteDocument(document) // TODO: should call service instead of API
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        res => {
-          const doc = res.json();
-          // remove file from specified document array
-          _.remove(documents, function (item) {
-            return (item._id === doc._id);
-          });
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error deleting document');
-        }
-      );
   }
 
   publishApplication() {
@@ -491,60 +410,165 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         })
         .takeUntil(this.ngUnsubscribe);
     } else {
-      this.applicationService.publish(this.application);
+      this.applicationService.publish(this.application)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          () => {
+            // publish succeeded - reload cached data
+            this.reloadData(this.application._id);
+          },
+          error => {
+            console.log('error =', error);
+            this.showMessage(true, 'Error publishing application');
+          }
+        );
     }
   }
 
   unPublishApplication() {
-    this.applicationService.unPublish(this.application);
+    this.applicationService.unPublish(this.application)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // unpublish succeeded - reload cached data
+          this.reloadData(this.application._id);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error un-publishing application');
+        }
+      );
   }
 
-  deleteApplication() {
-    if (this.application.documents && this.application.documents.length > 0) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Delete Application',
-          message: 'Please delete all documents first.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .takeUntil(this.ngUnsubscribe);
-    } else {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Confirm Deletion',
-          message: 'Do you really want to delete this application?'
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe((isConfirmed: boolean) => {
-          if (isConfirmed) {
-            this.applicationService.delete(this.application)
-              .takeUntil(this.ngUnsubscribe)
-              .subscribe(
-                () => {
-                  this.application = null;
-                  this.allowDeactivate = true;
-                  this.router.navigate(['/applications']);
-                },
-                error => {
-                  console.log('error =', error);
-                  this.showMessage(true, 'Error deleting application');
-                }
-              );
+  // TODO: this obliterates unsaved changes
+  private reloadData(id: string) {
+    // force-reload app data
+    this.applicationService.getById(id, true)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        application => {
+          // make a (deep) copy of the in-memory application so we don't change it
+          // this allows us to abort editing
+          // but forces us to reload in-memory application for certain changes
+          this.application = _.cloneDeep(application);
+
+          if (!this.application.publishDate) {
+            this.application.publishDate = new Date();
           }
-        });
+          this.application.publishDate = moment(this.application.publishDate).format();
+
+          this.applicationForm.form.markAsPristine();
+        }
+      );
+  }
+
+  uploadFiles(fileList: FileList, documents: Document[]) {
+    for (let i = 0; i < fileList.length; i++) {
+      if (fileList[i]) {
+        const formData = new FormData();
+        if (documents === this.application.documents) {
+          formData.append('_application', this.application._id);
+        } else if (documents === this.application.decision.documents) {
+          formData.append('_decision', this.application.decision._id);
+        } else {
+          break; // error
+        }
+        formData.append('displayName', fileList[i].name);
+        formData.append('upfile', fileList[i]);
+        this.documentService.add(formData)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            () => {
+              // add succeeded - reload cached data
+              // TODO: would be better to reload cached data after ALL files are added
+              this.reloadData(this.application._id);
+            },
+            error => {
+              console.log('error =', error);
+              this.showMessage(true, 'Error uploading file');
+            }
+          );
+      }
     }
   }
 
-  publishDecision(decision: Decision) {
-    this.decisionService.publish(decision);
+  deleteDocument(document: Document, documents: Document[]) {
+    this.documentService.delete(document)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // delete succeeded - reload cached data
+          this.reloadData(this.application._id);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error deleting document');
+        }
+      );
   }
 
-  unPublishDecision(decision: Decision) {
-    this.decisionService.unPublish(decision);
+  publishDocument(document: Document, documents: Document[]) {
+    this.documentService.publish(document)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // publish succeeded - reload cached data
+          this.reloadData(this.application._id);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error publishing document');
+        }
+      );
+  }
+
+  unPublishDocument(document: Document, documents: Document[]) {
+    this.documentService.unPublish(document)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // unpublish succeeded - reload cached data
+          this.reloadData(this.application._id);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error un-publishing document');
+        }
+      );
+  }
+
+  addDecision() {
+    const decision = new Decision();
+    decision._application = this.application._id;
+
+    this.decisionService.add(decision)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // add succeeded - reload cached data
+          this.reloadData(this.application._id);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error adding decision');
+        }
+      );
+  }
+
+  saveDecision() {
+    this.decisionService.save(this.application.decision)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // save succeeded - reload cached data
+          this.reloadData(this.application._id);
+          this.showMessage(false, 'Decision saved!');
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error saving decision');
+        }
+      );
   }
 
   deleteDecision(decision: Decision) {
@@ -556,22 +580,54 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(isConfirmed => {
-        if (isConfirmed) {
-          this.decisionService.delete(decision)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-              () => {
-                this.application.decision = null;
-                this.showMessage(false, 'Decision deleted!');
-              },
-              error => {
-                console.log('error =', error);
-                this.showMessage(true, 'Error deleting decision');
-              }
-            );
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            this.decisionService.delete(decision)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                () => {
+                  // delete succeeded - reload cached data
+                  this.reloadData(this.application._id);
+                },
+                error => {
+                  console.log('error =', error);
+                  this.showMessage(true, 'Error deleting decision');
+                }
+              );
+          }
         }
-      });
+      );
+  }
+
+  publishDecision(decision: Decision) {
+    this.decisionService.publish(decision)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // publish succeeded - reload cached data
+          this.reloadData(this.application._id);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error publishing decision');
+        }
+      );
+  }
+
+  unPublishDecision(decision: Decision) {
+    this.decisionService.unPublish(decision)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        () => {
+          // unpublish succeeded - reload cached data
+          this.reloadData(this.application._id);
+        },
+        error => {
+          console.log('error =', error);
+          this.showMessage(true, 'Error un-publishing decision');
+        }
+      );
   }
 
   private showMessage(isError, msg) {
