@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { PaginationInstance } from 'ngx-pagination';
 import { Subject } from 'rxjs/Subject';
@@ -20,11 +20,11 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 export class ApplicationListComponent implements OnInit, OnDestroy {
   public loading = true;
+  private paramMap: ParamMap = null;
   public showOnlyOpenApps: boolean;
   public applications: Array<Application> = [];
-  public isDesc: boolean;
-  public column: string;
-  public direction: number;
+  public column: string = null;
+  public direction = 0;
   public config: PaginationInstance = {
     id: 'custom',
     itemsPerPage: 25,
@@ -47,11 +47,14 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // get optional query parameter
+    // get optional query parameters
     this.route.queryParamMap
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(params => {
-        this.showOnlyOpenApps = (params.get('showOnlyOpenApps') === 'true');
+      .subscribe(paramMap => {
+        this.paramMap = paramMap;
+
+        // set initial filters
+        this.resetFilters(null);
       });
 
     // get data
@@ -71,13 +74,29 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   public showOnlyOpenAppsChange(checked: boolean) {
     this.showOnlyOpenApps = checked;
+    this.saveFilters();
+  }
 
-    // change browser URL without reloading page (so query param is saved in history)
-    if (checked) {
-      this.location.go(this.router.createUrlTree([], { relativeTo: this.route, queryParams: { showOnlyOpenApps: true } }).toString());
-    } else {
-      this.location.go(this.router.createUrlTree([], { relativeTo: this.route }).toString());
+  private saveFilters() {
+    const params: Params = {};
+
+    if (this.showOnlyOpenApps) {
+      params['showOnlyOpenApps'] = true;
     }
+
+    if (this.column && this.direction) {
+      params['col'] = this.column;
+      params['dir'] = this.direction;
+    }
+
+    // change browser URL without reloading page (so any query params are saved in history)
+    this.location.go(this.router.createUrlTree([], { relativeTo: this.route, queryParams: params }).toString());
+  }
+
+  public resetFilters(e: Event) {
+    this.showOnlyOpenApps = (this.paramMap.get('showOnlyOpenApps') === 'true');
+    this.column = this.paramMap.get('col'); // == null if col isn't present
+    this.direction = +this.paramMap.get('dir'); // == 0 if dir isn't present
   }
 
   public getDaysRemaining(item: Application): string {
@@ -96,9 +115,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   public sort(property: string) {
-    this.isDesc = !this.isDesc;
     this.column = property;
-    this.direction = this.isDesc ? 1 : -1;
+    this.direction = this.direction > 0 ? -1 : 1;
+    this.saveFilters();
   }
 
   public showThisApp(item: Application) {
