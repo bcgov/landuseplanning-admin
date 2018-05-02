@@ -399,7 +399,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         }
         formData.append('displayName', fileList[i].name);
         formData.append('upfile', fileList[i]);
-        this.api.uploadDocument(formData)
+        this.api.uploadDocument(formData) // TODO: should call service instead of API
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
             res => {

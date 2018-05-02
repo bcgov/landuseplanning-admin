@@ -574,7 +574,7 @@ export class ApiService {
     return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', null, { headers: headers });
   }
 
-  uploadDocument(formData) {
+  uploadDocument(formData: FormData) {
     const fields = ['documentFileName', 'displayName', 'internalURL', 'internalMime'];
     let queryString = 'document/?fields=';
     _.each(fields, function (f) {

@@ -134,7 +134,6 @@ export class DecisionService {
 
   delete(decision: Decision): Observable<any> {
     return this.api.deleteDecision(decision)
-      .map(res => { return res; })
       .catch(this.api.handleError);
   }
 

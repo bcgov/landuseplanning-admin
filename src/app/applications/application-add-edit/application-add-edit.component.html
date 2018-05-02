@@ -207,10 +207,9 @@
               <textarea class="form-control app-notes" type="text" id="internalNotes" name="internalNotes" rows="5" #internalNotes="ngModel" [(ngModel)]="application.internal.notes"></textarea>
             </section>
           </section>
-
         </form>
 
-        <!-- ERROR MESSAGES FOR BOTH APPLICATION AND DECISION -->
+        <!-- MESSAGES FOR BOTH APPLICATION AND DECISION -->
         <div class="spinner-container full-screen" *ngIf="showMsg">
           <div *ngIf="error" class="alert alert-danger">{{status}}</div>
           <div *ngIf="!error" class="alert alert-success">{{status}}</div>

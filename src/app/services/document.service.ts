@@ -77,7 +77,6 @@ export class DocumentService {
 
   delete(file: any): Observable<any> {
     return this.api.deleteDocument(file)
-      .map(res => { return res; })
       .catch(this.api.handleError);
   }
 
@@ -95,5 +94,14 @@ export class DocumentService {
         () => document.isPublished = false,
         error => console.log('unpublish error =', error)
       );
+  }
+
+  add(formData: FormData): Observable<Document> {
+    return this.api.uploadDocument(formData)
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Document(d) : null;
+      })
+      .catch(this.api.handleError);
   }
 }

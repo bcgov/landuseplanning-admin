@@ -295,7 +295,6 @@ export class ApplicationService {
 
   delete(app: Application): Observable<any> {
     return this.api.deleteApplication(app)
-      .map(res => { return res; })
       .catch(this.api.handleError);
   }
 

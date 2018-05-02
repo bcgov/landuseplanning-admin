@@ -120,7 +120,6 @@ export class CommentPeriodService {
 
   delete(period: CommentPeriod): Observable<any> {
     return this.api.deleteCommentPeriod(period)
-      .map(res => { return res; })
       .catch(this.api.handleError);
   }
 
