@@ -322,11 +322,9 @@ export class ApplicationService {
       app.legalDescription = app.legalDescription.replace(/\n/g, '\\n');
     }
 
-    console.log('app =>', app);
     return this.api.saveApplication(app)
       .map(res => {
         const a = res.text() ? res.json() : null;
-        console.log('a =>', a);
         return a ? new Application(a) : null;
       })
       .catch(this.api.handleError);

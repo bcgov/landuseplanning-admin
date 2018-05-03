@@ -43,7 +43,7 @@
             <h3>Disposition</h3>
 
             <div class="form-group">
-              <label class="h4 control-label mb-2" for="tantalisID">Disposition ID<em>(Required)</em></label>
+              <label class="h4 control-label mb-2" for="tantalisID">Disposition ID <em>(Required)</em></label>
               <div class="disp-input" (keydown.enter)="false">
                 <input type="number" class="form-control" [ngClass]="{'is-invalid': tantalisID.invalid}" required aria-required="true" autofocus
                   id="tantalisID" name="tantalisID" #tantalisID="ngModel" [(ngModel)]="application.tantalisID" (keyup.enter)="applyDisposition()"
@@ -237,7 +237,7 @@
 
               <!-- DESCRIPTION -->
               <section>
-                <label class="h4 control-label mb-2" for="decisionDesc">Description <em>(Required)</em> </label>
+                <label class="h4 control-label mb-2" for="decisionDesc">Description <em>(Required)</em></label>
                 <textarea class="form-control app-decision-desc" [ngClass]="{'is-invalid': decisionDesc.invalid}" type="text" id="decisionDesc"
                   name="decisionDesc" rows="5" #decisionDesc="ngModel" [(ngModel)]="application.decision.description" required
                   aria-required="true">
@@ -303,18 +303,18 @@
                   <span>Save</span>
                 </button>
                 <!-- to publish, decision form must be valid -->
-                <button type="button" class="btn btn-primary" *ngIf="!application.decision.isPublished" (click)="publishDecision(application.decision)"
+                <button type="button" class="btn btn-primary" *ngIf="!application.decision.isPublished" (click)="publishDecision()"
                   [disabled]="decisionForm.form.invalid" title="Publish decision">
                   <i class="material-icons">play_arrow</i>
                   <span>Publish</span>
                 </button>
-                <button type="button" class="btn btn-danger" *ngIf="application.decision.isPublished" (click)="unPublishDecision(application.decision)"
+                <button type="button" class="btn btn-danger" *ngIf="application.decision.isPublished" (click)="unPublishDecision()"
                   title="Unpublish decision">
                   <i class="material-icons">pause</i>
                   <span>Unpublish</span>
                 </button>
                 <!-- to delete, there must be no decision documents -->
-                <button type="button" class="btn btn-danger" *ngIf="!application.decision.isPublished" (click)="deleteDecision(application.decision)"
+                <button type="button" class="btn btn-danger" *ngIf="!application.decision.isPublished" (click)="deleteDecision()"
                   [disabled]="application.decision.documents?.length > 0" title="Delete decision">
                   <i class="material-icons">delete</i>
                   <span>Delete</span>

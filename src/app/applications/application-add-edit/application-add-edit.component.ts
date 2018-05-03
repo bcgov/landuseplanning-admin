@@ -32,14 +32,8 @@ import { DocumentService } from 'app/services/document.service';
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   @ViewChild('applicationForm') applicationForm: NgForm;
+  @ViewChild('decisionForm') decisionForm: NgForm;
   @ViewChild(ApplicationAsideComponent) applicationAside: ApplicationAsideComponent;
-
-  // NOT USED?
-  // public types = Constants.types;
-  // public subtypes = Constants.subtypes;
-  // public purposes = Constants.purposes;
-  // public subpurposes = Constants.subpurposes;
-  // public statuses = Constants.statuses;
 
   public application: Application = null;
   public error = false;
@@ -64,7 +58,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(event) {
     // display browser alert if needed
-    if (!this.allowDeactivate && this.applicationForm.dirty) {
+    if (!this.allowDeactivate && (this.applicationForm.dirty || this.decisionForm.dirty)) {
       event.returnValue = true;
     }
   }
@@ -72,7 +66,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   // check for unsaved changes before navigating away from current route (ie, this page)
   canDeactivate(): Observable<boolean> | boolean {
     // allow synchronous navigation if everything is OK
-    if (this.allowDeactivate || this.applicationForm.pristine) {
+    if (this.allowDeactivate || (this.applicationForm.pristine && this.decisionForm.pristine)) {
       return true;
     }
 
@@ -99,9 +93,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe(
         (data: { application: Application }) => {
           if (data.application) {
-            // make a (deep) copy of the in-memory application so we don't change it
+            // make a local copy of the in-memory (cached) application so we don't change it
             // this allows us to abort editing
-            // but forces us to reload in-memory application for certain changes
+            // but forces us to reload cached application properties for certain changes
             this.application = _.cloneDeep(data.application);
 
             if (!this.application.publishDate) {
@@ -150,6 +144,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                 isConfirmed => {
                   if (isConfirmed) {
                     // go to the other application
+                    this.allowDeactivate = true;
                     this.router.navigate(['/a', application._id]);
                   }
                   // otherwise return to current application
@@ -241,7 +236,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   public resetApplication() {
-    if (this.applicationForm.pristine) {
+    if (this.applicationForm.pristine && this.decisionForm.pristine) {
       this.reloadData(this.application._id);
     } else {
       this.dialogService.addDialog(ConfirmComponent,
@@ -262,7 +257,28 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  // create new application
+  private reloadData(id: string) {
+    // force-reload cached app data
+    this.applicationService.getById(id, true)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        application => {
+          // make a local copy of the in-memory (cached) application so we don't change it
+          // this allows us to abort editing
+          // but forces us to reload cached application properties for certain changes
+          this.application = _.cloneDeep(application);
+
+          if (!this.application.publishDate) {
+            this.application.publishDate = new Date();
+          }
+          this.application.publishDate = moment(this.application.publishDate).format();
+
+          this.applicationForm.form.markAsPristine();
+          this.decisionForm.form.markAsPristine();
+        }
+      );
+  }
+
   public createApplication() {
     if (this.applicationForm.invalid) {
       this.dialogService.addDialog(ConfirmComponent,
@@ -292,9 +308,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           application => {
-            this.showMessage(false, 'Application created!');
-            // reload cached data
+            // TODO: update URL with new app id
+            // reload cached app and local copy
             this.reloadData(application._id);
+            this.showMessage(false, 'Application created!');
           },
           error => {
             console.log('error =', error);
@@ -304,7 +321,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  // save current application
   public saveApplication() {
     if (this.applicationForm.invalid) {
       this.dialogService.addDialog(ConfirmComponent,
@@ -334,9 +350,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           application => {
+            // reload cached app only so we don't lose other local data
+            this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+            this.applicationForm.form.markAsPristine();
             this.showMessage(false, 'Application saved!');
-            // reload cached data
-            this.reloadData(application._id);
           },
           error => {
             console.log('error =', error);
@@ -372,7 +389,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
               this.applicationService.delete(this.application)
                 .takeUntil(this.ngUnsubscribe)
                 .subscribe(
-                  () => {
+                  application => {
+                    // delete succeeded --> navigate back to application list
                     this.application = null;
                     this.allowDeactivate = true;
                     this.router.navigate(['/applications']);
@@ -399,11 +417,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
         .takeUntil(this.ngUnsubscribe);
-    } else if (!this.application.client || !this.application.description) {
+    } else if (!this.application.client) {
       this.dialogService.addDialog(ConfirmComponent,
         {
           title: 'Cannot Publish Application',
-          message: 'Please check that client and description have been entered.',
+          message: 'Please check that client has been entered.',
           okOnly: true
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
@@ -413,9 +431,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       this.applicationService.publish(this.application)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          () => {
-            // publish succeeded - reload cached data
-            this.reloadData(this.application._id);
+          application => {
+            // publish succeeded
+            // reload cached app and update local data separately so we don't lose other local data
+            this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+            this.application.isPublished = true;
           },
           error => {
             console.log('error =', error);
@@ -429,35 +449,15 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.applicationService.unPublish(this.application)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        () => {
-          // unpublish succeeded - reload cached data
-          this.reloadData(this.application._id);
+        application => {
+          // unpublish succeeded
+          // reload cached app and update local data separately so we don't lose other local data
+          this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+          this.application.isPublished = false;
         },
         error => {
           console.log('error =', error);
           this.showMessage(true, 'Error un-publishing application');
-        }
-      );
-  }
-
-  // TODO: this obliterates unsaved changes
-  private reloadData(id: string) {
-    // force-reload app data
-    this.applicationService.getById(id, true)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        application => {
-          // make a (deep) copy of the in-memory application so we don't change it
-          // this allows us to abort editing
-          // but forces us to reload in-memory application for certain changes
-          this.application = _.cloneDeep(application);
-
-          if (!this.application.publishDate) {
-            this.application.publishDate = new Date();
-          }
-          this.application.publishDate = moment(this.application.publishDate).format();
-
-          this.applicationForm.form.markAsPristine();
         }
       );
   }
@@ -478,10 +478,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         this.documentService.add(formData)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
-            () => {
-              // add succeeded - reload cached data
-              // TODO: would be better to reload cached data after ALL files are added
-              this.reloadData(this.application._id);
+            doc => {
+              // upload succeeded
+              // reload cached app and update local data separately so we don't lose other local data
+              this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+              documents.push(doc);
             },
             error => {
               console.log('error =', error);
@@ -496,9 +497,13 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.documentService.delete(document)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        () => {
-          // delete succeeded - reload cached data
-          this.reloadData(this.application._id);
+        doc => {
+          // delete succeeded
+          // reload cached app and update local data separately so we don't lose other local data
+          this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+          _.remove(documents, function (item) {
+            return (item._id === doc._id);
+          });
         },
         error => {
           console.log('error =', error);
@@ -512,8 +517,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => {
-          // publish succeeded - reload cached data
-          this.reloadData(this.application._id);
+          // publish succeeded
+          // reload cached app and update local data separately so we don't lose other local data
+          this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+          document.isPublished = true;
         },
         error => {
           console.log('error =', error);
@@ -527,8 +534,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => {
-          // unpublish succeeded - reload cached data
-          this.reloadData(this.application._id);
+          // unpublish succeeded
+          // reload cached app and update local data separately so we don't lose other local data
+          this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+          document.isPublished = false;
         },
         error => {
           console.log('error =', error);
@@ -544,9 +553,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.decisionService.add(decision)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        () => {
-          // add succeeded - reload cached data
-          this.reloadData(this.application._id);
+        decsn => {
+          // add succeeded
+          // reload cached app and update local data separately so we don't lose other local data
+          this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+          this.application.decision = decsn;
         },
         error => {
           console.log('error =', error);
@@ -560,8 +571,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => {
-          // save succeeded - reload cached data
-          this.reloadData(this.application._id);
+          // save succeeded
+          // reload cached app only so we don't lose other local data
+          this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+          this.decisionForm.form.markAsPristine();
           this.showMessage(false, 'Decision saved!');
         },
         error => {
@@ -571,7 +584,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  deleteDecision(decision: Decision) {
+  deleteDecision() {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Confirm Deletion',
@@ -583,12 +596,14 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe(
         isConfirmed => {
           if (isConfirmed) {
-            this.decisionService.delete(decision)
+            this.decisionService.delete(this.application.decision)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
                 () => {
-                  // delete succeeded - reload cached data
-                  this.reloadData(this.application._id);
+                  // delete succeeded
+                  // reload cached app and update local data separately so we don't lose other local data
+                  this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+                  this.application.decision = null;
                 },
                 error => {
                   console.log('error =', error);
@@ -600,28 +615,44 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  publishDecision(decision: Decision) {
-    this.decisionService.publish(decision)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        () => {
-          // publish succeeded - reload cached data
-          this.reloadData(this.application._id);
-        },
-        error => {
-          console.log('error =', error);
-          this.showMessage(true, 'Error publishing decision');
-        }
-      );
+  publishDecision() {
+    if (this.decisionForm.dirty) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Publish Decision',
+          message: 'Please save pending decision changes first.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      this.decisionService.publish(this.application.decision)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          () => {
+            // publish succeeded
+            // reload cached app and update local data separately so we don't lose other local data
+            this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+            this.application.decision.isPublished = true;
+          },
+          error => {
+            console.log('error =', error);
+            this.showMessage(true, 'Error publishing decision');
+          }
+        );
+    }
   }
 
-  unPublishDecision(decision: Decision) {
-    this.decisionService.unPublish(decision)
+  unPublishDecision() {
+    this.decisionService.unPublish(this.application.decision)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => {
-          // unpublish succeeded - reload cached data
-          this.reloadData(this.application._id);
+          // unpublish succeeded
+          // reload cached app and update local data separately so we don't lose other local data
+          this.applicationService.getById(this.application._id, true).takeUntil(this.ngUnsubscribe).subscribe();
+          this.application.decision.isPublished = false;
         },
         error => {
           console.log('error =', error);
