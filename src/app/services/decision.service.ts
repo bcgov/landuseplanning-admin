@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -126,31 +125,36 @@ export class DecisionService {
 
     return this.api.saveDecision(decision)
       .map(res => {
-        const c = res.text() ? res.json() : null;
-        return c ? new Decision(c) : null;
+        const d = res.text() ? res.json() : null;
+        return d ? new Decision(d) : null;
       })
       .catch(this.api.handleError);
   }
 
-  delete(decision: Decision): Observable<any> {
+  delete(decision: Decision): Observable<Decision> {
     return this.api.deleteDecision(decision)
-      .map(res => { return res; })
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Decision(d) : null;
+      })
       .catch(this.api.handleError);
   }
 
-  publish(decision: Decision): Subscription {
+  publish(decision: Decision): Observable<Decision> {
     return this.api.publishDecision(decision)
-      .subscribe(
-        () => decision.isPublished = true,
-        error => console.log('publish error =', error)
-      );
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Decision(d) : null;
+      })
+      .catch(this.api.handleError);
   }
 
-  unPublish(decision: Decision): Subscription {
+  unPublish(decision: Decision): Observable<Decision> {
     return this.api.unPublishDecision(decision)
-      .subscribe(
-        () => decision.isPublished = false,
-        error => console.log('unpublish error =', error)
-      );
+      .map(res => {
+        const d = res.text() ? res.json() : null;
+        return d ? new Decision(d) : null;
+      })
+      .catch(this.api.handleError);
   }
 }

@@ -100,32 +100,21 @@ export class ApiService {
   //
   getApplications() {
     const fields = [
-      '_id',
-      'id',
-
-      '_addedBy',
-      '_updatedBy',
-      'dateAdded',
-      'dateUpdated',
-
       'agency',
-      'areaHectares',
       'cl_file',
-      'code',
-      'name',
       'client',
+      'code',
       'description',
+      'internal',
       'internalID',
-      'legalDescription',
       'latitude',
+      'legalDescription',
       'longitude',
-      'mapsheet',
+      'name',
       'postID',
       'publishDate',
       'region',
-      'tantalisID',
-
-      'internal'
+      'tantalisID'
     ];
     let queryString = 'application?isDeleted=false&fields=';
     _.each(fields, function (f) {
@@ -139,32 +128,21 @@ export class ApiService {
 
   getApplication(id: string) {
     const fields = [
-      '_id',
-      'id',
-
-      '_addedBy',
-      '_updatedBy',
-      'dateAdded',
-      'dateUpdated',
-
       'agency',
-      'areaHectares',
       'cl_file',
-      'code',
-      'name',
       'client',
+      'code',
       'description',
+      'internal',
       'internalID',
-      'legalDescription',
       'latitude',
+      'legalDescription',
       'longitude',
-      'mapsheet',
+      'name',
       'postID',
       'publishDate',
       'region',
-      'tantalisID',
-
-      'internal'
+      'tantalisID'
     ];
     let queryString = 'application/' + id + '?fields=';
     _.each(fields, function (f) {
@@ -204,44 +182,34 @@ export class ApiService {
   }
 
   saveApplication(app: Application) {
-    // TODO: specify desired return fields
-    // (currently, all following fields are returned)
-    // NB: above applies to all POSTs and PUTs in this module
+    // TODO: this should be used to specify desired return fields
+    // NB: this applies to all POSTs and PUTs in this module
 
-    // const fields = [
-    //   'agency',
-    //   'areaHectares',
-    //   'cl_file',
-    //   'client',
-    //   'code',
-    //   'description',
-    //   'id',
-    //   'interestID',
-    //   'internal',
-    //   'internalID',
-    //   'isDeleted',
-    //   'latitude',
-    //   'legalDescription',
-    //   'longitude'
-    //   'mapsheet',
-    //   'name',
-    //   'postID',
-    //   'publishDate',
-    //   'region',
-    //   'tags',
-    //   'tantalisID'
-    // ];
-    // let queryString = 'application/' + app._id + '?fields=';
-    // _.each(fields, function (f) {
-    //   queryString += f + '|';
-    // });
-    // // Trim the last |
-    // queryString = queryString.replace(/\|$/, '');
-    // const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // return this.put(this.pathAPI, queryString, app, { headers: headers });
-
+    const fields = [
+      'agency',
+      'cl_file',
+      'client',
+      'code',
+      'description',
+      'internal',
+      'internalID',
+      'latitude',
+      'legalDescription',
+      'longitude',
+      'name',
+      'postID',
+      'publishDate',
+      'region',
+      'tantalisID'
+    ];
+    let queryString = 'application/' + app._id + '?fields=';
+    _.each(fields, function (f) {
+      queryString += f + '|';
+    });
+    // Trim the last |
+    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'application/' + app._id, null, { headers: headers });
+    return this.put(this.pathAPI, queryString, app, { headers: headers });
   }
 
   //
@@ -574,7 +542,7 @@ export class ApiService {
     return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', null, { headers: headers });
   }
 
-  uploadDocument(formData) {
+  uploadDocument(formData: FormData) {
     const fields = ['documentFileName', 'displayName', 'internalURL', 'internalMime'];
     let queryString = 'document/?fields=';
     _.each(fields, function (f) {

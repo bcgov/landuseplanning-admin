@@ -95,10 +95,10 @@
                 </span>
                 <span class="cell name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
                 <span class="cell actions">
-                  <button class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
+                  <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
                     <i class="material-icons">file_download</i>
                   </button>
-                  <button class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document">
+                  <button type="button" class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document">
                     <i class="material-icons">open_in_new</i>
                   </button>
                 </span>
@@ -155,7 +155,7 @@
             <h3 class="title-container__title mb-0">Geographic Shape Data</h3>
 
             <div class="title-container__actions">
-              <button class="btn btn-white slide-r-btn" (click)="launchMap()" disabled aria-disabled="true">
+              <button type="button" class="btn btn-white slide-r-btn" (click)="launchMap()" disabled aria-disabled="true">
                 <span>See on map</span>
                 <i class="material-icons">place</i>
               </button>
