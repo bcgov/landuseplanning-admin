@@ -51,7 +51,8 @@ export class DecisionService {
           this.decision = decision;
           return decision;
         });
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get a specific decision by its id

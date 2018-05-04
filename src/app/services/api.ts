@@ -230,6 +230,7 @@ export class ApiService {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
+
   getOrganization(id: string) {
     const fields = [
       '_addedBy',

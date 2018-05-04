@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -50,7 +49,8 @@ export class CommentService {
           .then((allComments: Comment[][]) => {
             return _.flatten(allComments);
           });
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get all comments for the specified comment period id
@@ -118,7 +118,8 @@ export class CommentService {
           this.comment = comment;
           return this.comment;
         });
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   add(orig: Comment): Observable<Comment> {
