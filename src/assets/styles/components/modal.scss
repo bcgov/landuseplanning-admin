@@ -1,6 +1,7 @@
 @import "~assets/styles/base.scss";
+
 .modal-header {
-    background-color: #FFF;
+    background-color: $white;
     .modal-title {
         font-weight: bold;
     }
@@ -16,5 +17,5 @@
 }
 
 .modal-footer {
-    background-color: #FFF;
+    background-color: $white;
 }
