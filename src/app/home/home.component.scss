@@ -86,7 +86,7 @@
       &-item {
         @include flex-box();
         padding: 0.2rem 0.5rem;
-        border-top: 1px solid #fff;
+        border-top: 1px solid $white;
         font-size: 0.875rem;
 
         .name {

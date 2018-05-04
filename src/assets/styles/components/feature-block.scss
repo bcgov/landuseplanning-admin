@@ -22,6 +22,24 @@
     @include flex(0 0 auto);
   }
 
+  &.dark {
+    background-color: $feature-block-bg;
+    color: $feature-block-color;
+
+    a:not([class^="btn"]) {
+      color: $gold;
+    }
+  }
+
+  &.light {
+    background-color: $feature-block-light-bg;
+    color: $feature-block-light-color;
+
+    a:not[class^="btn"] {
+      color: $feature-block-primary;
+    }
+  }
+
   h3, h4, p {
     color: inherit;
     font-weight: normal;

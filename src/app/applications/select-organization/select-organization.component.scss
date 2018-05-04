@@ -1,8 +1,10 @@
+@import "~assets/styles/base.scss";
+
 .clickable-row td {
     cursor: pointer;
 }
 
 tr.active {
     background-color: cornflowerblue !important;
-    color: #FFF !important;
+    color: $white !important;
 }
