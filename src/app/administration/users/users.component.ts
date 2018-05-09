@@ -57,7 +57,8 @@ export class UsersComponent implements OnInit, OnDestroy {
               self.standards.push(i);
             }
           });
-          // Needed in development mode - not required in prod.
+          // Force change detection since we changed a bound property after the normal check cycle and outside anything
+          // that would trigger a CD cycle - this will eliminate the error you get when running in dev mode.
           this._changeDetectionRef.detectChanges();
         },
         error => {

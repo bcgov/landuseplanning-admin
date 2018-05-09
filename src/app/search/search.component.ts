@@ -129,6 +129,8 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.terms.clfile = this.params.clfile.split(',').join(' ');
           }
 
+          // Force change detection since we changed a bound property after the normal check cycle and outside anything
+          // that would trigger a CD cycle - this will eliminate the error you get when running in dev mode.
           this._changeDetectionRef.detectChanges();
 
           if (!_.isEmpty(this.terms.getParams())) {
@@ -269,7 +271,8 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.count = self.groupByResults.length;
           }
 
-          // Needed in development mode - not required in prod.
+          // Force change detection since we changed a bound property after the normal check cycle and outside anything
+          // that would trigger a CD cycle - this will eliminate the error you get when running in dev mode.
           this._changeDetectionRef.detectChanges();
         },
         error => {
