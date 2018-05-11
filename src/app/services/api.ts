@@ -43,19 +43,19 @@ export class ApiService {
         this.env = 'dev';
         break;
 
-        case 'nrts-prc-test.pathfinder.gov.bc.ca':
+      case 'nrts-prc-test.pathfinder.gov.bc.ca':
         // Test
         this.pathAPI = 'https://nrts-prc-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
-        case 'nrts-prc-demo.pathfinder.gov.bc.ca':
+      case 'nrts-prc-demo.pathfinder.gov.bc.ca':
         // Demo
         this.pathAPI = 'https://nrts-prc-demo.pathfinder.gov.bc.ca/api';
         this.env = 'demo';
         break;
 
-        default:
+      default:
         // Prod
         this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
         this.env = 'prod';
@@ -110,30 +110,20 @@ export class ApiService {
 
       'agency',
       'areaHectares',
-      'businessUnit',
       'cl_file',
       'code',
       'name',
       'client',
       'description',
-      'interestID',
       'internalID',
       'legalDescription',
-      'location',
       'latitude',
       'longitude',
       'mapsheet',
       'postID',
       'publishDate',
-      'purpose',
-      'subpurpose',
       'region',
-      'status',
-      'tenureStage',
       'tantalisID',
-      'dispositionID',
-      'type',
-      'subtype',
 
       'internal'
     ];
@@ -159,30 +149,20 @@ export class ApiService {
 
       'agency',
       'areaHectares',
-      'businessUnit',
       'cl_file',
       'code',
       'name',
       'client',
       'description',
-      'interestID',
       'internalID',
       'legalDescription',
-      'location',
       'latitude',
       'longitude',
       'mapsheet',
       'postID',
       'publishDate',
-      'purpose',
-      'subpurpose',
       'region',
-      'status',
-      'tenureStage',
       'tantalisID',
-      'dispositionID',
-      'type',
-      'subtype',
 
       'internal'
     ];
@@ -196,9 +176,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  // For now, this is just a quick lookup by dispositionId
-  getApplicationByDisposition(dispositionId: number) {
-    const queryString = 'application?isDeleted=false&tantalisId=' + dispositionId;
+  // for now, this is just a quick lookup by Tantalis ID
+  getApplicationByTantalisId(tantalisId: number) {
+    const queryString = 'application?isDeleted=false&tantalisId=' + tantalisId;
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
@@ -224,54 +204,44 @@ export class ApiService {
   }
 
   saveApplication(app: Application) {
-    const fields = [
-      // '_addedBy',
-      // '_updatedBy',
-      // 'dateAdded',
-      // 'dateUpdated',
+    // TODO: specify desired return fields
+    // (currently, all following fields are returned)
+    // NB: above applies to all POSTs and PUTs in this module
 
-      'agency',
-      'areaHectares',
-      'businessUnit',
-      'cl_file',
-      'code',
-      'name',
-      'client',
-      'description',
-      'interestID',
-      'internalID',
-      'legalDescription',
-      'location',
-      'latitude',
-      'longitude',
-      'mapsheet',
-      'postID',
-      'publishDate',
-      'purpose',
-      'subpurpose',
-      'region',
-      'status',
-      'tenureStage',
-      'tantalisID',
-      'dispositionID',
-      'type',
-      'subtype',
+    // const fields = [
+    //   'agency',
+    //   'areaHectares',
+    //   'cl_file',
+    //   'client',
+    //   'code',
+    //   'description',
+    //   'id',
+    //   'interestID',
+    //   'internal',
+    //   'internalID',
+    //   'isDeleted',
+    //   'latitude',
+    //   'legalDescription',
+    //   'longitude'
+    //   'mapsheet',
+    //   'name',
+    //   'postID',
+    //   'publishDate',
+    //   'region',
+    //   'tags',
+    //   'tantalisID'
+    // ];
+    // let queryString = 'application/' + app._id + '?fields=';
+    // _.each(fields, function (f) {
+    //   queryString += f + '|';
+    // });
+    // // Trim the last |
+    // queryString = queryString.replace(/\|$/, '');
+    // const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    // return this.put(this.pathAPI, queryString, app, { headers: headers });
 
-      'internal'
-    ];
-    let queryString = 'application/' + app._id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Remove features since we don't really save them in the back-end, they are
-    // referencial.
-    if (app.features) {
-      delete app.features;
-    }
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, app, { headers: headers });
+    return this.put(this.pathAPI, 'application/' + app._id, null, { headers: headers });
   }
 
   //
@@ -658,9 +628,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getBCGWDispositionTransactionId(id: string) {
+  getBCGWDispositionByTransactionId(transactionId: number) {
     const fields = ['name'];
-    let queryString = 'public/search/bcgw/dispositionTransactionId/' + id + '?fields=';
+    let queryString = 'public/search/bcgw/dispositionTransactionId/' + transactionId + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -670,9 +640,9 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  getClientsInfoByDispositionId(id: number) {
+  getClientsInfoByDispositionId(dispositionId: number) {
     const fields = ['name'];
-    let queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + id + '?fields=';
+    let queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + dispositionId + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
@@ -741,6 +711,7 @@ export class ApiService {
   private post(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
     return this.http.post(`${apiPath}/${apiRoute}`, body || null, options || null);
   }
+
   private delete(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
     return this.http.delete(`${apiPath}/${apiRoute}`, options || null);
   }

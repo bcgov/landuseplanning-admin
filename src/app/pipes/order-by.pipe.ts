@@ -40,7 +40,6 @@ export class OrderByPipe implements PipeTransform {
             if (aCompare > bCompare) { return +args.direction; }
             return 0;
         });
-
     }
 
     // coalesce literals to a base value

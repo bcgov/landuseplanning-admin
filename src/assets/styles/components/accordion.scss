@@ -1,3 +1,4 @@
+@import "~assets/styles/base.scss";
 .accordion {
     margin-top: 0.25rem;
 
@@ -5,12 +6,12 @@
         margin-bottom: 0.25rem;
 
         .accordion__collapse-header {
-            background: #f7f8fa;
+            background: $table-row-bg;
         }
 
         &:nth-child(even) {
             .accordion__collapse-header {
-                background: #f4f4f4;
+                background: $table-alt-row-bg;
             }
         }
     
@@ -26,7 +27,7 @@
 
         &--column {
             display: table-cell;
-            padding: 1rem 0.75rem;
+            padding: 0.75rem;
             font-size: 0.875rem;
             vertical-align: top;
 

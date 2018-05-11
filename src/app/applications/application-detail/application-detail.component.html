@@ -17,12 +17,9 @@
         <section class="card bg-dark">
           <h2 class="mb-0">{{application.client || '-'}}</h2>
           <div>{{application.purpose || '-'}} / {{application.subpurpose || '-'}}</div>
-          <!--
-          <h3>{{applicationService.getStatus(application) || '-'}}</h3>
-          -->
           <ul class="application-detail__list">
             <li>CL File: {{application.cl_file || '-'}}</li>
-            <li *ngIf="application.features?.length > 0">Disp ID: {{application.features[0].properties.DISPOSITION_TRANSACTION_SID}}</li>
+            <li>Disp ID: {{application.tantalisID || '-'}}</li>
           </ul>
         </section>
 
@@ -38,15 +35,15 @@
             <ul class="application-detail__list">
               <li class="pt-0">
                 <span class="name">Type / Subtype</span>
-                <span class="value">{{application.features[0].properties.TENURE_TYPE || '-'}} / {{application.features[0].properties.TENURE_SUBTYPE || '-'}}</span>
+                <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
               </li>
               <li class="pt-0">
                 <span class="name">Status</span>
-                <span class="value">{{application.features[0].properties.TENURE_STATUS || '-'}}</span>
+                <span class="value">{{application.status || '-'}}</span>
               </li>
               <li>
                 <span class="name">Stage</span>
-                <span class="value">{{application.features[0].properties.TENURE_STAGE || '-'}}</span>
+                <span class="value">{{application.tenureStage || '-'}}</span>
               </li>
               <li>
                 <span class="name">Agency</span>
@@ -57,7 +54,7 @@
             <ul class="application-detail__list">
               <li class="pt-0">
                 <span class="name">Business Unit</span>
-                <span class="value">{{application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT || '-'}}</span>
+                <span class="value">{{application.businessUnit || '-'}}</span>
               </li>
               <li class="pt-0">
                 <span class="name">Region</span>
@@ -65,7 +62,7 @@
               </li>
               <li>
                 <span class="name">Location</span>
-                <span class="value">{{application.features[0].properties.TENURE_LOCATION || '-'}}</span>
+                <span class="value">{{application.location || '-'}}</span>
               </li>
               <li>
                 <span class="name">Total Area (hectares)</span>
@@ -164,8 +161,7 @@
               </button>
             </div>
           </div>
-          <span *ngIf="application.features">This application has
-            <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
+          <span *ngIf="application.features">This application has <strong>{{application.features.length}}</strong> shape {{application.features.length === 1 ? 'file' : 'files'}}.</span>
           <div class="geo-shape-data__list">
             <section class="pt-3" *ngFor="let shape of application.features">
               <h4 class="mb-3">Interest ID: {{shape.properties.INTRID_SID}}</h4>
@@ -191,7 +187,7 @@
       </main>
 
       <aside class="col-lg-4">
-        <app-application-aside></app-application-aside>
+        <app-application-aside [application]="application"></app-application-aside>
       </aside>
 
     </div>

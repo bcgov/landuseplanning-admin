@@ -2,107 +2,121 @@
   <main>
     <section>
       <h2>Crown Lands Applications in British Columbia</h2>
-      <p class="tab-intro">Use the list below to navigate to information on individual application. Click on any application to go directly to
-        its details page, or click the <i class="material-icons open-icon" style="vertical-align: middle">arrow_drop_down</i>sign to expand the
-        list item to see basic information (e.g., Type, Location, Description, etc.) about that application.
-      </p>
+      <p class="tab-intro">Use the list below to navigate to individual applications. Click on any application to go directly to its details page
+        or click <i class="material-icons open-icon" style="vertical-align: middle">arrow_drop_down</i> to expand the list item to see basic
+        information (e.g., Location, Description, etc.) about that application.</p>
 
-      <button class="btn btn-primary" (click)="createApplication()">
+      <button class="btn btn-primary" [routerLink]="['/a/0/edit']">
         <i class="material-icons">add</i>
         <span>Create New Application</span>
       </button>
+
+      <div class="application-list__options">
+        <mat-slide-toggle color="primary" [checked]="showOnlyOpenApps" (change)="showOnlyOpenAppsChange($event.checked)">
+          Only show applications with an open or future comment period
+        </mat-slide-toggle>
+      </div>
 
       <table class="table application-table">
         <thead class="application-table__sort-header">
           <tr>
             <th class="application-table__name-col sortable" (click)="sort('client')">Client Name
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && isDesc), 'sort-desc': (column == 'client' && !isDesc) }"
-                aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && !isDesc), 'sort-desc': (column == 'client' && isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__cl_file-col sortable" (click)="sort('cl_file')">CL File
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && isDesc), 'sort-desc': (column == 'cl_file' && !isDesc) }"
-                aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && !isDesc), 'sort-desc': (column == 'cl_file' && isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && isDesc), 'sort-desc': (column == 'purpose' && !isDesc) }"
-                aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && !isDesc), 'sort-desc': (column == 'purpose' && isDesc) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__region-col sortable" (click)="sort('region')">Region
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && isDesc), 'sort-desc': (column == 'region' && !isDesc) }" aria-hidden="true"></i>
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && !isDesc), 'sort-desc': (column == 'region' && isDesc) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__status-col sortable" (click)="sort('status')">Status
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'status' && isDesc), 'sort-desc': (column == 'status' && !isDesc) }" aria-hidden="true"></i>
+            <th class="application-table__status-col sortable" (click)="sort('appStatus')">Status
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'appStatus' && !isDesc), 'sort-desc': (column == 'appStatus' && isDesc) }" aria-hidden="true"></i>
+            </th>
+            <th class="application-table__commenting-col sortable" (click)="sort('cpStatus')">PRC Status
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'cpStatus' && !isDesc), 'sort-desc': (column == 'cpStatus' && isDesc) }" aria-hidden="true"></i>
             </th>
           </tr>
         </thead>
 
         <tbody class="application-table__content">
-          <tr *ngFor="let item of applications | orderBy: {property: column, direction: direction} | paginate: config">
-            <td class="accordion__collapse-item p-0" colspan="5">
-              <div class="accordion__collapse-header" role="tab">
-                <a role="button" class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item._id}}">
-                  <i class="material-icons open-icon">arrow_drop_down</i>
-                  <i class="material-icons close-icon">arrow_drop_up</i>
-                </a>
-                <span class="accordion__collapse-header--column application-table__name-col">{{item.client || '-'}}</span>
-                <span class="accordion__collapse-header--column application-table__cl_file-col">
-                  <a [routerLink]="['/a', item._id]">{{item.cl_file || '-'}}</a>
-                </span>
-                <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
-                <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
-                <span class="accordion__collapse-header--column application-table__status-col">{{applicationService.getStatus(item) || '-'}}</span>
-              </div>
+          <ng-template ngFor let-item [ngForOf]="applications | orderBy: {property: column, direction: direction} | paginate: config">
+            <tr *ngIf="showThisApp(item)">
+              <td class="accordion__collapse-item p-0" colspan="6">
+                <div class="accordion__collapse-header" role="tab">
+                  <a role="button" class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item._id}}">
+                    <i class="material-icons open-icon">arrow_drop_down</i>
+                    <i class="material-icons close-icon">arrow_drop_up</i>
+                  </a>
+                  <span class="accordion__collapse-header--column application-table__name-col">{{item.client || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__cl_file-col">
+                    <a [routerLink]="['/a', item._id]">{{item.cl_file || '-'}}</a>
+                  </span>
+                  <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__status-col">{{item.appStatus || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__commenting-col">{{item.cpStatus}}</span>
+                </div>
 
-              <div class="collapse" id="accordCollapse{{item._id}}" role="tabpanel">
-                <div class="accordion__collapse-body">
-                  <div class="application-table__application-details">
-                    <ul class="nv-list application-table__application-details--list">
-                      <!-- <li class="p-0">
-                        <span class="name">Type / Subtype:</span>
-                        <span class="value">{{item.type || '-'}} / {{item.subtype || '-'}}</span>
-                      </li> -->
-                      <li class="p-0">
-                        <span class="name">Comment Period Status:</span>
-                        <span class="value">{{commentPeriodService.getStatus(item.currentPeriod)}}</span>
-                      </li>
-                      <li class="p-0" *ngIf="item.currentPeriod">
-                        <span class="name">Comment Period Dates:</span>
-                        <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}</span>
-                      </li>
-                      <li class="p-0">
-                        <span class="name">Location:</span>
-                        <span class="value">{{item.location || '-'}}</span>
-                      </li>
-                      <li class="p-0">
-                        <span class="name">Description:</span>
-                        <span class="value" *ngIf="item.description" [innerHTML]="item.description | newlines"></span>
-                        <span class="value" *ngIf="!item.description">-</span>
-                      </li>
-                    </ul>
+                <div class="collapse" id="accordCollapse{{item._id}}" role="tabpanel">
+                  <div class="accordion__collapse-body">
+                    <div class="application-table__application-details">
+                      <ul class="nv-list application-table__application-details--list">
+                        <!-- <li class="p-0">
+                          <span class="name">Type / Subtype:</span>
+                          <span class="value">{{item.type || '-'}} / {{item.subtype || '-'}}</span>
+                        </li> -->
+                        <li class="p-0">
+                          <span class="name">Comment Period Status:</span>
+                          <span class="value">{{item.cpStatus}}</span>
+                        </li>
+                        <li class="p-0" *ngIf="item.currentPeriod">
+                          <span class="name">Comment Period Dates:</span>
+                          <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}
+                            <span *ngIf="commentPeriodService.isOpen(item.currentPeriod)">&nbsp; ({{getDaysRemaining(item)}})</span>
+                          </span>
+                        </li>
+                        <li class="p-0" *ngIf="item.currentPeriod">
+                          <span class="name">Comments Received:</span>
+                          <span class="value">{{item.numComments}}</span>
+                        </li>
+                        <li class="p-0">
+                          <span class="name">Location:</span>
+                          <span class="value">{{item.location || '-'}}</span>
+                        </li>
+                        <li class="p-0">
+                          <span class="name">Description:</span>
+                          <span class="value" *ngIf="item.description" [innerHTML]="item.description | newlines"></span>
+                          <span class="value" *ngIf="!item.description">-</span>
+                        </li>
+                      </ul>
 
-                    <div class="application-table__application-details--links">
-                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item._id]">
-                        <i class="material-icons">info_outline</i>
-                        <span>Application Details</span>
-                      </a>
-                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods', item._id]">
-                        <i class="material-icons">date_range</i>
-                        <span>Manage Comment Periods</span>
-                      </a>
-                      <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments', item._id]">
-                        <i class="material-icons">message</i>
-                        <span>Review Comments</span>
-                      </a>
-                      <!-- <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/map', { application: item._id }]">
-                        <i class="material-icons">place</i>
-                        <span>Show on Map</span>
-                      </a> -->
+                      <div class="application-table__application-details--links">
+                        <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item._id]">
+                          <i class="material-icons">info_outline</i>
+                          <span>Application Details</span>
+                        </a>
+                        <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods', item._id]">
+                          <i class="material-icons">date_range</i>
+                          <span>Manage Comment Periods</span>
+                        </a>
+                        <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments', item._id]">
+                          <i class="material-icons">message</i>
+                          <span>Review Comments</span>
+                        </a>
+                        <!-- <a class="btn content-btn slide-l-btn btn-sm float-right" [routerLink]="['/map', { application: item._id }]">
+                          <i class="material-icons">place</i>
+                          <span>Show on Map</span>
+                        </a> -->
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </td>
-          </tr>
+              </td>
+            </tr>
+          </ng-template>
         </tbody>
       </table>
     </section>

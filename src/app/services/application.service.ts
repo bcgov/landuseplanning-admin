@@ -14,11 +14,29 @@ import { ApiService } from './api';
 import { DocumentService } from './document.service';
 import { OrganizationService } from './organization.service';
 import { CommentPeriodService } from './commentperiod.service';
+import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
 import { SearchService } from './search.service';
 
 @Injectable()
 export class ApplicationService {
+  // statuses / query param options
+  readonly ABANDONED = 'AB';
+  readonly ACCEPTED = 'AC';
+  readonly ALLOWED = 'AL';
+  readonly CANCELLED = 'CA';
+  readonly DISALLOWED = 'DI';
+  readonly DISPOSITION_GOOD_STANDING = 'DG';
+  readonly OFFER_ACCEPTED = 'OA';
+  readonly OFFER_NOT_ACCEPTED = 'ON';
+  readonly OFFERED = 'OF';
+  readonly SUSPENDED = 'SU';
+  // special combination status (see isDecision below)
+  readonly DECISION_MADE = 'DE';
+  // special status when no data
+  readonly UNKNOWN = 'UN';
+
+  public applicationStatuses: Array<string> = [];
   private application: Application = null;
 
   constructor(
@@ -26,9 +44,24 @@ export class ApplicationService {
     private documentService: DocumentService,
     private organizationService: OrganizationService,
     private commentPeriodService: CommentPeriodService,
+    private commentService: CommentService,
     private decisionService: DecisionService,
     private searchService: SearchService
-  ) { }
+  ) {
+    // display strings
+    this.applicationStatuses[this.ABANDONED] = 'Application Abandoned';
+    this.applicationStatuses[this.ACCEPTED] = 'Application Under Review';
+    this.applicationStatuses[this.ALLOWED] = 'Decision: Allowed';
+    this.applicationStatuses[this.CANCELLED] = 'Application Cancelled';
+    this.applicationStatuses[this.DISALLOWED] = 'Decision: Not Approved';
+    this.applicationStatuses[this.DISPOSITION_GOOD_STANDING] = 'Tenure: Disposition in Good Standing';
+    this.applicationStatuses[this.OFFER_ACCEPTED] = 'Decision: Offer Accepted';
+    this.applicationStatuses[this.OFFER_NOT_ACCEPTED] = 'Decision: Offer Not Accepted';
+    this.applicationStatuses[this.OFFERED] = 'Decision: Offered';
+    this.applicationStatuses[this.SUSPENDED] = 'Tenure: Suspended';
+    this.applicationStatuses[this.DECISION_MADE] = 'Decision Made';
+    this.applicationStatuses[this.UNKNOWN] = 'Unknown Application Status';
+  }
 
   // get count of applications
   getCount(): Observable<number> {
@@ -72,7 +105,58 @@ export class ApplicationService {
         applications.forEach((application, i) => {
           promises.push(this.commentPeriodService.getAllByApplicationId(applications[i]._id)
             .toPromise()
-            .then(periods => applications[i].currentPeriod = this.commentPeriodService.getCurrent(periods)));
+            .then(periods => {
+              const cp = this.commentPeriodService.getCurrent(periods);
+              applications[i].currentPeriod = cp;
+              // derive comment period status for app list display + sorting
+              applications[i]['cpStatus'] = this.commentPeriodService.getStatus(cp);
+            })
+          );
+        });
+
+        // now get the number of pending comments for each application
+        applications.forEach((application, i) => {
+          promises.push(this.commentService.getAllByApplicationId(applications[i]._id)
+            .toPromise()
+            .then(comments => {
+              const pending = comments.filter(comment => this.commentService.isPending(comment));
+              applications[i]['numComments'] = pending.length.toString();
+            })
+          );
+        });
+
+        // now get the referenced data (features)
+        applications.forEach((application, i) => {
+          promises.push(this.searchService.getByDTID(application.tantalisID)
+            .toPromise()
+            .then(features => {
+              application.features = features;
+
+              // calculate Total Area (hectares)
+              let areaHectares = 0;
+              _.each(application.features, function (f) {
+                if (f['properties']) {
+                  areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+                }
+              });
+              application.areaHectares = areaHectares;
+
+              // cache application properties from first feature
+              if (application.features && application.features.length > 0) {
+                application.purpose = application.features[0].properties.TENURE_PURPOSE;
+                application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
+                application.type = application.features[0].properties.TENURE_TYPE;
+                application.subtype = application.features[0].properties.TENURE_SUBTYPE;
+                application.status = application.features[0].properties.TENURE_STATUS;
+                application.tenureStage = application.features[0].properties.TENURE_STAGE;
+                application.location = application.features[0].properties.TENURE_LOCATION;
+                application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+              }
+
+              // derive application status for app list display + sorting
+              application['appStatus'] = this.getStatus(application);
+            })
+          );
         });
 
         return Promise.all(promises).then(() => { return applications; });
@@ -92,11 +176,13 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
-  // get an application by it's disposition (tantalisId)
-  getByDispositionId(dispositionId: number): Observable<Application> {
-    return this.api.getApplicationByDisposition(dispositionId)
+  // get a specific application by its Tantalis ID
+  // without related data
+  getByTantalisId(tantalisId: number): Observable<Application> {
+    return this.api.getApplicationByTantalisId(tantalisId)
       .map(res => {
         const applications = res.text() ? res.json() : [];
+        // return the first (only) application
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
       .catch(this.api.handleError);
@@ -154,12 +240,13 @@ export class ApplicationService {
           .then(decision => application.decision = decision)
         );
 
-        // now get the shapes
-        promises.push(this.searchService.getByDTID(application.tantalisID.toString())
+        // now get the referenced data (features)
+        promises.push(this.searchService.getByDTID(application.tantalisID, forceReload)
           .toPromise()
           .then(features => {
             application.features = features;
-            // calculate areaHectares
+
+            // calculate Total Area (hectares)
             let areaHectares = 0;
             _.each(application.features, function (f) {
               if (f['properties']) {
@@ -167,6 +254,18 @@ export class ApplicationService {
               }
             });
             application.areaHectares = areaHectares;
+
+            // cache application properties from first feature
+            if (application.features && application.features.length > 0) {
+              application.purpose = application.features[0].properties.TENURE_PURPOSE;
+              application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
+              application.type = application.features[0].properties.TENURE_TYPE;
+              application.subtype = application.features[0].properties.TENURE_SUBTYPE;
+              application.status = application.features[0].properties.TENURE_STATUS;
+              application.tenureStage = application.features[0].properties.TENURE_STAGE;
+              application.location = application.features[0].properties.TENURE_LOCATION;
+              application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+            }
           })
         );
 
@@ -201,12 +300,20 @@ export class ApplicationService {
   }
 
   // create new application
-  // mandatory fields:
-  // - disp ID (and related data)
-  // - description
-  // - client
-  addApplication(item: any): Observable<Application> {
-    const app = this.sanitizeApplication(item);
+  add(item: any): Observable<Application> {
+    const app = new Application(item);
+
+    // boilerplate for new application
+    app.agency = 'Crown Land Allocation';
+    app.name = 'New Application'; // TODO: remove if not needed
+    app.region = 'Skeena';
+
+    // id must not exist on POST
+    delete app._id;
+
+    // don't send features or documents
+    delete app.features;
+    delete app.documents;
 
     // replace newlines with \\n (JSON format)
     if (app.description) {
@@ -224,47 +331,13 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
-  // deletes object keys the API doesn't want on POST
-  // and initializes defaults
-  private sanitizeApplication(item: any): Application {
-    const app = new Application();
-
-    // ID must not exist on POST
-    delete app._id;
-
-    if (item && item.properties) {
-      app.purpose = item.properties.TENURE_PURPOSE;
-      app.subpurpose = item.properties.TENURE_SUBPURPOSE;
-      app.type = item.properties.TENURE_TYPE;
-      app.subtype = item.properties.TENURE_SUBTYPE;
-      app.status = item.properties.TENURE_STATUS;
-      app.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
-      app.region = 'Skeena';
-      app.location = item.properties.TENURE_LOCATION;
-      app.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
-      app.agency = 'Crown Land Allocation';
-      app.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
-      app.interestID = item.properties.INTRID_SID;
-    } else {
-      // boilerplate for new application
-      app.name = 'New Application';
-      // app.purpose = 'TENURE_PURPOSE';
-      // app.subpurpose = 'TENURE_SUBPURPOSE';
-      // app.type = 'TENURE_TYPE';
-      // app.subtype = 'TENURE_SUBTYPE';
-      // app.status = 'TENURE_STATUS';
-      app.region = 'Skeena';
-      // app.location = 'TENURE_LOCATION';
-      // app.businessUnit = 'RESPONSIBLE_BUSINESS_UNIT';
-      app.agency = 'Crown Land Allocation';
-    }
-
-    return app;
-  }
-
   save(orig: Application): Observable<Application> {
     // make a (deep) copy of the passed-in application so we don't change it
     const app = _.cloneDeep(orig);
+
+    // don't send features or documents
+    delete app.features;
+    delete app.documents;
 
     // replace newlines with \\n (JSON format)
     if (app.description) {
@@ -285,22 +358,55 @@ export class ApplicationService {
   // returns application status based on status code
   getStatus(application: Application): string {
     if (!application || !application.status) {
-      return null; // 'Unknown Application Status';
+      return null; // this.applicationStatuses[this.UNKNOWN]; // no data
     }
 
     switch (application.status.toUpperCase()) {
-      case 'ABANDONED': return 'Application Abandoned';
-      case 'ACCEPTED': return 'Application Under Review';
-      case 'ALLOWED': return 'Decision: Allowed';
-      case 'DISALLOWED': return 'Decision: Not Approved';
-      case 'DISPOSITION IN GOOD STANDING': return 'Tenure: Disposition in Good Standing';
-      case 'OFFER ACCEPTED': return 'Decision: Offer Accepted';
-      case 'OFFER NOT ACCEPTED': return 'Decision: Offer Not Accepted';
-      case 'OFFERED': return 'Decision: Offered';
-      case 'SUSPENDED': return 'Tenure: Suspended';
+      case 'ABANDONED': return this.applicationStatuses[this.ABANDONED];
+      case 'ACCEPTED': return this.applicationStatuses[this.ACCEPTED];
+      case 'ALLOWED': return this.applicationStatuses[this.ALLOWED];
+      case 'CANCELLED': return this.applicationStatuses[this.CANCELLED];
+      case 'DISALLOWED': return this.applicationStatuses[this.DISALLOWED];
+      case 'DISPOSITION IN GOOD STANDING': return this.applicationStatuses[this.DISPOSITION_GOOD_STANDING];
+      case 'OFFER ACCEPTED': return this.applicationStatuses[this.OFFER_ACCEPTED];
+      case 'OFFER NOT ACCEPTED': return this.applicationStatuses[this.OFFER_NOT_ACCEPTED];
+      case 'OFFERED': return this.applicationStatuses[this.OFFERED];
+      case 'SUSPENDED': return this.applicationStatuses[this.SUSPENDED];
     }
 
     // else return current status in title case
     return _.startCase(_.camelCase(application.status));
+  }
+
+  isAccepted(status: string): boolean {
+    return (status && status.toUpperCase() === 'ACCEPTED');
+  }
+
+  // NOTE: a decision may or may not include Cancelled
+  // see code that uses this helper
+  isDecision(status: string): boolean {
+    const s = (status && status.toUpperCase());
+    return (s === 'ALLOWED'
+      || s === 'CANCELLED'
+      || s === 'DISALLOWED'
+      || s === 'OFFER ACCEPTED'
+      || s === 'OFFER NOT ACCEPTED'
+      || s === 'OFFERED');
+  }
+
+  isCancelled(status: string): boolean {
+    return (status && status.toUpperCase() === 'CANCELLED');
+  }
+
+  isAbandoned(status: string): boolean {
+    return (status && status.toUpperCase() === 'ABANDONED');
+  }
+
+  isDispGoodStanding(status: string): boolean {
+    return (status && status.toUpperCase() === 'DISPOSITION IN GOOD STANDING');
+  }
+
+  isSuspended(status: string): boolean {
+    return (status && status.toUpperCase() === 'SUSPENDED');
   }
 }

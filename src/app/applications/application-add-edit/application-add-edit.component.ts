@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http/src/static_response';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -11,6 +12,7 @@ import * as _ from 'lodash';
 import { Constants } from 'app/utils/constants';
 import { SelectOrganizationComponent } from 'app/applications/select-organization/select-organization.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { ApplicationAsideComponent } from 'app/applications/application-aside/application-aside.component';
 import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
 import { Comment } from 'app/models/comment';
@@ -21,7 +23,6 @@ import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 import { SearchService } from 'app/services/search.service';
 import { DecisionService } from 'app/services/decision.service';
-import { ApplicationAsideComponent } from 'app/applications/application-aside/application-aside.component';
 
 @Component({
   selector: 'app-application-add-edit',
@@ -29,7 +30,9 @@ import { ApplicationAsideComponent } from 'app/applications/application-aside/ap
   styleUrls: ['./application-add-edit.component.scss']
 })
 export class ApplicationAddEditComponent implements OnInit, OnDestroy {
-  @ViewChild(ApplicationAsideComponent) child: ApplicationAsideComponent;
+  @ViewChild('applicationForm') applicationForm: NgForm;
+  @ViewChild(ApplicationAsideComponent) applicationAside: ApplicationAsideComponent;
+
   public types = Constants.types;
   public subtypes = Constants.subtypes;
   public purposes = Constants.purposes;
@@ -42,7 +45,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   public status: string;
   public clFile: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  private originalTantalisId = null;
+  private allowDeactivate = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +56,33 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private decisionService: DecisionService
   ) { }
+
+  // check for unsaved changes before closing (or refreshing) current tab/window
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(event) {
+    // display browser alert if needed
+    if (!this.allowDeactivate && this.applicationForm.dirty) {
+      event.returnValue = true;
+    }
+  }
+
+  // check for unsaved changes before navigating away from current route (ie, this page)
+  canDeactivate(): Observable<boolean> | boolean {
+    // allow synchronous navigation if everything is OK
+    if (this.allowDeactivate || this.applicationForm.pristine) {
+      return true;
+    }
+
+    // otherwise prompt the user with observable (asynchronous) dialog
+    return this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Unsaved Changes',
+        message: 'Click OK to discard your changes or Cancel to return to the application.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe);
+  }
 
   ngOnInit() {
     // if we're not logged in, redirect
@@ -66,9 +96,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe(
         (data: { application: Application }) => {
           if (data.application) {
-            this.application = data.application;
-
-            this.originalTantalisId = this.application.tantalisID;
+            // make a (deep) copy of the in-memory application so we don't change it
+            // this allows us to abort editing
+            this.application = _.cloneDeep(data.application);
 
             if (!this.application.publishDate) {
               this.application.publishDate = new Date();
@@ -88,21 +118,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  // TODO: PRC-256: check for unsaved changes
-  // ref: https://angular.io/guide/router#candeactivate-handling-unsaved-changes
-  canDeactivate(): Observable<boolean> | boolean {
-    // TODO: check if forms are pristine?
-
-    // allow synchronous navigation (`true`) if everything is OK
-    // if (!this.crisis || this.crisis.name === this.editName) {
-    return true;
-    // }
-
-    // otherwise ask the user to confirm
-    // using observable which resolves to true or false when the user decides
-    // return this.dialogService.confirm('Discard changes?');
-  }
-
   public launchMap() {
     // pass along the id of the current application if available
     // so that the map component can show the popup for it.
@@ -111,78 +126,87 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   applyDisposition() {
-    // (re)load the shapes
-
-    // First check if the disp is already inside an existing application
-    this.applicationService.getByDispositionId(this.application.tantalisID)
+    // first check if the disp is already used by another application
+    this.applicationService.getByTantalisId(this.application.tantalisID)
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((application: Application) => {
-        if (application) {
-          // Found it
-          this.dialogService.addDialog(ConfirmComponent,
-            {
-              title: 'Disposition Already Exists',
-              message: 'This Disposition alreads exists in a Public Review &amp; Comment application.'
-                + ' Click OK to go to the existing application, or Cancel to return to the current application.'
-            }, {
-              backdropColor: 'rgba(0, 0, 0, 0.5)'
-            })
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe((isConfirmed: boolean) => {
-              if (isConfirmed) {
-                // Go to the other application
-                this.router.navigate(['/a', application._id]);
-              }
-            });
-        } else {
-          // Fall through
-          this.searchService.getByDTID(this.application.tantalisID.toString())
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-              (features: Feature[]) => {
-                this.application.features = features;
-                // calculate areaHectares
-                let areaHectares = 0;
-                _.each(this.application.features, function (f) {
-                  if (f['properties']) {
-                    areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-                  }
-                });
-                this.application.areaHectares = areaHectares;
-
-                // Pull in the application info.
-                if (this.application.features && this.application.features.length > 0) {
-                  this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
-                  this.application.type = this.application.features[0].properties.TENURE_TYPE;
-                  this.application.subtype = this.application.features[0].properties.TENURE_SUBTYPE;
-                  this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
-                  this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
-                  this.application.status = this.application.features[0].properties.TENURE_STATUS;
-                  this.application.location = this.application.features[0].properties.TENURE_LOCATION;
-                  this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
+      .subscribe(
+        application => {
+          if (application && application._id !== this.application._id) {
+            // found it
+            this.dialogService.addDialog(ConfirmComponent,
+              {
+                title: 'Disposition Already Exists',
+                message: 'This Disposition already exists in a Public Review &amp; Comment application.'
+                  + ' Click OK to go to the existing application, or Cancel to return to the current application.'
+              }, {
+                backdropColor: 'rgba(0, 0, 0, 0.5)'
+              })
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(isConfirmed => {
+                if (isConfirmed) {
+                  // go to the other application
+                  this.router.navigate(['/a', application._id]);
                 }
-                this.child.drawMap(this.application);
-              },
-              error => {
-                console.log('error =', error);
-                this.showMessage(true, 'Error loading shapes');
-              }
-            );
-        }
-      },
+                // otherwise return to current application
+              });
+          } else {
+            // (re)load features/shapes
+            this.searchService.getByDTID(this.application.tantalisID)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                features => {
+                  this.application.features = features;
+
+                  // calculate Total Area (hectares)
+                  let areaHectares = 0;
+                  _.each(this.application.features, function (f) {
+                    if (f['properties']) {
+                      areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+                    }
+                  });
+                  this.application.areaHectares = areaHectares;
+
+                  // save application properties from first feature
+                  if (this.application.features && this.application.features.length > 0) {
+                    // cached data
+                    this.application.purpose = this.application.features[0].properties.TENURE_PURPOSE;
+                    this.application.subpurpose = this.application.features[0].properties.TENURE_SUBPURPOSE;
+                    this.application.type = this.application.features[0].properties.TENURE_TYPE;
+                    this.application.subtype = this.application.features[0].properties.TENURE_SUBTYPE;
+                    this.application.status = this.application.features[0].properties.TENURE_STATUS;
+                    this.application.tenureStage = this.application.features[0].properties.TENURE_STAGE;
+                    this.application.location = this.application.features[0].properties.TENURE_LOCATION;
+                    this.application.businessUnit = this.application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+                    // this is special
+                    // we will persist it to db as a search key
+                    this.application.cl_file = +this.application.features[0].properties.CROWN_LANDS_FILE; // NOTE: unary operator
+                  }
+
+                  // unset old client
+                  this.application.client = null;
+
+                  this.applicationAside.drawMap(this.application);
+                },
+                error => {
+                  console.log('error =', error);
+                  this.showMessage(true, 'Error loading shapes');
+                }
+              );
+          }
+        },
         error => {
-          console.log('Error retreiving applications.');
+          console.log('Error retrieving application.');
         }
       );
   }
 
   selectClient() {
-    const self = this;
-    let dispId = null;
+    let dispId: number = null;
 
     if (this.application && this.application.tantalisID) {
       dispId = this.application.tantalisID;
     }
+
     this.dialogService.addDialog(SelectOrganizationComponent,
       {
         dispositionId: dispId
@@ -193,7 +217,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       .subscribe(
         clientString => {
           if (clientString && clientString.length > 0) {
-            self.application.client = clientString;
+            if (clientString !== this.application.client) {
+              this.applicationForm.form.markAsDirty();
+            }
+            this.application.client = clientString;
           }
         },
         error => {
@@ -202,26 +229,125 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  saveApplication() {
-    // adjust for current tz
-    this.application.publishDate = moment(this.application.publishDate).format();
+  // create new application
+  public createApplication() {
+    if (this.applicationForm.invalid) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Create Application',
+          message: 'Please check for required fields or errors.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else if (!this.isDispositionValid()) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Create Application',
+          message: 'Please check that disposition data (basic information) has been successfully loaded.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      // adjust for current tz
+      this.application.publishDate = moment(this.application.publishDate).format();
 
-    const self = this;
-    this.applicationService.save(this.application)
+      this.applicationService.add(this.application)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          application => {
+            this.showMessage(false, 'Application created!');
+            // reload cached data
+            this.reloadData(application._id);
+          },
+          error => {
+            console.log('error =', error);
+            this.showMessage(true, 'Error creating application');
+          }
+        );
+    }
+  }
+
+  // save current application
+  public saveApplication() {
+    if (this.applicationForm.invalid) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Save Application',
+          message: 'Please check for required fields or errors.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else if (!this.isDispositionValid()) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Save Application',
+          message: 'Please check that disposition data (basic information) has been successfully loaded.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      // adjust for current tz
+      this.application.publishDate = moment(this.application.publishDate).format();
+
+      this.applicationService.save(this.application)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          application => {
+            this.showMessage(false, 'Application saved!');
+            // reload cached data
+            this.reloadData(application._id);
+          },
+          error => {
+            console.log('error =', error);
+            this.showMessage(true, 'Error saving application');
+          }
+        );
+    }
+  }
+
+  private isDispositionValid() {
+    return (this.application.features && this.application.features.length > 0
+      && this.application.features[0].properties.DISPOSITION_TRANSACTION_SID === this.application.tantalisID);
+  }
+
+  public resetApplication() {
+    if (this.applicationForm.pristine) {
+      this.reloadData(this.application._id);
+    } else {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Confirm Reset',
+          message: 'Click OK to discard your changes or Cancel to return to the application.'
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(isConfirmed => {
+          if (isConfirmed) {
+            this.reloadData(this.application._id);
+          }
+        });
+    }
+  }
+
+  private reloadData(id: string) {
+    // force-reload app data
+    this.applicationService.getById(id, true)
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        () => {
-          self.showMessage(false, 'Saved application!');
-          // reload cached app data
-          this.applicationService.getById(this.application._id, true)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe();
-        },
-        error => {
-          console.log('error =', error);
-          self.showMessage(true, 'Error saving application');
-        }
-      );
+      .subscribe(application => {
+        // make a (deep) copy of the in-memory application so we don't change it
+        // this allows us to abort editing
+        this.application = _.cloneDeep(application);
+        this.applicationForm.form.markAsPristine();
+      });
   }
 
   addDecision() {
@@ -231,10 +357,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.decisionService.add(d)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (decision: Decision) => {
+        decision => {
           // add succeeded - accept new record
           this.application.decision = decision;
-          this.showMessage(false, 'Added decision!');
+          this.showMessage(false, 'Decision added!');
         },
         error => {
           console.log('error =', error);
@@ -250,7 +376,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         () => {
           // save succeeded
           // just hold on to existing decision instead of reloading it
-          this.showMessage(false, 'Saved decision!');
+          this.showMessage(false, 'Decision saved!');
         },
         error => {
           console.log('error =', error);
@@ -275,7 +401,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         this.api.uploadDocument(formData)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
-            (res: Response) => {
+            res => {
               // add uploaded file to specified document array
               documents.push(res.json());
             },
@@ -292,7 +418,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.publishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (res: Response) => {
+        res => {
           const doc = res.json();
           const f = _.find(documents, function (item) {
             return (item._id === doc._id);
@@ -310,7 +436,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.unPublishDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (res: Response) => {
+        res => {
           const doc = res.json();
           const f = _.find(documents, function (item) {
             return (item._id === doc._id);
@@ -328,7 +454,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.api.deleteDocument(document) // TODO: should call service instead of API
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (res: Response) => {
+        res => {
           const doc = res.json();
           // remove file from specified document array
           _.remove(documents, function (item) {
@@ -342,39 +468,74 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  publishApplication(app: Application) {
-    this.applicationService.publish(app);
+  publishApplication() {
+    if (this.applicationForm.dirty) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Publish Application',
+          message: 'Please save pending application changes first.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else if (!this.application.client || !this.application.description) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Publish Application',
+          message: 'Please check that client and description have been entered.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      this.applicationService.publish(this.application);
+    }
   }
 
-  unPublishApplication(app: Application) {
-    this.applicationService.unPublish(app);
+  unPublishApplication() {
+    this.applicationService.unPublish(this.application);
   }
 
-  deleteApplication(app: Application) {
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Confirm deletion',
-        message: 'Do you really want to delete this application?'
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed: boolean) => {
-        if (isConfirmed) {
-          this.applicationService.delete(app)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-              () => {
-                this.application = null;
-                this.router.navigate(['/applications']);
-              },
-              error => {
-                console.log('error =', error);
-                this.showMessage(true, 'Error deleting application');
-              }
-            );
-        }
-      });
+  deleteApplication() {
+    if (this.application.documents && this.application.documents.length > 0) {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Cannot Delete Application',
+          message: 'Please delete all documents first.',
+          okOnly: true
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe);
+    } else {
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Confirm Deletion',
+          message: 'Do you really want to delete this application?'
+        }, {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((isConfirmed: boolean) => {
+          if (isConfirmed) {
+            this.applicationService.delete(this.application)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(
+                () => {
+                  this.application = null;
+                  this.allowDeactivate = true;
+                  this.router.navigate(['/applications']);
+                },
+                error => {
+                  console.log('error =', error);
+                  this.showMessage(true, 'Error deleting application');
+                }
+              );
+          }
+        });
+    }
   }
 
   publishDecision(decision: Decision) {
@@ -388,20 +549,20 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   deleteDecision(decision: Decision) {
     this.dialogService.addDialog(ConfirmComponent,
       {
-        title: 'Confirm deletion',
+        title: 'Confirm Deletion',
         message: 'Do you really want to delete this decision?'
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((isConfirmed: boolean) => {
+      .subscribe(isConfirmed => {
         if (isConfirmed) {
           this.decisionService.delete(decision)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               () => {
                 this.application.decision = null;
-                this.showMessage(false, 'Deleted decision!');
+                this.showMessage(false, 'Decision deleted!');
               },
               error => {
                 console.log('error =', error);
@@ -416,6 +577,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.error = isError;
     this.showMsg = true;
     this.status = msg;
-    setTimeout(() => this.showMsg = false, 3000);
+    setTimeout(() => this.showMsg = false, 2000);
   }
 }

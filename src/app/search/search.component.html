@@ -60,7 +60,7 @@
           <tbody *ngIf="results && groupByResults">
             <tr *ngFor="let item of groupByResults">
               <td *ngIf="!item.isImported">
-                <span class="import-link" (click)="importProject(item)"  title="Import this item"><i class="material-icons">cloud_download</i></span>
+                <span class="import-link" (click)="importProject(item)" title="Import this item"><i class="material-icons">cloud_download</i></span>
               </td>
               <td *ngIf="item.isImported">
                 <span><i class="material-icons" title="Already imported">cloud_done</i></span>

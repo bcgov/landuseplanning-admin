@@ -24,7 +24,7 @@
 					<h3 class="feature-block__header">Create New</h3>
 					<p class="feature-block__body">Enter a Disposition ID to create a new PRC disposition.</p>
 					<div class="feature-block__footer">
-						<a class="btn inverted" (click)="createApplication()">Create New Application</a>
+						<a class="btn inverted" [routerLink]="['/a/0/edit']">Create New Application</a>
 					</div>
 				</div>
 			</div>
@@ -34,6 +34,7 @@
 					<p class="feature-block__body">Explore all PRC dispositions already created on this site, listed with all relevant information.</p>
 					<div class="feature-block__footer">
 						<a class="btn inverted" routerLink="/applications">View List</a>
+						<!-- <a class="btn inverted" routerLink="/applications" [queryParams]="{ showOnlyOpenApps: true }">View Filtered List</a> -->
 					</div>
 				</div>
 			</div>

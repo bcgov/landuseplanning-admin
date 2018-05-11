@@ -4,6 +4,7 @@ import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 export interface DataModel {
   title: string;
   message: string;
+  okOnly: boolean;
 }
 
 @Component({
@@ -12,8 +13,9 @@ export interface DataModel {
 })
 
 export class ConfirmComponent extends DialogComponent<DataModel, boolean> implements DataModel {
-  title: string;
-  message: string;
+  title = 'Confirm';
+  message = 'Are you sure?';
+  okOnly = false;
 
   constructor(public dialogService: DialogService) {
     super(dialogService);

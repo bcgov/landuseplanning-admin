@@ -1,4 +1,6 @@
-import { Component, Input, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
+import { Component, OnChanges, OnDestroy, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/toPromise';
 
 import { Comment } from 'app/models/comment';
@@ -19,13 +21,14 @@ interface SaveParameters {
   styleUrls: ['./comment-detail.component.scss']
 })
 
-export class CommentDetailComponent implements OnChanges {
+export class CommentDetailComponent implements OnChanges, OnDestroy {
   @Input() comment: Comment;
   @Output() commentChange = new EventEmitter<Comment>();
 
   public internalNotes: string; // working version
   public networkMsg: string;
   private documents: Array<Document>;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     public api: ApiService, // used in template
@@ -34,17 +37,20 @@ export class CommentDetailComponent implements OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.comment.currentValue) {
-      // console.log('changes =', changes);
+    // console.log('changes.comment =', changes.comment);
 
+    // guard against null comment
+    if (changes.comment.currentValue) {
       // save copy of notes for possible reset
       this.internalNotes = this.comment.review.reviewerNotes;
 
       // get the comment documents
-      this.documentService.getAllByCommentId(this.comment._id).subscribe(
-        (documents: Document[]) => this.documents = documents,
-        error => console.log(error)
-      );
+      this.documentService.getAllByCommentId(this.comment._id)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          (documents: Document[]) => this.documents = documents,
+          error => console.log(error)
+        );
     }
   }
 
@@ -121,5 +127,10 @@ export class CommentDetailComponent implements OnChanges {
       .catch(reason => {
         this.networkMsg += reason;
       });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

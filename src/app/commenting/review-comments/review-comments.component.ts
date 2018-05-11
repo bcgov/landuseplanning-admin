@@ -218,8 +218,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
               delete document.isDeleted;
               delete document.tags;
             });
-            // add some properties
-            // comment['client'] = this.application.client;
+            // add necessary properties
+            // comment['client'] = this.application.client; // FUTURE
             comment['cl_file'] = this.application.cl_file;
             return this.flatten_fastest(comment);
           });
