@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/takeUntil';
 import { DialogService } from 'ng2-bootstrap-modal';
 import * as _ from 'lodash';
 
@@ -22,8 +22,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   public loading = true;
   public sysadmins: Array<User> = [];
   public standards: Array<User> = [];
-  private sub: Subscription;
-  private destroy$: Subject<boolean> = new Subject<boolean>();
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private userService: UserService,
@@ -43,7 +42,8 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   refreshUsersUI() {
-    this.sub = this.userService.getAll()
+    this.userService.getAll()
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
         data => {
           this.loading = false;
@@ -57,7 +57,8 @@ export class UsersComponent implements OnInit, OnDestroy {
               self.standards.push(i);
             }
           });
-          // Needed in development mode - not required in prod.
+          // Force change detection since we changed a bound property after the normal check cycle and outside anything
+          // that would trigger a CD cycle - this will eliminate the error you get when running in dev mode.
           this._changeDetectionRef.detectChanges();
         },
         error => {
@@ -80,16 +81,18 @@ export class UsersComponent implements OnInit, OnDestroy {
         // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.destroy$)
-      .subscribe((isConfirmed) => {
-        // we get dialog result
-        if (isConfirmed) {
-          // console.log('saved');
-          this.refreshUsersUI();
-        } else {
-          // console.log('canceled');
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          // we get dialog result
+          if (isConfirmed) {
+            // console.log('saved');
+            this.refreshUsersUI();
+          } else {
+            // console.log('canceled');
+          }
         }
-      });
+      );
   }
 
   selectUser(user) {
@@ -104,7 +107,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.destroy$)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {
@@ -117,8 +120,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-    this.sub.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

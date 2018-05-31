@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatSlideToggleModule } from '@angular/material';
 
-import { OrderByPipe } from '../pipes/order-by.pipe';
-import { NewlinesPipe } from '../pipes/newlines.pipe';
-import { PublishedPipe } from '../pipes/published.pipe';
+import { OrderByPipe } from 'app/pipes/order-by.pipe';
+import { NewlinesPipe } from 'app/pipes/newlines.pipe';
+import { PublishedPipe } from 'app/pipes/published.pipe';
 import { ObjectFilterPipe } from 'app/pipes/object-filter.pipe';
 
 import { FileUploadComponent } from 'app/file-upload/file-upload.component';

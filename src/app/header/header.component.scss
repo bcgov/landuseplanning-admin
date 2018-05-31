@@ -42,7 +42,7 @@ header {
 
   &.collapsed {
     border: 2px solid transparent;
-    color: #FFF;
+    color: $white;
   }
 
   i {
@@ -136,7 +136,7 @@ header {
 
 @media (min-width: 768px) {
   .navbar {
-    background: transparent;
+    // background: transparent;
     
     .navbar-nav {
       margin-top: 0;
@@ -202,25 +202,30 @@ header {
 // NAVBAR BRAND
 .navbar-brand {
   margin: 0;
-  width: 260px; // use PX dimensions here to ensure exact match to image
+  width: 233px; // use PX dimensions here to ensure exact match to image
   height: 3rem;
   background-image: url("~assets/images/bcgov-header-horiz-SM.png");
-  background-position: center;
+  background-position-y: 0.5rem;
   background-repeat: no-repeat;
   background-size: auto;
 }
 
-@media (min-width: 768px) {
-  .navbar-brand {
-    width: 260px;
-    height: 4rem;
-  }
+.badge {
+  color: $gold;
+  padding: 0;
+  top: 1rem;
+  font-size: 0.65rem;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .navbar-brand {
     width: 342px; // use PX dimensions here to ensure exact match to image
     height: 4rem;
     background-image: url("~assets/images/bcgov-header-horiz-LG.png");
+    background-position-y: 0.4rem;
+  }
+  .badge {
+    top: 1.5rem;
+    font-size: 0.875rem;
   }
 }

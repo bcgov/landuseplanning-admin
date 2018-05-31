@@ -45,7 +45,7 @@
             li {
                 @include align-items(start);
                 +li {
-                    border-top: 1px solid #fff;
+                    border-top: 1px solid $white;
                 }
             }
             .name,
