@@ -19,7 +19,7 @@
     right: 0;
     padding: 5%;
     background: $spinner-bg;
-    z-index: 1001; // +1 to keep above map controls
+    z-index: 9999; // to keep above everything else
     transition: all linear 0.5s;
 
     &.inverted,
@@ -41,7 +41,7 @@
 
     &.full-screen {
         position: fixed;
-        z-index: 1001; // +1 to keep above map controls
+        z-index: 9999; // to keep above everything else
     }
 }
 

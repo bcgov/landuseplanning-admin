@@ -3,6 +3,7 @@ $primary:                       #003366;
 $gold:                          #fcba19;
 $white:                         #fff;
 $black:                         #000;
+$lightgray:                     #eee;
 
 // Background Colors
 $bg-dark:                       $primary;
@@ -56,7 +57,7 @@ $feature-block-primary:         $primary;
 $fc-height:                     2.75rem;
 $fc-border-color:               #ddd;
 $fc-bg:                         $white;
-$fc-inner-shadow:               0.1rem 0.1rem 0.1rem #EEE;
+$fc-inner-shadow:               0.1rem 0.1rem 0.1rem $lightgray;
 $fc-placeholder-color:          #aaa;
 $fc-focus-border-color:         #5091cd;            
 
@@ -66,7 +67,7 @@ $list-row-bg:                   #f7f8fa;
 $list-row-alt-bg:               #f4f4f4;
 
 // Pagination Control
-$pgn-btn-bg:                    #eee;
+$pgn-btn-bg:                    $lightgray;
 $pgn-btn-active-bg:             #5091cd;
 $pgn-btn-active-color:          $white;
 $pgn-btn-border:                1px solid #ccc;
@@ -83,9 +84,9 @@ $spinner-invert-bg:             rgba(#001a33,0.8);
 $tab-color:                     #38598a;
 $tab-nav-border-color:          #ddd;
 $tab-nav-bg:                    $white;
-$tab-hover-bg:                  #eee;
+$tab-hover-bg:                  $lightgray;
 $tab-sm-active-color:           $white;
-$tab-sm-bg:                     #eee;
+$tab-sm-bg:                     $lightgray;
 $tab-sm-active-bg:              #38598a;
 $tab-active-bg:                 $white;
 
