@@ -1,5 +1,3 @@
-@import "~assets/styles/base.scss";
-
 .feature-block {
   @include flex-box();
   @include flex-direction(column);
