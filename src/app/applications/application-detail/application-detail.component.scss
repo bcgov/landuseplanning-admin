@@ -81,7 +81,7 @@
     &__actions {
         .btn {
             border: none;
-            background: #eee;
+            background: $lightgray;
             font-size: 0.9375rem;
             font-weight: bold;
             i {
@@ -94,7 +94,7 @@
 .geo-shape-data {
     .btn {
         border: none;
-        background: #eee;
+        background: $lightgray;
     }
     &__list {
         section {
