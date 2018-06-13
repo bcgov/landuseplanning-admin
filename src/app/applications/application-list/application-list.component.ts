@@ -54,7 +54,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this.paramMap = paramMap;
 
         // set initial filters
-        this.resetFilters(null);
+        this.resetFilters();
       });
 
     // get data
@@ -93,7 +93,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.location.go(this.router.createUrlTree([], { relativeTo: this.route, queryParams: params }).toString());
   }
 
-  public resetFilters(e: Event) {
+  private resetFilters() {
     this.showOnlyOpenApps = (this.paramMap.get('showOnlyOpenApps') === 'true');
     this.column = this.paramMap.get('col'); // == null if col isn't present
     this.direction = +this.paramMap.get('dir'); // == 0 if dir isn't present
