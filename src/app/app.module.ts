@@ -61,9 +61,9 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
     FormsModule,
     HttpModule,
     SharedModule,
-    ApplicationsModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
+    ApplicationsModule,
     CommentingModule,
-    AppRoutingModule,
+    AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     NgbModule.forRoot(),
     NgxPaginationModule,
     Ng2PageScrollModule.forRoot(),

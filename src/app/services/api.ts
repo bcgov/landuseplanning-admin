@@ -62,6 +62,12 @@ export class ApiService {
     };
   }
 
+  handleError(error: any): ErrorObservable {
+    const reason = error.message ? error.message : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
+    console.log('API error =', reason);
+    return Observable.throw(error);
+  }
+
   ensureLoggedIn() {
     if (!this.token) {
       console.log('not logged in, redirecting');
@@ -658,12 +664,6 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.post(this.pathAPI, queryString, user, { headers: headers });
-  }
-
-  handleError(error: any): ErrorObservable {
-    const reason = error.message ? error.message : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
-    console.log('API error =', reason);
-    return Observable.throw(reason);
   }
 
   //
