@@ -135,11 +135,11 @@ hr {
 
 /* class to make divs look like anchors */
 .clickable {
-    cursor: pointer;
-    color: $link-color;
+    cursor: pointer !important;
+    color: $link-color !important;
     &:focus,
     &:hover {
-        text-decoration: underline;
+        text-decoration: underline !important;
     }
 }
 
