@@ -171,7 +171,7 @@
                     <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(file)" title="Download this document">
                       <i class="material-icons">file_download</i>
                     </button>
-                    <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document">
+                    <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
                       <i class="material-icons">open_in_new</i>
                     </button>
                     <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="deleteDocument(file, application.documents)" title="Delete this document">
@@ -265,7 +265,7 @@
                       <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(file)" title="Download this document">
                         <i class="material-icons">file_download</i>
                       </button>
-                      <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document">
+                      <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
                         <i class="material-icons">open_in_new</i>
                       </button>
                       <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="deleteDocument(file, application.decision.documents)"

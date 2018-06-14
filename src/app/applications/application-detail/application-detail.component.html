@@ -98,7 +98,7 @@
                   <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
                     <i class="material-icons">file_download</i>
                   </button>
-                  <button type="button" class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document">
+                  <button type="button" class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document" [hidden]="api.isMS">
                     <i class="material-icons">open_in_new</i>
                   </button>
                 </span>
@@ -139,7 +139,7 @@
                     <button class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
                       <i class="material-icons">file_download</i>
                     </button>
-                    <button class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document">
+                    <button class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document" [hidden]="api.isMS">
                       <i class="material-icons">open_in_new</i>
                     </button>
                   </span>
