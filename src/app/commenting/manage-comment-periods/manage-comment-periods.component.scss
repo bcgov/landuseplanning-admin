@@ -1,4 +1,4 @@
-@import "~assets/styles/base.scss";
+@import "~assets/styles/base/base.scss";
 
 .comment-periods {
     .title-container {
@@ -7,7 +7,7 @@
     .header-row {
         .btn {
             border: none;
-            background: #eee;
+            background: $lightgray;
             font-size: 0.9375rem;
             font-weight: bold;
             img, i {

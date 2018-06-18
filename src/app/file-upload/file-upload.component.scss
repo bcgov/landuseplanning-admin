@@ -1,4 +1,4 @@
-@import "~assets/styles/base.scss";
+@import "~assets/styles/base/base.scss";
 
 @function repeater($item, $count) {
     $string: "";
@@ -6,6 +6,16 @@
         $string: $string + $item;
     }
     @return "#{$string}";
+}
+
+.files-info {
+    font-size: small;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.material-icons {
+    vertical-align: middle;
 }
 
 .dragarea {
@@ -70,7 +80,7 @@
 
 .btn-xs {
     padding: 0 5px;
-    font-size: smaller;
+    font-size: 0.83rem;
     border-radius: 3px;
     .material-icons {
         font-size: large;

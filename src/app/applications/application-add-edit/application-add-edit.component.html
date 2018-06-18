@@ -189,7 +189,7 @@
 
               <div class="file-upload">
                 <!-- to upload files, application must have been created -->
-                <input type="file" class="form-control" name="fileInput1" size="5000000" (change)="uploadFiles($event.target.files, application.documents)"
+                <input type="file" name="fileInput1" size="5000000" (change)="uploadFiles($event.target.files, application.documents)"
                   multiple [disabled]="application._id === '0'">
                 <div class="file-upload__target">
                   <span class="file-upload__prompt">
@@ -285,7 +285,7 @@
                 </ul>
 
                 <div class="file-upload">
-                  <input type="file" class="form-control" name="fileInput2" size="5000000" (change)="uploadFiles($event.target.files, application.decision.documents)" multiple>
+                  <input type="file" name="fileInput2" size="5000000" (change)="uploadFiles($event.target.files, application.decision.documents)" multiple>
                   <div class="file-upload__target">
                     <span class="file-upload__prompt">
                       <i class="file-upload__prompt-icon material-icons">file_upload</i>
