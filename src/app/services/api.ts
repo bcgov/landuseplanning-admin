@@ -22,14 +22,16 @@ import { User } from 'app/models/user';
 @Injectable()
 export class ApiService {
   public token: string;
+  public isMS: boolean; // IE, Edge, etc
   pathAPI: string;
   params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'prod';
 
   constructor(private http: Http, private router: Router) {
-    const { hostname } = window.location;
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
+    this.isMS = window.navigator.msSaveOrOpenBlob ? true : false;
+    const { hostname } = window.location;
     switch (hostname) {
       case 'localhost':
         // Local
@@ -569,12 +571,19 @@ export class ApiService {
       });
   }
 
+  // NB: for IE, this behaves the same as downloadDocument()
   openDocument(document: Document): Subscription {
-    const tab = window.open();
     return this.getDocumentBlob(document)
       .subscribe((value: Blob) => {
-        const fileURL = URL.createObjectURL(value);
-        tab.location.href = fileURL;
+        if (this.isMS) {
+          // IE has its own API for creating and downloading files
+          window.navigator.msSaveOrOpenBlob(value, document.documentFileName);
+        } else {
+          const tab = window.open();
+          // not supported by IE due to security restrictions
+          const fileURL = URL.createObjectURL(value);
+          tab.location.href = fileURL;
+        }
       });
   }
 
