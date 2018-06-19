@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, ResponseContentType, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
-import * as _ from 'lodash';
-import * as FileSaver from 'file-saver';
-
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import * as _ from 'lodash';
+import * as FileSaver from 'file-saver';
 
 import { Application } from 'app/models/application';
 // import { Organization } from 'app/models/organization';
@@ -28,7 +27,7 @@ export class ApiService {
   env: 'local' | 'dev' | 'test' | 'demo' | 'prod';
 
   constructor(private http: Http, private router: Router) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
     this.isMS = window.navigator.msSaveOrOpenBlob ? true : false;
     const { hostname } = window.location;
@@ -89,7 +88,7 @@ export class ApiService {
           this.token = token;
 
           // store username and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
+          window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
 
           return true; // successful login
         }
@@ -100,7 +99,7 @@ export class ApiService {
   logout() {
     // clear token + remove user from local storage to log user out
     this.token = null;
-    localStorage.removeItem('currentUser');
+    window.localStorage.removeItem('currentUser');
   }
 
   //
