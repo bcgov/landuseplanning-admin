@@ -87,7 +87,7 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
             element.onmouseout = () => element.style.backgroundColor = '#fff';
             element.onclick = function () {
               const bounds = self.fg.getBounds();
-              if (!_.isEmpty(bounds)) {
+              if (bounds && bounds.isValid()) {
                 self.map.fitBounds(bounds, self.maxZoom);
               }
             };
@@ -157,7 +157,7 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
                 });
 
                 const bounds = self.fg.getBounds();
-                if (!_.isEmpty(bounds)) {
+                if (bounds && bounds.isValid()) {
                   self.map.fitBounds(bounds, self.maxZoom);
                 }
               } catch (e) { }
@@ -196,7 +196,7 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
             });
 
             const bounds = self.fg.getBounds();
-            if (!_.isEmpty(bounds)) {
+            if (bounds && bounds.isValid()) {
               self.map.fitBounds(bounds, self.maxZoom);
             }
           },
