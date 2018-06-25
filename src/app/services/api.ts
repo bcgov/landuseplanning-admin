@@ -55,6 +55,12 @@ export class ApiService {
         this.env = 'demo';
         break;
 
+      case 'nrts-prc-scale.pathfinder.gov.bc.ca':
+        // Demo
+        this.pathAPI = 'https://nrts-prc-scale.pathfinder.gov.bc.ca/api';
+        this.env = 'demo';
+        break;
+
       default:
         // Prod
         this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
