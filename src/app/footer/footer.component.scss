@@ -1,4 +1,4 @@
-@import "~assets/styles/base.scss";
+@import "~assets/styles/base/base.scss";
 
 .app-footer {
     border-top: 4px solid $gold;
@@ -40,7 +40,7 @@
             li {
                 display: inline-block;
                 margin: 0;
-                line-height: 1;
+                line-height: 1rem;
 
                 &:after {
                     position: relative;

@@ -51,7 +51,7 @@
           <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
             <i class="material-icons">file_download</i>
           </button>
-          <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document">
+          <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document" [hidden]="api.isMS">
             <i class="material-icons">open_in_new</i>
           </button>
           <span [title]="document.displayName || ''">{{document.documentFileName}}</span>

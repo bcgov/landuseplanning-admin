@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, ResponseContentType, RequestOptions, Headers } from '@angular/http';
 import { Params, Router } from '@angular/router';
-import * as _ from 'lodash';
-import * as FileSaver from 'file-saver';
-
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import * as _ from 'lodash';
+import * as FileSaver from 'file-saver';
 
 import { Application } from 'app/models/application';
 // import { Organization } from 'app/models/organization';
@@ -22,14 +21,16 @@ import { User } from 'app/models/user';
 @Injectable()
 export class ApiService {
   public token: string;
+  public isMS: boolean; // IE, Edge, etc
   pathAPI: string;
   params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'prod';
 
   constructor(private http: Http, private router: Router) {
-    const { hostname } = window.location;
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
+    this.isMS = window.navigator.msSaveOrOpenBlob ? true : false;
+    const { hostname } = window.location;
     switch (hostname) {
       case 'localhost':
         // Local
@@ -93,7 +94,7 @@ export class ApiService {
           this.token = token;
 
           // store username and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
+          window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
 
           return true; // successful login
         }
@@ -104,7 +105,7 @@ export class ApiService {
   logout() {
     // clear token + remove user from local storage to log user out
     this.token = null;
-    localStorage.removeItem('currentUser');
+    window.localStorage.removeItem('currentUser');
   }
 
   //
@@ -575,12 +576,19 @@ export class ApiService {
       });
   }
 
+  // NB: for IE, this behaves the same as downloadDocument()
   openDocument(document: Document): Subscription {
-    const tab = window.open();
     return this.getDocumentBlob(document)
       .subscribe((value: Blob) => {
-        const fileURL = URL.createObjectURL(value);
-        tab.location.href = fileURL;
+        if (this.isMS) {
+          // IE has its own API for creating and downloading files
+          window.navigator.msSaveOrOpenBlob(value, document.documentFileName);
+        } else {
+          const tab = window.open();
+          // not supported by IE due to security restrictions
+          const fileURL = URL.createObjectURL(value);
+          tab.location.href = fileURL;
+        }
       });
   }
 

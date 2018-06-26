@@ -1,15 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files. */
+/* This architecture roughly follows https://sass-guidelin.es/#the-7-1-pattern */
+
 //@import "~mygovbc-bootstrap-theme/dist/mygovbc-bootstrap-theme.min.css";
 
-// Helpers
-@import "assets/styles/helpers/helpers.scss";
-
-// Themes
-@import "assets/styles/themes/typography.scss";
-@import "assets/styles/themes/material-icons.scss";
+// Base
+@import "assets/styles/base/base.scss";
 
 // Layout
-@import "assets/styles/layout.scss";
+@import "assets/styles/layout/layout.scss";
 
 // Components
 @import "assets/styles/components/accordion.scss";
@@ -18,6 +16,7 @@
 @import "assets/styles/components/buttons.scss";
 @import "assets/styles/components/card.scss";
 @import "assets/styles/components/feature-block.scss";
+@import "assets/styles/components/file-upload.scss";
 @import "assets/styles/components/filter-bar.scss";
 @import "assets/styles/components/form-elements.scss";
 @import "assets/styles/components/hero-banner.scss";
@@ -27,4 +26,3 @@
 @import "assets/styles/components/spinner.scss";
 @import "assets/styles/components/tab-nav.scss";
 @import "assets/styles/components/table.scss";
-

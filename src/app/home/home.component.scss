@@ -1,8 +1,8 @@
-@import "~assets/styles/base.scss";
+@import "~assets/styles/base/base.scss";
 
 :host {
   display: block;
-  // Fill the entire viewport and offset the fixed header and footer height (68px + 61px = 129px;)
+  /* fill the entire viewport and offset the fixed header and footer height (68px + 61px = 129px;) */
   min-height: calc(100vh - 129px);
   background-position: center -8rem;
   background-size: 250%;

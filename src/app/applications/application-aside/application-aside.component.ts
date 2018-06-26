@@ -74,22 +74,24 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
             position: 'topleft'
           },
           onAdd: function (map) {
-            const container = L.DomUtil.create('i', 'material-icons leaflet-bar leaflet-control leaflet-control-custom');
-            container.style.backgroundColor = 'white';
-            container.title = 'Reset Map';
-            container.innerText = 'refresh';
-            container.style.width = '34px';
-            container.style.height = '34px';
-            container.style.lineHeight = '30px';
-            container.style.textAlign = 'center';
-            container.style.cursor = 'pointer';
-            container.onclick = function () {
+            const element = L.DomUtil.create('i', 'material-icons leaflet-bar leaflet-control leaflet-control-custom');
+            element.title = 'Reset view';
+            element.innerText = 'refresh';
+            element.style.width = '34px';
+            element.style.height = '34px';
+            element.style.lineHeight = '30px';
+            element.style.textAlign = 'center';
+            element.style.cursor = 'pointer';
+            element.style.backgroundColor = '#fff';
+            element.onmouseover = () => element.style.backgroundColor = '#f4f4f4';
+            element.onmouseout = () => element.style.backgroundColor = '#fff';
+            element.onclick = function () {
               const bounds = self.fg.getBounds();
-              if (!_.isEmpty(bounds)) {
+              if (bounds && bounds.isValid()) {
                 self.map.fitBounds(bounds, self.maxZoom);
               }
             };
-            return container;
+            return element;
           },
         });
 
@@ -155,7 +157,7 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
                 });
 
                 const bounds = self.fg.getBounds();
-                if (!_.isEmpty(bounds)) {
+                if (bounds && bounds.isValid()) {
                   self.map.fitBounds(bounds, self.maxZoom);
                 }
               } catch (e) { }
@@ -194,7 +196,7 @@ export class ApplicationAsideComponent implements OnChanges, OnDestroy {
             });
 
             const bounds = self.fg.getBounds();
-            if (!_.isEmpty(bounds)) {
+            if (bounds && bounds.isValid()) {
               self.map.fitBounds(bounds, self.maxZoom);
             }
           },

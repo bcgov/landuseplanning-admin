@@ -11,7 +11,7 @@ import { Component, Input, Output, EventEmitter, HostListener } from '@angular/c
 
 export class FileUploadComponent {
   dragDropClass = 'dragarea';
-  @Input() fileExt = 'JPG, GIF, PNG, DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT';
+  @Input() fileExt = 'jpg, jpeg, gif, png, bmp, doc, docx, xls, xlsx, ppt, pptx, pdf, txt';
   @Input() maxFiles = 5;
   @Input() maxSize = 5; // in MB
   @Input() files: Array<File> = [];
