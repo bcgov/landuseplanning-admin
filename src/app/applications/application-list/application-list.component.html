@@ -59,7 +59,7 @@
                     <a [routerLink]="['/a', item._id]">{{item.cl_file || '-'}}</a>
                   </span>
                   <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
-                  <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__region-col">{{applicationService.getRegion(item.region) || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__status-col">{{item.appStatus || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__commenting-col">{{item.cpStatus}}</span>
                 </div>
