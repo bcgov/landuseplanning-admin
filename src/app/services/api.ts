@@ -24,7 +24,7 @@ export class ApiService {
   public isMS: boolean; // IE, Edge, etc
   pathAPI: string;
   params: Params;
-  env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'prod';
+  env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
 
   constructor(private http: Http, private router: Router) {
     const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
@@ -60,6 +60,18 @@ export class ApiService {
         // Demo
         this.pathAPI = 'https://nrts-prc-scale.pathfinder.gov.bc.ca/api';
         this.env = 'scale';
+        break;
+
+      case 'nrts-prc-beta.pathfinder.gov.bc.ca':
+        // Demo
+        this.pathAPI = 'https://nrts-prc-beta.pathfinder.gov.bc.ca/api';
+        this.env = 'beta';
+        break;
+
+      case 'nrts-prc-master.pathfinder.gov.bc.ca':
+        // Demo
+        this.pathAPI = 'https://nrts-prc-master.pathfinder.gov.bc.ca/api';
+        this.env = 'master';
         break;
 
       default:
