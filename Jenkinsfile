@@ -4,48 +4,12 @@ pipeline {
         stage('build chained angular app build'){
             steps {
                 notifyBuild('STARTED')
-                openshiftBuild(bldCfg: 'admin-angular-on-nginx-build-angular-app-build', showBuildLogs: 'true')
+                openshiftBuild(bldCfg: 'admin-angular-on-nginx-master-build-angular-app-build', showBuildLogs: 'true')
             }
         }
         stage('build and package admin-angular-on-nginx'){
             steps {
-                openshiftBuild(bldCfg: 'admin-angular-on-nginx-build', showBuildLogs: 'true')
-            }
-        }
-        stage('tag and deploy to dev') {
-            steps {
-                openshiftTag(srcStream: 'admin-angular-on-nginx', srcTag: 'latest', destStream: 'admin-angular-on-nginx', destTag: 'dev')
-                notifyBuild('DEPLOYED:DEV')
-            }
-        }
-        stage('tag and deploy to test') {
-            steps {
-                script {
-                    try {
-                        timeout(time: 2, unit: 'MINUTES') {
-                          input "Deploy to TEST?"
-                          openshiftTag(srcStream: 'admin-angular-on-nginx', srcTag: 'dev', destStream: 'admin-angular-on-nginx', destTag: 'test')
-                          notifyBuild('DEPLOYED:TEST')
-                        }
-                    } catch (err) {
-                        notifyBuild('DEPLOYMENT:TEST ABORTED')
-                    }
-                }
-            }
-        }
-        stage('tag and deploy to prod') {
-            steps {
-                script {
-                    try {
-                        timeout(time: 2, unit: 'MINUTES') {
-                          input "Deploy to PROD?"
-                          openshiftTag(srcStream: 'admin-angular-on-nginx', srcTag: 'test', destStream: 'admin-angular-on-nginx', destTag: 'prod')
-                          notifyBuild('DEPLOYED:PROD')
-                        }
-                    } catch (err) {
-                        notifyBuild('DEPLOYMENT:PROD ABORTED')
-                    }
-                }
+                openshiftBuild(bldCfg: 'admin-angular-on-nginx-master-build', showBuildLogs: 'true')
             }
         }
     }
@@ -75,5 +39,5 @@ def notifyBuild(String buildStatus = 'STARTED') {
   }
 
   // Send notifications
-  //slackSend (color: colorCode, message: summary)
+  slackSend (color: colorCode, message: summary)
 }
