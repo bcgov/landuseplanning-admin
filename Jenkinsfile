@@ -1,43 +1,49 @@
 pipeline {
-    agent any
-    stages {
-        stage('build chained angular app build'){
-            steps {
-                notifyBuild('STARTED')
-                openshiftBuild(bldCfg: 'admin-angular-on-nginx-master-build-angular-app-build', showBuildLogs: 'true')
-            }
+  agent any
+  options {
+    skipDefaultCheckout()
+  }
+  stages {
+    stage('Building: admin (master branch)') {
+      steps {
+        script {
+          try {
+            echo "Building: ${env.JOB_NAME} #${env.BUILD_ID}"
+            notifyBuild("Building: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOW")
+            openshiftBuild bldCfg: 'admin-angular-on-nginx-master-build-angular-app-build', showBuildLogs: 'true'
+          } catch (e) {
+            notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
+            error('Stopping early…')
+          }
         }
-        stage('build and package admin-angular-on-nginx'){
-            steps {
-                openshiftBuild(bldCfg: 'admin-angular-on-nginx-master-build', showBuildLogs: 'true')
-            }
-        }
+      }
     }
+    stage('Deploying: admin (master branch)') {
+      steps {
+        script {
+          try {
+            notifyBuild("Deploying: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOW")
+            openshiftBuild bldCfg: 'admin-angular-on-nginx-master-build', showBuildLogs: 'true'
+          } catch (e) {
+            notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
+            error('Stopping early…')
+          }
+          notifyBuild("Deployed ${env.JOB_NAME} #${env.BUILD_ID}", "GREEN")
+        }
+      }
+    }
+  }
 }
-def notifyBuild(String buildStatus = 'STARTED') {
-  // build status of null means successful
-  buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
-  // Default values
-  def colorName = 'RED'
-  def colorCode = '#FF0000'
-  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-  def summary = "${subject} (${env.BUILD_URL})"
-  def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-    <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
-
-  // Override default values based on build status
-  if (buildStatus == 'STARTED' || buildStatus.startsWith("DEPLOYMENT")) {
-    color = 'YELLOW'
+def notifyBuild(String msg = '', String colour = 'GREEN') {
+  if (colour == 'YELLOW') {
     colorCode = '#FFFF00'
-  } else if (buildStatus == 'SUCCESSFUL' || buildStatus.startsWith("DEPLOYED")) {
-    color = 'GREEN'
+  } else if (colour == 'GREEN') {
     colorCode = '#00FF00'
   } else {
-    color = 'RED'
     colorCode = '#FF0000'
   }
 
   // Send notifications
-  slackSend (color: colorCode, message: summary)
+  slackSend (color: colorCode, message: msg)
 }
