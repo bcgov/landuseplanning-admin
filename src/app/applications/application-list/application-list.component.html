@@ -46,7 +46,7 @@
         </thead>
 
         <tbody class="application-table__content">
-          <ng-template ngFor let-item [ngForOf]="applications | orderBy: {property: column, direction: direction} | paginate: config">
+          <ng-template ngFor let-item [ngForOf]="applications | orderBy: {property: column, direction: direction}">
             <tr *ngIf="showThisApp(item)">
               <td class="accordion__collapse-item p-0" colspan="6">
                 <div class="accordion__collapse-header" role="tab">
