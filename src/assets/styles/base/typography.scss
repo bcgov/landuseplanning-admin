@@ -9,7 +9,7 @@ body {
 }
 
 h1 {
-    font-size: 2.2rem;        // 36px
+    font-size: 2.2rem; // 36px
     font-weight: 400;
     letter-spacing: -0.03rem;
 
@@ -24,7 +24,7 @@ h1 {
 }
 
 h2 {
-    font-size: 2rem;        // 32px
+    font-size: 2rem; // 32px
     font-weight: 400;
     letter-spacing: -0.05rem;
 }
@@ -40,12 +40,12 @@ h4 {
 
 p {
     margin-bottom: 1.75rem;
-    font-size: 1rem;        //16px
+    font-size: medium; // 16px
     line-height: 1.8rem;
 }
 
 a {
-    color: #1a5a96;
+    color: $link-color;
 }
 
 button,

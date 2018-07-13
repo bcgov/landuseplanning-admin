@@ -1,7 +1,3 @@
-$file-upload-list-item-bg:     #f4f4f4;
-$file-upload-alt-list-item-bg: #f7f8fa;
-$file-upload-target-border:    #ccc;
-
 .file-upload {
   position: relative;
 
@@ -30,7 +26,7 @@ $file-upload-target-border:    #ccc;
     left: 0;
     z-index: 1;
     border-radius: 0.4rem;
-    border: 3px dashed $file-upload-target-border;
+    border: 3px dashed #ccc;
     text-align: center;
     transition: all ease-out 0.2s;
   }

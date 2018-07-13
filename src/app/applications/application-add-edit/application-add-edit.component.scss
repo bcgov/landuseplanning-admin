@@ -1,5 +1,4 @@
-@import "~assets/styles/base.scss";
-@import "~assets/styles/components/file-upload.scss";
+@import "~assets/styles/base/base.scss";
 
 .spinner-container {
   .alert {
@@ -142,7 +141,7 @@ input[type=number]::-webkit-outer-spin-button {
   &__actions {
     .btn {
       border: none;
-      background: #eee;
+      background: $lightgray;
       font-size: 0.9375rem;
       font-weight: bold;
       i {
@@ -169,7 +168,7 @@ input[type=number]::-webkit-outer-spin-button {
   margin-top: 2rem;
   .btn {
     border: none;
-    background: #eee;
+    background: $lightgray;
   }
   &__list {
     section {

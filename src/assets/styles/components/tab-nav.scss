@@ -1,5 +1,3 @@
-@import "~assets/styles/base.scss";
-
 .nav-tabs {
     @include flex-flow(row wrap);
     border-bottom: none;

@@ -171,7 +171,7 @@
                     <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(file)" title="Download this document">
                       <i class="material-icons">file_download</i>
                     </button>
-                    <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document">
+                    <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
                       <i class="material-icons">open_in_new</i>
                     </button>
                     <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="deleteDocument(file, application.documents)" title="Delete this document">
@@ -189,7 +189,7 @@
 
               <div class="file-upload">
                 <!-- to upload files, application must have been created -->
-                <input type="file" class="form-control" name="fileInput1" size="5000000" (change)="uploadFiles($event.target.files, application.documents)"
+                <input type="file" name="fileInput1" size="5000000" (change)="uploadFiles($event.target.files, application.documents)"
                   multiple [disabled]="application._id === '0'">
                 <div class="file-upload__target">
                   <span class="file-upload__prompt">
@@ -265,7 +265,7 @@
                       <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(file)" title="Download this document">
                         <i class="material-icons">file_download</i>
                       </button>
-                      <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document">
+                      <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
                         <i class="material-icons">open_in_new</i>
                       </button>
                       <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="deleteDocument(file, application.decision.documents)"
@@ -285,7 +285,7 @@
                 </ul>
 
                 <div class="file-upload">
-                  <input type="file" class="form-control" name="fileInput2" size="5000000" (change)="uploadFiles($event.target.files, application.decision.documents)" multiple>
+                  <input type="file" name="fileInput2" size="5000000" (change)="uploadFiles($event.target.files, application.decision.documents)" multiple>
                   <div class="file-upload__target">
                     <span class="file-upload__prompt">
                       <i class="file-upload__prompt-icon material-icons">file_upload</i>
