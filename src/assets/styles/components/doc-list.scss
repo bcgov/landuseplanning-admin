@@ -1,0 +1,62 @@
+// Document List Shared Styling
+.doc-list {
+  li {
+    @include flex-box();
+    @include flex-direction(row);
+    background: #fff;
+
+    + li {
+      margin-top: 2px;
+    }
+  }
+
+  .cell {
+    padding: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    // Text Content
+    &__txt-content {
+      margin-top: 0.3rem;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    // Icon Column
+    &.icon {
+      @include flex(0 0 auto);
+      padding-right: 0;
+      color: #777;
+  
+      i {
+        margin-top: 0.2rem;
+      }
+    }
+  
+    // Name Column
+    &.name {
+      @include flex(1 1 auto);
+      font-size: 0.875rem;
+    }
+
+    // Actions Column
+    &.actions {
+      @include flex(0 0 auto);
+
+      [class^="btn"] {
+        height: 2rem;
+        padding-right: 0.25rem;
+        padding-left: 0.25rem;
+        border: transparent;
+    
+        &:not(:hover) {
+          background: transparent;
+        }
+    
+        &:disabled {
+          opacity: 0.2;
+        }
+      }
+    }
+  }
+}
