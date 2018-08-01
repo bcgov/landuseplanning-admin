@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { PaginationInstance } from 'ngx-pagination';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment';
@@ -25,11 +24,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   public applications: Array<Application> = [];
   public column: string = null;
   public direction = 0;
-  public config: PaginationInstance = {
-    id: 'custom',
-    itemsPerPage: 25,
-    currentPage: 1
-  };
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
