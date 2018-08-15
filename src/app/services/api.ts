@@ -169,19 +169,34 @@ export class ApiService {
       'region',
       'tantalisID'
     ];
-    let queryString = 'application/' + id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
+    const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
-  // for now, this is just a quick lookup by Tantalis ID
-  getApplicationByTantalisId(tantalisId: number) {
-    const queryString = 'application?isDeleted=false&tantalisId=' + tantalisId;
+  getApplicationByTantalisID(tantalisID: number) {
+    const fields = [
+      'agency',
+      'cl_file',
+      'client',
+      'code',
+      'description',
+      'internal',
+      'internalID',
+      'latitude',
+      'legalDescription',
+      'longitude',
+      'name',
+      'postID',
+      'publishDate',
+      'purpose',
+      'region',
+      'status',
+      'subpurpose',
+      'tantalisID'
+    ];
+    // NB: API uses 'tantalisId' (even though elsewhere it's 'tantalisID')
+    const queryString = `application?isDeleted=false&tantalisId=${tantalisID}&fields=${this.buildValues(fields)}`;
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
@@ -615,42 +630,21 @@ export class ApiService {
   }
 
   //
-  // Crown Lands files
+  // Searching
   //
-  getBCGWCrownLands(id: string) {
-    const fields = ['name', 'isImported'];
-    let queryString = 'public/search/bcgw/crownLandsId/' + id + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+  getAppsByCLID(clid: string) {
+    const queryString = 'public/search/bcgw/crownLandsId/' + clid;
+    return this.get(this.pathAPI, queryString);
   }
 
-  getBCGWDispositionByTransactionId(transactionId: number) {
-    const fields = ['name'];
-    let queryString = 'public/search/bcgw/dispositionTransactionId/' + transactionId + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+  getAppsByDTID(dtid: number) {
+    const queryString = 'public/search/bcgw/dispositionTransactionId/' + dtid;
+    return this.get(this.pathAPI, queryString);
   }
 
-  getClientsInfoByDispositionId(dispositionId: number) {
-    const fields = ['name'];
-    let queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + dispositionId + '?fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+  getClientsByDTID(dtid: number) {
+    const queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + dtid;
+    return this.get(this.pathAPI, queryString);
   }
 
   //
@@ -693,8 +687,17 @@ export class ApiService {
   }
 
   //
-  // Private
+  // Local helpers
   //
+  private buildValues(collection: any[]): string {
+    let values = '';
+    _.each(collection, function (a) {
+      values += a + '|';
+    });
+    // trim the last |
+    return values.replace(/\|$/, '');
+  }
+
   private get(apiPath: string, apiRoute: string, options?: Object) {
     return this.http.get(`${apiPath}/${apiRoute}`, options || null);
   }

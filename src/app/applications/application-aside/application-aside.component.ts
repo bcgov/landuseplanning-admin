@@ -164,7 +164,8 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
       this.searchService.getByDTID(this.application.tantalisID)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          features => {
+          search => {
+            const features = search && search.features;
             try {
               _.each(features, function (feature) {
                 const f = JSON.parse(JSON.stringify(feature));
@@ -193,14 +194,14 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   // called from parent component
   public drawMap(app: Application) {
     if (app.tantalisID) {
+      const self = this;
       this.searchService.getByDTID(app.tantalisID)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          features => {
-            const self = this; // for closure functions below
-
-            if (this.fg) {
-              _.each(this.layers, function (layer) {
+          search => {
+            const features = search && search.features;
+            if (self.fg) {
+              _.each(self.layers, function (layer) {
                 self.map.removeLayer(layer);
               });
               this.fg.clearLayers();

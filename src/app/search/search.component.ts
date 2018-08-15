@@ -1,15 +1,11 @@
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/map';
-import * as L from 'leaflet';
 import * as _ from 'lodash';
 
-import { Application } from 'app/models/application';
-import { Organization } from 'app/models/organization';
-import { Search, SearchTerms } from 'app/models/search';
+import { SearchTerms } from 'app/models/search';
 import { ApplicationService } from 'app/services/application.service';
 import { SearchService } from 'app/services/search.service';
 
@@ -17,130 +13,130 @@ import { SearchService } from 'app/services/search.service';
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('visibility', [
-      transition(':enter', [   // :enter is alias to 'void => *'
-        animate('0.2s 0s', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [   // :leave is alias to '* => void'
-        animate('0.2s 0.75s', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class SearchComponent implements OnInit, OnDestroy {
-  results: Search;
-  groupByResults: Array<any>;
-  page: number;
-  limit: number;
-  count: number;
-  noMoreResults: boolean;
-  ranSearch: boolean;
-  applications: Array<Application>;
-  organizations: Array<Organization>;
-  applicationArray: Array<string>;
-  protoSearchActive: boolean;
-  showAdvancedFields: boolean;
-  public loading: boolean;
-  params: Params;
-  terms: SearchTerms;
-  myApplications: Array<any>;
-  map: L.Map;
-  fg: L.FeatureGroup;
-  layerGroups: L.FeatureGroup[];
-  layers: L.Layer[];
-  tileLayers: L.TileLayer[];
-  baseMaps: {};
-  control: L.Control;
-  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  private maxZoom = { maxZoom: 17 };
+  public terms = new SearchTerms();
+  public searching = false;
+  public ranSearch = false;
+  public keywords: Array<string> = [];
+  public groupByResults: Array<any> = [];
+  public count = 0; // for template
+  private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
+  private ngUnsubscribe = new Subject<boolean>();
 
   constructor(
+    public snackBar: MatSnackBar,
     private applicationService: ApplicationService,
     private searchService: SearchService,
-    private _changeDetectionRef: ChangeDetectorRef,
     private router: Router,
-    private route: ActivatedRoute
-  ) {
-    this.limit = 15;
-  }
+    private route: ActivatedRoute,
+    private _changeDetectionRef: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
-    this.noMoreResults = true;
-    this.ranSearch = false;
-    this.showAdvancedFields = false;
-    this.loading = false;
-
-    if (!this.tileLayers) {
-      this.tileLayers = [];
-    }
-    const World_Topo_Map = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
-    });
-    const World_Imagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-    });
-    const OpenMapSurfer_Roads = L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}', {
-      maxZoom: 20,
-      attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    });
-    const Esri_OceanBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
-      maxZoom: 13
-    });
-    const Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
-      maxZoom: 16
-    });
-    this.map = L.map('map', {
-      layers: [World_Imagery]
-    });
-    this.map.setView(new L.LatLng(53.7267, -127.6476), 5);
-
-    // set up the controls
-    this.baseMaps = {
-      'Ocean Base': Esri_OceanBasemap,
-      'Nat Geo World Map': Esri_NatGeoWorldMap,
-      'Open Surfer Roads': OpenMapSurfer_Roads,
-      'World Topographic': World_Topo_Map,
-      'World Imagery': World_Imagery
-    };
-
-    if (!this.layers) {
-      this.layers = [];
-    }
-
+    // get search terms from route
     this.route.params
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (params: Params) => {
-          /*
-            TBD: Deal with meta search terms?
-              this.params.type
-              this.params.page
-              this.params.limit
-          */
-          this.params = params;
-          this.terms = new SearchTerms();
-
-          if (this.params.clfile) {
-            this.terms.clfile = this.params.clfile.split(',').join(' ');
-          }
-
-          // Force change detection since we changed a bound property after the normal check cycle and outside anything
-          // that would trigger a CD cycle - this will eliminate the error you get when running in dev mode.
-          this._changeDetectionRef.detectChanges();
-
-          if (!_.isEmpty(this.terms.getParams())) {
-            this.doSearch(true);
-          }
+      .subscribe(params => {
+        if (params.keywords) {
+          // remove empty and duplicate items
+          this.terms.keywords = _.uniq(_.compact(params.keywords.split(','))).join(' ');
         }
-      );
+
+        if (!_.isEmpty(this.terms.getParams())) {
+          this.doSearch();
+        }
+      });
   }
 
-  importProject(item: any) {
+  ngOnDestroy() {
+    // dismiss any open snackbar
+    if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  private doSearch() {
+    this.searching = true;
+    this.keywords = this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' '))) || []; // safety checks
+    this.groupByResults.length = 0; // empty the list
+
+    this.searchService.getByClidDtid(this.keywords, true)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        search => {
+          // console.log('search =', search);
+          if (search.totalFeatures > 0 && search.features && search.features.length > 0) {
+            const groupedFeatures = _.groupBy(search.features, 'properties.DISPOSITION_TRANSACTION_SID');
+            const self = this; // for closure below
+            _.each(groupedFeatures, function (value: any, key: string) {
+              // ensure result is not already in list
+              if (!_.find(self.groupByResults, result => { return result.properties.DISPOSITION_TRANSACTION_SID === +key; })) {
+                // if app is in PRC, query application data to update UI
+                if (_.includes(search.sidsFound, key)) {
+                  value[0].loaded = false;
+                  self.applicationService.getByTantalisID(+key, true)
+                    .takeUntil(self.ngUnsubscribe)
+                    .subscribe(
+                      application => {
+                        value[0].loaded = true;
+                        if (application) {
+                          value[0].app = application;
+                          // Force change detection since we changed a bound property after the normal check cycle and outside anything
+                          // that would trigger a CD cycle - this will eliminate the error we get when running in dev mode.
+                          self._changeDetectionRef.detectChanges();
+                        }
+                      },
+                      error => {
+                        self.snackBarRef = self.snackBar.open('Error retrieving application ...', null, { duration: 3000 });
+                      }
+                    );
+                } else {
+                  value[0].loaded = true;
+                }
+                self.groupByResults.push(value[0]);
+              }
+            });
+          }
+        },
+        error => {
+          // update variables on error
+          this.searching = false;
+          this.ranSearch = true;
+          this.count = 0;
+          this._changeDetectionRef.detectChanges(); // force change detection
+
+          this.snackBarRef = this.snackBar.open('Error searching applications ...', 'RETRY');
+          this.snackBarRef.onAction().subscribe(() => this.onSubmit());
+        },
+        () => {
+          // update variables on completion
+          this.searching = false;
+          this.ranSearch = true;
+          this.count = this.groupByResults.length;
+          this._changeDetectionRef.detectChanges(); // force change detection
+        });
+  }
+
+  // reload page with current search terms
+  public onSubmit() {
+    // dismiss any open snackbar
+    if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+
+    // NOTE: Angular Router doesn't reload page on same URL
+    // ref: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
+    // WORKAROUND: add timestamp to force URL to be different than last time
+    const params = this.terms.getParams();
+    params['now'] = Date.now();
+
+    // console.log('params =', params);
+    this.router.navigate(['search', params]);
+  }
+
+  public importProject(item: any) {
     // save application properties from search results
     if (item.properties) {
       // cached data
@@ -148,154 +144,22 @@ export class SearchComponent implements OnInit, OnDestroy {
       item.subpurpose = item.properties.TENURE_SUBPURPOSE;
       item.type = item.properties.TENURE_TYPE;
       item.subtype = item.properties.TENURE_SUBTYPE;
-      item.status = item.properties.TENURE_STATUS;
+      item.status = this.applicationService.getStatusCode(item.properties.TENURE_STATUS);
       item.tenureStage = item.properties.TENURE_STAGE;
       item.location = item.properties.TENURE_LOCATION;
       item.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
-      item.region = this.applicationService.getRegionCode(item.properties.RESPONSIBLE_BUSINESS_UNIT);
-      // these are special
-      // we will persist them to db as search keys
+      item.region = this.applicationService.getRegionCode(item.businessUnit);
+      // these are special - we will persist them to db as search keys
       item.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
       item.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;
     }
-
-    item.agency = 'Crown Land Allocation';
-    item.name = item.cl_file && item.cl_file.toString();
 
     // add the application
     // on success go to edit page
     this.applicationService.add(item)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(application => {
-        this.router.navigate(['/a', application._id]);
+        this.router.navigate(['/a', application._id, 'edit']);
       });
-  }
-
-  toggleAdvancedSearch() {
-    this.showAdvancedFields = !this.showAdvancedFields;
-  }
-
-  private doSearch(firstSearch: boolean) {
-    this.loading = true;
-    this.ranSearch = true;
-
-    if (firstSearch) {
-      this.page = 0;
-      this.count = 0;
-      this.results = null;
-      this.groupByResults = [];
-      this.noMoreResults = false;
-    } else {
-      this.page += 1;
-    }
-
-    this.searchService.getByCLFile(this.terms.clfile)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        data => {
-          this.loading = false;
-          // This outputs the value of data to the web console.
-          this.results = data;
-
-          const self = this;
-
-          this.groupByResults = [];
-          const groupedFeatures = _.groupBy(data.features, 'properties.DISPOSITION_TRANSACTION_SID');
-
-          _.each(groupedFeatures, function (value: any, key) {
-            if (_.includes(data.sidsFound, key)) {
-              value[0].isImported = true;
-            }
-            self.groupByResults.push(value[0]);
-          });
-
-          self.layerGroups = [];
-          // Create the FG for all the layers found in this search.
-          if (self.fg) {
-            self.map.removeControl(self.control);
-            _.each(self.layers, function (layer) {
-              self.map.removeLayer(layer);
-            });
-            self.fg.clearLayers();
-          } else {
-            self.fg = L.featureGroup();
-          }
-          const overlayMaps: { [k: string]: any } = {};
-
-          _.each(this.results.features, function (feature) {
-            const f = JSON.parse(JSON.stringify(feature));
-            // Needed to be valid GeoJSON
-            delete f.geometry_name;
-            const featureObj: GeoJSON.Feature<any> = f;
-            const layer = L.geoJSON(featureObj);
-            self.layers.push(layer);
-            const options = { maxWidth: 400 };
-            const content = '<h3>' + featureObj.properties.TENURE_TYPE
-              + '<br />'
-              + featureObj.properties.TENURE_SUBTYPE + '</h3>'
-              + '<strong>ShapeID: </strong>' + featureObj.properties.INTRID_SID
-              + '<br />'
-              + '<strong>Disposition: </strong>' + featureObj.properties.DISPOSITION_TRANSACTION_SID
-              + '<br />'
-              + '<strong>Purpose: </strong>' + featureObj.properties.TENURE_PURPOSE
-              + '<br />'
-              + '<strong>Sub Purpose: </strong>' + featureObj.properties.TENURE_SUBPURPOSE
-              + '<br />'
-              + '<strong>Stage: </strong>' + featureObj.properties.TENURE_STAGE
-              + '<br />'
-              + '<strong>Status: </strong>' + featureObj.properties.TENURE_STATUS
-              + '<br />'
-              + '<strong>Hectares: </strong>' + featureObj.properties.TENURE_AREA_IN_HECTARES
-              + '<br />'
-              + '<br />'
-              + '<strong>Legal Description: </strong>' + featureObj.properties.TENURE_LEGAL_DESCRIPTION;
-            const popup = L.popup(options).setContent(content);
-            layer.bindPopup(popup);
-            self.fg.addLayer(layer);
-            const dispLabel = '<strong>Disposition ID:</strong> ' + featureObj.properties.DISPOSITION_TRANSACTION_SID + '</span>';
-            if (!!self.layerGroups[dispLabel]) {
-              // Already exists as a FG.
-            } else {
-              self.layerGroups[dispLabel] = new L.FeatureGroup();
-            }
-            self.layerGroups[dispLabel].addLayer(layer);
-          });
-
-          // Add the layergroups to the map.
-          _.forOwn(self.layerGroups, function (value, key) {
-            overlayMaps[key] = self.layerGroups[key];
-            self.layerGroups[key].addTo(self.map);
-          });
-
-          self.control = L.control.layers(self.baseMaps, overlayMaps, { collapsed: false }).addTo(self.map);
-
-          self.map.fitBounds(self.fg.getBounds(), self.maxZoom);
-
-          if (self.groupByResults) {
-            this.count = self.groupByResults.length;
-          }
-
-          // Force change detection since we changed a bound property after the normal check cycle and outside anything
-          // that would trigger a CD cycle - this will eliminate the error you get when running in dev mode.
-          this._changeDetectionRef.detectChanges();
-        },
-        error => {
-          this.loading = false;
-          console.log(error);
-        });
-  }
-
-  onSubmit() {
-    this.terms.clfile = this.terms.clfile.trim();
-    this.router.navigate(['search', this.terms.getParams()]);
-  }
-
-  loadMore() {
-    this.doSearch(false);
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }

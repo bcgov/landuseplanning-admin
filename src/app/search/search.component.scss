@@ -1,294 +1,223 @@
-@import "~assets/styles/base/base.scss";
-
-$search-input-font-size: 0.9375rem;
-
-.hero-banner {
-    height: auto;
-
-    &__content {
-        padding-top: 3rem;
-        padding-bottom: 3rem;
-        width: 100%;
-    }
+// Move somewhere global
+h1 {
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: -0.05rem;
 }
 
-.map {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    outline: none;
-    touch-action: none;
-    background-color: #445a71;
+h2 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.03rem;
+
+  strong {
+    font-weight: 400;
+  }
+}
+
+.btn-sm {
+  i {
+    margin-top: -0.1rem;
+  }
+}
+
+// Search Container
+.search-container {
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+  background: #f7f8fa;
+}
+
+form {
+  margin-top: 3.5rem;
+}
+
+.main-search-field {
+  input {
+    height: 3rem;
+    color: #000;
+    font-size: 1.15rem;
+
+    &:-webkit-autofill {
+      box-shadow: 0 0 0 30px white inset;
+    }
   }
 
-.import-link {
-    cursor: pointer;
+  button {
+    min-width: 10rem;
+    font-weight: 700;
+  }
+
+  .input-group-addon {
+    font-size: 1.15rem;
+  }
 }
 
-@media (min-width: 992px) {
-    .hero-banner {
-        &__content {
-            padding-top: 6rem;
-            padding-bottom: 6rem;
-        }
-    }
+.form-text {
+  margin-top: 0.55rem;
+  font-size: 0.85rem;
 }
 
-@media (min-width: 1200px) {
-    .hero-banner {
-        &__content {
-            padding-top: 9rem;
-            padding-bottom: 6rem;
-        }
-    }
-}
-
-.search-form {
-    button {
-        &[type="submit"] {
-            font-weight: 700;
-        }
-    }
-
-    .date-range {
-        &__spacer {
-            padding: 10px;
-        }
-    }
-
-    &__btn-container {
-        @include flex-box();
-        @include flex-flow(column-reverse nowrap);
-        justify-content: flex-start;
-        align-items: flex-start;
-    }
-
-    &__search-btn {
-        width: 100%;
-        color: $white;
-        border-color: $gold;
-        background: darken($gold, 5%);
-        text-transform: uppercase;
-        font-size: 0.9375rem;
-
-        &:active,
-        &:focus,
-        &:hover {
-            border-color: $gold;
-            background: $gold;
-            color: #002663;
-        }
-    }
-
-    &__toggle-advanced-btn {
-        @include flex(0 0 auto);
-        margin-top: 0.75rem;
-        margin-bottom: 1.5rem;
-        padding: 0.15rem;
-        color: $gold;
-        border: none;
-        text-decoration: none;
-        font-size: 0.85rem;
-
-
-        i {
-            margin-top: -2px;
-            margin-right: 0.2rem;
-        }
-    }
-
-    .ng2-tag-input {
-        border-bottom: 10px solid red;
-    }
-}
-
-@media (max-width: 575px) {
-    .search-form {
-        .date-range {
-            &__spacer {
-                display: block;
-                width: 100%;
-                text-align: center;
-            }
-        }
-    }
-}
-
-@media (min-width: 768px) {
-    .search-form {
-        &__search-btn {
-            width: 8rem;
-        }
-    }
-}
+// Search Results Table
+$sr-table-row-bg: #f7f8fa;
 
 .search-results {
-    &__title {
-        span {
-            display: inline;
-        }
-    }
+  table {
+    margin-top: 2rem;
+    table-layout: fixed;
+  }
 
-    &__header {
-        padding: 1rem 0;
-        
-        .srch-count {
-            font-weight: 600;
-        }
-    }
-    &__footer {
-        text-align: center;
-    }
+  th {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: $sr-table-row-bg;
+    font-size: 0.875rem;
+  }
 
-    &-item {
-        position: relative;
-        margin-bottom: 0.25rem;
-        padding: 1rem;
-        flex-flow: column wrap;
-        align-items: left;
-    
-        &__actions {
-            margin-top: 1.25rem;
-            font-size: 0.875rem;
-
-            a {
-
-                + a {
-                    &:before {
-                        content: '|';
-                        display: inline-block;
-                        width: 1rem;
-                        text-align: center;
-                    }
-                }
-            }
-        }
-    
-        &__description {
-            margin-top: 1rem;
-            overflow: hidden;
-            word-break: break-all;
-            line-height: calc(0.875rem * 1.5);
-            font-size: 0.875rem;
-        }
-    
-        &__meta {
-            margin-top: 0.4rem;
-            font-size: 0.875rem;
-        }
-    
-        &__application-name {
-            margin-bottom: 0.4rem;
-            line-height: 1rem;
-            font-size: 0.975rem;
-            font-weight: 400;
-        }
-    
-        &__title {
-            margin-bottom: 0.4rem;
-            width: 100%;
-            overflow: hidden;
-            line-height: 1.4rem;
-            text-overflow: ellipsis;
-            font-size: 1.2rem;
-            font-weight: 400;
-        }
-    }
-
-    &__no-results {
-        + .search-results__footer {
-            display: none;
-        }
-    }
+  td {
+    padding-top: 1.25rem;
+    padding-right: 1rem;
+    padding-bottom: 0;
+    padding-left: 1rem;
+    border: none;
+    background: $sr-table-row-bg;
+    line-height: 1.15rem;
+    font-size: 0.9375rem;
+  }
 }
 
-@media (min-width: 768px) {
-    .search-results {
-        &-item {
-            padding: 1.5rem;
+// Search Table Columns
+.cl-file {
+  padding-right: 0;
+  width: 6.5rem;
+  overflow: hidden;
 
-            &__actions {
-                margin-top: 1.25rem;
-            }
-            &__description {
-                line-height: 1.5rem;
-                font-size: 1rem;
-            }
-            &__meta {
-                position: absolute;
-                top: 0.75rem;
-                right: 1.5rem;
-            }
-            &__application-name {
-                margin-bottom: 0.5rem;
-                font-size: 1.25rem;
-            }
-            &__title {
-                line-height: 1.8rem;
-                font-size: 1.5rem;
-            }
-        }
-    }
+  .cl-arrow {
+    top: -0.55rem; // Offset top padding
+    left: -1rem;  // Offset left padding
+  }
 }
 
-tag-input {
-    &.form-control {
-        padding: 0;
+.client {
+  width: 13rem;
+}
+
+.disp {
+  width: 7rem;
+}
+
+.actions {
+  width: 8rem;
+  text-align: right;
+  padding-top: 0;
+  padding-bottom: 0;
+
+  .btn {
+    margin-top: -0.35rem;
+    min-width: 6rem;
+    border-width: 2px;
+    font-weight: 700;
+  }
+}
+
+.status {
+  width: 14rem;
+}
+
+.app-details {
+  border-top: 4px solid #fff;
+}
+
+.app-comment-details {
+  td {
+    padding-top: 0.75rem;
+    padding-bottom: 1.25rem;
+
+    a {
+      color: #007bff;
     }
+  }
 
-    ::ng-deep {
-        &.ng2-tag-input {
-            padding: 0;
-            border-bottom: none;
-
-            * {
-                font-family: "myriad-pro" !important;
-            }
-
-            &.ng2-tag-input--focused {
-                border-bottom: none;
-            }
-
-            &__text-input {
-                min-width: 200px;
-                padding: 0.75rem 0.5rem;
-                height: auto;
-                font-size: $search-input-font-size;
-                font-weight: 400;
-                box-shadow: none;
-            }
-
-            .ng2-tags-container {
-                padding-left: 0.15rem;
-            }
-
-            tag {
-                padding: 0.2rem 0.6rem;
-                height: auto;
-                color: $white;
-                border-radius: 0.2rem;
-                background: #5091cd;
-                letter-spacing: 0;
-                font-size: $search-input-font-size;
-                font-weight: 400;
-
-                &:hover {
-                    color: $white !important;
-                    background: #5091cd !important; 
-                }
-
-                &__text {
-                    margin-right: 0.4rem;
-                }
-
-                delete-icon {
-                    margin-top: 1px;
-
-                    path {
-                        fill: $white;
-                    }
-                }
-            }
-        }
+  span {
+    + .loading-comment-info {
+      display: none;
     }
+  }
+}
+
+// Crown Land File Number Arrow
+$cl-arrow-size: 2.3rem;
+$cl-arrow-color: #003366;
+$cl-arrow-font-color: #fff;
+
+.cl-arrow {
+  position: relative;
+  display: inline-block;
+  height: $cl-arrow-size;
+  padding-top: 0.55rem;
+  padding-right: 0.65rem;
+  padding-left: 1rem;
+  color: $cl-arrow-font-color;
+  background: $cl-arrow-color;
+  font-weight: bold;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: calc(#{$cl-arrow-size} * -1);
+    display: block;
+    width: $cl-arrow-size;
+    height: $cl-arrow-size;
+    border-style: solid;
+    border-top-width: calc(#{$cl-arrow-size} / 2);
+    border-top-color: transparent;
+    border-bottom-width: calc(#{$cl-arrow-size} / 2);
+    border-bottom-color: transparent;
+    border-left-width: calc(#{$cl-arrow-size} / 2);
+    border-left-color: $cl-arrow-color;
+  }
+}
+
+// Dropdown Menus
+.dropdown {
+  &.show {
+    .dropdown-menu {
+      display: block;
+    }
+  }
+}
+
+.dropdown-menu {
+  left: auto;
+  right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border: none;
+  box-shadow: 0 0 0.5rem #999;
+  font-size: 0.875rem;
+
+  button {
+    color: #007bff;
+    background: #fff;
+    white-space: nowrap;
+
+    &:hover {
+      color: #fff;
+      background: #007bff;
+    }
+  }
+}
+
+
+// Buttons w/ Icons
+.btn,
+.list-group-item {
+  i {
+    margin-top: -0.15rem;
+    vertical-align: middle;
+    margin-right: 0.25rem;
+    margin-left: -0.25rem;
+    font-size: 1.25rem;
+  }
 }

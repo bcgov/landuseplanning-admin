@@ -2,10 +2,6 @@
     width: 100%;
     table-layout: fixed;
 
-    tr {
-        border-top: $table-row-border;  
-    }
-
     td, th {
         text-align: left;
 
@@ -51,14 +47,6 @@
     }
 
     tbody {
-        tr {
-            background: $table-row-bg;
-
-            &:nth-child(even){
-                background: $table-alt-row-bg;
-            }
-        }
-
         td {
             padding: 0.25rem 0.5rem;
             vertical-align: top;

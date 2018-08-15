@@ -3,10 +3,8 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { Application } from 'app/models/application';
 import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
-import { AuthenticationService } from 'app/services/authentication.service';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +19,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private applicationService: ApplicationService,
-    private authenticationService: AuthenticationService,
     private api: ApiService
   ) { }
 

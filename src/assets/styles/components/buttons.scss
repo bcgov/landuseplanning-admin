@@ -34,11 +34,6 @@
     }
   }
 
-  &.btn-default {
-    background: $lightgray;
-    color: $link-color;
-  }
-
   &:disabled {
     pointer-events: none;
   }

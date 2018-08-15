@@ -9,15 +9,11 @@ import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
 import * as _ from 'lodash';
 
-import { Constants } from 'app/utils/constants';
 import { SelectOrganizationComponent } from 'app/applications/select-organization/select-organization.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { ApplicationAsideComponent } from 'app/applications/application-aside/application-aside.component';
 import { Application } from 'app/models/application';
 import { Document } from 'app/models/document';
-import { Comment } from 'app/models/comment';
-import { Organization } from 'app/models/organization';
-import { Feature } from 'app/models/feature';
 import { Decision } from 'app/models/decision';
 import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
@@ -123,9 +119,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.router.navigate(['/map', { application: appId }]);
   }
 
+  // TODO: soon to be obsolete
   applyDisposition() {
     // first check if the disp is already used by another application
-    this.applicationService.getByTantalisId(this.application.tantalisID)
+    this.applicationService.getByTantalisID(this.application.tantalisID, true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         application => {
@@ -155,8 +152,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
             this.searchService.getByDTID(this.application.tantalisID)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
-                features => {
-                  this.application.features = features;
+                search => {
+                  this.application.features = search && search.features;
 
                   // calculate Total Area (hectares)
                   let areaHectares = 0;

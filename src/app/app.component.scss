@@ -2,12 +2,25 @@
 
 :host {
   display: block;
-  margin-top: 52px;
-  z-index: 998;
+  @include flex-box();
+  @include flex-direction(column);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: hidden;
 }
 
-@media (min-width: 992px) {
-  :host {
-    margin-top: 68px;
-  }
+app-header {
+  @include flex(0 0 auto);
+}
+
+.app-body {
+  @include flex-box();
+  @include flex(1 1 auto);
+  @include flex-direction(column);
+  position: relative;
+  margin-top: 68px;
+  overflow-y: scroll;
 }

@@ -42,9 +42,11 @@ export class ApplicationService {
   readonly SOUTHERN_INTERIOR = 'SI';
   readonly VANCOUVER_ISLAND = 'VI';
 
-  public applicationStatuses: Array<string> = [];
+  // use helpers to get these:
+  private applicationStatuses: Array<string> = [];
   private regions: Array<string> = [];
-  private application: Application = null;
+
+  private application: Application = null; // for caching
 
   constructor(
     private api: ApiService,
@@ -65,7 +67,7 @@ export class ApplicationService {
     this.applicationStatuses[this.OFFER_NOT_ACCEPTED] = 'Decision: Offer Not Accepted';
     this.applicationStatuses[this.OFFERED] = 'Decision: Offered';
     this.applicationStatuses[this.SUSPENDED] = 'Tenure: Suspended';
-    this.applicationStatuses[this.DECISION_MADE] = 'Decision Made';
+    this.applicationStatuses[this.DECISION_MADE] = 'Decision Made'; // NB: calculated status
     this.applicationStatuses[this.UNKNOWN] = 'Unknown Application Status';
 
     this.regions[this.CARIBOO] = 'Cariboo, Williams Lake';
@@ -108,7 +110,7 @@ export class ApplicationService {
 
         const promises: Array<Promise<any>> = [];
 
-        // FUTURE: get the organization for each application
+        // FUTURE: get the organization here
 
         // now get the current comment period for each application
         applications.forEach((application, i) => {
@@ -134,12 +136,21 @@ export class ApplicationService {
           );
         });
 
-        // now get the referenced data (features)
+        // NOT NEEDED AT THIS TIME
+        // // now get the decision for each application
+        // applications.forEach((application, i) => {
+        //   promises.push(this.decisionService.getByApplicationId(applications[i]._id)
+        //     .toPromise()
+        //     .then(decision => applications[i].decision = decision)
+        //   );
+        // });
+
+        // now get the referenced data (features) for each application
         applications.forEach((application, i) => {
           promises.push(this.searchService.getByDTID(application.tantalisID)
             .toPromise()
-            .then(features => {
-              application.features = features;
+            .then(search => {
+              application.features = search && search.features;
 
               // calculate Total Area (hectares) from all features
               application.areaHectares = 0;
@@ -155,14 +166,14 @@ export class ApplicationService {
                 application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
                 application.type = application.features[0].properties.TENURE_TYPE;
                 application.subtype = application.features[0].properties.TENURE_SUBTYPE;
-                application.status = application.features[0].properties.TENURE_STATUS;
+                application.status = this.getStatusCode(application.features[0].properties.TENURE_STATUS);
                 application.tenureStage = application.features[0].properties.TENURE_STAGE;
                 application.location = application.features[0].properties.TENURE_LOCATION;
                 application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
               }
 
               // derive application status for app list display + sorting
-              application['appStatus'] = this.getStatus(application);
+              application['appStatus'] = this.getStatusString(application.status);
             })
           );
         });
@@ -186,24 +197,32 @@ export class ApplicationService {
   }
 
   // get a specific application by its Tantalis ID
-  // without related data
-  getByTantalisId(tantalisId: number): Observable<Application> {
-    return this.api.getApplicationByTantalisId(tantalisId)
+  getByTantalisID(tantalisID: number, forceReload: boolean = false): Observable<Application> {
+    if (this.application && this.application.tantalisID === tantalisID && !forceReload) {
+      return Observable.of(this.application);
+    }
+
+    // first get the base application data
+    return this.api.getApplicationByTantalisID(tantalisID)
       .map(res => {
         const applications = res.text() ? res.json() : [];
         // return the first (only) application
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
+      .mergeMap(application => {
+        // now get the rest of the application data
+        return this._getApplicationData(application, forceReload);
+      })
       .catch(this.api.handleError);
   }
 
-  // get a specific application by its id
+  // get a specific application by its object id
   getById(appId: string, forceReload: boolean = false): Observable<Application> {
     if (this.application && this.application._id === appId && !forceReload) {
       return Observable.of(this.application);
     }
 
-    // first get the application data
+    // first get the base application data
     return this.api.getApplication(appId)
       .map(res => {
         const applications = res.text() ? res.json() : [];
@@ -211,73 +230,95 @@ export class ApplicationService {
         return applications.length > 0 ? new Application(applications[0]) : null;
       })
       .mergeMap(application => {
-        if (!application) { return Observable.of(null as Application); }
-
-        // replace \\n (JSON format) with newlines
-        if (application.description) {
-          application.description = application.description.replace(/\\n/g, '\n');
-        }
-        if (application.legalDescription) {
-          application.legalDescription = application.legalDescription.replace(/\\n/g, '\n');
-        }
-
-        const promises: Array<Promise<any>> = [];
-
-        // FUTURE: get the organization
-
-        // now get the documents
-        promises.push(this.documentService.getAllByApplicationId(application._id)
-          .toPromise()
-          .then(documents => application.documents = documents)
-        );
-
-        // now get the current comment period
-        promises.push(this.commentPeriodService.getAllByApplicationId(application._id)
-          .toPromise()
-          .then(periods => application.currentPeriod = this.commentPeriodService.getCurrent(periods))
-        );
-
-        // now get the decision
-        promises.push(this.decisionService.getByApplicationId(application._id, forceReload)
-          .toPromise()
-          .then(decision => application.decision = decision)
-        );
-
-        // now get the referenced data (features)
-        promises.push(this.searchService.getByDTID(application.tantalisID, forceReload)
-          .toPromise()
-          .then(features => {
-            application.features = features;
-
-            // calculate Total Area (hectares) from all features
-            application.areaHectares = 0;
-            _.each(application.features, function (f) {
-              if (f['properties']) {
-                application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-              }
-            });
-
-            // cache application properties from first feature
-            if (application.features && application.features.length > 0) {
-              application.purpose = application.features[0].properties.TENURE_PURPOSE;
-              application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
-              application.type = application.features[0].properties.TENURE_TYPE;
-              application.subtype = application.features[0].properties.TENURE_SUBTYPE;
-              application.status = application.features[0].properties.TENURE_STATUS;
-              application.tenureStage = application.features[0].properties.TENURE_STAGE;
-              application.location = application.features[0].properties.TENURE_LOCATION;
-              application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
-            }
-          })
-        );
-
-        return Promise.all(promises).then(() => {
-          this.application = application;
-          return this.application;
-        });
+        // now get the rest of the application data
+        return this._getApplicationData(application, forceReload);
       })
       .catch(this.api.handleError);
   }
+
+  private _getApplicationData(application: Application, forceReload: boolean): Promise<Application> {
+    if (!application) { return Promise.resolve(null); }
+
+    // replace \\n (JSON format) with newlines
+    if (application.description) {
+      application.description = application.description.replace(/\\n/g, '\n');
+    }
+    if (application.legalDescription) {
+      application.legalDescription = application.legalDescription.replace(/\\n/g, '\n');
+    }
+
+    const promises: Array<Promise<any>> = [];
+
+    // FUTURE: get the organization here
+
+    // get the documents
+    promises.push(this.documentService.getAllByApplicationId(application._id)
+      .toPromise()
+      .then(documents => application.documents = documents)
+    );
+
+    // get the current comment period
+    promises.push(this.commentPeriodService.getAllByApplicationId(application._id)
+      .toPromise()
+      .then(periods => {
+        const cp = this.commentPeriodService.getCurrent(periods);
+        application.currentPeriod = cp;
+        // derive comment period status for app list display + sorting
+        application['cpStatus'] = this.commentPeriodService.getStatus(cp);
+      })
+    );
+
+    // get the number of pending comments
+    promises.push(this.commentService.getAllByApplicationId(application._id)
+      .toPromise()
+      .then(comments => {
+        const pending = comments.filter(comment => this.commentService.isPending(comment));
+        application['numComments'] = pending.length.toString();
+      })
+    );
+
+    // get the decision
+    promises.push(this.decisionService.getByApplicationId(application._id, forceReload)
+      .toPromise()
+      .then(decision => application.decision = decision)
+    );
+
+    // get the referenced data (features)
+    promises.push(this.searchService.getByDTID(application.tantalisID, forceReload)
+      .toPromise()
+      .then(search => {
+        application.features = search && search.features;
+
+        // calculate Total Area (hectares) from all features
+        application.areaHectares = 0;
+        _.each(application.features, function (f) {
+          if (f['properties']) {
+            application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
+          }
+        });
+
+        // cache application properties from first feature
+        if (application.features && application.features.length > 0) {
+          application.purpose = application.features[0].properties.TENURE_PURPOSE;
+          application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
+          application.type = application.features[0].properties.TENURE_TYPE;
+          application.subtype = application.features[0].properties.TENURE_SUBTYPE;
+          application.status = this.getStatusCode(application.features[0].properties.TENURE_STATUS);
+          application.tenureStage = application.features[0].properties.TENURE_STAGE;
+          application.location = application.features[0].properties.TENURE_LOCATION;
+          application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
+        }
+
+        // derive application status for app list display + sorting
+        application['appStatus'] = this.getStatusString(application.status);
+      })
+    );
+
+    return Promise.all(promises).then(() => {
+      this.application = application;
+      return this.application;
+    });
+}
 
   // create new application
   add(item: any): Observable<Application> {
@@ -285,7 +326,7 @@ export class ApplicationService {
 
     // boilerplate for new application
     app.agency = 'Crown Land Allocation';
-    app.name = 'New Application'; // TODO: remove if not needed
+    app.name = item.cl_file && item.cl_file.toString();
 
     // id must not exist on POST
     delete app._id;
@@ -362,27 +403,51 @@ export class ApplicationService {
       .catch(this.api.handleError);
   }
 
-  // returns application status based on status code
-  getStatus(application: Application): string {
-    if (!application || !application.status) {
-      return null; // this.applicationStatuses[this.UNKNOWN]; // no data
+  /**
+   * Returns status abbreviation.
+   */
+  getStatusCode(status: string): string {
+    if (status) {
+      switch (status.toUpperCase()) {
+        case 'ABANDONED': return this.ABANDONED;
+        case 'ACCEPTED': return this.ACCEPTED;
+        case 'ALLOWED': return this.ALLOWED;
+        case 'CANCELLED': return this.CANCELLED;
+        case 'DISALLOWED': return this.DISALLOWED;
+        case 'DISPOSITION IN GOOD STANDING': return this.DISPOSITION_GOOD_STANDING;
+        case 'OFFER ACCEPTED': return this.OFFER_ACCEPTED;
+        case 'OFFER NOT ACCEPTED': return this.OFFER_NOT_ACCEPTED;
+        case 'OFFERED': return this.OFFERED;
+        case 'SUSPENDED': return this.SUSPENDED;
+      }
+      // else return given status in title case
+      return _.startCase(_.camelCase(status));
     }
+    return this.UNKNOWN; // no data
+  }
 
-    switch (application.status.toUpperCase()) {
-      case 'ABANDONED': return this.applicationStatuses[this.ABANDONED];
-      case 'ACCEPTED': return this.applicationStatuses[this.ACCEPTED];
-      case 'ALLOWED': return this.applicationStatuses[this.ALLOWED];
-      case 'CANCELLED': return this.applicationStatuses[this.CANCELLED];
-      case 'DISALLOWED': return this.applicationStatuses[this.DISALLOWED];
-      case 'DISPOSITION IN GOOD STANDING': return this.applicationStatuses[this.DISPOSITION_GOOD_STANDING];
-      case 'OFFER ACCEPTED': return this.applicationStatuses[this.OFFER_ACCEPTED];
-      case 'OFFER NOT ACCEPTED': return this.applicationStatuses[this.OFFER_NOT_ACCEPTED];
-      case 'OFFERED': return this.applicationStatuses[this.OFFERED];
-      case 'SUSPENDED': return this.applicationStatuses[this.SUSPENDED];
+  /**
+   * Returns user-friendly status string.
+   */
+  getStatusString(status: string): string {
+    if (status) {
+      switch (status.toUpperCase()) {
+        case this.ABANDONED: return this.applicationStatuses[this.ABANDONED];
+        case this.ACCEPTED: return this.applicationStatuses[this.ACCEPTED];
+        case this.ALLOWED: return this.applicationStatuses[this.ALLOWED];
+        case this.CANCELLED: return this.applicationStatuses[this.CANCELLED];
+        case this.DECISION_MADE: return this.applicationStatuses[this.DECISION_MADE]; // NB: calculated status
+        case this.DISALLOWED: return this.applicationStatuses[this.DISALLOWED];
+        case this.DISPOSITION_GOOD_STANDING: return this.applicationStatuses[this.DISPOSITION_GOOD_STANDING];
+        case this.OFFER_ACCEPTED: return this.applicationStatuses[this.OFFER_ACCEPTED];
+        case this.OFFER_NOT_ACCEPTED: return this.applicationStatuses[this.OFFER_NOT_ACCEPTED];
+        case this.OFFERED: return this.applicationStatuses[this.OFFERED];
+        case this.SUSPENDED: return this.applicationStatuses[this.SUSPENDED];
+        case this.UNKNOWN: return this.applicationStatuses[this.UNKNOWN];
+      }
+      return status; // not one of the above, but return it anyway
     }
-
-    // else return current status in title case
-    return _.startCase(_.camelCase(application.status));
+    return null;
   }
 
   isAccepted(status: string): boolean {
@@ -417,22 +482,20 @@ export class ApplicationService {
     return (status && status.toUpperCase() === 'SUSPENDED');
   }
 
+  /**
+   * Returns region abbreviation.
+   */
   getRegionCode(businessUnit: string): string {
-    return businessUnit ? businessUnit.toUpperCase().split(' ')[0] : null;
+    if (businessUnit) {
+      return businessUnit.toUpperCase().split(' ')[0];
+    }
+    return null;
   }
 
-  getRegion(regionCode: string): string {
-    switch (regionCode) {
-      case this.CARIBOO: return this.regions[this.CARIBOO];
-      case this.KOOTENAY: return this.regions[this.KOOTENAY];
-      case this.LOWER_MAINLAND: return this.regions[this.LOWER_MAINLAND];
-      case this.OMENICA: return this.regions[this.OMENICA];
-      case this.PEACE: return this.regions[this.PEACE];
-      case this.SKEENA: return this.regions[this.SKEENA];
-      case this.SOUTHERN_INTERIOR: return this.regions[this.SOUTHERN_INTERIOR];
-      case this.VANCOUVER_ISLAND: return this.regions[this.VANCOUVER_ISLAND];
-    }
-
-    return null;
+  /**
+   * Returns user-friendly region string.
+   */
+  getRegionString(abbrev: string): string {
+    return this.regions[abbrev]; // returns null if not found
   }
 }

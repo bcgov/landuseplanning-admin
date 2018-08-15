@@ -27,7 +27,7 @@ $footer-bg:                     $primary;
 $footer-color:                  $white;
 
 // Main Navigation
-$mn-font-size:                  0.875rem; // 14px
+$mn-font-size:                  0.875rem; // 14 px
 $mn-dropdown-menu-size:         0.875rem; // 14 px
 $mn-color:                      $white;
 $mn-border-color:               #5f79a2;
@@ -59,7 +59,7 @@ $fc-border-color:               #ddd;
 $fc-bg:                         $white;
 $fc-inner-shadow:               0.1rem 0.1rem 0.1rem $lightgray;
 $fc-placeholder-color:          #aaa;
-$fc-focus-border-color:         #5091cd;            
+$fc-focus-border-color:         #5091cd;
 
 // List Variants
 $nv-list-bg:                    #f7f8fa;
@@ -74,10 +74,11 @@ $pgn-btn-border:                1px solid #ccc;
 $pgn-btn-color:                 $black;
 
 // Spinner
-$spinner-width:                 50px;
+$spinner-lg:                    50px;
+$spinner-sm:                    30px;
 $spinner-color:                 #5091cd;
-$spinner-bg:                    rgba(255,255,255,0.8);
-$spinner-invert-color:          $white;
+$spinner-bg:                    #fff;
+$spinner-invert-color:          #fff;
 $spinner-invert-bg:             rgba(#001a33,0.8);
 
 // Tab Navigation
@@ -103,6 +104,8 @@ $table-sort-icon-size:          0.25rem;
 
 // Modal
 $modal-bg:                      $white;
+$modal-header-bg:               #f1f1f1;
+$modal-footer-bg:               #f1f1f1;
 
 // Map Components
 $map-bg:                        #445a71;
@@ -112,7 +115,7 @@ $map-popup-color:               $white;
 $map-popup-bg:                  #244278;
 $map-popup-footer-bg:           $primary;
 $map-popup-header-bg:           $primary;
-$map-popup-font-size:           0.9375rem; // 15px
+$map-popup-font-size:           0.9375rem; // 15 px
 $map-popup-menu-active-bg:      #5091cd;
 $map-popup-btn-color:           $white;
 $map-popup-border-color:        $white;

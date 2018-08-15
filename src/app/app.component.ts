@@ -1,30 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-// import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PageScrollConfig } from 'ng2-page-scroll';
-import { CookieService } from 'ngx-cookie-service';
-
-import { DocumentService } from './services/document.service';
-import { ApiService } from './services/api';
+import { ConfigService } from './services/config.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  providers: [DocumentService]
+  styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent implements OnInit {
-  loggedIn: String;
-  hostname: String;
+export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
-    // private _router: Router,
-    private cookieService: CookieService,
-    private api: ApiService
+    private configService: ConfigService
   ) {
-    // used for sharing links
-    this.hostname = api.pathAPI; // TODO: Wrong
-
     PageScrollConfig.defaultScrollOffset = 50;
     PageScrollConfig.defaultEasingLogic = {
       ease: (t: number, b: number, c: number, d: number): number => {
@@ -44,6 +32,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loggedIn = this.cookieService.get('loggedIn');
+    this.configService.init();
   }
+
+  ngOnDestroy() {
+    this.configService.destroy();
+  }
+
 }

@@ -39,7 +39,7 @@
               </li>
               <li class="pt-0">
                 <span class="name">Status</span>
-                <span class="value">{{application.status || '-'}}</span>
+                <span class="value">{{application.appStatus || '-'}}</span>
               </li>
               <li>
                 <span class="name">Stage</span>
@@ -58,7 +58,7 @@
               </li>
               <li class="pt-0">
                 <span class="name">Region</span>
-                <span class="value">{{applicationService.getRegion(application.region) || '-'}}</span>
+                <span class="value">{{applicationService.getRegionString(application.region) || '-'}}</span>
               </li>
               <li>
                 <span class="name">Location</span>

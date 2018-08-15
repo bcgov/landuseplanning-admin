@@ -78,7 +78,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
                   this.loading = false;
                   this.commentPeriods = periods;
                   // Force change detection since we changed a bound property after the normal check cycle and outside anything
-                  // that would trigger a CD cycle - this will eliminate the error you get when running in dev mode.
+                  // that would trigger a CD cycle - this will eliminate the error we get when running in dev mode.
                   this._changeDetectionRef.detectChanges();
                 },
                 error => {
@@ -237,6 +237,7 @@ export class ManageCommentPeriodsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  // NB: see also CommentPeriodService.getStatus()
   private getStatus(item: CommentPeriod): string {
     if (!item || !item.startDate || !item.endDate) {
       return 'unknown';
