@@ -123,9 +123,9 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
                 }
               );
           } else {
-            // application not found --> navigate back to application list
+            // application not found --> navigate back to search
             alert('Uh-oh, couldn\'t load application');
-            this.router.navigate(['/applications']);
+            this.router.navigate(['/search']);
           }
         }
       );
