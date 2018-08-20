@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { trigger, style, transition, animate } from '@angular/animations';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -11,46 +10,45 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
-import { CommentPeriod } from 'app/models/commentperiod';
-import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
 import { ExcelService } from 'app/services/excel.service';
 import { ApiService } from 'app/services/api';
 
-import { CommentDetailComponent } from './comment-detail/comment-detail.component';
 import { AddCommentComponent } from './add-comment/add-comment.component';
+
+class SortKey {
+  innerHTML: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-review-comments',
   templateUrl: './review-comments.component.html',
-  styleUrls: ['./review-comments.component.scss'],
-  animations: [
-    trigger('visibility', [
-      transition(':enter', [   // :enter is alias to 'void => *'
-        animate('0.2s 0s', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [   // :leave is alias to '* => void'
-        animate('0.2s 0.75s', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+  styleUrls: ['./review-comments.component.scss']
 })
 
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
-  readonly sortKeys = [
-    '&uarr; Date',
-    '&darr; Name',
+  readonly PAGE_SIZE = 10;
+
+  readonly sortKeys: Array<SortKey> = [
+    { innerHTML: '&uarr; Date', value: '%2BdateAdded' },
+    { innerHTML: '&darr; Date', value: '-dateAdded' },
+    { innerHTML: '&uarr; Name', value: '%2BcontactName' },
+    { innerHTML: '&darr; Name', value: '-contactName' },
     // PRC-272: temporarily removed
-    // '&darr; Status'
+    // { innerHTML: '&uarr; Status', value: '%2BcommentStatus' },
+    // { innerHTML: '&darr; Status', value: '-commentStatus' },
   ];
 
-  public loading = true;
+  public loading = false;
   public application: Application = null;
-  public periodId: string;
   public comments: Array<Comment> = [];
   public alerts: Array<string> = [];
   public currentComment: Comment;
+  public pageCount = 1; // in case getCount() fails
+  public pageNum = 1; // first page
+  public sortBy = this.sortKeys[1].value; // initial sort is by descending date
 
   // see official solution:
   // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription
@@ -60,7 +58,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
     private excelService: ExcelService,
     private api: ApiService,
@@ -81,47 +78,16 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           if (data.application) {
             this.application = data.application;
 
-            // get comment periods
-            // this is independent of application data
-            this.commentPeriodService.getAllByApplicationId(this.application._id)
+            this.commentService.getCountByApplicationId(this.application._id)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
-                periods => {
-                  if (periods.length > 0) {
-                    // for now, pick first comment period
-                    this.periodId = periods[0]._id;
-                  }
-                },
-                error => {
-                  // if 403, redir to login page
-                  if (error && error.status === 403) { this.router.navigate(['/login']); }
-                  this.alerts.push('Error loading comment periods');
+                value => {
+                  this.pageCount = value ? Math.ceil(value / this.PAGE_SIZE) : 1;
                 });
 
-            // get comments
-            // this is independent of application data
-            this.commentService.getAllByApplicationId(this.application._id)
-              .takeUntil(this.ngUnsubscribe)
-              .subscribe(
-                comments => {
-                  this.loading = false;
-                  this.comments = comments;
+            // get initial data
+            this.getData();
 
-                  // initial sort
-                  this.sort(this.sortKeys[0]);
-
-                  // pre-select first comment
-                  if (this.comments.length > 0) {
-                    this.setCurrentComment(this.comments[0]);
-                  }
-                },
-                error => {
-                  this.loading = false;
-                  // if 403, redir to login page
-                  if (error && error.status === 403) { this.router.navigate(['/login']); }
-                  this.alerts.push('Error loading comments');
-                }
-              );
           } else {
             alert('Uh-oh, couldn\'t load application');
             // application not found --> navigate back to search
@@ -136,23 +102,47 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  private sort(key: string): Comment[] {
-    const self = this;
-    return this.comments.sort(function (a: Comment, b: Comment) {
-      switch (key) {
-        case self.sortKeys[0]: return (a.dateAdded < b.dateAdded) ? 1 : -1;
-        case self.sortKeys[1]: return (a.commentAuthor.contactName > b.commentAuthor.contactName) ? 1 : -1;
-        case self.sortKeys[2]: return (a.commentStatus > b.commentStatus) ? 1 : -1;
-        default: return 0;
-      }
-    });
+  getData() {
+    if (this.application) { // safety check
+      this.loading = true;
+
+      this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          comments => {
+            this.loading = false;
+            this.comments = comments;
+
+            // pre-select the first comment
+            if (this.comments.length > 0) {
+              this.setCurrentComment(this.comments[0]);
+            }
+          },
+          error => {
+            this.loading = false;
+            // if 403, redir to login page
+            if (error && error.status === 403) { this.router.navigate(['/login']); }
+            this.alerts.push('Error loading comments');
+          }
+        );
+    }
   }
 
-  public addClick() {
-    if (this.periodId) {
+  prevPage() {
+    this.pageNum--;
+    this.getData();
+  }
+
+  nextPage() {
+    this.pageNum++;
+    this.getData();
+  }
+
+  addClick() {
+    if (this.application.currentPeriod && this.application.currentPeriod._id) {
       this.dialogService.addDialog(AddCommentComponent,
         {
-          periodId: this.periodId
+          periodId: this.application.currentPeriod._id
         }, {
           // index: 0,
           // autoCloseTimeout: 10000,
@@ -172,7 +162,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setCurrentComment(item: Comment) {
+  setCurrentComment(item: Comment) {
     const index = _.findIndex(this.comments, { _id: item._id });
     if (index >= 0) {
       this.comments.splice(index, 1, item);
@@ -180,78 +170,88 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isCurrentComment(item: Comment): boolean {
+  isCurrentComment(item: Comment): boolean {
     return (item === this.currentComment);
   }
 
-  private exportToExcel() {
-    const observables: Array<Observable<Comment>> = [];
-
-    // get full comments
-    this.comments.forEach(comment => {
-      observables.push(this.commentService.getById(comment._id, true));
-    });
-
-    // run all observables in parallel
-    forkJoin(observables)
+  exportToExcel() {
+    // get all comments
+    this.commentService.getAllByApplicationId(this.application._id)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (allComments: Comment[]) => {
-          // FUTURE: instead of flattening, copy to new 'export object' with user-friendly keys?
-          const flatComments = allComments.map(comment => {
-            // sanitize and flatten each comment object
-            delete comment._commentPeriod;
-            delete comment.commentAuthor.internal.tags;
-            delete comment.commentAuthor.tags;
-            delete comment.commentNumber;
-            delete comment.review.tags;
-            delete comment.tags;
-            // sanitize documents
-            comment.documents.forEach(document => {
-              delete document._id;
-              delete document._addedBy;
-              delete document._application;
-              delete document._decision;
-              delete document._comment;
-              delete document.internalURL;
-              delete document.internalMime;
-              delete document.isDeleted;
-              delete document.tags;
-            });
-            // add necessary properties
-            // comment['client'] = this.application.client; // FUTURE
-            comment['cl_file'] = this.application['clFile'];
-            return this.flatten_fastest(comment);
+        comments => {
+          const observables: Array<Observable<Comment>> = [];
+
+          // get full comments
+          comments.forEach(comment => {
+            observables.push(this.commentService.getById(comment._id, true));
           });
 
-          const excelFileName = 'comments-'
-            + this.application.client.replace(/\s/g, '_')
-            + moment(new Date()).format('-YYYYMMDD');
-          const columnOrder: Array<string> = [
-            'cl_file',
-            '_id',
-            '_addedBy',
-            'dateAdded',
-            'commentAuthor.contactName',
-            'commentAuthor.orgName',
-            'commentAuthor.location',
-            'commentAuthor.requestedAnonymous',
-            'commentAuthor.internal.email',
-            'commentAuthor.internal.phone',
-            'comment',
-            'review.reviewerDate',
-            'review.reviewerNotes',
-            'commentStatus',
-            'isPublished'
-            // document columns go here
-          ];
-          this.excelService.exportAsExcelFile(flatComments, excelFileName, columnOrder);
+          // run all observables in parallel
+          forkJoin(observables)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe(
+              (allComments: Comment[]) => {
+                // FUTURE: instead of flattening, copy to new 'export object' with user-friendly keys?
+                const flatComments = allComments.map(comment => {
+                  // sanitize and flatten each comment object
+                  delete comment._commentPeriod;
+                  delete comment.commentAuthor.internal.tags;
+                  delete comment.commentAuthor.tags;
+                  delete comment.commentNumber;
+                  delete comment.review.tags;
+                  delete comment.tags;
+                  // sanitize documents
+                  comment.documents.forEach(document => {
+                    delete document._id;
+                    delete document._addedBy;
+                    delete document._application;
+                    delete document._decision;
+                    delete document._comment;
+                    delete document.internalURL;
+                    delete document.internalMime;
+                    delete document.isDeleted;
+                    delete document.tags;
+                  });
+                  // add necessary properties
+                  // comment['client'] = this.application.client; // FUTURE
+                  comment['cl_file'] = this.application['clFile'];
+                  return this.flatten_fastest(comment);
+                });
+
+                const excelFileName = 'comments-'
+                  + this.application.client.replace(/\s/g, '_')
+                  + moment(new Date()).format('-YYYYMMDD');
+                const columnOrder: Array<string> = [
+                  'cl_file',
+                  '_id',
+                  '_addedBy',
+                  'dateAdded',
+                  'commentAuthor.contactName',
+                  'commentAuthor.orgName',
+                  'commentAuthor.location',
+                  'commentAuthor.requestedAnonymous',
+                  'commentAuthor.internal.email',
+                  'commentAuthor.internal.phone',
+                  'comment',
+                  'review.reviewerDate',
+                  'review.reviewerNotes',
+                  'commentStatus',
+                  'isPublished'
+                  // document columns go here
+                ];
+                this.excelService.exportAsExcelFile(flatComments, excelFileName, columnOrder);
+              },
+              error => {
+                // if 403, redir to login page
+                if (error && error.status === 403) { this.router.navigate(['/login']); }
+                this.alerts.push('Error exporting comments');
+              });
         },
         error => {
-          // if 403, redir to login page
-          if (error && error.status === 403) { this.router.navigate(['/login']); }
-          this.alerts.push('Error exporting comments');
-        });
+          console.log('error =', error);
+        }
+      );
   }
 
   //
