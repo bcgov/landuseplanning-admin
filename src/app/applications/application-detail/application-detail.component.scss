@@ -1,105 +1,51 @@
 @import "~assets/styles/base/base.scss";
 
-.title-container {
-    @include flex-box();
-    &__title {
-        @include flex(1 1 auto);
-    }
-    &__actions {
-        @include flex(0 0 auto);
-    }
-}
-
 .application-detail {
-    main {
-        section {
-            padding: 1.5rem;
-            section {
-                padding: 0;
-            }
-        }
-    }
-    hr {
-        margin: 1.5rem 0;
-    }
-    ul {
-        margin: 0;
+  main {
+    section {
+      padding: 1.5rem;
+      section {
         padding: 0;
-        list-style-type: none;
+      }
     }
-    &__list {
-        @include clearfix();
-        li {
-            width: 50%;
-            float: left;
-            padding-top: 1rem;
-            &.full-width {
-                width: 100%;
-            }
-            .name,
-            .value {
-                display: block;
-            }
-            .name {
-                font-weight: bold;
-            }
-        }
-    }
-}
-
-.document-list {
-    display: table;
-    width: 100%;
+  }
+  hr {
+    margin: 1.5rem 0;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  &__list {
+    @include clearfix();
     li {
-        display: table-row;
+      width: 50%;
+      float: left;
+      padding-top: 1rem;
+      &.full-width {
         width: 100%;
-        background: transparent;
-        .cell {
-            display: table-cell;
-            padding: 0.5rem;
-            vertical-align: middle;
-            border-top: 1px solid #ccc;
-            &.icon {
-                width: 2rem;
-                text-align: center;
-                i {
-                    margin-top: 0.4rem;
-                }
-            }
-        }
-        +li {
-            margin-top: 0.25rem;
-        }
+      }
+      .name,
+      .value {
+        display: block;
+      }
+      .name {
+        font-weight: bold;
+      }
     }
-    .actions {
-        width: 8rem;
-        text-align: right;
-    }
-}
-
-.pg-title-container {
-    &__actions {
-        .btn {
-            border: none;
-            background: $lightgray;
-            font-size: 0.9375rem;
-            font-weight: bold;
-            i {
-                margin-top: -0.15rem;
-            }
-        }
-    }
+  }
 }
 
 .geo-shape-data {
-    .btn {
-        border: none;
-        background: $lightgray;
+  .btn {
+    border: none;
+    background: $lightgray;
+  }
+  &__list {
+    section {
+      margin-top: 1.5rem;
+      border-top: 2px solid #ddd;
     }
-    &__list {
-        section {
-            margin-top: 1.5rem;
-            border-top: 2px solid #ddd;
-        }
-    }
+  }
 }

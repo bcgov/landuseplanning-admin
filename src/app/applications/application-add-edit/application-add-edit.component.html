@@ -3,7 +3,7 @@
     <div class="title-container mb-4">
       <h1 class="title-container__title" *ngIf="application._id === '0'">Create New Application</h1>
       <h1 class="title-container__title" *ngIf="application._id !== '0'">Edit Application</h1>
-      <div class="pg-title-container__actions">
+      <div class="title-container__actions">
         <!-- to navigate to details, application must have been created -->
         <button type="button" class="btn btn-light slide-l-btn" [routerLink]="['/a', application._id]" [disabled]="application._id === '0'">
           <i class="material-icons">info_outline</i>
@@ -141,8 +141,6 @@
           <!-- APPLICATION -->
           <section class="card bg-light">
             <h3>Application</h3>
-
-            <!-- DESCRIPTION -->
             <section>
               <label class="h4 control-label mb-2" for="description">
                 Description
@@ -157,40 +155,46 @@
             <section class="application-detail__documents">
               <h4 class="mb-2">Application Documents</h4>
 
-              <div *ngIf="!application.documents || application.documents.length === 0">
-                <em>This application has no documents.</em>
-              </div>
-
-              <ul class="document-list list-group mb-3">
-                <li class="list-group-item" *ngFor="let file of application.documents">
-                  <span class="cell icon pr-0">
-                    <i class="material-icons">attachment</i>
+              <!-- Application Document List -->
+              <ul class="doc-list mb-3">
+                <li *ngFor="let file of application.documents">
+                  <span class="cell icon">
+                    <i class="material-icons">insert_drive_file</i>
                   </span>
-                  <span class="cell name" [title]="file.displayName || ''">{{file.documentFileName}}</span>
+                  <span class="cell name" [title]="file.displayName || ''">
+                    <span class="cell__txt-content">{{file.documentFileName}}</span>
+                  </span>
+                  <span class="cell publish-actions">
+                    <span class="btn-group">
+                      <button class="btn btn-sm" [ngClass]="file.isPublished ? 'btn-success':'btn-light'" [disabled]="file.isPublished" title="Publish this document"
+                        (click)="publishDocument(file, application.documents)">
+                        Published
+                      </button>
+                      <button class="btn btn-sm" [ngClass]="!file.isPublished ? 'btn-dark active':'btn-light'" [disabled]="!file.isPublished" title="Unpublish this document"
+                        (click)="unPublishDocument(file, application.documents)">
+                        Unpublished
+                      </button>
+                    </span>
+                  </span>
                   <span class="cell actions">
-                    <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(file)" title="Download this document">
+                    <button class="btn btn-light btn-sm" type="button" (click)="api.downloadDocument(file)" title="Download this document">
                       <i class="material-icons">file_download</i>
                     </button>
-                    <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
+                    <button class="btn btn-light btn-sm" type="button" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
                       <i class="material-icons">open_in_new</i>
                     </button>
-                    <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="deleteDocument(file, application.documents)" title="Delete this document">
-                      <i class="material-icons">delete</i>
-                    </button>
-                    <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="publishDocument(file, application.documents)" title="Publish this document">
-                      <i class="material-icons">play_arrow</i>
-                    </button>
-                    <button type="button" class="btn btn-light p-1" *ngIf="file.isPublished" (click)="unPublishDocument(file, application.documents)" title="Unpublish this document">
-                      <i class="material-icons">pause</i>
-                    </button>
+                    <span placement="top" title="{{file.isPublished ? 'Documents must be unpublished before they can be deleted':'Delete this document'}}">
+                      <button class="btn btn-light btn-sm" type="button" [disabled]="file.isPublished" (click)="deleteDocument(file, application.documents)">
+                        <i class="material-icons">delete</i>
+                      </button>
+                    </span>
                   </span>
                 </li>
               </ul>
 
+              <!-- Upload Application Documents -->
               <div class="file-upload">
-                <!-- to upload files, application must have been created -->
-                <input type="file" name="fileInput1" size="5000000" (change)="uploadFiles($event.target.files, application.documents)"
-                  multiple [disabled]="application._id === '0'">
+                <input type="file" name="fileInput1" size="5000000" (change)="uploadFiles($event.target.files, application.documents)" multiple [disabled]="application._id === '0'">
                 <div class="file-upload__target">
                   <span class="file-upload__prompt">
                     <i class="file-upload__prompt-icon material-icons">file_upload</i>
@@ -200,7 +204,7 @@
               </div>
             </section>
 
-            <!-- INTERNAL NOTES -->
+            <!-- Internal Notes -->
             <section>
               <label class="h4 control-label mb-2" for="internalNotes">
                 Internal Notes
@@ -226,7 +230,6 @@
             <h3 for="decisionDesc">Decision</h3>
 
             <section *ngIf="!application.decision">
-              <!-- to add decision, application must have been created -->
               <button type="button" class="btn btn-success" (click)="addDecision()" title="Add decision" [disabled]="application._id === '0'">
                 <i class="material-icons">add</i>
                 <span>Add Decision</span>
@@ -234,8 +237,6 @@
             </section>
 
             <div *ngIf="application.decision">
-
-              <!-- DESCRIPTION -->
               <section>
                 <label class="h4 control-label mb-2" for="decisionDesc">Description <em>(Required)</em></label>
                 <textarea class="form-control app-decision-desc" [ngClass]="{'is-invalid': decisionDesc.invalid}" type="text" id="decisionDesc"
@@ -249,41 +250,46 @@
               <section>
                 <h4 class="mb-2">Decision Documents</h4>
 
-                <!--
-                <div *ngIf="!application.decision.documents || application.decision.documents.length === 0">
-                  <em>This decision has no documents.</em>
-                </div>
-                -->
-
-                <ul class="document-list list-group mb-3" *ngIf="application.decision.documents.length > 0">
-                  <li class="list-group-item" *ngFor="let file of application.decision.documents">
-                    <span class="cell icon pr-0">
-                      <i class="material-icons">attachment</i>
+                <!-- Decision Document List -->
+                <ul class="doc-list mb-3" *ngIf="application.decision.documents.length > 0">
+                  <li *ngFor="let file of application.decision.documents">
+                    <span class="cell icon">
+                      <i class="material-icons">insert_drive_file</i>
                     </span>
-                    <span class="cell name" [title]="file.displayName || ''">{{file.documentFileName}}</span>
+                    <span class="cell name" [title]="file.displayName || ''">
+                      <span class="cell__txt-content">
+                        {{file.documentFileName}}
+                      </span>
+                    </span>
+                    <span class="cell publish-actions">
+                      <span class="btn-group">
+                        <button class="btn btn-sm" [ngClass]="file.isPublished ? 'btn-success':'btn-light'" [disabled]="file.isPublished" type="button" title="Publish this document"
+                          (click)="publishDocument(file, application.decision.documents)">
+                          Published
+                        </button>
+                        <button class="btn btn-sm" [ngClass]="!file.isPublished ? 'btn-dark active':'btn-light'" [disabled]="!file.isPublished" type="button" title="Unpublish this document"
+                          (click)="unPublishDocument(file, application.decision.documents)">
+                          Unpublished
+                        </button>
+                      </span>
+                    </span>         
                     <span class="cell actions">
-                      <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(file)" title="Download this document">
+                      <button type="button" class="btn btn-light btn-sm" (click)="api.downloadDocument(file)" title="Download this document">
                         <i class="material-icons">file_download</i>
                       </button>
-                      <button type="button" class="btn btn-light p-1" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
+                      <button type="button" class="btn btn-light btn-sm" (click)="api.openDocument(file)" title="Open this document" [hidden]="api.isMS">
                         <i class="material-icons">open_in_new</i>
                       </button>
-                      <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="deleteDocument(file, application.decision.documents)"
-                        title="Delete this document">
-                        <i class="material-icons">delete</i>
-                      </button>
-                      <button type="button" class="btn btn-light p-1" *ngIf="!file.isPublished" (click)="publishDocument(file, application.decision.documents)"
-                        title="Publish this document">
-                        <i class="material-icons">play_arrow</i>
-                      </button>
-                      <button type="button" class="btn btn-light p-1" *ngIf="file.isPublished" (click)="unPublishDocument(file, application.decision.documents)"
-                        title="Unpublish this document">
-                        <i class="material-icons">pause</i>
-                      </button>
+                      <span placement="top" title="{{file.isPublished ? 'Documents must be unpublished before they can be deleted':'Delete this document'}}">
+                        <button type="button" class="btn btn-light btn-sm" [disabled]="file.isPublished" (click)="deleteDocument(file, application.decision.documents)">
+                          <i class="material-icons">delete</i>
+                        </button>
+                      </span>
                     </span>
                   </li>
                 </ul>
 
+                <!-- Upload Decision Documents -->
                 <div class="file-upload">
                   <input type="file" name="fileInput2" size="5000000" (change)="uploadFiles($event.target.files, application.decision.documents)" multiple>
                   <div class="file-upload__target">

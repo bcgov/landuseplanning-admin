@@ -24,6 +24,12 @@ input {
     }
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
 select {
     &.form-control {
         &:not([size]):not([multiple]) {
@@ -49,3 +55,4 @@ textarea {
     vertical-align: top;
   }
 }
+

@@ -2,7 +2,7 @@
   <div class="container" *ngIf="application">
     <div class="title-container mb-4">
       <h1 class="title-container__title">Application Details</h1>
-      <div class="pg-title-container__actions">
+      <div class="title-container__actions">
         <a class="btn btn-light slide-l-btn" [routerLink]="['/a', application._id, 'edit']">
           <i class="material-icons">mode_edit</i>
           <span>Edit Application</span>
@@ -75,12 +75,12 @@
         <!-- APPLICATION -->
         <section class="card bg-light">
           <h3 class="mb-4">Application</h3>
-
           <section>
             <h4 class="mb-1">Description</h4>
             <p [innerHTML]="(application.description | newlines) || '-'"></p>
           </section>
 
+          <!-- APPLICATION DOCUMENTS -->
           <section class="application-detail__documents mt-1">
             <h4 class="mb-3">Application Documents</h4>
 
@@ -88,17 +88,22 @@
               <em>This application has no documents.</em>
             </div>
 
-            <ul class="document-list list-group">
-              <li class="list-group-item" *ngFor="let document of application.documents | published">
-                <span class="cell icon pr-0">
-                  <i class="material-icons">attachment</i>
+            <!-- Application Document List -->
+            <ul class="doc-list">
+              <li *ngFor="let document of application.documents | published">
+                <span class="cell icon">
+                  <i class="material-icons">insert_drive_file</i>
                 </span>
-                <span class="cell name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
+                <span class="cell name" [title]="document.displayName || ''">
+                  <span class="cell__txt-content">
+                      {{document.documentFileName}}
+                  </span>
+                </span>
                 <span class="cell actions">
-                  <button type="button" class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
+                  <button type="button" class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
                     <i class="material-icons">file_download</i>
                   </button>
-                  <button type="button" class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document" [hidden]="api.isMS">
+                  <button type="button" class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document" [hidden]="api.isMS">
                     <i class="material-icons">open_in_new</i>
                   </button>
                 </span>
@@ -122,6 +127,7 @@
               <p [innerHTML]="(application.decision.description | newlines) || '-'"></p>
             </section>
 
+            <!-- DECISION DOCUMENTS -->
             <section class="application-detail__documents mt-1">
               <h4 class="mb-3">Decision Documents</h4>
 
@@ -129,17 +135,22 @@
                 <em>This decision has no documents.</em>
               </div>
 
-              <ul class="document-list list-group">
-                <li class="list-group-item" *ngFor="let document of application.decision.documents | published">
-                  <span class="cell icon pr-2">
-                    <i class="material-icons">attachment</i>
+               <!-- Decision Document List -->
+              <ul class="doc-list">
+                <li *ngFor="let document of application.decision.documents | published">
+                  <span class="cell icon">
+                    <i class="material-icons">insert_drive_file</i>
                   </span>
-                  <span class="cell name" [title]="document.displayName || ''">{{document.documentFileName}}</span>
+                  <span class="cell name" [title]="document.displayName || ''">
+                      <span class="cell__txt-content">
+                        {{document.documentFileName}}
+                      </span>
+                  </span>
                   <span class="cell actions">
-                    <button class="btn btn-light p-1" (click)="api.downloadDocument(document)" title="Download this document">
+                    <button class="btn btn-light btn-sm" (click)="api.downloadDocument(document)" title="Download this document">
                       <i class="material-icons">file_download</i>
                     </button>
-                    <button class="btn btn-light p-1" (click)="api.openDocument(document)" title="Open this document" [hidden]="api.isMS">
+                    <button class="btn btn-light btn-sm" (click)="api.openDocument(document)" title="Open this document" [hidden]="api.isMS">
                       <i class="material-icons">open_in_new</i>
                     </button>
                   </span>
