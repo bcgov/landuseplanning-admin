@@ -280,9 +280,7 @@ export class ApplicationService {
   add(item: any): Observable<Application> {
     const app = new Application(item);
 
-    // boilerplate for new application
-    app.agency = 'Crown Land Allocation';
-    app.name = 'New Application'; // TODO: remove if not needed
+    // boilerplate for new application -- TODO: DELETE THIS WHEN REGIONS ARE REWORKED
     app.region = 'Skeena';
 
     // id must not exist on POST
