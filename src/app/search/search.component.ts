@@ -152,6 +152,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       item.tenureStage = item.properties.TENURE_STAGE;
       item.location = item.properties.TENURE_LOCATION;
       item.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
+      item.region = this.applicationService.getRegionCode(item.properties.RESPONSIBLE_BUSINESS_UNIT);
       // these are special
       // we will persist them to db as search keys
       item.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
@@ -174,7 +175,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.showAdvancedFields = !this.showAdvancedFields;
   }
 
-  doSearch(firstSearch: boolean) {
+  private doSearch(firstSearch: boolean) {
     this.loading = true;
     this.ranSearch = true;
 
@@ -285,6 +286,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.terms.clfile = this.terms.clfile.trim();
     this.router.navigate(['search', this.terms.getParams()]);
   }
 
