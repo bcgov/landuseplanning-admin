@@ -43,7 +43,7 @@ export class ApplicationService {
   readonly VANCOUVER_ISLAND = 'VI';
 
   public applicationStatuses: Array<string> = [];
-  public regions: Array<string> = [];
+  private regions: Array<string> = [];
   private application: Application = null;
 
   constructor(
@@ -422,17 +422,15 @@ export class ApplicationService {
   }
 
   getRegion(regionCode: string): string {
-    if (regionCode) {
-      switch (regionCode) {
-        case this.CARIBOO: return this.regions[this.CARIBOO];
-        case this.KOOTENAY: return this.regions[this.KOOTENAY];
-        case this.LOWER_MAINLAND: return this.regions[this.LOWER_MAINLAND];
-        case this.OMENICA: return this.regions[this.OMENICA];
-        case this.PEACE: return this.regions[this.PEACE];
-        case this.SKEENA: return this.regions[this.SKEENA];
-        case this.SOUTHERN_INTERIOR: return this.regions[this.SOUTHERN_INTERIOR];
-        case this.VANCOUVER_ISLAND: return this.regions[this.VANCOUVER_ISLAND];
-      }
+    switch (regionCode) {
+      case this.CARIBOO: return this.regions[this.CARIBOO];
+      case this.KOOTENAY: return this.regions[this.KOOTENAY];
+      case this.LOWER_MAINLAND: return this.regions[this.LOWER_MAINLAND];
+      case this.OMENICA: return this.regions[this.OMENICA];
+      case this.PEACE: return this.regions[this.PEACE];
+      case this.SKEENA: return this.regions[this.SKEENA];
+      case this.SOUTHERN_INTERIOR: return this.regions[this.SOUTHERN_INTERIOR];
+      case this.VANCOUVER_ISLAND: return this.regions[this.VANCOUVER_ISLAND];
     }
 
     return null;
