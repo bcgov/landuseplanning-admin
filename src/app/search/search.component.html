@@ -1,104 +1,110 @@
-<div class="spinner-container full-screen" *ngIf="loading" [@visibility]>
-  <div class="spinner-new rotating"></div>
-</div>
-
-<div class="search-banner">
+<div class="search-container">
   <div class="container">
-    <div class="container__inner-container">
-      <div >
-        <h1 id="pgTitle">Search Crown Land Files</h1>
-        <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
-
-          <div class="search-form__basic-search-fields">
-            <div class="form-group mb-0">
-              <input class="form-control" type="text" placeholder="Enter CL File Number..." name="keywordInput" id="keywordInput"
-                [disabled]="protoSearchActive" [(ngModel)]="terms.clfile"/>
-            </div>
-          </div>
-
-          <div class="search-form__btn-container">
-            <button class="search-form__search-btn btn btn-primary slide-l-btn"
-              [hidden]="protoSearchActive"
-              type="submit">
-              <i class="material-icons">search</i><span>Search</span>
-            </button>
-
-            <button class="search-form__search-btn btn btn-primary slide-l-btn"
-              [hidden]="!protoSearchActive"
-              disabled>
-              <i class="material-icons">search</i><span>Searching...</span>
-            </button>
-            <br>
-          </div>
-        </form>
+    <h1>Find Crown Lands Applications</h1>
+    <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
+      <label for="keywordInput">Enter Crown Land File or Disposition Numbers</label>
+      <div class="input-group main-search-field">
+        <input class="form-control" type="text" name="keywordInput" id="keywordInput"
+            [(ngModel)]="terms.keywords" [disabled]="searching" autofocus/>
+        <div class="input-group-btn">
+          <!-- prevent searching if input is empty or we're already searching -->
+          <button class="btn btn-primary" type="submit" [disabled]="!terms.keywords || searching">
+            <i class="spinner rotating" [hidden]="!searching"></i>
+            <span>{{searching ? 'Searching...' : 'Find'}}</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
-<div class="container" id="anchor-point">
-  <main>
-    <!-- SEARCH RESULTS TEMPLATE -->
-    <section class="add-spacer" *ngIf="ranSearch">
-      <h2 class="search-results__title" *ngIf="ranSearch && results && count > 0">Showing {{count}} Disposition<span *ngIf="count != 1">s</span></h2>
-      <section class="card">
-        <table class="table table-sm">
-          <thead>
-            <tr>
-               <th>Import?</th>
-               <th>CL File</th>
-               <th>Purpose</th>
-               <th>SubPurp</th>
-               <th>DIP</th>
-               <th>RBI</th>
-               <th>Location</th>
-               <th>Status</th>
-               <th>Type</th>
-               <th>SubType</th>
-            </tr>
-          </thead>
-          <tbody *ngIf="results && groupByResults">
-            <tr *ngFor="let item of groupByResults">
-              <td *ngIf="!item.isImported">
-                <span class="import-link" (click)="importProject(item)" title="Import this item"><i class="material-icons">cloud_download</i></span>
-              </td>
-              <td *ngIf="item.isImported">
-                <span><i class="material-icons" title="Already imported">cloud_done</i></span>
-              </td>
-              <td>{{item.properties.CROWN_LANDS_FILE}}</td>
-              <td>{{item.properties.TENURE_PURPOSE}}</td>
-              <td>{{item.properties.TENURE_SUBPURPOSE}}</td>
-              <td>{{item.properties.DISPOSITION_TRANSACTION_SID}}</td>
-              <td>{{item.properties.RESPONSIBLE_BUSINESS_UNIT}}</td>
-              <td>{{item.properties.TENURE_LOCATION}}</td>
-              <td>{{item.properties.TENURE_STATUS}}</td>
-              <td>{{item.properties.TENURE_TYPE}}</td>
-              <td>{{item.properties.TENURE_SUBTYPE}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section class="search-results__no-results" *ngIf="results && results.length < 1" >
-        <h2>No Applications Found</h2>
-        <p class="mb-0">Sorry, we were unable to locate any applications matching your search criteria.</p>
-      </section>
-
-      <div class="search-results__footer mt-3" *ngIf="ranSearch && noMoreResults">
-        <button class="btn content-btn-alt" disabled>No More Results</button>
-      </div>
-
-      <div class="search-results__footer mt-3" *ngIf="ranSearch && results && results.length > 0 && !noMoreResults">
-        <button class="btn content-btn-alt" (click)="loadMore()">Show More</button>
-      </div>
-
-      <h2 class="search-results__title" *ngIf="ranSearch && results && results.length > 0">Showing {{results.length}} out of {{count}} Document<span *ngIf="count != 1">s</span></h2>
-    </section>
-
-  </main>
-  <section>
-    <div class="map-container" style="height: 800px; background-color: blue;">
-      <div class="map" id="map"></div>
-    </div>
-  </section>
+<div class="container">
+  <div class="search-results">
+    <h2 *ngIf="ranSearch && !searching && count == 0">
+      <strong>No result<span *ngIf="count != 1">s</span> found for "{{keywords.length > 0 ? keywords.join(', ') : 'unknown'}}"</strong>
+    </h2>
+    <h2 *ngIf="ranSearch && !searching && count > 0">
+      <strong>{{count}} result<span *ngIf="count != 1">s</span> found for "{{keywords.length > 0 ? keywords.join(', ') : 'unknown'}}"</strong>
+    </h2>
+    <table class="table" *ngIf="!searching && count > 0">
+      <thead>
+        <tr>
+          <th class="cl-file" name="Crowns Land File Number">CL File</th>
+          <th class="disp">Disp. ID</th>
+          <th class="client">Client</th>
+          <th class="purpose">Purpose/Subpurpose</th>
+          <th class="status">Status</th>
+          <th class="actions"></th>
+        </tr>
+      </thead>
+      <ng-template ngFor let-item [ngForOf]="groupByResults">
+        <tr class="app-details" *ngIf="item.loaded">
+          <td class="cl-file">
+            <span class="cl-arrow">{{item.properties.CROWN_LANDS_FILE}}</span>
+          </td>
+          <td>
+            <strong>{{item.properties.DISPOSITION_TRANSACTION_SID}}</strong>
+          </td>
+          <td [innerHTML]="item.app?.client ? (item.app.client | titlecase) : '<em>Client Not Selected</em>'"></td>
+          <td>
+            {{item.properties.TENURE_PURPOSE | titlecase}} / {{item.properties.TENURE_SUBPURPOSE | titlecase}}
+          </td>
+          <td>
+            {{item.properties.TENURE_STATUS | titlecase}}
+          </td>
+          <td class="actions">
+            <button class="btn btn-sm btn-primary" type="button" 
+              *ngIf="!item.app" 
+              (click)="importProject(item)">
+              <i class="material-icons">add</i>
+              Create
+            </button>
+            <div ngbDropdown *ngIf="item.app">
+              <button class="btn btn-sm btn-outline-primary" type="button" ngbDropdownToggle>
+                Actions
+              </button>
+              <div class="dropdown-menu" ngbDropdownMenu>
+                <button class="list-group-item list-group-item-action" type="button"
+                  [routerLink]="['/a', item.app._id]">
+                  <i class="material-icons">insert_drive_file</i>
+                  View Application
+                </button>
+                <button class="list-group-item list-group-item-action" type="button"
+                  [routerLink]="['/a', item.app._id, 'edit']">
+                  <i class="material-icons">edit</i>
+                  Edit Details
+                </button>
+                <button class="list-group-item list-group-item-action" type="button"
+                  [routerLink]="['/comments', item.app._id]">
+                  <i class="material-icons">mode_comment</i>
+                  Review Comments
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr class="app-comment-details" *ngIf="item.loaded">
+          <td colspan="6">
+            <span class="comment-info">
+              <span *ngIf="item.app?.numComments > 0">
+                <strong>
+                  <a [routerLink]="['/comments', item.app._id]">{{item.app.numComments}} comments</a>
+                </strong>
+                &nbsp;-&nbsp;
+              </span>
+              <span *ngIf="item.app?.cpStatus">
+                {{item.app.cpStatus}}
+              </span>
+              <span *ngIf="item.app?.currentPeriod">
+                &nbsp;-&nbsp; {{item.app.currentPeriod.startDate | date:'longDate'}} to {{item.app.currentPeriod.endDate | date:'longDate'}}
+              </span>
+              <em class="loading-comment-info" *ngIf="item.app">
+                Fetching Comment Info
+              </em>
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+    </table>
+  </div>
 </div>

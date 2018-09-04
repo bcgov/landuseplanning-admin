@@ -30,6 +30,7 @@ import { DocumentService } from 'app/services/document.service';
 import { DecisionService } from 'app/services/decision.service';
 import { UserService } from 'app/services/user.service';
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
+import { ConfigService } from 'app/services/config.service';
 
 // feature modules
 import { ApplicationsModule } from 'app/applications/applications.module';
@@ -80,7 +81,8 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
     DocumentService,
     DecisionService,
     UserService,
-    CanDeactivateGuard
+    CanDeactivateGuard,
+    ConfigService
   ],
   entryComponents: [
     ConfirmComponent,

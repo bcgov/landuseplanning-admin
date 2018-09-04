@@ -1,4 +1,6 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css"; // https://material.angular.io/guide/getting-started#step-4-include-a-theme
+// Required for Angular Material styling: (ref: https://material.angular.io/guide/theming)
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+
 @import "~assets/styles/abstracts/mixins.scss";
 @import "~assets/styles/themes/default.scss";
 @import "~assets/styles/base/helpers.scss";

@@ -1,29 +1,31 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/merge';
 
 import { ApiService } from './api';
-import { Search } from 'app/models/search';
-import { Feature } from 'app/models/feature';
+import { SearchResults } from 'app/models/search';
 import { Client } from 'app/models/client';
 
 @Injectable()
 export class SearchService {
   private clients: Array<Client> = null;
-  private search: Search = null;
-  private features: Array<Feature> = null;
+  private ClidSearch: SearchResults = null;
+  private DtidSearch: SearchResults = null;
 
   constructor(private api: ApiService) { }
 
-  // get clients by disposition ID (transaction ID)
-  getClientsByDispositionId(dispositionId: number, forceReload: boolean = false): Observable<Client[]> {
-    if (!forceReload && this.clients && this.clients.length > 0 && this.clients[0].DISPOSITION_TRANSACTION_SID === dispositionId) {
+  // get clients by Disposition Transaction ID
+  getClientsByDTID(dtid: number, forceReload: boolean = false): Observable<Client[]> {
+    if (!forceReload
+      && this.clients
+      && this.clients.length > 0
+      && this.clients[0].DISPOSITION_TRANSACTION_SID === dtid) {
       return Observable.of(this.clients);
     }
 
-    return this.api.getClientsInfoByDispositionId(dispositionId)
+    return this.api.getClientsByDTID(dtid)
       .map(res => {
         const clients = res.text() ? res.json() : [];
         clients.forEach((client, i) => {
@@ -42,45 +44,57 @@ export class SearchService {
       .catch(this.api.handleError);
   }
 
-  // get search results by CL file #
-  getByCLFile(clfile: string, forceReload: boolean = false): Observable<Search> {
-    if (!forceReload && this.search && this.search.features && this.search.features.length > 0 && this.search.features[0].properties
-      && this.search.features[0].properties.CROWN_LANDS_FILE === clfile) {
-      return Observable.of(this.search);
+  // get search results by array of CLIDs or DTIDs
+  getByClidDtid(keys: string[], forceReload: boolean = false): Observable<SearchResults> {
+    const observables = keys.map(key => { return this.getByCLID(key, forceReload); })
+      .concat(keys.map(key => { return this.getByDTID(+key, forceReload); }));
+    return Observable.of(new SearchResults()).merge(...observables);
+  }
+
+  // get search results by CL File #
+  getByCLID(clid: string, forceReload: boolean = false): Observable<SearchResults> {
+    if (!forceReload
+      && this.ClidSearch
+      && this.ClidSearch.features
+      && this.ClidSearch.features.length > 0
+      && this.ClidSearch.features[0].properties
+      && this.ClidSearch.features[0].properties.CROWN_LANDS_FILE === clid) {
+      return Observable.of(this.ClidSearch);
     }
 
-    return this.api.getBCGWCrownLands(clfile)
+    return this.api.getAppsByCLID(clid)
       .map(res => {
-        return res.text() ? new Search(res.json()) : null;
+        return res.text() ? new SearchResults(res.json()) : null;
       })
-      .map((search: Search) => {
+      .map((search: SearchResults) => {
         if (!search) { return null; }
 
-        this.search = search;
-        return this.search;
+        this.ClidSearch = search;
+        return this.ClidSearch;
       })
       .catch(this.api.handleError);
   }
 
-  // get features by disposition ID (transaction ID)
-  getByDTID(dtid: number, forceReload: boolean = false): Observable<Feature[]> {
-    if (!forceReload && this.features && this.features.length > 0 && this.features[0].properties
-      && this.features[0].properties.DISPOSITION_TRANSACTION_SID === dtid) {
-      // console.log('cached features =', this.features);
-      return Observable.of(this.features);
+  // get search results by Disposition Transaction ID
+  getByDTID(dtid: number, forceReload: boolean = false): Observable<SearchResults> {
+    if (!forceReload
+      && this.DtidSearch
+      && this.DtidSearch.features
+      && this.DtidSearch.features.length > 0
+      && this.DtidSearch.features[0].properties
+      && this.DtidSearch.features[0].properties.DISPOSITION_TRANSACTION_SID === dtid) {
+      return Observable.of(this.DtidSearch);
     }
 
-    return this.api.getBCGWDispositionByTransactionId(dtid)
+    return this.api.getAppsByDTID(dtid)
       .map(res => {
-        const results = res.text() ? new Search(res.json()) : null;
-        return results.features;
+        return res.text() ? new SearchResults(res.json()) : null;
       })
-      .map((features: Feature[]) => {
-        if (!features) { return null; }
+      .map((search: SearchResults) => {
+        if (!search) { return null; }
 
-        // console.log('new features =', features);
-        this.features = features;
-        return this.features;
+        this.DtidSearch = search;
+        return this.DtidSearch;
       })
       .catch(this.api.handleError);
   }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import * as _ from 'lodash';
 
 import { SearchService } from 'app/services/search.service';
@@ -34,7 +34,7 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
 
   ngOnInit() {
     const self = this;
-    this.searchService.getClientsByDispositionId(this.dispositionId)
+    this.searchService.getClientsByDTID(this.dispositionId)
       .subscribe(
         data => {
           _.each(data, function (i) {
