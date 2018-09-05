@@ -29,7 +29,7 @@ const routes: Routes = [
   {
     // default route
     path: '',
-    component: HomeComponent
+    component: SearchComponent
   },
   {
     // wildcard route

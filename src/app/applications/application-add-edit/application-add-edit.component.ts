@@ -99,9 +99,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
             }
             this.application.publishDate = moment(this.application.publishDate).format();
           } else {
-            // application not found --> navigate back to application list
+            // application not found --> navigate back to search
             alert('Uh-oh, couldn\'t load application');
-            this.router.navigate(['/applications']);
+            this.router.navigate(['/search']);
           }
         }
       );
@@ -390,10 +390,10 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
                 .takeUntil(this.ngUnsubscribe)
                 .subscribe(
                   application => {
-                    // delete succeeded --> navigate back to application list
+                    // delete succeeded --> navigate back to search
                     this.application = null;
                     this.allowDeactivate = true;
-                    this.router.navigate(['/applications']);
+                    this.router.navigate(['/search']);
                   },
                   error => {
                     console.log('error =', error);

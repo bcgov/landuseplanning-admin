@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { SearchTerms } from 'app/models/search';
 import { ApplicationService } from 'app/services/application.service';
 import { SearchService } from 'app/services/search.service';
+import { ApiService } from 'app/services/api';
 
 @Component({
   selector: 'app-search',
@@ -32,10 +33,16 @@ export class SearchComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private _changeDetectionRef: ChangeDetectorRef
+    private _changeDetectionRef: ChangeDetectorRef,
+    // private authenticationService: AuthenticationService,
+    private api: ApiService
   ) { }
 
   ngOnInit() {
+    // if we're not logged in, redirect
+    if (!this.api.ensureLoggedIn()) {
+      this.router.navigate(['/login']);
+    }
     // get search terms from route
     this.route.params
       .takeUntil(this.ngUnsubscribe)

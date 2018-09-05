@@ -38,9 +38,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           if (data.application) {
             this.application = data.application;
           } else {
-            // application not found --> navigate back to application list
+            // application not found --> navigate back to search
             alert('Uh-oh, couldn\'t load application');
-            this.router.navigate(['/applications']);
+            this.router.navigate(['/search']);
           }
         }
       );
