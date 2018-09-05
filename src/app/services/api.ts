@@ -9,6 +9,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
 import * as FileSaver from 'file-saver';
+import { tokenNotExpired } from 'angular2-jwt';
 
 import { Application } from 'app/models/application';
 // import { Organization } from 'app/models/organization';
@@ -88,7 +89,7 @@ export class ApiService {
   }
 
   ensureLoggedIn() {
-    if (!this.token) {
+    if (!this.token || !tokenNotExpired('currentUser')) {
       console.log('not logged in, redirecting');
       this.router.navigate(['login']);
       return false;
