@@ -168,8 +168,16 @@ export class ApiService {
       'postID',
       'publishDate',
       'region',
-      'tantalisID'
-    ];
+      'tantalisID',
+      'purpose',
+      'subpurpose',
+      'type',
+      'subtype',
+      'status',
+      'tenureStage',
+      'location',
+      'businessUnit'
+  ];
     const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
@@ -194,7 +202,15 @@ export class ApiService {
       'region',
       'status',
       'subpurpose',
-      'tantalisID'
+      'tantalisID',
+      'purpose',
+      'subpurpose',
+      'type',
+      'subtype',
+      'status',
+      'tenureStage',
+      'location',
+      'businessUnit'
     ];
     // NB: API uses 'tantalisId' (even though elsewhere it's 'tantalisID')
     const queryString = `application?isDeleted=false&tantalisId=${tantalisID}&fields=${this.buildValues(fields)}`;
@@ -251,6 +267,39 @@ export class ApiService {
     queryString = queryString.replace(/\|$/, '');
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.put(this.pathAPI, queryString, app, { headers: headers });
+  }
+
+  //
+  // Features
+  //
+  getFeaturesByTantalisId(tantalisID: number) {
+    const fields = [
+      'type',
+      'tags',
+      'geometry',
+      'geometryName',
+      'properties',
+      'isDeleted',
+      'applicationID'
+    ];
+    const queryString = `feature?isDeleted=false&tantalisId=${tantalisID}&fields=${this.buildValues(fields)}`;
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  getFeaturesByApplicationId(applicationId: string) {
+    const fields = [
+      'type',
+      'tags',
+      'geometry',
+      'geometryName',
+      'properties',
+      'isDeleted',
+      'applicationID'
+    ];
+    const queryString = `feature?isDeleted=false&applicationId=${applicationId}&fields=${this.buildValues(fields)}`;
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
   //
