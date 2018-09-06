@@ -58,7 +58,7 @@
               </li>
               <li class="pt-0">
                 <span class="name">Region</span>
-                <span class="value">{{applicationService.getRegionString(application.region) || '-'}}</span>
+                <span class="value">{{applicationService.getRegionString(applicationService.getRegionCode(application.businessUnit)) || '-'}}</span>
               </li>
               <li>
                 <span class="name">Location</span>
