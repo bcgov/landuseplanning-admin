@@ -5,6 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
+import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
@@ -98,6 +99,9 @@ export class ApplicationService {
           return Observable.of([] as Application[]);
         }
 
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
         // replace \\n (JSON format) with newlines in each application
         applications.forEach((application, i) => {
           if (applications[i].description) {
@@ -119,8 +123,13 @@ export class ApplicationService {
             .then(periods => {
               const cp = this.commentPeriodService.getCurrent(periods);
               applications[i].currentPeriod = cp;
-              // derive comment period status for app list display + sorting
+              // derive comment period status for display
               applications[i]['cpStatus'] = this.commentPeriodService.getStatus(cp);
+              // derive days remaining for display
+              // use moment to handle Daylight Saving Time changes
+              if (cp && this.commentPeriodService.isOpen(cp)) {
+                applications[i].currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
+              }
             })
           );
         });
@@ -160,7 +169,7 @@ export class ApplicationService {
                 }
               });
 
-              // derive application status for app list display + sorting
+              // derive application status for display
               application['appStatus'] = this.getStatusString(application.status);
             })
           );
@@ -227,6 +236,9 @@ export class ApplicationService {
   private _getApplicationData(application: Application, forceReload: boolean): Promise<Application> {
     if (!application) { return Promise.resolve(null); }
 
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
     // replace \\n (JSON format) with newlines
     if (application.description) {
       application.description = application.description.replace(/\\n/g, '\n');
@@ -251,8 +263,13 @@ export class ApplicationService {
       .then(periods => {
         const cp = this.commentPeriodService.getCurrent(periods);
         application.currentPeriod = cp;
-        // derive comment period status for app list display + sorting
+        // derive comment period status for display
         application['cpStatus'] = this.commentPeriodService.getStatus(cp);
+        // derive days remaining for display
+        // use moment to handle Daylight Saving Time changes
+        if (cp && this.commentPeriodService.isOpen(cp)) {
+          application.currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
+        }
       })
     );
 
@@ -284,7 +301,7 @@ export class ApplicationService {
           }
         });
 
-        // derive application status for app list display + sorting
+        // derive application status for display
         application['appStatus'] = this.getStatusString(application.status);
       })
     );
@@ -293,7 +310,7 @@ export class ApplicationService {
       this.application = application;
       return this.application;
     });
-}
+  }
 
   // create new application
   add(item: any): Observable<Application> {
