@@ -7,7 +7,7 @@ import { OrderByPipe } from 'app/pipes/order-by.pipe';
 import { NewlinesPipe } from 'app/pipes/newlines.pipe';
 import { PublishedPipe } from 'app/pipes/published.pipe';
 import { ObjectFilterPipe } from 'app/pipes/object-filter.pipe';
-
+import { VarDirective } from 'app/utils/ng-var.directive';
 import { FileUploadComponent } from 'app/file-upload/file-upload.component';
 
 @NgModule({
@@ -21,6 +21,7 @@ import { FileUploadComponent } from 'app/file-upload/file-upload.component';
     NewlinesPipe,
     PublishedPipe,
     ObjectFilterPipe,
+    VarDirective,
     FileUploadComponent
   ],
   exports: [
@@ -29,6 +30,7 @@ import { FileUploadComponent } from 'app/file-upload/file-upload.component';
     OrderByPipe,
     NewlinesPipe,
     PublishedPipe,
+    VarDirective,
     FileUploadComponent
   ]
 })

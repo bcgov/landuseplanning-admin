@@ -1,37 +1,6 @@
 <!-- MAP THUMBNAIL -->
-<section class="map-thumbnail card p-0">
+<div class="map-thumbnail">
     <div class="map-container">
         <div class="map" id="map"></div>
     </div>
-</section>
-
-<!-- COMMENTING INFO -->
-<section class="comment-status card bg-light" *ngIf="application">
-    <h4 class="title mb-0">{{commentPeriodService.getStatus(application.currentPeriod)}}</h4>
-    <div class="mt-1" *ngIf="application.currentPeriod">
-        <span>{{application.currentPeriod.startDate | date:'mediumDate'}} - {{application.currentPeriod.endDate | date:'mediumDate'}}</span>
-        <span class="badge badge-dark" *ngIf="application.currentPeriod.daysRemaining">
-          {{application.currentPeriod.daysRemaining + (application.currentPeriod.daysRemaining === 1 ? ' Day ' : ' Days ') + 'Remaining'}}
-        </span>
-    </div>
-    <div class="comment-status__actions mt-4">
-        <!-- prevent navigation if application hasn't been created yet -->
-        <button type="button" class="btn btn-light slide-r-btn" [routerLink]="['/periods', application._id]" [disabled]="application._id === '0'">
-            <span>Click to Modify</span>
-            <i class="material-icons">arrow_forward</i>
-        </button>
-    </div>
-</section>
-
-<!-- COMMENTS INFO -->
-<section class="comment-count card bg-light" *ngIf="application">
-    <h4 class="title mb-3">Comments Received</h4>
-    <span class="badge badge-dark">{{numComments}}</span>
-    <div class="comment-status__actions mt-4">
-        <!-- prevent navigation if application hasn't been created yet -->
-        <button type="button" class="btn btn-light slide-r-btn" [routerLink]="['/comments', application._id]" [disabled]="application._id === '0'">
-            <span>Click to Review</span>
-            <i class="material-icons">arrow_forward</i>
-        </button>
-    </div>
-</section>
+</div>

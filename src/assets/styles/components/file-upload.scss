@@ -32,14 +32,19 @@
   }
 
   &__prompt {
-    margin-top: 0.8rem;
+    margin-top: 1.2rem;
     display: inline-block;
-    // font-size: 0.9375rem;
-    // font-weight: 700;
+    color: #007bff;
+    font-size: 0.875rem;
+    font-weight: 700;
 
     &-icon {
       margin-top: -0.2rem;
       vertical-align: middle;
+    }
+
+    strong {
+      color: #007bff;
     }
 
     &-msg {
@@ -55,7 +60,7 @@
     }
 
     &__prompt {
-      margin-top: 1.5rem;
+      margin-top: 1.65rem;
 
       &-msg {
         display: inline;

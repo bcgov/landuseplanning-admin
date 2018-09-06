@@ -19,6 +19,7 @@ export interface DataModel {
 // NOTE: dialog components must not implement OnDestroy
 //       otherwise they don't return a result
 export class SelectOrganizationComponent extends DialogComponent<DataModel, string> implements DataModel, OnInit {
+  public isLoading = true;
   public dispositionId: number = null;
   public clients: Array<Client> = [];
   public selectedClients: Array<Client> = [];
@@ -44,12 +45,15 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
             //   self.selectedClients = i;
             // }
           });
+          this.isLoading = false;
         },
         error => {
           // if 403, redir to login page
-          if (error.startsWith('403')) { this.router.navigate(['/login']); }
+          if (error && error.startsWith && error.startsWith('403')) { this.router.navigate(['/login']); }
           alert('Error loading clients');
-        });
+          this.isLoading = false;
+        }
+      );
   }
 
   toggleClient(client: Client) {

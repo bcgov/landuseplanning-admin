@@ -1,8 +1,8 @@
 <div class="search-container">
   <div class="container">
-    <h1>Find Crown Lands Applications</h1>
+    <h1>Find Crown Land Applications</h1>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
-      <label for="keywordInput">Enter Crown Land File or Disposition Numbers</label>
+      <label for="keywordInput">Enter Crown Land File or Disposition Transaction number</label>
       <div class="input-group main-search-field">
         <input class="form-control" type="text" name="keywordInput" id="keywordInput"
             [(ngModel)]="terms.keywords" [disabled]="searching" autofocus/>
@@ -29,9 +29,9 @@
     <table class="table" *ngIf="!searching && count > 0">
       <thead>
         <tr>
-          <th class="cl-file" name="Crowns Land File Number">CL File</th>
+          <th class="cl-file" name="Crowns land File Number">CL File</th>
           <th class="disp">Disp. ID</th>
-          <th class="client">Client</th>
+          <th class="client">Applicant(s)</th>
           <th class="purpose">Purpose/Subpurpose</th>
           <th class="status">Status</th>
           <th class="actions"></th>
@@ -53,9 +53,7 @@
             {{item.prcStatus || 'Unknown'}}
           </td>
           <td class="actions">
-            <button class="btn btn-sm btn-primary" type="button" 
-              *ngIf="!item.app" 
-              (click)="importProject(item)">
+            <button class="btn btn-sm btn-primary" type="button" *ngIf="!item.app" (click)="importProject(item)">
               <i class="material-icons">add</i>
               Create
             </button>
@@ -64,18 +62,15 @@
                 Actions
               </button>
               <div class="dropdown-menu" ngbDropdownMenu>
-                <button class="list-group-item list-group-item-action" type="button"
-                  [routerLink]="['/a', item.app._id]">
+                <button class="list-group-item list-group-item-action" type="button" [routerLink]="['/a', item.app._id]">
                   <i class="material-icons">insert_drive_file</i>
                   View Application
                 </button>
-                <button class="list-group-item list-group-item-action" type="button"
-                  [routerLink]="['/a', item.app._id, 'edit']">
+                <button class="list-group-item list-group-item-action" type="button" [routerLink]="['/a', item.app._id, 'edit']">
                   <i class="material-icons">edit</i>
                   Edit Details
                 </button>
-                <button class="list-group-item list-group-item-action" type="button"
-                  [routerLink]="['/comments', item.app._id]">
+                <button class="list-group-item list-group-item-action" type="button" [routerLink]="['/comments', item.app._id]">
                   <i class="material-icons">mode_comment</i>
                   Review Comments
                 </button>
@@ -86,9 +81,9 @@
         <tr class="app-comment-details" *ngIf="item.loaded">
           <td colspan="6">
             <span class="comment-info">
-              <span *ngIf="item.app?.numComments > 0">
+              <span *ngIf="item.app && item.app['numComments'] > 0">
                 <strong>
-                  <a [routerLink]="['/comments', item.app._id]">{{item.app.numComments}} comments</a>
+                  <a [routerLink]="['/comments', item.app._id]">{{item.app['numComments']}} {{item.app['numComments'] === '1' ? 'comment' : 'comments'}}</a>
                 </strong>
                 &nbsp;-&nbsp;
               </span>
@@ -97,8 +92,8 @@
               </span>
               <span *ngIf="item.app?.currentPeriod">
                 &nbsp;-&nbsp; {{item.app.currentPeriod.startDate | date:'longDate'}} to {{item.app.currentPeriod.endDate | date:'longDate'}}
-                <span *ngIf="item.app.currentPeriod.daysRemaining">
-                  &nbsp;({{item.app.currentPeriod.daysRemaining + (item.app.currentPeriod.daysRemaining === 1 ? ' day ' : ' days ') + 'remaining'}})
+                <span *ngIf="item.app['daysRemaining']">
+                  &nbsp;({{item.app['daysRemaining'] + (item.app['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
                 </span>
               </span>
               <em class="loading-comment-info" *ngIf="item.app">

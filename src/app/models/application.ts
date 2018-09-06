@@ -47,10 +47,10 @@ export class Application {
   isPublished = false; // depends on tags; see below
 
   // associated data
-  documents: Array<Document>;
-  currentPeriod: CommentPeriod;
-  decision: Decision;
-  features: Array<Feature>;
+  documents: Array<Document> = [];
+  currentPeriod: CommentPeriod = null;
+  decision: Decision = null;
+  features: Array<Feature> = [];
 
   constructor(obj?: any) {
     this._id                     = obj && obj._id                     || null;
@@ -92,10 +92,5 @@ export class Application {
         }
       });
     }
-
-    this.documents = [];
-    this.currentPeriod = null;
-    this.decision = null;
-    this.features = [];
   }
 }

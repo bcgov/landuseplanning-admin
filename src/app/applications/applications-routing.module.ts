@@ -26,9 +26,7 @@ const routes: Routes = [
     resolve: {
       application: ApplicationDetailResolver
     },
-    canDeactivate: [CanDeactivateGuard],
-    // always run resolvers -- to allow reloading same route
-    runGuardsAndResolvers: 'always'
+    canDeactivate: [CanDeactivateGuard]
   }
 ];
 

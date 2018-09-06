@@ -22,5 +22,5 @@ app-header {
   @include flex-direction(column);
   position: relative;
   margin-top: 68px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
