@@ -13,7 +13,7 @@ import { DocumentService } from './document.service';
 import { CommentPeriodService } from './commentperiod.service';
 import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
-import { SearchService } from './search.service';
+import { FeatureService } from './feature.service';
 
 @Injectable()
 export class ApplicationService {
@@ -54,7 +54,7 @@ export class ApplicationService {
     private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
     private decisionService: DecisionService,
-    private searchService: SearchService
+    private featureService: FeatureService
   ) {
     // display strings
     this.applicationStatuses[this.ABANDONED] = 'Application Abandoned';
@@ -147,10 +147,10 @@ export class ApplicationService {
 
         // now get the referenced data (features) for each application
         applications.forEach((application, i) => {
-          promises.push(this.searchService.getByDTID(application.tantalisID)
+          promises.push(this.featureService.getByApplicationId(application._id)
             .toPromise()
-            .then(search => {
-              application.features = search && search.features;
+            .then(features => {
+              application.features = features;
 
               // calculate Total Area (hectares) from all features
               application.areaHectares = 0;
@@ -159,18 +159,6 @@ export class ApplicationService {
                   application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
                 }
               });
-
-              // cache application properties from first feature
-              if (application.features && application.features.length > 0) {
-                application.purpose = application.features[0].properties.TENURE_PURPOSE;
-                application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
-                application.type = application.features[0].properties.TENURE_TYPE;
-                application.subtype = application.features[0].properties.TENURE_SUBTYPE;
-                application.status = this.getStatusCode(application.features[0].properties.TENURE_STATUS);
-                application.tenureStage = application.features[0].properties.TENURE_STAGE;
-                application.location = application.features[0].properties.TENURE_LOCATION;
-                application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
-              }
 
               // derive application status for app list display + sorting
               application['appStatus'] = this.getStatusString(application.status);
@@ -284,30 +272,17 @@ export class ApplicationService {
     );
 
     // get the referenced data (features)
-    promises.push(this.searchService.getByDTID(application.tantalisID, forceReload)
+    promises.push(this.featureService.getByApplicationId(application._id)
       .toPromise()
-      .then(search => {
-        application.features = search && search.features;
-
+      .then(features => {
+        application.features = features;
         // calculate Total Area (hectares) from all features
         application.areaHectares = 0;
-        _.each(application.features, function (f) {
+        _.each(features, function (f) {
           if (f['properties']) {
             application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
           }
         });
-
-        // cache application properties from first feature
-        if (application.features && application.features.length > 0) {
-          application.purpose = application.features[0].properties.TENURE_PURPOSE;
-          application.subpurpose = application.features[0].properties.TENURE_SUBPURPOSE;
-          application.type = application.features[0].properties.TENURE_TYPE;
-          application.subtype = application.features[0].properties.TENURE_SUBTYPE;
-          application.status = this.getStatusCode(application.features[0].properties.TENURE_STATUS);
-          application.tenureStage = application.features[0].properties.TENURE_STAGE;
-          application.location = application.features[0].properties.TENURE_LOCATION;
-          application.businessUnit = application.features[0].properties.RESPONSIBLE_BUSINESS_UNIT;
-        }
 
         // derive application status for app list display + sorting
         application['appStatus'] = this.getStatusString(application.status);

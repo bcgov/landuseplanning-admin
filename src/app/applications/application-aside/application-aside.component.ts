@@ -11,7 +11,7 @@ import { Comment } from 'app/models/comment';
 import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { CommentService } from 'app/services/comment.service';
-import { SearchService } from '../../services/search.service';
+import { FeatureService } from 'app/services/feature.service';
 
 @Component({
   selector: 'app-application-aside',
@@ -35,7 +35,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
     private api: ApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private searchService: SearchService,
+    private featureService: FeatureService,
     public commentPeriodService: CommentPeriodService, // used in template
     private commentService: CommentService
   ) { }
@@ -161,11 +161,10 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
 
       // NB: always reload results to reduce chance of race condition
       //     with drawing map and features
-      this.searchService.getByDTID(this.application.tantalisID)
+      this.featureService.getByApplicationId(this.application._id)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          search => {
-            const features = search && search.features;
+          features => {
             try {
               _.each(features, function (feature) {
                 const f = JSON.parse(JSON.stringify(feature));
@@ -195,11 +194,10 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   public drawMap(app: Application) {
     if (app.tantalisID) {
       const self = this;
-      this.searchService.getByDTID(app.tantalisID)
+      this.featureService.getByDTID(app.tantalisID)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          search => {
-            const features = search && search.features;
+          features => {
             if (self.fg) {
               _.each(self.layers, function (layer) {
                 self.map.removeLayer(layer);
