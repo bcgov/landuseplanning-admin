@@ -2,7 +2,6 @@ import { Component, OnInit, OnChanges, OnDestroy, Input, SimpleChanges } from '@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import * as moment from 'moment';
 import * as L from 'leaflet';
 import * as _ from 'lodash';
 
@@ -21,8 +20,7 @@ import { FeatureService } from 'app/services/feature.service';
 
 export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   @Input() application: Application = null;
-  public daysRemaining = '-';
-  public numComments = '-';
+  public numComments = ' ';
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fg: L.FeatureGroup;
   public map: L.Map;
@@ -126,15 +124,6 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
 
   private updateData() {
     if (this.application) {
-      // get comment period days remaining
-      if (this.application._id !== '0' && this.application.currentPeriod) {
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        // use moment to handle Daylight Saving Time changes
-        const days = moment(this.application.currentPeriod.endDate).diff(moment(today), 'days') + 1;
-        this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
-      }
-
       // get number of pending comments
       if (this.application._id !== '0') {
         this.commentService.getAllByApplicationId(this.application._id)

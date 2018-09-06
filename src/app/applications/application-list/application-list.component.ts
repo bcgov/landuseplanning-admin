@@ -3,7 +3,6 @@ import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
@@ -91,16 +90,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.showOnlyOpenApps = (this.paramMap.get('showOnlyOpenApps') === 'true');
     this.column = this.paramMap.get('col'); // == null if col isn't present
     this.direction = +this.paramMap.get('dir'); // == 0 if dir isn't present
-  }
-
-  public getDaysRemaining(item: Application): string {
-    if (item._id !== '0' && item.currentPeriod) {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      // use moment to handle Daylight Saving Time changes
-      const days = moment(item.currentPeriod.endDate).diff(moment(today), 'days') + 1;
-      return (days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining');
-    }
   }
 
   ngOnDestroy() {
