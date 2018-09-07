@@ -145,10 +145,12 @@ export class CommentPeriodService {
       .catch(this.api.handleError);
   }
 
-  // returns first published period - multiple comment periods are currently not suported
+  // returns current (latest) published period
+  // assumes if there's an open period, there isn't also future one
   getCurrent(periods: CommentPeriod[]): CommentPeriod {
     const published = periods.filter(period => period.isPublished);
-    return (published.length > 0) ? published[0] : null;
+    const sorted = published.sort((a, b) => a.startDate < b.startDate ? 1 : 0);
+    return (sorted.length > 0) ? sorted[0] : null;
   }
 
   // NB: see also ManageCommentPeriodsComponent.getStatus()
