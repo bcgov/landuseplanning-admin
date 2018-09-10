@@ -15,11 +15,12 @@ export class FeatureService {
   getByDTID(tantalisId: number): Observable<Feature[]> {
     return this.api.getFeaturesByTantalisId(tantalisId)
       .map(res => {
-        const feature = res.text() ? res.json() : [];
-        feature.forEach((feature, index) => {
-          feature[index] = new Feature(feature);
+        const features = res.text() ? res.json() : [];
+        const farray = [];
+        features.forEach((feature, index) => {
+          farray[index] = new Feature(feature);
         });
-        return feature;
+        return farray;
       })
       .catch(this.api.handleError);
   }
@@ -27,11 +28,12 @@ export class FeatureService {
   getByApplicationId(applicationId: string): Observable<Feature[]> {
     return this.api.getFeaturesByApplicationId(applicationId)
       .map(res => {
-        const feature = res.text() ? res.json() : [];
-        feature.forEach((feature, index) => {
-          feature[index] = new Feature(feature);
+        const features = res.text() ? res.json() : [];
+        const farray = [];
+        features.forEach((feature, index) => {
+          farray[index] = new Feature(feature);
         });
-        return feature;
+        return farray;
       })
       .catch(this.api.handleError);
   }
