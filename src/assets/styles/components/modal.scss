@@ -1,19 +1,19 @@
 .modal-header {
-    background-color: $white;
-    .modal-title {
-        font-weight: bold;
-    }
+  background-color: $white;
+  .modal-title {
+    font-weight: bold;
+  }
 }
 
 .modal-body {
-    background-color: $modal-bg;
-    textarea {
-        width: 100%;
-        height: 80px;
-        resize: none;
-    }
+  background-color: $modal-bg;
+  textarea {
+    width: 100%;
+    height: 80px;
+    resize: none;
+  }
 }
 
 .modal-footer {
-    background-color: $white;
+  background-color: $white;
 }
