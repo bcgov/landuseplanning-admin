@@ -101,61 +101,53 @@ export class ApplicationService {
 
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        // replace \\n (JSON format) with newlines in each application
-        applications.forEach((application, i) => {
-          if (applications[i].description) {
-            applications[i].description = applications[i].description.replace(/\\n/g, '\n');
-          }
-          if (applications[i].legalDescription) {
-            applications[i].legalDescription = applications[i].legalDescription.replace(/\\n/g, '\n');
-          }
-        });
-
         const promises: Array<Promise<any>> = [];
 
-        // FUTURE: get the organization here
+        applications.forEach((application) => {
+          // replace \\n (JSON format) with newlines in each application
+          if (application.description) {
+            application.description = application.description.replace(/\\n/g, '\n');
+          }
+          if (application.legalDescription) {
+            application.legalDescription = application.legalDescription.replace(/\\n/g, '\n');
+          }
 
-        // now get the current comment period for each application
-        applications.forEach((application, i) => {
-          promises.push(this.commentPeriodService.getAllByApplicationId(applications[i]._id)
+          // user-friendly application status
+          application['appStatus'] = this.getStatusString(this.getStatusCode(application.status));
+
+          // FUTURE: now get the organization
+
+          // NB: we don't get documents here
+
+          // now get the current comment period for each application
+          promises.push(this.commentPeriodService.getAllByApplicationId(application._id)
             .toPromise()
             .then(periods => {
               const cp = this.commentPeriodService.getCurrent(periods);
-              applications[i].currentPeriod = cp;
-              // derive comment period status for display
-              applications[i]['cpStatus'] = this.commentPeriodService.getStatus(cp);
+              application.currentPeriod = cp;
+              // user-friendly comment period status
+              application['cpStatus'] = this.commentPeriodService.getStatus(cp);
               // derive days remaining for display
               // use moment to handle Daylight Saving Time changes
               if (cp && this.commentPeriodService.isOpen(cp)) {
-                applications[i].currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
+                application.currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
               }
             })
           );
-        });
 
-        // now get the number of pending comments for each application
-        applications.forEach((application, i) => {
-          promises.push(this.commentService.getAllByApplicationId(applications[i]._id)
+          // now get the number of pending comments for each application
+          promises.push(this.commentService.getAllByApplicationId(application._id)
             .toPromise()
             .then(comments => {
               const pending = comments.filter(comment => this.commentService.isPending(comment));
-              applications[i]['numComments'] = pending.length.toString();
+              application['numComments'] = pending.length.toString();
             })
           );
-        });
 
-        // NOT NEEDED AT THIS TIME
-        // // now get the decision for each application
-        // applications.forEach((application, i) => {
-        //   promises.push(this.decisionService.getByApplicationId(applications[i]._id)
-        //     .toPromise()
-        //     .then(decision => applications[i].decision = decision)
-        //   );
-        // });
+          // NB: we don't get the decision here
 
-        // now get the referenced data (features) for each application
-        applications.forEach((application, i) => {
+          // TODO: we don't need to get the shapes (features) here... remove this code
+          // now get the referenced data (features) for each application
           promises.push(this.featureService.getByApplicationId(application._id)
             .toPromise()
             .then(features => {
@@ -168,9 +160,6 @@ export class ApplicationService {
                   application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
                 }
               });
-
-              // derive application status for display
-              application['appStatus'] = this.getStatusString(application.status);
             })
           );
         });
@@ -238,6 +227,7 @@ export class ApplicationService {
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const promises: Array<Promise<any>> = [];
 
     // replace \\n (JSON format) with newlines
     if (application.description) {
@@ -247,9 +237,10 @@ export class ApplicationService {
       application.legalDescription = application.legalDescription.replace(/\\n/g, '\n');
     }
 
-    const promises: Array<Promise<any>> = [];
+    // user-friendly application status
+    application['appStatus'] = this.getStatusString(this.getStatusCode(application.status));
 
-    // FUTURE: get the organization here
+    // FUTURE: now get the organization
 
     // get the documents
     promises.push(this.documentService.getAllByApplicationId(application._id)
@@ -263,7 +254,7 @@ export class ApplicationService {
       .then(periods => {
         const cp = this.commentPeriodService.getCurrent(periods);
         application.currentPeriod = cp;
-        // derive comment period status for display
+        // user-friendly comment period status
         application['cpStatus'] = this.commentPeriodService.getStatus(cp);
         // derive days remaining for display
         // use moment to handle Daylight Saving Time changes
@@ -300,9 +291,6 @@ export class ApplicationService {
             application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
           }
         });
-
-        // derive application status for display
-        application['appStatus'] = this.getStatusString(application.status);
       })
     );
 
