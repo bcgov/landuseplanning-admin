@@ -50,7 +50,7 @@
             {{item.properties.TENURE_PURPOSE | titlecase}} / {{item.properties.TENURE_SUBPURPOSE | titlecase}}
           </td>
           <td>
-            {{item.properties.TENURE_STATUS | titlecase}}
+            {{item.app?.appStatus || (item.properties.TENURE_STATUS | titlecase) || 'Unknown'}}
           </td>
           <td class="actions">
             <button class="btn btn-sm btn-primary" type="button" 
