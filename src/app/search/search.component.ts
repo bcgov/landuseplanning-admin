@@ -156,11 +156,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       item.subpurpose = item.properties.TENURE_SUBPURPOSE;
       item.type = item.properties.TENURE_TYPE;
       item.subtype = item.properties.TENURE_SUBTYPE;
-      item.status = this.applicationService.getStatusCode(item.properties.TENURE_STATUS);
+      item.status = item.properties.TENURE_STATUS;
       item.tenureStage = item.properties.TENURE_STAGE;
       item.location = item.properties.TENURE_LOCATION;
       item.businessUnit = item.properties.RESPONSIBLE_BUSINESS_UNIT;
-      item.region = this.applicationService.getRegionCode(item.businessUnit);
       // these are special - we will persist them to db as search keys
       item.cl_file = +item.properties.CROWN_LANDS_FILE; // NOTE: unary operator
       item.tantalisID = item.properties.DISPOSITION_TRANSACTION_SID;

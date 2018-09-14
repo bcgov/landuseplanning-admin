@@ -112,6 +112,9 @@ export class ApplicationService {
             application.legalDescription = application.legalDescription.replace(/\\n/g, '\n');
           }
 
+          // derive region code
+          application.region = this.getRegionCode(application.businessUnit);
+
           // user-friendly application status
           application['appStatus'] = this.getStatusString(this.getStatusCode(application.status));
 
@@ -236,6 +239,9 @@ export class ApplicationService {
     if (application.legalDescription) {
       application.legalDescription = application.legalDescription.replace(/\\n/g, '\n');
     }
+
+    // derive region code
+    application.region = this.getRegionCode(application.businessUnit);
 
     // user-friendly application status
     application['appStatus'] = this.getStatusString(this.getStatusCode(application.status));
