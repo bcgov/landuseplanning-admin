@@ -85,6 +85,8 @@ export class SearchComponent implements OnInit, OnDestroy {
             const groupedFeatures = _.groupBy(search.features, 'properties.DISPOSITION_TRANSACTION_SID');
             const self = this; // for closure below
             _.each(groupedFeatures, function (value: any, key: string) {
+              // display PRC status from properties
+              value[0].prcStatus = self.applicationService.getStatusString(self.applicationService.getStatusCode(value[0].properties.TENURE_STATUS));
               // ensure result is not already in list
               if (!_.find(self.groupByResults, result => { return result.properties.DISPOSITION_TRANSACTION_SID === +key; })) {
                 // if app is in PRC, query application data to update UI
@@ -96,6 +98,8 @@ export class SearchComponent implements OnInit, OnDestroy {
                       application => {
                         value[0].loaded = true;
                         if (application) {
+                          // display PRC status from application
+                          value[0].prcStatus = application['appStatus'];
                           value[0].app = application;
                           // Force change detection since we changed a bound property after the normal check cycle and outside anything
                           // that would trigger a CD cycle - this will eliminate the error we get when running in dev mode.
