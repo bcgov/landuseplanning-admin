@@ -38,7 +38,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
     return this.applicationService.getById(appId, true)
       .catch(error => {
         // if 403, redir to login page
-        if (error && error.startsWith && error.startsWith('403')) { this.router.navigate(['/login']); }
+        if (error && error.status === 403) { this.router.navigate(['/login']); }
         return Observable.of(null as Application);
       });
   }

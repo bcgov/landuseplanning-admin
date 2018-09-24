@@ -49,7 +49,7 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
         },
         error => {
           // if 403, redir to login page
-          if (error && error.startsWith && error.startsWith('403')) { this.router.navigate(['/login']); }
+          if (error && error.status === 403) { this.router.navigate(['/login']); }
           alert('Error loading clients');
           this.isLoading = false;
         }
