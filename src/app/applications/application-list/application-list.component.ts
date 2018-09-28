@@ -54,12 +54,12 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.applicationService.getAll()
       .takeUntil(this.ngUnsubscribe)
       .subscribe(applications => {
-        this.applications = applications;
         this.loading = false;
+        this.applications = applications;
       }, error => {
+        this.loading = false;
         console.log(error);
         alert('Uh-oh, couldn\'t load applications');
-        this.loading = false;
         // applications not found --> navigate back to home
         this.router.navigate(['/']);
       });

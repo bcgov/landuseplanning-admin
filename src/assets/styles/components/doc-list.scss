@@ -1,9 +1,14 @@
+$doc-list-link-color: #007bff;
+
 // Document List Shared Styling
 .doc-list {
+  margin: 0;
+  padding: 0;
+
   li {
     @include flex-box();
     @include flex-direction(row);
-    background: #fff;
+    background: #f7f8fa;
 
     + li {
       margin-top: 2px;
@@ -11,25 +16,43 @@
   }
 
   .cell {
-    padding: 0.5rem;
+    padding: 0.25rem;
     overflow: hidden;
     text-overflow: ellipsis;
 
     // Text Content
     &__txt-content {
-      margin-top: 0.3rem;
+      margin-top: 0.5rem;
       display: inline-block;
       white-space: nowrap;
+
+      a {
+        color: $doc-list-link-color;
+        cursor: pointer;
+
+        &:hover {
+          color: $doc-list-link-color;
+          text-decoration: underline;
+        }
+      }
     }
 
     // Icon Column
     &.icon {
       @include flex(0 0 auto);
+      padding-left: 0.75rem;
       padding-right: 0;
-      color: #777;
   
       i {
-        margin-top: 0.2rem;
+        margin-top: 0.5rem;
+        font-size: 1.35rem;
+        color: #999;
+        cursor: default;
+
+        &.link {
+          color: $doc-list-link-color;
+          cursor: pointer;
+        }
       }
     }
   
@@ -42,21 +65,33 @@
     // Actions Column
     &.actions {
       @include flex(0 0 auto);
+    }
+  }
 
-      [class^="btn"] {
-        height: 2rem;
-        padding-right: 0.25rem;
-        padding-left: 0.25rem;
-        border: transparent;
-    
-        &:not(:hover) {
-          background: transparent;
-        }
-    
-        &:disabled {
-          opacity: 0.2;
-        }
-      }
+  .no-results {
+    padding: 0.75rem;
+    font-size: 0.9375rem;
+  }
+}
+
+// Document List Publish Actions
+.publish-actions {
+  @include flex(0 0 auto);
+  padding-right: 0;
+  overflow: visible;
+
+  .btn {
+    height: 2rem;
+    width: 5.5rem;
+    font-size: 0.75rem;
+
+    &.active {
+      box-shadow: none;
+    }
+
+    // TODO: remove when we the toggle buttons here to a radio group
+    &:disabled {
+      opacity: 1;
     }
   }
 }

@@ -302,6 +302,11 @@ export class ApiService {
     return this.get(this.pathAPI, queryString, { headers: headers });
   }
 
+  deleteFeaturesByApplicationId(applicationId: string) {
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.delete(this.pathAPI, 'feature/?applicationID=' + applicationId, null, { headers: headers });
+  }
+
   //
   // Organizations
   //

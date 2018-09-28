@@ -1,7 +1,7 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Select Organization</h4>
+        <h4 class="modal-title">Select Applicant(s)</h4>
         <button type="button" class="close" aria-label="Close" (click)="close()">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -11,7 +11,7 @@
           <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th scope="col">Client Name</th>
+                  <th scope="col">Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -30,8 +30,12 @@
       </div>
   
       <div class="modal-footer">
+        <!-- NEW CODE
+          <button type="button" class="btn btn-primary" *ngIf="isLoading" disabled><i class="spinner rotating"></i>Loading</button>
+          <button type="button" class="btn btn-primary" *ngIf="!isLoading" (click)="save()">Ok</button>
+        -->
         <button type="button" class="btn btn-primary" (click)="save()">Ok</button>
-        <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
+        <button type="button" class="btn btn-light" (click)="close()">Cancel</button>
       </div>
     </div>
   </div>

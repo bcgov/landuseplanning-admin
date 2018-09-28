@@ -18,14 +18,14 @@ export class CommentPeriod {
   isPublished = false;
 
   constructor(obj?: any) {
-    this._id          = obj && obj._id          || null;
-    this._addedBy     = obj && obj._addedBy     || null;
-    this._application = obj && obj._application || null;
-    this.code         = obj && obj.code         || null;
-    this.startDate    = obj && obj.startDate    || null;
-    this.endDate      = obj && obj.endDate      || null;
-    this.description  = obj && obj.description  || null;
-    this.internal     = obj && obj.internal     || new Internal();
+    this._id          = obj && obj._id                 || null;
+    this._addedBy     = obj && obj._addedBy            || null;
+    this._application = obj && obj._application        || null;
+    this.code         = obj && obj.code                || null;
+    this.startDate    = obj && new Date(obj.startDate) || null;
+    this.endDate      = obj && new Date(obj.endDate)   || null;
+    this.description  = obj && obj.description         || null;
+    this.internal     = obj && obj.internal            || new Internal();
 
     // Wrap isPublished around the tags we receive for this object.
     if (obj && obj.tags) {

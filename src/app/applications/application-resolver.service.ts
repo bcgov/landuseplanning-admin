@@ -18,14 +18,27 @@ export class ApplicationDetailResolver implements Resolve<Application> {
 
     if (appId === '0') {
       // create new application
-      return Observable.of(new Application({ _id: appId }));
+      const app = new Application({
+        purpose: route.queryParamMap.get('purpose'),
+        subpurpose: route.queryParamMap.get('subpurpose'),
+        type: route.queryParamMap.get('type'),
+        subtype: route.queryParamMap.get('subtype'),
+        status: route.queryParamMap.get('status'),
+        tenureStage: route.queryParamMap.get('tenureStage'),
+        location: route.queryParamMap.get('location'),
+        businessUnit: route.queryParamMap.get('businessUnit'),
+        cl_file: route.queryParamMap.get('cl_file'),
+        tantalisID: route.queryParamMap.get('tantalisID'),
+      });
+      return Observable.of(app);
     }
 
     // view/edit existing application
-    return this.applicationService.getById(appId)
-      .catch(err => {
+    // force-reload so we always have latest data
+    return this.applicationService.getById(appId, true)
+      .catch(error => {
         // if 403, redir to login page
-        if (err.startsWith('403')) { this.router.navigate(['/login']); }
+        if (error && error.startsWith && error.startsWith('403')) { this.router.navigate(['/login']); }
         return Observable.of(null as Application);
       });
   }

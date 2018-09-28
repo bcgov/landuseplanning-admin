@@ -161,17 +161,45 @@ hr {
   
   &__title {
     @include flex(1 1 auto);
+    margin: 0;
+
+    h1 {
+      margin-bottom: 0;
+      font-size: 1.65rem;
+    }
   }
   
   &__actions {
     @include flex(0 0 auto);
   
     .btn {
-      background-color: #eee;
-      color: #000;
-      font-size: 0.9375rem;
+      min-width: 5rem;
+      font-size: 0.875rem;
       font-weight: bold;
-      cursor: pointer;
     }
   }
+}
+
+.title-container__sub {
+  display: block;
+  letter-spacing: 0.01rem;
+}
+
+.top-container {
+  @include flex(0 0 auto); 
+  position: relative;
+  padding-right: 17px; // Offset approximate width of scrollbar
+  box-shadow: 0 0 0.5rem rgba(0,0,0,0.15);
+  z-index: 999;
+  
+  .container {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.bottom-container {
+  @include flex(1 1 auto);
+  overflow-y: scroll;
+  background: #f7f8fa;
 }

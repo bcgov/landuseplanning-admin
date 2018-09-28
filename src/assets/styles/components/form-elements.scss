@@ -56,3 +56,69 @@ textarea {
   }
 }
 
+fieldset {
+  + fieldset {
+  margin-top: 3.5rem;
+  padding-top: 3rem;
+  border-top: 1px solid #ccc;
+  }
+}
+
+legend {
+  float: left; // Fix to ensure the legend is bound the the fieldset box
+  margin-bottom: 2rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+label {
+  font-size: 0.875rem;
+}
+
+// Input Group 
+.input-group-btn {
+  .btn-icon {
+    border-color: #ccc;
+  }
+}
+
+// Validation
+.invalid-feedback {
+  position: relative;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: #fff;
+
+  &::after {
+    content: ' ';
+    position: absolute;
+    top: -1rem;
+    left: 1rem;
+    width: 1rem;
+    height: 1rem;
+    border-right: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid #dc3545;
+    border-left: 0.5rem solid transparent;
+  }
+}
+
+.is-invalid ~ .invalid-feedback {
+  display: inline-block;
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.input-group.is-invalid {
+  .form-control {
+    border-color: #dc3545;
+  }
+
+  .input-group-btn {
+    .btn-icon {
+      border-color: #dc3545;
+    }
+  }
+}

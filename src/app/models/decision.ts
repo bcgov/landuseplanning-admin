@@ -9,7 +9,7 @@ export class Decision {
   name: string;
   description: string;
 
-  documents: Array<Document>;
+  documents: Array<Document> = [];
   isPublished = false;
 
   constructor(obj?: any) {
@@ -20,9 +20,13 @@ export class Decision {
     this.name         = obj && obj.name         || null;
     this.description  = obj && obj.description  || null;
 
-    this.documents = [];
+    if (obj && obj.documents) {
+      obj.documents.forEach(doc => {
+        this.documents.push(doc);
+      });
+    }
 
-    // Wrap isPublished around the tags we receive for this object.
+    // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
       const self = this;
       _.each(obj.tags, function (tag) {

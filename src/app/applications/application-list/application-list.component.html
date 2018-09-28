@@ -79,14 +79,14 @@
                         <li class="p-0" *ngIf="item.currentPeriod">
                           <span class="name">Comment Period Dates:</span>
                           <span class="value">{{item.currentPeriod.startDate | date:'mediumDate'}} to {{item.currentPeriod.endDate | date:'mediumDate'}}
-                            <span *ngIf="item.currentPeriod.daysRemaining">
-                              &nbsp;({{item.currentPeriod.daysRemaining + (item.currentPeriod.daysRemaining === 1 ? ' day ' : ' days ') + 'remaining'}})
+                            <span *ngIf="item['daysRemaining']">
+                              &nbsp;({{item['daysRemaining'] + (item['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
                             </span>
                           </span>
                         </li>
                         <li class="p-0" *ngIf="item.currentPeriod">
                           <span class="name">Comments Received:</span>
-                          <span class="value">{{item.numComments}}</span>
+                          <span class="value">{{item['numComments']}}</span>
                         </li>
                         <li class="p-0">
                           <span class="name">Location:</span>
@@ -103,10 +103,6 @@
                         <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item._id]">
                           <i class="material-icons">info_outline</i>
                           <span>Application Details</span>
-                        </a>
-                        <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/periods', item._id]">
-                          <i class="material-icons">date_range</i>
-                          <span>Manage Comment Periods</span>
                         </a>
                         <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments', item._id]">
                           <i class="material-icons">message</i>
