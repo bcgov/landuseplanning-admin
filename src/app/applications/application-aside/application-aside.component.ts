@@ -78,6 +78,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
       'World Imagery': World_Imagery
     };
     this.control = L.control.layers(this.baseMaps, null, { collapsed: true }).addTo(this.map);
+    const self = this; // for closure function below
     const resetViewControl = L.Control.extend({
       options: {
         position: 'topleft'
@@ -96,7 +97,6 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
         this._element.onmouseover = () => this._element.style.backgroundColor = '#f4f4f4';
         this._element.onmouseout = () => this._element.style.backgroundColor = '#fff';
 
-        const self = this; // for closure function below
         this._element.onclick = function () {
           const bounds = self.fg.getBounds();
           if (bounds && bounds.isValid()) {
