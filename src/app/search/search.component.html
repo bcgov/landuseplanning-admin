@@ -45,7 +45,7 @@
           <td>
             <strong>{{item.properties.DISPOSITION_TRANSACTION_SID}}</strong>
           </td>
-          <td [innerHTML]="item.app?.client ? (item.app.client | titlecase) : '<em>Client Not Selected</em>'"></td>
+          <td [innerHTML]="item.app?.client ? (item.app.client | titlecase) : '<em>Applicant Not Selected</em>'"></td>
           <td>
             {{item.properties.TENURE_PURPOSE | titlecase}} / {{item.properties.TENURE_SUBPURPOSE | titlecase}}
           </td>
