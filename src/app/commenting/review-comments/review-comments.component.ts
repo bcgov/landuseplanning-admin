@@ -94,7 +94,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
                 },
                 error => {
                   // if 403, redir to login page
-                  if (error && error.startsWith && error.startsWith('403')) { this.router.navigate(['/login']); }
+                  if (error && error.status === 403) { this.router.navigate(['/login']); }
                   this.alerts.push('Error loading comment periods');
                 });
 
@@ -118,7 +118,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
                 error => {
                   this.loading = false;
                   // if 403, redir to login page
-                  if (error && error.startsWith && error.startsWith('403')) { this.router.navigate(['/login']); }
+                  if (error && error.status === 403) { this.router.navigate(['/login']); }
                   this.alerts.push('Error loading comments');
                 }
               );
@@ -249,7 +249,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
         },
         error => {
           // if 403, redir to login page
-          if (error && error.startsWith && error.startsWith('403')) { this.router.navigate(['/login']); }
+          if (error && error.status === 403) { this.router.navigate(['/login']); }
           this.alerts.push('Error exporting comments');
         });
   }
