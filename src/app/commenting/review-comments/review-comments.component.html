@@ -17,7 +17,7 @@
           <h2 class="mb-0">{{application.client || '-'}}</h2>
           <div>{{application.purpose || '-'}} / {{application.subpurpose || '-'}}</div>
           <ul class="review-comments__list">
-            <li>CL File: {{application.cl_file || '-'}}</li>
+            <li>CL File: {{application['clFile'] || '-'}}</li>
             <li>Disp ID: {{application.tantalisID || '-'}}</li>
           </ul>
         </section>

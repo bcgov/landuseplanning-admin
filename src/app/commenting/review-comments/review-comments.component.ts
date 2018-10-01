@@ -220,7 +220,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             });
             // add necessary properties
             // comment['client'] = this.application.client; // FUTURE
-            comment['cl_file'] = this.application.cl_file;
+            comment['cl_file'] = this.application['clFile'];
             return this.flatten_fastest(comment);
           });
 

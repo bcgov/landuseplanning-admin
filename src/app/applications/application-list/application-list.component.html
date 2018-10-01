@@ -56,7 +56,7 @@
                   </a>
                   <span class="accordion__collapse-header--column application-table__name-col">{{item.client || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__cl_file-col">
-                    <a [routerLink]="['/a', item._id]">{{item.cl_file || '-'}}</a>
+                    <a [routerLink]="['/a', item._id]">{{item['clFile'] || '-'}}</a>
                   </span>
                   <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
