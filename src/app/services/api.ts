@@ -428,9 +428,7 @@ export class ApiService {
       '_addedBy',
       '_application',
       'startDate',
-      'endDate',
-      'description',
-      'internal'
+      'endDate'
     ];
     let queryString = 'commentperiod?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
@@ -447,9 +445,7 @@ export class ApiService {
       '_addedBy',
       '_application',
       'startDate',
-      'endDate',
-      'description',
-      'internal'
+      'endDate'
     ];
     let queryString = 'commentperiod/' + id + '?fields=';
     _.each(fields, function (f) {
@@ -462,7 +458,7 @@ export class ApiService {
   }
 
   addCommentPeriod(period: CommentPeriod) {
-    const fields = ['_application', 'startDate', 'endDate', 'description'];
+    const fields = ['_application', 'startDate', 'endDate'];
     let queryString = 'commentperiod?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
@@ -474,7 +470,7 @@ export class ApiService {
   }
 
   saveCommentPeriod(period: CommentPeriod) {
-    const fields = ['_application', 'startDate', 'endDate', 'description'];
+    const fields = ['_application', 'startDate', 'endDate'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';

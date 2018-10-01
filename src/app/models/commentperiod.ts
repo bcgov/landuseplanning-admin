@@ -12,8 +12,7 @@ export class CommentPeriod {
   code: string;
   startDate: Date;
   endDate: Date;
-  description: string;
-  internal: Internal;
+  internal: Internal; // OBSOLETE BUT API V1 EXPECTS IT - REMOVE LATER
 
   isPublished = false;
 
@@ -24,7 +23,6 @@ export class CommentPeriod {
     this.code         = obj && obj.code                || null;
     this.startDate    = obj && new Date(obj.startDate) || null;
     this.endDate      = obj && new Date(obj.endDate)   || null;
-    this.description  = obj && obj.description         || null;
     this.internal     = obj && obj.internal            || new Internal();
 
     // Wrap isPublished around the tags we receive for this object.
