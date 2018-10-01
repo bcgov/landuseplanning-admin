@@ -58,15 +58,15 @@ textarea {
 
 fieldset {
   + fieldset {
-  margin-top: 3.5rem;
-  padding-top: 3rem;
-  border-top: 1px solid #ccc;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid #ddd;
   }
 }
 
 legend {
   float: left; // Fix to ensure the legend is bound the the fieldset box
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-size: 1.25rem;
   font-weight: 600;
 }
