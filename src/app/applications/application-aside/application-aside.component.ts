@@ -1,15 +1,10 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, SimpleChanges } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as L from 'leaflet';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
-import { Comment } from 'app/models/comment';
-import { ApiService } from 'app/services/api';
-import { CommentPeriodService } from 'app/services/commentperiod.service';
-import { CommentService } from 'app/services/comment.service';
 import { FeatureService } from 'app/services/feature.service';
 
 @Component({
@@ -20,22 +15,15 @@ import { FeatureService } from 'app/services/feature.service';
 
 export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   @Input() application: Application = null;
-  public numComments = ' ';
+
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fg: L.FeatureGroup;
   public map: L.Map;
   public layers: L.Layer[];
-  private baseMaps: {};
-  private control: L.Control;
   private maxZoom = { maxZoom: 17 };
 
   constructor(
-    private api: ApiService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private featureService: FeatureService,
-    public commentPeriodService: CommentPeriodService, // used in template
-    private commentService: CommentService
+    private featureService: FeatureService
   ) { }
 
   ngOnInit() {
@@ -69,16 +57,19 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
       layers: [World_Imagery]
     });
 
-    // set up the controls
-    this.baseMaps = {
+    // base layers
+    const baseMaps = {
       'Ocean Base': Esri_OceanBasemap,
       'Nat Geo World Map': Esri_NatGeoWorldMap,
       'Open Surfer Roads': OpenMapSurfer_Roads,
       'World Topographic': World_Topo_Map,
       'World Imagery': World_Imagery
     };
-    this.control = L.control.layers(this.baseMaps, null, { collapsed: true }).addTo(this.map);
+    L.control.layers(baseMaps, null, { collapsed: true }).addTo(this.map);
+
     const self = this; // for closure function below
+
+    // reset view control
     const resetViewControl = L.Control.extend({
       options: {
         position: 'topleft'
@@ -124,19 +115,6 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
 
   private updateData() {
     if (this.application) {
-      // get number of pending comments
-      if (this.application._id !== '0') {
-        this.commentService.getAllByApplicationId(this.application._id)
-          .takeUntil(this.ngUnsubscribe)
-          .subscribe(
-            (comments: Comment[]) => {
-              const pending = comments.filter(comment => this.commentService.isPending(comment));
-              this.numComments = pending.length.toString();
-            },
-            error => console.log('couldn\'t get pending comments, error =', error)
-          );
-      }
-
       const self = this; // for closure functions below
 
       if (this.fg) {
@@ -161,7 +139,6 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
                 delete f.geometry_name;
                 const featureObj: GeoJSON.Feature<any> = f;
                 const layer = L.geoJSON(featureObj);
-                const options = { maxWidth: 400 };
                 self.fg.addLayer(layer);
                 layer.addTo(self.map);
               });
@@ -182,7 +159,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   // called from parent component
   public drawMap(app: Application) {
     if (app.tantalisID) {
-      const self = this;
+      const self = this; // for closure function below
       this.featureService.getByDTID(app.tantalisID)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -200,7 +177,6 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
               delete f.geometry_name;
               const featureObj: GeoJSON.Feature<any> = f;
               const layer = L.geoJSON(featureObj);
-              const options = { maxWidth: 400 };
               self.fg.addLayer(layer);
               layer.addTo(self.map);
             });

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -17,8 +16,11 @@ export class CommentPeriodService {
   readonly CLOSED = 'Closed';
   readonly OPEN = 'Open';
 
+  // use helpers to get these:
+  private commentStatuses = [];
+
+  // for caching
   private commentPeriod: CommentPeriod = null;
-  public commentStatuses = [];
 
   constructor(private api: ApiService) {
     // user-friendly strings

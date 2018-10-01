@@ -58,19 +58,19 @@ export class ApiService {
         break;
 
       case 'nrts-prc-scale.pathfinder.gov.bc.ca':
-        // Demo
+        // Scale
         this.pathAPI = 'https://nrts-prc-scale.pathfinder.gov.bc.ca/api';
         this.env = 'scale';
         break;
 
       case 'nrts-prc-beta.pathfinder.gov.bc.ca':
-        // Demo
+        // Beta
         this.pathAPI = 'https://nrts-prc-beta.pathfinder.gov.bc.ca/api';
         this.env = 'beta';
         break;
 
       case 'nrts-prc-master.pathfinder.gov.bc.ca':
-        // Demo
+        // Master
         this.pathAPI = 'https://nrts-prc-master.pathfinder.gov.bc.ca/api';
         this.env = 'master';
         break;
@@ -499,7 +499,13 @@ export class ApiService {
   //
   // Comments
   //
-  getCommentsByPeriodId(periodId: string) {
+  getCommentsByPeriodIdNoFields(periodId: string) {
+    const queryString = `comment?isDeleted=false&_commentPeriod=${periodId}&pageNum=0&pageSize=1000000`; // max 1M records
+    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
+    return this.get(this.pathAPI, queryString, { headers: headers });
+  }
+
+  getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string) {
     const fields = [
       '_addedBy',
       '_commentPeriod',
@@ -510,12 +516,13 @@ export class ApiService {
       'dateAdded',
       'commentStatus'
     ];
-    let queryString = 'comment?isDeleted=false&_commentPeriod=' + periodId + '&fields=';
-    _.each(fields, function (f) {
-      queryString += f + '|';
-    });
-    // Trim the last |
-    queryString = queryString.replace(/\|$/, '');
+
+    let queryString = `comment?isDeleted=false&_commentPeriod=${periodId}&`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
+
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
   }

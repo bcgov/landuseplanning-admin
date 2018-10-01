@@ -35,7 +35,9 @@ export class DecisionService {
         return decisions.length > 0 ? new Decision(decisions[0]) : null;
       })
       .mergeMap(decision => {
-        if (!decision) { return Observable.of(null as Decision); }
+        if (!decision) {
+          return Observable.of(null as Decision);
+        }
 
         // replace \\n (JSON format) with newlines
         if (decision.description) {
@@ -69,7 +71,9 @@ export class DecisionService {
         return decisions.length > 0 ? new Decision(decisions[0]) : null;
       })
       .mergeMap(decision => {
-        if (!decision) { return Observable.of(null as Decision); }
+        if (!decision) {
+          return Observable.of(null as Decision);
+        }
 
         // replace \\n (JSON format) with newlines
         if (decision.description) {
