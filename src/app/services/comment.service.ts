@@ -57,7 +57,7 @@ export class CommentService {
 
   // get all comments for the specified application id
   // (without documents)
-  getAllByApplicationId(appId: string, pageNum: number = 0, pageSize: number = 1000000, sortBy: string = null): Observable<Comment[]> {
+  getAllByApplicationId(appId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null): Observable<Comment[]> {
     // first get the comment periods
     return this.commentPeriodService.getAllByApplicationId(appId)
       .mergeMap(periods => {
@@ -99,7 +99,7 @@ export class CommentService {
 
   // get all comments for the specified comment period id
   // (without documents)
-  getAllByPeriodId(periodId: string, pageNum: number = 0, pageSize: number = 1000000, sortBy: string = null): Observable<Comment[]> {
+  getAllByPeriodId(periodId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null): Observable<Comment[]> {
     return this.api.getCommentsByPeriodId(periodId, pageNum, pageSize, sortBy)
       .map(res => {
         const comments = res.text() ? res.json() : [];
