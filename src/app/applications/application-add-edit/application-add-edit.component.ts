@@ -173,7 +173,9 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
             if (!this.application.currentPeriod) {
               this.application.currentPeriod = new CommentPeriod();
               // set startDate
-              this.application.currentPeriod.startDate = new Date(); // today
+              const now = new Date();
+              const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+              this.application.currentPeriod.startDate = today;
               this.startDate = this.dateToNgbDate(this.application.currentPeriod.startDate);
               // set delta and endDate
               this.onDeltaChg(DEFAULT_DAYS);
