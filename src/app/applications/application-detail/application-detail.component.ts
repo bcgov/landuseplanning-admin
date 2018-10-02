@@ -19,7 +19,7 @@ import { FeatureService } from 'app/services/feature.service';
 @Component({
   selector: 'app-application-detail',
   templateUrl: './application-detail.component.html',
-  styleUrls: ['./application-detail.component.scss'],
+  styleUrls: ['./application-detail.component.scss']
 })
 
 export class ApplicationDetailComponent implements OnInit, OnDestroy {
@@ -335,6 +335,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
                 this.application = application;
               },
               error => {
+                this.isUnpublishing = false;
                 console.log('error =', error);
                 alert('Uh-oh, couldn\'t reload application');
               }
