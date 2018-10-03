@@ -27,9 +27,15 @@ export class ApplicationDetailResolver implements Resolve<Application> {
         tenureStage: route.queryParamMap.get('tenureStage'),
         location: route.queryParamMap.get('location'),
         businessUnit: route.queryParamMap.get('businessUnit'),
-        cl_file: route.queryParamMap.get('cl_file'),
-        tantalisID: route.queryParamMap.get('tantalisID'),
+        cl_file: +route.queryParamMap.get('cl_file'), // NB: unary operator
+        tantalisID: +route.queryParamMap.get('tantalisID'), // NB: unary operator
       });
+
+      // 7-digit CL File number for display
+      if (app.cl_file) {
+        app['clFile'] = app.cl_file.toString().padStart(7, '0');
+      }
+
       return Observable.of(app);
     }
 

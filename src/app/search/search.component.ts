@@ -169,7 +169,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         location: item.properties.TENURE_LOCATION,
         businessUnit: item.properties.RESPONSIBLE_BUSINESS_UNIT,
         // these are special - we will persist them to db as search keys
-        cl_file: +item.properties.CROWN_LANDS_FILE, // NOTE: unary operator
+        cl_file: item.properties.CROWN_LANDS_FILE,
         tantalisID: item.properties.DISPOSITION_TRANSACTION_SID,
       };
       // go to add-edit page
