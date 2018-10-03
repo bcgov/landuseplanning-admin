@@ -29,6 +29,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
         businessUnit: route.queryParamMap.get('businessUnit'),
         cl_file: +route.queryParamMap.get('cl_file'), // NB: unary operator
         tantalisID: +route.queryParamMap.get('tantalisID'), // NB: unary operator
+        legalDescription: route.queryParamMap.get('legalDescription')
       });
 
       // 7-digit CL File number for display
@@ -45,7 +46,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       .catch(error => {
         // if 403, redir to login page
         if (error && error.status === 403) { this.router.navigate(['/login']); }
-        return Observable.of(null as Application);
+        return Observable.of(null);
       });
   }
 }
