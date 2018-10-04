@@ -127,20 +127,24 @@ export class ApiService {
   getApplications() {
     const fields = [
       'agency',
+      'areaHectares',
+      'businessUnit',
+      'centroid',
       'cl_file',
       'client',
-      'code',
       'description',
       'internal',
-      'internalID',
-      'latitude',
       'legalDescription',
-      'longitude',
+      'location',
       'name',
-      'postID',
       'publishDate',
-      'region',
-      'tantalisID'
+      'purpose',
+      'status',
+      'subpurpose',
+      'subtype',
+      'tantalisID',
+      'tenureStage',
+      'type'
     ];
     let queryString = 'application?isDeleted=false&fields=';
     _.each(fields, function (f) {
@@ -155,29 +159,25 @@ export class ApiService {
   getApplication(id: string) {
     const fields = [
       'agency',
+      'areaHectares',
+      'businessUnit',
+      'centroid',
       'cl_file',
       'client',
-      'code',
       'description',
       'internal',
-      'internalID',
-      'latitude',
       'legalDescription',
-      'longitude',
-      'name',
-      'postID',
-      'publishDate',
-      'region',
-      'tantalisID',
-      'purpose',
-      'subpurpose',
-      'type',
-      'subtype',
-      'status',
-      'tenureStage',
       'location',
-      'businessUnit'
-    ];
+      'name',
+      'publishDate',
+      'purpose',
+      'status',
+      'subpurpose',
+      'subtype',
+      'tantalisID',
+      'tenureStage',
+      'type'
+  ];
     const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
@@ -186,31 +186,24 @@ export class ApiService {
   getApplicationByTantalisID(tantalisID: number) {
     const fields = [
       'agency',
+      'areaHectares',
+      'businessUnit',
+      'centroid',
       'cl_file',
       'client',
-      'code',
       'description',
       'internal',
-      'internalID',
-      'latitude',
       'legalDescription',
-      'longitude',
+      'location',
       'name',
-      'postID',
       'publishDate',
       'purpose',
-      'region',
       'status',
       'subpurpose',
-      'tantalisID',
-      'purpose',
-      'subpurpose',
-      'type',
       'subtype',
-      'status',
+      'tantalisID',
       'tenureStage',
-      'location',
-      'businessUnit'
+      'type'
     ];
     // NB: API uses 'tantalisId' (even though elsewhere it's 'tantalisID')
     const queryString = `application?isDeleted=false&tantalisId=${tantalisID}&fields=${this.buildValues(fields)}`;
@@ -244,20 +237,24 @@ export class ApiService {
 
     const fields = [
       'agency',
+      'areaHectares',
+      'businessUnit',
+      'centroid',
       'cl_file',
       'client',
-      'code',
       'description',
       'internal',
-      'internalID',
-      'latitude',
       'legalDescription',
-      'longitude',
+      'location',
       'name',
-      'postID',
       'publishDate',
-      'region',
-      'tantalisID'
+      'purpose',
+      'status',
+      'subpurpose',
+      'subtype',
+      'tantalisID',
+      'tenureStage',
+      'type'
     ];
     let queryString = 'application/' + app._id + '?fields=';
     _.each(fields, function (f) {

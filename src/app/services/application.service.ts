@@ -104,7 +104,7 @@ export class ApplicationService {
         const promises: Array<Promise<any>> = [];
 
         applications.forEach((application) => {
-          // replace \\n (JSON format) with newlines in each application
+          // replace \\n (JSON format) with newlines
           if (application.description) {
             application.description = application.description.replace(/\\n/g, '\n');
           }
@@ -123,11 +123,9 @@ export class ApplicationService {
             application['clFile'] = application.cl_file.toString().padStart(7, '0');
           }
 
-          // FUTURE: now get the organization
+          // NB: we don't get the documents here
 
-          // NB: we don't get documents here
-
-          // now get the current comment period for each application
+          // get the current comment period
           promises.push(this.commentPeriodService.getAllByApplicationId(application._id)
             .toPromise()
             .then(periods => {
@@ -143,7 +141,7 @@ export class ApplicationService {
             })
           );
 
-          // now get the number of pending comments for each application
+          // get the number of pending comments
           promises.push(this.commentService.getAllByApplicationId(application._id)
             .toPromise()
             .then(comments => {
@@ -154,21 +152,10 @@ export class ApplicationService {
 
           // NB: we don't get the decision here
 
-          // TODO: we don't need to get the shapes (features) here... remove this code
-          // now get the referenced data (features) for each application
+          // get the features
           promises.push(this.featureService.getByApplicationId(application._id)
             .toPromise()
-            .then(features => {
-              application.features = features;
-
-              // calculate Total Area (hectares) from all features
-              application.areaHectares = 0;
-              _.each(application.features, function (f) {
-                if (f['properties']) {
-                  application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-                }
-              });
-            })
+            .then(features => application.features = features)
           );
         });
 
@@ -256,8 +243,6 @@ export class ApplicationService {
       application['clFile'] = application.cl_file.toString().padStart(7, '0');
     }
 
-    // FUTURE: now get the organization
-
     // get the documents
     promises.push(this.documentService.getAllByApplicationId(application._id)
       .toPromise()
@@ -295,19 +280,10 @@ export class ApplicationService {
       .then(decision => application.decision = decision)
     );
 
-    // get the referenced data (features)
+    // get the features
     promises.push(this.featureService.getByApplicationId(application._id)
       .toPromise()
-      .then(features => {
-        application.features = features;
-        // calculate Total Area (hectares) from all features
-        application.areaHectares = 0;
-        _.each(features, function (f) {
-          if (f['properties']) {
-            application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-          }
-        });
-      })
+      .then(features => application.features = features)
     );
 
     return Promise.all(promises).then(() => {

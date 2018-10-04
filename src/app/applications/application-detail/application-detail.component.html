@@ -139,11 +139,17 @@
                 <section>
                   <app-application-aside [application]="application"></app-application-aside>
                 </section>
-                <section>
-                  <h2>Geographic Shape Data ({{application.features.length}})</h2>
+                <section *ngIf="!application.features || application.features.length === 0">
+                  <!-- if no features, display Legal Description here -->
+                  <!-- otherwise it's displayed in shape section below -->
+                  <h2>Legal Description</h2>
+                  <p [innerHTML]="(application.legalDescription | newlines) || '-'"></p>
+                </section>
+                <section *ngIf="application.features && application.features.length !== 0">
+                  <h2>Geographic Shape Information ({{application.features.length}})</h2>
                   <ul class="shapefile-list">
                     <li class="interest-id" *ngFor="let shape of application.features">
-                      <span class="title">Interest ID: {{shape.properties.INTRID_SID}}</span>
+                      <span class="title">Shape ID: {{shape.properties.INTRID_SID}}</span>
                       <ul class="nv-list">
                         <li>
                           <span class="name">Type / Subtype:</span>

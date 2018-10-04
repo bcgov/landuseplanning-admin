@@ -168,9 +168,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         tenureStage: item.properties.TENURE_STAGE,
         location: item.properties.TENURE_LOCATION,
         businessUnit: item.properties.RESPONSIBLE_BUSINESS_UNIT,
-        // these are special - we will persist them to db as search keys
         cl_file: item.properties.CROWN_LANDS_FILE,
         tantalisID: item.properties.DISPOSITION_TRANSACTION_SID,
+        legalDescription: item.properties.TENURE_LEGAL_DESCRIPTION
       };
       // go to add-edit page
       this.router.navigate(['/a', 0, 'edit'], { queryParams: params });
