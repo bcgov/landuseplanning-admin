@@ -212,7 +212,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   }
 
   // used in template
-  private isValidDate(date: NgbDateStruct): boolean {
+  public isValidDate(date: NgbDateStruct): boolean {
     return (date && !isNaN(date.year) && !isNaN(date.month) && !isNaN(date.day));
   }
 
