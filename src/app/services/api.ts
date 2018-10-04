@@ -177,7 +177,7 @@ export class ApiService {
       'tenureStage',
       'location',
       'businessUnit'
-  ];
+    ];
     const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     return this.get(this.pathAPI, queryString, { headers: headers });
