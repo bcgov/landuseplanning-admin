@@ -63,11 +63,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const url = router.parseUrl(router.url);
-        if (url.fragment) {
+        if (url && url.fragment) {
           // ensure element exists
-          const element = document.querySelector('#' + url.fragment);
+          const element = document.getElementById(url.fragment);
           if (element) {
-            document.getElementById(url.fragment).scrollIntoView();
+            element.scrollIntoView();
           }
         }
       }
