@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 export class ConfigService {
 
   // defaults
-  // TODO
+  private _baseLayerName = 'World Topographic'; // NB: must match a valid base layer name
 
   constructor() { }
 
@@ -24,6 +24,7 @@ export class ConfigService {
   }
 
   // getters/setters
-  // TODO
+  get baseLayerName(): string { return this._baseLayerName; }
+  set baseLayerName(val: string) { this._baseLayerName = val; }
 
 }

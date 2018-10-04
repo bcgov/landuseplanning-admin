@@ -5,6 +5,7 @@ import * as L from 'leaflet';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
+import { ConfigService } from 'app/services/config.service';
 import { FeatureService } from 'app/services/feature.service';
 
 @Component({
@@ -23,6 +24,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   private maxZoom = { maxZoom: 17 };
 
   constructor(
+    public configService: ConfigService,
     private featureService: FeatureService
   ) { }
 
@@ -54,22 +56,40 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.map = L.map('map', {
-      layers: [World_Imagery]
+      zoomControl: false // will be added manually below
     });
 
-    // base layers
-    const baseMaps = {
+    // add zoom control
+    L.control.zoom({ position: 'topright' }).addTo(this.map);
+
+    // add scale control
+    L.control.scale({ position: 'bottomright' }).addTo(this.map);
+
+    // add base maps layers control
+    const baseLayers = {
       'Ocean Base': Esri_OceanBasemap,
       'Nat Geo World Map': Esri_NatGeoWorldMap,
       'Open Surfer Roads': OpenMapSurfer_Roads,
       'World Topographic': World_Topo_Map,
       'World Imagery': World_Imagery
     };
-    L.control.layers(baseMaps, null, { collapsed: true }).addTo(this.map);
+    L.control.layers(baseLayers, null, { collapsed: true }).addTo(this.map);
 
-    const self = this; // for closure function below
+    // load base layer
+    for (const key of Object.keys(baseLayers)) {
+      if (key === this.configService.baseLayerName) {
+        this.map.addLayer(baseLayers[key]);
+        break;
+      }
+    }
+
+    // save any future base layer changes
+    this.map.on('baselayerchange', function (e: L.LayersControlEvent) {
+      this.configService.baseLayerName = e.name;
+    }, this);
 
     // reset view control
+    const self = this; // for closure function below
     const resetViewControl = L.Control.extend({
       options: {
         position: 'topleft'
@@ -194,6 +214,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.map) { this.map.remove(); }
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
