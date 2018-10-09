@@ -141,12 +141,11 @@ export class ApplicationService {
             })
           );
 
-          // get the number of pending comments
-          promises.push(this.commentService.getAllByApplicationId(application._id)
+          // get the number of comments
+          promises.push(this.commentService.getCountByApplicationId(application._id)
             .toPromise()
-            .then(comments => {
-              const pending = comments.filter(comment => this.commentService.isPending(comment));
-              application['numComments'] = pending.length.toString();
+            .then(value => {
+              application['numComments'] = value.toString();
             })
           );
 
@@ -265,12 +264,11 @@ export class ApplicationService {
       })
     );
 
-    // get the number of pending comments
-    promises.push(this.commentService.getAllByApplicationId(application._id)
+    // get the number of comments
+    promises.push(this.commentService.getCountByApplicationId(application._id)
       .toPromise()
-      .then(comments => {
-        const pending = comments.filter(comment => this.commentService.isPending(comment));
-        application['numComments'] = pending.length.toString();
+      .then(value => {
+        application['numComments'] = value.toString();
       })
     );
 
