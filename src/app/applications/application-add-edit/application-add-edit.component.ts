@@ -498,10 +498,36 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
 
     if (this.applicationForm.invalid) {
+      if (this.application.isPublished) {
+        this.dialogService.addDialog(ConfirmComponent,
+          {
+            title: 'Cannot Publish Changes',
+            message: 'Please check for required fields or errors.',
+            okOnly: true
+          }, {
+            backdropColor: 'rgba(0, 0, 0, 0.5)'
+          })
+          .takeUntil(this.ngUnsubscribe);
+        return;
+      } else {
+        this.dialogService.addDialog(ConfirmComponent,
+          {
+            title: 'Cannot Save Application',
+            message: 'Please check for required fields or errors.',
+            okOnly: true
+          }, {
+            backdropColor: 'rgba(0, 0, 0, 0.5)'
+          })
+          .takeUntil(this.ngUnsubscribe);
+        return;
+      }
+    }
+
+    if (this.application.isPublished && !this.application.description) {
       this.dialogService.addDialog(ConfirmComponent,
         {
-          title: 'Cannot Save Application',
-          message: 'Please check for required fields or errors.',
+          title: 'Cannot Publish Changes',
+          message: 'A description for this application is required to publish.',
           okOnly: true
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
