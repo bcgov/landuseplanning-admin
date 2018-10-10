@@ -17,9 +17,14 @@
           <span>{{isSubmitting ? 'Saving' : 'Save'}}</span>
         </button>
         <button class="btn btn-primary" type="button" title="Save application" 
-          *ngIf="application._id" (click)="saveApplication()" [disabled]="isSaving">
+          *ngIf="application._id && application.isPublished === false" (click)="saveApplication()" [disabled]="isSaving">
           <i class="spinner rotating" [hidden]="!isSaving"></i>
           <span>{{isSaving ? 'Saving' : 'Save'}}</span>
+        </button>
+        <button class="btn btn-primary" type="button" title="Publish Changes" 
+          *ngIf="application._id && application.isPublished === true" (click)="saveApplication()" [disabled]="isSaving">
+          <i class="spinner rotating" [hidden]="!isSaving"></i>
+          <span>{{isSaving ? 'Publishing Changes' : 'Publish Changes'}}</span>
         </button>
       </div>
     </div>
