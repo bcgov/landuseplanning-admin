@@ -176,7 +176,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     // get all comments
-    this.commentService.getAllByApplicationId(this.application._id)
+    this.commentService.getAllByApplicationId(this.application._id, 0, 1000000) // max 1M records
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         comments => {
