@@ -6,6 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/concat';
+import { of, forkJoin } from 'rxjs';
 
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
@@ -121,7 +122,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   private internalDeleteApplication() {
     this.isDeleting = true;
 
-    let observables = Observable.of(null);
+    let observables = of(null);
 
     // delete comment period
     if (this.application.currentPeriod) {
@@ -207,7 +208,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   private internalPublishApplication() {
     this.isPublishing = true;
 
-    let observables = Observable.of(null);
+    let observables = of(null);
 
     // publish comment period
     if (this.application.currentPeriod && !this.application.currentPeriod.isPublished) {
@@ -277,7 +278,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   public unPublishApplication() {
     this.isUnpublishing = true;
 
-    let observables = Observable.of(null);
+    let observables = of(null);
 
     // unpublish comment period
     if (this.application.currentPeriod && this.application.currentPeriod.isPublished) {

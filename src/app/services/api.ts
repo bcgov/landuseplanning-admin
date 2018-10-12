@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, ResponseContentType, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Params, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/throw';
+import { throwError } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
 import * as FileSaver from 'file-saver';
-import { tokenNotExpired } from 'angular2-jwt';
+import { JwtHelperService } from '@auth0/angular-jwt';
+
+import { SearchResults } from 'app/models/search';
 
 import { Application } from 'app/models/application';
 // import { Organization } from 'app/models/organization';
@@ -18,16 +20,36 @@ import { CommentPeriod } from 'app/models/commentperiod';
 import { Comment } from 'app/models/comment';
 import { Document } from 'app/models/document';
 import { User } from 'app/models/user';
+import { Feature } from 'app/models/feature';
+import { Organization } from 'app/models/organization';
+import { Client } from 'app/models/client';
+import { KeycloakService } from 'app/services/keycloak.service';
+
+interface LocalLoginResponse {
+  _id: string;
+  title: string;
+  created_at: string;
+  startTime: string;
+  endTime: string;
+  state: boolean;
+  accessToken: string;
+}
+
 
 @Injectable()
 export class ApiService {
   public token: string;
   public isMS: boolean; // IE, Edge, etc
+  private jwtHelper: JwtHelperService;
   pathAPI: string;
   params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
 
-  constructor(private http: Http, private router: Router) {
+  constructor(private http: HttpClient,
+              private router: Router,
+              private keycloakService: KeycloakService
+              ) {
+    this.jwtHelper = new JwtHelperService();
     const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
     this.isMS = window.navigator.msSaveOrOpenBlob ? true : false;
@@ -82,36 +104,35 @@ export class ApiService {
     };
   }
 
-  handleError(error: any): ErrorObservable {
+  handleError(error: any): Observable<any> {
     const reason = error.message ? error.message : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
     console.log('API error =', reason);
-    return Observable.throw(error);
+    return throwError(error);
   }
 
   ensureLoggedIn() {
-    if (!this.token || !tokenNotExpired('currentUser')) {
+    const token = this.keycloakService.getToken();
+    if (!token || this.jwtHelper.isTokenExpired(token)) {
       console.log('not logged in, redirecting');
-      this.router.navigate(['login']);
-      return false;
+      return this.keycloakService.forceAttemptUpdateToken();
     }
     return true;
   }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post(`${this.pathAPI}/login/token`, { username: username, password: password })
-      .map((response: Response) => {
+    return this.http.post<LocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
+      .map((response: LocalLoginResponse) => {
         // login successful if there's a jwt token in the response
-        const token = response.json() && response.json().accessToken;
-        if (token) {
+        if (response.accessToken) {
           // set token property
-          this.token = token;
+          this.token = response.accessToken;
 
           // store username and jwt token in local storage to keep user logged in between page refreshes
-          window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
-
+          window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: this.token }));
           return true; // successful login
+        } else {
+          return false; // failed login
         }
-        return false; // failed login
       });
   }
 
@@ -124,7 +145,7 @@ export class ApiService {
   //
   // Applications
   //
-  getApplications() {
+  getApplications(): Observable<Application[]> {
     const fields = [
       'agency',
       'areaHectares',
@@ -152,11 +173,12 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    // const params = new HttpParams().set('page', '1');
+    // const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getApplication(id: string) {
+  getApplication(id: string): Observable<Application> {
     const fields = [
       'agency',
       'areaHectares',
@@ -179,8 +201,7 @@ export class ApiService {
       'type'
   ];
     const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Application>(`${this.pathAPI}/${queryString}`, { });
   }
 
   getApplicationByTantalisID(tantalisID: number) {
@@ -207,28 +228,28 @@ export class ApiService {
     ];
     // NB: API uses 'tantalisId' (even though elsewhere it's 'tantalisID')
     const queryString = `application?isDeleted=false&tantalisId=${tantalisID}&fields=${this.buildValues(fields)}`;
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    // const params = new HttpParams().set('page', '1');
+    return this.http.get<Application>(`${this.pathAPI}/${queryString}`, { });
   }
 
   addApplication(app: Application) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, 'application/', app, { headers: headers });
+    const queryString = 'application/';
+    return this.http.post<Application>(`${this.pathAPI}/${queryString}`, app, { });
   }
 
   publishApplication(app: Application) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'application/' + app._id + '/publish', null, { headers: headers });
+    const queryString = 'application/' + app._id + '/publish';
+    return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, { });
   }
 
   unPublishApplication(app: Application) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'application/' + app._id + '/unpublish', null, { headers: headers });
+    const queryString = 'application/' + app._id + '/unpublish';
+    return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, { });
   }
 
   deleteApplication(app: Application) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, 'application/' + app._id, null, { headers: headers });
+    const queryString = 'application/' + app._id;
+    return this.http.delete<Application>(`${this.pathAPI}/${queryString}`, { });
   }
 
   saveApplication(app: Application) {
@@ -262,14 +283,13 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, app, { headers: headers });
+    return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, { });
   }
 
   //
   // Features
   //
-  getFeaturesByTantalisId(tantalisID: number) {
+  getFeaturesByTantalisId(tantalisID: number): Observable<Feature[]> {
     const fields = [
       'type',
       'tags',
@@ -280,11 +300,10 @@ export class ApiService {
       'applicationID'
     ];
     const queryString = `feature?isDeleted=false&tantalisId=${tantalisID}&fields=${this.buildValues(fields)}`;
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getFeaturesByApplicationId(applicationId: string) {
+  getFeaturesByApplicationId(applicationId: string): Observable<Feature[]> {
     const fields = [
       'type',
       'tags',
@@ -295,19 +314,18 @@ export class ApiService {
       'applicationID'
     ];
     const queryString = `feature?isDeleted=false&applicationId=${applicationId}&fields=${this.buildValues(fields)}`;
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
   deleteFeaturesByApplicationId(applicationId: string) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, 'feature/?applicationID=' + applicationId, null, { headers: headers });
+    const queryString = 'feature/?applicationID=' + applicationId;
+    return this.http.delete(`${this.pathAPI}/${queryString}`, { });
   }
 
   //
   // Organizations
   //
-  getOrganizations() {
+  getOrganizations(): Observable<Organization[]> {
     const fields = [
       '_addedBy',
       'code',
@@ -319,11 +337,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Organization[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getOrganization(id: string) {
+  getOrganization(id: string): Observable<Organization> {
     const fields = [
       '_addedBy',
       'code',
@@ -335,14 +352,13 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Organization>(`${this.pathAPI}/${queryString}`, { });
   }
 
   //
   // Decisions
   //
-  getDecisionByAppId(appId: string) {
+  getDecisionByAppId(appId: string): Observable<Decision[]> {
     const fields = [
       '_addedBy',
       '_application',
@@ -356,11 +372,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Decision[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getDecision(id: string) {
+  getDecision(id: string): Observable<Decision> {
     const fields = [
       '_addedBy',
       '_application',
@@ -374,11 +389,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Decision>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  addDecision(decision: Decision) {
+  addDecision(decision: Decision): Observable<Decision> {
     const fields = ['_application', 'description'];
     let queryString = 'decision?fields=';
     _.each(fields, function (f) {
@@ -386,11 +400,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, decision, { headers: headers });
+    return this.http.post<Decision>(`${this.pathAPI}/${queryString}`, decision, { });
   }
 
-  saveDecision(decision: Decision) {
+  saveDecision(decision: Decision): Observable<Decision> {
     const fields = ['_application', 'description'];
     let queryString = 'decision/' + decision._id + '?fields=';
     _.each(fields, function (f) {
@@ -398,29 +411,30 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, decision, { headers: headers });
+    return this.http.put<Decision>(`${this.pathAPI}/${queryString}`, decision, { });
   }
 
-  deleteDecision(decision: Decision) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, 'decision/' + decision._id, null, { headers: headers });
+  deleteDecision(decision: Decision): Observable<Decision> {
+    let queryString = 'decision/' + decision._id;
+    return this.http.delete<Decision>(`${this.pathAPI}/${queryString}`, { });
   }
 
   publishDecision(decision: Decision) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'decision/' + decision._id + '/publish', null, { headers: headers });
+    let queryString = 'decision/' + decision._id + '/publish';
+    return this.http.put<Decision>(`${this.pathAPI}/${queryString}`, decision, { });
   }
 
   unPublishDecision(decision: Decision) {
     const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'decision/' + decision._id + '/unpublish', null, { headers: headers });
+    let queryString = 'decision/' + decision._id + '/unpublish';
+    return this.http.put<Decision>(`${this.pathAPI}/${queryString}`, decision, { });
   }
 
   //
   // Comment Periods
   //
-  getPeriodsByAppId(appId: string) {
+  getPeriodsByAppId(appId: string): Observable<CommentPeriod[]> {
     const fields = [
       '_addedBy',
       '_application',
@@ -433,11 +447,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getPeriod(id: string) {
+  getPeriod(id: string): Observable<CommentPeriod> {
     const fields = [
       '_addedBy',
       '_application',
@@ -450,56 +463,52 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<CommentPeriod>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  addCommentPeriod(period: CommentPeriod) {
-    const fields = ['_application', 'startDate', 'endDate'];
+  addCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
+    const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, period, { headers: headers });
+    return this.http.post<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, { });
   }
 
-  saveCommentPeriod(period: CommentPeriod) {
-    const fields = ['_application', 'startDate', 'endDate'];
+  saveCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
+    const fields = ['_application', 'startDate', 'endDate', 'description'];
     let queryString = 'commentperiod/' + period._id + '?fields=';
     _.each(fields, function (f) {
       queryString += f + '|';
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, period, { headers: headers });
+    return this.http.put<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, { });
   }
 
-  deleteCommentPeriod(period: CommentPeriod) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, 'commentperiod/' + period._id, null, { headers: headers });
+  deleteCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
+    let queryString = 'commentperiod/' + period._id;
+    return this.http.delete<CommentPeriod>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  publishCommentPeriod(period: CommentPeriod) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'commentperiod/' + period._id + '/publish', null, { headers: headers });
+  publishCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
+    let queryString = 'commentperiod/' + period._id + '/publish';
+    return this.http.put<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, { });
   }
 
-  unPublishCommentPeriod(period: CommentPeriod) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'commentperiod/' + period._id + '/unpublish', null, { headers: headers });
+  unPublishCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
+    let queryString = 'commentperiod/' + period._id + '/unpublish';
+    return this.http.put<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, { });
   }
 
   //
   // Comments
   //
-  getCommentsByPeriodIdNoFields(periodId: string) {
+  getCommentsByPeriodIdNoFields(periodId: string): Observable<Comment[]>  {
     const queryString = `comment?isDeleted=false&_commentPeriod=${periodId}&pageNum=0&pageSize=1000000`; // max 1M records
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
   getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string) {
@@ -520,11 +529,10 @@ export class ApiService {
     if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
     queryString += `fields=${this.buildValues(fields)}`;
 
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getComment(id: string) {
+  getComment(id: string): Observable<Comment[]> {
     const fields = [
       '_addedBy',
       '_commentPeriod',
@@ -541,11 +549,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  addComment(comment: Comment) {
+  addComment(comment: Comment): Observable<Comment> {
     const fields = ['comment', 'commentAuthor'];
     let queryString = 'comment?fields=';
     _.each(fields, function (f) {
@@ -553,11 +560,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, comment, { headers: headers });
+    return this.http.post<Comment>(`${this.pathAPI}/${queryString}`, comment, { });
   }
 
-  saveComment(comment: Comment) {
+  saveComment(comment: Comment): Observable<Comment> {
     const fields = ['review', 'commentStatus'];
     let queryString = 'comment/' + comment._id + '?fields=';
     _.each(fields, function (f) {
@@ -565,24 +571,23 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, comment, { headers: headers });
+    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, comment, { });
   }
 
-  publishComment(comment: Comment) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'comment/' + comment._id + '/publish', null, { headers: headers });
+  publishComment(comment: Comment): Observable<Comment> {
+    let queryString = 'comment/' + comment._id + '/publish';
+    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, null, { });
   }
 
-  unPublishComment(comment: Comment) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'comment/' + comment._id + '/unpublish', null, { headers: headers });
+  unPublishComment(comment: Comment): Observable<Comment> {
+    let queryString = 'comment/' + comment._id + '/unpublish';
+    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, null, { });
   }
 
   //
   // Documents
   //
-  getDocumentsByAppId(appId: string) {
+  getDocumentsByAppId(appId: string): Observable<Document[]> {
     const fields = ['_application', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
     let queryString = 'document?isDeleted=false&_application=' + appId + '&fields=';
     _.each(fields, function (f) {
@@ -590,11 +595,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getDocumentsByCommentId(commentId: string) {
+  getDocumentsByCommentId(commentId: string): Observable<Document[]> {
     const fields = ['_comment', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
     let queryString = 'document?isDeleted=false&_comment=' + commentId + '&fields=';
     _.each(fields, function (f) {
@@ -602,11 +606,10 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
-  getDocumentsByDecisionId(decisionId: string) {
+  getDocumentsByDecisionId(decisionId: string): Observable<Document[]> {
     const fields = ['_decision', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
     let queryString = 'document?isDeleted=false&_decision=' + decisionId + '&fields=';
     _.each(fields, function (f) {
@@ -614,28 +617,27 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
   getDocument(id: string) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, 'document/' + id, { headers: headers });
+    let queryString = 'document/' + id;
+    return this.http.get<Document>(`${this.pathAPI}/${queryString}`, { });
   }
 
   deleteDocument(file: any) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.delete(this.pathAPI, 'document/' + file._id, null, { headers: headers });
+    let queryString = 'document/' + file._id
+    return this.http.delete<Document>(`${this.pathAPI}/${queryString}`, { });
   }
 
   publishDocument(file: any) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'document/' + file._id + '/publish', null, { headers: headers });
+    let queryString = 'document/' + file._id + '/publish';
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, file, { });
   }
 
   unPublishDocument(file: any) {
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, 'document/' + file._id + '/unpublish', null, { headers: headers });
+    let queryString = 'document/' + file._id + '/unpublish';
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, file, { });
   }
 
   uploadDocument(formData: FormData) {
@@ -646,42 +648,44 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, formData, { headers: headers });
+    return this.http.post<Document>(`${this.pathAPI}/${queryString}`, formData, { });
   }
 
-  downloadDocument(document: Document): Subscription {
-    return this.getDocumentBlob(document)
-      .subscribe((value: Blob) => {
-        const blob = new Blob([value], { type: document.internalMime });
-        FileSaver.saveAs(blob, document.documentFileName);
-      });
+  public async downloadResource(id: string): Promise<Blob> {
+    const queryString = 'document/' + id + '/download';
+    const file = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json'}).toPromise();
+    return file;
   }
 
-  // NB: for IE, this behaves the same as downloadDocument()
-  openDocument(document: Document): Subscription {
-    return this.getDocumentBlob(document)
-      .subscribe((value: Blob) => {
-        if (this.isMS) {
-          // IE has its own API for creating and downloading files
-          window.navigator.msSaveOrOpenBlob(value, document.documentFileName);
-        } else {
-          const tab = window.open();
-          // not supported by IE due to security restrictions
-          const fileURL = URL.createObjectURL(value);
-          tab.location.href = fileURL;
-        }
-      });
+  public async downloadFile(document: Document): Promise<void> {
+    const blob = await this.downloadResource(document._id);
+    const filename = document.documentFileName;
+
+    if (this.isMS) {
+      window.navigator.msSaveBlob(blob, filename);
+    } else {
+      const url = window.URL.createObjectURL(blob);
+      const a = window.document.createElement('a');
+      window.document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    }
   }
 
-  private getDocumentBlob(document: Document): Observable<Blob> {
-    const queryString = 'document/' + document._id + '/download';
-    const headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token });
-    const options = new RequestOptions({ responseType: ResponseContentType.Blob, headers });
-    return this.http.get(this.pathAPI + '/' + queryString, options)
-      .map((value: Response) => {
-        return new Blob([value.blob()], { type: document.internalMime });
-      });
+  public async openFile(document: Document): Promise<void> {
+    const blob = await this.downloadResource(document._id);
+    const filename = document.documentFileName;
+    if (this.isMS) {
+      window.navigator.msSaveBlob(blob, filename);
+    } else {
+      const tab = window.open();
+      const fileURL = URL.createObjectURL(blob);
+      tab.location.href = fileURL;
+    }
   }
 
   //
@@ -689,17 +693,17 @@ export class ApiService {
   //
   getAppsByCLID(clid: string) {
     const queryString = 'public/search/bcgw/crownLandsId/' + clid;
-    return this.get(this.pathAPI, queryString);
+    return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, { });
   }
 
   getAppsByDTID(dtid: number) {
     const queryString = 'public/search/bcgw/dispositionTransactionId/' + dtid;
-    return this.get(this.pathAPI, queryString);
+    return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, { });
   }
 
   getClientsByDTID(dtid: number) {
     const queryString = 'public/search/bcgw/getClientsInfoByDispositionId/' + dtid;
-    return this.get(this.pathAPI, queryString);
+    return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, { });
   }
 
   //
@@ -713,8 +717,7 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.get(this.pathAPI, queryString, { headers: headers });
+    return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, { });
   }
 
   saveUser(user: User) {
@@ -725,8 +728,7 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.put(this.pathAPI, queryString, user, { headers: headers });
+    return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, { });
   }
 
   addUser(user: User) {
@@ -737,8 +739,7 @@ export class ApiService {
     });
     // Trim the last |
     queryString = queryString.replace(/\|$/, '');
-    const headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    return this.post(this.pathAPI, queryString, user, { headers: headers });
+    return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, { });
   }
 
   //
@@ -751,21 +752,5 @@ export class ApiService {
     });
     // trim the last |
     return values.replace(/\|$/, '');
-  }
-
-  private get(apiPath: string, apiRoute: string, options?: Object) {
-    return this.http.get(`${apiPath}/${apiRoute}`, options || null);
-  }
-
-  private put(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
-    return this.http.put(`${apiPath}/${apiRoute}`, body || null, options || null);
-  }
-
-  private post(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
-    return this.http.post(`${apiPath}/${apiRoute}`, body || null, options || null);
-  }
-
-  private delete(apiPath: string, apiRoute: string, body?: Object, options?: Object) {
-    return this.http.delete(`${apiPath}/${apiRoute}`, options || null);
   }
 }

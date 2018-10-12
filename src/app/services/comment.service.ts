@@ -4,7 +4,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import { of, forkJoin } from 'rxjs';
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
@@ -33,7 +33,7 @@ export class CommentService {
     return this.commentPeriodService.getAllByApplicationId(appId)
       .mergeMap(periods => {
         if (periods.length === 0) {
-          return Observable.of(0);
+          return of(0);
         }
 
         // count comments for first comment period only
@@ -62,7 +62,7 @@ export class CommentService {
     return this.commentPeriodService.getAllByApplicationId(appId)
       .mergeMap(periods => {
         if (periods.length === 0) {
-          return Observable.of([] as Comment[]);
+          return of([] as Comment[]);
         }
 
         // get comments for first comment period only
@@ -88,27 +88,19 @@ export class CommentService {
   // TODO: count only pending comments? (need comment status)
   getCountByPeriodId(periodId: string): Observable<number> {
     return this.api.getCommentsByPeriodIdNoFields(periodId)
-      .map(res => {
-        const comments = res.text() ? res.json() : [];
-        comments.forEach((comment, i) => {
-          comments[i] = new Comment(comment);
-        });
-        return comments.length;
-      })
-      .catch(this.api.handleError);
+    .catch(this.api.handleError);
+  }
+
+  // get count of comments for the specified comment period id
+  getCommentsByPeriodId(periodId: string): Observable<Comment[]> {
+    return this.api.getCommentsByPeriodIdNoFields(periodId)
+    .catch(this.api.handleError);
   }
 
   // get all comments for the specified comment period id
   // (without documents)
   getAllByPeriodId(periodId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null): Observable<Comment[]> {
     return this.api.getCommentsByPeriodId(periodId, pageNum, pageSize, sortBy)
-      .map(res => {
-        const comments = res.text() ? res.json() : [];
-        comments.forEach((comment, i) => {
-          comments[i] = new Comment(comment);
-        });
-        return comments;
-      })
       .map((comments: Comment[]) => {
         if (comments.length === 0) {
           return [] as Comment[];
@@ -125,27 +117,25 @@ export class CommentService {
         });
 
         return comments;
-      })
-      .catch(this.api.handleError);
+      });
   }
 
   // get a specific comment by its id
   // (including documents)
   getById(commentId: string, forceReload: boolean = false): Observable<Comment> {
     if (this.comment && this.comment._id === commentId && !forceReload) {
-      return Observable.of(this.comment);
+      return of(this.comment);
     }
 
     // first get the comment data
     return this.api.getComment(commentId)
       .map(res => {
-        const comments = res.text() ? res.json() : [];
         // return the first (only) comment
-        return comments.length > 0 ? new Comment(comments[0]) : null;
+        return new Comment(res[0]);
       })
       .mergeMap(comment => {
         if (!comment) {
-          return Observable.of(null as Comment);
+          return of(null as Comment);
         }
 
         // replace \\n (JSON format) with newlines
@@ -165,8 +155,7 @@ export class CommentService {
           this.comment = comment;
           return this.comment;
         });
-      })
-      .catch(this.api.handleError);
+      });
   }
 
   add(orig: Comment): Observable<Comment> {
@@ -187,12 +176,7 @@ export class CommentService {
       comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\n/g, '\\n');
     }
 
-    return this.api.addComment(comment)
-      .map(res => {
-        const c = res.text() ? res.json() : null;
-        return c ? new Comment(c) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.addComment(comment);
   }
 
   save(orig: Comment): Observable<Comment> {
@@ -210,30 +194,15 @@ export class CommentService {
       comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\n/g, '\\n');
     }
 
-    return this.api.saveComment(comment)
-      .map(res => {
-        const c = res.text() ? res.json() : null;
-        return c ? new Comment(c) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.saveComment(comment);
   }
 
   publish(comment: Comment): Observable<Comment> {
-    return this.api.publishComment(comment)
-      .map(res => {
-        const c = res.text() ? res.json() : null;
-        return c ? new Comment(c) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.publishComment(comment);
   }
 
   unPublish(comment: Comment): Observable<Comment> {
-    return this.api.unPublishComment(comment)
-      .map(res => {
-        const c = res.text() ? res.json() : null;
-        return c ? new Comment(c) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.unPublishComment(comment);
   }
 
   isAccepted(comment: Comment): boolean {

@@ -3,7 +3,7 @@ import { Document } from './document';
 
 export class Decision {
   _id: string;
-  _addedBy: string; // objectid -> User
+  _addedBy: string;
   _application: string; // objectid -> Application
   code: string;
   name: string;

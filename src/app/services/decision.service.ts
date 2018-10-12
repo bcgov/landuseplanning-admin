@@ -6,11 +6,15 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
+import { of, forkJoin } from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
+
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
 import { DocumentService } from './document.service';
 import { Decision } from 'app/models/decision';
+import { Document } from 'app/models/document';
 
 @Injectable()
 export class DecisionService {
@@ -22,75 +26,56 @@ export class DecisionService {
   ) { }
 
   // get decision for the specified application id
-  getByApplicationId(appId: string, forceReload: boolean = false): Observable<Decision> {
-    if (this.decision && this.decision._application === appId && !forceReload) {
-      return Observable.of(this.decision);
-    }
+  getByApplicationId(appId: string, forceReload: boolean = true): Observable<Decision> {
+    const self = this;
 
-    // first get the decision data
+    // Get the decision
     return this.api.getDecisionByAppId(appId)
-      .map(res => {
-        const decisions = res.text() ? res.json() : [];
-        // return the first (only) decision
-        return decisions.length > 0 ? new Decision(decisions[0]) : null;
-      })
-      .mergeMap(decision => {
-        if (!decision) {
-          return Observable.of(null as Decision);
+    .pipe(
+      flatMap(res => {
+        if (res && res.length > 0) {
+          this.decision = new Decision(res[0]);
+          // Then get the documents for this decision
+          return this.documentService.getAllByDecisionId(this.decision._id)
+          .pipe(
+            map(documents => {
+              _.each(documents, function (d) {
+                self.decision.documents.push(new Document(d));
+              });
+              return this.decision;
+            })
+          );
+        } else {
+          return of(null);
         }
-
-        // replace \\n (JSON format) with newlines
-        if (decision.description) {
-          decision.description = decision.description.replace(/\\n/g, '\n');
-        }
-
-        // now get the decision documents
-        const promise = this.documentService.getAllByDecisionId(decision._id)
-          .toPromise()
-          .then(documents => decision.documents = documents);
-
-        return Promise.resolve(promise).then(() => {
-          this.decision = decision;
-          return decision;
-        });
       })
-      .catch(this.api.handleError);
+    );
   }
 
   // get a specific decision by its id
   getById(decisionId, forceReload: boolean = false): Observable<Decision> {
+    const self = this;
     if (this.decision && this.decision._id === decisionId && !forceReload) {
-      return Observable.of(this.decision);
+      return of(this.decision);
     }
 
-    // first get the decision data
+    // Get the decision
     return this.api.getDecision(decisionId)
-      .map(res => {
-        const decisions = res.text() ? res.json() : [];
-        // return the first (only) decision
-        return decisions.length > 0 ? new Decision(decisions[0]) : null;
+    .pipe(
+      flatMap(res => {
+        this.decision = new Decision(res[0]);
+        // Then get the documents for this decision
+        return this.documentService.getAllByDecisionId(this.decision._id)
+        .pipe(
+          map(documents => {
+            _.each(documents, function (d) {
+              self.decision.documents.push(new Document(d));
+            });
+            return this.decision;
+          })
+        );
       })
-      .mergeMap(decision => {
-        if (!decision) {
-          return Observable.of(null as Decision);
-        }
-
-        // replace \\n (JSON format) with newlines
-        if (decision.description) {
-          decision.description = decision.description.replace(/\\n/g, '\n');
-        }
-
-        // now get the decision documents
-        const promise = this.documentService.getAllByDecisionId(decision._id)
-          .toPromise()
-          .then(documents => decision.documents = documents);
-
-        return Promise.resolve(promise).then(() => {
-          this.decision = decision;
-          return decision;
-        });
-      })
-      .catch(this.api.handleError);
+    );
   }
 
   add(orig: Decision): Observable<Decision> {
@@ -108,12 +93,7 @@ export class DecisionService {
       decision.description = decision.description.replace(/\n/g, '\\n');
     }
 
-    return this.api.addDecision(decision)
-      .map(res => {
-        const c = res.text() ? res.json() : null;
-        return c ? new Decision(c) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.addDecision(decision);
   }
 
   save(orig: Decision): Observable<Decision> {
@@ -128,38 +108,18 @@ export class DecisionService {
       decision.description = decision.description.replace(/\n/g, '\\n');
     }
 
-    return this.api.saveDecision(decision)
-      .map(res => {
-        const d = res.text() ? res.json() : null;
-        return d ? new Decision(d) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.saveDecision(decision);
   }
 
   delete(decision: Decision): Observable<Decision> {
-    return this.api.deleteDecision(decision)
-      .map(res => {
-        const d = res.text() ? res.json() : null;
-        return d ? new Decision(d) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.deleteDecision(decision);
   }
 
   publish(decision: Decision): Observable<Decision> {
-    return this.api.publishDecision(decision)
-      .map(res => {
-        const d = res.text() ? res.json() : null;
-        return d ? new Decision(d) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.publishDecision(decision);
   }
 
   unPublish(decision: Decision): Observable<Decision> {
-    return this.api.unPublishDecision(decision)
-      .map(res => {
-        const d = res.text() ? res.json() : null;
-        return d ? new Decision(d) : null;
-      })
-      .catch(this.api.handleError);
+    return this.api.unPublishDecision(decision);
   }
 }

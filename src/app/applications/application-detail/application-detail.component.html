@@ -2,7 +2,7 @@
   <div class="container">
     <div class="title-container">
       <div class="title-container__title">
-        <h1>Crown land File: {{application['clFile']}}</h1>
+        <h1>Crown land File: {{application.cl_file}}</h1>
         <span class="title-container__sub text-muted">Disposition Transaction: {{application.tantalisID}}</span>
       </div>
       <div class="title-container__actions">
@@ -106,17 +106,17 @@
                   <ul class="doc-list">
                     <li *ngFor="let doc of application.documents">
                       <span class="cell icon">
-                        <i class="material-icons link" (click)="api.openDocument(doc)">
+                        <i class="material-icons link" (click)="api.openFile(doc)">
                           insert_drive_file
                         </i>
                       </span>
                       <span class="cell name" [title]="doc.displayName || ''">
                         <span class="cell__txt-content">
-                          <a (click)="api.openDocument(doc)">{{doc.documentFileName}}</a>
+                          <a (click)="api.openFile(doc)">{{doc.documentFileName}}</a>
                         </span>
                       </span>
                       <span class="cell actions">
-                        <button class="btn btn-icon" type="button" title="Download this document" (click)="api.downloadDocument(doc)">
+                      <button class="btn btn-icon" type="button" title="Download this document" (click)="api.downloadFile(doc)">
                           <i class="material-icons">file_download</i>
                         </button>
                       </span>
@@ -220,17 +220,17 @@
               <ul class="doc-list">
                 <li *ngFor="let doc of application.decision.documents">
                   <span class="cell icon">
-                    <i class="material-icons link" (click)="api.openDocument(doc)">
+                    <i class="material-icons link" (click)="api.openFile(doc)">
                       insert_drive_file
                     </i>
                   </span>
                   <span class="cell name" [title]="doc.displayName || ''">
                       <span class="cell__txt-content">
-                        <a (click)="api.openDocument(doc)">{{doc.documentFileName}}</a>
+                        <a (click)="api.openFile(doc)">{{doc.documentFileName}}</a>
                       </span>
                   </span>
                   <span class="cell actions">
-                    <button class="btn btn-icon" title="Download this document" (click)="api.downloadDocument(doc)">
+                    <button class="btn btn-icon" title="Download this document" (click)="api.downloadFile(doc)">
                       <i class="material-icons">file_download</i>
                     </button>
                   </span>

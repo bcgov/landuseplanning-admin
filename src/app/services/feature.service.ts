@@ -13,28 +13,12 @@ export class FeatureService {
 
   getByDTID(tantalisId: number): Observable<Feature[]> {
     return this.api.getFeaturesByTantalisId(tantalisId)
-      .map(res => {
-        const features = res.text() ? res.json() : [];
-        const farray = [];
-        features.forEach((feature, index) => {
-          farray[index] = new Feature(feature);
-        });
-        return farray;
-      })
-      .catch(this.api.handleError);
+    .catch(this.api.handleError);
   }
 
   getByApplicationId(applicationId: string): Observable<Feature[]> {
     return this.api.getFeaturesByApplicationId(applicationId)
-      .map(res => {
-        const features = res.text() ? res.json() : [];
-        const farray = [];
-        features.forEach((feature, index) => {
-          farray[index] = new Feature(feature);
-        });
-        return farray;
-      })
-      .catch(this.api.handleError);
+    .catch(this.api.handleError);
   }
 
   deleteByApplicationId(applicationId: string): Observable<Feature[]> {

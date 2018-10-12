@@ -46,7 +46,7 @@ class Review {
 
 export class Comment {
   _id: string;
-  _addedBy: string; // object id -> User
+  _addedBy: string;
   _commentPeriod: string; // object id -> CommentPeriod
   commentNumber: number;
   comment: string;

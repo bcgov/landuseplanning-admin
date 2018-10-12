@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { ApplicationService } from 'app/services/application.service';
 import { Application } from 'app/models/application';
 
+import { of, forkJoin } from 'rxjs';
+
 @Injectable()
 export class ApplicationDetailResolver implements Resolve<Application> {
 
@@ -37,16 +39,10 @@ export class ApplicationDetailResolver implements Resolve<Application> {
         app['clFile'] = app.cl_file.toString().padStart(7, '0');
       }
 
-      return Observable.of(app);
+      return of(app);
     }
 
     // view/edit existing application
-    // force-reload so we always have latest data
-    return this.applicationService.getById(appId, true)
-      .catch(error => {
-        // if 403, redir to login page
-        if (error && error.status === 403) { this.router.navigate(['/login']); }
-        return Observable.of(null);
-      });
+    return this.applicationService.getById(appId);
   }
 }

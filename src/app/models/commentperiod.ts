@@ -9,6 +9,7 @@ export class CommentPeriod {
   _id: string;
   _addedBy: string;
   _application: string;
+  description: string;
   code: string;
   startDate: Date;
   endDate: Date;
@@ -33,6 +34,10 @@ export class CommentPeriod {
           self.isPublished = true;
         }
       });
+    }
+
+    if (obj && obj.description) {
+      this.description = obj.description.replace(/\\n/g, '\n');
     }
   }
 }

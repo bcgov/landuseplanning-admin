@@ -1,11 +1,10 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Ng2PageScrollModule } from 'ng2-page-scroll';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -32,16 +31,22 @@ import { DecisionService } from 'app/services/decision.service';
 import { UserService } from 'app/services/user.service';
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 import { ConfigService } from 'app/services/config.service';
+import { KeycloakService } from 'app/services/keycloak.service';
 
 // feature modules
 import { ApplicationsModule } from 'app/applications/applications.module';
 import { CommentingModule } from 'app/commenting/commenting.module';
 import { HeaderComponent } from 'app/header/header.component';
 import { FooterComponent } from 'app/footer/footer.component';
+import { SelectOrganizationComponent } from 'app/applications/select-organization/select-organization.component';
+import { TokenInterceptor } from './utils/token-interceptor';
 import { AdministrationComponent } from 'app/administration/administration.component';
 import { UsersComponent } from 'app/administration/users/users.component';
 import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
-import { SelectOrganizationComponent } from 'app/applications/select-organization/select-organization.component';
+
+export function kcFactory(keycloakService: KeycloakService) {
+  return () => keycloakService.init();
+}
 
 @NgModule({
   declarations: [
@@ -61,17 +66,28 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     SharedModule,
     ApplicationsModule,
     CommentingModule,
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     NgbModule.forRoot(),
     NgxPaginationModule,
-    Ng2PageScrollModule.forRoot(),
-    BootstrapModalModule
+    BootstrapModalModule.forRoot({container: document.body})
   ],
   providers: [
+    KeycloakService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: kcFactory,
+      deps: [KeycloakService],
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
     CookieService,
     SearchService,
     FeatureService,
@@ -93,4 +109,8 @@ import { SelectOrganizationComponent } from 'app/applications/select-organizatio
   bootstrap: [AppComponent]
 })
 
-export class AppModule { }
+export class AppModule {
+  constructor(applicationRef: ApplicationRef) {
+    Object.defineProperty(applicationRef, '_rootComponents', {get: () => applicationRef['components']});
+  }
+}

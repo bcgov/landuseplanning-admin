@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 export class Document {
   _id: string;
-  _addedBy: string; // objectid -> User
+  _addedBy: string;
   _application: string; // objectid -> Application
   _decision: string; // objectid -> Decision
   _comment: string; // objectid -> Comment

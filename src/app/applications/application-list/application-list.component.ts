@@ -9,6 +9,7 @@ import { Application } from 'app/models/application';
 import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { CommentService } from 'app/services/comment.service';
 
 @Component({
   selector: 'app-application-list',
@@ -31,7 +32,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
-    public commentPeriodService: CommentPeriodService
+    public commentPeriodService: CommentPeriodService,
+    private commentService: CommentService
   ) { }
 
   ngOnInit() {
@@ -39,6 +41,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     if (!this.api.ensureLoggedIn()) {
       return false;
     }
+
+    const self = this;
 
     // get optional query parameters
     this.route.queryParamMap
@@ -56,6 +60,22 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       .subscribe(applications => {
         this.loading = false;
         this.applications = applications;
+        applications.forEach(app => {
+          self.commentPeriodService.getAllByApplicationId(app._id)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(cp => {
+            app.currentPeriod = cp[0];
+            app['cpStatus'] = self.commentPeriodService.getStatus(app.currentPeriod);
+
+            if (app.currentPeriod && app.currentPeriod._id) {
+              self.commentService.getCommentsByPeriodId(app.currentPeriod._id)
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe(comments => {
+                app['numComments'] = comments.length;
+              });
+            }
+          });
+        });
       }, error => {
         this.loading = false;
         console.log(error);

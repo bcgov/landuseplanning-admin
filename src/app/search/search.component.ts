@@ -76,7 +76,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.keywords = this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' '))) || []; // safety checks
     this.groupByResults.length = 0; // empty the list
 
-    this.searchService.getByClidDtid(this.keywords, true)
+    this.searchService.getByClidDtid(this.keywords)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         search => {

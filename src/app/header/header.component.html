@@ -24,7 +24,7 @@
             <a class="dropdown-item" *ngIf="renderMenu('administration')" routerLink="/administration">
               <strong>Administration</strong>
             </a>
-            <a class="dropdown-item" routerLink="/login">
+            <a class="dropdown-item" (click)="navigateToLogout()">
               <strong>Logout</strong>
             </a>
           </div>

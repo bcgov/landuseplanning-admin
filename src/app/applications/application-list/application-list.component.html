@@ -39,7 +39,7 @@
             <th class="application-table__status-col sortable" (click)="sort('appStatus')">Status
               <i class="sort" [ngClass]="{'sort-asc': (column == 'appStatus' && direction < 0), 'sort-desc': (column == 'appStatus' && direction > 0) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__commenting-col sortable" (click)="sort('cpStatus')">PRC Status
+            <th class="application-table__commenting-col sortable" (click)="sort('appStatus')">PRC Status
               <i class="sort" [ngClass]="{'sort-asc': (column == 'cpStatus' && direction < 0), 'sort-desc': (column == 'cpStatus' && direction > 0) }" aria-hidden="true"></i>
             </th>
           </tr>
@@ -56,11 +56,11 @@
                   </a>
                   <span class="accordion__collapse-header--column application-table__name-col">{{item.client || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__cl_file-col">
-                    <a [routerLink]="['/a', item._id]">{{item['clFile'] || '-'}}</a>
+                    <a [routerLink]="['/a', item._id]">{{item.cl_file || '-'}}</a>
                   </span>
                   <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
-                  <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
-                  <span class="accordion__collapse-header--column application-table__status-col">{{item.appStatus || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__region-col">{{applicationService.getRegionString(applicationService.getRegionCode(item.businessUnit)) || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__status-col">{{item.status || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__commenting-col">{{item.cpStatus}}</span>
                 </div>
 

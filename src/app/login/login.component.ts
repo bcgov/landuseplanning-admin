@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api';
+import { KeycloakService } from 'app/services/keycloak.service';
 
 @Component({
     selector: 'app-login',
@@ -16,12 +17,15 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private api: ApiService
+        private api: ApiService,
+        private keycloakService: KeycloakService
     ) { }
 
     ngOnInit() {
-        // reset login status
-        this.api.logout();
+        // Redir to the main index page if they try to get here.
+        if (this.keycloakService.isKeyCloakEnabled()) {
+            this.router.navigate(['/']);
+        }
     }
 
     login() {

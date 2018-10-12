@@ -8,7 +8,6 @@ export class User {
   roles: Array<Array<string>>;
 
   constructor(obj?: any) {
-    console.log('o:', obj);
     this._id         = obj && obj._id          || null;
     this.username    = obj && obj.username     || null;
     this.displayName = obj && obj.displayName  || null;

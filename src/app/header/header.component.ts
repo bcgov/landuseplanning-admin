@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from 'app/services/api';
 import { JwtUtil } from 'app/jwt-util';
+import { KeycloakService } from 'app/services/keycloak.service';
 
 @Component({
   selector: 'app-header',
@@ -14,16 +15,25 @@ export class HeaderComponent {
   private _api: ApiService;
   private jwt: {
     username: String,
+    realm_access: {
+      roles: Array<String>
+    }
     scopes: Array<String>
   };
 
-  constructor(private api: ApiService, private router: Router) {
+  constructor(private api: ApiService,
+              private keycloakService: KeycloakService,
+              private router: Router) {
     this._api = api;
     router.events.subscribe((val) => {
+      const token = this.keycloakService.getToken();
       // TODO: Change this to observe the change in the _api.token
-      if (val instanceof NavigationEnd && val.url !== '/login' && this._api.token) {
-        const jwt = new JwtUtil().decodeToken(this._api.token);
-        this.welcomeMsg = jwt ? ('Hello ' + jwt.username) : 'Login';
+      if (token) {
+        // console.log("token:", token);
+        const jwt = new JwtUtil().decodeToken(token);
+        // console.log("jwt:", jwt);
+        this.welcomeMsg = jwt ? ('Hello ' + jwt.name) : 'Login';
+        // console.log("this:", this.welcomeMsg);
         this.jwt = jwt;
       } else {
         this.welcomeMsg = 'Login';
@@ -36,7 +46,13 @@ export class HeaderComponent {
   renderMenu(route: String) {
     // Sysadmin's get administration.
     if (route === 'administration') {
-      return (this.jwt && this.jwt.scopes.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
+      return (this.jwt && this.jwt.realm_access.roles.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
     }
+  }
+
+  navigateToLogout() {
+    // reset login status
+    this.api.logout();
+    window.location.href = this.keycloakService.getLogoutURL();
   }
 }

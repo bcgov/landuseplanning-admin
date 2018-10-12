@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { User } from 'app/models/user';
 import { ApiService } from 'app/services/api';
 import { UserService } from 'app/services/user.service';
-import { AddEditUserComponent } from './add-edit-user/add-edit-user.component';
+import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
 
 @Component({
   selector: 'app-users',
@@ -35,13 +35,15 @@ export class UsersComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
-      return false;
+    return false;
     }
 
     this.refreshUsersUI();
   }
 
   refreshUsersUI() {
+    this.sysadmins = [];
+    this.standards = [];
     this.userService.getAll()
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
@@ -49,7 +51,7 @@ export class UsersComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.users = data;
           const self = this;
-          console.log('roles:', data);
+          // console.log('roles:', data);
           _.each(data, function (i) {
             if (_.some(i.roles, _.method('includes', 'sysadmin'))) {
               self.sysadmins.push(i);
@@ -63,9 +65,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         },
         error => {
           this.loading = false;
-          // if 403, redir to login page
-          if (error && error.status === 403) { this.router.navigate(['/login']); }
-          alert('Error loading users');
+          this.api.ensureLoggedIn();
         });
   }
 

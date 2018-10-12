@@ -35,8 +35,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       .subscribe(
         value => { this.numApplications = value; },
         error => {
-          console.log('error =', 'could not count applications');
-          this.router.navigate(['login']);
+          // console.log('error =', 'could not count applications');
+          this.api.ensureLoggedIn();
         }
       );
   }
