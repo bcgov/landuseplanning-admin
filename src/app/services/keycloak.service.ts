@@ -31,12 +31,12 @@ export class KeycloakService {
           clientId: 'prc-admin-console'
         };
 
-        console.log('KC Auth init.');
+        // console.log('KC Auth init.');
 
         self.keycloakAuth = new Keycloak(config);
 
         self.keycloakAuth.onAuthSuccess = function() {
-          console.log('onAuthSuccess');
+          // console.log('onAuthSuccess');
         };
 
         self.keycloakAuth.onAuthError = function() {
@@ -44,7 +44,7 @@ export class KeycloakService {
         };
 
         self.keycloakAuth.onAuthRefreshSuccess  = function() {
-          console.log('onAuthRefreshSuccess');
+          // console.log('onAuthRefreshSuccess');
         };
 
         self.keycloakAuth.onAuthRefreshError  = function() {
@@ -52,15 +52,15 @@ export class KeycloakService {
         };
 
         self.keycloakAuth.onAuthLogout  = function() {
-          console.log('onAuthLogout');
+          // console.log('onAuthLogout');
         };
 
         // Try to get refresh tokens in the background
         self.keycloakAuth.onTokenExpired  = function() {
-          console.log('onTokenExpired, attempting to refresh.');
+          // console.log('onTokenExpired, attempting to refresh.');
           self.keycloakAuth.updateToken()
           .success(function (auth) {
-            console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+            // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
           })
           .error((err) => {
             console.log('KC error:', err);
@@ -70,8 +70,8 @@ export class KeycloakService {
         // Initialize.
         self.keycloakAuth.init({ onLoad: 'login-required' })
         .success((auth) => {
-            console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
-            console.log('KC Success:', auth);
+          // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+          // console.log('KC Success:', auth);
           resolve();
         })
         .error((err) => {
@@ -88,7 +88,7 @@ export class KeycloakService {
       const self = this;
       this.keycloakAuth.updateToken()
       .success(function (auth) {
-        console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+        // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
         return true;
       })
       .error((err) => {
@@ -96,7 +96,7 @@ export class KeycloakService {
         return false;
       });
     } else {
-      console.log('redir to login');
+      // console.log('redir to login');
       window.location.href = window.location.origin + '/admin/login';
     }
   }
