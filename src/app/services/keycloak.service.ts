@@ -97,7 +97,7 @@ export class KeycloakService {
       });
     } else {
       console.log('redir to login');
-      return window.location.origin + '/admin/login';
+      window.location.href = window.location.origin + '/admin/login';
     }
   }
 
