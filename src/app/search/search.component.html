@@ -6,7 +6,7 @@
       <div class="input-group main-search-field">
         <input class="form-control" type="text" name="keywordInput" id="keywordInput"
             [(ngModel)]="terms.keywords" [disabled]="searching" autofocus/>
-        <div class="input-group-btn">
+        <div class="input-group-append">
           <!-- prevent searching if input is empty or we're already searching -->
           <button class="btn btn-primary" type="submit" [disabled]="!terms.keywords || searching">
             <i class="spinner rotating" [hidden]="!searching"></i>
@@ -57,20 +57,20 @@
               <i class="material-icons">add</i>
               Create
             </button>
-            <div ngbDropdown *ngIf="item.app">
-              <button class="btn btn-sm btn-outline-primary" type="button" ngbDropdownToggle>
+            <div ngbDropdown placement="bottom-right" *ngIf="item.app">
+              <button ngbDropdownToggle class="btn btn-sm btn-outline-primary" type="button">
                 Actions
               </button>
-              <div class="dropdown-menu" ngbDropdownMenu>
-                <button class="list-group-item list-group-item-action" type="button" [routerLink]="['/a', item.app._id]">
+              <div ngbDropdownMenu>
+                <button class="dropdown-item" type="button" [routerLink]="['/a', item.app._id]">
                   <i class="material-icons">insert_drive_file</i>
                   View Application
                 </button>
-                <button class="list-group-item list-group-item-action" type="button" [routerLink]="['/a', item.app._id, 'edit']">
+                <button class="dropdown-item" type="button" [routerLink]="['/a', item.app._id, 'edit']">
                   <i class="material-icons">edit</i>
                   Edit Details
                 </button>
-                <button class="list-group-item list-group-item-action" type="button" [routerLink]="['/comments', item.app._id]">
+                <button class="dropdown-item" type="button" [routerLink]="['/comments', item.app._id]">
                   <i class="material-icons">mode_comment</i>
                   Review Comments
                 </button>

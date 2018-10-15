@@ -21,10 +21,10 @@
           <i class="spinner rotating" [hidden]="!isSaving"></i>
           <span>{{isSaving ? 'Saving' : 'Save'}}</span>
         </button>
-        <button class="btn btn-primary" type="button" title="Publish Changes" 
+        <button class="publish-btn btn btn-primary" type="button" title="Publish Changes" 
           *ngIf="application._id && application.isPublished === true" (click)="saveApplication()" [disabled]="isSaving">
           <i class="spinner rotating" [hidden]="!isSaving"></i>
-          <span>{{isSaving ? 'Publishing Changes' : 'Publish Changes'}}</span>
+          <span>{{isSaving ? 'Publishing' : 'Publish Changes'}}</span>
         </button>
       </div>
     </div>
@@ -43,7 +43,7 @@
               <input class="form-control" placeholder="yyyy-mm-dd" name="date1" ngbDatepicker #date1="ngbDatepicker"
                 [firstDayOfWeek]="7" navigation="arrows" [(ngModel)]="startDate" (ngModelChange)="onStartDateChg($event)"
                 (click)="date1.close(); date2.close();" required aria-required="true">
-              <div class="input-group-btn">
+              <div class="input-group-append">
                 <button class="btn btn-icon" (click)="date1.toggle()" type="button" tabindex="-1">
                   <i class="material-icons">date_range</i>
                 </button>
@@ -65,7 +65,7 @@
               <input class="form-control" placeholder="yyyy-mm-dd" name="date2" ngbDatepicker #date2="ngbDatepicker"
                 [firstDayOfWeek]="7" navigation="arrows" [(ngModel)]="endDate" (ngModelChange)="onEndDateChg($event)"
                 (click)="date1.close(); date2.close();" required aria-required="true">
-              <div class="input-group-btn" tabindex="-1">
+              <div class="input-group-append" tabindex="-1">
                 <button class="btn btn-icon" (click)="date2.toggle()" type="button" tabindex="-1">
                   <i class="material-icons">date_range</i>
                 </button>

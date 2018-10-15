@@ -115,7 +115,6 @@
     }
 
     .dropdown-menu {
-      margin-top: -0.4rem;
       padding-top: 0;
       border: none;
       border-radius: 0;
@@ -157,6 +156,10 @@
   }
 }
 
+.navbar-collapse {
+  overflow: hidden;
+}
+
 @media (min-width: 768px) {
   .navbar {
     background: transparent;
@@ -179,9 +182,13 @@
 
       > li {
         .dropdown-menu {
+          top: 100% !important;
+          right: 0;
+          left: auto !important;
           margin: 0;
+          width: auto !important;
+          min-width: 10rem;
           padding: 0.5rem;
-          min-width: 16rem;
           background-color: #002663;
           &.dm-sm {
             min-width: 12rem;
@@ -208,6 +215,7 @@
               background-color: #002663;
               border: none;
             }
+
             .dropdown-menu {
               display: block;
             }
@@ -218,6 +226,8 @@
   }
 
   .navbar-collapse {
+    overflow: visible;
+    height: auto !important;
     flex-grow: 0;
   }
 }

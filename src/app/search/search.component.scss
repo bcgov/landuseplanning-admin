@@ -107,14 +107,14 @@ $sr-table-row-bg: #f7f8fa;
 }
 
 .actions {
-  width: 8rem;
+  width: 9rem;
   text-align: right;
   padding-top: 0;
   padding-bottom: 0;
 
   .btn {
     margin-top: -0.35rem;
-    min-width: 6rem;
+    width: 6rem;
     border-width: 2px;
     font-weight: 700;
   }
@@ -179,18 +179,7 @@ $cl-arrow-font-color: #fff;
   }
 }
 
-// Dropdown Menus
-.dropdown {
-  &.show {
-    .dropdown-menu {
-      display: block;
-    }
-  }
-}
-
 .dropdown-menu {
-  left: auto;
-  right: 0;
   padding-top: 0;
   padding-bottom: 0;
   border: none;
@@ -198,9 +187,17 @@ $cl-arrow-font-color: #fff;
   font-size: 0.875rem;
 
   button {
+    padding: 0.5rem 1rem;
     color: #007bff;
-    background: #fff;
-    white-space: nowrap;
+
+    i {
+      margin-top: -0.15rem;
+      vertical-align: middle;
+      margin-right: 0.25rem;
+      margin-left: -0.25rem;
+      font-size: 1.25rem;
+      width: 1.5rem;
+    }
 
     &:hover {
       color: #fff;
@@ -209,15 +206,12 @@ $cl-arrow-font-color: #fff;
   }
 }
 
+.dropdown-item:first-child {
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+}
 
-// Buttons w/ Icons
-.btn,
-.list-group-item {
-  i {
-    margin-top: -0.15rem;
-    vertical-align: middle;
-    margin-right: 0.25rem;
-    margin-left: -0.25rem;
-    font-size: 1.25rem;
-  }
+.dropdown-item:last-child {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }

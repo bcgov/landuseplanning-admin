@@ -23,16 +23,6 @@
 
   i {
     vertical-align: middle;
-    + span {
-      vertical-align: middle;
-    }
-  }
-
-  span {
-    vertical-align: middle;
-    + i {
-      vertical-align: middle;
-    }
   }
 
   &:disabled {
