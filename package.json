@@ -50,7 +50,7 @@
     "rxjs-compat": "^6.3.2",
     "tslint": "^5.11.0",
     "web-animations-js": "^2.3.1",
-    "xlsx": "^0.12.6",
+    "xlsx": "^0.14.0",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
