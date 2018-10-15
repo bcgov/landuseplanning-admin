@@ -44,12 +44,12 @@ export class SearchService {
   // get search results by CL File #
   getByCLID(clid: string): Observable<SearchResults> {
     return this.api.getAppsByCLID(clid)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   // get search results by Disposition Transaction ID
   getByDTID(dtid: number): Observable<SearchResults> {
     return this.api.getAppsByDTID(dtid)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 }

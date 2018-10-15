@@ -14,16 +14,16 @@ export class UserService {
 
   getAll(): Observable<User[]> {
     return this.api.getAllUsers()
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   save(user: User): Observable<User> {
     return this.api.saveUser(user)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   add(user: User): Observable<User> {
     return this.api.addUser(user)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 }

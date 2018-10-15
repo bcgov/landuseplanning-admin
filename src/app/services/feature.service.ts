@@ -13,12 +13,12 @@ export class FeatureService {
 
   getByDTID(tantalisId: number): Observable<Feature[]> {
     return this.api.getFeaturesByTantalisId(tantalisId)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   getByApplicationId(applicationId: string): Observable<Feature[]> {
     return this.api.getFeaturesByApplicationId(applicationId)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   deleteByApplicationId(applicationId: string): Observable<Feature[]> {

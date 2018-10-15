@@ -35,49 +35,49 @@ export class KeycloakService {
 
         self.keycloakAuth = new Keycloak(config);
 
-        self.keycloakAuth.onAuthSuccess = function() {
+        self.keycloakAuth.onAuthSuccess = function () {
           // console.log('onAuthSuccess');
         };
 
-        self.keycloakAuth.onAuthError = function() {
+        self.keycloakAuth.onAuthError = function () {
           console.log('onAuthError');
         };
 
-        self.keycloakAuth.onAuthRefreshSuccess  = function() {
+        self.keycloakAuth.onAuthRefreshSuccess = function () {
           // console.log('onAuthRefreshSuccess');
         };
 
-        self.keycloakAuth.onAuthRefreshError  = function() {
+        self.keycloakAuth.onAuthRefreshError = function () {
           console.log('onAuthRefreshError');
         };
 
-        self.keycloakAuth.onAuthLogout  = function() {
+        self.keycloakAuth.onAuthLogout = function () {
           // console.log('onAuthLogout');
         };
 
         // Try to get refresh tokens in the background
-        self.keycloakAuth.onTokenExpired  = function() {
+        self.keycloakAuth.onTokenExpired = function () {
           // console.log('onTokenExpired, attempting to refresh.');
           self.keycloakAuth.updateToken()
-          .success(function (auth) {
-            // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
-          })
-          .error((err) => {
-            console.log('KC error:', err);
-          });
+            .success(function (auth) {
+              // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+            })
+            .error((err) => {
+              console.log('KC error:', err);
+            });
         };
 
         // Initialize.
         self.keycloakAuth.init({ onLoad: 'login-required' })
-        .success((auth) => {
-          // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
-          // console.log('KC Success:', auth);
-          resolve();
-        })
-        .error((err) => {
-          console.log('KC error:', err);
-          reject();
-        });
+          .success((auth) => {
+            // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+            // console.log('KC Success:', auth);
+            resolve();
+          })
+          .error((err) => {
+            console.log('KC error:', err);
+            reject();
+          });
       });
     }
   };
@@ -87,14 +87,14 @@ export class KeycloakService {
       console.log('updating KC Token');
       const self = this;
       this.keycloakAuth.updateToken()
-      .success(function (auth) {
-        // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
-        return true;
-      })
-      .error((err) => {
-        console.log('KC error:', err);
-        return false;
-      });
+        .success(function (auth) {
+          // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+          return true;
+        })
+        .error((err) => {
+          console.log('KC error:', err);
+          return false;
+        });
     } else {
       // console.log('redir to login');
       window.location.href = window.location.origin + '/admin/login';

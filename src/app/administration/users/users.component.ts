@@ -35,7 +35,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // if we're not logged in, redirect
     if (!this.api.ensureLoggedIn()) {
-    return false;
+      return false;
     }
 
     this.refreshUsersUI();

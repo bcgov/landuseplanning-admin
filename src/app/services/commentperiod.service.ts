@@ -34,7 +34,7 @@ export class CommentPeriodService {
   // get all comment periods for the specified application id
   getAllByApplicationId(appId: string): Observable<CommentPeriod[]> {
     return this.api.getPeriodsByAppId(appId)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   // get a specific comment period by its id
@@ -63,7 +63,7 @@ export class CommentPeriodService {
     }
 
     return this.api.addCommentPeriod(period)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   save(orig: CommentPeriod): Observable<CommentPeriod> {
@@ -71,7 +71,7 @@ export class CommentPeriodService {
     const period = _.cloneDeep(orig);
 
     return this.api.saveCommentPeriod(period)
-    .catch(this.api.handleError);
+      .catch(this.api.handleError);
   }
 
   delete(period: CommentPeriod): Observable<CommentPeriod> {
