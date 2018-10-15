@@ -7,7 +7,7 @@ export class Decision {
   _application: string; // objectid -> Application
   code: string;
   name: string;
-  description: string;
+  description: string = null;
 
   documents: Array<Document> = [];
   isPublished = false;
@@ -18,8 +18,13 @@ export class Decision {
     this._application = obj && obj._application || null;
     this.code         = obj && obj.code         || null;
     this.name         = obj && obj.name         || null;
-    this.description  = obj && obj.description  || null;
 
+    // replace \\n (JSON format) with newlines
+    if (obj && obj.description) {
+      this.description = obj.description.replace(/\\n/g, '\n');
+    }
+
+    // copy documents
     if (obj && obj.documents) {
       obj.documents.forEach(doc => {
         this.documents.push(doc);

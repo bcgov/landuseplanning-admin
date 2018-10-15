@@ -26,7 +26,12 @@ export class CommentPeriod {
     this.endDate      = obj && new Date(obj.endDate)   || null;
     this.internal     = obj && obj.internal            || new Internal();
 
-    // Wrap isPublished around the tags we receive for this object.
+    // replace \\n (JSON format) with newlines
+    if (obj && obj.description) {
+      this.description = obj.description.replace(/\\n/g, '\n');
+    }
+
+    // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
       const self = this;
       _.each(obj.tags, function (tag) {
@@ -34,10 +39,6 @@ export class CommentPeriod {
           self.isPublished = true;
         }
       });
-    }
-
-    if (obj && obj.description) {
-      this.description = obj.description.replace(/\\n/g, '\n');
     }
   }
 }

@@ -43,6 +43,6 @@ export class ApplicationDetailResolver implements Resolve<Application> {
     }
 
     // view/edit existing application
-    return this.applicationService.getById(appId);
+    return this.applicationService.getById(appId, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getNumComments: true, getDecision: true });
   }
 }

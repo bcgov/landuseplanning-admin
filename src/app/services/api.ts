@@ -167,7 +167,7 @@ export class ApiService {
       'tenureStage',
       'type'
     ];
-    let queryString = 'application?isDeleted=false&fields=';
+    let queryString = 'application?isDeleted=false&pageNum=0&pageSize=1000000&fields='; // max 1M records
     _.each(fields, function (f) {
       queryString += f + '|';
     });

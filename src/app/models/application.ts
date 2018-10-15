@@ -22,9 +22,9 @@ export class Application {
   centroid: Array<number> = []; // [lng, lat]
   cl_file: number;
   client: string;
-  description: string;
+  description: string = null;
   internal: Internal;
-  legalDescription: string;
+  legalDescription: string = null;
   location: string;
   name: string; // MAY BE OBSOLETE
   publishDate: Date;
@@ -37,6 +37,8 @@ export class Application {
   type: string;
 
   region: string; // region code derived from Business Unit
+  appStatus: string; // user-friendly application status
+  cpStatus: string; // user-friendly comment period status
 
   isPublished = false; // depends on tags; see below
 
@@ -54,9 +56,7 @@ export class Application {
     this.businessUnit            = obj && obj.businessUnit            || null;
     this.cl_file                 = obj && obj.cl_file                 || null;
     this.client                  = obj && obj.client                  || null;
-    this.description             = obj && obj.description             || null;
-    this.internal                = obj && obj.internal                || new Internal(obj.internal);
-    this.legalDescription        = obj && obj.legalDescription        || null;
+    this.internal                = obj && obj.internal                || new Internal();
     this.location                = obj && obj.location                || null;
     this.name                    = obj && obj.name                    || null;
     this.publishDate             = obj && obj.publishDate             || null;
@@ -69,10 +69,38 @@ export class Application {
     this.type                    = obj && obj.type                    || null;
 
     this.region                  = obj && obj.region                  || null;
+    this.appStatus               = obj && obj.appStatus               || null;
+    this.cpStatus                = obj && obj.cpStatus                || null;
 
+    this.currentPeriod           = obj && obj.currentPeriod           || null;
+    this.decision                = obj && obj.decision                || null;
+
+    // replace \\n (JSON format) with newlines
+    if (obj && obj.description) {
+      this.description = obj.description.replace(/\\n/g, '\n');
+    }
+    if (obj && obj.legalDescription) {
+      this.legalDescription = obj.legalDescription.replace(/\\n/g, '\n');
+    }
+
+    // copy centroid
     if (obj && obj.centroid) {
       obj.centroid.forEach(num => {
         this.centroid.push(num);
+      });
+    }
+
+    // copy documents
+    if (obj && obj.documents) {
+      obj.documents.forEach(doc => {
+        this.documents.push(doc);
+      });
+    }
+
+    // copy features
+    if (obj && obj.features) {
+      obj.features.forEach(feature => {
+        this.features.push(feature);
       });
     }
 

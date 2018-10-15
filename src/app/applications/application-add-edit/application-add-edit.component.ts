@@ -427,8 +427,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           alert('Uh-oh, couldn\'t add application, part 2');
         },
         () => { // onCompleted
-          // reload all data
-          this.applicationService.getById(application2._id, true)
+          // reload app with decision for next step
+          this.applicationService.getById(application2._id, { getDecision: true })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application3 => {
@@ -599,8 +599,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           alert('Uh-oh, couldn\'t save application, part 1');
         },
         () => { // onCompleted
-          // reload all data
-          this.applicationService.getById(this.application._id, true)
+          // reload app with documents, current period and decision for next step
+          this.applicationService.getById(this.application._id, { getDocuments: true, getCurrentPeriod: true, getDecision: true })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application2 => {
@@ -666,8 +666,8 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           alert('Uh-oh, couldn\'t save application, part 2');
         },
         () => { // onCompleted
-          // reload all data
-          this.applicationService.getById(application2._id, true)
+          // reload app with decision for next step
+          this.applicationService.getById(application2._id, { getDecision: true })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application3 => {

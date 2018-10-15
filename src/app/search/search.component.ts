@@ -92,14 +92,14 @@ export class SearchComponent implements OnInit, OnDestroy {
                 // if app is in PRC, query application data to update UI
                 if (_.includes(search.sidsFound, key)) {
                   value[0].loaded = false;
-                  self.applicationService.getByTantalisID(+key, true)
+                  self.applicationService.getByTantalisID(+key, { getCurrentPeriod: true, getNumComments: true })
                     .takeUntil(self.ngUnsubscribe)
                     .subscribe(
                       application => {
                         value[0].loaded = true;
                         if (application) {
                           // display PRC status from application
-                          value[0].prcStatus = application['appStatus'];
+                          value[0].prcStatus = application.appStatus;
                           value[0].app = application;
                           // Force change detection since we changed a bound property after the normal check cycle and outside anything
                           // that would trigger a CD cycle - this will eliminate the error we get when running in dev mode.
