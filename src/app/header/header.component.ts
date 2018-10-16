@@ -46,7 +46,7 @@ export class HeaderComponent {
   renderMenu(route: String) {
     // Sysadmin's get administration.
     if (route === 'administration') {
-      return (this.jwt && this.jwt.realm_access.roles.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
+      return (this.jwt && this.jwt.realm_access && this.jwt.realm_access.roles.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
     }
   }
 
