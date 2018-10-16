@@ -54,7 +54,7 @@
               <ng-template ngbTabContent>
                 <section>
                   <h2>Description</h2>
-                  <p class="mb-0" [innerHTML]="application.description || '<em>No application description available</em>'"></p>
+                  <p class="mb-0" [innerHTML]="(application.description | newlines) || '<em>No application description available</em>'"></p>
                 </section>
                 <section>
                   <h2>Details</h2>
