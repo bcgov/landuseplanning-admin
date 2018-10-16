@@ -145,16 +145,8 @@
                 </span>
               </li>
           </ul>
-          <div class="file-upload">
-            <input type="file" name="fileInput1" size="5000000" multiple #fileInput1
-              (change)="addDocuments($event.target.files, application.documents);fileInput1.value=null">
-            <div class="file-upload__target">
-              <span class="file-upload__prompt">
-                <i class="file-upload__prompt-icon material-icons">file_upload</i>
-                <span class="file-upload__prompt-msg">Drop files to attach, or <strong>browse</strong>.</span>
-              </span>
-            </div>
-          </div>
+          <app-file-upload [maxFiles]="0" [showInfo]="false" [showList]="false" [files]="applicationFiles"
+            (filesChange)="addDocuments($event, application.documents); applicationFiles = []"></app-file-upload>
         </div>
       </fieldset>
 
@@ -190,16 +182,8 @@
                 </span>
               </li>
             </ul>
-            <div class="file-upload">
-              <input type="file" name="fileInput2" size="5000000" multiple #fileInput2
-                (change)="addDocuments($event.target.files, application.decision.documents);fileInput2.value=null">
-              <div class="file-upload__target">
-                <span class="file-upload__prompt">
-                  <i class="file-upload__prompt-icon material-icons">file_upload</i>
-                  <span class="file-upload__prompt-msg">Drop files to attach, or <em>browse</em>.</span>
-                </span>
-              </div>
-            </div>
+            <app-file-upload [maxFiles]="0" [showInfo]="false" [showList]="false" [files]="decisionFiles"
+              (filesChange)="addDocuments($event, application.decision.documents); decisionFiles = []"></app-file-upload>
           </div>
         </div>
         <button class="btn content-btn-alt" type="button" title="Add a decision"

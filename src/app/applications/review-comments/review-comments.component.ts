@@ -14,8 +14,6 @@ import { CommentService } from 'app/services/comment.service';
 import { ExcelService } from 'app/services/excel.service';
 import { ApiService } from 'app/services/api';
 
-import { AddCommentComponent } from './add-comment/add-comment.component';
-
 class SortKey {
   innerHTML: string;
   value: string;
@@ -130,30 +128,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   nextPage() {
     this.pageNum++;
     this.getData();
-  }
-
-  addClick() {
-    if (this.application.currentPeriod && this.application.currentPeriod._id) {
-      this.dialogService.addDialog(AddCommentComponent,
-        {
-          periodId: this.application.currentPeriod._id
-        }, {
-          // index: 0,
-          // autoCloseTimeout: 10000,
-          // closeByClickingOutside: true,
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe((isConfirmed) => {
-          // we get dialog result
-          if (isConfirmed) {
-            // TODO: reload page or rebind list?
-            console.log('saved');
-          } else {
-            console.log('canceled');
-          }
-        });
-    }
   }
 
   setCurrentComment(item: Comment) {

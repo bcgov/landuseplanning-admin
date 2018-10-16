@@ -82,4 +82,5 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
     this.result = res.replace(/,\s*$/, '');
     this.close();
   }
+
 }
