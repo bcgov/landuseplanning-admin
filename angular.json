@@ -27,13 +27,9 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/moment/min/moment.min.js",
               "node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
-              "node_modules/keycloak-js/dist/keycloak.min.js",
-              "src/assets/js/utils.js"
+              "node_modules/keycloak-js/dist/keycloak.min.js"
             ]
           },
           "configurations": {
@@ -82,13 +78,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/moment/min/moment.min.js",
               "node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
-              "node_modules/keycloak-js/dist/keycloak.min.js",
-              "src/assets/js/utils.js"
+              "node_modules/keycloak-js/dist/keycloak.min.js"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
