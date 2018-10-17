@@ -35,6 +35,17 @@ export class CommentService {
       .catch(error => this.api.handleError(error));
   }
 
+  // get count of comments for the specified comment period id
+  // TODO: count only pending comments? (need comment status)
+  getCountByPeriodId(periodId: string): Observable<number> {
+    return this.api.getCommentsByPeriodIdNoFields(periodId)
+      .map(res => {
+        const comments = res.text() ? res.json() : [];
+        return comments.length;
+      })
+      .catch(this.api.handleError);
+  }
+
   // get all comments for the specified application id
   // (including documents)
   getAllByApplicationId(appId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null, params: GetParameters = null): Observable<Comment[]> {

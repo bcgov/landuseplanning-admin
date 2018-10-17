@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
@@ -28,16 +28,16 @@ class SortKey {
 })
 
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
-  readonly PAGE_SIZE = 10;
+  readonly PAGE_SIZE = 20;
+
+  @ViewChild('commentListScrollContainer', { read: ElementRef })
+  public commentListScrollContainer: ElementRef;
 
   readonly sortKeys: Array<SortKey> = [
-    { innerHTML: '&uarr; Date', value: '%2BdateAdded' },
-    { innerHTML: '&darr; Date', value: '-dateAdded' },
-    { innerHTML: '&uarr; Name', value: '%2BcontactName' },
-    { innerHTML: '&darr; Name', value: '-contactName' },
-    // PRC-272: temporarily removed
-    // { innerHTML: '&uarr; Status', value: '%2BcommentStatus' },
-    // { innerHTML: '&darr; Status', value: '-commentStatus' },
+    { innerHTML: 'Oldest', value: '%2BdateAdded' },
+    { innerHTML: 'Newest', value: '-dateAdded' },
+    { innerHTML: 'Name (A-Z)', value: '%2BcontactName' },
+    { innerHTML: 'Name (Z-A)', value: '-contactName' }
   ];
 
   public loading = false;
@@ -97,6 +97,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   getData() {
     if (this.application) { // safety check
       this.loading = true;
+      this.commentListScrollContainer.nativeElement.scrollTop = 0;
 
       // get a page of comments
       this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
