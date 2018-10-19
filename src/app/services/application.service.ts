@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/catch';
 import { map, flatMap } from 'rxjs/operators';
+import { of, forkJoin } from 'rxjs';
+import 'rxjs/add/operator/catch';
 import * as moment from 'moment';
 import * as _ from 'lodash';
-import { of, forkJoin } from 'rxjs';
 
 import { Application } from 'app/models/application';
 import { ApiService } from './api';
@@ -15,10 +13,16 @@ import { CommentPeriodService } from './commentperiod.service';
 import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
 import { FeatureService } from './feature.service';
-import { Feature } from 'app/models/feature';
 import { Document } from 'app/models/document';
 import { CommentPeriod } from 'app/models/commentperiod';
-import { Decision } from 'app/models/decision';
+
+interface GetParameters {
+  getFeatures?: boolean;
+  getDocuments?: boolean;
+  getCurrentPeriod?: boolean;
+  getNumComments?: boolean;
+  getDecision?: boolean;
+}
 
 @Injectable()
 export class ApplicationService {
@@ -27,17 +31,16 @@ export class ApplicationService {
   readonly ACCEPTED = 'AC';
   readonly ALLOWED = 'AL';
   readonly CANCELLED = 'CA';
+  readonly DECISION_MADE = 'DE'; // special combination status (see isDecision below)
   readonly DISALLOWED = 'DI';
   readonly DISPOSITION_GOOD_STANDING = 'DG';
   readonly OFFER_ACCEPTED = 'OA';
   readonly OFFER_NOT_ACCEPTED = 'ON';
   readonly OFFERED = 'OF';
   readonly SUSPENDED = 'SU';
-  // special combination status (see isDecision below)
-  readonly DECISION_MADE = 'DE';
-  // special status when no data
-  readonly UNKNOWN = 'UN';
+  readonly UNKNOWN = 'UN'; // special status when no data
 
+  // regions / query param options
   readonly CARIBOO = 'CA';
   readonly KOOTENAY = 'KO';
   readonly LOWER_MAINLAND = 'LM';
@@ -51,8 +54,6 @@ export class ApplicationService {
   private applicationStatuses: Array<string> = [];
   private regions: Array<string> = [];
 
-  private application: Application = null; // for caching
-
   constructor(
     private api: ApiService,
     private documentService: DocumentService,
@@ -61,18 +62,18 @@ export class ApplicationService {
     private decisionService: DecisionService,
     private featureService: FeatureService
   ) {
-    // display strings
+    // user-friendly strings for display
     this.applicationStatuses[this.ABANDONED] = 'Application Abandoned';
     this.applicationStatuses[this.ACCEPTED] = 'Application Under Review';
     this.applicationStatuses[this.ALLOWED] = 'Decision: Allowed';
     this.applicationStatuses[this.CANCELLED] = 'Application Cancelled';
+    this.applicationStatuses[this.DECISION_MADE] = 'Decision Made';
     this.applicationStatuses[this.DISALLOWED] = 'Decision: Not Approved';
     this.applicationStatuses[this.DISPOSITION_GOOD_STANDING] = 'Tenure: Disposition in Good Standing';
     this.applicationStatuses[this.OFFER_ACCEPTED] = 'Decision: Offer Accepted';
     this.applicationStatuses[this.OFFER_NOT_ACCEPTED] = 'Decision: Offer Not Accepted';
     this.applicationStatuses[this.OFFERED] = 'Decision: Offered';
     this.applicationStatuses[this.SUSPENDED] = 'Tenure: Suspended';
-    this.applicationStatuses[this.DECISION_MADE] = 'Decision Made'; // NB: calculated status
     this.applicationStatuses[this.UNKNOWN] = 'Unknown Application Status';
 
     this.regions[this.CARIBOO] = 'Cariboo, Williams Lake';
@@ -87,7 +88,8 @@ export class ApplicationService {
 
   // get count of applications
   getCount(): Observable<number> {
-    return this.getAllInternal()
+    // get just the applications, and count them
+    return this.api.getApplications()
       .map(applications => {
         return applications.length;
       })
@@ -95,105 +97,116 @@ export class ApplicationService {
   }
 
   // get all applications
-  getAll(): Observable<Application[]> {
-    const self = this;
-    return this.getAllInternal()
-    .catch(this.api.handleError);
-  }
-
-  // get just the applications
-  private getAllInternal(): Observable<Object[]> {
+  getAll(params: GetParameters = null): Observable<Application[]> {
+    // first get just the applications
+    // then get the rest of the application data
     return this.api.getApplications()
-    .catch(this.api.handleError);
+      .pipe(
+        flatMap(value => {
+          const observables: Array<Observable<Application>> = [];
+          value.forEach(v => {
+            observables.push(this._getExtraAppData(new Application(v), params || {}));
+          });
+          return forkJoin(observables);
+        })
+      )
+      .catch(this.api.handleError);
   }
 
   // get a specific application by its Tantalis ID
-  getByTantalisID(tantalisID: number, forceReload: boolean = false): Observable<Application> {
-    if (this.application && this.application.tantalisID === tantalisID && !forceReload) {
-      return of(this.application);
-    }
-
+  getByTantalisID(tantalisID: number, params: GetParameters = null): Observable<Application> {
+    // first get the base application data
+    // then get the rest of the application data
     return this.api.getApplicationByTantalisID(tantalisID)
-    .map(res => {
-      // return the first (only) application
-      return new Application(res[0]);
-    })
-    .catch(this.api.handleError);
+      .pipe(
+        flatMap(value => {
+          return this._getExtraAppData(new Application(value[0]), params || {})
+        })
+      )
+      .catch(this.api.handleError);
   }
 
   // get a specific application by its object id
-  getById(appId: string, forceReload: boolean = false): Observable<Application> {
-    if (this.application && this.application._id === appId && !forceReload) {
-      return of(this.application);
-    }
-
-    return this._getAppData(appId);
+  getById(appId: string, params: GetParameters = null): Observable<Application> {
+    // first get the base application data
+    // then get the rest of the application data
+    return this.api.getApplication(appId)
+      .pipe(
+        flatMap(value => {
+          return this._getExtraAppData(new Application(value[0]), params || {})
+        })
+      )
+      .catch(this.api.handleError);
   }
 
-  private _getAppData(appId: string): Observable<Application> {
-    const self = this;
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const promises: Array<Promise<any>> = [];
-
-    // rest call 1
-    return this.api.getApplication(appId)
-    .pipe(
-      flatMap(res => {
-        this.application = new Application(res[0]);
-        return forkJoin(
-          this.featureService.getByApplicationId(appId),
-          this.documentService.getAllByApplicationId(appId),
-          this.commentPeriodService.getAllByApplicationId(appId),
-          this.decisionService.getByApplicationId(appId)
-          )
-          .map(payloads => {
-            // Feature Request
-            self.application.features = payloads[0];
-            _.each(self.application.features, function (f) {
-              if (f['properties']) {
-                self.application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-              }
-            });
-
-            // Document Request
-            _.each(payloads[1], function (d) {
-              const newDoc = new Document(d);
-              self.application.documents.push(newDoc);
-            });
-
-            // Comment Period
-            const periods = [];
-            _.each(payloads[2], function (p) {
-              periods.push(new CommentPeriod(p));
-            })
-
-            const cp = this.commentPeriodService.getCurrent(periods);
-            self.application.currentPeriod = cp;
-            // derive comment period status for display
-            self.application['cpStatus'] = this.commentPeriodService.getStatus(cp);
-
-            // derive days remaining for display
-            // use moment to handle Daylight Saving Time changes
-            if (cp && this.commentPeriodService.isOpen(cp)) {
-              self.application.currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
+  private _getExtraAppData(application: Application, { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getNumComments = false, getDecision = false }: GetParameters): Observable<Application> {
+    return forkJoin(
+      getFeatures ? this.featureService.getByApplicationId(application._id) : of(null),
+      getDocuments ? this.documentService.getAllByApplicationId(application._id) : of(null),
+      getCurrentPeriod ? this.commentPeriodService.getAllByApplicationId(application._id) : of(null),
+      getNumComments ? this.commentService.getCountByApplicationId(application._id) : of(null),
+      getDecision ? this.decisionService.getByApplicationId(application._id) : of(null)
+    )
+      .map(payloads => {
+        if (getFeatures) {
+          application.features = payloads[0];
+          _.each(application.features, function (f) {
+            if (f['properties']) {
+              application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
             }
-
-            // Decision
-            const decision = payloads[3];
-            self.application.decision = decision;
-
-            // user-friendly application status
-            self.application['appStatus'] = this.getStatusString(this.getStatusCode(self.application.status));
-
-             // derive region code
-            self.application.region = this.getRegionCode(self.application.businessUnit);
-
-            // Finally update the object and return
-            return self.application;
           });
-      })
-    );
+        }
+
+        if (getDocuments) {
+          _.each(payloads[1], function (d) {
+            const newDoc = new Document(d);
+            application.documents.push(newDoc);
+          });
+        }
+
+        if (getCurrentPeriod) {
+          const periods = [];
+          _.each(payloads[2], function (p) {
+            periods.push(new CommentPeriod(p));
+          });
+          const cp = this.commentPeriodService.getCurrent(periods);
+          application.currentPeriod = cp;
+          // user-friendly comment period status
+          application.cpStatus = this.commentPeriodService.getStatus(cp);
+
+          // derive days remaining for display
+          // use moment to handle Daylight Saving Time changes
+          if (cp && this.commentPeriodService.isOpen(cp)) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            application.currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
+          }
+        }
+
+        if (getNumComments) {
+          const numComments = payloads[3];
+          application['numComments'] = numComments.toString();
+        }
+
+        if (getDecision) {
+          const decision = payloads[4];
+          application.decision = decision;
+        }
+
+        // 7-digit CL File number for display
+        if (application.cl_file) {
+          application['clFile'] = application.cl_file.toString().padStart(7, '0');
+        }
+
+        // user-friendly application status
+        application.appStatus = this.getStatusString(this.getStatusCode(application.status));
+
+        // derive region code
+        application.region = this.getRegionCode(application.businessUnit);
+
+        // finally update the object and return
+        return application;
+      });
   }
 
   // create new application
@@ -207,9 +220,11 @@ export class ApplicationService {
     // id must not exist on POST
     delete app._id;
 
-    // don't send features or documents
+    // don't send attached data (features, documents, etc)
     delete app.features;
     delete app.documents;
+    delete app.currentPeriod;
+    delete app.decision;
 
     // replace newlines with \\n (JSON format)
     if (app.description) {
@@ -227,9 +242,11 @@ export class ApplicationService {
     // make a (deep) copy of the passed-in application so we don't change it
     const app = _.cloneDeep(orig);
 
-    // don't send features or documents
+    // don't send attached data (features, documents, etc)
     delete app.features;
     delete app.documents;
+    delete app.currentPeriod;
+    delete app.decision;
 
     // replace newlines with \\n (JSON format)
     if (app.description) {

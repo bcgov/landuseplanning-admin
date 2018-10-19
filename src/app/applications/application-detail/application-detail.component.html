@@ -2,7 +2,7 @@
   <div class="container">
     <div class="title-container">
       <div class="title-container__title">
-        <h1>Crown land File: {{application.cl_file}}</h1>
+        <h1>Crown land File: {{application['clFile']}}</h1>
         <span class="title-container__sub text-muted">Disposition Transaction: {{application.tantalisID}}</span>
       </div>
       <div class="title-container__actions">
@@ -186,7 +186,7 @@
             <ul class="nv-list">
               <li>
                 <span class="name">Status:</span>
-                <span class="value">{{application['cpStatus']}}</span>
+                <span class="value">{{application.cpStatus}}</span>
               </li>
               <li>
                 <span class="name">Start Date:</span>
