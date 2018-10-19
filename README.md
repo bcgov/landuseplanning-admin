@@ -1,48 +1,53 @@
-# nrts-prc-admin (master)
+# bcgov / nrts-prc-admin
 
-# Prerequisites
+# Pre-requisites
 
-## Node and NPM 
+- Node.js 8.12.0 (run `node -v` to verify)
+- npm 6.4.1 (run `npm -v` to verify)
+- Angular CLI 6.2.1 (run `npm ls -g @angular/cli --depth=0` to verify)
+- Yarn 1.10.1 or greater (run `yarn -v` to verify)
+- TSLint 5.11.0 or greater  (run `tslint -v` to verify)
+- TypeScript 2.3.4 (for webpack) (run `npm ls -g typescript --depth=0` to verify)
 
-Node 6.9.x or greater must be installed. Run `node -v` to verify.
+## Uninstall Older Node (if needed)
 
-npm 3.x.x or greater must be installed. Run `npm -v` to verify.
+1. Uninstall all global packages: `npm uninstall -g <package>`
+1. Uninstall Node.js
+1. Delete `C:\Users\{user}\AppData\Roaming\npm`
+1. Delete `C:\Users\{user}\AppData\Roaming\npm-cache`
+1. Delete `C:\Users\{user}\AppData\Local\Temp\npm-*`
+1. Reboot
 
-## Install [Angular CLI](https://angular.io/)
+## Install [Node.js](https://nodejs.org/)
 
-**Note, use `angular/cli`. Do not use `angular/angular-cli`**.
+Includes npm... Just use default settings.
+
+## Install Packages
+
+1. Install [Angular CLI](https://angular.io/): `npm i -g @angular/cli@6.2.1`
+1. Install [Yarn](https://yarnpkg.com/): `npm i -g yarn`
+1. Install [TSLint](https://palantir.github.io/tslint/): `npm i -g tslint`
+1. Install [TypeScript](https://www.npmjs.com/package/typescript) (needed for Webpack): `npm i -g typescript@'>=2.1.0 <2.4.0'`
+
+
+## Verify the Installation
 
 ```
-npm i -g @angular/cli
-```
-
-`ng` is the CLI itself .
-
-**Verify the installation**
-
-```
-npm list -g @angular/cli --depth=0
-ng -v
-```
-
-## Install [Yarn](https://yarnpkg.com/lang/en/docs/install/#alternatives-tab)
-
-```
-npm i -g yarn
+npm ls -g --depth=0
 ```
 
 # Fork, Build and Run
 
 1. After installing Node and Yarn, you can fork or straight download a copy of this application to start your own app.
 1. First download all the dependencies with `yarn install`.
-1. Run `npm start` to start the webpack server to run the application on port 4300.
+1. Run `npm start` to start the webpack server to run the application on port 4200.
 
-    Go to http://localhost:4300 to verify that the application is running.
+    Go to http://localhost:4200 to verify that the application is running.
 
     :bulb: To change the default port, open `.angular-cli.json`, change the value on `defaults.serve.port`.
     
-1. Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build, like so: `ng serve --prod` to run in production mode.
-1. Run `npm run lint` to lint your app code using `TSLint`.
+1. Run `npm run build` to just build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build, like so: `ng serve --prod` to run in production mode.
+1. Run `npm run lint` to just lint your app code using TSLint.
 
 ## Code scaffolding
 
@@ -148,8 +153,8 @@ ng new my-app --routing --style scss
 
 # Build and Deployment
 
-For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/nrts-prc-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using nginx.
+For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/nrts-prc-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using [nginx](https://www.nginx.com/).
 
 # How to Contribute
 
-Feel free to create pull requests from the default "master" branch, click here to create one automatically: https://github.com/bcgov/nrts-prc-admin/pull/new/master
+Feel free to create pull requests from the default "master" branch, click here to create one automatically: <https://github.com/bcgov/nrts-prc-admin/pull/new/master>

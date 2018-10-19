@@ -120,7 +120,7 @@ export class ApplicationService {
     return this.api.getApplicationByTantalisID(tantalisID)
       .pipe(
         flatMap(value => {
-          return this._getExtraAppData(new Application(value[0]), params || {})
+          return this._getExtraAppData(new Application(value[0]), params || {});
         })
       )
       .catch(this.api.handleError);
@@ -133,7 +133,7 @@ export class ApplicationService {
     return this.api.getApplication(appId)
       .pipe(
         flatMap(value => {
-          return this._getExtraAppData(new Application(value[0]), params || {})
+          return this._getExtraAppData(new Application(value[0]), params || {});
         })
       )
       .catch(this.api.handleError);

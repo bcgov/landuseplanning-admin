@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import { of, forkJoin } from 'rxjs';
+// import 'rxjs/add/operator/map';
+// import 'rxjs/add/operator/catch';
+import { of } from 'rxjs';
 
 import { ApiService } from './api';
 import { Organization } from 'app/models/organization';
 
 @Injectable()
 export class OrganizationService {
-  private organization: Organization = null;
+  // private organization: Organization = null;
 
   constructor(private api: ApiService) { }
 
   // get all organizations
   getAll(): Observable<Organization[]> {
-    return null;
+    return of(null);
 
     // return this.api.getOrganizations()
     //   .map(res => {
@@ -31,7 +30,7 @@ export class OrganizationService {
 
   // get a specific organization by its id
   getById(orgId: string, forceReload: boolean = false): Observable<Organization> {
-    return null;
+    return of(null);
 
     // if (this.organization && this.organization._id === orgId && !forceReload) {
     //   return of(this.organization);

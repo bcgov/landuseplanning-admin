@@ -80,7 +80,7 @@ export class KeycloakService {
           });
       });
     }
-  };
+  }
 
   forceAttemptUpdateToken() {
     if (this.keycloakEnabled) {

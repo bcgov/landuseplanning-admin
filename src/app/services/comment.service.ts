@@ -4,7 +4,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { of, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
@@ -120,7 +120,8 @@ export class CommentService {
         });
 
         return comments;
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   // get a specific comment by its id
@@ -158,7 +159,8 @@ export class CommentService {
           this.comment = comment;
           return this.comment;
         });
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   add(orig: Comment): Observable<Comment> {
@@ -179,7 +181,8 @@ export class CommentService {
       comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\n/g, '\\n');
     }
 
-    return this.api.addComment(comment);
+    return this.api.addComment(comment)
+      .catch(this.api.handleError);
   }
 
   save(orig: Comment): Observable<Comment> {
@@ -197,15 +200,18 @@ export class CommentService {
       comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\n/g, '\\n');
     }
 
-    return this.api.saveComment(comment);
+    return this.api.saveComment(comment)
+      .catch(this.api.handleError);
   }
 
   publish(comment: Comment): Observable<Comment> {
-    return this.api.publishComment(comment);
+    return this.api.publishComment(comment)
+      .catch(this.api.handleError);
   }
 
   unPublish(comment: Comment): Observable<Comment> {
-    return this.api.unPublishComment(comment);
+    return this.api.unPublishComment(comment)
+      .catch(this.api.handleError);
   }
 
   isAccepted(comment: Comment): boolean {
