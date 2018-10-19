@@ -73,7 +73,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     NgbModule.forRoot(),
     NgxPaginationModule,
-    BootstrapModalModule.forRoot({container: document.body})
+    BootstrapModalModule.forRoot({ container: document.body })
   ],
   providers: [
     KeycloakService,
@@ -111,6 +111,6 @@ export function kcFactory(keycloakService: KeycloakService) {
 
 export class AppModule {
   constructor(applicationRef: ApplicationRef) {
-    Object.defineProperty(applicationRef, '_rootComponents', {get: () => applicationRef['components']});
+    Object.defineProperty(applicationRef, '_rootComponents', { get: () => applicationRef['components'] });
   }
 }

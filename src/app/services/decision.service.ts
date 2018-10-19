@@ -31,25 +31,25 @@ export class DecisionService {
 
     // Get the decision
     return this.api.getDecisionByAppId(appId)
-    .pipe(
-      flatMap(res => {
-        if (res && res.length > 0) {
-          this.decision = new Decision(res[0]);
-          // Then get the documents for this decision
-          return this.documentService.getAllByDecisionId(this.decision._id)
-          .pipe(
-            map(documents => {
-              _.each(documents, function (d) {
-                self.decision.documents.push(new Document(d));
-              });
-              return this.decision;
-            })
-          );
-        } else {
-          return of(null);
-        }
-      })
-    );
+      .pipe(
+        flatMap(res => {
+          if (res && res.length > 0) {
+            this.decision = new Decision(res[0]);
+            // Then get the documents for this decision
+            return this.documentService.getAllByDecisionId(this.decision._id)
+              .pipe(
+                map(documents => {
+                  _.each(documents, function (d) {
+                    self.decision.documents.push(new Document(d));
+                  });
+                  return this.decision;
+                })
+              );
+          } else {
+            return of(null);
+          }
+        })
+      );
   }
 
   // get a specific decision by its id
@@ -61,21 +61,21 @@ export class DecisionService {
 
     // Get the decision
     return this.api.getDecision(decisionId)
-    .pipe(
-      flatMap(res => {
-        this.decision = new Decision(res[0]);
-        // Then get the documents for this decision
-        return this.documentService.getAllByDecisionId(this.decision._id)
-        .pipe(
-          map(documents => {
-            _.each(documents, function (d) {
-              self.decision.documents.push(new Document(d));
-            });
-            return this.decision;
-          })
-        );
-      })
-    );
+      .pipe(
+        flatMap(res => {
+          this.decision = new Decision(res[0]);
+          // Then get the documents for this decision
+          return this.documentService.getAllByDecisionId(this.decision._id)
+            .pipe(
+              map(documents => {
+                _.each(documents, function (d) {
+                  self.decision.documents.push(new Document(d));
+                });
+                return this.decision;
+              })
+            );
+        })
+      );
   }
 
   add(orig: Decision): Observable<Decision> {

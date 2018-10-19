@@ -47,4 +47,5 @@ import { ApplicationService } from '../services/application.service';
     SelectOrganizationComponent
   ]
 })
+
 export class ApplicationsModule { }
