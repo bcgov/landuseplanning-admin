@@ -27,34 +27,6 @@ export class CommentService {
     private documentService: DocumentService
   ) { }
 
-  // get count of comments for the specified application id
-  getCountByApplicationId(appId: string): Observable<number> {
-    // first get the comment periods
-    return this.commentPeriodService.getAllByApplicationId(appId)
-      .mergeMap(periods => {
-        if (periods.length === 0) {
-          return of(0);
-        }
-
-        // count comments for first comment period only
-        return this.getCountByPeriodId(periods[0]._id);
-
-        // FUTURE: this code is for multiple comment periods
-        // const promises: Array<Promise<any>> = [];
-
-        // // now get the counts for all periods
-        // periods.forEach(period => {
-        //   promises.push(this.getCountByPeriodId(period._id).toPromise());
-        // });
-
-        // return Promise.all(promises)
-        //   .then((allCounts: number[]) => {
-        //     return allCounts.reduce((total, num) => { return total + num; });
-        //   });
-      })
-      .catch(this.api.handleError);
-  }
-
   // get all comments for the specified application id
   // (without documents)
   getAllByApplicationId(appId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null): Observable<Comment[]> {
@@ -87,17 +59,8 @@ export class CommentService {
   // get count of comments for the specified comment period id
   // TODO: count only pending comments? (need comment status)
   getCountByPeriodId(periodId: string): Observable<number> {
-    return this.api.getCommentsByPeriodIdNoFields(periodId)
-      .map((comments: Comment[]) => {
-        return comments.length;
-      })
-      .catch(this.api.handleError);
-  }
-
-  // get count of comments for the specified comment period id
-  getCommentsByPeriodId(periodId: string): Observable<Comment[]> {
-    return this.api.getCommentsByPeriodIdNoFields(periodId)
-      .catch(this.api.handleError);
+    return this.api.getCommentCountByPeriodId(periodId)
+    .catch(this.api.handleError);
   }
 
   // get all comments for the specified comment period id

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-// import { HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { throwError } from 'rxjs';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators'
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -199,6 +198,17 @@ export class ApiService {
   ];
     const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
     return this.http.get<Application>(`${this.pathAPI}/${queryString}`, { });
+  }
+
+  getApplicationsCount(): Observable<any> {
+    const queryString = `application?isDeleted=false`;
+    return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, {observe: 'response'})
+    .pipe(
+      map( res => {
+        // Retrieve the count from the header.
+        return parseInt(res.headers.get('x-total-count'));
+      })
+    );
   }
 
   getApplicationByTantalisID(tantalisID: number) {
@@ -503,9 +513,15 @@ export class ApiService {
   //
   // Comments
   //
-  getCommentsByPeriodIdNoFields(periodId: string): Observable<Comment[]>  {
-    const queryString = `comment?isDeleted=false&_commentPeriod=${periodId}&pageNum=0&pageSize=1000000`; // max 1M records
-    return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, { });
+  getCommentCountByPeriodId(periodId: string): Observable<number> {
+    const queryString = `comment?isDeleted=false&_commentPeriod=${periodId}`; // max 1M records
+    return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, {observe: 'response'})
+    .pipe(
+      map( res => {
+        // Retrieve the count from the header.
+        return parseInt(res.headers.get('x-total-count'));
+      })
+    );
   }
 
   getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string) {

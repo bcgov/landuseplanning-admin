@@ -10,7 +10,7 @@ import {
 
 import { KeycloakService } from 'app/services/keycloak.service';
 import { Observable } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, map } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 
 @Injectable()
@@ -27,26 +27,13 @@ export class TokenInterceptor implements HttpInterceptor {
         'Authorization': 'Bearer ' + authToken
       }
     });
-    return next.handle(request);
-    // TODO: Handle failed requests gracefully/pop a modal/other
-    // return next.handle(request).pipe(tap(
-    //   (err: any) => {
-    //     if (err instanceof HttpErrorResponse) {
-    //       console.log(err);
-    //       if (err.status === 401) {
-    //         // this.router.navigate(['/login']);
-    //       }
-    //     }
-    //   }
-    // ),catchError(e => {
-    //   if (e instanceof HttpErrorResponse) {
-    //       console.log('Processing http error', e);
-    //       if (e.status === 403) {
-    //         // this.router.navigate(['/login']);
-    //       }
-    //     }
-    //     return _throw(e);
-    //   })
-    // );
+    return next.handle(request).pipe(
+      map((resp: HttpResponse<any>) => {
+        if (resp) {
+            // console.log('interceptor header keys: ', resp.headers && resp.headers.get('x-total-count'));
+            // console.log('interceptor X-Service-Name: ', resp.headers.get('X-Service-Name'));
+        }
+        return resp;
+    }));
   }
 }
