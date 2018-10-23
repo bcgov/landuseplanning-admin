@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { throwError } from 'rxjs';
-import { map } from 'rxjs/operators'
+import { map } from 'rxjs/operators';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -206,7 +206,7 @@ export class ApiService {
     .pipe(
       map( res => {
         // Retrieve the count from the header.
-        return parseInt(res.headers.get('x-total-count'));
+        return parseInt(res.headers.get('x-total-count'), 10);
       })
     );
   }
@@ -519,7 +519,7 @@ export class ApiService {
     .pipe(
       map( res => {
         // Retrieve the count from the header.
-        return parseInt(res.headers.get('x-total-count'));
+        return parseInt(res.headers.get('x-total-count'), 10);
       })
     );
   }
