@@ -81,7 +81,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       .subscribe(
         search => {
           // console.log('search =', search);
-          if (search.totalFeatures > 0 && search.features && search.features.length > 0) {
+          if (search && search.totalFeatures > 0 && search.features && search.features.length > 0) {
             const groupedFeatures = _.groupBy(search.features, 'properties.DISPOSITION_TRANSACTION_SID');
             const self = this; // for closure below
             _.each(groupedFeatures, function (value: any, key: string) {
