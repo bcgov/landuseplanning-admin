@@ -89,11 +89,8 @@ export class ApplicationService {
   // get count of applications
   getCount(): Observable<number> {
     // get just the applications, and count them
-    return this.api.getApplications()
-      .map(applications => {
-        return applications.length;
-      })
-      .catch(this.api.handleError);
+    return this.api.getApplicationsCount()
+    .catch(this.api.handleError);
   }
 
   // get all applications
@@ -144,7 +141,6 @@ export class ApplicationService {
       getFeatures ? this.featureService.getByApplicationId(application._id) : of(null),
       getDocuments ? this.documentService.getAllByApplicationId(application._id) : of(null),
       getCurrentPeriod ? this.commentPeriodService.getAllByApplicationId(application._id) : of(null),
-      getNumComments ? this.commentService.getCountByApplicationId(application._id) : of(null),
       getDecision ? this.decisionService.getByApplicationId(application._id) : of(null)
     )
       .map(payloads => {
@@ -164,7 +160,10 @@ export class ApplicationService {
           });
         }
 
-        if (getCurrentPeriod) {
+        // If we're getting the number of comments, we need to know the current period.
+        // This logic is flawed, because we should be explicit over white comment period
+        // we're getting.
+        if (getCurrentPeriod || getNumComments) {
           const periods = [];
           _.each(payloads[2], function (p) {
             periods.push(new CommentPeriod(p));
@@ -181,15 +180,19 @@ export class ApplicationService {
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             application.currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
           }
-        }
 
-        if (getNumComments) {
-          const numComments = payloads[3];
-          application['numComments'] = numComments.toString();
+          if (getNumComments && cp) {
+            this.commentService.getCountByPeriodId(cp._id)
+            .subscribe(
+              numComments => {
+                application['numComments'] = numComments;
+              }
+            );
+          }
         }
 
         if (getDecision) {
-          const decision = payloads[4];
+          const decision = payloads[3];
           application.decision = decision;
         }
 

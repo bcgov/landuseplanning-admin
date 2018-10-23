@@ -78,16 +78,14 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           if (data.application) {
             this.application = data.application;
 
-            this.commentService.getCountByApplicationId(this.application._id)
+            this.commentService.getCountByPeriodId(this.application.currentPeriod._id)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
                 value => {
                   this.pageCount = value ? Math.ceil(value / this.PAGE_SIZE) : 1;
+                  // get initial data
+                  this.getData();
                 });
-
-            // get initial data
-            this.getData();
-
           } else {
             alert('Uh-oh, couldn\'t load application');
             // application not found --> navigate back to search
