@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import { of, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 
 import * as _ from 'lodash';
@@ -49,7 +45,8 @@ export class DecisionService {
             return of(null);
           }
         })
-      );
+      )
+      .catch(this.api.handleError);
   }
 
   // get a specific decision by its id
@@ -75,7 +72,8 @@ export class DecisionService {
               })
             );
         })
-      );
+      )
+      .catch(this.api.handleError);
   }
 
   add(orig: Decision): Observable<Decision> {
@@ -93,7 +91,8 @@ export class DecisionService {
       decision.description = decision.description.replace(/\n/g, '\\n');
     }
 
-    return this.api.addDecision(decision);
+    return this.api.addDecision(decision)
+      .catch(this.api.handleError);
   }
 
   save(orig: Decision): Observable<Decision> {
@@ -108,18 +107,22 @@ export class DecisionService {
       decision.description = decision.description.replace(/\n/g, '\\n');
     }
 
-    return this.api.saveDecision(decision);
+    return this.api.saveDecision(decision)
+      .catch(this.api.handleError);
   }
 
   delete(decision: Decision): Observable<Decision> {
-    return this.api.deleteDecision(decision);
+    return this.api.deleteDecision(decision)
+      .catch(this.api.handleError);
   }
 
   publish(decision: Decision): Observable<Decision> {
-    return this.api.publishDecision(decision);
+    return this.api.publishDecision(decision)
+      .catch(this.api.handleError);
   }
 
   unPublish(decision: Decision): Observable<Decision> {
-    return this.api.unPublishDecision(decision);
+    return this.api.unPublishDecision(decision)
+      .catch(this.api.handleError);
   }
 }

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/merge';
-import { of, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
@@ -13,8 +13,6 @@ import { Client } from 'app/models/client';
 @Injectable()
 export class SearchService {
   private clients: Array<Client> = null;
-  private ClidSearch: SearchResults = null;
-  private DtidSearch: SearchResults = null;
 
   constructor(private api: ApiService) { }
 
@@ -38,7 +36,8 @@ export class SearchService {
   getByClidDtid(keys: string[]): Observable<SearchResults> {
     const observables = keys.map(key => { return this.getByCLID(key); })
       .concat(keys.map(key => { return this.getByDTID(+key); }));
-    return of(new SearchResults()).merge(...observables);
+    return of(null).merge(...observables)
+      .catch(this.api.handleError);
   }
 
   // get search results by CL File #

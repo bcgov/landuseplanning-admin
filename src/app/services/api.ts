@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Params, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+// import { HttpParams, HttpHeaders } from '@angular/common/http';
+import { Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { Subscription } from 'rxjs/Subscription';
 import { throwError } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
-import * as FileSaver from 'file-saver';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { SearchResults } from 'app/models/search';
@@ -22,7 +20,6 @@ import { Document } from 'app/models/document';
 import { User } from 'app/models/user';
 import { Feature } from 'app/models/feature';
 import { Organization } from 'app/models/organization';
-import { Client } from 'app/models/client';
 import { KeycloakService } from 'app/services/keycloak.service';
 
 interface LocalLoginResponse {
@@ -45,10 +42,10 @@ export class ApiService {
   params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
 
-  constructor(private http: HttpClient,
-              private router: Router,
-              private keycloakService: KeycloakService
-              ) {
+  constructor(
+    private http: HttpClient,
+    private keycloakService: KeycloakService
+  ) {
     this.jwtHelper = new JwtHelperService();
     const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
@@ -101,10 +98,10 @@ export class ApiService {
         // Prod
         this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
         this.env = 'prod';
-    };
+    }
   }
 
-  handleError(error: any): Observable<any> {
+  handleError(error: any): Observable<never> {
     const reason = error.message ? error.message : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
     console.log('API error =', reason);
     return throwError(error);
@@ -626,7 +623,7 @@ export class ApiService {
   }
 
   deleteDocument(file: any) {
-    let queryString = 'document/' + file._id
+    let queryString = 'document/' + file._id;
     return this.http.delete<Document>(`${this.pathAPI}/${queryString}`, { });
   }
 

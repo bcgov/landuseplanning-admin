@@ -21,7 +21,7 @@ export class FeatureService {
       .catch(this.api.handleError);
   }
 
-  deleteByApplicationId(applicationId: string): Observable<Feature[]> {
+  deleteByApplicationId(applicationId: string): Observable<Object> {
     return this.api.deleteFeaturesByApplicationId(applicationId)
       .catch(this.api.handleError);
   }

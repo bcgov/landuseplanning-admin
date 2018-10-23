@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
 import * as _ from 'lodash';
-import { of, forkJoin } from 'rxjs';
 
 import { ApiService } from './api';
 import { CommentPeriod } from 'app/models/commentperiod';
@@ -75,15 +73,18 @@ export class CommentPeriodService {
   }
 
   delete(period: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.deleteCommentPeriod(period);
+    return this.api.deleteCommentPeriod(period)
+      .catch(this.api.handleError);
   }
 
   publish(period: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.publishCommentPeriod(period);
+    return this.api.publishCommentPeriod(period)
+      .catch(this.api.handleError);
   }
 
   unPublish(period: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.unPublishCommentPeriod(period);
+    return this.api.unPublishCommentPeriod(period)
+      .catch(this.api.handleError);
   }
 
   // returns first period - multiple comment periods are currently not suported

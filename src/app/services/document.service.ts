@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -16,17 +15,20 @@ export class DocumentService {
 
   // get all documents for the specified application id
   getAllByApplicationId(id: string): Observable<Document[]> {
-    return this.api.getDocumentsByAppId(id);
+    return this.api.getDocumentsByAppId(id)
+      .catch(this.api.handleError);
   }
 
   // get all documents for the specified comment id
   getAllByCommentId(commentId: string): Observable<Document[]> {
-    return this.api.getDocumentsByCommentId(commentId);
+    return this.api.getDocumentsByCommentId(commentId)
+      .catch(this.api.handleError);
   }
 
   // get all documents for the specified decision id
   getAllByDecisionId(decisionId: string): Observable<Document[]> {
-    return this.api.getDocumentsByDecisionId(decisionId);
+    return this.api.getDocumentsByDecisionId(decisionId)
+      .catch(this.api.handleError);
   }
 
   // get a specific document by its id
@@ -45,22 +47,27 @@ export class DocumentService {
 
         this.document = document;
         return this.document;
-      });
+      })
+      .catch(this.api.handleError);
   }
 
   add(formData: FormData): Observable<Document> {
-    return this.api.uploadDocument(formData);
+    return this.api.uploadDocument(formData)
+      .catch(this.api.handleError);
   }
 
   delete(document: Document): Observable<Document> {
-    return this.api.deleteDocument(document);
+    return this.api.deleteDocument(document)
+      .catch(this.api.handleError);
   }
 
   publish(document: Document): Observable<Document> {
-    return this.api.publishDocument(document);
+    return this.api.publishDocument(document)
+      .catch(this.api.handleError);
   }
 
   unPublish(document: Document): Observable<Document> {
-    return this.api.unPublishDocument(document);
+    return this.api.unPublishDocument(document)
+      .catch(this.api.handleError);
   }
 }
