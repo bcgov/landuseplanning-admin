@@ -109,8 +109,12 @@ export class ApiService {
   ensureLoggedIn() {
     const token = this.keycloakService.getToken();
     if (!token || this.jwtHelper.isTokenExpired(token)) {
-      console.log('not logged in, redirecting');
       return this.keycloakService.forceAttemptUpdateToken();
+    } else {
+      // make sure token is valid for our scopes
+      if (!this.keycloakService.isValidForSite(token)) {
+        return false;
+      }
     }
     return true;
   }

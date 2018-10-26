@@ -29,7 +29,7 @@ export class SearchService {
         this.clients = self.clients;
         return this.clients;
       })
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get search results by array of CLIDs or DTIDs
@@ -37,18 +37,18 @@ export class SearchService {
     const observables = keys.map(key => { return this.getByCLID(key); })
       .concat(keys.map(key => { return this.getByDTID(+key); }));
     return of(null).merge(...observables)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get search results by CL File #
   getByCLID(clid: string): Observable<SearchResults> {
     return this.api.getAppsByCLID(clid)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get search results by Disposition Transaction ID
   getByDTID(dtid: number): Observable<SearchResults> {
     return this.api.getAppsByDTID(dtid)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 }

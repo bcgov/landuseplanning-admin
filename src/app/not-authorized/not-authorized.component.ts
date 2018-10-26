@@ -11,5 +11,4 @@ export class NotAuthorizedComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

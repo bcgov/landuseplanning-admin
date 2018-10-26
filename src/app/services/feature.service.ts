@@ -13,17 +13,17 @@ export class FeatureService {
 
   getByDTID(tantalisId: number): Observable<Feature[]> {
     return this.api.getFeaturesByTantalisId(tantalisId)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   getByApplicationId(applicationId: string): Observable<Feature[]> {
     return this.api.getFeaturesByApplicationId(applicationId)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   deleteByApplicationId(applicationId: string): Observable<Object> {
     return this.api.deleteFeaturesByApplicationId(applicationId)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // MBL TODO: PUT/POST functionality.

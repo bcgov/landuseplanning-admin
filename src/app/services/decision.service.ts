@@ -46,7 +46,7 @@ export class DecisionService {
           }
         })
       )
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get a specific decision by its id
@@ -73,7 +73,7 @@ export class DecisionService {
             );
         })
       )
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   add(orig: Decision): Observable<Decision> {
@@ -92,7 +92,7 @@ export class DecisionService {
     }
 
     return this.api.addDecision(decision)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   save(orig: Decision): Observable<Decision> {
@@ -108,21 +108,21 @@ export class DecisionService {
     }
 
     return this.api.saveDecision(decision)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   delete(decision: Decision): Observable<Decision> {
     return this.api.deleteDecision(decision)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   publish(decision: Decision): Observable<Decision> {
     return this.api.publishDecision(decision)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   unPublish(decision: Decision): Observable<Decision> {
     return this.api.unPublishDecision(decision)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 }

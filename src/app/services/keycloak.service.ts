@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import * as _ from 'lodash';
+import { JwtUtil } from 'app/jwt-util';
 
 declare var Keycloak: any;
 
@@ -84,10 +86,10 @@ export class KeycloakService {
 
         // Try to get refresh tokens in the background
         self.keycloakAuth.onTokenExpired = function () {
-          // console.log('onTokenExpired, attempting to refresh.');
+          console.log('onTokenExpired, attempting to refresh.');
           self.keycloakAuth.updateToken()
             .success(function (auth) {
-              // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+              console.log('KC Refresh Success?:', auth);
             })
             .error((err) => {
               console.log('KC error:', err);
@@ -95,10 +97,11 @@ export class KeycloakService {
         };
 
         // Initialize.
-        self.keycloakAuth.init({ onLoad: 'login-required' })
+        // self.keycloakAuth.init({ onLoad: `'login-required' })
+        self.keycloakAuth.init({  })
           .success((auth) => {
             // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
-            // console.log('KC Success:', auth);
+            console.log('KC Success:', auth);
             resolve();
           })
           .error((err) => {
@@ -109,19 +112,39 @@ export class KeycloakService {
     }
   }
 
+  isValidForSite(token: any) {
+    if (!token) {
+      return false;
+    }
+    const jwt = new JwtUtil().decodeToken(token);
+
+    if (jwt && jwt.realm_access && jwt.realm_access.roles) {
+      return _.includes(jwt.realm_access.roles, 'sysadmin');
+    } else {
+      return false;
+    }
+  }
+
   forceAttemptUpdateToken() {
     if (this.keycloakEnabled) {
-      console.log('updating KC Token');
       const self = this;
-      this.keycloakAuth.updateToken()
+
+      // If we have a token, try to refresh it
+      const currentToken = this.getToken();
+      // console.log("currentToken:", currentToken);
+      if (currentToken !== undefined) {
+        this.keycloakAuth.updateToken()
         .success(function (auth) {
-          // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
           return true;
         })
         .error((err) => {
           console.log('KC error:', err);
           return false;
         });
+      } else {
+        // Just attempt idir.
+        this.keycloakAuth.login({ idpHint: 'idir' });
+      }
     } else {
       // console.log('redir to login');
       window.location.href = window.location.origin + '/admin/login';
@@ -131,7 +154,7 @@ export class KeycloakService {
   getToken(): string {
     // console.log('getToken:', this.keycloakAuth);
     if (this.keycloakEnabled) {
-      return this.keycloakAuth.token;
+      return this.keycloakAuth.token; // returns undefined if present
     } else {
       // return the local storage token
       const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
@@ -140,6 +163,10 @@ export class KeycloakService {
   }
 
   getLogoutURL(): string {
+    // TODO? need to do two stage logoff.
+    // logoff prc, as well as bcgov?
+    // https://logon.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
+    // https://logontest.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
     if (this.keycloakEnabled) {
       return this.keycloakAuth.authServerUrl + '/realms/' + this.keycloakRealm + '/protocol/openid-connect/logout?redirect_uri=' + window.location.origin + '/admin/';
     } else {

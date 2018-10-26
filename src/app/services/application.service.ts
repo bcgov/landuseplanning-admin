@@ -90,7 +90,7 @@ export class ApplicationService {
   getCount(): Observable<number> {
     // get just the applications, and count them
     return this.api.getApplicationsCount()
-    .catch(this.api.handleError);
+    .catch(error => this.api.handleError(error));
   }
 
   // get all applications
@@ -107,7 +107,7 @@ export class ApplicationService {
           return forkJoin(observables);
         })
       )
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get a specific application by its Tantalis ID
@@ -120,7 +120,7 @@ export class ApplicationService {
           return this._getExtraAppData(new Application(value[0]), params || {});
         })
       )
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get a specific application by its object id
@@ -133,7 +133,7 @@ export class ApplicationService {
           return this._getExtraAppData(new Application(value[0]), params || {});
         })
       )
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   private _getExtraAppData(application: Application, { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getNumComments = false, getDecision = false }: GetParameters): Observable<Application> {

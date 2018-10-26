@@ -53,14 +53,14 @@ export class CommentService {
         //     return _.flatten(allComments);
         //   });
       })
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get count of comments for the specified comment period id
   // TODO: count only pending comments? (need comment status)
   getCountByPeriodId(periodId: string): Observable<number> {
     return this.api.getCommentCountByPeriodId(periodId)
-    .catch(this.api.handleError);
+    .catch(error => this.api.handleError(error));
   }
 
   // get all comments for the specified comment period id
@@ -84,7 +84,7 @@ export class CommentService {
 
         return comments;
       })
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get a specific comment by its id
@@ -123,7 +123,7 @@ export class CommentService {
           return this.comment;
         });
       })
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   add(orig: Comment): Observable<Comment> {
@@ -145,7 +145,7 @@ export class CommentService {
     }
 
     return this.api.addComment(comment)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   save(orig: Comment): Observable<Comment> {
@@ -164,17 +164,17 @@ export class CommentService {
     }
 
     return this.api.saveComment(comment)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   publish(comment: Comment): Observable<Comment> {
     return this.api.publishComment(comment)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   unPublish(comment: Comment): Observable<Comment> {
     return this.api.unPublishComment(comment)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   isAccepted(comment: Comment): boolean {

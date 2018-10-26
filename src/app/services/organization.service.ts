@@ -25,7 +25,7 @@ export class OrganizationService {
     //     });
     //     return organizations;
     //   })
-    //   .catch(this.api.handleError);
+    //   .catch(error => this.api.handleError(error));
   }
 
   // get a specific organization by its id
@@ -48,6 +48,6 @@ export class OrganizationService {
     //     this.organization = organization;
     //     return this.organization;
     //   })
-    //   .catch(this.api.handleError);
+    //   .catch(error => this.api.handleError(error));
   }
 }

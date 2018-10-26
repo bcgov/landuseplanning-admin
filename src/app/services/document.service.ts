@@ -16,19 +16,19 @@ export class DocumentService {
   // get all documents for the specified application id
   getAllByApplicationId(id: string): Observable<Document[]> {
     return this.api.getDocumentsByAppId(id)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get all documents for the specified comment id
   getAllByCommentId(commentId: string): Observable<Document[]> {
     return this.api.getDocumentsByCommentId(commentId)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get all documents for the specified decision id
   getAllByDecisionId(decisionId: string): Observable<Document[]> {
     return this.api.getDocumentsByDecisionId(decisionId)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   // get a specific document by its id
@@ -48,26 +48,26 @@ export class DocumentService {
         this.document = document;
         return this.document;
       })
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   add(formData: FormData): Observable<Document> {
     return this.api.uploadDocument(formData)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   delete(document: Document): Observable<Document> {
     return this.api.deleteDocument(document)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   publish(document: Document): Observable<Document> {
     return this.api.publishDocument(document)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 
   unPublish(document: Document): Observable<Document> {
     return this.api.unPublishDocument(document)
-      .catch(this.api.handleError);
+      .catch(error => this.api.handleError(error));
   }
 }
