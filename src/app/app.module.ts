@@ -43,6 +43,7 @@ import { TokenInterceptor } from './utils/token-interceptor';
 import { AdministrationComponent } from 'app/administration/administration.component';
 import { UsersComponent } from 'app/administration/users/users.component';
 import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
+import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -60,7 +61,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     AdministrationComponent,
     UsersComponent,
     AddEditUserComponent,
-    SelectOrganizationComponent
+    SelectOrganizationComponent,
+    NotAuthorizedComponent
   ],
   imports: [
     BrowserAnimationsModule,
