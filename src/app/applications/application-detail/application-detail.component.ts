@@ -258,7 +258,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Application published...', null, { duration: 2000 });
           // reload all data
-          this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getNumComments: true, getDecision: true })
+          this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application => {
@@ -328,7 +328,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Application unpublished...', null, { duration: 2000 });
           // reload all data
-          this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getNumComments: true, getDecision: true })
+          this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application => {

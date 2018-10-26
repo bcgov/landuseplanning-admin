@@ -13,7 +13,7 @@ export class Document {
   internalMime: string;
   tags: Array<string>;
 
-  isPublished = false;
+  isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
     this._id              = obj && obj._id              || null;
@@ -27,14 +27,14 @@ export class Document {
     this.isDeleted        = obj && obj.isDeleted        || null;
     this.internalMime     = obj && obj.internalMime     || null;
 
-    // Wrap isPublished around the tags we receive for this object.
+    // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
-      const self = this;
-      _.each(obj.tags, function (tag) {
+      for (const tag of obj.tags) {
         if (_.includes(tag, 'public')) {
-          self.isPublished = true;
+          this.isPublished = true;
+          break;
         }
-      });
+      }
     }
   }
 }

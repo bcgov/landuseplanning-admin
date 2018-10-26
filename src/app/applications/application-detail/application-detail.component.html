@@ -106,17 +106,17 @@
                   <ul class="doc-list">
                     <li *ngFor="let doc of application.documents">
                       <span class="cell icon">
-                        <i class="material-icons link" (click)="api.openFile(doc)">
+                        <i class="material-icons link" (click)="api.openDocument(doc)">
                           insert_drive_file
                         </i>
                       </span>
                       <span class="cell name" [title]="doc.displayName || ''">
                         <span class="cell__txt-content">
-                          <a (click)="api.openFile(doc)">{{doc.documentFileName}}</a>
+                          <a (click)="api.openDocument(doc)">{{doc.documentFileName}}</a>
                         </span>
                       </span>
                       <span class="cell actions">
-                      <button class="btn btn-icon" type="button" title="Download this document" (click)="api.downloadFile(doc)">
+                      <button class="btn btn-icon" type="button" title="Download this document" (click)="api.downloadDocument(doc)">
                           <i class="material-icons">file_download</i>
                         </button>
                       </span>
@@ -204,7 +204,7 @@
             <div class="btn-container">
               <button class="cta-btn btn btn-sm btn-outline-primary" type="button"
                 [routerLink]="['/comments', application._id]">
-                Review Comments ({{application['numComments']}})
+                Review Comments<span *ngIf="application['numComments'] >= 0">&nbsp;({{application['numComments']}})</span>
               </button>
             </div>
           </div>
@@ -220,17 +220,17 @@
               <ul class="doc-list">
                 <li *ngFor="let doc of application.decision.documents">
                   <span class="cell icon">
-                    <i class="material-icons link" (click)="api.openFile(doc)">
+                    <i class="material-icons link" (click)="api.openDocument(doc)">
                       insert_drive_file
                     </i>
                   </span>
                   <span class="cell name" [title]="doc.displayName || ''">
                       <span class="cell__txt-content">
-                        <a (click)="api.openFile(doc)">{{doc.documentFileName}}</a>
+                        <a (click)="api.openDocument(doc)">{{doc.documentFileName}}</a>
                       </span>
                   </span>
                   <span class="cell actions">
-                    <button class="btn btn-icon" title="Download this document" (click)="api.downloadFile(doc)">
+                    <button class="btn btn-icon" title="Download this document" (click)="api.downloadDocument(doc)">
                       <i class="material-icons">file_download</i>
                     </button>
                   </span>

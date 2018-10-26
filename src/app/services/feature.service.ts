@@ -11,13 +11,33 @@ export class FeatureService {
 
   constructor(private api: ApiService) { }
 
-  getByDTID(tantalisId: number): Observable<Feature[]> {
+  getByTantalisId(tantalisId: number): Observable<Feature[]> {
     return this.api.getFeaturesByTantalisId(tantalisId)
+      .map(res => {
+        if (res && res.length > 0) {
+          const features: Array<Feature> = [];
+          res.forEach(f => {
+            features.push(new Feature(f));
+          });
+          return features;
+        }
+        return [];
+      })
       .catch(error => this.api.handleError(error));
   }
 
   getByApplicationId(applicationId: string): Observable<Feature[]> {
     return this.api.getFeaturesByApplicationId(applicationId)
+      .map(res => {
+        if (res && res.length > 0) {
+          const features: Array<Feature> = [];
+          res.forEach(f => {
+            features.push(new Feature(f));
+          });
+          return features;
+        }
+        return [];
+      })
       .catch(error => this.api.handleError(error));
   }
 

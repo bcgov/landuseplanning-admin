@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { map, flatMap } from 'rxjs/operators';
+import { flatMap } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/catch';
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -13,14 +15,12 @@ import { CommentPeriodService } from './commentperiod.service';
 import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
 import { FeatureService } from './feature.service';
-import { Document } from 'app/models/document';
 import { CommentPeriod } from 'app/models/commentperiod';
 
 interface GetParameters {
   getFeatures?: boolean;
   getDocuments?: boolean;
   getCurrentPeriod?: boolean;
-  getNumComments?: boolean;
   getDecision?: boolean;
 }
 
@@ -88,21 +88,20 @@ export class ApplicationService {
 
   // get count of applications
   getCount(): Observable<number> {
-    // get just the applications, and count them
-    return this.api.getApplicationsCount()
-    .catch(error => this.api.handleError(error));
+    return this.api.getCountApplications()
+      .catch(error => this.api.handleError(error));
   }
 
   // get all applications
   getAll(params: GetParameters = null): Observable<Application[]> {
     // first get just the applications
-    // then get the rest of the application data
     return this.api.getApplications()
       .pipe(
-        flatMap(value => {
+        flatMap(apps => {
           const observables: Array<Observable<Application>> = [];
-          value.forEach(v => {
-            observables.push(this._getExtraAppData(new Application(v), params || {}));
+          apps.forEach(app => {
+            // now get the rest of the data for this application
+            observables.push(this._getExtraAppData(new Application(app), params || {}));
           });
           return forkJoin(observables);
         })
@@ -113,11 +112,11 @@ export class ApplicationService {
   // get a specific application by its Tantalis ID
   getByTantalisID(tantalisID: number, params: GetParameters = null): Observable<Application> {
     // first get the base application data
-    // then get the rest of the application data
-    return this.api.getApplicationByTantalisID(tantalisID)
+    return this.api.getApplicationByTantalisId(tantalisID)
       .pipe(
-        flatMap(value => {
-          return this._getExtraAppData(new Application(value[0]), params || {});
+        flatMap(apps => {
+          // now get the rest of the data for this application
+          return this._getExtraAppData(new Application(apps[0]), params || {});
         })
       )
       .catch(error => this.api.handleError(error));
@@ -126,26 +125,29 @@ export class ApplicationService {
   // get a specific application by its object id
   getById(appId: string, params: GetParameters = null): Observable<Application> {
     // first get the base application data
-    // then get the rest of the application data
     return this.api.getApplication(appId)
       .pipe(
-        flatMap(value => {
-          return this._getExtraAppData(new Application(value[0]), params || {});
+        flatMap(apps => {
+          // now get the rest of the data for this application
+          return this._getExtraAppData(new Application(apps[0]), params || {});
         })
       )
       .catch(error => this.api.handleError(error));
   }
 
-  private _getExtraAppData(application: Application, { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getNumComments = false, getDecision = false }: GetParameters): Observable<Application> {
+  private _getExtraAppData(application: Application, { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getDecision = false }: GetParameters): Observable<Application> {
     return forkJoin(
       getFeatures ? this.featureService.getByApplicationId(application._id) : of(null),
       getDocuments ? this.documentService.getAllByApplicationId(application._id) : of(null),
       getCurrentPeriod ? this.commentPeriodService.getAllByApplicationId(application._id) : of(null),
-      getDecision ? this.decisionService.getByApplicationId(application._id) : of(null)
+      getDecision ? this.decisionService.getByApplicationId(application._id, { getDocuments: true }) : of(null)
     )
       .map(payloads => {
         if (getFeatures) {
           application.features = payloads[0];
+
+          // calculate areaHectares
+          application.areaHectares = 0;
           _.each(application.features, function (f) {
             if (f['properties']) {
               application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
@@ -154,46 +156,39 @@ export class ApplicationService {
         }
 
         if (getDocuments) {
-          _.each(payloads[1], function (d) {
-            const newDoc = new Document(d);
-            application.documents.push(newDoc);
-          });
+          application.documents = payloads[1];
         }
 
-        // If we're getting the number of comments, we need to know the current period.
-        // This logic is flawed, because we should be explicit over white comment period
-        // we're getting.
-        if (getCurrentPeriod || getNumComments) {
-          const periods = [];
-          _.each(payloads[2], function (p) {
-            periods.push(new CommentPeriod(p));
-          });
-          const cp = this.commentPeriodService.getCurrent(periods);
-          application.currentPeriod = cp;
+        if (getCurrentPeriod) {
+          const periods: Array<CommentPeriod> = payloads[2];
+          application.currentPeriod = this.commentPeriodService.getCurrent(periods);
+
           // user-friendly comment period status
-          application.cpStatus = this.commentPeriodService.getStatus(cp);
+          application.cpStatus = this.commentPeriodService.getStatus(application.currentPeriod);
 
           // derive days remaining for display
           // use moment to handle Daylight Saving Time changes
-          if (cp && this.commentPeriodService.isOpen(cp)) {
+          if (application.currentPeriod && this.commentPeriodService.isOpen(application.currentPeriod)) {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            application.currentPeriod['daysRemaining'] = moment(cp.endDate).diff(moment(today), 'days') + 1; // including today
+            application.currentPeriod['daysRemaining']
+              = moment(application.currentPeriod.endDate).diff(moment(today), 'days') + 1; // including today
           }
 
-          if (getNumComments && cp) {
-            this.commentService.getCountByPeriodId(cp._id)
-            .subscribe(
-              numComments => {
-                application['numComments'] = numComments;
-              }
-            );
+          // get the number of comments for the current comment period only
+          // multiple comment periods are currently not supported
+          if (application.currentPeriod) {
+            this.commentService.getCountByPeriodId(application.currentPeriod._id)
+              .subscribe(
+                numComments => {
+                  application['numComments'] = numComments;
+                }
+              );
           }
         }
 
         if (getDecision) {
-          const decision = payloads[3];
-          application.decision = decision;
+          application.decision = payloads[3];
         }
 
         // 7-digit CL File number for display
@@ -369,4 +364,5 @@ export class ApplicationService {
   getRegionString(abbrev: string): string {
     return this.regions[abbrev]; // returns null if not found
   }
+
 }

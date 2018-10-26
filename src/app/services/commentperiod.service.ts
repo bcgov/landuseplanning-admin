@@ -9,6 +9,7 @@ import { CommentPeriod } from 'app/models/commentperiod';
 
 @Injectable()
 export class CommentPeriodService {
+
   // statuses (also used as short strings)
   readonly NOT_STARTED = 'Not Started';
   readonly NOT_OPEN = 'Not Open';
@@ -17,9 +18,6 @@ export class CommentPeriodService {
 
   // use helpers to get these:
   private commentStatuses = [];
-
-  // for caching
-  private commentPeriod: CommentPeriod = null;
 
   constructor(private api: ApiService) {
     // user-friendly strings
@@ -32,6 +30,16 @@ export class CommentPeriodService {
   // get all comment periods for the specified application id
   getAllByApplicationId(appId: string): Observable<CommentPeriod[]> {
     return this.api.getPeriodsByAppId(appId)
+      .map(res => {
+        if (res && res.length > 0) {
+          const periods: Array<CommentPeriod> = [];
+          res.forEach(cp => {
+            periods.push(new CommentPeriod(cp));
+          });
+          return periods;
+        }
+        return [];
+      })
       .catch(error => this.api.handleError(error));
   }
 
@@ -39,11 +47,11 @@ export class CommentPeriodService {
   getById(periodId: string): Observable<CommentPeriod> {
     return this.api.getPeriod(periodId)
       .map(res => {
-        // return the first (only) comment period
-        if (res[0] && res[0].length > 0) {
-          this.commentPeriod = new CommentPeriod(res[0]);
-          return this.commentPeriod;
+        if (res && res.length > 0) {
+          // return the first (only) comment period
+          return new CommentPeriod(res[0]);
         }
+        return null;
       })
       .catch(error => this.api.handleError(error));
   }
@@ -87,7 +95,8 @@ export class CommentPeriodService {
       .catch(error => this.api.handleError(error));
   }
 
-  // returns first period - multiple comment periods are currently not suported
+  // returns first period
+  // multiple comment periods are currently not supported
   getCurrent(periods: CommentPeriod[]): CommentPeriod {
     return (periods.length > 0) ? periods[0] : null;
   }
@@ -126,4 +135,5 @@ export class CommentPeriodService {
   isOpen(period: CommentPeriod): boolean {
     return (this.getStatus(period) === this.commentStatuses[this.OPEN]);
   }
+
 }

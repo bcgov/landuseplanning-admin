@@ -20,7 +20,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
 
     if (appId === '0') {
       // create new application
-      const app = new Application({
+      const application = new Application({
         purpose: route.queryParamMap.get('purpose'),
         subpurpose: route.queryParamMap.get('subpurpose'),
         type: route.queryParamMap.get('type'),
@@ -35,14 +35,20 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       });
 
       // 7-digit CL File number for display
-      if (app.cl_file) {
-        app['clFile'] = app.cl_file.toString().padStart(7, '0');
+      if (application.cl_file) {
+        application['clFile'] = application.cl_file.toString().padStart(7, '0');
       }
 
-      return of(app);
+      // user-friendly application status
+      application.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(application.status));
+
+      // derive region code
+      application.region = this.applicationService.getRegionCode(application.businessUnit);
+
+      return of(application);
     }
 
     // view/edit existing application
-    return this.applicationService.getById(appId, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getNumComments: true, getDecision: true });
+    return this.applicationService.getById(appId, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true });
   }
 }

@@ -180,7 +180,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   public drawMap(app: Application) {
     if (app.tantalisID) {
       const self = this; // for closure function below
-      this.featureService.getByDTID(app.tantalisID)
+      this.featureService.getByTantalisId(app.tantalisID)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           features => {

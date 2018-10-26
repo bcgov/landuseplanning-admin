@@ -25,25 +25,32 @@ export class SearchResults {
     this.status        = search && search.status        || null;
     this.hostname      = hostname;
 
+    // copy features
     if (search && search.features) {
-      search.features.forEach(feature => {
+      for (const feature of search.features) {
         this.features.push(feature);
-      });
+      }
     }
 
+    // copy sidsFound
     if (search && search.sidsFound) {
-      search.sidsFound.forEach(sidFound => {
-        this.sidsFound.push(sidFound);
-      });
+      for (const sid of search.sidsFound) {
+        this.sidsFound.push(sid);
+      }
     }
   }
 }
 
 export class SearchArray {
-  items: Array<SearchResults>;
+  items: Array<SearchResults> = [];
 
   constructor(obj?: any) {
-    this.items = obj && obj.items || [];
+    // copy items
+    if (obj && obj.items) {
+      for (const item of obj.items) {
+        this.items.push(item);
+      }
+    }
   }
 
   sort() {
@@ -76,10 +83,11 @@ export class SearchTerms {
     this.dateStart = obj && obj.dateStart || null;
     this.dateEnd   = obj && obj.dateEnd   || null;
 
+    // copy organizations
     if (obj && obj.organizations) {
-      obj.organizations.forEach(org => {
+      for (const org of obj.organizations) {
         this.organizations.push(org);
-      });
+      }
     }
   }
 

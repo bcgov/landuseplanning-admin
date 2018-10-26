@@ -36,20 +36,15 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
   }
 
   ngOnInit() {
-    const self = this;
     this.searchService.getClientsByDTID(this.dispositionId)
       .subscribe(
-        data => {
-          _.each(data, function (i) {
-            self.clients.push(new Client(i));
-            // Pre-select the existing clients if they're in the list
-            // if (i._id === self.dispositionId) {
-            //   self.selectedClients = i;
-            // }
-          });
+        clients => {
           this.isLoading = false;
+          this.clients = clients;
         },
         error => {
+          this.isLoading = false;
+          console.log('error =', error);
           this.api.ensureLoggedIn();
         });
   }
