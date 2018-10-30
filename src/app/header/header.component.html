@@ -13,12 +13,14 @@
     </button>
     <div class="navbar-collapse" [@toggleNav]="isNavMenuOpen ? 'navOpen' : 'navClosed'" id="mainNav">
       <ul class="navbar-nav">
-        <li class="nav-item">
+        <li *ngIf="jwt" class="nav-item">
           <a class="nav-link" routerLink="/search" title="Search the BCGW for applications" tabindex="0">
             <span>Find Applications</span>
           </a>
         </li>
-        <li class="nav-item" ngbDropdown placement="bottom-right">
+
+        <!-- LOGGED IN -->
+        <li *ngIf="jwt; else loggedOut" class="nav-item" ngbDropdown placement="bottom-right">
           <a class="nav-link" ngbDropdownToggle id="welcome" tabindex="0">
             <span>{{welcomeMsg}}</span>
             <span class="caret"></span>
@@ -32,6 +34,11 @@
             </a>
           </div>
         </li>
+
+        <!-- LOGGED OUT -->
+        <ng-template #loggedOut>
+          <!-- Placeholder? -->
+        </ng-template>
       </ul>
     </div>
   </nav>
