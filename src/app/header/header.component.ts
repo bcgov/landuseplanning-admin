@@ -31,7 +31,7 @@ export class HeaderComponent {
   isNavMenuOpen = false;
   welcomeMsg: String;
   private _api: ApiService;
-  private jwt: {
+  public jwt: {
     username: String,
     realm_access: {
       roles: Array<String>
