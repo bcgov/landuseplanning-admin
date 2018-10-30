@@ -10,7 +10,8 @@ export class Decision {
   description: string = null;
 
   documents: Array<Document> = [];
-  isPublished = false;
+
+  isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
     this._id          = obj && obj._id          || null;
@@ -26,19 +27,19 @@ export class Decision {
 
     // copy documents
     if (obj && obj.documents) {
-      obj.documents.forEach(doc => {
+      for (const doc of obj.documents) {
         this.documents.push(doc);
-      });
+      }
     }
 
     // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
-      const self = this;
-      _.each(obj.tags, function (tag) {
+      for (const tag of obj.tags) {
         if (_.includes(tag, 'public')) {
-          self.isPublished = true;
+          this.isPublished = true;
+          break;
         }
-      });
+      }
     }
   }
 }

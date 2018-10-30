@@ -49,31 +49,32 @@ export class Application {
   features: Array<Feature> = [];
 
   constructor(obj?: any) {
-    this._id                     = obj && obj._id                     || null;
+    this._id                     = obj && obj._id           || null;
 
-    this.agency                  = obj && obj.agency                  || null;
-    this.areaHectares            = obj && obj.areaHectares            || null;
-    this.businessUnit            = obj && obj.businessUnit            || null;
-    this.cl_file                 = obj && obj.cl_file                 || null;
-    this.client                  = obj && obj.client                  || null;
-    this.internal                = obj && obj.internal                || new Internal();
-    this.location                = obj && obj.location                || null;
-    this.name                    = obj && obj.name                    || null;
-    this.publishDate             = obj && obj.publishDate             || null;
-    this.purpose                 = obj && obj.purpose                 || null;
-    this.status                  = obj && obj.status                  || null;
-    this.subpurpose              = obj && obj.subpurpose              || null;
-    this.subtype                 = obj && obj.subtype                 || null;
-    this.tantalisID              = obj && obj.tantalisID              || null; // not zero
-    this.tenureStage             = obj && obj.tenureStage             || null;
-    this.type                    = obj && obj.type                    || null;
+    this.agency        = obj && obj.agency        || null;
+    this.areaHectares  = obj && obj.areaHectares  || null;
+    this.businessUnit  = obj && obj.businessUnit  || null;
+    this.cl_file       = obj && obj.cl_file       || null;
+    this.client        = obj && obj.client        || null;
+    this.location      = obj && obj.location      || null;
+    this.name          = obj && obj.name          || null;
+    this.publishDate   = obj && obj.publishDate   || null;
+    this.purpose       = obj && obj.purpose       || null;
+    this.status        = obj && obj.status        || null;
+    this.subpurpose    = obj && obj.subpurpose    || null;
+    this.subtype       = obj && obj.subtype       || null;
+    this.tantalisID    = obj && obj.tantalisID    || null; // not zero
+    this.tenureStage   = obj && obj.tenureStage   || null;
+    this.type          = obj && obj.type          || null;
 
-    this.region                  = obj && obj.region                  || null;
-    this.appStatus               = obj && obj.appStatus               || null;
-    this.cpStatus                = obj && obj.cpStatus                || null;
+    this.region        = obj && obj.region        || null;
+    this.appStatus     = obj && obj.appStatus     || null;
+    this.cpStatus      = obj && obj.cpStatus      || null;
 
-    this.currentPeriod           = obj && obj.currentPeriod           || null;
-    this.decision                = obj && obj.decision                || null;
+    this.currentPeriod = obj && obj.currentPeriod || null;
+    this.decision      = obj && obj.decision      || null;
+
+    this.internal      = new Internal(obj && obj.internal || null);
 
     // replace \\n (JSON format) with newlines
     if (obj && obj.description) {
@@ -85,33 +86,33 @@ export class Application {
 
     // copy centroid
     if (obj && obj.centroid) {
-      obj.centroid.forEach(num => {
+      for (const num of obj.centroid) {
         this.centroid.push(num);
-      });
+      }
     }
 
     // copy documents
     if (obj && obj.documents) {
-      obj.documents.forEach(doc => {
+      for (const doc of obj.documents) {
         this.documents.push(doc);
-      });
+      }
     }
 
     // copy features
     if (obj && obj.features) {
-      obj.features.forEach(feature => {
+      for (const feature of obj.features) {
         this.features.push(feature);
-      });
+      }
     }
 
     // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
-      const self = this;
-      _.each(obj.tags, function (tag) {
+      for (const tag of obj.tags) {
         if (_.includes(tag, 'public')) {
-          self.isPublished = true;
+          this.isPublished = true;
+          break;
         }
-      });
+      }
     }
   }
 }

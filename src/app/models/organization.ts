@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export class Organization {
   _id: string;
   _addedBy: string;
@@ -18,6 +20,8 @@ export class Organization {
   postal: string;
   country: string;
 
+  isPublished = false; // depends on tags; see below
+
   constructor(obj?: any) {
     this._id            = obj && obj._id            || null;
     this._addedBy       = obj && obj._addedBy       || null;
@@ -36,5 +40,15 @@ export class Organization {
     this.postal         = obj && obj.postal         || null;
     this.country        = obj && obj.country        || null;
     this.parentCompany  = obj && obj.parentCompany  || null;
+
+    // wrap isPublished around the tags we receive for this object
+    if (obj && obj.tags) {
+      for (const tag of obj.tags) {
+        if (_.includes(tag, 'public')) {
+          this.isPublished = true;
+          break;
+        }
+      }
+    }
   }
 }

@@ -18,7 +18,7 @@ export class ConfigService {
     // FUTURE: load settings from window.localStorage?
   }
 
-  // called by app constructor - for future use
+  // called by app constructor
   public destroy() {
     // FUTURE: save settings to window.localStorage?
   }

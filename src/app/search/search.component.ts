@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -13,8 +13,7 @@ import { ApiService } from 'app/services/api';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./search.component.scss']
 })
 
 export class SearchComponent implements OnInit, OnDestroy {
@@ -33,7 +32,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private _changeDetectionRef: ChangeDetectorRef,
     // private authenticationService: AuthenticationService,
     private api: ApiService
   ) { }
@@ -93,7 +91,7 @@ export class SearchComponent implements OnInit, OnDestroy {
                 // if app is in PRC, query application data to update UI
                 if (_.includes(search.sidsFound, key)) {
                   value[0].loaded = false;
-                  self.applicationService.getByTantalisID(+key, { getCurrentPeriod: true, getNumComments: true })
+                  self.applicationService.getByTantalisID(+key, { getCurrentPeriod: true })
                     .takeUntil(self.ngUnsubscribe)
                     .subscribe(
                       application => {
@@ -102,9 +100,6 @@ export class SearchComponent implements OnInit, OnDestroy {
                           // display PRC status from application
                           value[0].prcStatus = application.appStatus;
                           value[0].app = application;
-                          // Force change detection since we changed a bound property after the normal check cycle and outside anything
-                          // that would trigger a CD cycle - this will eliminate the error we get when running in dev mode.
-                          self._changeDetectionRef.detectChanges();
                         }
                       },
                       error => {
@@ -127,7 +122,6 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.searching = false;
           this.ranSearch = true;
           this.count = 0;
-          this._changeDetectionRef.detectChanges(); // force change detection
 
           this.snackBarRef = this.snackBar.open('Error searching applications ...', 'RETRY');
           this.snackBarRef.onAction().subscribe(() => this.onSubmit());
@@ -137,7 +131,6 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.searching = false;
           this.ranSearch = true;
           this.count = this.groupByResults.length;
-          this._changeDetectionRef.detectChanges(); // force change detection
         });
   }
 

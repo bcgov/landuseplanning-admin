@@ -5,7 +5,6 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/toPromise';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -104,7 +103,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     if (this.application) { // safety check
       this.loading = true;
 
-      this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy)
+      // get a page of comments
+      this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           comments => {
@@ -174,77 +174,59 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     // get all comments
-    this.commentService.getAllByApplicationId(this.application._id)
+    this.commentService.getAllByApplicationId(this.application._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         comments => {
-          const observables: Array<Observable<Comment>> = [];
-
-          // get full comments
-          comments.forEach(comment => {
-            observables.push(this.commentService.getById(comment._id, true));
+          // FUTURE: instead of flattening, copy to new 'export object' with user-friendly keys?
+          const flatComments = comments.map(comment => {
+            // sanitize and flatten each comment object
+            delete comment._commentPeriod;
+            delete comment.commentAuthor.internal.tags;
+            delete comment.commentAuthor.tags;
+            delete comment.commentNumber;
+            delete comment.review.tags;
+            delete comment.tags;
+            // sanitize documents
+            comment.documents.forEach(document => {
+              delete document._id;
+              delete document._addedBy;
+              delete document._application;
+              delete document._decision;
+              delete document._comment;
+              delete document.internalURL;
+              delete document.internalMime;
+              delete document.isDeleted;
+              delete document.tags;
+            });
+            // add necessary properties
+            // comment['client'] = this.application.client; // FUTURE
+            comment['cl_file'] = this.application['clFile'];
+            return this.flatten_fastest(comment);
           });
 
-          // run all observables in parallel
-          forkJoin(observables)
-            .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-              (allComments: Comment[]) => {
-                // FUTURE: instead of flattening, copy to new 'export object' with user-friendly keys?
-                const flatComments = allComments.map(comment => {
-                  // sanitize and flatten each comment object
-                  delete comment._commentPeriod;
-                  delete comment.commentAuthor.internal.tags;
-                  delete comment.commentAuthor.tags;
-                  delete comment.commentNumber;
-                  delete comment.review.tags;
-                  delete comment.tags;
-                  // sanitize documents
-                  comment.documents.forEach(document => {
-                    delete document._id;
-                    delete document._addedBy;
-                    delete document._application;
-                    delete document._decision;
-                    delete document._comment;
-                    delete document.internalURL;
-                    delete document.internalMime;
-                    delete document.isDeleted;
-                    delete document.tags;
-                  });
-                  // add necessary properties
-                  // comment['client'] = this.application.client; // FUTURE
-                  comment['cl_file'] = this.application['clFile'];
-                  return this.flatten_fastest(comment);
-                });
-
-                const excelFileName = 'comments-'
-                  + this.application.client.replace(/\s/g, '_')
-                  + moment(new Date()).format('-YYYYMMDD');
-                const columnOrder: Array<string> = [
-                  'cl_file',
-                  '_id',
-                  '_addedBy',
-                  'dateAdded',
-                  'commentAuthor.contactName',
-                  'commentAuthor.orgName',
-                  'commentAuthor.location',
-                  'commentAuthor.requestedAnonymous',
-                  'commentAuthor.internal.email',
-                  'commentAuthor.internal.phone',
-                  'comment',
-                  'review.reviewerDate',
-                  'review.reviewerNotes',
-                  'commentStatus',
-                  'isPublished'
-                  // document columns go here
-                ];
-                this.excelService.exportAsExcelFile(flatComments, excelFileName, columnOrder);
-              },
-              error => {
-                // if 403, redir to login page
-                if (error && error.status === 403) { this.router.navigate(['/login']); }
-                this.alerts.push('Error exporting comments');
-              });
+          const excelFileName = 'comments-'
+            + this.application.client.replace(/\s/g, '_')
+            + moment(new Date()).format('-YYYYMMDD');
+          const columnOrder: Array<string> = [
+            'cl_file',
+            '_id',
+            '_addedBy',
+            'dateAdded',
+            'commentAuthor.contactName',
+            'commentAuthor.orgName',
+            'commentAuthor.location',
+            'commentAuthor.requestedAnonymous',
+            'commentAuthor.internal.email',
+            'commentAuthor.internal.phone',
+            'comment',
+            'review.reviewerDate',
+            'review.reviewerNotes',
+            'commentStatus',
+            'isPublished'
+            // document columns go here
+          ];
+          this.excelService.exportAsExcelFile(flatComments, excelFileName, columnOrder);
         },
         error => {
           console.log('error =', error);

@@ -9,45 +9,40 @@ import { Organization } from 'app/models/organization';
 
 @Injectable()
 export class OrganizationService {
-  // private organization: Organization = null;
 
   constructor(private api: ApiService) { }
 
   // get all organizations
   getAll(): Observable<Organization[]> {
-    return of(null);
+    return of([] as Organization[]);
 
     // return this.api.getOrganizations()
     //   .map(res => {
-    //     const organizations = res.text() ? res.json() : [];
-    //     organizations.forEach((org, index) => {
-    //       organizations[index] = new Organization(org);
-    //     });
-    //     return organizations;
+    //     if (res && res.length > 0) {
+    //       const organizations: Array<Organization> = [];
+    //       res.forEach(org => {
+    //         organizations.push(new Organization(org));
+    //       });
+    //       return organizations;
+    //     }
+    //     return [];
     //   })
     //   .catch(error => this.api.handleError(error));
   }
 
   // get a specific organization by its id
-  getById(orgId: string, forceReload: boolean = false): Observable<Organization> {
-    return of(null);
-
-    // if (this.organization && this.organization._id === orgId && !forceReload) {
-    //   return of(this.organization);
-    // }
+  getById(orgId: string): Observable<Organization> {
+    return of(null as Organization);
 
     // return this.api.getOrganization(orgId)
     //   .map(res => {
-    //     const organizations = res.text() ? res.json() : [];
-    //     // return the first (only) organization
-    //     return organizations.length > 0 ? new Organization(organizations[0]) : null;
-    //   })
-    //   .map((organization: Organization) => {
-    //     if (!organization) { return null as Organization; }
-
-    //     this.organization = organization;
-    //     return this.organization;
+    //     if (res && res.length > 0) {
+    //       // return the first (only) organization
+    //       return new Organization(res[0]);
+    //     }
+    //     return null;
     //   })
     //   .catch(error => this.api.handleError(error));
   }
+
 }

@@ -6,9 +6,21 @@ class Internal {
   phone: string;
   tags: Array<string>;
 
+  isPublished = false; // depends on tags; see below
+
   constructor(obj?: any) {
     this.email = obj && obj.email || null;
     this.phone = obj && obj.phone || null;
+
+    // wrap isPublished around the tags we receive for this object
+    if (obj && obj.tags) {
+      for (const tag of obj.tags) {
+        if (_.includes(tag, 'public')) {
+          this.isPublished = true;
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -21,26 +33,55 @@ class CommentAuthor {
   internal: Internal;
   tags: Array<string>;
 
+  isPublished = false; // depends on tags; see below
+
   constructor(obj?: any) {
     this._userId            = obj && obj._userId            || null;
     this.orgName            = obj && obj.orgName            || null;
     this.contactName        = obj && obj.contactName        || null;
     this.location           = obj && obj.location           || null;
     this.requestedAnonymous = obj && obj.requestedAnonymous || null;
-    this.internal           = obj && obj.internal           || new Internal();
+
+    this.internal           = new Internal(obj && obj.internal || null);
+
+    // wrap isPublished around the tags we receive for this object
+    if (obj && obj.tags) {
+      for (const tag of obj.tags) {
+        if (_.includes(tag, 'public')) {
+          this.isPublished = true;
+          break;
+        }
+      }
+    }
   }
 }
 
 class Review {
   _reviewerId: string; // object id -> User
-  reviewerNotes: string;
+  reviewerNotes: string = null;
   reviewerDate: Date;
   tags: Array<string>;
 
+  isPublished = false; // depends on tags; see below
+
   constructor(obj?: any) {
     this._reviewerId    = obj && obj._reviewerId    || null;
-    this.reviewerNotes  = obj && obj.reviewerNotes  || null;
     this.reviewerDate   = obj && obj.reviewerDate   || null;
+
+    // replace \\n (JSON format) with newlines
+    if (obj && obj.reviewerNotes) {
+      this.reviewerNotes = obj.reviewerNotes.replace(/\\n/g, '\n');
+    }
+
+    // wrap isPublished around the tags we receive for this object
+    if (obj && obj.tags) {
+      for (const tag of obj.tags) {
+        if (_.includes(tag, 'public')) {
+          this.isPublished = true;
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -49,37 +90,48 @@ export class Comment {
   _addedBy: string;
   _commentPeriod: string; // object id -> CommentPeriod
   commentNumber: number;
-  comment: string;
+  comment: string = null;
   commentAuthor: CommentAuthor;
   review: Review;
   dateAdded: Date;
   commentStatus: string;
   tags: Array<string>;
 
-  documents: Array<Document>;
-  isPublished = false;
+  documents: Array<Document> = [];
+
+  isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
     this._id            = obj && obj._id            || null;
     this._addedBy       = obj && obj._addedBy       || null;
     this._commentPeriod = obj && obj._commentPeriod || null;
     this.commentNumber  = obj && obj.commentNumber  || 0;
-    this.comment        = obj && obj.comment        || null;
-    this.commentAuthor  = obj && obj.commentAuthor  || new CommentAuthor();
-    this.review         = obj && obj.review         || new Review();
     this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;
 
-    this.documents = [];
+    this.commentAuthor  = new CommentAuthor(obj && obj.commentAuthor || null);
+    this.review         = new Review(obj && obj.review || null);
 
-    // Wrap isPublished around the tags we receive for this object.
+    // replace \\n (JSON format) with newlines
+    if (obj && obj.comment) {
+      this.comment = obj.comment.replace(/\\n/g, '\n');
+    }
+
+    // copy documents
+    if (obj && obj.documents) {
+      for (const doc of obj.documents) {
+        this.documents.push(doc);
+      }
+    }
+
+    // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
-      const self = this;
-      _.each(obj.tags, function (tag) {
+      for (const tag of obj.tags) {
         if (_.includes(tag, 'public')) {
-          self.isPublished = true;
+          this.isPublished = true;
+          break;
         }
-      });
+      }
     }
   }
 }
