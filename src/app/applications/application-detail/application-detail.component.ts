@@ -46,11 +46,6 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // if we're not logged in, redirect
-    if (!this.api.ensureLoggedIn()) {
-      return false;
-    }
-
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)

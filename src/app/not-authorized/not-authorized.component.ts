@@ -27,8 +27,6 @@ export class NotAuthorizedComponent implements OnInit {
   }
 
   login() {
-    // Either go to the local login, or attempt IDIR auth
-    this.api.ensureLoggedIn();
-    this.router.navigate(['search']);
+    window.location.href = window.location.origin + '/admin/search';
   }
 }
