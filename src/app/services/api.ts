@@ -102,20 +102,10 @@ export class ApiService {
   handleError(error: any): Observable<never> {
     const reason = error.message ? error.message : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
     console.log('API error =', reason);
-    return throwError(error);
-  }
-
-  ensureLoggedIn() {
-    const token = this.keycloakService.getToken();
-    if (!token || this.jwtHelper.isTokenExpired(token)) {
-      return this.keycloakService.forceAttemptUpdateToken();
-    } else {
-      // make sure token is valid for our scopes
-      if (!this.keycloakService.isValidForSite(token)) {
-        return false;
-      }
+    if (error && error.status === 403 && !this.keycloakService.isKeyCloakEnabled()) {
+      window.location.href = '/admin/login';
     }
-    return true;
+    return throwError(error);
   }
 
   login(username: string, password: string): Observable<boolean> {

@@ -23,11 +23,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // if we're not logged in, redirect
-    if (!this.api.ensureLoggedIn()) {
-      return false;
-    }
-
     // although we aren't currently using numApplications,
     // this verifies our login token and redirects in case of error
     this.applicationService.getCount()
@@ -35,8 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       .subscribe(
         value => { this.numApplications = value; },
         error => {
-          // console.log('error =', 'could not count applications');
-          this.api.ensureLoggedIn();
+          console.log('error = could not count applications');
         }
       );
   }

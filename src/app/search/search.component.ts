@@ -32,16 +32,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    // private authenticationService: AuthenticationService,
     private api: ApiService
   ) { }
 
   ngOnInit() {
-    // if we're not logged in, redirect
-    if (!this.api.ensureLoggedIn()) {
-      this.router.navigate(['not-authorized']);
-      return;
-    }
     // get search terms from route
     this.route.params
       .takeUntil(this.ngUnsubscribe)
@@ -66,11 +60,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private doSearch() {
-    // Guard the doSearch against expired tokens.
-    if (!this.api.ensureLoggedIn()) {
-      return;
-    }
-
     this.searching = true;
     this.keywords = this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' '))) || []; // safety checks
     this.groupByResults.length = 0; // empty the list

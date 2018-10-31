@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ApiService } from 'app/services/api';
@@ -27,7 +27,7 @@ import { KeycloakService } from 'app/services/keycloak.service';
   ]
 })
 
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   isNavMenuOpen = false;
   welcomeMsg: String;
   private _api: ApiService;
@@ -61,6 +61,13 @@ export class HeaderComponent {
       }
       // console.log('val:', val instanceof NavigationEnd);
     });
+  }
+
+  ngOnInit() {
+    // Make sure they have the right role.
+    if (!this.keycloakService.isValidForSite()) {
+      this.router.navigate(['/not-authorized']);
+    }
   }
 
   renderMenu(route: String) {

@@ -10,6 +10,7 @@ export class KeycloakService {
   private keycloakEnabled: boolean;
   private keycloakUrl: string;
   private keycloakRealm: string;
+  private loggedOut: string;
 
   constructor() {
     switch (window.location.origin) {
@@ -48,7 +49,25 @@ export class KeycloakService {
     return this.keycloakEnabled;
   }
 
+  private getParameterByName(name) {
+    const url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) {
+      return null;
+    }
+    if (!results[2]) {
+      return '';
+    }
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
   init(): Promise<any> {
+
+    const url = window.location.href;
+    this.loggedOut = this.getParameterByName('loggedout');
+
     const self = this;
     if (this.keycloakEnabled) {
       // Bootup KC
@@ -97,12 +116,20 @@ export class KeycloakService {
         };
 
         // Initialize.
-        // self.keycloakAuth.init({ onLoad: `'login-required' })
         self.keycloakAuth.init({  })
           .success((auth) => {
             // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
             console.log('KC Success:', auth);
-            resolve();
+            if (!auth) {
+              if (this.loggedOut === 'true') {
+                // Don't do anything, they wanted to remain logged out.
+                resolve();
+              } else {
+                self.keycloakAuth.login({ idpHint: 'idir' });
+              }
+            } else {
+              resolve();
+            }
           })
           .error((err) => {
             console.log('KC error:', err);
@@ -112,42 +139,16 @@ export class KeycloakService {
     }
   }
 
-  isValidForSite(token: any) {
-    if (!token) {
+  isValidForSite() {
+    if (!this.getToken()) {
       return false;
     }
-    const jwt = new JwtUtil().decodeToken(token);
+    const jwt = new JwtUtil().decodeToken(this.keycloakAuth.token);
 
     if (jwt && jwt.realm_access && jwt.realm_access.roles) {
       return _.includes(jwt.realm_access.roles, 'sysadmin');
     } else {
       return false;
-    }
-  }
-
-  forceAttemptUpdateToken() {
-    if (this.keycloakEnabled) {
-      const self = this;
-
-      // If we have a token, try to refresh it
-      const currentToken = this.getToken();
-      // console.log("currentToken:", currentToken);
-      if (currentToken !== undefined) {
-        this.keycloakAuth.updateToken()
-        .success(function (auth) {
-          return true;
-        })
-        .error((err) => {
-          console.log('KC error:', err);
-          return false;
-        });
-      } else {
-        // Just attempt idir.
-        this.keycloakAuth.login({ idpHint: 'idir' });
-      }
-    } else {
-      // console.log('redir to login');
-      window.location.href = window.location.origin + '/admin/login';
     }
   }
 

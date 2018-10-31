@@ -45,7 +45,6 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
         error => {
           this.isLoading = false;
           console.log('error =', error);
-          this.api.ensureLoggedIn();
         });
   }
 
