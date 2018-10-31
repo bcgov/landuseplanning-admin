@@ -11,10 +11,6 @@ export class AdministrationComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit() {
-    // if we're not logged in, redirect
-    if (!this.api.ensureLoggedIn()) {
-      return false;
-    }
   }
 
 }

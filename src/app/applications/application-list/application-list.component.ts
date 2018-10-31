@@ -35,11 +35,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // if we're not logged in, redirect
-    if (!this.api.ensureLoggedIn()) {
-      return false;
-    }
-
     // get optional query parameters
     this.route.queryParamMap
       .takeUntil(this.ngUnsubscribe)
