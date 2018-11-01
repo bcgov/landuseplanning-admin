@@ -20,19 +20,10 @@
         </li>
 
         <!-- LOGGED IN -->
-        <li *ngIf="jwt; else loggedOut" class="nav-item" ngbDropdown placement="bottom-right">
-          <a class="nav-link" ngbDropdownToggle id="welcome" tabindex="0">
+        <li *ngIf="jwt; else loggedOut" class="nav-item" placement="bottom-right">
+          <a class="nav-link" id="welcome" tabindex="0">
             <span>{{welcomeMsg}}</span>
-            <span class="caret"></span>
           </a>
-          <div ngbDropdownMenu aria-labelledby="welcome">
-            <a class="dropdown-item" *ngIf="renderMenu('administration')" routerLink="/administration" tabindex="0">
-              <strong>Administration</strong>
-            </a>
-            <a class="dropdown-item" (click)="navigateToLogout()" tabindex="0">
-              <strong>Logout</strong>
-            </a>
-          </div>
         </li>
 
         <!-- LOGGED OUT -->
