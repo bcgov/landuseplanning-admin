@@ -139,42 +139,16 @@ export class KeycloakService {
     }
   }
 
-  isValidForSite(token: any) {
-    if (!token) {
+  isValidForSite() {
+    if (!this.getToken()) {
       return false;
     }
-    const jwt = new JwtUtil().decodeToken(token);
+    const jwt = new JwtUtil().decodeToken(this.keycloakAuth.token);
 
     if (jwt && jwt.realm_access && jwt.realm_access.roles) {
       return _.includes(jwt.realm_access.roles, 'sysadmin');
     } else {
       return false;
-    }
-  }
-
-  forceAttemptUpdateToken() {
-    if (this.keycloakEnabled) {
-      const self = this;
-
-      // If we have a token, try to refresh it
-      const currentToken = this.getToken();
-      // console.log("currentToken:", currentToken);
-      if (currentToken !== undefined) {
-        this.keycloakAuth.updateToken()
-        .success(function (auth) {
-          return true;
-        })
-        .error((err) => {
-          console.log('KC error:', err);
-          return false;
-        });
-      } else {
-        // Just attempt idir.
-        this.keycloakAuth.login({ idpHint: 'idir' });
-      }
-    } else {
-      // console.log('redir to login');
-      window.location.href = window.location.origin + '/admin/login';
     }
   }
 

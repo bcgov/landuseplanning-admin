@@ -32,7 +32,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    // private authenticationService: AuthenticationService,
     private api: ApiService
   ) { }
 
