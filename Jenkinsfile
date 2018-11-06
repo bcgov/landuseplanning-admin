@@ -1,13 +1,13 @@
 pipeline {
   agent any
   stages {
-    stage('Building: admin (scale branch)') {
+    stage('Building: admin (master branch)') {
       steps {
         script {
           try {
             echo "Building: ${env.JOB_NAME} #${env.BUILD_ID}"
             notifyBuild("Building: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOW")
-            openshiftBuild bldCfg: 'admin-angular-on-nginx-scale-build-angular-app-build', showBuildLogs: 'true'
+            openshiftBuild bldCfg: 'admin-angular-on-nginx-master-build-angular-app-build', showBuildLogs: 'true'
           } catch (e) {
             notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
             error('Stopping early…')
@@ -15,12 +15,12 @@ pipeline {
         }
       }
     }
-    stage('Deploying: admin (scale branch)') {
+    stage('Deploying: admin (master branch)') {
       steps {
         script {
           try {
             notifyBuild("Deploying: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOW")
-            openshiftBuild bldCfg: 'admin-angular-on-nginx-scale-build', showBuildLogs: 'true'
+            openshiftBuild bldCfg: 'admin-angular-on-nginx-master-build', showBuildLogs: 'true'
           } catch (e) {
             notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
             error('Stopping early…')

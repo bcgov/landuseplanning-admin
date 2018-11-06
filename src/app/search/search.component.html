@@ -42,7 +42,7 @@
           <td class="cl-file">
             <span class="cl-arrow">{{item.properties.CROWN_LANDS_FILE}}</span>
           </td>
-          <td>
+          <td class="disp">
             <strong>{{item.properties.DISPOSITION_TRANSACTION_SID}}</strong>
           </td>
           <td [innerHTML]="item.app?.client ? (item.app.client | titlecase) : '<em>Applicant Not Selected</em>'"></td>

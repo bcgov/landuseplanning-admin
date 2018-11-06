@@ -69,8 +69,10 @@ $sr-table-row-bg: #f7f8fa;
 
   th {
     padding: 0.5rem 1rem;
+    overflow: hidden;
     border: none;
     background: $sr-table-row-bg;
+    text-overflow: ellipsis;
     font-size: 0.875rem;
   }
 
@@ -89,7 +91,7 @@ $sr-table-row-bg: #f7f8fa;
 // Search Table Columns
 .cl-file {
   padding-right: 0;
-  width: 6.5rem;
+  width: 7rem;
   overflow: hidden;
 
   .cl-arrow {
@@ -98,12 +100,12 @@ $sr-table-row-bg: #f7f8fa;
   }
 }
 
-.client {
-  width: 13rem;
+.disp {
+  width: 5.5rem;
 }
 
-.disp {
-  width: 7rem;
+.status {
+  max-width: 13rem;
 }
 
 .actions {
@@ -118,10 +120,6 @@ $sr-table-row-bg: #f7f8fa;
     border-width: 2px;
     font-weight: 700;
   }
-}
-
-.status {
-  width: 14rem;
 }
 
 .app-details {
