@@ -372,7 +372,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
 
     // add application
-    this.application.publishDate = moment().format(); // set publish date = today
     this.applicationService.add(this.application)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(

@@ -159,6 +159,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           this.isDeleting = false;
           console.log('error =', error);
           alert('Uh-oh, couldn\'t delete application');
+          // TODO: should fully reload application here so we have latest non-deleted objects
         },
         () => { // onCompleted
           this.isDeleting = false;
@@ -238,6 +239,12 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
       observables = observables.concat(this.applicationService.publish(this.application));
     }
 
+    // finally, save publish date (first time only)
+    if (!this.application.publishDate) {
+      this.application.publishDate = new Date(); // now
+      observables = observables.concat(this.applicationService.save(this.application));
+    }
+
     observables
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
@@ -248,6 +255,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           this.isPublishing = false;
           console.log('error =', error);
           alert('Uh-oh, couldn\'t publish application');
+          // TODO: should fully reload application here so we have latest isPublished flags for objects
         },
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Application published...', null, { duration: 2000 });
@@ -318,6 +326,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           this.isUnpublishing = false;
           console.log('error =', error);
           alert('Uh-oh, couldn\'t unpublish application');
+          // TODO: should fully reload application here so we have latest isPublished flags for objects
         },
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Application unpublished...', null, { duration: 2000 });
