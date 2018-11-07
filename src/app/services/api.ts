@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
+// import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs/Observable';
 import { throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
-import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
-import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { KeycloakService } from 'app/services/keycloak.service';
 
@@ -33,9 +32,10 @@ interface LocalLoginResponse {
 
 @Injectable()
 export class ApiService {
+
   public token: string;
   public isMS: boolean; // IE, Edge, etc
-  private jwtHelper: JwtHelperService;
+  // private jwtHelper: JwtHelperService;
   pathAPI: string;
   params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
@@ -44,10 +44,11 @@ export class ApiService {
     private http: HttpClient,
     private keycloakService: KeycloakService
   ) {
-    this.jwtHelper = new JwtHelperService();
+    // this.jwtHelper = new JwtHelperService();
     const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
     this.isMS = window.navigator.msSaveOrOpenBlob ? true : false;
+
     const { hostname } = window.location;
     switch (hostname) {
       case 'localhost':
@@ -225,27 +226,27 @@ export class ApiService {
     return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  addApplication(app: Application) {
+  addApplication(app: Application): Observable<Application> {
     const queryString = `application/`;
     return this.http.post<Application>(`${this.pathAPI}/${queryString}`, app, {});
   }
 
-  publishApplication(app: Application) {
+  publishApplication(app: Application): Observable<Application> {
     const queryString = `application/${app._id}/publish`;
     return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, {});
   }
 
-  unPublishApplication(app: Application) {
+  unPublishApplication(app: Application): Observable<Application> {
     const queryString = `application/${app._id}/unpublish`;
     return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, {});
   }
 
-  deleteApplication(app: Application) {
+  deleteApplication(app: Application): Observable<Application> {
     const queryString = `application/${app._id}`;
     return this.http.delete<Application>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  saveApplication(app: Application) {
+  saveApplication(app: Application): Observable<Application> {
     const queryString = `application/${app._id}`;
     return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, {});
   }
@@ -647,4 +648,5 @@ export class ApiService {
     // trim the last |
     return values.replace(/\|$/, '');
   }
+
 }

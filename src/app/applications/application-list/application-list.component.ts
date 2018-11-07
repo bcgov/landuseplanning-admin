@@ -6,7 +6,6 @@ import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
 
 import { Application } from 'app/models/application';
-import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
@@ -27,7 +26,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   constructor(
     private location: Location,
-    private api: ApiService,
     private router: Router,
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
@@ -48,16 +46,19 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     // get data
     this.applicationService.getAll({ getCurrentPeriod: true })
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(applications => {
-        this.loading = false;
-        this.applications = applications;
-      }, error => {
-        this.loading = false;
-        console.log(error);
-        alert('Uh-oh, couldn\'t load applications');
-        // applications not found --> navigate back to home
-        this.router.navigate(['/']);
-      });
+      .subscribe(
+        applications => {
+          this.loading = false;
+          this.applications = applications;
+        },
+        error => {
+          this.loading = false;
+          console.log(error);
+          alert('Uh-oh, couldn\'t load applications');
+          // applications not found --> navigate back to home
+          this.router.navigate(['/']);
+        }
+      );
   }
 
   public showOnlyOpenAppsChange(checked: boolean) {

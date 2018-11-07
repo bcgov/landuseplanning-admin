@@ -4,20 +4,17 @@ import {
   HttpHandler,
   HttpEvent,
   HttpResponse,
-  HttpErrorResponse,
   HttpInterceptor
 } from '@angular/common/http';
 
 import { KeycloakService } from 'app/services/keycloak.service';
 import { Observable } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private auth: KeycloakService) {
 
-  }
+  constructor(private auth: KeycloakService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const authToken = this.auth.getToken() || '';
@@ -30,10 +27,12 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       map((resp: HttpResponse<any>) => {
         if (resp) {
-            // console.log('interceptor header keys: ', resp.headers && resp.headers.get('x-total-count'));
-            // console.log('interceptor X-Service-Name: ', resp.headers.get('X-Service-Name'));
+          // console.log('interceptor header keys: ', resp.headers && resp.headers.get('x-total-count'));
+          // console.log('interceptor X-Service-Name: ', resp.headers.get('X-Service-Name'));
         }
         return resp;
-    }));
+      })
+    );
   }
+
 }

@@ -1,16 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'app/services/api';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-administration',
   templateUrl: './administration.component.html',
   styleUrls: ['./administration.component.scss']
 })
-export class AdministrationComponent implements OnInit {
+export class AdministrationComponent {
 
-  constructor(private api: ApiService) { }
-
-  ngOnInit() {
-  }
+  constructor() { }
 
 }

@@ -92,8 +92,8 @@
               </span>
               <span *ngIf="item.app?.currentPeriod">
                 &nbsp;-&nbsp; {{item.app.currentPeriod.startDate | date:'longDate'}} to {{item.app.currentPeriod.endDate | date:'longDate'}}
-                <span *ngIf="item.app['daysRemaining']">
-                  &nbsp;({{item.app['daysRemaining'] + (item.app['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
+                <span *ngIf="item.app.currentPeriod['daysRemaining']">
+                  &nbsp;({{item.app.currentPeriod['daysRemaining'] + (item.app.currentPeriod['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
                 </span>
               </span>
             </span>

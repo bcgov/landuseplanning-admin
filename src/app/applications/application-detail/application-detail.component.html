@@ -196,9 +196,9 @@
                 <span class="name">End Date:</span>
                 <span class="value">{{application.currentPeriod.endDate | date:'longDate'}}</span>
               </li>
-              <li *ngIf="application['daysRemaining']">
+              <li *ngIf="application.currentPeriod['daysRemaining']">
                 <span class="name">Days Remaining:</span>
-                <span class="value">{{application['daysRemaining']}}</span>
+                <span class="value">{{application.currentPeriod['daysRemaining']}}</span>
               </li>
             </ul>
             <div class="btn-container">

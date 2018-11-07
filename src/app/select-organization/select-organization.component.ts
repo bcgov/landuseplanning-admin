@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { Router } from '@angular/router';
 import * as _ from 'lodash';
-import { ApiService } from 'app/services/api';
 
 import { SearchService } from 'app/services/search.service';
 import { Client } from 'app/models/client';
@@ -20,6 +18,7 @@ export interface DataModel {
 // NOTE: dialog components must not implement OnDestroy
 //       otherwise they don't return a result
 export class SelectOrganizationComponent extends DialogComponent<DataModel, string> implements DataModel, OnInit {
+
   public isLoading = true;
   public dispositionId: number = null;
   public clients: Array<Client> = [];
@@ -28,9 +27,7 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
 
   constructor(
     public dialogService: DialogService,
-    private router: Router,
-    private searchService: SearchService,
-    private api: ApiService
+    private searchService: SearchService
   ) {
     super(dialogService);
   }
@@ -45,7 +42,8 @@ export class SelectOrganizationComponent extends DialogComponent<DataModel, stri
         error => {
           this.isLoading = false;
           console.log('error =', error);
-        });
+        }
+      );
   }
 
   toggleClient(client: Client) {

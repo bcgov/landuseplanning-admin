@@ -1,12 +1,10 @@
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { DialogService } from 'ng2-bootstrap-modal';
 import * as _ from 'lodash';
 
 import { User } from 'app/models/user';
-import { ApiService } from 'app/services/api';
 import { UserService } from 'app/services/user.service';
 import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
 
@@ -26,10 +24,8 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
-    private router: Router,
     private dialogService: DialogService,
-    private _changeDetectionRef: ChangeDetectorRef,
-    private api: ApiService
+    private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -58,7 +54,7 @@ export class UsersComponent implements OnInit, OnDestroy {
           // that would trigger a CD cycle - this will eliminate the error we get when running in dev mode.
           this._changeDetectionRef.detectChanges();
         },
-        error => {
+        () => {
           this.loading = false;
         });
   }

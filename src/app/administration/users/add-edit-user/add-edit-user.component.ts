@@ -52,23 +52,25 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
     if (this.isNew) {
       this.userService.add(this.user)
         .subscribe(
-          data => {
+          () => {
             this.result = true;
             this.isNew = false;
             this.close();
           },
           error => {
+            console.log('error =', error);
             this.networkMsg = error;
           });
     } else {
       this.userService.save(this.user)
         .subscribe(
-          data => {
+          () => {
             this.result = true;
             this.isNew = false;
             this.close();
           },
           error => {
+            console.log('error =', error);
             this.networkMsg = error;
           });
     }
