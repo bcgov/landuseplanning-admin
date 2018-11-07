@@ -42,7 +42,6 @@ import { ConfigService } from 'app/services/config.service';
 import { KeycloakService } from 'app/services/keycloak.service';
 
 // feature modules
-import { CommentingModule } from 'app/commenting/commenting.module';
 import { TokenInterceptor } from './utils/token-interceptor';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 
