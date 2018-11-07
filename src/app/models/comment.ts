@@ -42,7 +42,7 @@ class CommentAuthor {
     this.location           = obj && obj.location           || null;
     this.requestedAnonymous = obj && obj.requestedAnonymous || null;
 
-    this.internal           = new Internal(obj && obj.internal || null);
+    this.internal = new Internal(obj && obj.internal || null);
 
     // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
@@ -109,8 +109,9 @@ export class Comment {
     this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;
 
-    this.commentAuthor  = new CommentAuthor(obj && obj.commentAuthor || null);
-    this.review         = new Review(obj && obj.review || null);
+    this.commentAuthor = new CommentAuthor(obj && obj.commentAuthor || null);
+
+    this.review = new Review(obj && obj.review || null);
 
     // replace \\n (JSON format) with newlines
     if (obj && obj.comment) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as _ from 'lodash';
 import { JwtUtil } from 'app/jwt-util';
+import * as _ from 'lodash';
 
 declare var Keycloak: any;
 
@@ -24,7 +24,7 @@ export class KeycloakService {
       case 'https://nrts-prc-beta.pathfinder.gov.bc.ca':
       case 'https://nrts-prc-master.pathfinder.gov.bc.ca':
       case 'https://nrts-prc-dev.pathfinder.gov.bc.ca':
-        // Dev
+        // Dev etc
         this.keycloakEnabled = true;
         this.keycloakUrl = 'https://sso-dev.pathfinder.gov.bc.ca/auth';
         this.keycloakRealm = 'prc';
@@ -53,7 +53,7 @@ export class KeycloakService {
     const url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');
     const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
+      results = regex.exec(url);
     if (!results) {
       return null;
     }
@@ -116,7 +116,7 @@ export class KeycloakService {
         };
 
         // Initialize.
-        self.keycloakAuth.init({  })
+        self.keycloakAuth.init({})
           .success((auth) => {
             // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
             console.log('KC Success:', auth);

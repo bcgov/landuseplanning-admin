@@ -1,9 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -12,7 +9,6 @@ import { Application } from 'app/models/application';
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
 import { ExcelService } from 'app/services/excel.service';
-import { ApiService } from 'app/services/api';
 
 class SortKey {
   innerHTML: string;
@@ -56,9 +52,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private commentService: CommentService,
-    private excelService: ExcelService,
-    private api: ApiService,
-    private dialogService: DialogService
+    private excelService: ExcelService
   ) { }
 
   ngOnInit() {
@@ -198,9 +192,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           ];
           this.excelService.exportAsExcelFile(flatComments, excelFileName, columnOrder);
         },
-        error => {
-          console.log('error =', error);
-        }
+        error => console.log('error =', error)
       );
   }
 

@@ -8,7 +8,6 @@ import * as _ from 'lodash';
 import { SearchTerms } from 'app/models/search';
 import { ApplicationService } from 'app/services/application.service';
 import { SearchService } from 'app/services/search.service';
-import { ApiService } from 'app/services/api';
 
 @Component({
   selector: 'app-search',
@@ -31,8 +30,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private searchService: SearchService,
     private router: Router,
-    private route: ActivatedRoute,
-    private api: ApiService
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -115,7 +113,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.snackBarRef = this.snackBar.open('Error searching applications ...', 'RETRY');
           this.snackBarRef.onAction().subscribe(() => this.onSubmit());
         },
-        () => {
+        () => { // onCompleted
           // update variables on completion
           this.searching = false;
           this.ranSearch = true;

@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { ApiService } from 'app/services/api';
 import { ApplicationService } from 'app/services/application.service';
 
 @Component({
@@ -13,13 +11,11 @@ import { ApplicationService } from 'app/services/application.service';
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
-  numApplications: number;
+  private numApplications: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private router: Router,
-    private applicationService: ApplicationService,
-    private api: ApiService
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit() {
@@ -28,8 +24,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.applicationService.getCount()
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        value => { this.numApplications = value; },
-        error => {
+        value => {
+          this.numApplications = value;
+        },
+        () => {
           console.log('error = could not count applications');
         }
       );

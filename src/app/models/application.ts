@@ -49,7 +49,7 @@ export class Application {
   features: Array<Feature> = [];
 
   constructor(obj?: any) {
-    this._id                     = obj && obj._id           || null;
+    this._id           = obj && obj._id           || null;
 
     this.agency        = obj && obj.agency        || null;
     this.areaHectares  = obj && obj.areaHectares  || null;
@@ -74,7 +74,7 @@ export class Application {
     this.currentPeriod = obj && obj.currentPeriod || null;
     this.decision      = obj && obj.decision      || null;
 
-    this.internal      = new Internal(obj && obj.internal || null);
+    this.internal = new Internal(obj && obj.internal || null);
 
     // replace \\n (JSON format) with newlines
     if (obj && obj.description) {

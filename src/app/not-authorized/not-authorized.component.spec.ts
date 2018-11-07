@@ -8,9 +8,9 @@ describe('NotAuthorizedComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NotAuthorizedComponent ]
+      declarations: [NotAuthorizedComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

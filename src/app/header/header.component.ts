@@ -39,13 +39,13 @@ export class HeaderComponent implements OnInit {
     scopes: Array<String>
   };
 
-  constructor (
+  constructor(
     private api: ApiService,
     private keycloakService: KeycloakService,
     public router: Router
   ) {
     this._api = api;
-    router.events.subscribe((val) => {
+    router.events.subscribe(val => {
       const token = this.keycloakService.getToken();
       // TODO: Change this to observe the change in the _api.token
       if (token) {

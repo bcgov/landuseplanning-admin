@@ -30,7 +30,7 @@ export class CommentPeriod {
     this.startDate    = obj && new Date(obj.startDate) || null;
     this.endDate      = obj && new Date(obj.endDate)   || null;
 
-    this.internal     = new Internal(obj && obj.internal || null);
+    this.internal = new Internal(obj && obj.internal || null);
 
     // replace \\n (JSON format) with newlines
     if (obj && obj.description) {

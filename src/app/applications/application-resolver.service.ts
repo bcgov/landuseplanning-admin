@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { ApplicationService } from 'app/services/application.service';
 import { Application } from 'app/models/application';
 
-import { of, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable()
 export class ApplicationDetailResolver implements Resolve<Application> {
 
   constructor(
-    private router: Router,
     private applicationService: ApplicationService
   ) { }
 
@@ -51,4 +50,5 @@ export class ApplicationDetailResolver implements Resolve<Application> {
     // view/edit existing application
     return this.applicationService.getById(appId, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true });
   }
+
 }

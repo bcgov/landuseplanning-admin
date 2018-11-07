@@ -3,18 +3,18 @@ import { Observable } from 'rxjs/Observable';
 import { flatMap } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/catch';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
-import { Application } from 'app/models/application';
 import { ApiService } from './api';
 import { DocumentService } from './document.service';
 import { CommentPeriodService } from './commentperiod.service';
 import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
 import { FeatureService } from './feature.service';
+
+import { Application } from 'app/models/application';
 import { CommentPeriod } from 'app/models/commentperiod';
 
 interface GetParameters {
@@ -26,6 +26,7 @@ interface GetParameters {
 
 @Injectable()
 export class ApplicationService {
+
   // statuses / query param options
   readonly ABANDONED = 'AB';
   readonly ACCEPTED = 'AC';

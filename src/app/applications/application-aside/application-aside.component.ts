@@ -169,9 +169,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
               }
             } catch (e) { }
           },
-          error => {
-            console.log('error =', error);
-          }
+          error => console.log('error =', error)
         );
     }
   }
@@ -206,9 +204,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
               this.map.fitBounds(bounds, this.maxZoom);
             }
           },
-          error => {
-            console.log('error =', error);
-          }
+          error => console.log('error =', error)
         );
     }
   }
