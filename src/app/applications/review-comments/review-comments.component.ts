@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
@@ -14,8 +14,6 @@ import { CommentService } from 'app/services/comment.service';
 import { ExcelService } from 'app/services/excel.service';
 import { ApiService } from 'app/services/api';
 
-import { AddCommentComponent } from './add-comment/add-comment.component';
-
 class SortKey {
   innerHTML: string;
   value: string;
@@ -28,16 +26,16 @@ class SortKey {
 })
 
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
-  readonly PAGE_SIZE = 10;
+  readonly PAGE_SIZE = 20;
+
+  @ViewChild('commentListScrollContainer', { read: ElementRef })
+  public commentListScrollContainer: ElementRef;
 
   readonly sortKeys: Array<SortKey> = [
-    { innerHTML: '&uarr; Date', value: '%2BdateAdded' },
-    { innerHTML: '&darr; Date', value: '-dateAdded' },
-    { innerHTML: '&uarr; Name', value: '%2BcontactName' },
-    { innerHTML: '&darr; Name', value: '-contactName' },
-    // PRC-272: temporarily removed
-    // { innerHTML: '&uarr; Status', value: '%2BcommentStatus' },
-    // { innerHTML: '&darr; Status', value: '-commentStatus' },
+    { innerHTML: 'Oldest', value: '%2BdateAdded' },
+    { innerHTML: 'Newest', value: '-dateAdded' },
+    { innerHTML: 'Name (A-Z)', value: '%2BcontactName' },
+    { innerHTML: 'Name (Z-A)', value: '-contactName' }
   ];
 
   public loading = false;
@@ -97,6 +95,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   getData() {
     if (this.application) { // safety check
       this.loading = true;
+      this.commentListScrollContainer.nativeElement.scrollTop = 0;
 
       // get a page of comments
       this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
@@ -129,30 +128,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   nextPage() {
     this.pageNum++;
     this.getData();
-  }
-
-  addClick() {
-    if (this.application.currentPeriod && this.application.currentPeriod._id) {
-      this.dialogService.addDialog(AddCommentComponent,
-        {
-          periodId: this.application.currentPeriod._id
-        }, {
-          // index: 0,
-          // autoCloseTimeout: 10000,
-          // closeByClickingOutside: true,
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe((isConfirmed) => {
-          // we get dialog result
-          if (isConfirmed) {
-            // TODO: reload page or rebind list?
-            console.log('saved');
-          } else {
-            console.log('canceled');
-          }
-        });
-    }
   }
 
   setCurrentComment(item: Comment) {

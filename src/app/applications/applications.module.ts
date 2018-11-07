@@ -12,11 +12,13 @@ import { ApplicationListComponent } from './application-list/application-list.co
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
 import { ApplicationAsideComponent } from './application-aside/application-aside.component';
 import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
-import { SelectOrganizationComponent } from './select-organization/select-organization.component';
+import { ReviewCommentsComponent } from './review-comments/review-comments.component';
+import { CommentDetailComponent } from './review-comments/comment-detail/comment-detail.component';
 
 // services
-import { ApiService } from '../services/api';
-import { ApplicationService } from '../services/application.service';
+import { ApiService } from 'app/services/api';
+import { ApplicationService } from 'app/services/application.service';
+import { ExcelService } from 'app/services/excel.service';
 
 @NgModule({
   imports: [
@@ -31,20 +33,22 @@ import { ApplicationService } from '../services/application.service';
     ApplicationListComponent,
     ApplicationDetailComponent,
     ApplicationAsideComponent,
-    ApplicationAddEditComponent
+    ApplicationAddEditComponent,
+    ReviewCommentsComponent,
+    CommentDetailComponent
   ],
   exports: [
     ApplicationListComponent,
     ApplicationDetailComponent,
     ApplicationAsideComponent,
-    ApplicationAddEditComponent
+    ApplicationAddEditComponent,
+    ReviewCommentsComponent,
+    CommentDetailComponent
   ],
   providers: [
     ApiService,
-    ApplicationService
-  ],
-  entryComponents: [
-    SelectOrganizationComponent
+    ApplicationService,
+    ExcelService
   ]
 })
 

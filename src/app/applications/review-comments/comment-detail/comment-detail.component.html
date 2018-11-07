@@ -1,0 +1,48 @@
+<div class="comment-detail-container" *ngIf="!comment">
+  <em>No comment selected</em>
+</div>
+
+<div class="comment-detail-container" *ngIf="comment">
+  <div class="title-container__title">
+    <h2>{{comment.commentAuthor.contactName}} <span *ngIf="comment.commentAuthor.orgName">({{comment.commentAuthor.orgName}})</span></h2>
+    <div class="comment-detail__date">
+      {{comment.dateAdded | date:'medium'}}
+    </div>
+  </div>
+  <div class="comment-detail__meta">
+    <div>
+      <a href="mailto:{{comment.commentAuthor.internal.email}}">{{comment.commentAuthor.internal.email}}</a>
+    </div>
+    <div>
+      <a href="tel:{{comment.commentAuthor.internal.phone}}">{{comment.commentAuthor.internal.phone}}</a>
+    </div>
+    <div>
+      {{comment.commentAuthor.location}}
+    </div>
+  </div>
+  <hr>
+  <div class="comment-detail__body" [innerHTML]="comment.comment | newlines"></div>
+  <div class="comment-detail__attachments">
+    <ul class="doc-list">
+      <li *ngFor="let document of comment.documents">
+        <div class="cell icon">
+          <i class="material-icons link" 
+            (click)="api.openDocument(document)">
+            insert_drive_file
+          </i>
+        </div>
+        <div class="cell name">
+          <span class="cell__txt-content">
+            <a (click)="api.openDocument(document)">{{document.documentFileName}}</a>
+          </span>
+        </div>
+        <div class="cell actions">
+          <button class="btn btn-icon" type="button" title="Download this document" 
+            (click)="api.downloadDocument(document)">
+            <i class="material-icons">file_download</i>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

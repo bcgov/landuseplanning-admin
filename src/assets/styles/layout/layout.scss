@@ -10,11 +10,10 @@ app-root {
 // Container
 .container {
   margin: 0 auto;
-  padding-top: 2em;
-  padding-right: 1.5rem;
-  padding-bottom: 2.5rem;
-  padding-left: 1.5rem;
-  
+  // Need to override bootstrap responsive behaviour for the container class here to ensure we aren't squeezing the interface unneccessarily
+  max-width: 1140px !important;
+  padding: 1.5rem;
+
   section {
     &.last {
       margin-bottom: 0;
@@ -132,8 +131,8 @@ main {
 }
 
 hr {
-  margin-top: 2.5rem;
-  margin-bottom: 2.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   border-width: 2px;
 }
 
@@ -198,7 +197,7 @@ hr {
   
   .container {
     padding-top: 1.5rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1.5rem;
   }
 }
 

@@ -41,7 +41,6 @@ $doc-list-link-color: #007bff;
     &.icon {
       @include flex(0 0 auto);
       padding-left: 0.75rem;
-      padding-right: 0;
   
       i {
         margin-top: 0.5rem;
@@ -93,5 +92,24 @@ $doc-list-link-color: #007bff;
     &:disabled {
       opacity: 1;
     }
+  }
+}
+
+
+.doc-list.inline {
+  margin: -0.2rem;
+
+  li { 
+    margin: 0.2rem;
+    display: inline-block;
+    width: auto;
+
+    .cell {
+      display: inline-block;
+    }
+  }
+
+  .cell__txt-content {
+    margin: 0;
   }
 }

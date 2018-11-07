@@ -4,7 +4,6 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/toPromise';
 
 import { Comment } from 'app/models/comment';
-import { Document } from 'app/models/document';
 import { ApiService } from 'app/services/api';
 import { CommentService } from 'app/services/comment.service';
 import { DocumentService } from 'app/services/document.service';
@@ -26,7 +25,6 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
 
   public internalNotes: string; // working version
   public networkMsg: string;
-  private documents: Array<Document>;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -42,14 +40,6 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
     if (changes.comment.currentValue) {
       // save copy of notes for possible reset
       this.internalNotes = this.comment.review.reviewerNotes;
-
-      // get the comment documents
-      this.documentService.getAllByCommentId(this.comment._id)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          documents => this.documents = documents,
-          error => console.log(error)
-        );
     }
   }
 
@@ -102,7 +92,7 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
       .then(
         () => {
           // save succeeded
-          // don't bother reloading comment as then we'd need to reload documents too
+          // don't bother reloading comment
         },
         reason => this.networkMsg += reason
       )
@@ -120,7 +110,7 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
                 error => console.log('publish error =', error)
               );
             // publish comment documents
-            this.documents.forEach(document =>
+            this.comment.documents.forEach(document =>
               this.documentService.publish(document)
                 .takeUntil(this.ngUnsubscribe)
                 .subscribe(
@@ -144,7 +134,7 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
                 error => console.log('unpublish error =', error)
               );
             // unpublish comment documents
-            this.documents.forEach(document =>
+            this.comment.documents.forEach(document =>
               this.documentService.unPublish(document)
                 .takeUntil(this.ngUnsubscribe)
                 .subscribe(
@@ -175,4 +165,5 @@ export class CommentDetailComponent implements OnChanges, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
+
 }
