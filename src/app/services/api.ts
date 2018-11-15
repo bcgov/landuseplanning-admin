@@ -113,7 +113,7 @@ export class ApiService {
     return this.http.post<LocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
       .map(res => {
         // login successful if there's a jwt token in the response
-        if (res.accessToken) {
+        if (res && res.accessToken) {
           this.token = res.accessToken;
 
           // store username and jwt token in local storage to keep user logged in between page refreshes
@@ -197,6 +197,33 @@ export class ApiService {
           return parseInt(res.headers.get('x-total-count'), 10);
         })
       );
+  }
+
+  // NB: returns array
+  getApplicationsByCrownLandID(clid: string): Observable<Application[]> {
+    const fields = [
+      'agency',
+      'areaHectares',
+      'businessUnit',
+      'centroid',
+      'cl_file',
+      'client',
+      'description',
+      'internal',
+      'legalDescription',
+      'location',
+      'name',
+      'publishDate',
+      'purpose',
+      'status',
+      'subpurpose',
+      'subtype',
+      'tantalisID',
+      'tenureStage',
+      'type'
+    ];
+    const queryString = `application?isDeleted=false&cl_file=${clid}&fields=${this.buildValues(fields)}`;
+    return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
@@ -598,17 +625,17 @@ export class ApiService {
   //
   // Searching
   //
-  getAppsByCLID(clid: string): Observable<SearchResults> {
+  searchAppsByCLID(clid: string): Observable<SearchResults> {
     const queryString = `public/search/bcgw/crownLandsId/${clid}`;
     return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  getAppsByDTID(dtid: number): Observable<SearchResults> {
+  searchAppsByDTID(dtid: number): Observable<SearchResults> {
     const queryString = `public/search/bcgw/dispositionTransactionId/${dtid}`;
     return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  getClientsByDTID(dtid: number): Observable<Client[]> {
+  searchClientsByDTID(dtid: number): Observable<Client[]> {
     const queryString = `public/search/bcgw/getClientsInfoByDispositionId/${dtid}`;
     return this.http.get<Client[]>(`${this.pathAPI}/${queryString}`, {});
   }
