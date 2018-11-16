@@ -145,7 +145,7 @@
                 </span>
               </li>
           </ul>
-          <app-file-upload [maxFiles]="0" [showInfo]="false" [showList]="false" [files]="applicationFiles"
+          <app-file-upload [maxFiles]="0" [maxSize]="10" [showInfo]="false" [showList]="false" [files]="applicationFiles"
             (filesChange)="addDocuments($event, application.documents); applicationFiles = []"></app-file-upload>
         </div>
       </fieldset>
@@ -182,7 +182,7 @@
                 </span>
               </li>
             </ul>
-            <app-file-upload [maxFiles]="0" [showInfo]="false" [showList]="false" [files]="decisionFiles"
+            <app-file-upload [maxFiles]="0" [maxSize]="10" [showInfo]="false" [showList]="false" [files]="decisionFiles"
               (filesChange)="addDocuments($event, application.decision.documents); decisionFiles = []"></app-file-upload>
           </div>
         </div>
