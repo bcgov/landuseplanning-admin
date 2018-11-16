@@ -4,7 +4,6 @@ import { Document } from './document';
 class Internal {
   email: string;
   phone: string;
-  tags: Array<string>;
 
   isPublished = false; // depends on tags; see below
 
@@ -31,7 +30,6 @@ class CommentAuthor {
   location: string;
   requestedAnonymous: boolean;
   internal: Internal;
-  tags: Array<string>;
 
   isPublished = false; // depends on tags; see below
 
@@ -42,7 +40,7 @@ class CommentAuthor {
     this.location           = obj && obj.location           || null;
     this.requestedAnonymous = obj && obj.requestedAnonymous || null;
 
-    this.internal = new Internal(obj && obj.internal || null);
+    this.internal = new Internal(obj && obj.internal || null); // must exist
 
     // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
@@ -59,18 +57,20 @@ class CommentAuthor {
 class Review {
   _reviewerId: string; // object id -> User
   reviewerNotes: string = null;
-  reviewerDate: Date;
-  tags: Array<string>;
+  reviewerDate: Date = null;
 
   isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
-    this._reviewerId    = obj && obj._reviewerId    || null;
-    this.reviewerDate   = obj && obj.reviewerDate   || null;
+    this._reviewerId = obj && obj._reviewerId || null;
 
     // replace \\n (JSON format) with newlines
     if (obj && obj.reviewerNotes) {
       this.reviewerNotes = obj.reviewerNotes.replace(/\\n/g, '\n');
+    }
+
+    if (obj && obj.reviewerDate) {
+      this.reviewerDate = new Date(obj.reviewerDate);
     }
 
     // wrap isPublished around the tags we receive for this object
@@ -93,10 +93,10 @@ export class Comment {
   comment: string = null;
   commentAuthor: CommentAuthor;
   review: Review;
-  dateAdded: Date;
+  dateAdded: Date = null;
   commentStatus: string;
-  tags: Array<string>;
 
+  // associated data
   documents: Array<Document> = [];
 
   isPublished = false; // depends on tags; see below
@@ -106,12 +106,15 @@ export class Comment {
     this._addedBy       = obj && obj._addedBy       || null;
     this._commentPeriod = obj && obj._commentPeriod || null;
     this.commentNumber  = obj && obj.commentNumber  || 0;
-    this.dateAdded      = obj && obj.dateAdded      || null;
     this.commentStatus  = obj && obj.commentStatus  || null;
 
-    this.commentAuthor = new CommentAuthor(obj && obj.commentAuthor || null);
+    if (obj && obj.dateAdded) {
+      this.dateAdded = new Date(obj.dateAdded);
+    }
 
-    this.review = new Review(obj && obj.review || null);
+    this.commentAuthor = new CommentAuthor(obj && obj.commentAuthor || null); // must exist
+
+    this.review = new Review(obj && obj.review || null); // must exist
 
     // replace \\n (JSON format) with newlines
     if (obj && obj.comment) {

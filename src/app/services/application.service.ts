@@ -63,7 +63,8 @@ export class ApplicationService {
   // get all applications
   getAll(params: GetParameters = null): Observable<Application[]> {
     // first get just the applications
-    return this.api.getApplications()
+    // NB: max 1000 records
+    return this.api.getApplications(0, 1000)
       .pipe(
         flatMap(apps => {
           if (!apps || apps.length === 0) {

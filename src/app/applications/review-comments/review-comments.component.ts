@@ -146,11 +146,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           const flatComments = comments.map(comment => {
             // sanitize and flatten each comment object
             delete comment._commentPeriod;
-            delete comment.commentAuthor.internal.tags;
-            delete comment.commentAuthor.tags;
             delete comment.commentNumber;
-            delete comment.review.tags;
-            delete comment.tags;
             // sanitize documents
             comment.documents.forEach(document => {
               delete document._id;
@@ -161,7 +157,6 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
               delete document.internalURL;
               delete document.internalMime;
               delete document.isDeleted;
-              delete document.tags;
             });
             // add necessary properties
             // comment['client'] = this.application.client; // FUTURE

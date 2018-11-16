@@ -11,7 +11,6 @@ export class Document {
   internalURL: string;
   isDeleted: boolean;
   internalMime: string;
-  tags: Array<string>;
 
   isPublished = false; // depends on tags; see below
 
