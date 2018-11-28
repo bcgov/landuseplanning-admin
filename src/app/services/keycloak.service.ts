@@ -143,7 +143,7 @@ export class KeycloakService {
     if (!this.getToken()) {
       return false;
     }
-    const jwt = new JwtUtil().decodeToken(this.keycloakAuth.token);
+    const jwt = new JwtUtil().decodeToken(this.getToken());
 
     if (jwt && jwt.realm_access && jwt.realm_access.roles) {
       return _.includes(jwt.realm_access.roles, 'sysadmin');
