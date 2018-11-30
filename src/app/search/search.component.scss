@@ -79,7 +79,7 @@ $sr-table-row-bg: #f7f8fa;
   td {
     padding-top: 1.25rem;
     padding-right: 1rem;
-    padding-bottom: 0;
+    padding-bottom: 1.25rem;
     padding-left: 1rem;
     border: none;
     background: $sr-table-row-bg;
@@ -128,7 +128,7 @@ $sr-table-row-bg: #f7f8fa;
 
 .app-comment-details {
   td {
-    padding-top: 0.75rem;
+    padding-top: 0;
     padding-bottom: 1.25rem;
 
     a {

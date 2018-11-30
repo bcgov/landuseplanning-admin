@@ -99,9 +99,36 @@ export class ApplicationService {
     return this.api.getApplications()
       .pipe(
         flatMap(apps => {
+          if (!apps || apps.length === 0) {
+            // NB: forkJoin([]) will complete immediately
+            // so return empty observable instead
+            return of([] as Application[]);
+          }
           const observables: Array<Observable<Application>> = [];
           apps.forEach(app => {
-            // now get the rest of the data for this application
+            // now get the rest of the data for each application
+            observables.push(this._getExtraAppData(new Application(app), params || {}));
+          });
+          return forkJoin(observables);
+        })
+      )
+      .catch(error => this.api.handleError(error));
+  }
+
+  // get applications by their Crown Land ID
+  getByCrownLandID(clid: string, params: GetParameters = null): Observable<Application[]> {
+    // first get just the applications
+    return this.api.getApplicationsByCrownLandID(clid)
+      .pipe(
+        flatMap(apps => {
+          if (!apps || apps.length === 0) {
+            // NB: forkJoin([]) will complete immediately
+            // so return empty observable instead
+            return of([] as Application[]);
+          }
+          const observables: Array<Observable<Application>> = [];
+          apps.forEach(app => {
+            // now get the rest of the data for each application
             observables.push(this._getExtraAppData(new Application(app), params || {}));
           });
           return forkJoin(observables);
@@ -112,10 +139,13 @@ export class ApplicationService {
 
   // get a specific application by its Tantalis ID
   getByTantalisID(tantalisID: number, params: GetParameters = null): Observable<Application> {
-    // first get the base application data
+    // first get just the application
     return this.api.getApplicationByTantalisId(tantalisID)
       .pipe(
         flatMap(apps => {
+          if (!apps || apps.length === 0) {
+            return of(null as Application);
+          }
           // now get the rest of the data for this application
           return this._getExtraAppData(new Application(apps[0]), params || {});
         })
@@ -125,10 +155,13 @@ export class ApplicationService {
 
   // get a specific application by its object id
   getById(appId: string, params: GetParameters = null): Observable<Application> {
-    // first get the base application data
+    // first get just the application
     return this.api.getApplication(appId)
       .pipe(
         flatMap(apps => {
+          if (!apps || apps.length === 0) {
+            return of(null as Application);
+          }
           // now get the rest of the data for this application
           return this._getExtraAppData(new Application(apps[0]), params || {});
         })
@@ -233,7 +266,8 @@ export class ApplicationService {
       app.legalDescription = app.legalDescription.replace(/\n/g, '\\n');
     }
 
-    return this.api.addApplication(app);
+    return this.api.addApplication(app)
+      .catch(error => this.api.handleError(error));
   }
 
   // update existing application
@@ -255,19 +289,23 @@ export class ApplicationService {
       app.legalDescription = app.legalDescription.replace(/\n/g, '\\n');
     }
 
-    return this.api.saveApplication(app);
+    return this.api.saveApplication(app)
+      .catch(error => this.api.handleError(error));
   }
 
   delete(app: Application): Observable<Application> {
-    return this.api.deleteApplication(app);
+    return this.api.deleteApplication(app)
+      .catch(error => this.api.handleError(error));
   }
 
   publish(app: Application): Observable<Application> {
-    return this.api.publishApplication(app);
+    return this.api.publishApplication(app)
+      .catch(error => this.api.handleError(error));
   }
 
   unPublish(app: Application): Observable<Application> {
-    return this.api.unPublishApplication(app);
+    return this.api.unPublishApplication(app)
+      .catch(error => this.api.handleError(error));
   }
 
   /**

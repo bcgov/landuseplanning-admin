@@ -26,7 +26,10 @@
     <h2 *ngIf="ranSearch && !searching && count > 0">
       <strong>{{count}} result<span *ngIf="count != 1">s</span> found for "{{keywords.length > 0 ? keywords.join(', ') : 'unknown'}}"</strong>
     </h2>
-    <table class="table" *ngIf="!searching && count > 0">
+    <!-- <ngb-alert type="danger" [dismissible]="false" *ngIf="ranSearch && !searching && searchService.isBcgwError">
+      Cannot connect to BCGW at the moment... Try searching for new applications later.
+    </ngb-alert> -->
+    <table class="table" *ngIf="count > 0">
       <thead>
         <tr>
           <th class="cl-file" name="Crowns land File Number">CL File</th>
@@ -37,40 +40,40 @@
           <th class="actions"></th>
         </tr>
       </thead>
-      <ng-template ngFor let-item [ngForOf]="groupByResults">
-        <tr class="app-details" *ngIf="item.loaded">
+      <ng-template ngFor let-application [ngForOf]="applications">
+        <tr class="app-details">
           <td class="cl-file">
-            <span class="cl-arrow">{{item.properties.CROWN_LANDS_FILE}}</span>
+            <span class="cl-arrow">{{application['clFile']}}</span>
           </td>
           <td class="disp">
-            <strong>{{item.properties.DISPOSITION_TRANSACTION_SID}}</strong>
+            <strong>{{application.tantalisID}}</strong>
           </td>
-          <td [innerHTML]="item.app?.client ? (item.app.client | titlecase) : '<em>Applicant Not Selected</em>'"></td>
+          <td [innerHTML]="application.client ? (application.client | titlecase) : '<em>Applicant Not Selected</em>'"></td>
           <td>
-            {{item.properties.TENURE_PURPOSE | titlecase}} / {{item.properties.TENURE_SUBPURPOSE | titlecase}}
+            {{application.purpose | titlecase}} / {{application.subpurpose | titlecase}}
           </td>
           <td>
-            {{item.prcStatus || 'Unknown'}}
+            {{application.appStatus || 'Unknown'}}
           </td>
           <td class="actions">
-            <button class="btn btn-sm btn-primary" type="button" *ngIf="!item.app" (click)="importProject(item)">
+            <button class="btn btn-sm btn-primary" type="button" *ngIf="!application['isCreated']" (click)="onImport(application)">
               <i class="material-icons">add</i>
               Create
             </button>
-            <div ngbDropdown placement="bottom-right" *ngIf="item.app">
+            <div ngbDropdown placement="bottom-right" *ngIf="application['isCreated']">
               <button ngbDropdownToggle class="btn btn-sm btn-outline-primary" type="button">
                 Actions
               </button>
               <div ngbDropdownMenu>
-                <button class="dropdown-item" type="button" [routerLink]="['/a', item.app._id]">
+                <button class="dropdown-item" type="button" [routerLink]="['/a', application._id]">
                   <i class="material-icons">insert_drive_file</i>
                   View Application
                 </button>
-                <button class="dropdown-item" type="button" [routerLink]="['/a', item.app._id, 'edit']">
+                <button class="dropdown-item" type="button" [routerLink]="['/a', application._id, 'edit']">
                   <i class="material-icons">edit</i>
                   Edit Details
                 </button>
-                <button class="dropdown-item" type="button" [routerLink]="['/comments', item.app._id]">
+                <button class="dropdown-item" type="button" [routerLink]="['/comments', application._id]">
                   <i class="material-icons">mode_comment</i>
                   Review Comments
                 </button>
@@ -78,22 +81,23 @@
             </div>
           </td>
         </tr>
-        <tr class="app-comment-details" *ngIf="item.loaded">
+        <tr class="app-comment-details" *ngIf="application['isCreated']">
           <td colspan="6">
             <span class="comment-info">
-              <span *ngIf="item.app && item.app['numComments'] > 0">
+              <span *ngIf="application['numComments'] > 0">
                 <strong>
-                  <a [routerLink]="['/comments', item.app._id]">{{item.app['numComments']}} {{item.app['numComments'] === 1 ? 'comment' : 'comments'}}</a>
+                  <a [routerLink]="['/comments', application._id]">{{application['numComments']}} {{application['numComments'] === 1 ? 'comment' : 'comments'}}</a>
                 </strong>
                 &nbsp;-&nbsp;
               </span>
-              <span *ngIf="item.app?.cpStatus">
-                {{item.app.cpStatus}}
+              <span>
+                {{application.cpStatus || 'Unknown'}}
               </span>
-              <span *ngIf="item.app?.currentPeriod">
-                &nbsp;-&nbsp; {{item.app.currentPeriod.startDate | date:'longDate'}} to {{item.app.currentPeriod.endDate | date:'longDate'}}
-                <span *ngIf="item.app.currentPeriod['daysRemaining']">
-                  &nbsp;({{item.app.currentPeriod['daysRemaining'] + (item.app.currentPeriod['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
+              <span *ngIf="application.currentPeriod">
+                &nbsp;-&nbsp;
+                {{application.currentPeriod.startDate | date:'longDate'}} to {{application.currentPeriod.endDate | date:'longDate'}}
+                <span *ngIf="application.currentPeriod['daysRemaining']">
+                  &nbsp;({{application.currentPeriod['daysRemaining'] + (application.currentPeriod['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
                 </span>
               </span>
             </span>
