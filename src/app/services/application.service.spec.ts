@@ -489,8 +489,7 @@ describe('ApplicationService', () => {
         service.getById('AAAA', { getDecision: true }).subscribe( application => {
           expect(application.decision).toBeDefined()
           expect(application.decision).not.toBeNull();
-          expect(application.decision[0]._id).toBe('IIIII');
-          expect(application.decision[1]._id).toBe('JJJJJ');
+          expect(application.decision._id).toBe('IIIII');
         });
       });
     });
