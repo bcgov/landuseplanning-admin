@@ -1,25 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
 import { VarDirective } from './ng-var.directive';
 
-@Component({
-  template: `<div id="tableTop"></div><button ngVar>`
-})
-
-class TestVarComponent {}
-
-xdescribe('VarDirective', () => {
-  let component: TestVarComponent;
+describe('VarDirective', () => {
   let directive: VarDirective;
-  let fixture: ComponentFixture<TestVarComponent>;
+  let fixture: ComponentFixture<VarDirective>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [VarDirective, TestVarComponent]
-    });
-
-    fixture = TestBed.createComponent(TestVarComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(VarDirective);
+    directive = fixture.componentInstance;
     fixture.detectChanges();
   });
 
