@@ -1,10 +1,14 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { OrganizationService } from './organization.service';
+import { ApiService } from 'app/services/api';
 
 describe('OrganizationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OrganizationService]
+      providers: [
+        OrganizationService,
+        { provide: ApiService }
+      ]
     });
   });
 

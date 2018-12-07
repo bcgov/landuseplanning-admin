@@ -1,11 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { SearchService } from './search.service';
+import { ApiService } from 'app/services/api';
 
 describe('SearchService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SearchService]
+      providers: [
+        SearchService,
+        { provide: ApiService }
+      ]
     });
   });
 

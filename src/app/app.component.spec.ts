@@ -4,14 +4,34 @@ import {
 } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
+import { ApiService } from 'app/services/api';
+import { ConfigService } from 'app/services/config.service';
+import { KeycloakService } from 'app/services/keycloak.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
+    const configService = new ConfigService();
+    const mockKeycloakService = {
+      isValidForSite: () => {
+        return true;
+      }
+    };
+
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        HeaderComponent,
+        FooterComponent
       ],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule, BrowserAnimationsModule],
+      providers: [
+        { provide: ApiService },
+        { provide: ConfigService, useValue: configService },
+        { provide: KeycloakService, useValue: mockKeycloakService },
+      ]
     }).compileComponents();
   }));
 
@@ -25,6 +45,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('span.title').textContent).toContain('MyGovBC Bootstrap Theme Demo Page');
+    expect(compiled.querySelector('span.navbar-brand__title').textContent).toContain("Applications, Comments & Reasons for Decision BETA");
   }));
 });
