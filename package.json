@@ -8,7 +8,9 @@
     "start": "ng serve -o --base-href /admin/ --deploy-url /admin/",
     "build": "npm run lint && ng build --prod --deploy-url /admin/ --base-href /admin/",
     "pretest": "",
-    "test": "ng test",
+    "test": "echo 'Test suite should be run with \"`npm run tests` or npm `run tests-ci`\"'",
+    "tests": "ng test",
+    "tests-ci": "ng test --watch=false",
     "lint": "ng lint --format=stylish",
     "e2e": "ng e2e",
     "postinstall": "ng build --prod --deploy-url /admin/ --base-href /admin/"
