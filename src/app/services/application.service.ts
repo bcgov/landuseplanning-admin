@@ -179,14 +179,6 @@ export class ApplicationService {
       .map(payloads => {
         if (getFeatures) {
           application.features = payloads[0];
-
-          // calculate areaHectares
-          application.areaHectares = 0;
-          _.each(application.features, function (f) {
-            if (f['properties']) {
-              application.areaHectares += f['properties'].TENURE_AREA_IN_HECTARES;
-            }
-          });
         }
 
         if (getDocuments) {

@@ -157,12 +157,12 @@
                       <ul class="nv-list">
                         <li>
                           <span class="name">Type / Subtype:</span>
-                          <span class="value">{{shape.properties.TENURE_TYPE || '-'}} / {{shape.properties.TENURE_SUBTYPE || '-'}}</span>
+                          <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
                         </li>
                         <li>
                           <span class="name">Area (hectares):</span>
                           <span class="value">
-                            {{shape.properties.TENURE_AREA_IN_HECTARES ? (shape.properties.TENURE_AREA_IN_HECTARES | number:'1.2-2') : '-'}}
+                            {{application.areaHectares ? (application.areaHectares | number:'1.2-2') : '-'}}
                           </span>
                         </li>
                         <li>
