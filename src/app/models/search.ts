@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 
 import { Feature } from './feature';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { Organization } from './organization';
 
 export class SearchResults {
   _id: string;
@@ -76,19 +75,11 @@ export class SearchTerms {
   keywords: string; // comma- or space-delimited list
   dateStart: NgbDateStruct;
   dateEnd: NgbDateStruct;
-  organizations: Array<Organization> = [];
 
   constructor(obj?: any) {
     this.keywords  = obj && obj.keywords  || null;
     this.dateStart = obj && obj.dateStart || null;
     this.dateEnd   = obj && obj.dateEnd   || null;
-
-    // copy organizations
-    if (obj && obj.organizations) {
-      for (const org of obj.organizations) {
-        this.organizations.push(org);
-      }
-    }
   }
 
   getParams(): Params {
@@ -104,10 +95,6 @@ export class SearchTerms {
     }
     if (this.dateEnd) {
       params['dateend'] = this.getDateParam(this.dateEnd);
-    }
-    if (this.organizations.length > 0) {
-      // remove empty and duplicate elements
-      params['organizations'] = _.uniq(_.compact(this.organizations)).map(p => p._id).join(',');
     }
 
     return params;

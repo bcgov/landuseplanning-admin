@@ -16,7 +16,6 @@ import { CommentPeriod } from 'app/models/commentperiod';
 import { Decision } from 'app/models/decision';
 import { Document } from 'app/models/document';
 import { Feature } from 'app/models/feature';
-import { Organization } from 'app/models/organization';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 
@@ -312,30 +311,6 @@ export class ApiService {
   deleteFeaturesByApplicationId(applicationID: string): Observable<Object> {
     const queryString = `feature/?applicationID=${applicationID}`;
     return this.http.delete(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  //
-  // Organizations
-  //
-  getOrganizations(): Observable<Organization[]> {
-    const fields = [
-      '_addedBy',
-      'code',
-      'name'
-    ];
-    const queryString = `organization?fields=${this.buildValues(fields)}`;
-    return this.http.get<Organization[]>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  // NB: returns array with 1 element
-  getOrganization(id: string): Observable<Organization[]> {
-    const fields = [
-      '_addedBy',
-      'code',
-      'name'
-    ];
-    const queryString = `organization/${id}?fields=${this.buildValues(fields)}`;
-    return this.http.get<Organization[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //
