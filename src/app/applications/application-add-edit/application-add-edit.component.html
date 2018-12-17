@@ -96,29 +96,6 @@
           <div class="applicant-display" *ngIf="application.client">
             {{application.client}}
           </div>
-          <div [ngClass]="{'is-invalid': isSubmitSaveClicked && !application.client}">
-            <button class="btn content-btn-alt" type="button"
-              (click)="selectClient()">
-              <span>Select Applicant(s)</span>
-            </button>
-          </div>
-          <div class="invalid-feedback bg-danger" *ngIf="isSubmitSaveClicked && !application.client">
-            Select one or more applicants
-          </div>
-
-          <!--
-          <div class="input-group applicant-input"
-            [ngClass]="{'is-invalid': isSubmitSaveClicked && applicant.invalid}">
-            <input class="form-control" type="text" name="applicant" readonly required aria-required="true" 
-              [ngModel]="application.client" #applicant="ngModel" />
-            <span class="input-group-btn">
-              <button class="btn btn-light" type="button" (click)="selectClient()">
-                <span>Select Applicant(s)</span>
-              </button>
-            </span>
-          </div>
-          -->
-
         </div>
 
         <div class="form-group">
