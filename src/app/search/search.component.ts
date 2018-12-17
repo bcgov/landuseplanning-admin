@@ -121,7 +121,8 @@ export class SearchComponent implements OnInit, OnDestroy {
         businessUnit: application.businessUnit,
         cl_file: application.cl_file,
         tantalisID: application.tantalisID,
-        legalDescription: application.legalDescription
+        legalDescription: application.legalDescription,
+        client: application.client
       };
       // go to add-edit page
       this.router.navigate(['/a', 0, 'edit'], { queryParams: params });

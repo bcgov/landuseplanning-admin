@@ -30,6 +30,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
         businessUnit: route.queryParamMap.get('businessUnit'),
         cl_file: +route.queryParamMap.get('cl_file'), // NB: unary operator
         tantalisID: +route.queryParamMap.get('tantalisID'), // NB: unary operator
+        client: route.queryParamMap.get('client'),
         legalDescription: route.queryParamMap.get('legalDescription')
       });
 

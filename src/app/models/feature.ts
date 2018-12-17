@@ -1,6 +1,3 @@
-//
-// this is the data structure as returned by BCGW
-//
 export class Feature {
     geometry: {
         type: string;

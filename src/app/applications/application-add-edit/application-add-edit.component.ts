@@ -13,7 +13,6 @@ import 'rxjs/add/operator/concat';
 import * as moment from 'moment-timezone';
 import * as _ from 'lodash';
 
-import { SelectOrganizationComponent } from 'app/select-organization/select-organization.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
 import { CommentPeriod } from 'app/models/commentperiod';
@@ -264,26 +263,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  public selectClient() {
-    this.dialogService.addDialog(SelectOrganizationComponent,
-      {
-        dispositionId: this.application.tantalisID
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        clientString => {
-          if (clientString && clientString.length > 0) {
-            if (clientString !== this.application.client) {
-              this.applicationForm.form.markAsDirty();
-            }
-            this.application.client = clientString;
-          }
-        }
-      );
-  }
-
   public addDecision() {
     this.application.decision = new Decision();
   }
@@ -349,12 +328,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   // (multi-part due to dependencies)
   public addApplication() {
     this.isSubmitSaveClicked = true;
-
-    // validate that Applicant(s) has been selected before saving
-    // (can't do this validation in the view)
-    if (!this.application.client) {
-      return;
-    }
 
     if (this.applicationForm.invalid) {
       this.dialogService.addDialog(ConfirmComponent,
@@ -487,12 +460,6 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
   // (multi-part due to dependencies)
   public saveApplication() {
     this.isSubmitSaveClicked = true;
-
-    // validate that Applicant(s) has been selected before saving
-    // (can't do this validation in the view)
-    if (!this.application.client) {
-      return;
-    }
 
     if (this.applicationForm.invalid) {
       if (this.application.isPublished) {

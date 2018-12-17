@@ -15,36 +15,16 @@ import { Feature } from 'app/models/feature';
 @Injectable()
 export class SearchService {
 
-  public isBcgwError = false;
+  public isError = false;
 
   constructor(
     private api: ApiService,
     private applicationService: ApplicationService
   ) { }
 
-  // get clients by Disposition Transaction ID
-  getClientsByDTID(dtid: number): Observable<Client[]> {
-    this.isBcgwError = false;
-    return this.api.searchClientsByDTID(dtid)
-      .map(res => {
-        if (res && res.length > 0) {
-          const clients: Array<Client> = [];
-          res.forEach(c => {
-            clients.push(new Client(c));
-          });
-          return clients;
-        }
-        return [];
-      })
-      .catch(error => {
-        this.isBcgwError = true;
-        return this.api.handleError(error);
-      });
-  }
-
   // get search results by array of CLIDs or DTIDs
   getAppsByClidDtid(keys: string[]): Observable<Array<Application>> {
-    this.isBcgwError = false;
+    this.isError = false;
     const observables = keys.map(clid => { return this.getAppsByCLID(clid); })
       .concat(keys.map(dtid => { return this.getAppByDTID(+dtid); }));
     return merge(...observables)
@@ -56,19 +36,16 @@ export class SearchService {
     const getByCrownLandID = this.applicationService.getByCrownLandID(clid, { getCurrentPeriod: true });
 
     const searchAppsByCLID = this.api.searchAppsByCLID(clid)
-      .map(res => {
-        return res ? new SearchResults(res) : null;
-      })
       .catch(() => {
-        this.isBcgwError = true;
+        this.isError = true;
         // if search call fails, return null results
-        return of(null as SearchResults);
+        return of(null as SearchResults[]);
       });
 
     return forkJoin(getByCrownLandID, searchAppsByCLID)
       .map(payloads => {
         const applications: Array<Application> = payloads[0];
-        const searchResults: SearchResults = payloads[1];
+        const searchResults: Array<SearchResults> = payloads[1];
         const results: Array<Application> = [];
 
         // first look at PRC results
@@ -77,36 +54,44 @@ export class SearchService {
           results.push(app);
         });
 
-        // now look at BCGW results
-        if (searchResults && searchResults.totalFeatures > 0 && searchResults.features && searchResults.features.length > 0) {
-          const groupedFeatures = _.groupBy(searchResults.features, 'properties.DISPOSITION_TRANSACTION_SID');
-          _.each(groupedFeatures, (value: any, key: string) => {
-            const feature = new Feature(value[0]);
-            // add BCGW result if not already found in PRC
-            if (!_.find(results, app => { return app.tantalisID === feature.properties.DISPOSITION_TRANSACTION_SID; })) {
-              const app = new Application({
-                purpose: feature.properties.TENURE_PURPOSE,
-                subpurpose: feature.properties.TENURE_SUBPURPOSE,
-                type: feature.properties.TENURE_TYPE,
-                subtype: feature.properties.TENURE_SUBTYPE,
-                status: feature.properties.TENURE_STATUS,
-                tenureStage: feature.properties.TENURE_STAGE,
-                location: feature.properties.TENURE_LOCATION,
-                businessUnit: feature.properties.RESPONSIBLE_BUSINESS_UNIT,
-                cl_file: feature.properties.CROWN_LANDS_FILE,
-                tantalisID: feature.properties.DISPOSITION_TRANSACTION_SID,
-                legalDescription: feature.properties.TENURE_LEGAL_DESCRIPTION
-              });
-              // 7-digit CL File number for display
-              app['clFile'] = feature.properties.CROWN_LANDS_FILE.padStart(7, '0');
-              // user-friendly application status
-              app.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(feature.properties.TENURE_STATUS));
-              // derive region code
-              app.region = this.applicationService.getRegionCode(app.businessUnit);
-              results.push(app);
+        // now look at Tantalis results
+        _.each(searchResults, result => {
+          // Build the client string.
+          let clientString = '';
+          let idx = 0;
+          for (let client of result.interestedParties) {
+            if (idx > 0) {
+              clientString += ', ';
             }
+            idx++;
+            if (client.interestedPartyType === 'O') {
+              clientString += client.legalName;
+            } else {
+              clientString += client.firstName + ' ' + client.lastName;
+            }
+          }
+
+          const app = new Application({
+            purpose: result.TENURE_PURPOSE,
+            subpurpose: result.TENURE_SUBPURPOSE,
+            type: result.TENURE_TYPE,
+            subtype: result.TENURE_SUBTYPE,
+            status: result.TENURE_STATUS,
+            tenureStage: result.TENURE_STAGE,
+            location: result.TENURE_LOCATION,
+            businessUnit: result.RESPONSIBLE_BUSINESS_UNIT,
+            cl_file: result.CROWN_LANDS_FILE,
+            tantalisID: result.DISPOSITION_TRANSACTION_SID,
+            client: clientString
           });
-        }
+          // 7-digit CL File number for display
+          app['clFile'] = result.CROWN_LANDS_FILE.padStart(7, '0');
+          // user-friendly application status
+          app.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(result.TENURE_STATUS));
+          // derive region code
+          app.region = this.applicationService.getRegionCode(app.businessUnit);
+          results.push(app);
+        });
 
         return results;
       })
@@ -122,7 +107,7 @@ export class SearchService {
         return res ? new SearchResults(res) : null;
       })
       .catch(() => {
-        this.isBcgwError = true;
+        this.isError = true;
         // if call fails, return null results
         return of(null as SearchResults);
       });
@@ -135,37 +120,49 @@ export class SearchService {
         // first look at PRC result
         if (application) {
           application['isCreated'] = true;
-          // found a unique application in PRC -- no need to look at BCGW results
+          // found a unique application in PRC -- no need to look at Tantalis results
           return [application];
         }
 
-        // now look at BCGW results
+        // now look at Tantalis results
         const results: Array<Application> = [];
-        if (searchResults && searchResults.totalFeatures > 0 && searchResults.features && searchResults.features.length > 0) {
-          const groupedFeatures = _.groupBy(searchResults.features, 'properties.DISPOSITION_TRANSACTION_SID');
-          _.each(groupedFeatures, (value: any, key: string) => {
-            const feature = new Feature(value[0]);
-            const app = new Application({
-              purpose: feature.properties.TENURE_PURPOSE,
-              subpurpose: feature.properties.TENURE_SUBPURPOSE,
-              type: feature.properties.TENURE_TYPE,
-              subtype: feature.properties.TENURE_SUBTYPE,
-              status: feature.properties.TENURE_STATUS,
-              tenureStage: feature.properties.TENURE_STAGE,
-              location: feature.properties.TENURE_LOCATION,
-              businessUnit: feature.properties.RESPONSIBLE_BUSINESS_UNIT,
-              cl_file: feature.properties.CROWN_LANDS_FILE,
-              tantalisID: feature.properties.DISPOSITION_TRANSACTION_SID,
-              legalDescription: feature.properties.TENURE_LEGAL_DESCRIPTION
-            });
-            // 7-digit CL File number for display
-            app['clFile'] = feature.properties.CROWN_LANDS_FILE.padStart(7, '0');
-            // user-friendly application status
-            app.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(feature.properties.TENURE_STATUS));
-            // derive region code
-            app.region = this.applicationService.getRegionCode(app.businessUnit);
-            results.push(app);
+        if (searchResults != null) {
+
+          // Build the client string.
+          let clientString = '';
+          let idx = 0;
+          for (let client of searchResults.interestedParties) {
+            if (idx > 0) {
+              clientString += ', ';
+            }
+            idx++;
+            if (client.interestedPartyType === 'O') {
+              clientString += client.legalName;
+            } else {
+              clientString += client.firstName + ' ' + client.lastName;
+            }
+          }
+
+          const app = new Application({
+            purpose: searchResults.TENURE_PURPOSE,
+            subpurpose: searchResults.TENURE_SUBPURPOSE,
+            type: searchResults.TENURE_TYPE,
+            subtype: searchResults.TENURE_SUBTYPE,
+            status: searchResults.TENURE_STATUS,
+            tenureStage: searchResults.TENURE_STAGE,
+            location: searchResults.TENURE_LOCATION,
+            businessUnit: searchResults.RESPONSIBLE_BUSINESS_UNIT,
+            cl_file: searchResults.CROWN_LANDS_FILE,
+            tantalisID: searchResults.DISPOSITION_TRANSACTION_SID,
+            client: clientString
           });
+          // 7-digit CL File number for display
+          app['clFile'] = searchResults.CROWN_LANDS_FILE.padStart(7, '0');
+          // user-friendly application status
+          app.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(searchResults.TENURE_STATUS));
+          // derive region code
+          app.region = this.applicationService.getRegionCode(app.businessUnit);
+          results.push(app);
         }
 
         return results;

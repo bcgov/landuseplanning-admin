@@ -600,19 +600,14 @@ export class ApiService {
   //
   // Searching
   //
-  searchAppsByCLID(clid: string): Observable<SearchResults> {
-    const queryString = `public/search/bcgw/crownLandsId/${clid}`;
-    return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, {});
+  searchAppsByCLID(clid: string): Observable<SearchResults[]> {
+    const queryString = `ttlsapi/crownLandFileNumber/${clid}`;
+    return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   searchAppsByDTID(dtid: number): Observable<SearchResults> {
-    const queryString = `public/search/bcgw/dispositionTransactionId/${dtid}`;
+    const queryString = `ttlsapi/dispositionTransactionId/${dtid}`;
     return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  searchClientsByDTID(dtid: number): Observable<Client[]> {
-    const queryString = `public/search/bcgw/getClientsInfoByDispositionId/${dtid}`;
-    return this.http.get<Client[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //

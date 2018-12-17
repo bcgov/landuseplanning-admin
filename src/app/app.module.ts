@@ -24,7 +24,6 @@ import { FooterComponent } from 'app/footer/footer.component';
 import { AdministrationComponent } from 'app/administration/administration.component';
 import { UsersComponent } from 'app/administration/users/users.component';
 import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
-import { SelectOrganizationComponent } from 'app/select-organization/select-organization.component';
 
 // services
 import { SearchService } from 'app/services/search.service';
@@ -60,7 +59,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     AdministrationComponent,
     UsersComponent,
     AddEditUserComponent,
-    SelectOrganizationComponent,
     NotAuthorizedComponent
   ],
   imports: [
@@ -103,8 +101,7 @@ export function kcFactory(keycloakService: KeycloakService) {
   ],
   entryComponents: [
     ConfirmComponent,
-    AddEditUserComponent,
-    SelectOrganizationComponent
+    AddEditUserComponent
   ],
   bootstrap: [AppComponent]
 })
