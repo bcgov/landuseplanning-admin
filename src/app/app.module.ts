@@ -31,7 +31,6 @@ import { SearchService } from 'app/services/search.service';
 import { FeatureService } from 'app/services/feature.service';
 import { AuthenticationService } from 'app/services/authentication.service';
 import { ApplicationService } from 'app/services/application.service';
-import { OrganizationService } from 'app/services/organization.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { CommentService } from 'app/services/comment.service';
 import { DocumentService } from 'app/services/document.service';
@@ -94,7 +93,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     FeatureService,
     AuthenticationService,
     ApplicationService,
-    OrganizationService,
     CommentPeriodService,
     CommentService,
     DocumentService,
