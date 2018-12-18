@@ -13,11 +13,31 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
 import { FeatureService } from 'app/services/feature.service';
+import { Application } from 'app/models/application';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRouteStub } from 'app/spec/helpers';
 
 
 describe('ApplicationDetailComponent', () => {
   let component: ApplicationDetailComponent;
   let fixture: ComponentFixture<ApplicationDetailComponent>;
+  const existingApplication = new Application();
+  const validRouteData = {application: existingApplication};
+
+  const activatedRouteStub = new ActivatedRouteStub(validRouteData);
+  const routerSpy = {
+    navigate: jasmine.createSpy('navigate')
+  };
+
+  const applicationServiceStub = {
+    getRegionString() {
+      return 'Skeena, Smithers';
+    },
+
+    getRegionCode() {
+      return 'SK';
+    }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,11 +47,13 @@ describe('ApplicationDetailComponent', () => {
         { provide: MatSnackBar },
         { provide: ApiService },
         { provide: DialogService },
-        { provide: ApplicationService },
+        { provide: ApplicationService, useValue: applicationServiceStub },
         { provide: CommentPeriodService },
         { provide: DecisionService },
         { provide: DocumentService },
         { provide: FeatureService },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: Router, useValue: routerSpy },
       ]
     })
       .compileComponents();
@@ -45,5 +67,27 @@ describe('ApplicationDetailComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+
+  describe('when the application is retrievable from the route', () => {
+    beforeEach(() => {
+      activatedRouteStub.setData(validRouteData);
+    });
+
+    it('sets the component application to the one from the route', () => {
+      expect(component.application).toEqual(existingApplication);
+    });
+  });
+
+  describe('when the application is not available from the route', () => {
+    beforeEach(() => {
+      activatedRouteStub.setData({something: 'went wrong'});
+    });
+
+    it('redirects to /search', () => {
+      component.ngOnInit();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/search']);
+    });
   });
 });
