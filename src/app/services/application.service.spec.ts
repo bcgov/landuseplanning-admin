@@ -21,14 +21,14 @@ describe('ApplicationService', () => {
 
   const apiServiceStub = {
     getApplication(id: string) {
-      const application = new Application({_id: id, status: 'ACCEPTED'});
-      return of( [application] );
+      const application = new Application({ _id: id, status: 'ACCEPTED' });
+      return of([application]);
     },
 
     getApplications() {
-      const firstApplication = new Application({_id: 'BBBB', status: 'ACCEPTED'});
-      const secondApplication = new Application({_id: 'CCCC', status: 'ABANDONED'});
-      return of( [firstApplication, secondApplication] );
+      const firstApplication = new Application({ _id: 'BBBB', status: 'ACCEPTED' });
+      const secondApplication = new Application({ _id: 'CCCC', status: 'ABANDONED' });
+      return of([firstApplication, secondApplication]);
     },
 
     handleError(error: any) {
@@ -40,8 +40,8 @@ describe('ApplicationService', () => {
   const featureServiceStub = {
     getByApplicationId(applicationId: string) {
       const features = [
-        new Feature({id: 'FFFFF', properties: { TENURE_AREA_IN_HECTARES: 12 }}),
-        new Feature({id: 'GGGGG', properties: { TENURE_AREA_IN_HECTARES: 13 }})
+        new Feature({ id: 'FFFFF', properties: { TENURE_AREA_IN_HECTARES: 12 } }),
+        new Feature({ id: 'GGGGG', properties: { TENURE_AREA_IN_HECTARES: 13 } })
       ];
       return of(features);
     }
@@ -50,8 +50,8 @@ describe('ApplicationService', () => {
   const documentServiceStub = {
     getAllByApplicationId(applicationId: string) {
       const documents = [
-        new Document({_id: 'DDDDD'}),
-        new Document({_id: 'EEEEE'})
+        new Document({ _id: 'DDDDD' }),
+        new Document({ _id: 'EEEEE' })
       ];
       return of(documents);
     }
@@ -60,8 +60,8 @@ describe('ApplicationService', () => {
   const commentPeriodServiceStub = {
     getAllByApplicationId(applicationId: string) {
       const commentPeriods = [
-        new CommentPeriod({_id: 'DDDDD', startDate: new Date(2018, 10, 1, ), endDate: new Date(2018, 11, 10)}),
-        new CommentPeriod({_id: 'EEEEE', startDate: new Date(2018, 10, 1, ), endDate: new Date(2018, 11, 10)})
+        new CommentPeriod({ _id: 'DDDDD', startDate: new Date(2018, 10, 1), endDate: new Date(2018, 11, 10) }),
+        new CommentPeriod({ _id: 'EEEEE', startDate: new Date(2018, 10, 1), endDate: new Date(2018, 11, 10) })
       ];
       return of(commentPeriods);
     },
@@ -70,8 +70,12 @@ describe('ApplicationService', () => {
       return (periods.length > 0) ? periods[0] : null;
     },
 
-    getStatus(period: CommentPeriod): string {
-      return 'Open';
+    getStatusCode(period: CommentPeriod): string {
+      return service.OPEN;
+    },
+
+    getStatusString(statusCode: string): string {
+      return 'Commenting Open';
     },
 
     isOpen(period: CommentPeriod): boolean {
@@ -81,7 +85,7 @@ describe('ApplicationService', () => {
 
   const decisionServiceStub = {
     getByApplicationId(applicationId: string) {
-      return of(new Decision({_id: 'IIIII'}));
+      return of(new Decision({ _id: 'IIIII' }));
     }
   };
 
@@ -113,7 +117,7 @@ describe('ApplicationService', () => {
 
   describe('getAll()', () => {
     it('retrieves the applications from the api service', () => {
-      service.getAll().subscribe( applications => {
+      service.getAll().subscribe(applications => {
         expect(applications[0]._id).toBe('BBBB');
         expect(applications[1]._id).toBe('CCCC');
       });
@@ -133,7 +137,7 @@ describe('ApplicationService', () => {
 
       it('sets the appStatus property', () => {
         existingApplication.status = 'ACCEPTED';
-        service.getAll().subscribe( applications => {
+        service.getAll().subscribe(applications => {
           let application = applications[0];
           expect(application.appStatus).toBe('Application Under Review');
         });
@@ -141,7 +145,7 @@ describe('ApplicationService', () => {
 
       it('clFile property is padded to be seven digits', () => {
         existingApplication.cl_file = 7777;
-        service.getAll().subscribe( applications => {
+        service.getAll().subscribe(applications => {
           let application = applications[0];
           expect(application.clFile).toBe('0007777');
         });
@@ -149,18 +153,18 @@ describe('ApplicationService', () => {
 
       it('clFile property is null if there is no cl_file property', () => {
         existingApplication.cl_file = null;
-        service.getAll().subscribe( applications => {
+        service.getAll().subscribe(applications => {
           let application = applications[0];
           expect(application.clFile).toBeUndefined();
         });
       });
 
       it('sets the region property', () => {
-        existingApplication.businessUnit = 'ZOO Keeper';
-        service.getAll().subscribe( applications => {
+        existingApplication.businessUnit = 'SK - LAND MGMNT - SKEENA FIELD OFFICE';
+        service.getAll().subscribe(applications => {
           let application = applications[0];
           expect(application.region).toBeDefined();
-          expect(application.region).toEqual('ZOO');
+          expect(application.region).toEqual(service.SKEENA);
         });
       });
     });
@@ -171,8 +175,8 @@ describe('ApplicationService', () => {
 
     describe('with the getCurrentPeriod Parameter', () => {
       // let commentPeriodService;
-      const firstAppCommentPeriod = new CommentPeriod({_id: 'CP_FOR_FIRST_APP', startDate: new Date(2018, 10, 1, ), endDate: new Date(2018, 11, 10)});
-      const secondAppCommentPeriod = new CommentPeriod({_id: 'CP_FOR_SECOND_APP', startDate: new Date(2018, 10, 1, ), endDate: new Date(2018, 11, 10)});
+      const firstAppCommentPeriod = new CommentPeriod({ _id: 'CP_FOR_FIRST_APP', startDate: new Date(2018, 10, 1), endDate: new Date(2018, 11, 10) });
+      const secondAppCommentPeriod = new CommentPeriod({ _id: 'CP_FOR_SECOND_APP', startDate: new Date(2018, 10, 1), endDate: new Date(2018, 11, 10) });
 
       beforeEach(() => {
         let commentPeriodService = TestBed.get(CommentPeriodService);
@@ -187,7 +191,7 @@ describe('ApplicationService', () => {
       });
 
       it('makes a call to commentPeriodService.getAllByApplicationId for each application and retrieves the comment period', () => {
-        service.getAll({ getCurrentPeriod: true }).subscribe( applications => {
+        service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
           let firstApplication = applications[0];
           expect(firstApplication.currentPeriod).toBeDefined();
           expect(firstApplication.currentPeriod).not.toBeNull();
@@ -200,10 +204,10 @@ describe('ApplicationService', () => {
         });
       });
 
-      it('sets the cpStatus to the commentPeriodService.getStatus result', () => {
-        service.getAll({ getCurrentPeriod: true }).subscribe( applications => {
+      it('sets the cpStatus to the commentPeriodService.getStatusString result', () => {
+        service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
           let firstApplication = applications[0];
-          expect(firstApplication.cpStatus).toBe('Open');
+          expect(firstApplication.cpStatus).toBe('Commenting Open');
         });
       });
 
@@ -224,10 +228,10 @@ describe('ApplicationService', () => {
         });
 
         it('sets the daysRemaining value to the endDate minus the current time', () => {
-          firstAppCommentPeriod.startDate = new Date(2018, 10, 1, );
+          firstAppCommentPeriod.startDate = new Date(2018, 10, 1);
           firstAppCommentPeriod.endDate = new Date(2018, 11, 10);
 
-          service.getAll({ getCurrentPeriod: true }).subscribe( applications => {
+          service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
             let firstApplication = applications[0];
 
             expect(firstApplication.currentPeriod.daysRemaining).toBeDefined();
@@ -246,7 +250,7 @@ describe('ApplicationService', () => {
         // I can't get the spies to work correctly here to stub the isOpen value
         // TODO: Stub isOpen method properly to get this to pass.
         xit('does not set the daysRemaining value', () => {
-          service.getAll({ getCurrentPeriod: true }).subscribe( applications => {
+          service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
             expect(applications[0].currentPeriod.daysRemaining).not.toBeDefined();
             expect(applications[1].currentPeriod.daysRemaining).not.toBeDefined();
           });
@@ -261,7 +265,7 @@ describe('ApplicationService', () => {
         });
 
         it('sets the numComments value to the commentService.getCountByPeriodId function', () => {
-          service.getAll({ getCurrentPeriod: true }).subscribe( applications => {
+          service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
             expect(applications[0].numComments).toEqual(42);
             expect(applications[1].numComments).toEqual(42);
           });
@@ -287,11 +291,10 @@ describe('ApplicationService', () => {
 
   describe('getById()', () => {
     it('retrieves the application from the api service', () => {
-      service.getById('AAAA').subscribe( application => {
+      service.getById('AAAA').subscribe(application => {
         expect(application._id).toBe('AAAA');
       });
     });
-
 
     describe('application properties', () => {
       let existingApplication = new Application({
@@ -307,37 +310,37 @@ describe('ApplicationService', () => {
 
       it('sets the appStatus property', () => {
         existingApplication.status = 'ACCEPTED';
-        service.getById('AAAA').subscribe( application => {
+        service.getById('AAAA').subscribe(application => {
           expect(application.appStatus).toBe('Application Under Review');
         });
       });
 
       it('clFile property is padded to be seven digits', () => {
         existingApplication.cl_file = 7777;
-        service.getById('AAAA').subscribe( application => {
+        service.getById('AAAA').subscribe(application => {
           expect(application.clFile).toBe('0007777');
         });
       });
 
       it('clFile property is null if there is no cl_file property', () => {
         existingApplication.cl_file = null;
-        service.getById('AAAA').subscribe( application => {
+        service.getById('AAAA').subscribe(application => {
           expect(application.clFile).toBeUndefined();
         });
       });
 
       it('sets the region property', () => {
-        existingApplication.businessUnit = 'ZOO Keeper';
-        service.getById('AAAA').subscribe( application => {
+        existingApplication.businessUnit = 'SK - LAND MGMNT - SKEENA FIELD OFFICE';
+        service.getById('AAAA').subscribe(application => {
           expect(application.region).toBeDefined();
-          expect(application.region).toEqual('ZOO');
+          expect(application.region).toEqual(service.SKEENA);
         });
       });
     });
 
     describe('with the getFeatures Parameter', () => {
       it('makes a call to featureService.getByApplicationId and attaches the resulting features', () => {
-        service.getById('AAAA', { getFeatures: true }).subscribe( application => {
+        service.getById('AAAA', { getFeatures: true }).subscribe(application => {
           expect(application.features).toBeDefined();
           expect(application.features).not.toBeNull();
           expect(application.features[0].id).toBe('FFFFF');
@@ -363,7 +366,7 @@ describe('ApplicationService', () => {
 
     describe('with the getDocuments Parameter', () => {
       it('makes a call to documentService.getAllByApplicationId and attaches the resulting documents', () => {
-        service.getById('AAAA', { getDocuments: true }).subscribe( application => {
+        service.getById('AAAA', { getDocuments: true }).subscribe(application => {
           expect(application.documents).toBeDefined();
           expect(application.documents).not.toBeNull();
           expect(application.documents[0]._id).toBe('DDDDD');
@@ -389,23 +392,23 @@ describe('ApplicationService', () => {
 
     describe('with the getCurrentPeriod Parameter', () => {
       it('makes a call to commentPeriodService.getAllByApplicationId and attaches the first resulting comment period', () => {
-        service.getById('AAAA', { getCurrentPeriod: true }).subscribe( application => {
+        service.getById('AAAA', { getCurrentPeriod: true }).subscribe(application => {
           expect(application.currentPeriod).toBeDefined();
           expect(application.currentPeriod).not.toBeNull();
           expect(application.currentPeriod._id).toBe('DDDDD');
         });
       });
 
-      it('sets the cpStatus to the commentPeriodService.getStatus result', () => {
-        service.getById('AAAA', { getCurrentPeriod: true }).subscribe( application => {
-          expect(application.cpStatus).toBe('Open');
+      it('sets the cpStatus to the commentPeriodService.getStatusString result', () => {
+        service.getById('AAAA', { getCurrentPeriod: true }).subscribe(application => {
+          expect(application.cpStatus).toBe('Commenting Open');
         });
       });
 
       describe('if the comment period is open', () => {
         let periodExpiringOnTheTenth = new CommentPeriod({
           _id: 'CCCC',
-          startDate: new Date(2018, 10, 1, ),
+          startDate: new Date(2018, 10, 1),
           endDate: new Date(2018, 11, 10)
         });
 
@@ -426,10 +429,8 @@ describe('ApplicationService', () => {
         });
 
         it('sets the daysRemaining value to the endDate minus the current time', () => {
-
-          service.getById('AAAA', { getCurrentPeriod: true }).subscribe( application => {
+          service.getById('AAAA', { getCurrentPeriod: true }).subscribe(application => {
             expect(application.currentPeriod.daysRemaining).toBeDefined();
-
             expect(application.currentPeriod.daysRemaining).toEqual(10);
           });
         });
@@ -443,7 +444,7 @@ describe('ApplicationService', () => {
         });
 
         it('does not set the daysRemaining value', () => {
-          service.getById('AAAA', { getCurrentPeriod: true }).subscribe( application => {
+          service.getById('AAAA', { getCurrentPeriod: true }).subscribe(application => {
             expect(application.currentPeriod.daysRemaining).not.toBeDefined();
           });
         });
@@ -457,7 +458,7 @@ describe('ApplicationService', () => {
         });
 
         it('sets the numComments value to the commentService.getCountByPeriodId function', () => {
-          service.getById('AAAA', { getCurrentPeriod: true }).subscribe( application => {
+          service.getById('AAAA', { getCurrentPeriod: true }).subscribe(application => {
             expect(application.numComments).toEqual(42);
           });
         });
@@ -480,7 +481,7 @@ describe('ApplicationService', () => {
 
     describe('with the getDecision Parameter', () => {
       it('makes a call to decisionService.getByApplicationId and attaches the resulting decision', () => {
-        service.getById('AAAA', { getDecision: true }).subscribe( application => {
+        service.getById('AAAA', { getDecision: true }).subscribe(application => {
           expect(application.decision).toBeDefined();
           expect(application.decision).not.toBeNull();
           expect(application.decision._id).toBe('IIIII');
@@ -504,161 +505,372 @@ describe('ApplicationService', () => {
     });
   });
 
-  describe('getStatusString()', () => {
-    it('with "AB" code it returns "Application Abandoned"', () => {
-      expect(service.getStatusString('AB')).toBe('Application Abandoned');
+  describe('getStatusCode()', () => {
+    it('with "ABANDONED" status it returns "AB" code', () => {
+      expect(service.getStatusCode('ABANDONED')).toEqual(service.ABANDONED);
     });
 
-    it('with "AC" code it returns "Application Under Review', () => {
-      expect(service.getStatusString('AC')).toBe('Application Under Review');
+    it('with "CANCELLED" status it returns "AB" code', () => {
+      expect(service.getStatusCode('CANCELLED')).toEqual(service.ABANDONED);
     });
 
-    it('with "AL" code it returns "Decision: Allowed', () => {
-      expect(service.getStatusString('AL')).toBe('Decision: Allowed');
+    it('with "OFFER NOT ACCEPTED" status it returns "AB" code', () => {
+      expect(service.getStatusCode('OFFER NOT ACCEPTED')).toEqual(service.ABANDONED);
     });
 
-    it('with "CA" code it returns "Application Cancelled', () => {
-      expect(service.getStatusString('CA')).toBe('Application Cancelled');
+    it('with "OFFER RESCINDED" status it returns "AB" code', () => {
+      expect(service.getStatusCode('OFFER RESCINDED')).toEqual(service.ABANDONED);
     });
 
-    it('with "DE" code it returns "Decision Made', () => {
-      expect(service.getStatusString('DE')).toBe('Decision Made');
+    it('with "RETURNED" status it returns "AB" code', () => {
+      expect(service.getStatusCode('RETURNED')).toEqual(service.ABANDONED);
     });
 
-    it('with "DI" code it returns "Decision: Not Approved', () => {
-      expect(service.getStatusString('DI')).toBe('Decision: Not Approved');
+    it('with "REVERTED" status it returns "AB" code', () => {
+      expect(service.getStatusCode('REVERTED')).toEqual(service.ABANDONED);
     });
 
-    it('with "DG" code it returns "Tenure: Disposition in Good Standing', () => {
-      expect(service.getStatusString('DG')).toBe('Tenure: Disposition in Good Standing');
+    it('with "SOLD" status it returns "AB" code', () => {
+      expect(service.getStatusCode('SOLD')).toEqual(service.ABANDONED);
     });
 
-    it('with "OA" code it returns "Decision: Offer Accepted', () => {
-      expect(service.getStatusString('OA')).toBe('Decision: Offer Accepted');
+    it('with "SUSPENDED" status it returns "AB" code', () => {
+      expect(service.getStatusCode('SUSPENDED')).toEqual(service.ABANDONED);
     });
 
-    it('with "ON" code it returns "Decision: Offer Not Accepted', () => {
-      expect(service.getStatusString('ON')).toBe('Decision: Offer Not Accepted');
+    it('with "WITHDRAWN" status it returns "AB" code', () => {
+      expect(service.getStatusCode('WITHDRAWN')).toEqual(service.ABANDONED);
     });
 
-    it('with "OF" code it returns "Decision: Offered', () => {
-      expect(service.getStatusString('OF')).toBe('Decision: Offered');
+    it('with "ACCEPTED" status it returns "AUR" code', () => {
+      expect(service.getStatusCode('ACCEPTED')).toEqual(service.APPLICATION_UNDER_REVIEW);
     });
 
-    it('with "SU" code it returns "Tenure: Suspended', () => {
-      expect(service.getStatusString('SU')).toBe('Tenure: Suspended');
+    it('with "ALLOWED" status it returns "AUR" code', () => {
+      expect(service.getStatusCode('ALLOWED')).toEqual(service.APPLICATION_UNDER_REVIEW);
     });
 
-    it('with "UN" code it returns "Unknown Application Status', () => {
-      expect(service.getStatusString('UN')).toBe('Unknown Application Status');
+    it('with "PENDING" status it returns "AUR" code', () => {
+      expect(service.getStatusCode('PENDING')).toEqual(service.APPLICATION_UNDER_REVIEW);
     });
 
-    it('returns the code that was passed in if it is not recognized', () => {
-      expect(service.getStatusString('WOO_BOY')).toBe('WOO_BOY');
+    it('with "RECEIVED" status it returns "AUR" code', () => {
+      expect(service.getStatusCode('RECEIVED')).toEqual(service.APPLICATION_UNDER_REVIEW);
+    });
+
+    it('with "OFFER ACCEPTED" status it returns "ARC" code', () => {
+      expect(service.getStatusCode('OFFER ACCEPTED')).toEqual(service.APPLICATION_REVIEW_COMPLETE);
+    });
+
+    it('with "OFFERED" status it returns "ARC" code', () => {
+      expect(service.getStatusCode('OFFERED')).toEqual(service.APPLICATION_REVIEW_COMPLETE);
+    });
+
+    it('with "ACTIVE" status it returns "DA" code', () => {
+      expect(service.getStatusCode('ACTIVE')).toEqual(service.DECISION_APPROVED);
+    });
+
+    it('with "COMPLETED" status it returns "DA" code', () => {
+      expect(service.getStatusCode('COMPLETED')).toEqual(service.DECISION_APPROVED);
+    });
+
+    it('with "DISPOSITION IN GOOD STANDING" status it returns "DA" code', () => {
+      expect(service.getStatusCode('DISPOSITION IN GOOD STANDING')).toEqual(service.DECISION_APPROVED);
+    });
+
+    it('with "EXPIRED" status it returns "DA" code', () => {
+      expect(service.getStatusCode('EXPIRED')).toEqual(service.DECISION_APPROVED);
+    });
+
+    it('with "HISTORIC" status it returns "DA" code', () => {
+      expect(service.getStatusCode('HISTORIC')).toEqual(service.DECISION_APPROVED);
+    });
+
+    it('with "DISALLOWED" status it returns "DNA" code', () => {
+      expect(service.getStatusCode('DISALLOWED')).toEqual(service.DECISION_NOT_APPROVED);
+    });
+
+    it('with "NOT USED" status it returns "UN" code', () => {
+      expect(service.getStatusCode('NOT USED')).toEqual(service.UNKNOWN);
+    });
+
+    it('with "PRE-TANTALIS" status it returns "UN" code', () => {
+      expect(service.getStatusCode('PRE-TANTALIS')).toEqual(service.UNKNOWN);
+    });
+
+    it('returns "UN" if status is empty', () => {
+      expect(service.getStatusCode('')).toEqual(service.UNKNOWN);
+    });
+
+    it('returns "UN" if status is undefined', () => {
+      expect(service.getStatusCode(undefined)).toEqual(service.UNKNOWN);
+    });
+
+    it('returns "UN" if status is null', () => {
+      expect(service.getStatusCode(null)).toEqual(service.UNKNOWN);
     });
   });
 
-  describe('getStatusCode()', () => {
-    it('with "ABANDONED" status it returns "AB" code', () => {
-      expect(service.getStatusCode('ABANDONED')).toBe('AB');
+  describe('getTantalisStatus()', () => {
+    it('with "AB" status it returns Abandoned codes', () => {
+      expect(service.getTantalisStatus(service.ABANDONED)).toEqual(
+        ['ABANDONED', 'CANCELLED', 'OFFER NOT ACCEPTED', 'OFFER RESCINDED', 'RETURNED', 'REVERTED', 'SOLD', 'SUSPENDED', 'WITHDRAWN']
+      );
     });
 
-    it('with "ACCEPTED" status it returns "AC" code', () => {
-      expect(service.getStatusCode('ACCEPTED')).toBe('AC');
+    it('with "AUR" status it returns Application Under Review codes', () => {
+      expect(service.getTantalisStatus(service.APPLICATION_UNDER_REVIEW)).toEqual(
+        ['ACCEPTED', 'ALLOWED', 'PENDING', 'RECEIVED']
+      );
     });
 
-    it('with "ALLOWED" status it returns "AL" code', () => {
-      expect(service.getStatusCode('ALLOWED')).toBe('AL');
+    it('with "ARC" status it returns Application Review Complete codes', () => {
+      expect(service.getTantalisStatus(service.APPLICATION_REVIEW_COMPLETE)).toEqual(
+        ['OFFER ACCEPTED', 'OFFERED']
+      );
     });
 
-    it('with "CANCELLED" status it returns "CA" code', () => {
-      expect(service.getStatusCode('CANCELLED')).toBe('CA');
+    it('with "DA" status it returns Decision Approved codes', () => {
+      expect(service.getTantalisStatus(service.DECISION_APPROVED)).toEqual(
+        ['ACTIVE', 'COMPLETED', 'DISPOSITION IN GOOD STANDING', 'EXPIRED', 'HISTORIC']
+      );
     });
 
-    it('with "DISALLOWED" status it returns "DI" code', () => {
-      expect(service.getStatusCode('DISALLOWED')).toBe('DI');
+    it('with "DNA" status it returns Decision Not Approved codes', () => {
+      expect(service.getTantalisStatus(service.DECISION_NOT_APPROVED)).toEqual(
+        ['DISALLOWED']
+      );
+    });
+  });
+
+  describe('getShortStatusString()', () => {
+    it('with "AB" code it returns "Abandoned" string', () => {
+      expect(service.getShortStatusString(service.ABANDONED)).toBe('Abandoned');
     });
 
-    it('with "DISPOSITION IN GOOD STANDING" status it returns "DG" code', () => {
-      expect(service.getStatusCode('DISPOSITION IN GOOD STANDING')).toBe('DG');
+    it('with "AUR" code it returns "Under Review" string', () => {
+      expect(service.getShortStatusString(service.APPLICATION_UNDER_REVIEW)).toBe('Under Review');
     });
 
-    it('with "OFFER ACCEPTED" status it returns "OA" code', () => {
-      expect(service.getStatusCode('OFFER ACCEPTED')).toBe('OA');
+    it('with "ARC" code it returns "Decision Pending" string', () => {
+      expect(service.getShortStatusString(service.APPLICATION_REVIEW_COMPLETE)).toBe('Decision Pending');
     });
 
-    it('with "OFFER NOT ACCEPTED" status it returns "ON" code', () => {
-      expect(service.getStatusCode('OFFER NOT ACCEPTED')).toBe('ON');
+    it('with "DA" code it returns "Approved" string', () => {
+      expect(service.getShortStatusString(service.DECISION_APPROVED)).toBe('Approved');
     });
 
-    it('with "OFFERED" status it returns "OF" code', () => {
-      expect(service.getStatusCode('OFFERED')).toBe('OF');
+    it('with "DNA" code it returns "Not Approved" string', () => {
+      expect(service.getShortStatusString(service.DECISION_NOT_APPROVED)).toBe('Not Approved');
     });
 
-    it('with "SUSPENDED" status it returns "SU" code', () => {
-      expect(service.getStatusCode('SUSPENDED')).toBe('SU');
+    it('with "UN" code it returns "Unknown" string', () => {
+      expect(service.getShortStatusString(service.UNKNOWN)).toBe('Unknown');
+    });
+  });
+
+  describe('getLongStatusString()', () => {
+    it('with "AB" code it returns "Abandoned" string', () => {
+      expect(service.getLongStatusString(service.ABANDONED)).toBe('Abandoned');
     });
 
-    it('returns "UN" if no status passed', () => {
-      expect(service.getStatusCode('')).toBe('UN');
+    it('with "AUR" code it returns "Application Under Review" string', () => {
+      expect(service.getLongStatusString(service.APPLICATION_UNDER_REVIEW)).toBe('Application Under Review');
     });
 
-    it('returns "UN" if the passed in status is undefined', () => {
-      let undefinedStatus;
-      expect(service.getStatusCode(undefinedStatus)).toBe('UN');
+    it('with "ARC" code it returns "Application Review Complete - Decision Pending" string', () => {
+      expect(service.getLongStatusString(service.APPLICATION_REVIEW_COMPLETE)).toBe('Application Review Complete - Decision Pending');
     });
 
-    it('returns the status back if it is not recognized', () => {
-      expect(service.getStatusCode('WOO_BOY')).toBe('Woo Boy');
+    it('with "DA" code it returns "Decision: Approved - Tenure Issued" string', () => {
+      expect(service.getLongStatusString(service.DECISION_APPROVED)).toBe('Decision: Approved - Tenure Issued');
+    });
+
+    it('with "DNA" code it returns "Decision: Not Approved" string', () => {
+      expect(service.getLongStatusString(service.DECISION_NOT_APPROVED)).toBe('Decision: Not Approved');
+    });
+
+    it('with "UN" code it returns "Unknown status" string', () => {
+      expect(service.getLongStatusString(service.UNKNOWN)).toBe('Unknown Status');
+    });
+  });
+
+  describe('isAbandoned()', () => {
+    it('with "AB" code it returns true', () => {
+      expect(service.isAbandoned(service.ABANDONED)).toBe(true);
+    });
+
+    it('with "xx" code it returns false', () => {
+      expect(service.isAbandoned('xx')).toBe(false);
+    });
+
+    it('with null code it returns false', () => {
+      expect(service.isAbandoned(null)).toBe(false);
+    });
+  });
+
+  describe('isApplicationUnderReview()', () => {
+    it('with "AUR" code it returns true', () => {
+      expect(service.isApplicationUnderReview(service.APPLICATION_UNDER_REVIEW)).toBe(true);
+    });
+
+    it('with "xx" code it returns false', () => {
+      expect(service.isApplicationUnderReview('xx')).toBe(false);
+    });
+
+    it('with null code it returns false', () => {
+      expect(service.isApplicationUnderReview(null)).toBe(false);
+    });
+  });
+
+  describe('isApplicationReviewComplete()', () => {
+    it('with "ARC" code it returns true', () => {
+      expect(service.isApplicationReviewComplete(service.APPLICATION_REVIEW_COMPLETE)).toBe(true);
+    });
+
+    it('with "xx" code it returns false', () => {
+      expect(service.isApplicationReviewComplete('xx')).toBe(false);
+    });
+
+    it('with null code it returns false', () => {
+      expect(service.isApplicationReviewComplete(null)).toBe(false);
+    });
+  });
+
+  describe('isDecisionApproved()', () => {
+    it('with "DA" code it returns true', () => {
+      expect(service.isDecisionApproved(service.DECISION_APPROVED)).toBe(true);
+    });
+
+    it('with "xx" code it returns false', () => {
+      expect(service.isDecisionApproved('xx')).toBe(false);
+    });
+
+    it('with null code it returns false', () => {
+      expect(service.isDecisionApproved(null)).toBe(false);
+    });
+  });
+
+  describe('isDecisionNotApproved()', () => {
+    it('with "DNA" code it returns true', () => {
+      expect(service.isDecisionNotApproved(service.DECISION_NOT_APPROVED)).toBe(true);
+    });
+
+    it('with "xx" code it returns false', () => {
+      expect(service.isDecisionNotApproved('xx')).toBe(false);
+    });
+
+    it('with null code it returns false', () => {
+      expect(service.isDecisionNotApproved(null)).toBe(false);
+    });
+  });
+
+  describe('isUnknown()', () => {
+    it('with "UN" code it returns true', () => {
+      expect(service.isUnknown(service.UNKNOWN)).toBe(true);
+    });
+
+    it('with "xx" code it returns false', () => {
+      expect(service.isUnknown('xx')).toBe(false);
+    });
+
+    it('with null code it returns false', () => {
+      expect(service.isUnknown(null)).toBe(false);
+    });
+  });
+
+  describe('getRegionCode()', () => {
+    it('with "CA - LAND MGMNT - CARIBOO FIELD OFFICE" it returns "CA" code', () => {
+      expect(service.getRegionCode('CA - LAND MGMNT - CARIBOO FIELD OFFICE')).toEqual(service.CARIBOO);
+    });
+
+    it('with "KO - LAND MGMNT - KOOTENAY FIELD OFFICE" it returns "KO" code', () => {
+      expect(service.getRegionCode('KO - LAND MGMNT - KOOTENAY FIELD OFFICE')).toEqual(service.KOOTENAY);
+    });
+
+    it('with "LM - LAND MGMNT - LOWER MAINLAND SERVICE REGION" it returns "LM" code', () => {
+      expect(service.getRegionCode('LM - LAND MGMNT - LOWER MAINLAND SERVICE REGION')).toEqual(service.LOWER_MAINLAND);
+    });
+
+    it('with "OM - LAND MGMNT - NORTHERN SERVICE REGION" it returns "OM" code', () => {
+      expect(service.getRegionCode('OM - LAND MGMNT - NORTHERN SERVICE REGION')).toEqual(service.OMENICA);
+    });
+
+    it('with "PE - LAND MGMNT - PEACE FIELD OFFICE" it returns "PE" code', () => {
+      expect(service.getRegionCode('PE - LAND MGMNT - PEACE FIELD OFFICE')).toEqual(service.PEACE);
+    });
+
+    it('with "SK - LAND MGMNT - SKEENA FIELD OFFICE" it returns "SK" code', () => {
+      expect(service.getRegionCode('SK - LAND MGMNT - SKEENA FIELD OFFICE')).toEqual(service.SKEENA);
+    });
+
+    it('with "SI - LAND MGMNT - SOUTHERN SERVICE REGION" it returns "SI" code', () => {
+      expect(service.getRegionCode('SI - LAND MGMNT - SOUTHERN SERVICE REGION')).toEqual(service.SOUTHERN_INTERIOR);
+    });
+
+    it('with "VI - LAND MGMNT - VANCOUVER ISLAND SERVICE REGION" it returns "VI" code', () => {
+      expect(service.getRegionCode('VI - LAND MGMNT - VANCOUVER ISLAND SERVICE REGION')).toEqual(service.VANCOUVER_ISLAND);
+    });
+
+    it('returns Falsy if Business Unit is empty', () => {
+      expect(service.getRegionCode('')).toBeFalsy();
+    });
+
+    it('returns Falsy if Business Unit is undefined', () => {
+      expect(service.getRegionCode(undefined)).toBeFalsy();
+    });
+    it('returns Falsy if Business Unit is null', () => {
+      expect(service.getRegionCode(null)).toBeFalsy();
     });
   });
 
   describe('getRegionString()', () => {
     it('with "CA" code it returns "Cariboo, Williams Lake"', () => {
-      expect(service.getRegionString('CA')).toBe('Cariboo, Williams Lake');
+      expect(service.getRegionString(service.CARIBOO)).toBe('Cariboo, Williams Lake');
     });
 
     it('with "KO" code it returns "Kootenay, Cranbrook"', () => {
-      expect(service.getRegionString('KO')).toBe('Kootenay, Cranbrook');
+      expect(service.getRegionString(service.KOOTENAY)).toBe('Kootenay, Cranbrook');
     });
 
     it('with "LM" code it returns "Lower Mainland, Surrey"', () => {
-      expect(service.getRegionString('LM')).toBe('Lower Mainland, Surrey');
+      expect(service.getRegionString(service.LOWER_MAINLAND)).toBe('Lower Mainland, Surrey');
     });
 
     it('with "OM" code it returns "Omenica/Peace, Prince George"', () => {
-      expect(service.getRegionString('OM')).toBe('Omenica/Peace, Prince George');
+      expect(service.getRegionString(service.OMENICA)).toBe('Omenica/Peace, Prince George');
     });
 
     it('with "PE" code it returns "Peace, Ft. St. John"', () => {
-      expect(service.getRegionString('PE')).toBe('Peace, Ft. St. John');
+      expect(service.getRegionString(service.PEACE)).toBe('Peace, Ft. St. John');
     });
 
     it('with "SK" code it returns "Skeena, Smithers"', () => {
-      expect(service.getRegionString('SK')).toBe('Skeena, Smithers');
+      expect(service.getRegionString(service.SKEENA)).toBe('Skeena, Smithers');
     });
 
     it('with "SI" code it returns "Thompson Okanagan, Kamloops"', () => {
-      expect(service.getRegionString('SI')).toBe('Thompson Okanagan, Kamloops');
+      expect(service.getRegionString(service.SOUTHERN_INTERIOR)).toBe('Thompson Okanagan, Kamloops');
     });
 
     it('with "VI" code it returns "West Coast, Nanaimo"', () => {
-      expect(service.getRegionString('VI')).toBe('West Coast, Nanaimo');
+      expect(service.getRegionString(service.VANCOUVER_ISLAND)).toBe('West Coast, Nanaimo');
     });
 
-    it('returns "undefined" if code is not recognized', () => {
-      expect(service.getRegionString('WUT')).toBeUndefined();
-    });
-  });
-
-  describe('getRegionCode()', () => {
-    it('returns the two letter abbreviation in the businessUnit string', () => {
-      const businessUnit = 'SK - LAND MGMNT - SKEENA FIELD OFFICE';
-      expect(service.getRegionCode(businessUnit)).toBe('SK');
+    it('returns Falsy if code is not recognized', () => {
+      expect(service.getRegionString('WTF')).toBeFalsy();
     });
 
-    it('returns null if no businessUnit is present', () => {
-      expect(service.getRegionCode()).toBeNull();
+    it('returns Falsy if code is empty', () => {
+      expect(service.getRegionString('')).toBeFalsy();
+    });
+
+    it('returns Falsy if code is undefined', () => {
+      expect(service.getRegionString(undefined)).toBeFalsy();
+    });
+
+    it('returns Falsy if code is null', () => {
+      expect(service.getRegionString(null)).toBeFalsy();
     });
   });
 });

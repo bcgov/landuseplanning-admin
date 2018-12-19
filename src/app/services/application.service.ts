@@ -29,16 +29,10 @@ export class ApplicationService {
 
   // statuses / query param options
   readonly ABANDONED = 'AB';
-  readonly ACCEPTED = 'AC';
-  readonly ALLOWED = 'AL';
-  readonly CANCELLED = 'CA';
-  readonly DECISION_MADE = 'DE'; // special combination status (see isDecision below)
-  readonly DISALLOWED = 'DI';
-  readonly DISPOSITION_GOOD_STANDING = 'DG';
-  readonly OFFER_ACCEPTED = 'OA';
-  readonly OFFER_NOT_ACCEPTED = 'ON';
-  readonly OFFERED = 'OF';
-  readonly SUSPENDED = 'SU';
+  readonly APPLICATION_UNDER_REVIEW = 'AUR';
+  readonly APPLICATION_REVIEW_COMPLETE = 'ARC';
+  readonly DECISION_APPROVED = 'DA';
+  readonly DECISION_NOT_APPROVED = 'DNA';
   readonly UNKNOWN = 'UN'; // special status when no data
 
   // regions / query param options
@@ -51,10 +45,6 @@ export class ApplicationService {
   readonly SOUTHERN_INTERIOR = 'SI';
   readonly VANCOUVER_ISLAND = 'VI';
 
-  // use helpers to get these:
-  private applicationStatuses: Array<string> = [];
-  private regions: Array<string> = [];
-
   constructor(
     private api: ApiService,
     private documentService: DocumentService,
@@ -62,30 +52,7 @@ export class ApplicationService {
     private commentService: CommentService,
     private decisionService: DecisionService,
     private featureService: FeatureService
-  ) {
-    // user-friendly strings for display
-    this.applicationStatuses[this.ABANDONED] = 'Application Abandoned';
-    this.applicationStatuses[this.ACCEPTED] = 'Application Under Review';
-    this.applicationStatuses[this.ALLOWED] = 'Decision: Allowed';
-    this.applicationStatuses[this.CANCELLED] = 'Application Cancelled';
-    this.applicationStatuses[this.DECISION_MADE] = 'Decision Made';
-    this.applicationStatuses[this.DISALLOWED] = 'Decision: Not Approved';
-    this.applicationStatuses[this.DISPOSITION_GOOD_STANDING] = 'Tenure: Disposition in Good Standing';
-    this.applicationStatuses[this.OFFER_ACCEPTED] = 'Decision: Offer Accepted';
-    this.applicationStatuses[this.OFFER_NOT_ACCEPTED] = 'Decision: Offer Not Accepted';
-    this.applicationStatuses[this.OFFERED] = 'Decision: Offered';
-    this.applicationStatuses[this.SUSPENDED] = 'Tenure: Suspended';
-    this.applicationStatuses[this.UNKNOWN] = 'Unknown Application Status';
-
-    this.regions[this.CARIBOO] = 'Cariboo, Williams Lake';
-    this.regions[this.KOOTENAY] = 'Kootenay, Cranbrook';
-    this.regions[this.LOWER_MAINLAND] = 'Lower Mainland, Surrey';
-    this.regions[this.OMENICA] = 'Omenica/Peace, Prince George';
-    this.regions[this.PEACE] = 'Peace, Ft. St. John';
-    this.regions[this.SKEENA] = 'Skeena, Smithers';
-    this.regions[this.SOUTHERN_INTERIOR] = 'Thompson Okanagan, Kamloops';
-    this.regions[this.VANCOUVER_ISLAND] = 'West Coast, Nanaimo';
-  }
+  ) { }
 
   // get count of applications
   getCount(): Observable<number> {
@@ -190,11 +157,12 @@ export class ApplicationService {
           application.currentPeriod = this.commentPeriodService.getCurrent(periods);
 
           // user-friendly comment period status
-          application.cpStatus = this.commentPeriodService.getStatus(application.currentPeriod);
+          const cpStatusCode = this.commentPeriodService.getStatusCode(application.currentPeriod);
+          application.cpStatus = this.commentPeriodService.getStatusString(cpStatusCode);
 
           // derive days remaining for display
           // use moment to handle Daylight Saving Time changes
-          if (application.currentPeriod && this.commentPeriodService.isOpen(application.currentPeriod)) {
+          if (application.currentPeriod && this.commentPeriodService.isOpen(cpStatusCode)) {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             application.currentPeriod['daysRemaining']
@@ -223,7 +191,7 @@ export class ApplicationService {
         }
 
         // user-friendly application status
-        application.appStatus = this.getStatusString(this.getStatusCode(application.status));
+        application.appStatus = this.getLongStatusString(this.getStatusCode(application.status));
 
         // derive region code
         application.region = this.getRegionCode(application.businessUnit);
@@ -301,99 +269,149 @@ export class ApplicationService {
   }
 
   /**
-   * Returns status abbreviation.
+   * Map Tantalis Status to status code.
    */
-  getStatusCode(status: string): string {
-    if (status) {
-      switch (status.toUpperCase()) {
-        case 'ABANDONED': return this.ABANDONED;
-        case 'ACCEPTED': return this.ACCEPTED;
-        case 'ALLOWED': return this.ALLOWED;
-        case 'CANCELLED': return this.CANCELLED;
-        case 'DISALLOWED': return this.DISALLOWED;
-        case 'DISPOSITION IN GOOD STANDING': return this.DISPOSITION_GOOD_STANDING;
-        case 'OFFER ACCEPTED': return this.OFFER_ACCEPTED;
-        case 'OFFER NOT ACCEPTED': return this.OFFER_NOT_ACCEPTED;
-        case 'OFFERED': return this.OFFERED;
-        case 'SUSPENDED': return this.SUSPENDED;
+  getStatusCode(statusString: string): string {
+    if (statusString) {
+      switch (statusString.toUpperCase()) {
+        case 'ABANDONED':
+        case 'CANCELLED':
+        case 'OFFER NOT ACCEPTED':
+        case 'OFFER RESCINDED':
+        case 'RETURNED':
+        case 'REVERTED':
+        case 'SOLD':
+        case 'SUSPENDED':
+        case 'WITHDRAWN':
+          return this.ABANDONED;
+
+        case 'ACCEPTED':
+        case 'ALLOWED':
+        case 'PENDING':
+        case 'RECEIVED':
+          return this.APPLICATION_UNDER_REVIEW;
+
+        case 'OFFER ACCEPTED':
+        case 'OFFERED':
+          return this.APPLICATION_REVIEW_COMPLETE;
+
+        case 'ACTIVE':
+        case 'COMPLETED':
+        case 'DISPOSITION IN GOOD STANDING':
+        case 'EXPIRED':
+        case 'HISTORIC':
+          return this.DECISION_APPROVED;
+
+        case 'DISALLOWED':
+          return this.DECISION_NOT_APPROVED;
+
+        case 'NOT USED':
+        case 'PRE-TANTALIS':
+          return this.UNKNOWN;
       }
-      // else return given status in title case
-      return _.startCase(_.camelCase(status));
     }
-    return this.UNKNOWN; // no data
+    return this.UNKNOWN;
   }
 
   /**
-   * Returns user-friendly status string.
+   * Map status code to Tantalis Status(es).
    */
-  getStatusString(status: string): string {
-    if (status) {
-      switch (status.toUpperCase()) {
-        case this.ABANDONED: return this.applicationStatuses[this.ABANDONED];
-        case this.ACCEPTED: return this.applicationStatuses[this.ACCEPTED];
-        case this.ALLOWED: return this.applicationStatuses[this.ALLOWED];
-        case this.CANCELLED: return this.applicationStatuses[this.CANCELLED];
-        case this.DECISION_MADE: return this.applicationStatuses[this.DECISION_MADE]; // NB: calculated status
-        case this.DISALLOWED: return this.applicationStatuses[this.DISALLOWED];
-        case this.DISPOSITION_GOOD_STANDING: return this.applicationStatuses[this.DISPOSITION_GOOD_STANDING];
-        case this.OFFER_ACCEPTED: return this.applicationStatuses[this.OFFER_ACCEPTED];
-        case this.OFFER_NOT_ACCEPTED: return this.applicationStatuses[this.OFFER_NOT_ACCEPTED];
-        case this.OFFERED: return this.applicationStatuses[this.OFFERED];
-        case this.SUSPENDED: return this.applicationStatuses[this.SUSPENDED];
-        case this.UNKNOWN: return this.applicationStatuses[this.UNKNOWN];
+  getTantalisStatus(statusCode: string): Array<string> {
+    if (statusCode) {
+      switch (statusCode.toUpperCase()) {
+        case this.ABANDONED: return ['ABANDONED', 'CANCELLED', 'OFFER NOT ACCEPTED', 'OFFER RESCINDED', 'RETURNED', 'REVERTED', 'SOLD', 'SUSPENDED', 'WITHDRAWN'];
+        case this.APPLICATION_UNDER_REVIEW: return ['ACCEPTED', 'ALLOWED', 'PENDING', 'RECEIVED'];
+        case this.APPLICATION_REVIEW_COMPLETE: return ['OFFER ACCEPTED', 'OFFERED'];
+        case this.DECISION_APPROVED: return ['ACTIVE', 'COMPLETED', 'DISPOSITION IN GOOD STANDING', 'EXPIRED', 'HISTORIC'];
+        case this.DECISION_NOT_APPROVED: return ['DISALLOWED'];
+        case this.UNKNOWN: return null;
       }
-      return status; // not one of the above, but return it anyway
     }
     return null;
   }
 
-  isAccepted(status: string): boolean {
-    return (status && status.toUpperCase() === 'ACCEPTED');
-  }
-
-  // NOTE: a decision may or may not include Cancelled
-  // see code that uses this helper
-  isDecision(status: string): boolean {
-    const s = (status && status.toUpperCase());
-    return (s === 'ALLOWED'
-      || s === 'CANCELLED'
-      || s === 'DISALLOWED'
-      || s === 'OFFER ACCEPTED'
-      || s === 'OFFER NOT ACCEPTED'
-      || s === 'OFFERED');
-  }
-
-  isCancelled(status: string): boolean {
-    return (status && status.toUpperCase() === 'CANCELLED');
-  }
-
-  isAbandoned(status: string): boolean {
-    return (status && status.toUpperCase() === 'ABANDONED');
-  }
-
-  isDispGoodStanding(status: string): boolean {
-    return (status && status.toUpperCase() === 'DISPOSITION IN GOOD STANDING');
-  }
-
-  isSuspended(status: string): boolean {
-    return (status && status.toUpperCase() === 'SUSPENDED');
+  /**
+   * Given a status code, returns a short user-friendly status string.
+   */
+  getShortStatusString(statusCode: string): string {
+    if (statusCode) {
+      switch (statusCode) {
+        case this.ABANDONED: return 'Abandoned';
+        case this.APPLICATION_UNDER_REVIEW: return 'Under Review';
+        case this.APPLICATION_REVIEW_COMPLETE: return 'Decision Pending';
+        case this.DECISION_APPROVED: return 'Approved';
+        case this.DECISION_NOT_APPROVED: return 'Not Approved';
+        case this.UNKNOWN: return 'Unknown';
+      }
+    }
+    return null;
   }
 
   /**
-   * Returns region abbreviation.
+   * Given a status code, returns a long user-friendly status string.
+   */
+  getLongStatusString(statusCode: string): string {
+    if (statusCode) {
+      switch (statusCode) {
+        case this.ABANDONED: return 'Abandoned';
+        case this.APPLICATION_UNDER_REVIEW: return 'Application Under Review';
+        case this.APPLICATION_REVIEW_COMPLETE: return 'Application Review Complete - Decision Pending';
+        case this.DECISION_APPROVED: return 'Decision: Approved - Tenure Issued';
+        case this.DECISION_NOT_APPROVED: return 'Decision: Not Approved';
+        case this.UNKNOWN: return 'Unknown Status';
+      }
+    }
+    return null;
+  }
+
+  isAbandoned(statusCode: string): boolean {
+    return (statusCode === this.ABANDONED);
+  }
+
+  isApplicationUnderReview(statusCode: string): boolean {
+    return (statusCode === this.APPLICATION_UNDER_REVIEW);
+  }
+
+  isApplicationReviewComplete(statusCode: string): boolean {
+    return (statusCode === this.APPLICATION_REVIEW_COMPLETE);
+  }
+
+  isDecisionApproved(statusCode: string): boolean {
+    return (statusCode === this.DECISION_APPROVED);
+  }
+
+  isDecisionNotApproved(statusCode: string): boolean {
+    return (statusCode === this.DECISION_NOT_APPROVED);
+  }
+
+  isUnknown(statusCode: string): boolean {
+    return (statusCode === this.UNKNOWN);
+  }
+
+  /**
+   * Returns region code.
    */
   getRegionCode(businessUnit: string): string {
-    if (businessUnit) {
-      return businessUnit.toUpperCase().split(' ')[0];
-    }
-    return null;
+    return businessUnit && businessUnit.toUpperCase().split(' ')[0];
   }
 
   /**
-   * Returns user-friendly region string.
+   * Given a region code, returns a user-friendly region string.
    */
-  getRegionString(abbrev: string): string {
-    return this.regions[abbrev]; // returns null if not found
+  getRegionString(regionCode: string): string {
+    if (regionCode) {
+      switch (regionCode) {
+        case this.CARIBOO: return 'Cariboo, Williams Lake';
+        case this.KOOTENAY: return 'Kootenay, Cranbrook';
+        case this.LOWER_MAINLAND: return 'Lower Mainland, Surrey';
+        case this.OMENICA: return 'Omenica/Peace, Prince George';
+        case this.PEACE: return 'Peace, Ft. St. John';
+        case this.SKEENA: return 'Skeena, Smithers';
+        case this.SOUTHERN_INTERIOR: return 'Thompson Okanagan, Kamloops';
+        case this.VANCOUVER_ISLAND: return 'West Coast, Nanaimo';
+      }
+    }
+    return null;
   }
 
 }

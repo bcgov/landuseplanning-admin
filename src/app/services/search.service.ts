@@ -87,7 +87,7 @@ export class SearchService {
           // 7-digit CL File number for display
           app['clFile'] = result.CROWN_LANDS_FILE.padStart(7, '0');
           // user-friendly application status
-          app.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(result.TENURE_STATUS));
+          app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(result.TENURE_STATUS));
           // derive region code
           app.region = this.applicationService.getRegionCode(app.businessUnit);
           results.push(app);
@@ -159,7 +159,7 @@ export class SearchService {
           // 7-digit CL File number for display
           app['clFile'] = searchResults.CROWN_LANDS_FILE.padStart(7, '0');
           // user-friendly application status
-          app.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(searchResults.TENURE_STATUS));
+          app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(searchResults.TENURE_STATUS));
           // derive region code
           app.region = this.applicationService.getRegionCode(app.businessUnit);
           results.push(app);
