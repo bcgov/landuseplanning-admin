@@ -49,6 +49,26 @@ npm ls -g --depth=0
 1. Run `npm run build` to just build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build, like so: `ng serve --prod` to run in production mode.
 1. Run `npm run lint` to just lint your app code using TSLint.
 
+## Running locally with Keycloak
+
+1. Before starting the local API project, in your shell, enable Keycloak and set Tantalis variables:
+```
+export KEYCLOAK_ENABLED=true
+export TTLS_API_ENDPOINT="<see below>"
+export WEBADE_AUTH_ENDPOINT="<see below>"
+export WEBADE_USERNAME="<see below>"
+export WEBADE_PASSWORD="<see below>"
+```
+:bulb: Get the values for TTLS_API_ENDPOINT, WEBADE_AUTH_ENDPOINT, WEBADE_USERNAME and WEBADE_PASSWORD, at [Openshift](https://console.pathfinder.gov.bc.ca:8443/console/projects) &rarr; Natural Resource Public Review and Comment (dev) project &rarr; Applications &rarr; Pods &rarr; prc-api pod &rarr; Environment.
+
+2. Before starting the local Admin project, in file `src/app/services/keycloak.service.ts`, around line 17, change code to:
+```
+case 'http://localhost:4200':
+  // Local
+  this.keycloakEnabled = true;
+  break;
+```
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
