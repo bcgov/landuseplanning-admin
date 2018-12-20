@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, Input } from '@angular/core';
+import { Component, Input, DebugElement } from '@angular/core';
 import { ReviewCommentsComponent } from './review-comments.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ActivatedRouteStub } from 'app/spec/helpers';
 import { of, throwError } from 'rxjs';
 import { SearchComponent } from 'app/search/search.component';
+import { By } from '@angular/platform-browser';
 
 
 @Component({selector: 'app-comment-detail', template: ''})
@@ -23,7 +24,7 @@ class CommentDetailStubComponent {
 }
 
 
-fdescribe('ReviewCommentsComponent', () => {
+describe('ReviewCommentsComponent', () => {
   let component: ReviewCommentsComponent;
   let fixture: ComponentFixture<ReviewCommentsComponent>;
   const commentPeriod = new CommentPeriod({_id: 'COMMENT_PERIOD_ID'});
@@ -189,27 +190,29 @@ fdescribe('ReviewCommentsComponent', () => {
       });
     });
 
-    xdescribe('pagination', () => {
-      let nextPage: HTMLButtonElement;
-      let previousPage: HTMLButtonElement;
+    describe('pagination', () => {
+      let nextPage: DebugElement;
+      let previousPage: DebugElement;
 
       beforeEach(() => {
-        nextPage = fixture.nativeElement.querySelector('button[title="View Next Page"');
-        previousPage = fixture.nativeElement.querySelector('button[title="View Previous Page"');
+        nextPage = fixture.debugElement.query(By.css('button[title="View Next Page"'));
+        previousPage = fixture.debugElement.query(By.css('button[title="View Previous Page"'));
       });
 
       describe('when "View Next Page" is clicked', () => {
-        it('pulls down the next 20 comments', () => {
+        it('pulls down the next 20 comments', (done) => {
           spyOn(commentService, 'getAllByApplicationId').and.returnValue(of([secondComment, firstComment]));
 
-          component.pageNum = 0;
+          component.pageNum = 2;
 
           fixture.whenStable().then(() => {
-            nextPage.click();
+            nextPage.triggerEventHandler('click', null);
   
-            let expectedPageNumber = 1;
+            // Comment service expects a zero-indexed page number, which is why the expected
+            // page number is 2. 2 is actually the third page. 
+            let expectedPageNumber = 2;
             let expectedPageSize = 20;
-            let expectedSortFilter = '%2BcontactName';
+            let expectedSortFilter = '-dateAdded';
   
             expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
               'APPLICATION_ID',
@@ -218,22 +221,26 @@ fdescribe('ReviewCommentsComponent', () => {
               expectedSortFilter,
               { getDocuments: true }
             );
+
+            done();
           });
         });
       });
 
       describe('when "View Previous Page" is clicked', () => {
-        it('it pulls down the prior 20 comments', () => {
+        it('it pulls down the prior 20 comments', (done) => {
           spyOn(commentService, 'getAllByApplicationId').and.callThrough();
 
-          component.pageNum = 1;
+          component.pageNum = 2;
 
           fixture.whenStable().then(() => {
-            previousPage.click();
+            previousPage.triggerEventHandler('click', null);
   
+            // Comment service expects a zero-indexed page number, which is why the expected
+            // page number is 0. 0 is the first page.  
             let expectedPageNumber = 0;
             let expectedPageSize = 20;
-            let expectedSortFilter = '%2BcontactName';
+            let expectedSortFilter = '-dateAdded';
   
             expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
               'APPLICATION_ID',
@@ -242,6 +249,7 @@ fdescribe('ReviewCommentsComponent', () => {
               expectedSortFilter,
               { getDocuments: true }
             );
+            done();
           });
         });
       });

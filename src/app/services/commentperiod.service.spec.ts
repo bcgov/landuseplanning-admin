@@ -4,7 +4,7 @@ import { ApiService } from 'app/services/api';
 import { Observable, of, throwError } from 'rxjs';
 import { CommentPeriodService } from './commentperiod.service';
 
-fdescribe('CommentPeriodService', () => {
+describe('CommentPeriodService', () => {
   let service: CommentPeriodService;
 
   beforeEach(() => {
