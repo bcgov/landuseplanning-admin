@@ -7,7 +7,7 @@ import { SearchService } from './search.service';
 import { SearchResults } from 'app/models/search';
 import { InterestedParty } from 'app/models/interestedParty';
 
-fdescribe('SearchService', () => {
+describe('SearchService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -226,8 +226,8 @@ fdescribe('SearchService', () => {
             expect(prcResult[0].tenureStage).toBe('tenure-stage-1');
             expect(prcResult[0].location).toBe('tenure-location-1');
             expect(prcResult[0].businessUnit).toBe('44');
-            expect(prcResult[0].cl_file).toBe('11');
-            expect(prcResult[0].tantalisID).toBe('33');
+            expect(prcResult[0].cl_file).toBe(11);
+            expect(prcResult[0].tantalisID).toBe(33);
 
             expect(prcResult[1].purpose).toBe('tenure-purpose-2');
             expect(prcResult[1].subpurpose).toBe('tenure-subpurpose-2');
@@ -237,8 +237,8 @@ fdescribe('SearchService', () => {
             expect(prcResult[1].tenureStage).toBe('tenure-stage-2');
             expect(prcResult[1].location).toBe('tenure-location-2');
             expect(prcResult[1].businessUnit).toBe('66');
-            expect(prcResult[1].cl_file).toBe('22');
-            expect(prcResult[1].tantalisID).toBe('55');
+            expect(prcResult[1].cl_file).toBe(22);
+            expect(prcResult[1].tantalisID).toBe(55);
           });
 
           it('builds and sets a client string', () => {
@@ -442,8 +442,8 @@ fdescribe('SearchService', () => {
             expect(tantalisResult[0].tenureStage).toBe('tenure-stage-1');
             expect(tantalisResult[0].location).toBe('tenure-location-1');
             expect(tantalisResult[0].businessUnit).toBe('44');
-            expect(tantalisResult[0].cl_file).toBe('11');
-            expect(tantalisResult[0].tantalisID).toBe('33');
+            expect(tantalisResult[0].cl_file).toBe(11);
+            expect(tantalisResult[0].tantalisID).toBe(33);
           });
 
           it('builds and sets a client string', () => {
