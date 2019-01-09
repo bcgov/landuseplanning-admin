@@ -29,9 +29,12 @@ describe('SearchComponent', () => {
       const applicationTwo = new Application();
       return of([applicationOne, applicationTwo]);
     }
-  }
+  };
   const snackbarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
-  const snackBarRef = jasmine.createSpyObj('MatSnackBarRef', ['onAction', 'dismiss']);
+  const snackBarRef = jasmine.createSpyObj('MatSnackBarRef', [
+    'onAction',
+    'dismiss'
+  ]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -40,12 +43,10 @@ describe('SearchComponent', () => {
       providers: [
         { provide: MatSnackBar, useValue: snackbarSpy },
         { provide: SearchService, useValue: searchServiceStub },
-        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: ActivatedRoute, useValue: activatedRouteStub }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchComponent);
@@ -67,69 +68,89 @@ describe('SearchComponent', () => {
         searchService = TestBed.get(SearchService);
         activatedRouteStub.setParams({});
       });
-  
+
       it('does not perform a search', () => {
         spyOn(searchService, 'getAppsByClidDtid').and.callThrough();
-  
+
         component.ngOnInit();
-  
+
         expect(searchService.getAppsByClidDtid).not.toHaveBeenCalled();
       });
     });
-  
+
     describe('with multiple keywords in the route', () => {
-      const urlParams = { keywords: "88888,99999", ms: "373" };
+      const urlParams = { keywords: '88888,99999', ms: '373' };
       beforeEach(() => {
         searchService = TestBed.get(SearchService);
-  
+
         activatedRouteStub.setParams(urlParams);
       });
-  
+
       it('performs a search with those keywords', () => {
         spyOn(searchService, 'getAppsByClidDtid').and.callThrough();
         component.ngOnInit();
-  
-        expect(searchService.getAppsByClidDtid).toHaveBeenCalledWith(['88888', '99999']);
+
+        expect(searchService.getAppsByClidDtid).toHaveBeenCalledWith([
+          '88888',
+          '99999'
+        ]);
       });
     });
-    
+
     describe('with one keyword in the route', () => {
-      const urlParams = { keywords: "88888", ms: "373" };
+      const urlParams = { keywords: '88888', ms: '373' };
 
       beforeEach(() => {
         searchService = TestBed.get(SearchService);
-  
+
         activatedRouteStub.setParams(urlParams);
       });
-  
+
       it('performs a search with those keywords', () => {
         spyOn(searchService, 'getAppsByClidDtid').and.callThrough();
 
         component.ngOnInit();
-  
+
         expect(searchService.getAppsByClidDtid).toHaveBeenCalledWith(['88888']);
       });
-      
-      it('sets the components applications to the results from the search service', () => {
-        const applicationOne = new Application({_id: 'APP_ONE', tantalisID: 'TANT_ONE'});
-        const applicationTwo = new Application({_id: 'APP_TWO', tantalisID: 'TANT_TWO'});
 
-        spyOn(searchService, 'getAppsByClidDtid')
-          .and.returnValue(of([applicationOne, applicationTwo]));
+      it('sets the components applications to the results from the search service', () => {
+        const applicationOne = new Application({
+          _id: 'APP_ONE',
+          tantalisID: 'TANT_ONE'
+        });
+        const applicationTwo = new Application({
+          _id: 'APP_TWO',
+          tantalisID: 'TANT_TWO'
+        });
+
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
+          of([applicationOne, applicationTwo])
+        );
 
         component.ngOnInit();
         fixture.detectChanges();
 
-        expect(component.applications).toEqual([applicationOne, applicationTwo]);
+        expect(component.applications).toEqual([
+          applicationOne,
+          applicationTwo
+        ]);
         expect(component.count).toEqual(2);
       });
 
       it('does not add duplicate applications if they are already there', () => {
-        const ogApplication = new Application({_id: 'APP_ONE', tantalisID: 'TANT_ONE'});
-        const duplicateApplication = new Application({_id: 'APP_ONE', tantalisID: 'TANT_ONE'});
+        const ogApplication = new Application({
+          _id: 'APP_ONE',
+          tantalisID: 'TANT_ONE'
+        });
+        const duplicateApplication = new Application({
+          _id: 'APP_ONE',
+          tantalisID: 'TANT_ONE'
+        });
 
-        spyOn(searchService, 'getAppsByClidDtid')
-          .and.returnValue(of([duplicateApplication]));
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
+          of([duplicateApplication])
+        );
 
         component.ngOnInit();
 
@@ -137,9 +158,10 @@ describe('SearchComponent', () => {
         expect(component.count).toEqual(1);
       });
 
-      it('renders an error if the search service throws one', () => {        
-        spyOn(searchService, 'getAppsByClidDtid')
-          .and.returnValue(throwError('Something went wrong!'));
+      it('renders an error if the search service throws one', () => {
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
+          throwError('Something went wrong!')
+        );
 
         snackbarSpy.open.and.returnValue(snackBarRef);
         snackBarRef.onAction.and.returnValue(of({}));
@@ -147,9 +169,15 @@ describe('SearchComponent', () => {
 
         component.ngOnInit();
 
-        expect(snackbarSpy.open).toHaveBeenCalledWith('Error searching applications ...', 'RETRY');
+        expect(snackbarSpy.open).toHaveBeenCalledWith(
+          'Error searching applications ...',
+          'RETRY'
+        );
 
-        expect(navigateSpy).toHaveBeenCalledWith(['search', jasmine.anything()]);
+        expect(navigateSpy).toHaveBeenCalledWith([
+          'search',
+          jasmine.anything()
+        ]);
       });
     });
   });
@@ -161,35 +189,38 @@ describe('SearchComponent', () => {
     // I was having trouble getting the items from the search input to actually
     // trigger a change and be sent to the url
     // TODO: update test to actually assert the term in the search input is reflected in the route.
-    xit('refreshes the current route with the search params', (done) => {
+    xit('refreshes the current route with the search params', done => {
       spyOn(searchService, 'getAppsByClidDtid').and.callThrough();
-      
+
       fixture.whenStable().then(() => {
         let navigateSpy = spyOn((<any>component).router, 'navigate');
         searchInput.value = '77777';
         searchInput.dispatchEvent(new Event('change'));
         fixture.detectChanges();
-        
-        searchForm.triggerEventHandler('ngSubmit', null); 
+
+        searchForm.triggerEventHandler('ngSubmit', null);
         // searchButton.nativeElement.click();
         // searchForm.submit();
 
         // expect(searchService.getAppsByClidDtid).toHaveBeenCalledWith(['77777']);
-        expect(navigateSpy).toHaveBeenCalledWith(['search', {ms: jasmine.anything()}]);
+        expect(navigateSpy).toHaveBeenCalledWith([
+          'search',
+          { ms: jasmine.anything() }
+        ]);
         done();
       });
     });
   });
 
   describe('rendering', () => {
-    const urlParams = { keywords: "88888", ms: "373" };
+    const urlParams = { keywords: '88888', ms: '373' };
     const valemontCommentPeriod = new CommentPeriod({
       startDate: new Date(2018, 8, 29),
-      endDate: new Date(2018, 11, 1),
+      endDate: new Date(2018, 11, 1)
     });
 
     const valemontApplication = new Application({
-      _id: 'VALEMONT', 
+      _id: 'VALEMONT',
       tantalisID: 'TANT_VALEMONT',
       client: 'Mr Moneybags',
       purpose: 'Shred',
@@ -199,7 +230,10 @@ describe('SearchComponent', () => {
       currentPeriod: valemontCommentPeriod
     });
 
-    const applicationTwo = new Application({_id: 'APP_TWO', tantalisID: 'TANT_TWO'});
+    const applicationTwo = new Application({
+      _id: 'APP_TWO',
+      tantalisID: 'TANT_TWO'
+    });
     let searchTable: DebugElement;
 
     beforeEach(() => {
@@ -210,18 +244,19 @@ describe('SearchComponent', () => {
 
     describe('with application results', () => {
       beforeEach(() => {
-        spyOn(searchService, 'getAppsByClidDtid')
-          .and.returnValue(of([valemontApplication, applicationTwo]));
-        
-      });      
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
+          of([valemontApplication, applicationTwo])
+        );
+      });
 
       it('displays the application details on the page', () => {
         component.ngOnInit();
 
         fixture.detectChanges();
 
-
-        searchTable = fixture.debugElement.query(By.css('.search-results table'));
+        searchTable = fixture.debugElement.query(
+          By.css('.search-results table')
+        );
         let firstApplicationRow = searchTable.query(By.css('.app-details'));
         expect(firstApplicationRow).toBeDefined();
 
@@ -233,10 +268,10 @@ describe('SearchComponent', () => {
         expect(firstAppRowEl.textContent).toContain('Shred / Powder');
       });
 
-      // The "isCreated" property is set in search.service. I'm not entirely clear 
+      // The "isCreated" property is set in search.service. I'm not entirely clear
       // on what it means, but it's pretty important. Maybe whether or not it exists in Tantalis?
 
-      describe('when the application "isCreated" property is true', () => {  
+      describe('when the application "isCreated" property is true', () => {
         beforeEach(() => {
           valemontApplication['isCreated'] = true;
         });
@@ -251,15 +286,20 @@ describe('SearchComponent', () => {
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(By.css('.search-results table'));
-          let firstCommentDetailsRow = searchTable.query(By.css('.app-comment-details'));
+          searchTable = fixture.debugElement.query(
+            By.css('.search-results table')
+          );
+          let firstCommentDetailsRow = searchTable.query(
+            By.css('.app-comment-details')
+          );
           expect(firstCommentDetailsRow).toBeDefined();
           const firstCommentRowEl = firstCommentDetailsRow.nativeElement;
 
           expect(firstCommentRowEl.textContent).toContain('200 comments');
           expect(firstCommentRowEl.textContent).toContain('Commenting Closed');
-          expect(firstCommentRowEl.textContent).toContain('September 29, 2018 to December 1, 2018');
-
+          expect(firstCommentRowEl.textContent).toContain(
+            'September 29, 2018 to December 1, 2018'
+          );
         });
 
         it('renders the "Actions" button', () => {
@@ -267,7 +307,9 @@ describe('SearchComponent', () => {
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(By.css('.search-results table'));
+          searchTable = fixture.debugElement.query(
+            By.css('.search-results table')
+          );
           let firstButton = searchTable.query(By.css('button'));
           const firstButtonEl = firstButton.nativeElement;
           expect(firstButtonEl.textContent).toContain('Actions');
@@ -284,17 +326,23 @@ describe('SearchComponent', () => {
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(By.css('.search-results table'));
-          let firstCommentDetailsRow = searchTable.query(By.css('.app-comment-details'));
+          searchTable = fixture.debugElement.query(
+            By.css('.search-results table')
+          );
+          let firstCommentDetailsRow = searchTable.query(
+            By.css('.app-comment-details')
+          );
           expect(firstCommentDetailsRow).toBeFalsy();
         });
-        
+
         it('renders the "Create" button', () => {
           component.ngOnInit();
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(By.css('.search-results table'));
+          searchTable = fixture.debugElement.query(
+            By.css('.search-results table')
+          );
           let firstButton = searchTable.query(By.css('button'));
           const firstButtonEl = firstButton.nativeElement;
           expect(firstButtonEl.textContent).toContain('Create');
@@ -306,9 +354,13 @@ describe('SearchComponent', () => {
 
         fixture.detectChanges();
 
-        searchTable = fixture.debugElement.query(By.css('.search-results table'));
+        searchTable = fixture.debugElement.query(
+          By.css('.search-results table')
+        );
 
-        let appDetailsRows = searchTable.nativeElement.querySelectorAll('tr.app-details');
+        let appDetailsRows = searchTable.nativeElement.querySelectorAll(
+          'tr.app-details'
+        );
         expect(appDetailsRows.length).toBe(2);
       });
     });
