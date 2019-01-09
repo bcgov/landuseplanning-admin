@@ -17,23 +17,30 @@ import { of, throwError } from 'rxjs';
 import { SearchComponent } from 'app/search/search.component';
 import { By } from '@angular/platform-browser';
 
-
-@Component({selector: 'app-comment-detail', template: ''})
+@Component({ selector: 'app-comment-detail', template: '' })
 class CommentDetailStubComponent {
   @Input() comment: Comment;
 }
 
-
 describe('ReviewCommentsComponent', () => {
   let component: ReviewCommentsComponent;
   let fixture: ComponentFixture<ReviewCommentsComponent>;
-  const commentPeriod = new CommentPeriod({_id: 'COMMENT_PERIOD_ID'});
-  const existingApplication = new Application({_id: 'APPLICATION_ID', currentPeriod: commentPeriod});
-  const validRouteData = {application: existingApplication};
+  const commentPeriod = new CommentPeriod({ _id: 'COMMENT_PERIOD_ID' });
+  const existingApplication = new Application({
+    _id: 'APPLICATION_ID',
+    currentPeriod: commentPeriod
+  });
+  const validRouteData = { application: existingApplication };
 
   const activatedRouteStub = new ActivatedRouteStub(validRouteData);
-  const firstComment = new Comment({_id: 'FIRST_COMMENT', name: 'Zebras are great'});
-  const secondComment = new Comment({_id: 'SECOND_COMMENT', name: 'Apples are tasty'});
+  const firstComment = new Comment({
+    _id: 'FIRST_COMMENT',
+    name: 'Zebras are great'
+  });
+  const secondComment = new Comment({
+    _id: 'SECOND_COMMENT',
+    name: 'Apples are tasty'
+  });
   let comments = [firstComment, secondComment];
   let sortSelector: HTMLSelectElement;
 
@@ -51,10 +58,10 @@ describe('ReviewCommentsComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         NgbModule,
-        RouterTestingModule.withRoutes(
-          [{path: 'search', component: SearchComponent}]
-        ),
-        FormsModule,
+        RouterTestingModule.withRoutes([
+          { path: 'search', component: SearchComponent }
+        ]),
+        FormsModule
       ],
       declarations: [
         ReviewCommentsComponent,
@@ -66,10 +73,9 @@ describe('ReviewCommentsComponent', () => {
         { provide: CommentService, useValue: commentServiceStub },
         { provide: ExcelService },
         { provide: ApiService },
-        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: ActivatedRoute, useValue: activatedRouteStub }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -96,12 +102,14 @@ describe('ReviewCommentsComponent', () => {
     });
 
     describe('pageCount', () => {
-      it('calls the comment service with the application\'s current period id', () => {
+      it('calls the comment service with the applications current period id', () => {
         spyOn(commentService, 'getCountByPeriodId').and.callThrough();
 
         component.ngOnInit();
 
-        expect(commentService.getCountByPeriodId).toHaveBeenCalledWith('COMMENT_PERIOD_ID');
+        expect(commentService.getCountByPeriodId).toHaveBeenCalledWith(
+          'COMMENT_PERIOD_ID'
+        );
       });
 
       it('pageCount is calculated by the number of comments divided by 20, rounded up', () => {
@@ -146,10 +154,11 @@ describe('ReviewCommentsComponent', () => {
       });
 
       it('redirects to login if the commment service returns a 403', () => {
-        let forbiddenError = { status: 403, message: 'Permission Denied!'};
+        let forbiddenError = { status: 403, message: 'Permission Denied!' };
 
-        spyOn(commentService, 'getAllByApplicationId')
-          .and.returnValue(throwError(forbiddenError));
+        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+          throwError(forbiddenError)
+        );
         let navigateSpy = spyOn((<any>component).router, 'navigate');
 
         component.ngOnInit();
@@ -158,8 +167,9 @@ describe('ReviewCommentsComponent', () => {
       });
 
       it('adds the error message to the alerts', () => {
-        spyOn(commentService, 'getAllByApplicationId')
-          .and.returnValue(throwError('Houston we have a problem'));
+        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+          throwError('Houston we have a problem')
+        );
 
         component.ngOnInit();
 
@@ -169,7 +179,9 @@ describe('ReviewCommentsComponent', () => {
 
     describe('sorting', () => {
       it('pulls down new comments when the sort selection is changed', () => {
-        spyOn(commentService, 'getAllByApplicationId').and.returnValue(of([secondComment, firstComment]));
+        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+          of([secondComment, firstComment])
+        );
 
         sortSelector.value = '%2BcontactName';
         sortSelector.dispatchEvent(new Event('change'));
@@ -195,25 +207,31 @@ describe('ReviewCommentsComponent', () => {
       let previousPage: DebugElement;
 
       beforeEach(() => {
-        nextPage = fixture.debugElement.query(By.css('button[title="View Next Page"'));
-        previousPage = fixture.debugElement.query(By.css('button[title="View Previous Page"'));
+        nextPage = fixture.debugElement.query(
+          By.css('button[title="View Next Page"')
+        );
+        previousPage = fixture.debugElement.query(
+          By.css('button[title="View Previous Page"')
+        );
       });
 
       describe('when "View Next Page" is clicked', () => {
-        it('pulls down the next 20 comments', (done) => {
-          spyOn(commentService, 'getAllByApplicationId').and.returnValue(of([secondComment, firstComment]));
+        it('pulls down the next 20 comments', done => {
+          spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+            of([secondComment, firstComment])
+          );
 
           component.pageNum = 2;
 
           fixture.whenStable().then(() => {
             nextPage.triggerEventHandler('click', null);
-  
+
             // Comment service expects a zero-indexed page number, which is why the expected
-            // page number is 2. 2 is actually the third page. 
+            // page number is 2. 2 is actually the third page.
             let expectedPageNumber = 2;
             let expectedPageSize = 20;
             let expectedSortFilter = '-dateAdded';
-  
+
             expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
               'APPLICATION_ID',
               expectedPageNumber,
@@ -228,20 +246,20 @@ describe('ReviewCommentsComponent', () => {
       });
 
       describe('when "View Previous Page" is clicked', () => {
-        it('it pulls down the prior 20 comments', (done) => {
+        it('it pulls down the prior 20 comments', done => {
           spyOn(commentService, 'getAllByApplicationId').and.callThrough();
 
           component.pageNum = 2;
 
           fixture.whenStable().then(() => {
             previousPage.triggerEventHandler('click', null);
-  
+
             // Comment service expects a zero-indexed page number, which is why the expected
-            // page number is 0. 0 is the first page.  
+            // page number is 0. 0 is the first page.
             let expectedPageNumber = 0;
             let expectedPageSize = 20;
             let expectedSortFilter = '-dateAdded';
-  
+
             expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
               'APPLICATION_ID',
               expectedPageNumber,
@@ -258,7 +276,7 @@ describe('ReviewCommentsComponent', () => {
 
   describe('when the application is not available from the route', () => {
     beforeEach(() => {
-      activatedRouteStub.setData({something: 'went wrong'});
+      activatedRouteStub.setData({ something: 'went wrong' });
     });
 
     it('redirects to /search', () => {

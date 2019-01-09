@@ -1,6 +1,5 @@
 import { of } from 'rxjs';
 
-
 export class ActivatedRouteStub {
   public data = of({});
   public params = of({});
@@ -14,7 +13,7 @@ export class ActivatedRouteStub {
   }
 
   public setParams(params: {}) {
-    this.params = of(params)
+    this.params = of(params);
   }
 }
 
