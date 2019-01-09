@@ -80,8 +80,8 @@ export class SearchService {
             tenureStage: result.TENURE_STAGE,
             location: result.TENURE_LOCATION,
             businessUnit: result.RESPONSIBLE_BUSINESS_UNIT,
-            cl_file: result.CROWN_LANDS_FILE,
-            tantalisID: result.DISPOSITION_TRANSACTION_SID,
+            cl_file: +result.CROWN_LANDS_FILE,
+            tantalisID: +result.DISPOSITION_TRANSACTION_SID,
             client: clientString
           });
           // 7-digit CL File number for display
@@ -152,8 +152,8 @@ export class SearchService {
             tenureStage: searchResults.TENURE_STAGE,
             location: searchResults.TENURE_LOCATION,
             businessUnit: searchResults.RESPONSIBLE_BUSINESS_UNIT,
-            cl_file: searchResults.CROWN_LANDS_FILE,
-            tantalisID: searchResults.DISPOSITION_TRANSACTION_SID,
+            cl_file: +searchResults.CROWN_LANDS_FILE,
+            tantalisID: +searchResults.DISPOSITION_TRANSACTION_SID,
             client: clientString
           });
           // 7-digit CL File number for display

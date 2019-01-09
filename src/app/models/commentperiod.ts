@@ -23,12 +23,12 @@ export class CommentPeriod {
   isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
-    this._id          = obj && obj._id                 || null;
-    this._addedBy     = obj && obj._addedBy            || null;
-    this._application = obj && obj._application        || null;
-    this.code         = obj && obj.code                || null;
-    this.startDate    = obj && new Date(obj.startDate) || null;
-    this.endDate      = obj && new Date(obj.endDate)   || null;
+    this._id          = obj && obj._id                                  || null;
+    this._addedBy     = obj && obj._addedBy                             || null;
+    this._application = obj && obj._application                         || null;
+    this.code         = obj && obj.code                                 || null;
+    this.startDate    = obj && obj.startDate && new Date(obj.startDate) || null;
+    this.endDate      = obj && obj.endDate   && new Date(obj.endDate)   || null;
 
     this.internal = new Internal(obj && obj.internal || null);
 

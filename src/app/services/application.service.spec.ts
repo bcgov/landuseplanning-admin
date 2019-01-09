@@ -344,12 +344,6 @@ describe('ApplicationService', () => {
           expect(application.features[1].id).toBe('GGGGG');
         });
       });
-
-      it('sets the areaHectares property to the sum of all feature property hectares', () => {
-        service.getById('AAAA', { getFeatures: true }).subscribe( application => {
-          expect(application.areaHectares).toBe(25);
-        });
-      });
     });
 
     describe('without the getFeatures Parameter', () => {

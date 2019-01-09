@@ -9,23 +9,25 @@ import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Application } from 'app/models/application';
 import { of } from 'rxjs';
+import { throwError } from 'rxjs';
 
-
-xdescribe('ApplicationListComponent', () => {
+describe('ApplicationListComponent', () => {
   let component: ApplicationListComponent;
   let fixture: ComponentFixture<ApplicationListComponent>;
 
-  const mockApplicationService = jasmine.createSpyObj('ApplicationService', [
-    'getAll'
-  ]);
+  const applicationServiceStub = {
+    getAll() {
+      return of([]);
+    }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ApplicationListComponent, OrderByPipe, NewlinesPipe],
       imports: [RouterTestingModule, MatSlideToggleModule],
       providers: [
-        { provide: ApplicationService, useValue: mockApplicationService },
-        { provide: CommentPeriodService },
+        { provide: ApplicationService, useValue: applicationServiceStub },
+        { provide: CommentPeriodService }
       ]
     })
       .compileComponents();
@@ -34,15 +36,42 @@ xdescribe('ApplicationListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ApplicationListComponent);
     component = fixture.componentInstance;
-    mockApplicationService.getAll.and.returnValue(
-      of([
-        new Application()
-      ])
-    );
     fixture.detectChanges();
   });
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('when applications are returned from the service', () => {
+    const existingApplications = [
+      new Application(),
+      new Application()
+    ];
+
+    beforeEach(() => {
+      let applicationService = TestBed.get(ApplicationService);
+      spyOn(applicationService, 'getAll').and.returnValue(of(existingApplications));
+    });
+
+    it('sets the component application to the one from the route', () => {
+      component.ngOnInit();
+      expect(component.applications).toEqual(existingApplications);
+    });
+  });
+
+  describe('when the application service throws an error', () => {
+    beforeEach(() => {
+      let applicationService = TestBed.get(ApplicationService);
+      spyOn(applicationService, 'getAll').and.returnValue(throwError('Beep boop server error'));
+    });
+
+    it('redirects to root', () => {
+      let navigateSpy = spyOn((<any>component).router, 'navigate');
+
+      component.ngOnInit();
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/']);
+    });
   });
 });
