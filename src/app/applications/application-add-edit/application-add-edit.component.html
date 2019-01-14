@@ -1,4 +1,4 @@
-<div class="top-container" *ngIf="application">
+<div class="top-container">
   <div class="container">
     <div class="title-container">
       <div class="title-container__title">
@@ -31,7 +31,7 @@
   </div>
 </div>
   
-<div class="bottom-container" *ngIf="application">
+<div class="bottom-container">
   <div class="container">
     <form class="mb-3" #applicationForm="ngForm">
       <fieldset>
@@ -76,17 +76,6 @@
             </div>
           </div>
         </div>
-        <!-- Need decision from PO -->
-        <!--
-        <div class="form-group">
-          <label>Description (Optional)</label>
-          <textarea class="form-control" rows="3"></textarea>
-        </div>
-        <div class="form-group mb-0">
-          <label>Internal Notes (Optional)</label>
-          <textarea class="form-control" rows="3"></textarea>
-        </div>
-        -->
       </fieldset>
 
       <fieldset>
@@ -129,7 +118,7 @@
 
       <fieldset name="decisionForm" id="appDecision">
         <legend class="mb-3">Application Decision</legend>
-        <div class="mb-4" *ngIf="application.decision">
+        <div class="mb-4" *ngIf="application?.decision">
           <div class="form-group">
             <label>Description</label>
             <textarea class="form-control" rows="3" name="decisionDesc" id="decisionDesc" required aria-required="true" #decisionDesc="ngModel"
@@ -170,7 +159,7 @@
           Add Decision
         </button>
         <button class="btn content-btn-alt danger" type="button" title="Remove this decision"
-          *ngIf="application.decision"
+          *ngIf="application?.decision"
           (click)="deleteDecision()">
           <i class="material-icons md-20">remove</i>
           Remove Decision
