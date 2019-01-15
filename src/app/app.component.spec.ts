@@ -45,6 +45,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('span.navbar-brand__title').textContent).toContain('Applications, Comments & Reasons for Decision BETA');
+    expect(compiled.querySelector('span.navbar-brand__title').textContent).toContain('EAGLE');
   }));
 });
