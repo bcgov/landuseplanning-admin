@@ -69,7 +69,7 @@ describe('SearchService', () => {
         }));
       });
 
-      describe('when application results from within PRC are returned', () => {
+      describe('when application results from within EAGLE are returned', () => {
         let result: Array<Application[]>;
         beforeEach(async(() => {
           result = [];
@@ -94,18 +94,18 @@ describe('SearchService', () => {
           expect(result[1].length).toEqual(0);
         }));
 
-        describe('the array of applications returned from PRC', () => {
-          let prcResult: Application[];
+        describe('the array of applications returned from EAGLE', () => {
+          let result: Application[];
           beforeEach(() => {
-            prcResult = result[0];
+            result = result[0];
           });
 
           it('has an isCreated property set to true', () => {
-            expect(prcResult[0]._id).toBe('1');
-            expect(prcResult[0]['isCreated']).toBe(true);
+            expect(result[0]._id).toBe('1');
+            expect(result[0]['isCreated']).toBe(true);
 
-            expect(prcResult[1]._id).toBe('2');
-            expect(prcResult[1]['isCreated']).toBe(true);
+            expect(result[1]._id).toBe('2');
+            expect(result[1]['isCreated']).toBe(true);
           });
         });
 
@@ -212,63 +212,63 @@ describe('SearchService', () => {
         }));
 
         describe('the array of applications returned from Tantalis', () => {
-          let prcResult: Application[];
+          let result: Application[];
           beforeEach(() => {
-            prcResult = result[0];
+            result = result[0];
           });
 
           it('sets certain values of the application', () => {
-            expect(prcResult[0].purpose).toBe('tenure-purpose-1');
-            expect(prcResult[0].subpurpose).toBe('tenure-subpurpose-1');
-            expect(prcResult[0].type).toBe('tenure-type-1');
-            expect(prcResult[0].subtype).toBe('tenure-subtype-1');
-            expect(prcResult[0].status).toBe('tenure-status-1');
-            expect(prcResult[0].tenureStage).toBe('tenure-stage-1');
-            expect(prcResult[0].location).toBe('tenure-location-1');
-            expect(prcResult[0].businessUnit).toBe('44');
-            expect(prcResult[0].cl_file).toBe(11);
-            expect(prcResult[0].tantalisID).toBe(33);
+            expect(result[0].purpose).toBe('tenure-purpose-1');
+            expect(result[0].subpurpose).toBe('tenure-subpurpose-1');
+            expect(result[0].type).toBe('tenure-type-1');
+            expect(result[0].subtype).toBe('tenure-subtype-1');
+            expect(result[0].status).toBe('tenure-status-1');
+            expect(result[0].tenureStage).toBe('tenure-stage-1');
+            expect(result[0].location).toBe('tenure-location-1');
+            expect(result[0].businessUnit).toBe('44');
+            expect(result[0].cl_file).toBe(11);
+            expect(result[0].tantalisID).toBe(33);
 
-            expect(prcResult[1].purpose).toBe('tenure-purpose-2');
-            expect(prcResult[1].subpurpose).toBe('tenure-subpurpose-2');
-            expect(prcResult[1].type).toBe('tenure-type-2');
-            expect(prcResult[1].subtype).toBe('tenure-subtype-2');
-            expect(prcResult[1].status).toBe('tenure-status-2');
-            expect(prcResult[1].tenureStage).toBe('tenure-stage-2');
-            expect(prcResult[1].location).toBe('tenure-location-2');
-            expect(prcResult[1].businessUnit).toBe('66');
-            expect(prcResult[1].cl_file).toBe(22);
-            expect(prcResult[1].tantalisID).toBe(55);
+            expect(result[1].purpose).toBe('tenure-purpose-2');
+            expect(result[1].subpurpose).toBe('tenure-subpurpose-2');
+            expect(result[1].type).toBe('tenure-type-2');
+            expect(result[1].subtype).toBe('tenure-subtype-2');
+            expect(result[1].status).toBe('tenure-status-2');
+            expect(result[1].tenureStage).toBe('tenure-stage-2');
+            expect(result[1].location).toBe('tenure-location-2');
+            expect(result[1].businessUnit).toBe('66');
+            expect(result[1].cl_file).toBe(22);
+            expect(result[1].tantalisID).toBe(55);
           });
 
           it('builds and sets a client string', () => {
-            expect(prcResult[0].client).toBe(
+            expect(result[0].client).toBe(
               'legal-name-1, first-name-3 last-name-3'
             );
-            expect(prcResult[1].client).toBe('first-name-2 last-name-2');
+            expect(result[1].client).toBe('first-name-2 last-name-2');
           });
 
           it('does not have an _id', () => {
-            expect(prcResult[0]._id).toBe(null);
-            expect(prcResult[1]._id).toBe(null);
+            expect(result[0]._id).toBe(null);
+            expect(result[1]._id).toBe(null);
           });
 
           it('does not add an isCreated property set to true', () => {
-            expect(prcResult[0]['isCreated']).toBe(undefined);
-            expect(prcResult[1]['isCreated']).toBe(undefined);
+            expect(result[0]['isCreated']).toBe(undefined);
+            expect(result[1]['isCreated']).toBe(undefined);
           });
 
           it('has a clFile property padded to 7 digits', () => {
-            expect(prcResult[0]['clFile']).toBe('0000011');
-            expect(prcResult[1]['clFile']).toBe('0000022');
+            expect(result[0]['clFile']).toBe('0000011');
+            expect(result[1]['clFile']).toBe('0000022');
           });
 
           it('has an appStatus', () => {
-            expect(prcResult[0].appStatus).toBe('someStatusString');
+            expect(result[0].appStatus).toBe('someStatusString');
           });
 
           it('has a region', () => {
-            expect(prcResult[0].region).toBe('someRegionCode');
+            expect(result[0].region).toBe('someRegionCode');
           });
         });
 
@@ -310,7 +310,7 @@ describe('SearchService', () => {
         }));
       });
 
-      describe('when application results from within PRC are returned', () => {
+      describe('when application results from within EAGLE are returned', () => {
         let result: Array<Application[]>;
         beforeEach(async(() => {
           result = [];
@@ -335,15 +335,15 @@ describe('SearchService', () => {
           expect(result[1].length).toEqual(1);
         }));
 
-        describe('the applications returned from PRC', () => {
-          let prcResult: Application[];
+        describe('the applications returned from EAGLE', () => {
+          let result: Application[];
           beforeEach(() => {
-            prcResult = result[1];
+            result = result[1];
           });
 
           it('has an isCreated property set to true', () => {
-            expect(prcResult[0]._id).toBe('2');
-            expect(prcResult[0]['isCreated']).toBe(true);
+            expect(result[0]._id).toBe('2');
+            expect(result[0]['isCreated']).toBe(true);
           });
         });
 
@@ -427,7 +427,7 @@ describe('SearchService', () => {
           expect(result[1].length).toEqual(1);
         }));
 
-        describe('the array of applications returned from PRC', () => {
+        describe('the array of applications returned from EAGLE', () => {
           let tantalisResult: Application[];
           beforeEach(() => {
             tantalisResult = result[1];

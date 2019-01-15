@@ -154,8 +154,6 @@ export class KeycloakService {
   }
 
   getLogoutURL(): string {
-    // TODO? need to do two stage logoff.
-    // logoff prc, as well as bcgov?
     // https://logon.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
     // https://logontest.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
     if (this.keycloakEnabled) {

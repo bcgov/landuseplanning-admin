@@ -28,7 +28,7 @@
         "source": {
           "type": "Git",
           "git": {
-            "uri": "https://github.com/bcgov/nrts-prc-admin"
+            "uri": "https://github.com/bcgov/eagle-admin"
           }
         },
         "strategy": {

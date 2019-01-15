@@ -48,7 +48,6 @@ export class SearchService {
         const searchResults: Array<SearchResults> = payloads[1];
         const results: Array<Application> = [];
 
-        // first look at PRC results
         applications.forEach(app => {
           app['isCreated'] = true;
           results.push(app);
@@ -117,10 +116,8 @@ export class SearchService {
         const application: Application = payloads[0];
         const searchResults: SearchResults = payloads[1];
 
-        // first look at PRC result
         if (application) {
           application['isCreated'] = true;
-          // found a unique application in PRC -- no need to look at Tantalis results
           return [application];
         }
 

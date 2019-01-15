@@ -84,7 +84,7 @@
       "displayName": "GIT Source Repo URL",
       "description": "A GIT URL to your source code.",
       "required": true,
-      "value": "https://github.com/bcgov/nrts-prc-admin"
+      "value": "https://github.com/bcgov/eagle-admin"
     }
   ]
 }
