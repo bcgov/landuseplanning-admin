@@ -235,7 +235,7 @@
 // Navbar Brand
 .navbar-brand {
   height: 3.4375rem;
-  background-image: url(/assets/images/bcgov-header-vert-SM.png);
+  background-image: url(/assets/images/bcgov-eao-horiz-lg-305x60.png);
   background-position: 8px center;
   background-repeat: no-repeat;
   white-space: normal;
@@ -261,12 +261,13 @@
   font-size: 0.5rem;
   font-weight: 700;
   vertical-align: top;
+  width: 600px;
 }
 
 @media (min-width: 1200px) {
   .navbar-brand {
     height: 4.2rem;
-    background-image: url(/assets/images/bcgov-header-vert-MD.png);
+    background-image: url(/assets/images/bcgov-eao-horiz-lg-305x60.png);
     background-position: 10px center;
   }
 
