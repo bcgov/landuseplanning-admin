@@ -105,6 +105,14 @@
                     </li> -->
                   </ul>
                 </section>
+                <!-- <section>
+                  <div *ngIf="application.statusHistoryEffectiveDate" style="font-weight: bold">
+                    Application status was last changed on {{application.statusHistoryEffectiveDate | date:'longDate'}}.
+                  </div>
+                  <div *ngIf="application['removeDate']" style="font-weight: bold">
+                    This file will be available on this site until {{application['removeDate'] | date:'longDate'}}.
+                  </div>
+                </section> -->
                 <section>
                   <h2>Documents</h2>
                   <ul class="doc-list">

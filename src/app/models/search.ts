@@ -29,9 +29,10 @@ export class SearchResults {
   TENURE_SUBTYPE: string;
   TENURE_TYPE: string;
   areaHectares: number;
-  centroid: Array<number> = [];
+  centroid: Array<number> = []; // [lng, lat]
   interestedParties: Array<InterestedParty> = [];
   parcels: Array<Feature> = [];
+  statusHistoryEffectiveDate: Date = null;
 
   constructor(search?: any, hostname?: any) {
     this._id           = search && search._id           || null;
@@ -41,23 +42,26 @@ export class SearchResults {
     this.status        = search && search.status        || null;
     this.hostname      = hostname;
 
-    this.CROWN_LANDS_FILE             = search && search.CROWN_LANDS_FILE || null;
-    this.DISPOSITION_TRANSACTION_SID  = search && search.DISPOSITION_TRANSACTION_SID || null;
-    this.RESPONSIBLE_BUSINESS_UNIT    = search && search.RESPONSIBLE_BUSINESS_UNIT || null;
-    this.TENURE_LOCATION              = search && search.TENURE_LOCATION || null;
-    this.TENURE_PURPOSE               = search && search.TENURE_PURPOSE || null;
-    this.TENURE_STAGE                 = search && search.TENURE_STAGE || null;
-    this.TENURE_STATUS                = search && search.TENURE_STATUS || null;
-    this.TENURE_SUBPURPOSE            = search && search.TENURE_SUBPURPOSE || null;
-    this.TENURE_SUBTYPE               = search && search.TENURE_SUBTYPE || null;
-    this.TENURE_TYPE                  = search && search.TENURE_TYPE || null;
-    this.TENURE_TYPE                  = search && search.TENURE_TYPE || null;
-    this.areaHectares                 = search && search.areaHectares || null;
-    this.centroid                     = search && search.centroid || null;
-    this.parcels                      = search && search.parcels || null;
+    this.CROWN_LANDS_FILE            = search && search.CROWN_LANDS_FILE            || null;
+    this.DISPOSITION_TRANSACTION_SID = search && search.DISPOSITION_TRANSACTION_SID || null;
+    this.RESPONSIBLE_BUSINESS_UNIT   = search && search.RESPONSIBLE_BUSINESS_UNIT   || null;
+    this.TENURE_LOCATION             = search && search.TENURE_LOCATION             || null;
+    this.TENURE_PURPOSE              = search && search.TENURE_PURPOSE              || null;
+    this.TENURE_STAGE                = search && search.TENURE_STAGE                || null;
+    this.TENURE_STATUS               = search && search.TENURE_STATUS               || null;
+    this.TENURE_SUBPURPOSE           = search && search.TENURE_SUBPURPOSE           || null;
+    this.TENURE_SUBTYPE              = search && search.TENURE_SUBTYPE              || null;
+    this.TENURE_TYPE                 = search && search.TENURE_TYPE                 || null;
+    this.TENURE_TYPE                 = search && search.TENURE_TYPE                 || null;
+    this.areaHectares                = search && search.areaHectares                || null;
+    this.parcels                     = search && search.parcels                     || null;
 
     if (search && search.date) {
       this.date = new Date(search.date);
+    }
+
+    if (search && search.statusHistoryEffectiveDate) {
+      this.statusHistoryEffectiveDate = new Date(search.statusHistoryEffectiveDate);
     }
 
     // copy features
@@ -78,6 +82,13 @@ export class SearchResults {
     if (search && search.sidsFound) {
       for (const sid of search.sidsFound) {
         this.sidsFound.push(sid);
+      }
+    }
+
+    // copy centroid
+    if (search && search.centroid) {
+      for (const num of search.centroid) {
+        this.centroid.push(num);
       }
     }
   }

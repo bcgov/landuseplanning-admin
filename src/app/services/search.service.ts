@@ -53,11 +53,11 @@ export class SearchService {
         });
 
         // now look at Tantalis results
-        _.each(searchResults, result => {
+        _.each(searchResults, searchResult => {
           // Build the client string.
           let clientString = '';
           let idx = 0;
-          for (let client of result.interestedParties) {
+          for (let client of searchResult.interestedParties) {
             if (idx > 0) {
               clientString += ', ';
             }
@@ -70,24 +70,25 @@ export class SearchService {
           }
 
           const app = new Application({
-            purpose: result.TENURE_PURPOSE,
-            subpurpose: result.TENURE_SUBPURPOSE,
-            type: result.TENURE_TYPE,
-            subtype: result.TENURE_SUBTYPE,
-            status: result.TENURE_STATUS,
-            tenureStage: result.TENURE_STAGE,
-            location: result.TENURE_LOCATION,
-            businessUnit: result.RESPONSIBLE_BUSINESS_UNIT,
-            cl_file: +result.CROWN_LANDS_FILE,
-            tantalisID: +result.DISPOSITION_TRANSACTION_SID,
-            client: clientString
+            purpose: searchResult.TENURE_PURPOSE,
+            subpurpose: searchResult.TENURE_SUBPURPOSE,
+            type: searchResult.TENURE_TYPE,
+            subtype: searchResult.TENURE_SUBTYPE,
+            status: searchResult.TENURE_STATUS,
+            tenureStage: searchResult.TENURE_STAGE,
+            location: searchResult.TENURE_LOCATION,
+            businessUnit: searchResult.RESPONSIBLE_BUSINESS_UNIT,
+            cl_file: +searchResult.CROWN_LANDS_FILE,
+            tantalisID: +searchResult.DISPOSITION_TRANSACTION_SID,
+            client: clientString,
+            statusHistoryEffectiveDate: searchResult.statusHistoryEffectiveDate
           });
 
           // 7-digit CL File number for display
-          app['clFile'] = result.CROWN_LANDS_FILE.padStart(7, '0');
+          app['clFile'] = searchResult.CROWN_LANDS_FILE.padStart(7, '0');
 
           // user-friendly application status
-          app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(result.TENURE_STATUS));
+          app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(searchResult.TENURE_STATUS));
 
           // derive region code
           app.region = this.applicationService.getRegionCode(app.businessUnit);
@@ -123,7 +124,7 @@ export class SearchService {
     return forkJoin(getByTantalisID, searchAppsByDTID)
       .map(payloads => {
         const application: Application = payloads[0];
-        const searchResults: SearchResults = payloads[1];
+        const searchResult: SearchResults = payloads[1];
 
         // first look at PRC result
         if (application) {
@@ -134,12 +135,12 @@ export class SearchService {
 
         // now look at Tantalis results
         const results: Array<Application> = [];
-        if (searchResults != null) {
+        if (searchResult != null) {
 
           // Build the client string.
           let clientString = '';
           let idx = 0;
-          for (let client of searchResults.interestedParties) {
+          for (let client of searchResult.interestedParties) {
             if (idx > 0) {
               clientString += ', ';
             }
@@ -152,24 +153,25 @@ export class SearchService {
           }
 
           const app = new Application({
-            purpose: searchResults.TENURE_PURPOSE,
-            subpurpose: searchResults.TENURE_SUBPURPOSE,
-            type: searchResults.TENURE_TYPE,
-            subtype: searchResults.TENURE_SUBTYPE,
-            status: searchResults.TENURE_STATUS,
-            tenureStage: searchResults.TENURE_STAGE,
-            location: searchResults.TENURE_LOCATION,
-            businessUnit: searchResults.RESPONSIBLE_BUSINESS_UNIT,
-            cl_file: +searchResults.CROWN_LANDS_FILE,
-            tantalisID: +searchResults.DISPOSITION_TRANSACTION_SID,
-            client: clientString
+            purpose: searchResult.TENURE_PURPOSE,
+            subpurpose: searchResult.TENURE_SUBPURPOSE,
+            type: searchResult.TENURE_TYPE,
+            subtype: searchResult.TENURE_SUBTYPE,
+            status: searchResult.TENURE_STATUS,
+            tenureStage: searchResult.TENURE_STAGE,
+            location: searchResult.TENURE_LOCATION,
+            businessUnit: searchResult.RESPONSIBLE_BUSINESS_UNIT,
+            cl_file: +searchResult.CROWN_LANDS_FILE,
+            tantalisID: +searchResult.DISPOSITION_TRANSACTION_SID,
+            client: clientString,
+            statusHistoryEffectiveDate: searchResult.statusHistoryEffectiveDate
           });
 
           // 7-digit CL File number for display
-          app['clFile'] = searchResults.CROWN_LANDS_FILE.padStart(7, '0');
+          app['clFile'] = searchResult.CROWN_LANDS_FILE.padStart(7, '0');
 
           // user-friendly application status
-          app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(searchResults.TENURE_STATUS));
+          app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(searchResult.TENURE_STATUS));
 
           // derive region code
           app.region = this.applicationService.getRegionCode(app.businessUnit);

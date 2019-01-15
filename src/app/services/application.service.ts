@@ -192,7 +192,8 @@ export class ApplicationService {
         }
 
         // user-friendly application status
-        application.appStatus = this.getLongStatusString(this.getStatusCode(application.status));
+        const appStatusCode = this.getStatusCode(application.status);
+        application.appStatus = this.getLongStatusString(appStatusCode);
 
         // derive region code
         application.region = this.getRegionCode(application.businessUnit);
@@ -201,6 +202,11 @@ export class ApplicationService {
         if (application.client) {
           const clients = application.client.split(', ');
           application['applicants'] = _.uniq(clients).join(', ');
+        }
+
+        // derive date of removal from ACRFD
+        if (application.statusHistoryEffectiveDate && [this.DECISION_APPROVED, this.DECISION_NOT_APPROVED, this.ABANDONED].includes(appStatusCode)) {
+          application['removeDate'] = moment(application.statusHistoryEffectiveDate).add(6, 'months');
         }
 
         // finally update the object and return

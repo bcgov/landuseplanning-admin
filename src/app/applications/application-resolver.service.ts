@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 
 import { ApplicationService } from 'app/services/application.service';
 import { Application } from 'app/models/application';
@@ -31,8 +32,9 @@ export class ApplicationDetailResolver implements Resolve<Application> {
         businessUnit: route.queryParamMap.get('businessUnit'),
         cl_file: +route.queryParamMap.get('cl_file'), // NB: unary operator
         tantalisID: +route.queryParamMap.get('tantalisID'), // NB: unary operator
+        legalDescription: route.queryParamMap.get('legalDescription'),
         client: route.queryParamMap.get('client'),
-        legalDescription: route.queryParamMap.get('legalDescription')
+        statusHistoryEffectiveDate: route.queryParamMap.get('statusHistoryEffectiveDate')
       });
 
       // 7-digit CL File number for display
@@ -41,7 +43,8 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       }
 
       // user-friendly application status
-      application.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(application.status));
+      const appStatusCode = this.applicationService.getStatusCode(application.status);
+      application.appStatus = this.applicationService.getLongStatusString(appStatusCode);
 
       // derive region code
       application.region = this.applicationService.getRegionCode(application.businessUnit);
@@ -50,6 +53,11 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       if (application.client) {
         const clients = application.client.split(', ');
         application['applicants'] = _.uniq(clients).join(', ');
+      }
+
+      // derive date of removal from ACRFD
+      if (application.statusHistoryEffectiveDate && [this.applicationService.DECISION_APPROVED, this.applicationService.DECISION_NOT_APPROVED, this.applicationService.ABANDONED].includes(appStatusCode)) {
+        application['removeDate'] = moment(application.statusHistoryEffectiveDate).add(6, 'months');
       }
 
       return of(application);
