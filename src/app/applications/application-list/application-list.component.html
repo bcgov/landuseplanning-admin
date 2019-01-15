@@ -5,42 +5,42 @@
 
   <main *ngIf="!loading">
     <section>
-      <h2>Crown Lands Applications in British Columbia</h2>
-      <p class="tab-intro">Use the list below to navigate to individual applications. Click on any application to go directly to its details page
+      <h2>Environmental Assessments in British Columbia</h2>
+      <p class="tab-intro">Use the list below to navigate to individual Projects. Click on any project to go directly to its details page
         or click <i class="material-icons open-icon" style="vertical-align: middle">arrow_drop_down</i> to expand the list item to see basic
-        information (e.g., Location, Description, etc.) about that application.</p>
+        information (e.g., Location, Description, etc.) about that project.</p>
 
       <button class="btn btn-primary" [routerLink]="['/a/0/edit']">
         <i class="material-icons">add</i>
-        <span>Create New Application</span>
+        <span>Create New project</span>
       </button>
 
       <div class="application-list__options">
         <mat-slide-toggle color="primary" [checked]="showOnlyOpenApps" (change)="showOnlyOpenAppsChange($event.checked)">
-          Only show applications with an open or future comment period
+          Only show projects with an open or future comment period
         </mat-slide-toggle>
       </div>
 
       <table class="table application-table">
         <thead class="application-table__sort-header">
           <tr>
-            <th class="application-table__name-col sortable" (click)="sort('client')">Client Name
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && direction < 0), 'sort-desc': (column == 'client' && direction > 0) }" aria-hidden="true"></i>
+            <th class="application-table__name-col sortable" (click)="sort('name')">Name
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'name' && direction < 0), 'sort-desc': (column == 'name' && direction > 0) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__cl_file-col sortable" (click)="sort('cl_file')">CL File
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && direction < 0), 'sort-desc': (column == 'cl_file' && direction > 0) }" aria-hidden="true"></i>
+            <th class="application-table__cl_file-col sortable" (click)="sort('proponent')">Proponent
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'proponent' && direction < 0), 'sort-desc': (column == 'proponent' && direction > 0) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && direction < 0), 'sort-desc': (column == 'purpose' && direction > 0) }" aria-hidden="true"></i>
+            <th class="application-table__purpose-col sortable" (click)="sort('type')">Type
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'type' && direction < 0), 'sort-desc': (column == 'type' && direction > 0) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__region-col sortable" (click)="sort('region')">Region
               <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && direction < 0), 'sort-desc': (column == 'region' && direction > 0) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__status-col sortable" (click)="sort('appStatus')">Status
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'appStatus' && direction < 0), 'sort-desc': (column == 'appStatus' && direction > 0) }" aria-hidden="true"></i>
+            <th class="application-table__status-col sortable" (click)="sort('currentPhaseName')">Phase
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'currentPhaseName' && direction < 0), 'sort-desc': (column == 'currentPhaseName' && direction > 0) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__commenting-col sortable" (click)="sort('cpStatus')">PRC Status
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cpStatus' && direction < 0), 'sort-desc': (column == 'cpStatus' && direction > 0) }" aria-hidden="true"></i>
+            <th class="application-table__commenting-col sortable" (click)="sort('eacDecision')">Decision
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'eacDecision' && direction < 0), 'sort-desc': (column == 'eacDecision' && direction > 0) }" aria-hidden="true"></i>
             </th>
           </tr>
         </thead>
@@ -50,18 +50,19 @@
             <tr *ngIf="showThisApp(item)">
               <td class="accordion__collapse-item p-0" colspan="6">
                 <div class="accordion__collapse-header" role="tab">
-                  <a role="button" class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" href="#accordCollapse{{item._id}}">
+                  <a role="button" class="accordion__collapse-header--column toggle collapsed" data-toggle="collapse" [routerLink]="['/a', item._id]">
+                    <!-- href="#accordCollapse{{item._id}}"> -->
                     <i class="material-icons open-icon">arrow_drop_down</i>
                     <i class="material-icons close-icon">arrow_drop_up</i>
                   </a>
-                  <span class="accordion__collapse-header--column application-table__name-col">{{item.client || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__name-col">{{item.name || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__cl_file-col">
-                    <a [routerLink]="['/a', item._id]">{{item['clFile'] || '-'}}</a>
+                    <!-- <a [routerLink]="['/a', item._id]">{{item['proponent'] || '-'}}</a> -->-
                   </span>
-                  <span class="accordion__collapse-header--column application-table__purpose-col">{{item.purpose || '-'}} / {{item.subpurpose || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__purpose-col">{{item.type || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__region-col">{{item.region || '-'}}</span>
-                  <span class="accordion__collapse-header--column application-table__status-col">{{item.appStatus || '-'}}</span>
-                  <span class="accordion__collapse-header--column application-table__commenting-col">{{item.cpStatus}}</span>
+                  <span class="accordion__collapse-header--column application-table__status-col">{{item.currentPhaseName || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__commenting-col">{{item.eacDecision}}</span>
                 </div>
 
                 <div class="collapse" id="accordCollapse{{item._id}}" role="tabpanel">
@@ -101,7 +102,7 @@
                       <div class="application-table__application-details--links">
                         <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/a', item._id]">
                           <i class="material-icons">info_outline</i>
-                          <span>Application Details</span>
+                          <span>Project Details</span>
                         </a>
                         <a class="btn content-btn slide-l-btn btn-sm" [routerLink]="['/comments', item._id]">
                           <i class="material-icons">message</i>

@@ -397,7 +397,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         },
         () => { // onCompleted
           // reload app with decision for next step
-          this.applicationService.getById(application2._id, { getDecision: true })
+          this.applicationService.getById(application2._id, { getDecision: false })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application3 => {
@@ -563,7 +563,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         },
         () => { // onCompleted
           // reload app with documents, current period and decision for next step
-          this.applicationService.getById(this.application._id, { getDocuments: true, getCurrentPeriod: true, getDecision: true })
+          this.applicationService.getById(this.application._id, { getDocuments: true, getCurrentPeriod: true, getDecision: false })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application2 => {
@@ -630,7 +630,7 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
         },
         () => { // onCompleted
           // reload app with decision for next step
-          this.applicationService.getById(application2._id, { getDecision: true })
+          this.applicationService.getById(application2._id, { getDecision: false })
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               application3 => {

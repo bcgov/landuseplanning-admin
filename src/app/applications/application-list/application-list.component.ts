@@ -44,7 +44,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       });
 
     // get data
-    this.applicationService.getAll({ getCurrentPeriod: true })
+    this.applicationService.getAll({ getCurrentPeriod: false })
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         applications => {

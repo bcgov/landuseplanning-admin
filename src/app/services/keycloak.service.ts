@@ -14,34 +14,24 @@ export class KeycloakService {
 
   constructor() {
     switch (window.location.origin) {
-      case 'http://localhost:4200':
-        // Local
-        this.keycloakEnabled = false;
-        break;
+      // Always enable sso
+      // case 'http://localhost:4200':
+      //   // Local
+      //   this.keycloakEnabled = false;
+      //   break;
 
-      case 'https://nrts-prc-demo.pathfinder.gov.bc.ca':
-      case 'https://nrts-prc-scale.pathfinder.gov.bc.ca':
-      case 'https://nrts-prc-beta.pathfinder.gov.bc.ca':
-      case 'https://nrts-prc-master.pathfinder.gov.bc.ca':
-      case 'https://nrts-prc-dev.pathfinder.gov.bc.ca':
+      case 'https://eagle-dev.pathfinder.gov.bc.ca':
         // Dev etc
         this.keycloakEnabled = true;
-        this.keycloakUrl = 'https://sso-dev.pathfinder.gov.bc.ca/auth';
-        this.keycloakRealm = 'prc';
-        break;
-
-      case 'https://nrts-prc-test.pathfinder.gov.bc.ca':
-        // Test
-        this.keycloakEnabled = true;
-        this.keycloakUrl = 'https://sso-test.pathfinder.gov.bc.ca/auth';
-        this.keycloakRealm = 'acrfd';
+        this.keycloakUrl = 'https://sso.pathfinder.gov.bc.ca/auth';
+        this.keycloakRealm = 'eagle';
         break;
 
       default:
         // Prod
         this.keycloakEnabled = true;
         this.keycloakUrl = 'https://sso.pathfinder.gov.bc.ca/auth';
-        this.keycloakRealm = 'acrfd';
+        this.keycloakRealm = 'eagle';
     }
   }
 
@@ -76,7 +66,7 @@ export class KeycloakService {
         const config = {
           url: this.keycloakUrl,
           realm: this.keycloakRealm,
-          clientId: 'prc-admin-console'
+          clientId: 'eagle-admin-console'
         };
 
         // console.log('KC Auth init.');

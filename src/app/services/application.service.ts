@@ -226,7 +226,7 @@ export class ApplicationService {
         application.appStatus = this.getStatusString(this.getStatusCode(application.status));
 
         // derive region code
-        application.region = this.getRegionCode(application.businessUnit);
+        // application.region = this.getRegionCode(application.businessUnit);
 
         // finally update the object and return
         return application;

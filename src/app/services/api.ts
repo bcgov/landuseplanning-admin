@@ -56,45 +56,15 @@ export class ApiService {
         this.env = 'local';
         break;
 
-      case 'nrts-prc-dev.pathfinder.gov.bc.ca':
+      case 'eagle-dev.pathfinder.gov.bc.ca':
         // Dev
-        this.pathAPI = 'https://nrts-prc-dev.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://eagle-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
-        break;
-
-      case 'nrts-prc-test.pathfinder.gov.bc.ca':
-        // Test
-        this.pathAPI = 'https://nrts-prc-test.pathfinder.gov.bc.ca/api';
-        this.env = 'test';
-        break;
-
-      case 'nrts-prc-demo.pathfinder.gov.bc.ca':
-        // Demo
-        this.pathAPI = 'https://nrts-prc-demo.pathfinder.gov.bc.ca/api';
-        this.env = 'demo';
-        break;
-
-      case 'nrts-prc-scale.pathfinder.gov.bc.ca':
-        // Scale
-        this.pathAPI = 'https://nrts-prc-scale.pathfinder.gov.bc.ca/api';
-        this.env = 'scale';
-        break;
-
-      case 'nrts-prc-beta.pathfinder.gov.bc.ca':
-        // Beta
-        this.pathAPI = 'https://nrts-prc-beta.pathfinder.gov.bc.ca/api';
-        this.env = 'beta';
-        break;
-
-      case 'nrts-prc-master.pathfinder.gov.bc.ca':
-        // Master
-        this.pathAPI = 'https://nrts-prc-master.pathfinder.gov.bc.ca/api';
-        this.env = 'master';
         break;
 
       default:
         // Prod
-        this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
+        this.pathAPI = 'https://eagle-dev.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
     }
   }
@@ -135,60 +105,77 @@ export class ApiService {
   //
   getApplications(): Observable<Application[]> {
     const fields = [
-      'agency',
-      'areaHectares',
-      'businessUnit',
-      'centroid',
-      'cl_file',
-      'client',
-      'description',
-      'internal',
-      'legalDescription',
-      'location',
+      'eacDecision',
       'name',
-      'publishDate',
-      'purpose',
-      'status',
-      'subpurpose',
-      'subtype',
-      'tantalisID',
-      'tenureStage',
-      'type'
+      'proponent',
+      'region',
+      'type',
+      'code',
+      'currentPhaseName',
+      'decisionDate'
     ];
     // NB: max 1000 records
-    const queryString = `application?isDeleted=false&pageNum=0&pageSize=1000&fields=${this.buildValues(fields)}`;
+    const queryString = `project?pageNum=0&pageSize=1000&fields=${this.buildValues(fields)}`;
     return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
   getApplication(id: string): Observable<Application[]> {
     const fields = [
-      'agency',
-      'areaHectares',
-      'businessUnit',
+      'cEAAInvolvement',
+      'cELead',
+      'cELeadEmail',
+      'cELeadPhone',
       'centroid',
-      'cl_file',
-      'client',
       'description',
-      'internal',
-      'legalDescription',
+      'eacDecision',
       'location',
       'name',
-      'publishDate',
-      'purpose',
-      'status',
-      'subpurpose',
+      'projectLead',
+      'projectLeadEmail',
+      'projectLeadPhone',
+      'proponent',
+      'region',
+      'responsibleEPD',
+      'responsibleEPDEmail',
+      'responsibleEPDPhone',
       'subtype',
-      'tantalisID',
-      'tenureStage',
-      'type'
+      'type',
+      'addedBy',
+      'build',
+      'CEAALink',
+      'code',
+      'commodity',
+      'currentPhaseName',
+      'dateAdded',
+      'dateCommentsClosed',
+      'dateCommentsOpen',
+      'dateUpdated',
+      'decisionDate',
+      'duration',
+      'eaoMember',
+      'epicProjectID',
+      'fedElecDist',
+      'isTermsAgreed',
+      'overallProgress',
+      'primaryContact',
+      'proMember',
+      'provElecDist',
+      'sector',
+      'shortName',
+      'status',
+      'substitution',
+      'updatedBy',
+      'read',
+      'write',
+      'delete'
     ];
-    const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
+    const queryString = `project/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   getCountApplications(): Observable<number> {
-    const queryString = `application?isDeleted=false`;
+    const queryString = `project`;
     return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' })
       .pipe(
         map(res => {

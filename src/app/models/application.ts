@@ -16,6 +16,15 @@ export class Application {
   _id: string;
 
   // the following are retrieved from the API
+  name: string;
+  proponent: string;
+  type: string;
+  eacDecision: string;
+  region: string;
+  currentPhaseName: string;
+  // currentPeriod: string;
+  decisionDate: string;
+
   agency: string;
   areaHectares: number;
   businessUnit: string;
@@ -26,7 +35,6 @@ export class Application {
   internal: Internal;
   legalDescription: string = null;
   location: string;
-  name: string; // MAY BE OBSOLETE
   publishDate: Date;
   purpose: string;
   status: string;
@@ -34,9 +42,7 @@ export class Application {
   subtype: string;
   tantalisID: number;
   tenureStage: string;
-  type: string;
 
-  region: string; // region code derived from Business Unit
   appStatus: string; // user-friendly application status
   cpStatus: string; // user-friendly comment period status
 
@@ -49,7 +55,17 @@ export class Application {
   features: Array<Feature> = [];
 
   constructor(obj?: any) {
-    this._id           = obj && obj._id           || null;
+    this._id                = obj && obj._id                || null;
+
+    this.name               = obj && obj.name               || null;
+    this.type               = obj && obj.type               || null;
+    this.proponent          = obj && obj.proponent          || null;
+    this.eacDecision        = obj && obj.eacDecision        || null;
+    this.region             = obj && obj.region             || null;
+    this.currentPhaseName   = obj && obj.currentPhaseName   || null;
+    this.decisionDate       = obj && obj.decisionDate       || null;
+    // this.currentPeriod   = obj && obj.currentPeriod        || null;
+
 
     this.agency        = obj && obj.agency        || null;
     this.areaHectares  = obj && obj.areaHectares  || null;
@@ -57,7 +73,6 @@ export class Application {
     this.cl_file       = obj && obj.cl_file       || null;
     this.client        = obj && obj.client        || null;
     this.location      = obj && obj.location      || null;
-    this.name          = obj && obj.name          || null;
     this.publishDate   = obj && obj.publishDate   || null;
     this.purpose       = obj && obj.purpose       || null;
     this.status        = obj && obj.status        || null;
@@ -65,9 +80,7 @@ export class Application {
     this.subtype       = obj && obj.subtype       || null;
     this.tantalisID    = obj && obj.tantalisID    || null; // not zero
     this.tenureStage   = obj && obj.tenureStage   || null;
-    this.type          = obj && obj.type          || null;
 
-    this.region        = obj && obj.region        || null;
     this.appStatus     = obj && obj.appStatus     || null;
     this.cpStatus      = obj && obj.cpStatus      || null;
 
