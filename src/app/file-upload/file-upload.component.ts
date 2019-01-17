@@ -11,7 +11,7 @@ import { Component, Input, Output, EventEmitter, HostListener } from '@angular/c
 
 export class FileUploadComponent {
   public dragDropClass = 'dragarea';
-  @Input() fileExt = 'jpg, jpeg, gif, png, bmp, doc, docx, xls, xlsx, ppt, pptx, pdf, txt';
+  @Input() fileExt = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt'];
   @Input() maxFiles = 5;
   @Input() maxSize = 5; // in MB
   @Input() files: Array<File> = [];
@@ -93,7 +93,7 @@ export class FileUploadComponent {
 
   private validateFileExtensions(files: FileList): boolean {
     let ret = true;
-    const extensions = this.fileExt.split(',').map(function (x) { return x.toUpperCase().trim(); });
+    const extensions = this.fileExt.map(function (x) { return x.toUpperCase().trim(); });
     for (let i = 0; i < files.length; i++) {
       const ext = files[i].name.toUpperCase().split('.').pop() || files[i].name;
       if (!extensions.includes(ext)) {

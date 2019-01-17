@@ -1,6 +1,6 @@
 <div class="files-info" *ngIf="showInfo">
   Maximum of {{maxFiles}} files, up to {{maxSize}}MB each.
-  <br> Acceptable file types: {{fileExt}}
+  <br> Acceptable file types: {{fileExt.slice().join(', ')}}
 </div>
 
 <div draggable="true" ngClass="{{dragDropClass}}">
