@@ -82,8 +82,8 @@
         <legend>Application Details</legend>
         <div class="form-group">
           <label>Applicant(s)</label>
-          <div class="applicant-display" *ngIf="application.client">
-            {{application.client}}
+          <div class="applicant-display">
+            {{application.client || 'No Applicant on this File'}}
           </div>
         </div>
 
