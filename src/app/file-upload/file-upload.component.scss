@@ -9,7 +9,6 @@
 }
 
 .files-info {
-  margin-top: -0.5rem;
   margin-bottom: 0.5rem;
   font-size: small;
 }
@@ -21,11 +20,12 @@
 .dragarea,
 .droparea {
   padding: 1rem;
+  margin-top: 0.5rem;
   border-style: dashed;
   border-radius: 0.4rem;
   border-width: 3px;
   border-color: #ddd;
-  background-color: #fff;
+  background-color: $white;
   color: #bbb;
   font-size: 1rem;
   a {
@@ -55,7 +55,7 @@
       float: left;
       width: 0;
       white-space: nowrap;
-      content: repeater(". ", 120);
+      content: repeater(". ", 100);
     }
     li .name {
       padding-right: 0.5rem;
