@@ -40,7 +40,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       }
 
       // user-friendly application status
-      application.appStatus = this.applicationService.getStatusString(this.applicationService.getStatusCode(application.status));
+      application.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(application.status));
 
       // derive region code
       application.region = this.applicationService.getRegionCode(application.businessUnit);

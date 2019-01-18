@@ -1,7 +1,7 @@
 import { async, TestBed } from '@angular/core/testing';
 import { CommentPeriod } from 'app/models/commentperiod';
 import { ApiService } from 'app/services/api';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CommentPeriodService } from './commentperiod.service';
 
 describe('CommentPeriodService', () => {
@@ -675,62 +675,58 @@ describe('CommentPeriodService', () => {
     });
   });
 
-  describe('getStatus()', () => {
+  describe('getStatusCode()', () => {
     describe('without a comment period', () => {
-      it('returns "Not Open"', () => {
-        expect(service.getStatus(null)).toBe('Not Open For Commenting');
+      it('returns "NOT_OPEN"', () => {
+        expect(service.getStatusCode(null)).toEqual(service.NOT_OPEN);
       });
     });
 
     describe('without a start date ', () => {
-      it('returns "Not Open"', () => {
+      it('returns "NOT_OPEN"', () => {
         const commentPeriod = new CommentPeriod({
           endDate: Date.now()
         });
-        expect(service.getStatus(commentPeriod)).toBe(
-          'Not Open For Commenting'
-        );
+        expect(service.getStatusCode(commentPeriod)).toEqual(service.NOT_OPEN);
       });
     });
 
     describe('without an end date ', () => {
-      it('returns "Not Open"', () => {
+      it('returns "NOT_OPEN"', () => {
         const commentPeriod = new CommentPeriod({
           startDate: Date.now()
         });
-        expect(service.getStatus(commentPeriod)).toBe(
-          'Not Open For Commenting'
-        );
+        expect(service.getStatusCode(commentPeriod)).toEqual(service.NOT_OPEN);
       });
     });
 
-    describe('when end date is before the present time', () => {
-      it('returns "Commenting Closed"', () => {
+    describe('when end date is before today', () => {
+      it('returns "CLOSED"', () => {
         const commentPeriod = new CommentPeriod({
           startDate: new Date('September 28, 2018 08:24:00'),
           endDate: new Date('December 1, 2018 16:24:00')
         });
-        expect(service.getStatus(commentPeriod)).toBe('Commenting Closed');
+        expect(service.getStatusCode(commentPeriod)).toEqual(service.CLOSED);
       });
     });
 
     describe('when start date is in the future', () => {
-      it('returns "Not Started"', () => {
+      it('returns "NOT_STARTED"', () => {
         const commentPeriod = new CommentPeriod({
           startDate: new Date('September 28, 2050 08:24:00'),
           endDate: new Date('December 1, 2050 16:24:00')
         });
-        expect(service.getStatus(commentPeriod)).toBe('Commenting Not Started');
+        expect(service.getStatusCode(commentPeriod)).toEqual(service.NOT_STARTED);
       });
     });
 
-    describe('when startDate is before the present time and end date is in the future', () => {
-      it('returns "Open', () => {
+    describe('when startDate is before today and end date is in the future', () => {
+      it('returns "OPEN"', () => {
         const commentPeriod = new CommentPeriod({
           startDate: new Date('September 28, 2010 08:24:00'),
           endDate: new Date('December 1, 2050 16:24:00')
         });
-        expect(service.getStatus(commentPeriod)).toBe('Commenting Open');
+        expect(service.getStatusCode(commentPeriod)).toEqual(service.OPEN);
       });
     });
   });
@@ -739,38 +735,71 @@ describe('CommentPeriodService', () => {
     it('returns "true" if the comment period status is "Closed"', () => {
       const commentPeriod = new CommentPeriod({
         startDate: new Date('September 28, 2018 08:24:00'),
-        endDate: new Date('December 1, 2050 16:24:00')
+        endDate: new Date('December 1, 2018 16:24:00')
       });
-      expect(service.isClosed(commentPeriod)).toBe(false);
-
-      commentPeriod.endDate = new Date('December 1, 2018 16:24:00');
-      expect(service.isClosed(commentPeriod)).toBe(true);
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isClosed(statusCode)).toBe(true);
     });
-  });
 
-  describe('isNotOpen()', () => {
-    it('returns "true" if the comment period status is "Not Open"', () => {
+    it('returns "false" if the comment period status is not "Closed"', () => {
       const commentPeriod = new CommentPeriod({
         startDate: new Date('September 28, 2018 08:24:00'),
         endDate: new Date('December 1, 2050 16:24:00')
       });
-      expect(service.isNotOpen(commentPeriod)).toBe(false);
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isClosed(statusCode)).toBe(false);
+    });
+  });
 
-      commentPeriod.endDate = null;
-      expect(service.isNotOpen(commentPeriod)).toBe(true);
+  describe('isNotOpen()', () => {
+    it('returns "true" if the comment period status is null', () => {
+      const statusCode = service.getStatusCode(null);
+      expect(service.isNotOpen(statusCode)).toBe(true);
+    });
+
+    it('returns "true" if the comment period status has no start date', () => {
+      const commentPeriod = new CommentPeriod({
+        endDate: new Date('December 1, 2050 16:24:00')
+      });
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isNotOpen(statusCode)).toBe(true);
+    });
+
+    it('returns "true" if the comment period status has no end date', () => {
+      const commentPeriod = new CommentPeriod({
+        startDate: new Date('September 28, 2018 08:24:00')
+      });
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isNotOpen(statusCode)).toBe(true);
+    });
+
+    it('returns "false" if the comment period status is not "Not Open"', () => {
+      const commentPeriod = new CommentPeriod({
+        startDate: new Date('September 28, 2018 08:24:00'),
+        endDate: new Date('December 1, 2050 16:24:00')
+      });
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isClosed(statusCode)).toBe(false);
     });
   });
 
   describe('isNotStarted()', () => {
     it('returns "true" if the comment period status is "Not Started"', () => {
       const commentPeriod = new CommentPeriod({
-        startDate: new Date('September 28, 2018 08:24:00'),
-        endDate: new Date('December 1, 2050 16:24:00')
+        startDate: new Date('December 1, 2050 8:24:00'),
+        endDate: new Date('December 31, 2050 16:24:00')
       });
-      expect(service.isNotStarted(commentPeriod)).toBe(false);
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isNotStarted(statusCode)).toBe(true);
+    });
 
-      commentPeriod.startDate = new Date('September 28, 2050 08:24:00');
-      expect(service.isNotStarted(commentPeriod)).toBe(true);
+    it('returns "false" if the comment period status is not "Not Started"', () => {
+      const commentPeriod = new CommentPeriod({
+        startDate: new Date('September 28, 2018 08:24:00'),
+        endDate: new Date('December 1, 2018 16:24:00')
+      });
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isNotStarted(statusCode)).toBe(false);
     });
   });
 
@@ -778,13 +807,19 @@ describe('CommentPeriodService', () => {
     it('returns "true" if the comment period status is "Open"', () => {
       const commentPeriod = new CommentPeriod({
         startDate: new Date('September 28, 2010 08:24:00'),
-        endDate: new Date('December 1, 2010 08:24:00')
+        endDate: new Date('December 1, 2050 08:24:00')
       });
-      expect(service.isOpen(commentPeriod)).toBe(false);
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isOpen(statusCode)).toBe(true);
+    });
 
-      commentPeriod.endDate = new Date('December 1, 2050 16:24:00');
-
-      expect(service.isOpen(commentPeriod)).toBe(true);
+    it('returns "false" if the comment period status is not "Open"', () => {
+      const commentPeriod = new CommentPeriod({
+        startDate: new Date('September 28, 2018 08:24:00'),
+        endDate: new Date('December 1, 2018 16:24:00')
+      });
+      const statusCode = service.getStatusCode(commentPeriod);
+      expect(service.isOpen(statusCode)).toBe(false);
     });
   });
 });

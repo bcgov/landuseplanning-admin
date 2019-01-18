@@ -1,3 +1,11 @@
+/*
+ * This component is no longer supported (but it may still mostly work).
+ * There is no route to this component but it can be navigated to directly.
+ * Some developers might find this component useful for looking at data.
+ * Known issues:
+ * - the accordion collapse is broken because it needs jQuery (which has since been removed)
+ */
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Location } from '@angular/common';
@@ -100,8 +108,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   public showThisApp(item: Application) {
+    const statusCode = item && this.commentPeriodService.getStatusCode(item.currentPeriod);
     return !this.showOnlyOpenApps
-      || this.commentPeriodService.isOpen(item.currentPeriod)
-      || this.commentPeriodService.isNotStarted(item.currentPeriod);
+      || this.commentPeriodService.isOpen(statusCode)
+      || this.commentPeriodService.isNotStarted(statusCode);
   }
 }
