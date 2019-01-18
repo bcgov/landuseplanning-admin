@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { NgForm } from '@angular/forms';
 // import { Location } from '@angular/common';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
@@ -32,9 +32,10 @@ const DEFAULT_DAYS = 30;
   styleUrls: ['./application-add-edit.component.scss']
 })
 
-export class ApplicationAddEditComponent implements OnInit, OnDestroy {
+export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('applicationForm') applicationForm: NgForm;
 
+  private scrollToFragment: string = null;
   public isSubmitSaveClicked = false;
   public isSubmitting = false;
   public isSaving = false;
@@ -61,17 +62,11 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
     private decisionService: DecisionService,
     private documentService: DocumentService
   ) {
-    // if we have URL fragment, scroll to specified section
+    // if we have an URL fragment, save it for future scrolling
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const url = router.parseUrl(router.url);
-        if (url && url.fragment) {
-          // ensure element exists
-          const element = document.getElementById(url.fragment);
-          if (element) {
-            element.scrollIntoView();
-          }
-        }
+        this.scrollToFragment = (url && url.fragment) || null;
       }
     });
   }
@@ -190,6 +185,17 @@ export class ApplicationAddEditComponent implements OnInit, OnDestroy {
           }
         }
       );
+  }
+
+  ngAfterViewInit() {
+    // if requested, scroll to specified section
+    if (this.scrollToFragment) {
+      // ensure element exists
+      const element = document.getElementById(this.scrollToFragment);
+      if (element) {
+        element.scrollIntoView();
+      }
+    }
   }
 
   ngOnDestroy() {
