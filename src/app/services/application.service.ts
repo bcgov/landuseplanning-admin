@@ -197,6 +197,12 @@ export class ApplicationService {
         // derive region code
         application.region = this.getRegionCode(application.businessUnit);
 
+        // derive unique applicants
+        if (application.client) {
+          const clients = application.client.split(', ');
+          application['applicants'] = _.uniq(clients).join(', ');
+        }
+
         // finally update the object and return
         return application;
       });

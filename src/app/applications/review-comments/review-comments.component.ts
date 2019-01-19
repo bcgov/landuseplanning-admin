@@ -159,13 +159,13 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
               delete document.isDeleted;
             });
             // add necessary properties
-            // comment['client'] = this.application.client; // FUTURE
+            // comment['applicants'] = this.application['applicants']; // FUTURE
             comment['cl_file'] = this.application['clFile'];
             return this.flatten_fastest(comment);
           });
 
           const excelFileName = 'comments-'
-            + this.application.client.replace(/\s/g, '_')
+            + this.application['applicants'].replace(/\s/g, '_')
             + moment(new Date()).format('-YYYYMMDD');
           const columnOrder: Array<string> = [
             'cl_file',

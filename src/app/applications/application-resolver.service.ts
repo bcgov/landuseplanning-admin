@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import * as _ from 'lodash';
 
 import { ApplicationService } from 'app/services/application.service';
 import { Application } from 'app/models/application';
@@ -44,6 +45,12 @@ export class ApplicationDetailResolver implements Resolve<Application> {
 
       // derive region code
       application.region = this.applicationService.getRegionCode(application.businessUnit);
+
+      // derive unique applicants
+      if (application.client) {
+        const clients = application.client.split(', ');
+        application['applicants'] = _.uniq(clients).join(', ');
+      }
 
       return of(application);
     }
