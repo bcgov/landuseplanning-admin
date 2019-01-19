@@ -10,7 +10,6 @@ import * as _ from 'lodash';
 import { KeycloakService } from 'app/services/keycloak.service';
 
 import { Application } from 'app/models/application';
-import { Client } from 'app/models/client';
 import { Comment } from 'app/models/comment';
 import { CommentPeriod } from 'app/models/commentperiod';
 import { Decision } from 'app/models/decision';
@@ -133,7 +132,7 @@ export class ApiService {
   //
   // Applications
   //
-  getApplications(): Observable<Application[]> {
+  getApplications(pageNum: number, pageSize: number): Observable<Application[]> {
     const fields = [
       'agency',
       'areaHectares',
@@ -142,7 +141,6 @@ export class ApiService {
       'cl_file',
       'client',
       'description',
-      'internal',
       'legalDescription',
       'location',
       'name',
@@ -155,8 +153,10 @@ export class ApiService {
       'tenureStage',
       'type'
     ];
-    // NB: max 1000 records
-    const queryString = `application?isDeleted=false&pageNum=0&pageSize=1000&fields=${this.buildValues(fields)}`;
+    let queryString = 'application?isDeleted=false&';
+    if (pageNum !== null) { queryString += `pageNum=${pageNum}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
     return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -170,7 +170,6 @@ export class ApiService {
       'cl_file',
       'client',
       'description',
-      'internal',
       'legalDescription',
       'location',
       'name',
@@ -235,7 +234,6 @@ export class ApiService {
       'cl_file',
       'client',
       'description',
-      'internal',
       'legalDescription',
       'location',
       'name',
@@ -320,7 +318,6 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_application',
-      'code',
       'name',
       'description'
     ];
@@ -333,7 +330,6 @@ export class ApiService {
     const fields = [
       '_addedBy',
       '_application',
-      'code',
       'name',
       'description'
     ];

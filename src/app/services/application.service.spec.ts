@@ -1,4 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import * as moment from 'moment';
 
 import { ApplicationService } from './application.service';
 import { ApiService } from 'app/services/api';
@@ -7,9 +10,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { CommentService } from 'app/services/comment.service';
 import { DecisionService } from 'app/services/decision.service';
 import { FeatureService } from 'app/services/feature.service';
-import { of } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-import * as moment from 'moment';
+
 import { Feature } from 'app/models/feature';
 import { Document } from 'app/models/document';
 import { CommentPeriod } from 'app/models/commentperiod';
@@ -17,7 +18,7 @@ import { Decision } from 'app/models/decision';
 import { Application } from 'app/models/application';
 
 describe('ApplicationService', () => {
-  let service;
+  let service: any;
 
   const apiServiceStub = {
     getApplication(id: string) {
@@ -35,7 +36,6 @@ describe('ApplicationService', () => {
       fail(error);
     }
   };
-
 
   const featureServiceStub = {
     getByApplicationId(applicationId: string) {

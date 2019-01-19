@@ -5,10 +5,10 @@ export class Decision {
   _id: string;
   _addedBy: string;
   _application: string; // objectid -> Application
-  code: string;
   name: string;
   description: string = null;
 
+  // associated data
   documents: Array<Document> = [];
 
   isPublished = false; // depends on tags; see below
@@ -17,7 +17,6 @@ export class Decision {
     this._id          = obj && obj._id          || null;
     this._addedBy     = obj && obj._addedBy     || null;
     this._application = obj && obj._application || null;
-    this.code         = obj && obj.code         || null;
     this.name         = obj && obj.name         || null;
 
     // replace \\n (JSON format) with newlines

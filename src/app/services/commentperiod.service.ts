@@ -54,11 +54,6 @@ export class CommentPeriodService {
     // ID must not exist on POST
     delete period._id;
 
-    // replace newlines with \\n (JSON format)
-    if (period.description) {
-      period.description = period.description.replace(/\n/g, '\\n');
-    }
-
     return this.api.addCommentPeriod(period)
       .catch(error => this.api.handleError(error));
   }

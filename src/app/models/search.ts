@@ -1,18 +1,19 @@
 import { Params } from '@angular/router';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'lodash';
 
 import { Feature } from './feature';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { InterestedParty } from './interestedParty';
 
 export class SearchResults {
   _id: string;
   totalFeatures: number;
-  date: Date;
+  date: Date = null;
   crs: string;
   type: string;
   status: string;
   hostname: string;
+
   features: Array<Feature> = [];
   sidsFound: Array<string> = [];
 
@@ -35,7 +36,6 @@ export class SearchResults {
   constructor(search?: any, hostname?: any) {
     this._id           = search && search._id           || null;
     this.totalFeatures = search && search.totalFeatures || 0;
-    this.date          = search && search.date          || null;
     this.crs           = search && search.crs           || null;
     this.type          = search && search.type          || null;
     this.status        = search && search.status        || null;
@@ -55,6 +55,10 @@ export class SearchResults {
     this.areaHectares                 = search && search.areaHectares || null;
     this.centroid                     = search && search.centroid || null;
     this.parcels                      = search && search.parcels || null;
+
+    if (search && search.date) {
+      this.date = new Date(search.date);
+    }
 
     // copy features
     if (search && search.features) {
