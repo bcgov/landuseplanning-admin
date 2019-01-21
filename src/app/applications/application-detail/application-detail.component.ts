@@ -6,6 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/concat';
 import { of } from 'rxjs';
+import * as moment from 'moment-timezone';
 
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
@@ -27,6 +28,7 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   public isPublishing = false;
   public isUnpublishing = false;
   public isDeleting = false;
+  public isRetired = false;
   public application: Application = null;
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
@@ -52,6 +54,10 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         (data: { application: Application }) => {
           if (data.application) {
             this.application = data.application;
+            // set flag if retire date is in the past
+            if (this.application['retireDate']) {
+              this.isRetired = moment(this.application['retireDate']).isBefore();
+            }
           } else {
             alert('Uh-oh, couldn\'t load application');
             // application not found --> navigate back to search

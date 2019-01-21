@@ -55,9 +55,9 @@ export class ApplicationDetailResolver implements Resolve<Application> {
         application['applicants'] = _.uniq(clients).join(', ');
       }
 
-      // derive date of removal from ACRFD
+      // derive retire date
       if (application.statusHistoryEffectiveDate && [this.applicationService.DECISION_APPROVED, this.applicationService.DECISION_NOT_APPROVED, this.applicationService.ABANDONED].includes(appStatusCode)) {
-        application['removeDate'] = moment(application.statusHistoryEffectiveDate).add(6, 'months');
+        application['retireDate'] = moment(application.statusHistoryEffectiveDate).endOf('day').add(6, 'months');
       }
 
       return of(application);

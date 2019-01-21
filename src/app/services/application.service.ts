@@ -204,9 +204,9 @@ export class ApplicationService {
           application['applicants'] = _.uniq(clients).join(', ');
         }
 
-        // derive date of removal from ACRFD
+        // derive retire date
         if (application.statusHistoryEffectiveDate && [this.DECISION_APPROVED, this.DECISION_NOT_APPROVED, this.ABANDONED].includes(appStatusCode)) {
-          application['removeDate'] = moment(application.statusHistoryEffectiveDate).add(6, 'months');
+          application['retireDate'] = moment(application.statusHistoryEffectiveDate).endOf('day').add(6, 'months');
         }
 
         // finally update the object and return
