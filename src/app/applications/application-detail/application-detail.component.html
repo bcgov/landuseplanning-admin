@@ -10,14 +10,14 @@
           Edit
         </button>
         <button class="btn btn-primary" type="button"
-          *ngIf="application.isPublished === false"
+          *ngIf="!application.isPublished && !isRetired"
           (click)="publishApplication()"
           [disabled]="isPublishing">
           <i class="spinner rotating" [hidden]="!isPublishing"></i>
           <span>{{isPublishing ? 'Publishing' : 'Publish'}}</span>
         </button>
         <button class="btn btn-primary" type="button"
-          *ngIf="application.isPublished === true"
+          *ngIf="application.isPublished"
           (click)="unPublishApplication()"
           [disabled]="isUnpublishing">
           <i class="spinner rotating" [hidden]="!isUnpublishing"></i>
@@ -38,9 +38,25 @@
 
 <div class="bottom-container" *ngIf="application">
   <div class="container">
+    <ngb-alert type="primary" [dismissible]="false" *ngIf="application['retireDate'] && !isRetired">
+      <div class="alert-contents">
+        <i class="material-icons">warning</i>
+        <div class="alert-msg">
+          This application will be visible on the public website until {{application['retireDate'] | date:'longDate'}}.
+        </div>
+      </div>
+    </ngb-alert>
+    <ngb-alert type="warning" [dismissible]="false" *ngIf="application['retireDate'] && isRetired">
+      <div class="alert-contents">
+        <i class="material-icons">warning</i>
+        <div class="alert-msg">
+          This application was removed from the public website on {{application['retireDate'] | date:'longDate'}}.
+        </div>
+      </div>
+    </ngb-alert>
+
     <div class="row">
       <div class="col-md-8">
-        
         <section class="main-card">
           <!-- Tabs -->
           <ngb-tabset>
@@ -70,10 +86,6 @@
                     <li>
                       <span class="name">Type / Subtype:</span>
                       <span class="value">{{application.type || '-'}} / {{application.subtype || '-'}}</span>
-                    </li>
-                    <li>
-                      <span class="name">Status:</span>
-                      <span class="value">{{application.appStatus || '-'}}</span>
                     </li>
                     <li>
                       <span class="name">Stage:</span>
@@ -177,10 +189,19 @@
             </ngb-tab>
           </ngb-tabset>
         </section>
-
       </div>
 
       <div class="col-md-4">
+        <div class="aside-card">
+          <h3 class="title">Application Status</h3>
+          <div class="body">
+            <div class="app-status">{{application.appStatus || '-'}}</div>
+            <div class="app-status__date text-muted" *ngIf="application.statusHistoryEffectiveDate">
+              Last updated on {{application.statusHistoryEffectiveDate | date:'longDate'}}
+            </div>
+          </div>
+        </div>
+
         <div class="aside-card">
           <h3 class="title">Comment Period Details</h3>
           <div class="body" *ngIf="!application.currentPeriod">
