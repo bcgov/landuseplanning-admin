@@ -82,12 +82,22 @@ export class SearchService {
             tantalisID: +result.DISPOSITION_TRANSACTION_SID,
             client: clientString
           });
+
           // 7-digit CL File number for display
           app['clFile'] = result.CROWN_LANDS_FILE.padStart(7, '0');
+
           // user-friendly application status
           app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(result.TENURE_STATUS));
+
           // derive region code
           app.region = this.applicationService.getRegionCode(app.businessUnit);
+
+          // derive unique applicants
+          if (app.client) {
+            const clients = app.client.split(', ');
+            app['applicants'] = _.uniq(clients).join(', ');
+          }
+
           results.push(app);
         });
 
@@ -154,12 +164,22 @@ export class SearchService {
             tantalisID: +searchResults.DISPOSITION_TRANSACTION_SID,
             client: clientString
           });
+
           // 7-digit CL File number for display
           app['clFile'] = searchResults.CROWN_LANDS_FILE.padStart(7, '0');
+
           // user-friendly application status
           app.appStatus = this.applicationService.getLongStatusString(this.applicationService.getStatusCode(searchResults.TENURE_STATUS));
+
           // derive region code
           app.region = this.applicationService.getRegionCode(app.businessUnit);
+
+          // derive unique applicants
+          if (app.client) {
+            const clients = app.client.split(', ');
+            app['applicants'] = _.uniq(clients).join(', ');
+          }
+
           results.push(app);
         }
 

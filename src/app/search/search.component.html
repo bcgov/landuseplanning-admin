@@ -45,7 +45,7 @@
           <td class="disp">
             <strong>{{application.tantalisID}}</strong>
           </td>
-          <td [innerHTML]="application.client ? (application.client | titlecase) : '<em>No Applicant on this File</em>'"></td>
+          <td [innerHTML]="application['applicants'] ? (application['applicants'] | titlecase) : '<em>No Applicant on this File</em>'"></td>
           <td>
             {{application.purpose | titlecase}} / {{application.subpurpose | titlecase}}
           </td>
