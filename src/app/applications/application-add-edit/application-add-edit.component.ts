@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/concat';
-import * as moment from 'moment-timezone';
+import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import { ConfirmComponent } from 'app/confirm/confirm.component';

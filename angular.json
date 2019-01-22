@@ -28,7 +28,6 @@
             ],
             "scripts": [
               "node_modules/moment/min/moment.min.js",
-              "node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
               "node_modules/keycloak-js/dist/keycloak.min.js"
             ]
           },
@@ -79,7 +78,6 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/moment/min/moment.min.js",
-              "node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
               "node_modules/keycloak-js/dist/keycloak.min.js"
             ],
             "styles": [

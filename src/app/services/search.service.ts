@@ -4,7 +4,7 @@ import { of, merge, forkJoin } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
-import * as moment from 'moment-timezone';
+import * as moment from 'moment';
 
 import { ApiService } from './api';
 import { ApplicationService } from 'app/services/application.service';
