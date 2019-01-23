@@ -6,14 +6,14 @@
   <div *ngIf="!loggedout; else loggedOut">
     <h1>Email for access</h1>
     <p>You must request access to this administrative site by <strong>email</strong>.</p>
-    <p><a href="mailto:Lori.Miller@gov.bc.ca">Lori.Miller@gov.bc.ca</a> OR <a href="mailto:Baljit.Sall@gov.bc.ca">Baljit.Sall@gov.bc.ca</a></p>
-    <p>Authentication is a one time process, after which your IDIR will be enabled for future logins. If this is your first time logging into Applications, Comments and Reasons for Decision, you will need to send an email to Lori Miller or Baljit Sall to complete your authentication and gain access to the site.</p>
+    <p><a href="mailto:CLRHelp@gov.bc.ca">CLR Help</a></p>
+    <p>Authentication is a one time process, after which your IDIR will be enabled for future logins. If this is your first time logging into Applications, Comments and Reasons for Decision, you will need to send an email to CLR Help to complete your authentication and gain access to the site.</p>
   </div>
-  
+
   <ng-template #loggedOut>
     <h1>Logged Out</h1>
     <p><strong>You have been logged out.</strong></p>
     <button class="btn btn-primary" (click)="login()">Click here to log back in again.</button>
   </ng-template>
-  
+
 </div>
