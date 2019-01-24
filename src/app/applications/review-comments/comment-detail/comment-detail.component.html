@@ -4,7 +4,7 @@
 
 <div class="comment-detail-container" *ngIf="comment">
   <div class="title-container__title">
-    <h2>{{comment.commentAuthor.contactName}} <span *ngIf="comment.commentAuthor.orgName">({{comment.commentAuthor.orgName}})</span></h2>
+    <h2>{{comment.commentAuthor.contactName || 'Anonymous'}} <span *ngIf="comment.commentAuthor.orgName">({{comment.commentAuthor.orgName}})</span></h2>
     <div class="comment-detail__date">
       {{comment.dateAdded | date:'medium'}}
     </div>

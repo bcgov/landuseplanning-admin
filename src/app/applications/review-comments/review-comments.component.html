@@ -34,7 +34,7 @@
             <div class="comment-item" [class.active]="isCurrentComment(item)" (click)="setCurrentComment(item)" tabindex="0">
               <div class="comment-item-header">
                 <div class="comment-author">
-                  {{item.commentAuthor?.contactName || '-'}}
+                  {{item.commentAuthor?.contactName || 'Anonymous'}}
                 </div>
                 <div class="comment-date">
                   {{(item.dateAdded | date) || '-'}}
