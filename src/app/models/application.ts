@@ -26,11 +26,16 @@ export class Application {
   tenureStage: string;
   type: string;
   statusHistoryEffectiveDate: Date = null;
+  tags: Array<string> = [];
 
   region: string; // region code derived from Business Unit
   appStatus: string; // user-friendly application status
   cpStatus: string; // user-friendly comment period status
 
+  clFile: string;
+  applicants: string;
+  retireDate: Date = null;
+  isRetired = false;
   isPublished = false; // depends on tags; see below
 
   // associated data
@@ -58,6 +63,9 @@ export class Application {
     this.region       = obj && obj.region       || null;
     this.appStatus    = obj && obj.appStatus    || null;
     this.cpStatus     = obj && obj.cpStatus     || null;
+    this.clFile       = obj && obj.clFile       || null;
+    this.applicants   = obj && obj.applicants   || null;
+    this.isRetired    = obj && obj.isRetired    || null;
 
     if (obj && obj.publishDate) {
       this.publishDate = new Date(obj.publishDate);
@@ -65,6 +73,10 @@ export class Application {
 
     if (obj && obj.statusHistoryEffectiveDate) {
       this.statusHistoryEffectiveDate = new Date(obj.statusHistoryEffectiveDate);
+    }
+
+    if (obj && obj.retireDate) {
+      this.retireDate = new Date(obj.retireDate);
     }
 
     // replace \\n (JSON format) with newlines
@@ -79,6 +91,13 @@ export class Application {
     if (obj && obj.centroid) {
       for (const num of obj.centroid) {
         this.centroid.push(num);
+      }
+    }
+
+    // copy tags
+    if (obj && obj.tags) {
+      for (const tag of obj.tags) {
+        this.tags.push(tag);
       }
     }
 

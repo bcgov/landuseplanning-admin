@@ -259,8 +259,8 @@ describe('SearchService', () => {
           });
 
           it('has a clFile property padded to 7 digits', () => {
-            expect(prcResult[0]['clFile']).toBe('0000011');
-            expect(prcResult[1]['clFile']).toBe('0000022');
+            expect(prcResult[0].clFile).toBe('0000011');
+            expect(prcResult[1].clFile).toBe('0000022');
           });
 
           it('has an appStatus', () => {
@@ -461,7 +461,7 @@ describe('SearchService', () => {
           });
 
           it('has a clFile property padded to 7 digits', () => {
-            expect(tantalisResult[0]['clFile']).toBe('0000011');
+            expect(tantalisResult[0].clFile).toBe('0000011');
           });
 
           it('has an appStatus', () => {

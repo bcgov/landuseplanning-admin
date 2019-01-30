@@ -24,11 +24,11 @@
       <table class="table application-table">
         <thead class="application-table__sort-header">
           <tr>
-            <th class="application-table__name-col sortable" (click)="sort('client')">Applicant(s)
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'client' && direction < 0), 'sort-desc': (column == 'client' && direction > 0) }" aria-hidden="true"></i>
+            <th class="application-table__name-col sortable" (click)="sort('applicants')">Applicant(s)
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'applicants' && direction < 0), 'sort-desc': (column == 'applicants' && direction > 0) }" aria-hidden="true"></i>
             </th>
-            <th class="application-table__cl_file-col sortable" (click)="sort('cl_file')">CL File
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'cl_file' && direction < 0), 'sort-desc': (column == 'cl_file' && direction > 0) }" aria-hidden="true"></i>
+            <th class="application-table__cl_file-col sortable" (click)="sort('clFile')">CL File
+              <i class="sort" [ngClass]="{'sort-asc': (column == 'clFile' && direction < 0), 'sort-desc': (column == 'clFile' && direction > 0) }" aria-hidden="true"></i>
             </th>
             <th class="application-table__purpose-col sortable" (click)="sort('purpose')">Purpose / Subpurpose
               <i class="sort" [ngClass]="{'sort-asc': (column == 'purpose' && direction < 0), 'sort-desc': (column == 'purpose' && direction > 0) }" aria-hidden="true"></i>
@@ -54,9 +54,9 @@
                     <i class="material-icons open-icon">arrow_drop_down</i>
                     <i class="material-icons close-icon">arrow_drop_up</i>
                   </a>
-                  <span class="accordion__collapse-header--column application-table__name-col">{{app['applicants'] || '-'}}</span>
+                  <span class="accordion__collapse-header--column application-table__name-col">{{app.applicants || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__cl_file-col">
-                    <a [routerLink]="['/a', app._id]">{{app['clFile'] || '-'}}</a>
+                    <a [routerLink]="['/a', app._id]">{{app.clFile || '-'}}</a>
                   </span>
                   <span class="accordion__collapse-header--column application-table__purpose-col">{{app.purpose || '-'}} / {{app.subpurpose || '-'}}</span>
                   <span class="accordion__collapse-header--column application-table__region-col">{{app.region || '-'}}</span>
