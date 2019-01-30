@@ -6,7 +6,6 @@ export class Decision {
   _addedBy: string;
   _application: string; // objectid -> Application
   name: string;
-  description: string = null;
 
   // associated data
   documents: Array<Document> = [];
@@ -18,11 +17,6 @@ export class Decision {
     this._addedBy     = obj && obj._addedBy     || null;
     this._application = obj && obj._application || null;
     this.name         = obj && obj.name         || null;
-
-    // replace \\n (JSON format) with newlines
-    if (obj && obj.description) {
-      this.description = obj.description.replace(/\\n/g, '\n');
-    }
 
     // copy documents
     if (obj && obj.documents) {

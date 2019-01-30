@@ -241,7 +241,6 @@
               <p class="mb-0">No decisions have been made for this application at this time.</p>
             </div>
             <div *ngIf="application.decision">
-              <div [innerHTML]="(application.decision.description | newlines) || '<em>No decision description available</em>'"></div>
               <ul class="doc-list">
                 <li *ngFor="let doc of application.decision.documents">
                   <span class="cell icon">

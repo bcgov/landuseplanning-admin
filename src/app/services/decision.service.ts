@@ -89,11 +89,6 @@ export class DecisionService {
     // don't send documents
     delete decision.documents;
 
-    // replace newlines with \\n (JSON format)
-    if (decision.description) {
-      decision.description = decision.description.replace(/\n/g, '\\n');
-    }
-
     return this.api.addDecision(decision)
       .catch(error => this.api.handleError(error));
   }
@@ -104,11 +99,6 @@ export class DecisionService {
 
     // don't send documents
     delete decision.documents;
-
-    // replace newlines with \\n (JSON format)
-    if (decision.description) {
-      decision.description = decision.description.replace(/\n/g, '\\n');
-    }
 
     return this.api.saveDecision(decision)
       .catch(error => this.api.handleError(error));
