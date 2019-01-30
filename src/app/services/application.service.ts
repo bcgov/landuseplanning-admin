@@ -188,7 +188,7 @@ export class ApplicationService {
 
         // 7-digit CL File number for display
         if (application.cl_file) {
-          application['clFile'] = application.cl_file.toString().padStart(7, '0');
+          application.clFile = application.cl_file.toString().padStart(7, '0');
         }
 
         // user-friendly application status
@@ -201,12 +201,14 @@ export class ApplicationService {
         // derive unique applicants
         if (application.client) {
           const clients = application.client.split(', ');
-          application['applicants'] = _.uniq(clients).join(', ');
+          application.applicants = _.uniq(clients).join(', ');
         }
 
         // derive retire date
         if (application.statusHistoryEffectiveDate && [this.DECISION_APPROVED, this.DECISION_NOT_APPROVED, this.ABANDONED].includes(appStatusCode)) {
-          application['retireDate'] = moment(application.statusHistoryEffectiveDate).endOf('day').add(6, 'months');
+          application.retireDate = moment(application.statusHistoryEffectiveDate).endOf('day').add(6, 'months').toDate();
+          // set flag if retire date is in the past
+          application.isRetired = moment(application.retireDate).isBefore();
         }
 
         // finally update the object and return

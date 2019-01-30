@@ -40,12 +40,12 @@
       <ng-template ngFor let-application [ngForOf]="applications">
         <tr class="app-details">
           <td class="cl-file">
-            <span class="cl-arrow">{{application['clFile']}}</span>
+            <span class="cl-arrow">{{application.clFile}}</span>
           </td>
           <td class="disp">
             <strong>{{application.tantalisID}}</strong>
           </td>
-          <td [innerHTML]="application['applicants'] ? (application['applicants'] | titlecase) : '<em>No Applicant on this File</em>'"></td>
+          <td [innerHTML]="application.applicants ? (application.applicants | titlecase) : '<em>No Applicant on this File</em>'"></td>
           <td>
             {{application.purpose | titlecase}} / {{application.subpurpose | titlecase}}
           </td>
@@ -53,10 +53,16 @@
             {{application.appStatus || 'Unknown'}}
           </td>
           <td class="actions">
-            <button class="btn btn-sm btn-primary" type="button" *ngIf="!application['isCreated']" (click)="onImport(application)">
-              <i class="material-icons">add</i>
-              Create
-            </button>
+            <div class="btn-container">
+              <button class="btn btn-sm btn-primary" type="button" title="Create this application in ACFRD"
+                *ngIf="!application['isCreated']"
+                (click)="onImport(application)"
+                [disabled]="application.isRetired">
+                <i class="material-icons">add</i>
+                Create
+              </button>
+              <span title="You cannot create a retired application"></span>
+            </div>
             <div ngbDropdown placement="bottom-right" *ngIf="application['isCreated']">
               <button ngbDropdownToggle class="btn btn-sm btn-outline-primary" type="button">
                 Actions
@@ -66,7 +72,7 @@
                   <i class="material-icons">insert_drive_file</i>
                   View Application
                 </button>
-                <button class="dropdown-item" type="button" [routerLink]="['/a', application._id, 'edit']">
+                <button class="dropdown-item" type="button" [routerLink]="['/a', application._id, 'edit']" *ngIf="!application.isRetired">
                   <i class="material-icons">edit</i>
                   Edit Details
                 </button>

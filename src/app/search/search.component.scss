@@ -213,3 +213,16 @@ $cl-arrow-font-color: #fff;
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
 }
+
+.btn-container {
+  position: relative;
+  display: inline-block;
+
+  button:disabled + span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

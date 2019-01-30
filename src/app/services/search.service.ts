@@ -86,7 +86,7 @@ export class SearchService {
           });
 
           // 7-digit CL File number for display
-          app['clFile'] = searchResult.CROWN_LANDS_FILE.padStart(7, '0');
+          app.clFile = searchResult.CROWN_LANDS_FILE.padStart(7, '0');
 
           // user-friendly application status
           const appStatusCode = this.applicationService.getStatusCode(searchResult.TENURE_STATUS);
@@ -98,12 +98,14 @@ export class SearchService {
           // derive unique applicants
           if (app.client) {
             const clients = app.client.split(', ');
-            app['applicants'] = _.uniq(clients).join(', ');
+            app.applicants = _.uniq(clients).join(', ');
           }
 
           // derive retire date
           if (app.statusHistoryEffectiveDate && [this.applicationService.DECISION_APPROVED, this.applicationService.DECISION_NOT_APPROVED, this.applicationService.ABANDONED].includes(appStatusCode)) {
-            app['retireDate'] = moment(app.statusHistoryEffectiveDate).endOf('day').add(6, 'months');
+            app.retireDate = moment(app.statusHistoryEffectiveDate).endOf('day').add(6, 'months').toDate();
+            // set flag if retire date is in the past
+            app.isRetired = moment(app.retireDate).isBefore();
           }
 
           results.push(app);
@@ -175,7 +177,7 @@ export class SearchService {
           });
 
           // 7-digit CL File number for display
-          app['clFile'] = searchResult.CROWN_LANDS_FILE.padStart(7, '0');
+          app.clFile = searchResult.CROWN_LANDS_FILE.padStart(7, '0');
 
           // user-friendly application status
           const appStatusCode = this.applicationService.getStatusCode(searchResult.TENURE_STATUS);
@@ -187,12 +189,14 @@ export class SearchService {
           // derive unique applicants
           if (app.client) {
             const clients = app.client.split(', ');
-            app['applicants'] = _.uniq(clients).join(', ');
+            app.applicants = _.uniq(clients).join(', ');
           }
 
           // derive retire date
           if (app.statusHistoryEffectiveDate && [this.applicationService.DECISION_APPROVED, this.applicationService.DECISION_NOT_APPROVED, this.applicationService.ABANDONED].includes(appStatusCode)) {
-            app['retireDate'] = moment(app.statusHistoryEffectiveDate).endOf('day').add(6, 'months');
+            app.retireDate = moment(app.statusHistoryEffectiveDate).endOf('day').add(6, 'months').toDate();
+            // set flag if retire date is in the past
+            app.isRetired = moment(app.retireDate).isBefore();
           }
 
           results.push(app);

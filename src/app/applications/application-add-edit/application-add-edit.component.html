@@ -2,7 +2,7 @@
   <div class="container">
     <div class="title-container">
       <div class="title-container__title">
-        <h1><span class="text-muted">Crown land File: {{application['clFile']}} &nbsp;&rsaquo;&nbsp; </span>
+        <h1><span class="text-muted">Crown land File: {{application.clFile}} &nbsp;&rsaquo;&nbsp; </span>
           {{!application._id ? 'Create' : 'Edit'}} Application
         </h1>
         <span class="title-container__sub text-muted">Disposition Transaction: {{application.tantalisID}}</span>
@@ -11,21 +11,36 @@
         <button class="btn btn-light" type="button" title="Cancel changes" (click)="cancelChanges()">
           Cancel
         </button>
-        <button class="btn btn-primary" type="button" title="Submit new application"
-          *ngIf="!application._id" (click)="addApplication()" [disabled]="isSubmitting">
-          <i class="spinner rotating" [hidden]="!isSubmitting"></i>
-          <span>{{isSubmitting ? 'Saving' : 'Save'}}</span>
-        </button>
-        <button class="btn btn-primary" type="button" title="Save application"
-          *ngIf="application._id && application.isPublished === false" (click)="saveApplication()" [disabled]="isSaving">
-          <i class="spinner rotating" [hidden]="!isSaving"></i>
-          <span>{{isSaving ? 'Saving' : 'Save'}}</span>
-        </button>
-        <button class="publish-btn btn btn-primary" type="button" title="Publish Changes"
-          *ngIf="application._id && application.isPublished === true" (click)="saveApplication()" [disabled]="isSaving">
-          <i class="spinner rotating" [hidden]="!isSaving"></i>
-          <span>{{isSaving ? 'Publishing' : 'Publish Changes'}}</span>
-        </button>
+        <div class="btn-container">
+          <button class="btn btn-primary ml-1" type="button" title="Submit new application"
+            *ngIf="!application._id"
+            (click)="addApplication()"
+            [disabled]="isSubmitting || application.isRetired">
+            <i class="spinner rotating" [hidden]="!isSubmitting"></i>
+            <span>{{isSubmitting ? 'Saving' : 'Save'}}</span>
+          </button>
+          <span title="You cannot save a retired application"></span>
+        </div>
+        <div class="btn-container">
+          <button class="btn btn-primary ml-1" type="button" title="Save application"
+            *ngIf="application._id && application.isPublished === false"
+            (click)="saveApplication()"
+            [disabled]="isSaving || application.isRetired">
+            <i class="spinner rotating" [hidden]="!isSaving"></i>
+            <span>{{isSaving ? 'Saving' : 'Save'}}</span>
+          </button>
+          <span title="You cannot save a retired application"></span>
+        </div>
+        <div class="btn-container">
+          <button class="publish-btn btn btn-primary ml-1" type="button" title="Publish changes"
+            *ngIf="application._id && application.isPublished === true"
+            (click)="saveApplication()"
+            [disabled]="isSaving || application.isRetired">
+            <i class="spinner rotating" [hidden]="!isSaving"></i>
+            <span>{{isSaving ? 'Publishing' : 'Publish Changes'}}</span>
+          </button>
+          <span title="You cannot publish changes to a retired application"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -83,7 +98,7 @@
         <div class="form-group">
           <label>Applicant(s)</label>
           <div class="applicant-display">
-            {{application['applicants'] || 'No Applicant on this File'}}
+            {{application.applicants || 'No Applicant on this File'}}
           </div>
         </div>
 

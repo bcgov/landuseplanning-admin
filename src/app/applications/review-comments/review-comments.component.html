@@ -8,7 +8,7 @@
     </div>
     <div class="title-container">
       <div class="title-container__title">
-        <h1>Review Comments for Crown Land File: {{application['clFile']}}</h1>
+        <h1>Review Comments for Crown Land File: {{application.clFile}}</h1>
       </div>
       <div class="title-container__actions">
         <button class="btn btn-light" (click)="exportToExcel()" [disabled]="comments.length === 0">
