@@ -4,18 +4,18 @@ import 'rxjs/add/operator/takeUntil';
 import * as L from 'leaflet';
 import * as _ from 'lodash';
 
-import { Application } from 'app/models/application';
+import { Project } from 'app/models/project';
 import { ConfigService } from 'app/services/config.service';
 import { FeatureService } from 'app/services/feature.service';
 
 @Component({
-  selector: 'app-application-aside',
-  templateUrl: './application-aside.component.html',
-  styleUrls: ['./application-aside.component.scss']
+  selector: 'app-project-aside',
+  templateUrl: './project-aside.component.html',
+  styleUrls: ['./project-aside.component.scss']
 })
 
-export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() application: Application = null;
+export class ProjectAsideComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() project: Project = null;
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fg: L.FeatureGroup;
@@ -127,14 +127,14 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // guard against null application
-    if (changes.application.currentValue) {
+    // guard against null project
+    if (changes.project.currentValue) {
       this.updateData();
     }
   }
 
   private updateData() {
-    if (this.application) {
+    if (this.project) {
       const self = this; // for closure functions below
 
       if (this.fg) {
@@ -148,7 +148,7 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
 
       // NB: always reload results to reduce chance of race condition
       //     with drawing map and features
-      this.featureService.getByApplicationId(this.application._id)
+      this.featureService.getByProjectId(this.project._id)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           features => {
@@ -175,38 +175,38 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // called from parent component
-  public drawMap(app: Application) {
-    if (app.tantalisID) {
-      const self = this; // for closure function below
-      this.featureService.getByTantalisId(app.tantalisID)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          features => {
-            if (self.fg) {
-              _.each(self.layers, function (layer) {
-                self.map.removeLayer(layer);
-              });
-              this.fg.clearLayers();
-            }
+  public drawMap(app: Project) {
+    // if (app.tantalisID) {
+    //   const self = this; // for closure function below
+    //   this.featureService.getByTantalisId(app.tantalisID)
+    //     .takeUntil(this.ngUnsubscribe)
+    //     .subscribe(
+    //       features => {
+    //         if (self.fg) {
+    //           _.each(self.layers, function (layer) {
+    //             self.map.removeLayer(layer);
+    //           });
+    //           this.fg.clearLayers();
+    //         }
 
-            _.each(features, function (feature) {
-              const f = JSON.parse(JSON.stringify(feature));
-              // needs to be valid GeoJSON
-              delete f.geometry_name;
-              const featureObj: GeoJSON.Feature<any> = f;
-              const layer = L.geoJSON(featureObj);
-              self.fg.addLayer(layer);
-              layer.addTo(self.map);
-            });
+    //         _.each(features, function (feature) {
+    //           const f = JSON.parse(JSON.stringify(feature));
+    //           // needs to be valid GeoJSON
+    //           delete f.geometry_name;
+    //           const featureObj: GeoJSON.Feature<any> = f;
+    //           const layer = L.geoJSON(featureObj);
+    //           self.fg.addLayer(layer);
+    //           layer.addTo(self.map);
+    //         });
 
-            const bounds = this.fg.getBounds();
-            if (bounds && bounds.isValid()) {
-              this.map.fitBounds(bounds, this.maxZoom);
-            }
-          },
-          error => console.log('error =', error)
-        );
-    }
+    //         const bounds = this.fg.getBounds();
+    //         if (bounds && bounds.isValid()) {
+    //           this.map.fitBounds(bounds, this.maxZoom);
+    //         }
+    //       },
+    //       error => console.log('error =', error)
+    //     );
+    // }
   }
 
   ngOnDestroy() {

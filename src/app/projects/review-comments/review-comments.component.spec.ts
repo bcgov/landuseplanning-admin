@@ -28,7 +28,7 @@ describe('ReviewCommentsComponent', () => {
   const commentPeriod = new CommentPeriod({ _id: 'COMMENT_PERIOD_ID' });
   const existingApplication = new Application({
     _id: 'APPLICATION_ID',
-    currentPeriod: commentPeriod
+    currentPeriods: commentPeriod
   });
   const validRouteData = { application: existingApplication };
 

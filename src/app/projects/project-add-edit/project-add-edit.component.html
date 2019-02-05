@@ -1,28 +1,28 @@
-<div class="top-container" *ngIf="application">
+<div class="top-container" *ngIf="project">
   <div class="container">
     <div class="title-container">
       <div class="title-container__title">
-        <h1><span class="text-muted">Crown land File: {{application['clFile']}} &nbsp;&rsaquo;&nbsp; </span>
-          {{!application._id ? 'Create' : 'Edit'}} Application
+        <h1><span class="text-muted">Crown land File: {{project['clFile']}} &nbsp;&rsaquo;&nbsp; </span>
+          {{!project._id ? 'Create' : 'Edit'}} Project
         </h1>
-        <span class="title-container__sub text-muted">Disposition Transaction: {{application.tantalisID}}</span>
+        <span class="title-container__sub text-muted">Disposition Transaction: {{project.tantalisID}}</span>
       </div>
       <div class="title-container__actions">
         <button class="btn btn-light" type="button" title="Cancel changes" (click)="cancelChanges()">
           Cancel
         </button>
-        <button class="btn btn-primary" type="button" title="Submit new application" 
-          *ngIf="!application._id" (click)="addApplication()" [disabled]="isSubmitting">
+        <button class="btn btn-primary" type="button" title="Submit new project" 
+          *ngIf="!project._id" (click)="addProject()" [disabled]="isSubmitting">
           <i class="spinner rotating" [hidden]="!isSubmitting"></i>
           <span>{{isSubmitting ? 'Saving' : 'Save'}}</span>
         </button>
-        <button class="btn btn-primary" type="button" title="Save application" 
-          *ngIf="application._id && application.isPublished === false" (click)="saveApplication()" [disabled]="isSaving">
+        <button class="btn btn-primary" type="button" title="Save project" 
+          *ngIf="project._id && project.isPublished === false" (click)="saveProject()" [disabled]="isSaving">
           <i class="spinner rotating" [hidden]="!isSaving"></i>
           <span>{{isSaving ? 'Saving' : 'Save'}}</span>
         </button>
         <button class="publish-btn btn btn-primary" type="button" title="Publish Changes" 
-          *ngIf="application._id && application.isPublished === true" (click)="saveApplication()" [disabled]="isSaving">
+          *ngIf="project._id && project.isPublished === true" (click)="saveProject()" [disabled]="isSaving">
           <i class="spinner rotating" [hidden]="!isSaving"></i>
           <span>{{isSaving ? 'Publishing' : 'Publish Changes'}}</span>
         </button>
@@ -31,9 +31,9 @@
   </div>
 </div>
   
-<div class="bottom-container" *ngIf="application">
+<div class="bottom-container" *ngIf="project">
   <div class="container">
-    <form class="mb-3" #applicationForm="ngForm">
+    <form class="mb-3" #projectForm="ngForm">
       <fieldset>
         <legend>Comment Period</legend>
         <div class="review-dates">
@@ -90,11 +90,11 @@
       </fieldset>
 
       <fieldset>
-        <legend>Application Details</legend>
+        <legend>Project Details</legend>
         <div class="form-group">
           <label>Applicant(s)</label>
-          <div class="applicant-display" *ngIf="application.client">
-            {{application.client}}
+          <div class="applicant-display" *ngIf="project.client">
+            {{project.client}}
           </div>
         </div>
 
@@ -102,13 +102,13 @@
           <label>Description</label>
           <textarea class="form-control" rows="3" id="description" name="description"
             #description="ngModel" 
-            [(ngModel)]="application.description">
+            [(ngModel)]="project.description">
           </textarea>
         </div>
         <div class="form-group  mb-0">
-          <label>Application Documents</label>
-          <ul class="doc-list mb-3" *ngIf="application.documents?.length > 0">
-              <li *ngFor="let doc of application.documents">
+          <label>Project Documents</label>
+          <ul class="doc-list mb-3" *ngIf="project.documents?.length > 0">
+              <li *ngFor="let doc of project.documents">
                 <span class="cell icon">
                   <i class="material-icons">insert_drive_file</i>
                 </span>
@@ -116,25 +116,25 @@
                   <span class="cell__txt-content">{{doc.documentFileName}}</span>
                 </span>
                 <span class="cell actions">
-                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc, application.documents)">
+                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc, project.documents)">
                     <i class="material-icons">delete</i>
                   </button>
                 </span>
               </li>
           </ul>
-          <app-file-upload [maxFiles]="0" [maxSize]="10" [showInfo]="false" [showList]="false" [files]="applicationFiles"
-            (filesChange)="addDocuments($event, application.documents); applicationFiles = []"></app-file-upload>
+          <app-file-upload [maxFiles]="0" [maxSize]="10" [showInfo]="false" [showList]="false" [files]="projectFiles"
+            (filesChange)="addDocuments($event, project.documents); projectFiles = []"></app-file-upload>
         </div>
       </fieldset>
 
       <fieldset name="decisionForm" id="appDecision">
-        <legend class="mb-3">Application Decision</legend>
-        <div class="mb-4" *ngIf="application.decision">
+        <legend class="mb-3">Project Decision</legend>
+        <div class="mb-4" *ngIf="project.decision">
           <div class="form-group">
             <label>Description</label>
             <textarea class="form-control" rows="3" name="decisionDesc" id="decisionDesc" required aria-required="true" #decisionDesc="ngModel"
               [ngClass]="{'is-invalid': isSubmitSaveClicked && decisionDesc.invalid}"  
-              [(ngModel)]="application.decision.description">
+              [(ngModel)]="project.decision.description">
             </textarea>
             <div class="invalid-feedback bg-danger" *ngIf="isSubmitSaveClicked && decisionDesc.invalid">
               Decision Description is required
@@ -142,8 +142,8 @@
           </div>
           <div class="form-group mb-0">
             <label>Decision Documents</label>
-            <ul class="doc-list mb-3" *ngIf="application.decision.documents?.length > 0">
-              <li *ngFor="let doc of application.decision.documents">
+            <ul class="doc-list mb-3" *ngIf="project.decision.documents?.length > 0">
+              <li *ngFor="let doc of project.decision.documents">
                 <span class="cell icon">
                   <i class="material-icons">insert_drive_file</i>
                 </span>
@@ -153,24 +153,24 @@
                   </span>
                 </span>
                 <span class="cell actions">
-                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc, application.decision.documents)">
+                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc, project.decision.documents)">
                     <i class="material-icons">delete</i>
                   </button>
                 </span>
               </li>
             </ul>
             <app-file-upload [maxFiles]="0" [maxSize]="10" [showInfo]="false" [showList]="false" [files]="decisionFiles"
-              (filesChange)="addDocuments($event, application.decision.documents); decisionFiles = []"></app-file-upload>
+              (filesChange)="addDocuments($event, project.decision.documents); decisionFiles = []"></app-file-upload>
           </div>
         </div>
         <button class="btn content-btn-alt" type="button" title="Add a decision"
-          *ngIf="!application.decision"
+          *ngIf="!project.decision"
           (click)="addDecision()">
           <i class="material-icons md-20">add</i>
           Add Decision
         </button>
         <button class="btn content-btn-alt danger" type="button" title="Remove this decision"
-          *ngIf="application.decision"
+          *ngIf="project.decision"
           (click)="deleteDecision()">
           <i class="material-icons md-20">remove</i>
           Remove Decision

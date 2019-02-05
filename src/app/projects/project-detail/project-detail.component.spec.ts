@@ -1,35 +1,35 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApplicationDetailComponent } from './application-detail.component';
+import { ProjectDetailComponent } from './project-detail.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NewlinesPipe } from 'app/pipes/newlines.pipe';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ApplicationAsideComponent } from 'app/applications/application-aside/application-aside.component';
+import { ProjectAsideComponent } from 'app/projects/project-aside/project-aside.component';
 import { MatSnackBar } from '@angular/material';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { ApiService } from 'app/services/api';
-import { ApplicationService } from 'app/services/application.service';
+import { ProjectService } from 'app/services/project.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
 import { FeatureService } from 'app/services/feature.service';
-import { Application } from 'app/models/application';
+import { Project } from 'app/models/project';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActivatedRouteStub } from 'app/spec/helpers';
 
 
-describe('ApplicationDetailComponent', () => {
-  let component: ApplicationDetailComponent;
-  let fixture: ComponentFixture<ApplicationDetailComponent>;
-  const existingApplication = new Application();
-  const validRouteData = {application: existingApplication};
+describe('ProjectDetailComponent', () => {
+  let component: ProjectDetailComponent;
+  let fixture: ComponentFixture<ProjectDetailComponent>;
+  const existingProject = new Project();
+  const validRouteData = {project: existingProject};
 
   const activatedRouteStub = new ActivatedRouteStub(validRouteData);
   const routerSpy = {
     navigate: jasmine.createSpy('navigate')
   };
 
-  const applicationServiceStub = {
+  const projectServiceStub = {
     getRegionString() {
       return 'Skeena, Smithers';
     },
@@ -41,13 +41,13 @@ describe('ApplicationDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ApplicationDetailComponent, NewlinesPipe, ApplicationAsideComponent],
+      declarations: [ProjectDetailComponent, NewlinesPipe, ProjectAsideComponent],
       imports: [RouterTestingModule, NgbModule],
       providers: [
         { provide: MatSnackBar },
         { provide: ApiService },
         { provide: DialogService },
-        { provide: ApplicationService, useValue: applicationServiceStub },
+        { provide: ProjectService, useValue: projectServiceStub },
         { provide: CommentPeriodService },
         { provide: DecisionService },
         { provide: DocumentService },
@@ -60,7 +60,7 @@ describe('ApplicationDetailComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ApplicationDetailComponent);
+    fixture = TestBed.createComponent(ProjectDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -70,17 +70,17 @@ describe('ApplicationDetailComponent', () => {
   });
 
 
-  describe('when the application is retrievable from the route', () => {
+  describe('when the project is retrievable from the route', () => {
     beforeEach(() => {
       activatedRouteStub.setData(validRouteData);
     });
 
-    it('sets the component application to the one from the route', () => {
-      expect(component.application).toEqual(existingApplication);
+    it('sets the component project to the one from the route', () => {
+      expect(component.project).toEqual(existingProject);
     });
   });
 
-  describe('when the application is not available from the route', () => {
+  describe('when the project is not available from the route', () => {
     beforeEach(() => {
       activatedRouteStub.setData({something: 'went wrong'});
     });

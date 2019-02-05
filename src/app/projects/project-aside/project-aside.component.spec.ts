@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApplicationAsideComponent } from './application-aside.component';
+import { ApplicationAsideComponent } from './project-aside.component';
 import { ConfigService } from 'app/services/config.service';
 import { FeatureService } from 'app/services/feature.service';
 import { Application } from '../../models/application';
