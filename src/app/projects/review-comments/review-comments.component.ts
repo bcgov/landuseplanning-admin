@@ -5,7 +5,7 @@ import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
-import { Application } from 'app/models/application';
+import { Project } from 'app/models/project';
 import { Comment } from 'app/models/comment';
 import { CommentService } from 'app/services/comment.service';
 import { ExcelService } from 'app/services/excel.service';
@@ -35,7 +35,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   ];
 
   public loading = false;
-  public application: Application = null;
+  public project: Project = null;
   public comments: Array<Comment> = [];
   public alerts: Array<string> = [];
   public currentComment: Comment;
@@ -60,11 +60,11 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        (data: { application: Application }) => {
-          if (data.application) {
-            this.application = data.application;
+        (data: { project: Project }) => {
+          if (data.project) {
+            this.project = data.project;
 
-            this.commentService.getCountByPeriodId(this.application.currentPeriod._id)
+            this.commentService.getCountByPeriodId(this.project.currentPeriods[0]._id)
               .takeUntil(this.ngUnsubscribe)
               .subscribe(
                 value => {
@@ -73,8 +73,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
                   this.getData();
                 });
           } else {
-            alert('Uh-oh, couldn\'t load application');
-            // application not found --> navigate back to search
+            alert('Uh-oh, couldn\'t load project');
+            // project not found --> navigate back to search
             this.router.navigate(['/search']);
           }
         }
@@ -87,12 +87,12 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    if (this.application) { // safety check
+    if (this.project) { // safety check
       this.loading = true;
       this.commentListScrollContainer.nativeElement.scrollTop = 0;
 
       // get a page of comments
-      this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
+      this.commentService.getAllByprojectId(this.project._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           comments => {
@@ -138,7 +138,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     // get all comments
-    this.commentService.getAllByApplicationId(this.application._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
+    this.commentService.getAllByprojectId(this.project._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         comments => {
@@ -155,7 +155,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             comment.documents.forEach(document => {
               delete document._id;
               delete document._addedBy;
-              delete document._application;
+              // delete document._project;
               delete document._decision;
               delete document._comment;
               delete document.internalURL;
@@ -164,13 +164,13 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
               delete document.tags;
             });
             // add necessary properties
-            // comment['client'] = this.application.client; // FUTURE
-            comment['cl_file'] = this.application['clFile'];
+            // comment['client'] = this.project.client; // FUTURE
+            comment['cl_file'] = this.project['clFile'];
             return this.flatten_fastest(comment);
           });
 
           const excelFileName = 'comments-'
-            + this.application.client.replace(/\s/g, '_')
+            // + this.project.client.replace(/\s/g, '_')
             + moment(new Date()).format('-YYYYMMDD');
           const columnOrder: Array<string> = [
             'cl_file',

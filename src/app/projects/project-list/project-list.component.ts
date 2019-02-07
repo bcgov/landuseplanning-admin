@@ -5,21 +5,21 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
 
-import { Application } from 'app/models/application';
-import { ApplicationService } from 'app/services/application.service';
+import { Project } from 'app/models/project';
+import { ProjectService } from 'app/services/project.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
 @Component({
-  selector: 'app-application-list',
-  templateUrl: './application-list.component.html',
-  styleUrls: ['./application-list.component.scss']
+  selector: 'app-project-list',
+  templateUrl: './project-list.component.html',
+  styleUrls: ['./project-list.component.scss']
 })
 
-export class ApplicationListComponent implements OnInit, OnDestroy {
+export class ProjectListComponent implements OnInit, OnDestroy {
   public loading = true;
   private paramMap: ParamMap = null;
   public showOnlyOpenApps: boolean;
-  public applications: Array<Application> = [];
+  public projects: Array<Project> = [];
   public column: string = null;
   public direction = 0;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
@@ -28,7 +28,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private location: Location,
     private router: Router,
     private route: ActivatedRoute,
-    private applicationService: ApplicationService,
+    private projectService: ProjectService,
     public commentPeriodService: CommentPeriodService
   ) { }
 
@@ -44,18 +44,19 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       });
 
     // get data
-    this.applicationService.getAll({ getCurrentPeriod: false })
+    this.projectService.getAll({ getCurrentPeriod: false })
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        applications => {
+        projects => {
           this.loading = false;
-          this.applications = applications;
+          this.projects = projects;
+          console.log(this.projects);
         },
         error => {
           this.loading = false;
           console.log(error);
-          alert('Uh-oh, couldn\'t load applications');
-          // applications not found --> navigate back to home
+          alert('Uh-oh, couldn\'t load projects');
+          // projects not found --> navigate back to home
           this.router.navigate(['/']);
         }
       );
@@ -99,9 +100,15 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     this.saveFilters();
   }
 
-  public showThisApp(item: Application) {
-    return !this.showOnlyOpenApps
-      || this.commentPeriodService.isOpen(item.currentPeriod)
-      || this.commentPeriodService.isNotStarted(item.currentPeriod);
+  public showThisProj(item: Project) {
+    if (!this.showOnlyOpenApps) {
+      return !this.showOnlyOpenApps;
+    } else {
+      item.currentPeriods.forEach(period => {
+        if (this.commentPeriodService.isOpen(period) || this.commentPeriodService.isNotStarted(period)) {
+          return true;
+        }
+      });
+    }
   }
 }

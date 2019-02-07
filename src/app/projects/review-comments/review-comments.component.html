@@ -3,12 +3,12 @@
 <div class="top-container">
   <div class="container">
     <div class="breadcrumb-container">
-      <a [routerLink]="['/a', application._id]">
+      <a [routerLink]="['/a', project._id]">
         <i class="material-icons md-18">arrow_back </i> Back to Application Details</a>
     </div>
     <div class="title-container">
       <div class="title-container__title">
-        <h1>Review Comments for Crown Land File: {{application['clFile']}}</h1>
+        <h1>Review Comments for Crown Land File: {{project['clFile']}}</h1>
       </div>
       <div class="title-container__actions">
         <button class="btn btn-light" (click)="exportToExcel()" [disabled]="comments.length === 0">

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApplicationListComponent } from './application-list.component';
+import { ApplicationListComponent } from './project-list.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatSlideToggleModule } from '@angular/material';
 import { OrderByPipe } from 'app/pipes/order-by.pipe';

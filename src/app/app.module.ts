@@ -10,7 +10,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 // modules
 import { SharedModule } from 'app/shared.module';
-import { ApplicationsModule } from 'app/applications/applications.module';
+import { ProjectsModule } from 'app/projects/projects.module';
 import { AppRoutingModule } from 'app/app-routing.module';
 
 // components
@@ -29,7 +29,7 @@ import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add
 import { SearchService } from 'app/services/search.service';
 import { FeatureService } from 'app/services/feature.service';
 import { AuthenticationService } from 'app/services/authentication.service';
-import { ApplicationService } from 'app/services/application.service';
+import { ProjectService } from 'app/services/project.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { CommentService } from 'app/services/comment.service';
 import { DocumentService } from 'app/services/document.service';
@@ -67,7 +67,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     FormsModule,
     HttpClientModule,
     SharedModule,
-    ApplicationsModule,
+    ProjectsModule,
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     NgbModule.forRoot(),
     NgxPaginationModule,
@@ -90,7 +90,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     SearchService,
     FeatureService,
     AuthenticationService,
-    ApplicationService,
+    ProjectService,
     CommentPeriodService,
     CommentService,
     DocumentService,

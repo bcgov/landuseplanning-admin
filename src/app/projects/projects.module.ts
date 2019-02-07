@@ -5,19 +5,19 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'app/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ApplicationsRoutingModule } from './applications-routing.module';
+import { ProjectsRoutingModule } from './projects-routing.module';
 
 // components
-import { ApplicationListComponent } from './application-list/application-list.component';
-import { ApplicationDetailComponent } from './application-detail/application-detail.component';
-import { ApplicationAsideComponent } from './application-aside/application-aside.component';
-import { ApplicationAddEditComponent } from './application-add-edit/application-add-edit.component';
+import { ProjectListComponent } from './project-list/project-list.component';
+import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { ProjectAsideComponent } from './project-aside/project-aside.component';
+import { ProjectAddEditComponent } from './project-add-edit/project-add-edit.component';
 import { ReviewCommentsComponent } from './review-comments/review-comments.component';
 import { CommentDetailComponent } from './review-comments/comment-detail/comment-detail.component';
 
 // services
 import { ApiService } from 'app/services/api';
-import { ApplicationService } from 'app/services/application.service';
+import { ProjectService } from 'app/services/project.service';
 import { ExcelService } from 'app/services/excel.service';
 
 @NgModule({
@@ -27,29 +27,29 @@ import { ExcelService } from 'app/services/excel.service';
     SharedModule,
     NgxPaginationModule,
     NgbModule.forRoot(),
-    ApplicationsRoutingModule
+    ProjectsRoutingModule
   ],
   declarations: [
-    ApplicationListComponent,
-    ApplicationDetailComponent,
-    ApplicationAsideComponent,
-    ApplicationAddEditComponent,
+    ProjectListComponent,
+    ProjectDetailComponent,
+    ProjectAsideComponent,
+    ProjectAddEditComponent,
     ReviewCommentsComponent,
     CommentDetailComponent
   ],
   exports: [
-    ApplicationListComponent,
-    ApplicationDetailComponent,
-    ApplicationAsideComponent,
-    ApplicationAddEditComponent,
+    ProjectListComponent,
+    ProjectDetailComponent,
+    ProjectAsideComponent,
+    ProjectAddEditComponent,
     ReviewCommentsComponent,
     CommentDetailComponent
   ],
   providers: [
     ApiService,
-    ApplicationService,
+    ProjectService,
     ExcelService
   ]
 })
 
-export class ApplicationsModule { }
+export class ProjectsModule { }

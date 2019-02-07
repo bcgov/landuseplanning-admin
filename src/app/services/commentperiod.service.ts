@@ -27,8 +27,8 @@ export class CommentPeriodService {
     this.commentStatuses[this.OPEN] = 'Commenting Open';
   }
 
-  // get all comment periods for the specified application id
-  getAllByApplicationId(appId: string): Observable<CommentPeriod[]> {
+  // get all comment periods for the specified project id
+  getAllByProjectId(appId: string): Observable<CommentPeriod[]> {
     return this.api.getPeriodsByAppId(appId)
       .map(res => {
         if (res && res.length > 0) {
