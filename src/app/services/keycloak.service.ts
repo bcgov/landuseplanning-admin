@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { JwtUtil } from 'app/jwt-util';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import * as _ from 'lodash';
 
 declare var Keycloak: any;
@@ -60,8 +62,6 @@ export class KeycloakService {
   }
 
   init(): Promise<any> {
-
-    const url = window.location.href;
     this.loggedOut = this.getParameterByName('loggedout');
 
     const self = this;
@@ -101,13 +101,12 @@ export class KeycloakService {
 
         // Try to get refresh tokens in the background
         self.keycloakAuth.onTokenExpired = function () {
-          console.log('onTokenExpired, attempting to refresh.');
           self.keycloakAuth.updateToken()
-            .success(function (auth) {
-              console.log('KC Refresh Success?:', auth);
+            .success(function (refreshed) {
+              console.log('KC refreshed token?:', refreshed);
             })
             .error((err) => {
-              console.log('KC error:', err);
+              console.log('KC refresh error:', err);
             });
         };
 
@@ -148,15 +147,45 @@ export class KeycloakService {
     }
   }
 
+  /**
+   * Returns the current keycloak auth token.
+   *
+   * @returns {string} keycloak auth token.
+   * @memberof KeycloakService
+   */
   getToken(): string {
-    // console.log('getToken:', this.keycloakAuth);
-    if (this.keycloakEnabled) {
-      return this.keycloakAuth.token; // returns undefined if present
-    } else {
+    if (!this.keycloakEnabled) {
       // return the local storage token
       const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
       return currentUser ? currentUser.token : null;
     }
+
+    return this.keycloakAuth.token;
+  }
+
+  /**
+   * Returns an observable that emits when the auth token has been refreshed.
+   * Call {@link KeycloakService#getToken} to fetch the updated token.
+   *
+   * @returns {Observable<string>}
+   * @memberof KeycloakService
+   */
+  refreshToken(): Observable<any> {
+    return new Observable(observer => {
+      this.keycloakAuth
+        .updateToken(30)
+        .success(function(refreshed) {
+          console.log('KC refreshed token?:', refreshed);
+          observer.next();
+          observer.complete();
+        })
+        .error(err => {
+          console.log('KC refresh error:', err);
+          observer.error();
+        });
+
+      return { unsubscribe() {} };
+    });
   }
 
   getLogoutURL(): string {
