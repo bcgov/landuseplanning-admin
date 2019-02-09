@@ -92,7 +92,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
       this.commentListScrollContainer.nativeElement.scrollTop = 0;
 
       // get a page of comments
-      this.commentService.getAllByprojectId(this.project._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
+      this.commentService.getAllByProjectId(this.project._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           comments => {
@@ -138,7 +138,7 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     // get all comments
-    this.commentService.getAllByprojectId(this.project._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
+    this.commentService.getAllByProjectId(this.project._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         comments => {

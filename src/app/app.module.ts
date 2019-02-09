@@ -21,6 +21,7 @@ import { LoginComponent } from 'app/login/login.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { HeaderComponent } from 'app/header/header.component';
 import { FooterComponent } from 'app/footer/footer.component';
+import { SidebarComponent } from 'app/sidebar/sidebar.component';
 import { AdministrationComponent } from 'app/administration/administration.component';
 import { UsersComponent } from 'app/administration/users/users.component';
 import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
@@ -42,6 +43,7 @@ import { KeycloakService } from 'app/services/keycloak.service';
 // feature modules
 import { TokenInterceptor } from './utils/token-interceptor';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
+import { ProjectsComponent } from './projects/projects.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -56,6 +58,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     ConfirmComponent,
     HeaderComponent,
     FooterComponent,
+    ProjectsComponent,
+    SidebarComponent,
     AdministrationComponent,
     UsersComponent,
     AddEditUserComponent,

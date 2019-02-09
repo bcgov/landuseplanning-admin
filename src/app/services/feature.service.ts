@@ -41,10 +41,10 @@ export class FeatureService {
       .catch(error => this.api.handleError(error));
   }
 
-  deleteByProjectId(projectId: string): Observable<Object> {
-    return this.api.deleteFeaturesByProjectId(projectId)
-      .catch(error => this.api.handleError(error));
-  }
+  // deleteByApplicationId(applicationId: string): Observable<Object> {
+  //   return this.api.deleteFeaturesByApplicationId(applicationId)
+  //     .catch(error => this.api.handleError(error));
+  // }
 
   // MBL TODO: PUT/POST functionality.
 

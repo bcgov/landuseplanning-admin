@@ -464,9 +464,9 @@ describe('SearchService', () => {
             expect(tantalisResult[0]['clFile']).toBe('0000011');
           });
 
-          it('has an appStatus', () => {
-            expect(tantalisResult[0].appStatus).toBe('someStatusString');
-          });
+          // it('has an appStatus', () => {
+          //   expect(tantalisResult[0].appStatus).toBe('someStatusString');
+          // });
 
           it('has a region', () => {
             expect(tantalisResult[0].region).toBe('someRegionCode');

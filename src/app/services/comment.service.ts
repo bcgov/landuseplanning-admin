@@ -37,7 +37,7 @@ export class CommentService {
 
   // get all comments for the specified project id
   // (including documents)
-  getAllByprojectId(appId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null, params: GetParameters = null): Observable<Comment[]> {
+  getAllByProjectId(appId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null, params: GetParameters = null): Observable<Comment[]> {
     // first get the comment periods
     return this.commentPeriodService.getAllByProjectId(appId)
       .mergeMap(periods => {
