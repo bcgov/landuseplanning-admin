@@ -135,7 +135,7 @@ export class Project {
 
       this.commentPeriods.forEach(period => {
         // TODO: Update comment period model. Should actually be period.dateEnded or something.
-        if (moment(period.endDate) > now) {
+        if (moment(period.dateCompleted) > now) {
           this.currentPeriods.push(obj.currentPeriods);
         }
       });

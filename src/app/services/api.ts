@@ -302,14 +302,16 @@ export class ApiService {
   //
   // Comment Periods
   //
-  getPeriodsByAppId(projId: string): Observable<CommentPeriod[]> {
+  getPeriodsByProjId(projId: string): Observable<CommentPeriod[]> {
     const fields = [
-      '_addedBy',
-      '_project',
-      'startDate',
-      'endDate'
+      'project',
+      'dateStarted',
+      'dateCompleted'
     ];
-    const queryString = `commentperiod?isDeleted=false&_project=${projId}&fields=${this.buildValues(fields)}`;
+    const sort = '&sortBy=-dateStarted';
+
+    let queryString = `commentperiod?&project=${projId}&fields=${this.buildValues(fields)}`;
+    if (sort !== null) { queryString += `sortBy=${sort}&`; }
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
