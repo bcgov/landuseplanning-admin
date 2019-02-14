@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -15,6 +15,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
 import { FeatureService } from 'app/services/feature.service';
+import { ProjectComponent } from '../project.component';
 
 @Component({
   selector: 'app-project-detail',
@@ -32,7 +33,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     public snackBar: MatSnackBar,
     public api: ApiService, // also used in template
@@ -41,24 +41,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public commentPeriodService: CommentPeriodService,
     public decisionService: DecisionService,
     public documentService: DocumentService,
-    public featureService: FeatureService
+    public featureService: FeatureService,
+    private projectComponent: ProjectComponent
   ) { }
 
   ngOnInit() {
-    // get data from route resolver
-    this.route.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (data: { project: Project }) => {
-          if (data.project) {
-            this.project = data.project;
-          } else {
-            alert('Uh-oh, couldn\'t load project');
-            // project not found --> navigate back to search
-            this.router.navigate(['/search']);
-          }
-        }
-      );
+    this.project = this.projectComponent.project;
   }
 
   ngOnDestroy() {

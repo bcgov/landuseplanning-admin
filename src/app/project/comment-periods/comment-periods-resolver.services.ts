@@ -13,7 +13,7 @@ export class CommentPeriodsResolver implements Resolve<CommentPeriod[]> {
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CommentPeriod[]> {
-    const projectId = route.paramMap.get('projId');
+    const projectId = route.parent.paramMap.get('projId');
     // force-reload so we always have latest data
     return this.commentPeriodService.getAllByProjectId(projectId);
   }

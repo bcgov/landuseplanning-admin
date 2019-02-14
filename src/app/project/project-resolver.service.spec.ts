@@ -1,19 +1,19 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { ProjectDetailResolver } from './project-resolver.service';
+import { ProjectResolver } from './project-resolver.service';
 import { ProjectService } from 'app/services/project.service';
 
 describe('ProjectDetailResolverService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        ProjectDetailResolver,
+        ProjectResolver,
         { provide: ProjectService }
       ]
     });
   });
 
-  it('should be created', inject([ProjectDetailResolver], (service: ProjectDetailResolver) => {
+  it('should be created', inject([ProjectResolver], (service: ProjectResolver) => {
     expect(service).toBeTruthy();
   }));
 });

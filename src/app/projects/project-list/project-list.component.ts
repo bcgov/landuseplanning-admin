@@ -50,7 +50,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         projects => {
           this.loading = false;
           this.projects = projects;
-          console.log(this.projects);
         },
         error => {
           this.loading = false;

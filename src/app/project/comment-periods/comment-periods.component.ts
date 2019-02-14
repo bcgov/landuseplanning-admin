@@ -12,6 +12,7 @@ export class CommentPeriodsComponent implements OnInit {
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public commentPeriods: CommentPeriod[] = null;
+  public loading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,10 +27,13 @@ export class CommentPeriodsComponent implements OnInit {
       (data: { commentPeriods: CommentPeriod[] }) => {
         if (data.commentPeriods) {
           this.commentPeriods = data.commentPeriods;
+          this.loading = false;
+          console.log(this.commentPeriods);
         } else {
           alert('Uh-oh, couldn\'t load project');
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
+          this.loading = false;
         }
       }
     );

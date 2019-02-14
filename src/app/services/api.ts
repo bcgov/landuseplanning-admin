@@ -311,7 +311,7 @@ export class ApiService {
     const sort = '&sortBy=-dateStarted';
 
     let queryString = `commentperiod?&project=${projId}&fields=${this.buildValues(fields)}`;
-    if (sort !== null) { queryString += `sortBy=${sort}&`; }
+    if (sort !== null) { queryString += `&sortBy=${sort}`; }
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
   }
 

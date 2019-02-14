@@ -8,7 +8,7 @@ import { Project } from 'app/models/project';
 import { of } from 'rxjs';
 
 @Injectable()
-export class ProjectDetailResolver implements Resolve<Project> {
+export class ProjectResolver implements Resolve<Project> {
 
   constructor(
     private projectService: ProjectService
