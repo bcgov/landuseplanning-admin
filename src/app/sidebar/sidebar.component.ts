@@ -43,8 +43,6 @@ export class SidebarComponent {
           break;
         }
         case 'comment-periods': {
-          // TODO: set active subheading to comment periods.
-          console.log('This is comment period');
           break;
         }
         case 'milestones': {

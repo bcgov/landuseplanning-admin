@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApplicationListComponent } from './project-list.component';
+import { ProjectListComponent } from './project-list.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatSlideToggleModule } from '@angular/material';
 import { OrderByPipe } from 'app/pipes/order-by.pipe';
 import { NewlinesPipe } from 'app/pipes/newlines.pipe';
-import { ApplicationService } from 'app/services/application.service';
+import { ProjectService } from 'app/services/project.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
-import { Application } from 'app/models/application';
+import { Project } from 'app/models/project';
 import { of } from 'rxjs';
 import { throwError } from 'rxjs';
 
-describe('ApplicationListComponent', () => {
-  let component: ApplicationListComponent;
-  let fixture: ComponentFixture<ApplicationListComponent>;
+describe('ProjectListComponent', () => {
+  let component: ProjectListComponent;
+  let fixture: ComponentFixture<ProjectListComponent>;
 
-  const applicationServiceStub = {
+  const projectServiceStub = {
     getAll() {
       return of([]);
     }
@@ -23,10 +23,10 @@ describe('ApplicationListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ApplicationListComponent, OrderByPipe, NewlinesPipe],
+      declarations: [ProjectListComponent, OrderByPipe, NewlinesPipe],
       imports: [RouterTestingModule, MatSlideToggleModule],
       providers: [
-        { provide: ApplicationService, useValue: applicationServiceStub },
+        { provide: ProjectService, useValue: projectServiceStub },
         { provide: CommentPeriodService }
       ]
     })
@@ -34,7 +34,7 @@ describe('ApplicationListComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ApplicationListComponent);
+    fixture = TestBed.createComponent(ProjectListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -43,27 +43,27 @@ describe('ApplicationListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('when applications are returned from the service', () => {
-    const existingApplications = [
-      new Application(),
-      new Application()
+  describe('when projects are returned from the service', () => {
+    const existingProjects = [
+      new Project(),
+      new Project()
     ];
 
     beforeEach(() => {
-      let applicationService = TestBed.get(ApplicationService);
-      spyOn(applicationService, 'getAll').and.returnValue(of(existingApplications));
+      let projectService = TestBed.get(ProjectService);
+      spyOn(projectService, 'getAll').and.returnValue(of(existingProjects));
     });
 
-    it('sets the component application to the one from the route', () => {
+    it('sets the component project to the one from the route', () => {
       component.ngOnInit();
-      expect(component.applications).toEqual(existingApplications);
+      expect(component.projects).toEqual(existingProjects);
     });
   });
 
-  describe('when the application service throws an error', () => {
+  describe('when the project service throws an error', () => {
     beforeEach(() => {
-      let applicationService = TestBed.get(ApplicationService);
-      spyOn(applicationService, 'getAll').and.returnValue(throwError('Beep boop server error'));
+      let projectService = TestBed.get(ProjectService);
+      spyOn(projectService, 'getAll').and.returnValue(throwError('Beep boop server error'));
     });
 
     it('redirects to root', () => {

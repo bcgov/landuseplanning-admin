@@ -8,24 +8,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
 import { SharedModule } from 'app/shared.module';
 
 // components
-import { CommentDetailComponent } from './review-comments/comment-detail/comment-detail.component';
-import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
-import { ComplianceComponent } from './compliance/compliance.component';
-import { IndigenousNationsComponent } from './indigenous-nations/indigenous-nations.component';
-import { MilestonesComponent } from './milestones/milestones.component';
-import { ProjectAddEditComponent } from './project-add-edit/project-add-edit.component';
-import { ProjectAsideComponent } from './project-aside/project-aside.component';
-import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
-import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectListComponent } from './project-list/project-list.component';
-import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
-import { ReviewCommentsComponent } from './review-comments/review-comments.component';
-import { ValuedComponentsComponent } from './valued-components/valued-components.component';
-
-// services
-import { ApiService } from 'app/services/api';
-import { ExcelService } from 'app/services/excel.service';
-import { ProjectService } from 'app/services/project.service';
 
 @NgModule({
   imports: [
@@ -37,39 +20,12 @@ import { ProjectService } from 'app/services/project.service';
     SharedModule
   ],
   declarations: [
-    CommentDetailComponent,
-    CommentPeriodsComponent,
-    ComplianceComponent,
-    IndigenousNationsComponent,
-    MilestonesComponent,
-    ProjectAddEditComponent,
-    ProjectAsideComponent,
-    ProjectContactsComponent,
-    ProjectDetailComponent,
-    ProjectListComponent,
-    ProjectUpdatesComponent,
-    ReviewCommentsComponent,
-    ValuedComponentsComponent
+    ProjectListComponent
   ],
   exports: [
-    CommentDetailComponent,
-    CommentPeriodsComponent,
-    ComplianceComponent,
-    IndigenousNationsComponent,
-    MilestonesComponent,
-    ProjectAddEditComponent,
-    ProjectAsideComponent,
-    ProjectContactsComponent,
-    ProjectDetailComponent,
-    ProjectListComponent,
-    ProjectUpdatesComponent,
-    ReviewCommentsComponent,
-    ValuedComponentsComponent
+    ProjectListComponent
   ],
   providers: [
-    ApiService,
-    ExcelService,
-    ProjectService
   ]
 })
 

@@ -3,7 +3,7 @@
     <div class="title-container">
       <div class="title-container__title">
         <h1>
-          This is where the project name goes.
+          {{project.name}}
         </h1>
       </div>
       <div class="title-container__actions">
@@ -13,7 +13,10 @@
   </div>
 </div>
 <div class="bottom-container">
-  <div class="container">
-    <app-project-detail></app-project-detail>
+  <div class="spinner-container full-screen" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  <div class="container" *ngIf="!loading">
+    <router-outlet></router-outlet>
   </div>
 </div>

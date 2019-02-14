@@ -1,0 +1,12 @@
+<div class="spinner-container full-screen" *ngIf="loading">
+  <div class="spinner-new rotating"></div>
+</div>
+<h2 *ngIf="!loading">
+  Comment Periods
+</h2>
+<ul class="list-group">
+  <li class="list-group-item" *ngFor="let period of commentPeriods">
+    <p>Status: {{period.commentPeriodStatus}}</p>
+    <p>{{period.dateStarted | date:'longDate'}} - {{period.dateCompleted | date:'longDate'}}</p>
+  </li>
+</ul>
