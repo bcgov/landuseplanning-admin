@@ -535,14 +535,9 @@ export class ApiService {
   //
   // Searching
   //
-  searchAppsByCLID(clid: string): Observable<SearchResults[]> {
-    const queryString = `ttlsapi/crownLandFileNumber/${clid}`;
+  searchKeywords(keys: string[]): Observable<SearchResults[]> {
+    const queryString = `public/search?keywords=${keys}`;
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  searchAppsByDTID(dtid: number): Observable<SearchResults> {
-    const queryString = `ttlsapi/dispositionTransactionId/${dtid}`;
-    return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //

@@ -6,7 +6,7 @@ import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
 
 import { SearchService } from 'app/services/search.service';
-import { SearchTerms } from 'app/models/search';
+import { SearchTerms, SearchResults } from 'app/models/search';
 import { Project } from 'app/models/project';
 
 @Component({
@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   public searching = false;
   public ranSearch = false;
   public keywords: Array<string> = [];
-  public projects: Array<Project> = [];
+  public results: Array<SearchResults> = [];
   public count = 0; // for template
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
@@ -60,8 +60,38 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searching = true;
     this.count = 0;
     this.keywords = this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' '))) || []; // safety checks
-    this.projects.length = 0; // empty the list
+    this.results = []; // empty the list
 
+    this.searchService.getSearchResults(this.keywords)
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe(
+      results => {
+        // console.log(results)
+        this.results = results;
+        this.count = results.length;
+        // results.forEach(result => {
+        //   // add if not already in list
+        //   // if (!_.find(this.results, app => { return app.tantalisID === project.tantalisID; })) {
+        //   // if (!_.find(this.results, app => { return true; })) {
+        //     this.results.push(result);
+        //   // }
+        // });
+      },
+      error => {
+        console.log('error =', error);
+
+        // update variables on error
+        this.searching = false;
+        this.ranSearch = true;
+
+        this.snackBarRef = this.snackBar.open('Error searching projects ...', 'RETRY');
+        this.snackBarRef.onAction().subscribe(() => this.onSubmit());
+      },
+      () => { // onCompleted
+        // update variables on completion
+        this.searching = false;
+        this.ranSearch = true;
+      });
     // this.searchService.getAppsByClidDtid(this.keywords)
     //   .takeUntil(this.ngUnsubscribe)
     //   .subscribe(
