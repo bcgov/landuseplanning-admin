@@ -25,75 +25,67 @@
     <h2 *ngIf="ranSearch && !searching && count > 0">
       <strong>{{count}} result<span *ngIf="count != 1">s</span> found for "{{keywords.length > 0 ? keywords.join(', ') : 'unknown'}}"</strong>
     </h2>
+    <label class="form-check-inline">
+      <input class="form-check-input" type="radio" [checked]="true">All
+    </label>
+    <label class="form-check-inline">
+      <input class="form-check-input" type="radio">Projects
+    </label>
+    <label class="form-check-inline">
+      <input class="form-check-input" type="radio">Documents
+    </label>
+    <label class="form-check-inline">
+      <input class="form-check-input" type="radio">Valued Components
+    </label>
     <table class="table" *ngIf="count > 0">
       <thead>
         <tr>
-          <th class="cl-file" name="Crowns land File Number">CL File</th>
-          <th class="disp">Disp. ID</th>
-          <th class="client">Applicant(s)</th>
-          <th class="purpose">Purpose/Subpurpose</th>
+          <th name="Type">Type</th>
+          <th class="disp">Project #</th>
+          <th class="client">Name</th>
+          <th class="purpose">Location</th>
           <th class="status">Status</th>
           <th class="actions"></th>
         </tr>
       </thead>
-      <ng-template ngFor let-application [ngForOf]="projects">
+      <ng-template ngFor let-result [ngForOf]="results">
         <tr class="app-details">
-          <td class="cl-file">
-            <span class="cl-arrow">{{application['clFile']}}</span>
+          <td >
+            <span >{{result.project.type}}</span>
           </td>
           <td class="disp">
-            <strong>{{application.tantalisID}}</strong>
+            <strong>{{result.project.epicProjectID}}</strong>
           </td>
-          <td [innerHTML]="application.client ? (application.client | titlecase) : '<em>Applicant Not Selected</em>'"></td>
+          <td [innerHTML]="result.project.name ? (result.project.name | titlecase) : '<em>No Project Name</em>'"></td>
           <td>
-            {{application.purpose | titlecase}} / {{application.subpurpose | titlecase}}
+            {{result.project.location | titlecase}}
           </td>
           <td>
-            {{application.appStatus || 'Unknown'}}
+            {{result.project.status || 'Unknown'}}
           </td>
           <td class="actions">
-            <button class="btn btn-sm btn-primary" type="button" *ngIf="!application['isCreated']" (click)="onImport(application)">
-              <i class="material-icons">add</i>
-              Create
+            <button class="btn btn-sm btn-primary" type="button" [routerLink]="['/p', result.project._id]">
+              View
             </button>
-            <div ngbDropdown placement="bottom-right" *ngIf="application['isCreated']">
-              <button ngbDropdownToggle class="btn btn-sm btn-outline-primary" type="button">
-                Actions
-              </button>
-              <div ngbDropdownMenu>
-                <button class="dropdown-item" type="button" [routerLink]="['/a', application._id]">
-                  <i class="material-icons">insert_drive_file</i>
-                  View Application
-                </button>
-                <button class="dropdown-item" type="button" [routerLink]="['/a', application._id, 'edit']">
-                  <i class="material-icons">edit</i>
-                  Edit Details
-                </button>
-                <button class="dropdown-item" type="button" [routerLink]="['/comments', application._id]">
-                  <i class="material-icons">mode_comment</i>
-                  Review Comments
-                </button>
-              </div>
-            </div>
           </td>
         </tr>
-        <tr class="app-comment-details" *ngIf="application['isCreated']">
+        <tr class="app-comment-details" *ngIf="result['isCreated']">
           <td colspan="6">
             <span class="comment-info">
-              <span *ngIf="application['numComments'] > 0">
+              <span *ngIf="result['numComments'] > 0">
                 <strong>
-                  <a [routerLink]="['/comments', application._id]">{{application['numComments']}} {{application['numComments'] === 1 ? 'comment' : 'comments'}}</a>
+                  <a [routerLink]="['/comments', result._id]">{{result['numComments']}} {{result['numComments'] === 1 ? 'comment' : 'comments'}}</a>
                 </strong>
                 &nbsp;-&nbsp;
               </span>
               <span>
-                {{application.cpStatus || 'Unknown'}}
+                {{result.cpStatus || 'Unknown'}}
               </span>
-              <span *ngIf="application.currentPeriods">
+              <span *ngIf="result.currentPeriods">
                 &nbsp;-&nbsp;
-                {{application.currentPeriods.startDate | date:'longDate'}} to {{application.currentPeriods.endDate | date:'longDate'}}
-                <span *ngIf="application.currentPeriods['daysRemaining']">
-                  &nbsp;({{application.currentPeriods['daysRemaining'] + (application.currentPeriods['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
+                {{result.currentPeriods.startDate | date:'longDate'}} to {{result.currentPeriods.endDate | date:'longDate'}}
+                <span *ngIf="result.currentPeriods['daysRemaining']">
+                  &nbsp;({{result.currentPeriods['daysRemaining'] + (result.currentPeriods['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
                 </span>
               </span>
             </span>
