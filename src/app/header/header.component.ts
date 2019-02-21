@@ -5,6 +5,10 @@ import { ApiService } from 'app/services/api';
 import { JwtUtil } from 'app/jwt-util';
 import { KeycloakService } from 'app/services/keycloak.service';
 
+import { DayCalculatorModalComponent } from 'app/day-calculator-modal/day-calculator-modal.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { DayCalculatorModalResult } from 'app/day-calculator-modal/day-calculator-modal.component';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -38,10 +42,13 @@ export class HeaderComponent implements OnInit {
     }
     scopes: Array<String>
   };
+  private dayCalculatorModal: NgbModalRef = null;
+  private showDayCalculatorModal = false;
 
   constructor(
     private api: ApiService,
     private keycloakService: KeycloakService,
+    private modalService: NgbModal,
     public router: Router
   ) {
     this._api = api;
@@ -68,6 +75,29 @@ export class HeaderComponent implements OnInit {
     if (!this.keycloakService.isValidForSite()) {
       this.router.navigate(['/not-authorized']);
     }
+  }
+
+  openCalculator() {
+    this.showDayCalculatorModal = true;
+    this.dayCalculatorModal = this.modalService.open(DayCalculatorModalComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
+    this.dayCalculatorModal.result.then(result => {
+      this.dayCalculatorModal = null;
+      this.showDayCalculatorModal = false;
+      // if user dismissed the modal or clicked Explore then load initial apps
+      // otherwise user clicked Find, which will load filtered apps
+      switch (result) {
+        case DayCalculatorModalResult.Dismissed:
+          // this.urlService.setFragment(null);
+          // this.getApps();
+          break;
+        case DayCalculatorModalResult.Exploring:
+          // this.getApps();
+          break;
+        case DayCalculatorModalResult.Finding:
+          break;
+      }
+    });
+    return;
   }
 
   renderMenu(route: String) {
