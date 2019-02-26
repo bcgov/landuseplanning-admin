@@ -244,7 +244,7 @@
           </div>
         </div>
         <div class="aside-card">
-          <h3 class="title">Application Decision</h3>
+          <h3 class="title">Application Decision Documents</h3>
           <div class="body">
             <div *ngIf="!application.decision">
               <p class="mb-0">No decision documents have been added to this application.</p>
@@ -274,11 +274,11 @@
               </ul>
             </div>
             <div class="btn-container">
-              <button class="cta-btn btn btn-sm btn-outline-primary" type="button" title="Edit decision"
+              <button class="cta-btn btn btn-sm btn-outline-primary" type="button" title="Edit decision documents"
                 [routerLink]="['/a', application._id, 'edit']"
                 [disabled]="application.isRetired"
                 fragment="appDecision">
-                Edit Decision
+                Edit Decision Documents
               </button>
               <span title="You cannot edit the decision of a retired application"></span>
             </div>
