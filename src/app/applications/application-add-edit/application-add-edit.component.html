@@ -132,7 +132,7 @@
       </fieldset>
 
       <fieldset name="decisionForm" id="appDecision">
-        <legend class="mb-3">Application Decision</legend>
+        <legend class="mb-3">Application Decision Documents</legend>
         <div class="mb-4" *ngIf="application.decision">
           <div class="form-group">
             <label>Decision Documents</label>
@@ -157,17 +157,17 @@
               (filesChange)="addDocuments($event, application.decision.documents); decisionFiles = []"></app-file-upload>
           </div>
         </div>
-        <button class="btn content-btn-alt" type="button" title="Add a decision"
+        <button class="btn content-btn-alt" type="button" title="Add decision documents"
           *ngIf="!application.decision"
           (click)="addDecision()">
           <i class="material-icons md-20">add</i>
-          Add Decision
+          Add Decision Documents
         </button>
-        <button class="btn content-btn-alt danger" type="button" title="Remove this decision"
+        <button class="btn content-btn-alt danger" type="button" title="Remove the decision documents"
           *ngIf="application.decision"
           (click)="deleteDecision()">
           <i class="material-icons md-20">remove</i>
-          Remove Decision
+          Remove Decision Documents
         </button>
       </fieldset>
 
