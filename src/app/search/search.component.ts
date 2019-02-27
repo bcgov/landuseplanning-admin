@@ -19,8 +19,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   public terms = new SearchTerms();
   public searching = false;
   public ranSearch = false;
-  public keywords: Array<string> = [];
-  public results: Array<SearchResults> = [];
+  public keywords: string;
+  public results: any;
   public count = 0; // for template
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
@@ -39,7 +39,14 @@ export class SearchComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         if (params.keywords) {
           // remove empty and duplicate items
-          this.terms.keywords = _.uniq(_.compact(params.keywords.split(','))).join(' ');
+          this.terms.keywords = params.keywords;
+        }
+
+        if (params.dataset) {
+          this.terms.dataset = params.dataset;
+        } else {
+          // default all
+          this.terms.dataset = 'All';
         }
 
         if (!_.isEmpty(this.terms.getParams())) {
@@ -56,19 +63,30 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  handleRadioChange(value) {
+    this.terms.dataset = value;
+    this.doSearch();
+  }
+
   private doSearch() {
     this.searching = true;
     this.count = 0;
-    this.keywords = this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' '))) || []; // safety checks
-    this.results = []; // empty the list
+    this.keywords = this.terms.keywords;
+    this.results = {}; // empty the list
 
-    this.searchService.getSearchResults(this.keywords)
+    console.log('keywords:', this.keywords);
+    this.searchService.getSearchResults(this.keywords, this.terms.dataset)
     .takeUntil(this.ngUnsubscribe)
     .subscribe(
       results => {
         // console.log(results)
-        this.results = results;
-        this.count = results.length;
+        this.count = 0;
+
+        for (let i of results) {
+          this.results[i.data._id] = i.data.objects;
+          this.count += i.data.objects.length;
+        }
+
         // results.forEach(result => {
         //   // add if not already in list
         //   // if (!_.find(this.results, app => { return app.tantalisID === project.tantalisID; })) {
@@ -131,6 +149,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     // WORKAROUND: add timestamp to force URL to be different than last time
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
+    params['dataset'] = this.terms.dataset;
 
     // console.log('params =', params);
     this.router.navigate(['search', params]);

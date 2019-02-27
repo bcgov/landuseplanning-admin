@@ -5,12 +5,12 @@ import { Project } from './project';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 export class SearchResults {
-  type: string;
-  project: Project;
+  _schemaName: string;
+  data: any;
 
   constructor(search?: any, hostname?: any) {
-    this.type          = search && search.type          || 0;
-    this.project       = search && search.project       || 0;
+    this._schemaName          = search && search._schemaName          || 0;
+    this.data       = search && search.data       || 0;
   }
 }
 
@@ -49,11 +49,13 @@ export class SearchTerms {
   keywords: string; // comma- or space-delimited list
   dateStart: NgbDateStruct;
   dateEnd: NgbDateStruct;
+  dataset: string;
 
   constructor(obj?: any) {
     this.keywords  = obj && obj.keywords  || null;
     this.dateStart = obj && obj.dateStart || null;
     this.dateEnd   = obj && obj.dateEnd   || null;
+    this.dataset   = obj && obj.dataset   || null;
   }
 
   getParams(): Params {
@@ -61,8 +63,8 @@ export class SearchTerms {
 
     if (this.keywords) {
       // tokenize by comma, space, etc and remove duplicate items
-      const keywords = _.uniq(this.keywords.match(/\b(\w+)/g));
-      params['keywords'] = keywords.join(',');
+      // const keywords = _.uniq(this.keywords.match(/\b(\w+)/g));
+      params['keywords'] = this.keywords;
     }
     if (this.dateStart) {
       params['datestart'] = this.getDateParam(this.dateStart);

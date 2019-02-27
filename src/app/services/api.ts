@@ -535,8 +535,8 @@ export class ApiService {
   //
   // Searching
   //
-  searchKeywords(keys: string[]): Observable<SearchResults[]> {
-    const queryString = `public/search?keywords=${keys}`;
+  searchKeywords(keys: string, dataset: string): Observable<SearchResults[]> {
+    const queryString = `public/search?keywords=${keys}&dataset=${dataset}`;
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 

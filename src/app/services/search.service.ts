@@ -22,12 +22,15 @@ export class SearchService {
     private projectService: ProjectService
   ) { }
 
-  getSearchResults(keys: string[]): Observable<any[]> {
-    const searchResults = this.api.searchKeywords(keys)
+  getSearchResults(keys: string, dataset: string): Observable<any[]> {
+    console.log('D:', dataset);
+    console.log('keys:', keys);
+    const searchResults = this.api.searchKeywords(keys, dataset)
     .map(res => {
       let allResults = <any>[];
+      console.log('RES:', res);
       res.forEach(item => {
-        const r = new SearchResults({type: 'project', project: new Project(item)});
+        const r = new SearchResults({type: item._schemaName, data: item});
         allResults.push(r);
       });
       return allResults;

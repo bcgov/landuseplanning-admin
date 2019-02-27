@@ -2,9 +2,25 @@
   <div class="container">
     <h1>Find Environmental Assessment Projects</h1>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
+      <label class="form-check-inline">
+        <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'All'"
+          (click)='handleRadioChange("All")'>All
+      </label>
+      <label class="form-check-inline">
+        <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'Project'"
+          (click)='handleRadioChange("Project")'>Projects
+      </label>
+      <label class="form-check-inline">
+        <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'Document'"
+          (click)='handleRadioChange("Document")'>Documents
+      </label>
+      <label class="form-check-inline">
+        <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'Vc'"
+          (click)='handleRadioChange("Vc")'>Valued Components
+      </label>
       <div class="input-group main-search-field">
-        <input class="form-control" type="text" name="keywordInput" id="keywordInput"
-            [(ngModel)]="terms.keywords" [disabled]="searching" autofocus/>
+        <input class="form-control" type="text" name="keywordInput" id="keywordInput" [(ngModel)]="terms.keywords"
+          [disabled]="searching" autofocus />
         <div class="input-group-append">
           <!-- prevent searching if input is empty or we're already searching -->
           <button class="btn btn-primary" type="submit" [disabled]="!terms.keywords || searching">
@@ -13,85 +29,109 @@
           </button>
         </div>
       </div>
+      <div>
+        <h5 *ngIf="ranSearch && !searching && count == 0">
+          No result<span *ngIf="count != 1">s</span> found for "{{keywords}}"
+        </h5>
+        <h5 *ngIf="ranSearch && !searching && count > 0">
+          {{count}} result<span *ngIf="count != 1">s</span> found for "{{keywords}}"
+        </h5>
+      </div>
     </form>
   </div>
 </div>
 
 <div class="container">
   <div class="search-results">
-    <h2 *ngIf="ranSearch && !searching && count == 0">
-      <strong>No result<span *ngIf="count != 1">s</span> found for "{{keywords.length > 0 ? keywords.join(', ') : 'unknown'}}"</strong>
-    </h2>
-    <h2 *ngIf="ranSearch && !searching && count > 0">
-      <strong>{{count}} result<span *ngIf="count != 1">s</span> found for "{{keywords.length > 0 ? keywords.join(', ') : 'unknown'}}"</strong>
-    </h2>
-    <label class="form-check-inline">
-      <input class="form-check-input" type="radio" [checked]="true">All
-    </label>
-    <label class="form-check-inline">
-      <input class="form-check-input" type="radio">Projects
-    </label>
-    <label class="form-check-inline">
-      <input class="form-check-input" type="radio">Documents
-    </label>
-    <label class="form-check-inline">
-      <input class="form-check-input" type="radio">Valued Components
-    </label>
-    <table class="table" *ngIf="count > 0">
-      <thead>
-        <tr>
-          <th name="Type">Type</th>
-          <th class="disp">Project #</th>
-          <th class="client">Name</th>
-          <th class="purpose">Location</th>
-          <th class="status">Status</th>
-          <th class="actions"></th>
-        </tr>
-      </thead>
-      <ng-template ngFor let-result [ngForOf]="results">
-        <tr class="app-details">
-          <td >
-            <span >{{result.project.type}}</span>
-          </td>
-          <td class="disp">
-            <strong>{{result.project.epicProjectID}}</strong>
-          </td>
-          <td [innerHTML]="result.project.name ? (result.project.name | titlecase) : '<em>No Project Name</em>'"></td>
-          <td>
-            {{result.project.location | titlecase}}
-          </td>
-          <td>
-            {{result.project.status || 'Unknown'}}
-          </td>
-          <td class="actions">
-            <button class="btn btn-sm btn-primary" type="button" [routerLink]="['/p', result.project._id]">
-              View
-            </button>
-          </td>
-        </tr>
-        <tr class="app-comment-details" *ngIf="result['isCreated']">
-          <td colspan="6">
-            <span class="comment-info">
-              <span *ngIf="result['numComments'] > 0">
-                <strong>
-                  <a [routerLink]="['/comments', result._id]">{{result['numComments']}} {{result['numComments'] === 1 ? 'comment' : 'comments'}}</a>
-                </strong>
-                &nbsp;-&nbsp;
-              </span>
-              <span>
-                {{result.cpStatus || 'Unknown'}}
-              </span>
-              <span *ngIf="result.currentPeriods">
-                &nbsp;-&nbsp;
-                {{result.currentPeriods.startDate | date:'longDate'}} to {{result.currentPeriods.endDate | date:'longDate'}}
-                <span *ngIf="result.currentPeriods['daysRemaining']">
-                  &nbsp;({{result.currentPeriods['daysRemaining'] + (result.currentPeriods['daysRemaining'] === 1 ? ' day ' : ' days ') + 'remaining'}})
-                </span>
-              </span>
-            </span>
-          </td>
-        </tr>
-      </ng-template>
-    </table>
+    <div *ngIf="count > 0">
+      <!-- ALL -->
+      <div *ngIf="this.terms.dataset === 'All'">
+        <ng-template ngFor let-result [ngForOf]="results.Project">
+          <div class="app-details" *ngIf="result._schemaName === 'Project'">
+              <div class="card">
+                <h5 class="card-header"><i class="material-icons">assignment</i></h5>
+                <div class="card-body">
+                  <h5 class="card-title">{{result.name}}</h5>
+                  <p class="card-text">{{result.type}} / {{result.sector}}</p>
+                  <p class="card-text">{{result.location}}</p>
+                  <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View Project</a>
+                </div>
+              </div>
+            </div>
+        </ng-template>
+        <ng-template ngFor let-result [ngForOf]="results.Document">
+          <div class="app-details">
+            <div class="card">
+              <h5 class="card-header"><i class="material-icons">picture_as_pdf</i></h5>
+              <div class="card-body">
+                <h5 class="card-title">{{result.displayName}}</h5>
+                <p class="card-text">{{result.datePosted | date:'medium'}}</p>
+                <a [routerLink]="['/p', result.project]" class="btn btn-primary float-right">View Project</a>
+                <a href="#" class="btn btn-primary">Download Document</a>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template ngFor let-result [ngForOf]="results.Vc">
+            <div class="app-details">
+              <div class="card">
+                <h5 class="card-header"><i class="material-icons">switch_camera</i></h5>
+                <div class="card-body">
+                  <h5 class="card-title">{{result.name}}</h5>
+                  <p class="card-text">{{result.description}}</p>
+                  <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View VC</a>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+      </div>
+      <!-- END ALL -->
+
+      <!-- NOT ALL -->
+      <div *ngIf="this.terms.dataset === 'Document'">
+        <ng-template ngFor let-result [ngForOf]="results.Document">
+            <div class="app-details">
+              <div class="card">
+                <h5 class="card-header"><i class="material-icons">picture_as_pdf</i></h5>
+                <div class="card-body">
+                  <h5 class="card-title">{{result.displayName}}</h5>
+                  <p class="card-text">{{result.datePosted | date:'medium'}}</p>
+                  <a [routerLink]="['/p', result.project]" class="btn btn-primary float-right">View Project</a>
+                  <a href="#" class="btn btn-primary">Download Document</a>
+                </div>
+              </div>
+            </div>
+        </ng-template>
+      </div>
+      <div *ngIf="this.terms.dataset === 'Project'">
+        <ng-template ngFor let-result [ngForOf]="results.Project">
+          <div class="app-details" *ngIf="result._schemaName === 'Project'">
+              <div class="card">
+                <h5 class="card-header"><i class="material-icons">assignment</i></h5>
+                <div class="card-body">
+                  <h5 class="card-title">{{result.name}}</h5>
+                  <p class="card-text">{{result.type}} / {{result.sector}}</p>
+                  <p class="card-text">{{result.location}}</p>
+                  <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View Project</a>
+                </div>
+              </div>
+            </div>
+        </ng-template>
+      </div>
+      <div *ngIf="this.terms.dataset === 'Vc'">
+        <ng-template ngFor let-result [ngForOf]="results.Vc">
+          <div class="app-details">
+            <div class="card">
+              <h5 class="card-header"><i class="material-icons">switch_camera</i></h5>
+              <div class="card-body">
+                <h5 class="card-title">{{result.name}}</h5>
+                <p class="card-text">{{result.description}}</p>
+                <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View VC</a>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
   </div>
 </div>
