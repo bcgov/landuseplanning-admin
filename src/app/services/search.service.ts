@@ -23,16 +23,14 @@ export class SearchService {
   ) { }
 
   getSearchResults(keys: string, dataset: string): Observable<any[]> {
-    console.log('D:', dataset);
-    console.log('keys:', keys);
     const searchResults = this.api.searchKeywords(keys, dataset)
     .map(res => {
       let allResults = <any>[];
-      console.log('RES:', res);
       res.forEach(item => {
         const r = new SearchResults({type: item._schemaName, data: item});
         allResults.push(r);
       });
+      console.log('Service results: ', allResults);
       return allResults;
     })
     .catch(() => {

@@ -20,10 +20,13 @@ export class SearchComponent implements OnInit, OnDestroy {
   public searching = false;
   public ranSearch = false;
   public keywords: string;
-  public results: any;
   public count = 0; // for template
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
+
+  public projects: Array<any> = [];
+  public documents: Array<any> = [];
+  public vcs: Array<any> = [];
 
   constructor(
     public snackBar: MatSnackBar,
@@ -31,6 +34,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute
   ) { }
+
+  // TODO: when clicking on radio buttons, url must change to reflect dataset.
 
   ngOnInit() {
     // get search terms from route
@@ -65,78 +70,58 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   handleRadioChange(value) {
     this.terms.dataset = value;
-    this.doSearch();
+    this.onSubmit();
   }
 
   private doSearch() {
+    this.projects = [];
+    this.documents = [];
+    this.vcs = [];
+
     this.searching = true;
     this.count = 0;
     this.keywords = this.terms.keywords;
-    this.results = {}; // empty the list
 
-    console.log('keywords:', this.keywords);
     this.searchService.getSearchResults(this.keywords, this.terms.dataset)
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(
-      results => {
-        // console.log(results)
-        this.count = 0;
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        results => {
+          this.count = results.length;
+          results.forEach(result => {
+            switch (result.data['_schemaName']) {
+              case 'Project': {
+                this.projects.push(result.data);
+                break;
+              }
+              case 'Document': {
+                this.documents.push(result.data);
+                break;
+              }
+              case 'Vc': {
+                this.vcs.push(result.data);
+                break;
+              }
+              default: {
+                break;
+              }
+            }
+          });
+        },
+        error => {
+          console.log('error =', error);
 
-        for (let i of results) {
-          this.results[i.data._id] = i.data.objects;
-          this.count += i.data.objects.length;
-        }
+          // update variables on error
+          this.searching = false;
+          this.ranSearch = true;
 
-        // results.forEach(result => {
-        //   // add if not already in list
-        //   // if (!_.find(this.results, app => { return app.tantalisID === project.tantalisID; })) {
-        //   // if (!_.find(this.results, app => { return true; })) {
-        //     this.results.push(result);
-        //   // }
-        // });
-      },
-      error => {
-        console.log('error =', error);
-
-        // update variables on error
-        this.searching = false;
-        this.ranSearch = true;
-
-        this.snackBarRef = this.snackBar.open('Error searching projects ...', 'RETRY');
-        this.snackBarRef.onAction().subscribe(() => this.onSubmit());
-      },
-      () => { // onCompleted
-        // update variables on completion
-        this.searching = false;
-        this.ranSearch = true;
-      });
-    // this.searchService.getAppsByClidDtid(this.keywords)
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe(
-    //     projects => {
-    //       projects.forEach(project => {
-    //         // add if not already in list
-    //         if (!_.find(this.projects, app => { return app.tantalisID === project.tantalisID; })) {
-    //           this.projects.push(project);
-    //         }
-    //       });
-    //       this.count = this.projects.length;
-    //     },
-    //     error => {
-    //       console.log('error =', error);
-
-    //       // update variables on error
-    //       this.searching = false;
-    //       this.ranSearch = true;
-
-    //       this.snackBarRef = this.snackBar.open('Error searching projects ...', 'RETRY');
-    //       this.snackBarRef.onAction().subscribe(() => this.onSubmit());
-    //     },
-    //     () => { // onCompleted
-    //       // update variables on completion
-    //       this.searching = false;
-    //       this.ranSearch = true;
-    //     });
+          this.snackBarRef = this.snackBar.open('Error searching projects ...', 'RETRY');
+          this.snackBarRef.onAction().subscribe(() => this.onSubmit());
+        },
+        () => { // onCompleted
+          // update variables on completion
+          this.searching = false;
+          this.ranSearch = true;
+        });
   }
 
   // reload page with current search terms
