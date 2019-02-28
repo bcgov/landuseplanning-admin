@@ -46,35 +46,37 @@
     <div *ngIf="count > 0">
       <!-- ALL -->
       <div *ngIf="this.terms.dataset === 'All'">
-        <div class="app-details" *ngFor="let project of projects">
-          <div class="card">
-            <h5 class="card-header"><i class="material-icons">assignment</i></h5>
-            <div class="card-body">
-              <h5 class="card-title">{{project.name}}</h5>
-              <p class="card-text">{{project.type}} / {{project.sector}}</p>
-              <p class="card-text">{{project.location}}</p>
-              <a [routerLink]="['/p', project._id]" class="btn btn-primary float-right">View Project</a>
+        <div *ngFor="let result of results">
+          <div class="app-details" *ngIf="result._schemaName === 'Project'">
+            <div class="card">
+              <h2 class="card-header"><i class="material-icons">assignment</i>&nbsp;&nbsp;&nbsp;Project</h2>
+              <div class="card-body">
+                <h5 class="card-title">{{result.name}}</h5>
+                <p class="card-text">{{result.type}} / {{result.sector}}</p>
+                <p class="card-text">{{result.location}}</p>
+                <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View Project</a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="app-details" *ngFor="let document of documents">
-          <div class="card">
-            <h5 class="card-header"><i class="material-icons">picture_as_pdf</i></h5>
-            <div class="card-body">
-              <h5 class="card-title">{{document.displayName}}</h5>
-              <p class="card-text">{{document.datePosted | date:'medium'}}</p>
-              <a [routerLink]="['/p', document.project]" class="btn btn-primary float-right">View Project</a>
-              <a href="#" class="btn btn-primary">Download Document</a>
+          <div class="app-details" *ngIf="result._schemaName === 'Document'">
+            <div class="card">
+              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document</h2>
+              <div class="card-body">
+                <h5 class="card-title">{{result.displayName}}</h5>
+                <p class="card-text">{{result.datePosted | date:'medium'}}</p>
+                <a [routerLink]="['/p', result.project]" class="btn btn-primary float-right">View Project</a>
+                <a href="#" class="btn btn-primary">Download Document</a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="app-details" *ngFor="let vc of vcs">
-          <div class="card">
-            <h5 class="card-header"><i class="material-icons">switch_camera</i></h5>
-            <div class="card-body">
-              <h5 class="card-title">{{vc.name}}</h5>
-              <p class="card-text">{{vc.description}}</p>
-              <a [routerLink]="['/p', vc._id]" class="btn btn-primary float-right">View VC</a>
+          <div class="app-details" *ngIf="result._schemaName === 'Vc'">
+            <div class="card">
+              <h5 class="card-header"><i class="material-icons">switch_camera</i>&nbsp;&nbsp;&nbsp;Valued Component</h5>
+              <div class="card-body">
+                <h5 class="card-title">{{result.name}}</h5>
+                <p class="card-text">{{result.description}}</p>
+                <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View VC</a>
+              </div>
             </div>
           </div>
         </div>
@@ -83,39 +85,39 @@
 
       <!-- NOT ALL -->
       <div *ngIf="this.terms.dataset === 'Document'">
-        <div class="app-details" *ngFor="let document of documents">
+        <div class="app-details" *ngFor="let result of results">
           <div class="card">
             <h5 class="card-header"><i class="material-icons">picture_as_pdf</i></h5>
             <div class="card-body">
-              <h5 class="card-title">{{document.displayName}}</h5>
-              <p class="card-text">{{document.datePosted | date:'medium'}}</p>
-              <a [routerLink]="['/p', document.project]" class="btn btn-primary float-right">View Project</a>
+              <h5 class="card-title">{{result.displayName}}</h5>
+              <p class="card-text">{{result.datePosted | date:'medium'}}</p>
+              <a [routerLink]="['/p', result.project]" class="btn btn-primary float-right">View Project</a>
               <a href="#" class="btn btn-primary">Download Document</a>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="this.terms.dataset === 'Project'">
-        <div class="app-details" *ngFor="let project of projects">
+        <div class="app-details" *ngFor="let result of results">
           <div class="card">
-            <h5 class="card-header"><i class="material-icons">assignment</i></h5>
-            <div class="card-body">
-              <h5 class="card-title">{{project.name}}</h5>
-              <p class="card-text">{{project.type}} / {{project.sector}}</p>
-              <p class="card-text">{{project.location}}</p>
-              <a [routerLink]="['/p', project._id]" class="btn btn-primary float-right">View Project</a>
+              <h2 class="card-header"><i class="material-icons">assignment</i>&nbsp;&nbsp;&nbsp;Project</h2>
+              <div class="card-body">
+                <h5 class="card-title">{{result.name}}</h5>
+                <p class="card-text">{{result.type}} / {{result.sector}}</p>
+                <p class="card-text">{{result.location}}</p>
+                <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View Project</a>
+              </div>
             </div>
-          </div>
         </div>
       </div>
       <div *ngIf="this.terms.dataset === 'Vc'">
-        <div class="app-details" *ngFor="let vc of vcs">
+        <div class="app-details" *ngFor="let result of results">
           <div class="card">
-            <h5 class="card-header"><i class="material-icons">switch_camera</i></h5>
+            <h5 class="card-header"><i class="material-icons">stars</i></h5>
             <div class="card-body">
-              <h5 class="card-title">{{vc.name}}</h5>
-              <p class="card-text">{{vc.description}}</p>
-              <a [routerLink]="['/p', vc._id]" class="btn btn-primary float-right">View VC</a>
+              <h5 class="card-title">{{result.name}}</h5>
+              <p class="card-text">{{result.description}}</p>
+              <a [routerLink]="['/p', result.project]" class="btn btn-primary float-right">View VC</a>
             </div>
           </div>
         </div>

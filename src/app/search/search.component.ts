@@ -24,9 +24,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
 
-  public projects: Array<any> = [];
-  public documents: Array<any> = [];
-  public vcs: Array<any> = [];
+  public results: Array<any> = [];
 
   constructor(
     public snackBar: MatSnackBar,
@@ -74,9 +72,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private doSearch() {
-    this.projects = [];
-    this.documents = [];
-    this.vcs = [];
+    this.results = [];
 
     this.searching = true;
     this.count = 0;
@@ -86,27 +82,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         results => {
-          this.count = results[0].data.searchResults.length;
-
-          results[0].data.searchResults.forEach(result => {
-            switch (result._schemaName) {
-              case 'Project': {
-                this.projects.push(result);
-                break;
-              }
-              case 'Document': {
-                this.documents.push(result);
-                break;
-              }
-              case 'Vc': {
-                this.vcs.push(result);
-                break;
-              }
-              default: {
-                break;
-              }
-            }
-          });
+          if (results[0].data.meta.length > 0) {
+            this.count = results[0].data.meta[0].searchResultsTotal;
+            this.results = results[0].data.searchResults;
+          } else {
+            this.count = 0;
+            this.results = [];
+          }
         },
         error => {
           console.log('error =', error);
