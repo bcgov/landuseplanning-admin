@@ -86,19 +86,20 @@ export class SearchComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         results => {
-          this.count = results.length;
-          results.forEach(result => {
-            switch (result.data['_schemaName']) {
+          this.count = results[0].data.searchResults.length;
+
+          results[0].data.searchResults.forEach(result => {
+            switch (result._schemaName) {
               case 'Project': {
-                this.projects.push(result.data);
+                this.projects.push(result);
                 break;
               }
               case 'Document': {
-                this.documents.push(result.data);
+                this.documents.push(result);
                 break;
               }
               case 'Vc': {
-                this.vcs.push(result.data);
+                this.vcs.push(result);
                 break;
               }
               default: {
