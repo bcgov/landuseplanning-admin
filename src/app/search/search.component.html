@@ -34,7 +34,7 @@
           No result<span *ngIf="count != 1">s</span> found for "{{keywords}}"
         </h5>
         <h5 *ngIf="ranSearch && !searching && count > 0">
-          {{count}} result<span *ngIf="count != 1">s</span> found for "{{keywords}}"
+          Showing {{ results.length }} of {{count}} result<span *ngIf="count != 1">s</span> for "{{keywords}}"
         </h5>
       </div>
     </form>
