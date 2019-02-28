@@ -71,7 +71,7 @@
           </div>
           <div class="app-details" *ngIf="result._schemaName === 'Vc'">
             <div class="card">
-              <h5 class="card-header"><i class="material-icons">switch_camera</i>&nbsp;&nbsp;&nbsp;Valued Component</h5>
+              <h2 class="card-header"><i class="material-icons">switch_camera</i>&nbsp;&nbsp;&nbsp;Valued Component</h2>
               <div class="card-body">
                 <h5 class="card-title">{{result.name}}</h5>
                 <p class="card-text">{{result.description}}</p>
@@ -87,7 +87,7 @@
       <div *ngIf="this.terms.dataset === 'Document'">
         <div class="app-details" *ngFor="let result of results">
           <div class="card">
-            <h5 class="card-header"><i class="material-icons">picture_as_pdf</i></h5>
+              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document</h2>
             <div class="card-body">
               <h5 class="card-title">{{result.displayName}}</h5>
               <p class="card-text">{{result.datePosted | date:'medium'}}</p>
@@ -113,7 +113,7 @@
       <div *ngIf="this.terms.dataset === 'Vc'">
         <div class="app-details" *ngFor="let result of results">
           <div class="card">
-            <h5 class="card-header"><i class="material-icons">stars</i></h5>
+              <h2 class="card-header"><i class="material-icons">switch_camera</i>&nbsp;&nbsp;&nbsp;Valued Component</h2>
             <div class="card-body">
               <h5 class="card-title">{{result.name}}</h5>
               <p class="card-text">{{result.description}}</p>
