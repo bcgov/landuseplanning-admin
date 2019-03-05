@@ -8,9 +8,9 @@ import { NewlinesPipe } from 'app/pipes/newlines.pipe';
 import { CommentService } from 'app/services/comment.service';
 import { ExcelService } from 'app/services/excel.service';
 import { ApiService } from 'app/services/api';
-import { Application } from 'app/models/application';
+import { Project } from 'app/models/project';
 import { Comment } from 'app/models/comment';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 import { ActivatedRoute } from '@angular/router';
 import { ActivatedRouteStub } from 'app/spec/helpers';
 import { of, throwError } from 'rxjs';
@@ -26,11 +26,11 @@ describe('ReviewCommentsComponent', () => {
   let component: ReviewCommentsComponent;
   let fixture: ComponentFixture<ReviewCommentsComponent>;
   const commentPeriod = new CommentPeriod({ _id: 'COMMENT_PERIOD_ID' });
-  const existingApplication = new Application({
+  const existingProject = new Project({
     _id: 'APPLICATION_ID',
     currentPeriods: commentPeriod
   });
-  const validRouteData = { application: existingApplication };
+  const validRouteData = { project: existingProject };
 
   const activatedRouteStub = new ActivatedRouteStub(validRouteData);
   const firstComment = new Comment({
@@ -49,7 +49,7 @@ describe('ReviewCommentsComponent', () => {
       return of(20);
     },
 
-    getAllByApplicationId() {
+    getAllByProjectId() {
       return of(comments);
     }
   };
@@ -89,7 +89,7 @@ describe('ReviewCommentsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('when the application is retrievable from the route', () => {
+  describe('when the project is retrievable from the route', () => {
     let commentService;
 
     beforeEach(() => {
@@ -97,12 +97,12 @@ describe('ReviewCommentsComponent', () => {
       commentService = TestBed.get(CommentService);
     });
 
-    it('sets the component application to the one from the route', () => {
-      expect(component.application).toEqual(existingApplication);
+    it('sets the component project to the one from the route', () => {
+      expect(component.project).toEqual(existingProject);
     });
 
     describe('pageCount', () => {
-      it('calls the comment service with the applications current period id', () => {
+      it('calls the comment service with the projects current period id', () => {
         spyOn(commentService, 'getCountByPeriodId').and.callThrough();
 
         component.ngOnInit();
@@ -131,7 +131,7 @@ describe('ReviewCommentsComponent', () => {
 
     describe('comments', () => {
       it('calls the comment service with the correct parameters', () => {
-        spyOn(commentService, 'getAllByApplicationId').and.callThrough();
+        spyOn(commentService, 'getAllByProjectId').and.callThrough();
 
         component.ngOnInit();
 
@@ -139,7 +139,7 @@ describe('ReviewCommentsComponent', () => {
         let expectedPageSize = 20;
         let expectedSortFilter = '-dateAdded';
 
-        expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
+        expect(commentService.getAllByProjectId).toHaveBeenCalledWith(
           'APPLICATION_ID',
           expectedPageNumber,
           expectedPageSize,
@@ -156,7 +156,7 @@ describe('ReviewCommentsComponent', () => {
       it('redirects to login if the commment service returns a 403', () => {
         let forbiddenError = { status: 403, message: 'Permission Denied!' };
 
-        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+        spyOn(commentService, 'getAllByProjectId').and.returnValue(
           throwError(forbiddenError)
         );
         let navigateSpy = spyOn((<any>component).router, 'navigate');
@@ -167,7 +167,7 @@ describe('ReviewCommentsComponent', () => {
       });
 
       it('adds the error message to the alerts', () => {
-        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+        spyOn(commentService, 'getAllByProjectId').and.returnValue(
           throwError('Houston we have a problem')
         );
 
@@ -179,7 +179,7 @@ describe('ReviewCommentsComponent', () => {
 
     describe('sorting', () => {
       it('pulls down new comments when the sort selection is changed', () => {
-        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+        spyOn(commentService, 'getAllByProjectId').and.returnValue(
           of([secondComment, firstComment])
         );
 
@@ -190,7 +190,7 @@ describe('ReviewCommentsComponent', () => {
         let expectedPageSize = 20;
         let expectedSortFilter = '%2BcontactName';
 
-        expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
+        expect(commentService.getAllByProjectId).toHaveBeenCalledWith(
           'APPLICATION_ID',
           expectedPageNumber,
           expectedPageSize,
@@ -217,7 +217,7 @@ describe('ReviewCommentsComponent', () => {
 
       describe('when "View Next Page" is clicked', () => {
         it('pulls down the next 20 comments', done => {
-          spyOn(commentService, 'getAllByApplicationId').and.returnValue(
+          spyOn(commentService, 'getAllByProjectId').and.returnValue(
             of([secondComment, firstComment])
           );
 
@@ -232,7 +232,7 @@ describe('ReviewCommentsComponent', () => {
             let expectedPageSize = 20;
             let expectedSortFilter = '-dateAdded';
 
-            expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
+            expect(commentService.getAllByProjectId).toHaveBeenCalledWith(
               'APPLICATION_ID',
               expectedPageNumber,
               expectedPageSize,
@@ -247,7 +247,7 @@ describe('ReviewCommentsComponent', () => {
 
       describe('when "View Previous Page" is clicked', () => {
         it('it pulls down the prior 20 comments', done => {
-          spyOn(commentService, 'getAllByApplicationId').and.callThrough();
+          spyOn(commentService, 'getAllByProjectId').and.callThrough();
 
           component.pageNum = 2;
 
@@ -260,7 +260,7 @@ describe('ReviewCommentsComponent', () => {
             let expectedPageSize = 20;
             let expectedSortFilter = '-dateAdded';
 
-            expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
+            expect(commentService.getAllByProjectId).toHaveBeenCalledWith(
               'APPLICATION_ID',
               expectedPageNumber,
               expectedPageSize,
@@ -274,7 +274,7 @@ describe('ReviewCommentsComponent', () => {
     });
   });
 
-  describe('when the application is not available from the route', () => {
+  describe('when the project is not available from the route', () => {
     beforeEach(() => {
       activatedRouteStub.setData({ something: 'went wrong' });
     });

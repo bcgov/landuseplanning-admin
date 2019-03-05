@@ -10,7 +10,7 @@ import { of, throwError } from 'rxjs';
 import { ActivatedRouteStub } from 'app/spec/helpers';
 import { By } from '@angular/platform-browser';
 import { tick } from '@angular/core/src/render3';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;

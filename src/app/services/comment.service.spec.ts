@@ -5,7 +5,7 @@ import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Comment } from 'app/models/comment';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 
 describe('CommentService', () => {
   let service;

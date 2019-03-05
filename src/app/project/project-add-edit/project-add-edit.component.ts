@@ -15,7 +15,7 @@ import * as _ from 'lodash';
 
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Project } from 'app/models/project';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 import { Document } from 'app/models/document';
 import { Decision } from 'app/models/decision';
 import { ApiService } from 'app/services/api';

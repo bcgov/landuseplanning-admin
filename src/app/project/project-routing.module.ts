@@ -15,6 +15,7 @@ import { ReviewCommentsComponent } from './review-comments/review-comments.compo
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 
 import { ProjectResolver } from './project-resolver.service';
+import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
 
 const routes: Routes = [
   {
@@ -40,6 +41,9 @@ const routes: Routes = [
       {
         path: 'valued-components',
         component: ValuedComponentsComponent,
+        resolve: {
+          valuedComponents: ValuedComponentsResolver
+        }
       },
       {
         path: 'project-updates',
@@ -88,7 +92,8 @@ const routes: Routes = [
   ],
   providers: [
     ProjectResolver,
-    CommentPeriodsResolver
+    CommentPeriodsResolver,
+    ValuedComponentsResolver
   ]
 })
 

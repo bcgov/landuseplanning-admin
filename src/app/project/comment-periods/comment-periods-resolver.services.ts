@@ -3,7 +3,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/r
 import { Observable } from 'rxjs/Observable';
 
 import { CommentPeriodService } from 'app/services/commentperiod.service';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 
 @Injectable()
 export class CommentPeriodsResolver implements Resolve<CommentPeriod[]> {
