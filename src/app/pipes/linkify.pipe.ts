@@ -18,10 +18,12 @@ export class LinkifyPipe implements PipeTransform {
 
     const linkify = new LinkifyIt();
 
-    linkify.match(str).forEach(match => {
-      str = str.replace(match.text, `<a href="${match.url}" target="_blank">${match.text}</a>`);
-    });
-
+    const matches = linkify.match(str);
+    if (matches) {
+      matches.forEach(match => {
+        str = str.replace(match.text, `<a href="${match.url}" target="_blank">${match.text}</a>`);
+      });
+    }
     return str;
   }
 }
