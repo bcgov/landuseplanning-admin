@@ -47,6 +47,7 @@ import { TopicService } from 'app/services/topic.service';
 // feature modules
 import { TokenInterceptor } from './utils/token-interceptor';
 import { DayCalculatorModalComponent } from './day-calculator-modal/day-calculator-modal.component';
+import { AddEditTopicComponent } from 'app/administration/topics/add-edit-topic/add-edit-topic.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -59,6 +60,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AppComponent,
     ConfirmComponent,
     DayCalculatorModalComponent,
+    AddEditTopicComponent,
     FooterComponent,
     HeaderComponent,
     HomeComponent,
@@ -112,7 +114,8 @@ export function kcFactory(keycloakService: KeycloakService) {
   entryComponents: [
     // AddEditUserComponent,
     ConfirmComponent,
-    DayCalculatorModalComponent
+    DayCalculatorModalComponent,
+    AddEditTopicComponent
   ],
   bootstrap: [AppComponent]
 })

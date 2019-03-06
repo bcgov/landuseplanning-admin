@@ -373,6 +373,33 @@ export class ApiService {
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
+  getTopic(id: string): Observable<Topic[]> {
+    const fields = [
+      'description',
+      'name',
+      'type',
+      'pillar',
+      'parent'
+    ];
+    const queryString = `topic/${id}?fields=${this.buildValues(fields)}`;
+    return this.http.get<Topic[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  addTopic(topic: Topic): Observable<Topic> {
+    const queryString = `topic/`;
+    return this.http.post<Topic>(`${this.pathAPI}/${queryString}`, topic, {});
+  }
+
+  saveTopic(topic: Topic): Observable<Topic> {
+    const queryString = `topic/${topic._id}`;
+    return this.http.put<Topic>(`${this.pathAPI}/${queryString}`, topic, {});
+  }
+
+  deleteTopic(topic: Topic): Observable<Topic> {
+    const queryString = `topic/${topic._id}`;
+    return this.http.delete<Topic>(`${this.pathAPI}/${queryString}`, {});
+  }
+
 
   //
   // Comments

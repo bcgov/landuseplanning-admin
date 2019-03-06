@@ -1,6 +1,15 @@
 <div class="search-container">
     <div class="container">
-      <h2>Value Components</h2>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/administration">Settings</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Topics</li>
+        </ol>
+        <button type="button"
+                class="btn btn-primary"
+                (click)="editVC(undefined)" >Add new VC</button>
+      </nav>
+      &nbsp;
       <table class="table table-bordered">
         <thead class="thead-light">
           <tr>
@@ -8,16 +17,20 @@
             <th scope="col">Description</th>
             <th scope="col">Type</th>
             <th scope="col">Pillar</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let topic of topics | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: totalTopics }"
-              (click)="selectTopic(topic)"
               class="clickable-row">
             <td scope="row">{{topic.name}}</td>
             <td>{{topic.description}}</td>
             <td>{{topic.type}}</td>
             <td>{{topic.pillar}}</td>
+            <td>
+              <button type="button" (click)="editVC(topic)" class="btn btn-primary">Edit</button>&nbsp;
+              <button type="button" (click)="deleteVC(topic)" class="btn btn-danger">Delete</button>
+            </td>
           </tr>
         </tbody>
       </table>

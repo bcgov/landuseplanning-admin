@@ -3,10 +3,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PlatformLocation } from '@angular/common';
+import { DialogService } from 'ng2-bootstrap-modal';
 
 import { Topic } from 'app/models/topic';
 import { TopicService } from 'app/services/topic.service';
-// import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
+import { AddEditTopicComponent } from 'app/administration/topics/add-edit-topic/add-edit-topic.component';
+import { ModalResult } from 'app/administration/topics/add-edit-topic/add-edit-topic.component';
+import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 @Component({
   selector: 'app-users',
@@ -26,21 +31,67 @@ export class TopicsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
+    private platformLocation: PlatformLocation,
     private route: ActivatedRoute,
     private topicService: TopicService,
+    private dialogService: DialogService,
     private router: Router,
+    private modalService: NgbModal,
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.topicService.getAllTopics(1, 10, '')
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe((res: any) => {
-      this.topicsLoading = false;
-      this.totalTopics = res.totalCount;
-      this.topics = res.data;
-      this._changeDetectionRef.detectChanges();
+    this.route.queryParams.subscribe(params => {
+      this.currentPage = params.currentPage;
+      this.pageSize = params.pageSize;
+      this.topicService.getAllTopics(params.currentPage, params.pageSize, '')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res: any) => {
+        this.topicsLoading = false;
+        this.totalTopics = res.totalCount;
+        this.topics = res.data;
+        this._changeDetectionRef.detectChanges();
+      });
     });
+  }
+
+  deleteVC(vc) {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Delete Valued Component',
+        message: 'Click OK to delete this Valued Component or Cancel to return to the list.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            // Delete the VC
+            this.topicService.delete(vc)
+            .subscribe(
+              () => {
+                this.getPaginatedTopics(this.currentPage);
+              },
+              error => {
+                console.log('error =', error);
+              });
+          }
+        }
+      );
+  }
+
+  editVC(vc) {
+    let dlg = this.modalService.open(AddEditTopicComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
+    dlg.componentInstance.model = vc;
+    dlg.result.then(result => {
+      switch (result) {
+        case ModalResult.Save:
+          this.getPaginatedTopics(this.currentPage);
+        break;
+      }
+    });
+    return;
   }
 
   getPaginatedTopics(pageNumber) {
@@ -62,60 +113,12 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   updateUrl() {
     let currentUrl = this.router.url;
+    currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
     currentUrl = currentUrl.split('?')[0];
     currentUrl += `?currentPage=${this.currentPage}&pageSize=${this.pageSize}`;
+    currentUrl += '&ms=' + new Date().getTime();
     window.history.replaceState({}, '', currentUrl);
   }
-
-  // addUser() {
-  //   this.dialogService.addDialog(AddEditUserComponent,
-  //     {
-  //       title: 'Create User',
-  //       message: 'Add',
-  //       model: null
-  //     }, {
-  //       // index: 0,
-  //       // autoCloseTimeout: 10000,
-  //       // closeByClickingOutside: true,
-  //       backdropColor: 'rgba(0, 0, 0, 0.5)'
-  //     })
-  //     .takeUntil(this.ngUnsubscribe)
-  //     .subscribe(
-  //       isConfirmed => {
-  //         // we get dialog result
-  //         if (isConfirmed) {
-  //           // console.log('saved');
-  //           this.refreshUsersUI();
-  //         } else {
-  //           // console.log('canceled');
-  //         }
-  //       }
-  //     );
-  // }
-
-  // selectUser(user) {
-  //   this.dialogService.addDialog(AddEditUserComponent,
-  //     {
-  //       title: 'Edit User',
-  //       message: 'Save',
-  //       model: user
-  //     }, {
-  //       // index: 0,
-  //       // autoCloseTimeout: 10000,
-  //       // closeByClickingOutside: true,
-  //       backdropColor: 'rgba(0, 0, 0, 0.5)'
-  //     })
-  //     .takeUntil(this.ngUnsubscribe)
-  //     .subscribe((isConfirmed) => {
-  //       // we get dialog result
-  //       if (isConfirmed) {
-  //         // console.log('saved');
-  //         this.refreshUsersUI();
-  //       } else {
-  //         // console.log('canceled');
-  //       }
-  //     });
-  // }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
