@@ -18,6 +18,7 @@ import { Document } from 'app/models/document';
 import { Feature } from 'app/models/feature';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
+import { Topic } from 'app/models/topic';
 
 interface LocalLoginResponse {
   _id: string;
@@ -350,6 +351,27 @@ export class ApiService {
   unPublishCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
     const queryString = `commentperiod/${period._id}/unpublish`;
     return this.http.put<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, {});
+  }
+
+  //
+  // Topics
+  //
+  getTopics(pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
+    const fields = [
+      'description',
+      'name',
+      'type',
+      'pillar',
+      'parent'
+    ];
+
+    let queryString = `topic?`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //

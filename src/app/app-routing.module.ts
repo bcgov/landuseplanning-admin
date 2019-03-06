@@ -5,7 +5,7 @@ import { LoginComponent } from './login/login.component';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { SearchComponent } from './search/search.component';
 import { AdministrationComponent } from './administration/administration.component';
-import { UsersComponent } from './administration/users/users.component';
+import { TopicsComponent } from './administration/topics/topics.component';
 
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 
@@ -19,8 +19,8 @@ const routes: Routes = [
     component: AdministrationComponent
   },
   {
-    path: 'administration/users',
-    component: UsersComponent
+    path: 'administration/topics',
+    component: TopicsComponent
   },
   {
     path: 'not-authorized',

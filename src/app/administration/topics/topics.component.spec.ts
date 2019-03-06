@@ -1,38 +1,38 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UsersComponent } from './users.component';
+import { TopicsComponent } from './topics.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { UserService } from 'app/services/user.service';
-import { User } from 'app/models/user';
+import { TopicService } from 'app/services/topic.service';
+import { Topic } from 'app/models/topic';
 import { of } from 'rxjs';
 
-describe('UsersComponent', () => {
-  let component: UsersComponent;
-  let fixture: ComponentFixture<UsersComponent>;
+describe('TopicsComponent', () => {
+  let component: TopicsComponent;
+  let fixture: ComponentFixture<TopicsComponent>;
 
-  const mockUserService = jasmine.createSpyObj('UserService', [
+  const mockTopicService = jasmine.createSpyObj('TopicService', [
     'getAll'
   ]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UsersComponent ],
+      declarations: [ TopicsComponent ],
       imports: [ NgbModule ],
       providers: [
         { provide: DialogService },
-        { provide: UserService, useValue: mockUserService },
+        { provide: TopicService, useValue: mockTopicService },
       ]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UsersComponent);
+    fixture = TestBed.createComponent(TopicsComponent);
     component = fixture.componentInstance;
-    mockUserService.getAll.and.returnValue(
+    mockTopicService.getAll.and.returnValue(
       of([
-        new User()
+        new Topic()
       ])
     );
     fixture.detectChanges();

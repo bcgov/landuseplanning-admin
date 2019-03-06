@@ -15,7 +15,7 @@ import { ProjectsModule } from 'app/projects/projects.module';
 import { SharedModule } from 'app/shared.module';
 
 // components
-import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
+// import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
 import { AdministrationComponent } from 'app/administration/administration.component';
 import { AppComponent } from 'app/app.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
@@ -27,7 +27,7 @@ import { NotAuthorizedComponent } from './not-authorized/not-authorized.componen
 import { ProjectComponent } from './project/project.component';
 import { SearchComponent } from 'app/search/search.component';
 import { SidebarComponent } from 'app/sidebar/sidebar.component';
-import { UsersComponent } from 'app/administration/users/users.component';
+import { TopicsComponent } from 'app/administration/topics/topics.component';
 
 // services
 import { AuthenticationService } from 'app/services/authentication.service';
@@ -42,6 +42,7 @@ import { KeycloakService } from 'app/services/keycloak.service';
 import { ProjectService } from 'app/services/project.service';
 import { SearchService } from 'app/services/search.service';
 import { UserService } from 'app/services/user.service';
+import { TopicService } from 'app/services/topic.service';
 
 // feature modules
 import { TokenInterceptor } from './utils/token-interceptor';
@@ -53,7 +54,7 @@ export function kcFactory(keycloakService: KeycloakService) {
 
 @NgModule({
   declarations: [
-    AddEditUserComponent,
+    // AddEditUserComponent,
     AdministrationComponent,
     AppComponent,
     ConfirmComponent,
@@ -66,7 +67,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     ProjectComponent,
     SearchComponent,
     SidebarComponent,
-    UsersComponent
+    TopicsComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -105,10 +106,11 @@ export function kcFactory(keycloakService: KeycloakService) {
     FeatureService,
     ProjectService,
     SearchService,
-    UserService
+    UserService,
+    TopicService
   ],
   entryComponents: [
-    AddEditUserComponent,
+    // AddEditUserComponent,
     ConfirmComponent,
     DayCalculatorModalComponent
   ],
