@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { map, flatMap } from 'rxjs/operators';
-import { of, forkJoin } from 'rxjs';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { Observable, of, forkJoin } from 'rxjs';
+import { map, flatMap, mergeMap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
@@ -32,7 +28,9 @@ export class CommentService {
   // get count of comments for the specified comment period id
   getCountByPeriodId(periodId: string): Observable<number> {
     return this.api.getCountCommentsByPeriodId(periodId)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get all comments for the specified application id
@@ -40,15 +38,17 @@ export class CommentService {
   getAllByApplicationId(appId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null, params: GetParameters = null): Observable<Comment[]> {
     // first get the comment periods
     return this.commentPeriodService.getAllByApplicationId(appId)
-      .mergeMap(periods => {
-        if (periods && periods.length > 0) {
-          // get comments for first comment period only
-          // multiple comment periods are currently not supported
-          return this.getAllByPeriodId(periods[0]._id, pageNum, pageSize, sortBy, params);
-        }
-        return of([] as Comment[]);
-      })
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        mergeMap(periods => {
+          if (periods && periods.length > 0) {
+            // get comments for first comment period only
+            // multiple comment periods are currently not supported
+            return this.getAllByPeriodId(periods[0]._id, pageNum, pageSize, sortBy, params);
+          }
+          return of([] as Comment[]);
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get all comments for the specified comment period id
@@ -56,17 +56,17 @@ export class CommentService {
   getAllByPeriodId(periodId: string, pageNum: number = 0, pageSize: number = 10, sortBy: string = null, params: GetParameters = null): Observable<Comment[]> {
     // first get just the comments
     return this.api.getCommentsByPeriodId(periodId, pageNum, pageSize, sortBy)
-      .map(res => {
-        if (res && res.length > 0) {
-          const comments: Array<Comment> = [];
-          res.forEach(comment => {
-            comments.push(new Comment(comment));
-          });
-          return comments;
-        }
-        return [];
-      })
       .pipe(
+        map(res => {
+          if (res && res.length > 0) {
+            const comments: Array<Comment> = [];
+            res.forEach(comment => {
+              comments.push(new Comment(comment));
+            });
+            return comments;
+          }
+          return [];
+        }),
         flatMap(comments => {
           // now get the documents for each comment
           if (params && params.getDocuments) {
@@ -87,9 +87,9 @@ export class CommentService {
           }
 
           return of(comments);
-        })
-      )
-      .catch(error => this.api.handleError(error));
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get a specific comment by its id
@@ -119,9 +119,9 @@ export class CommentService {
             return of(comment);
           }
           return of(null as Comment);
-        })
-      )
-      .catch(error => this.api.handleError(error));
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   add(orig: Comment): Observable<Comment> {
@@ -143,7 +143,9 @@ export class CommentService {
     }
 
     return this.api.addComment(comment)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   save(orig: Comment): Observable<Comment> {
@@ -162,17 +164,23 @@ export class CommentService {
     }
 
     return this.api.saveComment(comment)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   publish(comment: Comment): Observable<Comment> {
     return this.api.publishComment(comment)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   unPublish(comment: Comment): Observable<Comment> {
     return this.api.unPublishComment(comment)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   isAccepted(comment: Comment): boolean {

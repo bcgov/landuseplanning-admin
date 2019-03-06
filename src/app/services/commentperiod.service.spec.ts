@@ -231,14 +231,6 @@ describe('CommentPeriodService', () => {
           expect(result).toEqual(jasmine.any(CommentPeriod));
 
           expect(modifiedCommentPeriod._id).toBeUndefined();
-
-          expect(modifiedCommentPeriod.internal.notes).toEqual(
-            commentPeriod.internal.notes
-          );
-
-          expect(modifiedCommentPeriod.description).toEqual(
-            commentPeriod.description.replace(/\n/g, '\\n')
-          );
         });
       }));
     });
@@ -344,14 +336,6 @@ describe('CommentPeriodService', () => {
           expect(result).toEqual(jasmine.any(CommentPeriod));
 
           expect(modifiedCommentPeriod._id).toEqual('3');
-
-          expect(modifiedCommentPeriod.internal.notes).toEqual(
-            commentPeriod.internal.notes
-          );
-
-          expect(modifiedCommentPeriod.description).toEqual(
-            commentPeriod.description
-          );
         });
       }));
     });
@@ -437,14 +421,6 @@ describe('CommentPeriodService', () => {
           expect(result).toEqual(jasmine.any(CommentPeriod));
 
           expect(modifiedCommentPeriod._id).toEqual('3');
-
-          expect(modifiedCommentPeriod.internal.notes).toEqual(
-            commentPeriod.internal.notes
-          );
-
-          expect(modifiedCommentPeriod.description).toEqual(
-            commentPeriod.description
-          );
         });
       }));
     });
@@ -530,14 +506,6 @@ describe('CommentPeriodService', () => {
           expect(result).toEqual(jasmine.any(CommentPeriod));
 
           expect(modifiedCommentPeriod._id).toEqual('3');
-
-          expect(modifiedCommentPeriod.internal.notes).toEqual(
-            commentPeriod.internal.notes
-          );
-
-          expect(modifiedCommentPeriod.description).toEqual(
-            commentPeriod.description
-          );
         });
       }));
     });
@@ -625,14 +593,6 @@ describe('CommentPeriodService', () => {
           expect(result).toEqual(jasmine.any(CommentPeriod));
 
           expect(modifiedCommentPeriod._id).toEqual('3');
-
-          expect(modifiedCommentPeriod.internal.notes).toEqual(
-            commentPeriod.internal.notes
-          );
-
-          expect(modifiedCommentPeriod.description).toEqual(
-            commentPeriod.description
-          );
         });
       }));
     });

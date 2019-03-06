@@ -12,9 +12,6 @@
     "curly": true,
     "eofline": true,
     "forin": true,
-    "import-blacklist": [
-      true
-    ],
     "import-spacing": true,
     "indent": [
       true,
@@ -28,9 +25,10 @@
     ],
     "member-access": false,
     "member-ordering": [
-      true,
-      "static-before-instance",
-      "variables-before-functions"
+      false,
+      {
+        "order": "statics-first"
+      }
     ],
     "no-arg": true,
     "no-bitwise": true,
@@ -68,7 +66,7 @@
       "check-else",
       "check-whitespace"
     ],
-    "prefer-const": false,
+    "prefer-const": true,
     "quotemark": [
       true,
       "single"

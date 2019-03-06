@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-not-authorized',
@@ -17,7 +18,9 @@ export class NotAuthorizedComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParamMap
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(paramMap => {
         this.loggedout = paramMap.get('loggedout') === 'true';
       });

@@ -6,7 +6,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
-import { CookieService } from 'ngx-cookie-service';
 
 // modules
 import { SharedModule } from 'app/shared.module';
@@ -86,7 +85,6 @@ export function kcFactory(keycloakService: KeycloakService) {
       useClass: TokenInterceptor,
       multi: true
     },
-    CookieService,
     SearchService,
     FeatureService,
     AuthenticationService,

@@ -40,9 +40,9 @@
                   {{(item.dateAdded | date) || '-'}}
                 </div>
               </div>
-              
+
               <div class="comment-body">{{item.comment}}</div>
-              
+
               <div class="comment-attachments" *ngIf="item.documents.length > 0">
                 <i class="material-icons">
                   attach_file
@@ -72,7 +72,7 @@
       </div>
       <div class="review-comments__detail panel">
         <div class="panel-scroll">
-          <app-comment-detail [comment]="currentComment" (commentChange)="setCurrentComment($event)"></app-comment-detail>
+          <app-comment-detail [comment]="currentComment"></app-comment-detail>
         </div>
       </div>
     </div>

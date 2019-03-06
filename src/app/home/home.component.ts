@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { ApplicationService } from 'app/services/application.service';
 
@@ -11,7 +11,6 @@ import { ApplicationService } from 'app/services/application.service';
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
-  private numApplications: number = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -22,11 +21,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     // although we aren't currently using numApplications,
     // this verifies our login token and redirects in case of error
     this.applicationService.getCount()
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
-        value => {
-          this.numApplications = value;
-        },
+        () => {},
         () => {
           console.log('error = could not count applications');
         }
