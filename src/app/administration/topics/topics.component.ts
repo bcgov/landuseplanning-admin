@@ -24,7 +24,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   public topics: Array<Topic>;
   public topicsLoading = true;
   public pageNum = 1;
-  public pageSize = 10;
+  public pageSize = 15;
   public currentPage = 1;
   public totalTopics = 0;
   public sortBy = '';
@@ -43,7 +43,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.currentPage = params.currentPage;
-      this.pageSize = params.pageSize;
+      this.pageSize = params.pageSize || 15;
       this.topicService.getAllTopics(params.currentPage, params.pageSize, '')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
