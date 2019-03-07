@@ -1,21 +1,17 @@
 <div class="sidebar">
-  <section class="active" [hidden]='!showProjectDetails'>
-    <a class="dropdown-btn" [routerLink]="['p', currentProjectId]">
+  <section [hidden]='!showProjectDetails' class="bg-light">
+    <a class="dropdown-btn " [routerLink]="['p', currentProjectId]">
         Project Details
       </a>
-      <a role="button" (click)="toggleDropdown();">
-          <i class="material-icons open-icon" [hidden]='showProjectDetailsSubItems'>arrow_drop_down</i>
-          <i class="material-icons close-icon" [hidden]='!showProjectDetailsSubItems'>arrow_drop_up</i>
-        </a>
-      <div [hidden]='!showProjectDetailsSubItems' class="project-details-dropdown-container active">
-        <a [routerLink]="['p', currentProjectId, 'compliance']">Compliance</a>
-        <a [routerLink]="['p', currentProjectId, 'valued-components']">Valued Components</a>
-        <a [routerLink]="['p', currentProjectId, 'project-updates']">Project Updates</a>
-        <a [routerLink]="['p', currentProjectId, 'project-contracts']">Project Contacts</a>
-        <a [routerLink]="['p', currentProjectId, 'comment-periods']">Comment Periods</a>
-        <a [routerLink]="['p', currentProjectId, 'milestones']">Milestones</a>
-    </div>
+        <a class="text-lowercase" [routerLink]="['p', currentProjectId, 'compliance']"><i class="material-icons mr-3">event_note</i>Compliance</a>
+        <a [routerLink]="['p', currentProjectId, 'valued-components']"><i class="material-icons mr-3">view_list</i>Valued Components</a>
+        <a [routerLink]="['p', currentProjectId, 'project-updates']"><i class="material-icons mr-3">fiber_new</i>Project Updates</a>
+        <a [routerLink]="['p', currentProjectId, 'project-contracts']"><i class="material-icons mr-3">person</i>Project Contacts</a>
+        <a [routerLink]="['p', currentProjectId, 'comment-periods']"><i class="material-icons mr-3">comment</i>Comment Periods</a>
+        <a [routerLink]="['p', currentProjectId, 'milestones']"><i class="material-icons mr-3">playlist_add</i>Milestones</a>
   </section>
-
-  <a [routerLink]="['/administration']">Settings</a>
+  <section class="bg-secondary">
+    <a [routerLink]="['/projects']"><i class="material-icons mr-3">view_list</i>ALL PROJECTS</a>
+    <a [routerLink]="['/administration']"><i class="material-icons mr-3 ">settings</i>SETTINGS</a>
+  </section>
 </div>

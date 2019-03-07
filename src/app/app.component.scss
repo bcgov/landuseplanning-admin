@@ -27,10 +27,10 @@ app-header {
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
-  margin-left: 200px;
+  margin-left: 250px;
   height: 1000px;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 650px) {
   div.content {margin-left: 0;}
 }

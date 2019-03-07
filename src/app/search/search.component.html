@@ -1,5 +1,10 @@
 <div class="search-container">
-  <div class="container">
+  <div class="container-fluid-padding">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Find</li>
+      </ol>
+    </nav>
     <h1>Find Environmental Assessment Projects</h1>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
       <label class="form-check-inline">
@@ -41,7 +46,7 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container-fluid-padding">
   <div class="search-results">
     <div *ngIf="count > 0">
       <!-- ALL -->
