@@ -1,4 +1,4 @@
-import { CommentPeriod } from './commentperiod';
+import { CommentPeriod } from './commentPeriod';
 import * as moment from 'moment';
 
 export class Project {

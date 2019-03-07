@@ -43,6 +43,7 @@ import { ProjectService } from 'app/services/project.service';
 import { SearchService } from 'app/services/search.service';
 import { UserService } from 'app/services/user.service';
 import { TopicService } from 'app/services/topic.service';
+import { ValuedComponentService } from './services/valued-component.service';
 
 // feature modules
 import { TokenInterceptor } from './utils/token-interceptor';
@@ -109,7 +110,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     ProjectService,
     SearchService,
     UserService,
-    TopicService
+    TopicService,
+    ValuedComponentService
   ],
   entryComponents: [
     // AddEditUserComponent,

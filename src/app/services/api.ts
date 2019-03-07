@@ -12,13 +12,14 @@ import { KeycloakService } from 'app/services/keycloak.service';
 import { Project } from 'app/models/project';
 import { Client } from 'app/models/client';
 import { Comment } from 'app/models/comment';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 import { Decision } from 'app/models/decision';
 import { Document } from 'app/models/document';
 import { Feature } from 'app/models/feature';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 import { Topic } from 'app/models/topic';
+import { ValuedComponent } from 'app/models/valuedComponent';
 
 interface LocalLoginResponse {
   _id: string;
@@ -582,6 +583,49 @@ export class ApiService {
   }
 
   //
+  // Valued Component
+  //
+  getValuedComponents(): Observable<ValuedComponent[]> {
+    const fields = [
+      '_id',
+      '_schemaName',
+      'code',
+      'description',
+      'name',
+      'parent',
+      'pillar',
+      'project',
+      'stage',
+      'title',
+      'type'];
+    // NB: max 1000 records
+    const queryString = `vc?fields=${this.buildValues(fields)}`;
+    return this.http.get<ValuedComponent[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+  getValuedComponentsByProjectId(projectId: String, pageNum: number, pageSize: number, sortBy: string = null): Observable<Object> {
+    const fields = [
+      '_id',
+      '_schemaName',
+      'code',
+      'description',
+      'name',
+      'parent',
+      'pillar',
+      'project',
+      'stage',
+      'title',
+      'type'];
+
+      let queryString = `vc?projectId=${projectId}&`;
+      if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+      if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+      if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+      queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  //
   // Searching
   //
   searchKeywords(keys: string, dataset: string): Observable<SearchResults[]> {
@@ -624,5 +668,4 @@ export class ApiService {
     // trim the last |
     return values.replace(/\|$/, '');
   }
-
 }

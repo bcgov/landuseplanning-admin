@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 
 @Component({
   selector: 'app-comment-periods',

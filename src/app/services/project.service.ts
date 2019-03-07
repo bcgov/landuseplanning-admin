@@ -15,7 +15,7 @@ import { DecisionService } from './decision.service';
 import { FeatureService } from './feature.service';
 
 import { Project } from 'app/models/project';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 
 interface GetParameters {
   getFeatures?: boolean;
