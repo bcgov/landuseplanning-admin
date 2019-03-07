@@ -366,7 +366,7 @@ export class ApiService {
     ];
 
     let queryString = `topic?`;
-    if (pageNum !== null) { queryString += `pageNum=${pageNum}&`; }
+    if (pageNum !== null) { queryString += `pageNum=${pageNum-1}&`; }
     if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
     if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
     queryString += `fields=${this.buildValues(fields)}`;
