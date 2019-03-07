@@ -191,13 +191,13 @@ hr {
 .top-container {
   @include flex(0 0 auto); 
   position: relative;
-  padding-right: 17px; // Offset approximate width of scrollbar
+  padding-right: 5px; // Offset approximate width of scrollbar
   box-shadow: 0 0 0.5rem rgba(0,0,0,0.15);
   z-index: 999;
   
   .container {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 }
 
