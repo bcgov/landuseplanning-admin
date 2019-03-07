@@ -9,9 +9,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import * as _ from 'lodash';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Application } from 'app/models/application';
 import { ApplicationService } from 'app/services/application.service';
@@ -43,7 +42,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // get optional query parameters
     this.route.queryParamMap
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(paramMap => {
         this.paramMap = paramMap;
 
@@ -53,7 +54,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
     // get data
     this.applicationService.getAll({ getCurrentPeriod: true })
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         applications => {
           this.loading = false;

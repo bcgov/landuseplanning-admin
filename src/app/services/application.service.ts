@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { flatMap } from 'rxjs/operators';
-import { of, forkJoin } from 'rxjs';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { Observable, of, forkJoin } from 'rxjs';
+import { flatMap, map, catchError } from 'rxjs/operators';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -57,7 +54,9 @@ export class ApplicationService {
   // get count of applications
   getCount(): Observable<number> {
     return this.api.getCountApplications()
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get all applications
@@ -78,9 +77,9 @@ export class ApplicationService {
             observables.push(this._getExtraAppData(new Application(app), params || {}));
           });
           return forkJoin(observables);
-        })
-      )
-      .catch(error => this.api.handleError(error));
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get applications by their Crown Land ID
@@ -100,9 +99,9 @@ export class ApplicationService {
             observables.push(this._getExtraAppData(new Application(app), params || {}));
           });
           return forkJoin(observables);
-        })
-      )
-      .catch(error => this.api.handleError(error));
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get a specific application by its Tantalis ID
@@ -116,9 +115,9 @@ export class ApplicationService {
           }
           // now get the rest of the data for this application
           return this._getExtraAppData(new Application(apps[0]), params || {});
-        })
-      )
-      .catch(error => this.api.handleError(error));
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get a specific application by its object id
@@ -132,9 +131,9 @@ export class ApplicationService {
           }
           // now get the rest of the data for this application
           return this._getExtraAppData(new Application(apps[0]), params || {});
-        })
-      )
-      .catch(error => this.api.handleError(error));
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   private _getExtraAppData(application: Application, { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getDecision = false }: GetParameters): Observable<Application> {
@@ -144,7 +143,8 @@ export class ApplicationService {
       getCurrentPeriod ? this.commentPeriodService.getAllByApplicationId(application._id) : of(null),
       getDecision ? this.decisionService.getByApplicationId(application._id, { getDocuments: true }) : of(null)
     )
-      .map(payloads => {
+    .pipe(
+      map(payloads => {
         if (getFeatures) {
           application.features = payloads[0];
         }
@@ -213,7 +213,8 @@ export class ApplicationService {
 
         // finally update the object and return
         return application;
-      });
+      })
+    );
   }
 
   // create new application
@@ -242,7 +243,9 @@ export class ApplicationService {
     }
 
     return this.api.addApplication(app)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // update existing application
@@ -265,22 +268,30 @@ export class ApplicationService {
     }
 
     return this.api.saveApplication(app)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   delete(app: Application): Observable<Application> {
     return this.api.deleteApplication(app)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   publish(app: Application): Observable<Application> {
     return this.api.publishApplication(app)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   unPublish(app: Application): Observable<Application> {
     return this.api.unPublishApplication(app)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   /**

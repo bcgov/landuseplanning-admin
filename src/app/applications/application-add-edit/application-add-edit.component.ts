@@ -5,11 +5,9 @@ import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/concat';
+import { Subject } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { takeUntil, concat } from 'rxjs/operators';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -103,7 +101,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.ngUnsubscribe);
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      );
   }
 
   // this is needed because we don't have a form control that is marked as dirty
@@ -154,7 +154,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
   ngOnInit() {
     // get data from route resolver
     this.route.data
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         (data: { application: Application }) => {
           if (data.application) {
@@ -344,7 +346,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
-        .takeUntil(this.ngUnsubscribe);
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        );
       return;
     }
 
@@ -352,7 +356,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
 
     // add application
     this.applicationService.add(this.application)
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         application2 => { // onNext
           this.addApplication2(application2);
@@ -374,24 +380,26 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     if (this.application.documents) {
       for (const doc of this.application.documents) {
         doc['formData'].append('_application', application2._id); // set back-reference
-        observables = observables.concat(this.documentService.add(doc['formData']));
+        observables = observables.pipe(concat(this.documentService.add(doc['formData'])));
       }
     }
 
     // add comment period
     if (this.application.currentPeriod) {
       this.application.currentPeriod._application = application2._id; // set back-reference
-      observables = observables.concat(this.commentPeriodService.add(this.application.currentPeriod));
+      observables = observables.pipe(concat(this.commentPeriodService.add(this.application.currentPeriod)));
     }
 
     // add decision
     if (this.application.decision) {
       this.application.decision._application = application2._id; // set back-reference
-      observables = observables.concat(this.decisionService.add(this.application.decision));
+      observables = observables.pipe(concat(this.decisionService.add(this.application.decision)));
     }
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
@@ -404,7 +412,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
         () => { // onCompleted
           // reload app with decision for next step
           this.applicationService.getById(application2._id, { getDecision: true })
-            .takeUntil(this.ngUnsubscribe)
+            .pipe(
+              takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(
               application3 => {
                 this.addApplication3(application3);
@@ -428,12 +438,14 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     if (this.application.decision && this.application.decision.documents) {
       for (const doc of this.application.decision.documents) {
         doc['formData'].append('_decision', application3.decision._id); // set back-reference
-        observables = observables.concat(this.documentService.add(doc['formData']));
+        observables = observables.pipe(concat(this.documentService.add(doc['formData'])));
       }
     }
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
@@ -477,7 +489,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
           }, {
             backdropColor: 'rgba(0, 0, 0, 0.5)'
           })
-          .takeUntil(this.ngUnsubscribe);
+          .pipe(
+            takeUntil(this.ngUnsubscribe)
+          );
         return;
       } else {
         this.dialogService.addDialog(ConfirmComponent,
@@ -488,7 +502,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
           }, {
             backdropColor: 'rgba(0, 0, 0, 0.5)'
           })
-          .takeUntil(this.ngUnsubscribe);
+          .pipe(
+            takeUntil(this.ngUnsubscribe)
+          );
         return;
       }
     }
@@ -502,7 +518,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
-        .takeUntil(this.ngUnsubscribe);
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        );
       return;
     }
 
@@ -514,7 +532,7 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     // NB: delete first and add below -- in case the user wants to simultaneously
     //     delete an old doc and add a new doc with the same name
     for (const doc of this.docsToDelete) {
-      observables = observables.concat(this.documentService.delete(doc));
+      observables = observables.pipe(concat(this.documentService.delete(doc)));
     }
     this.docsToDelete = []; // assume delete succeeds
 
@@ -523,7 +541,7 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
       for (const doc of this.application.documents) {
         if (!doc._id) {
           doc['formData'].append('_application', this.application._id); // set back-reference
-          observables = observables.concat(this.documentService.add(doc['formData']));
+          observables = observables.pipe(concat(this.documentService.add(doc['formData'])));
         }
       }
     }
@@ -532,9 +550,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     if (this.application.currentPeriod) {
       if (!this.application.currentPeriod._id) {
         this.application.currentPeriod._application = this.application._id; // set back-reference
-        observables = observables.concat(this.commentPeriodService.add(this.application.currentPeriod));
+        observables = observables.pipe(concat(this.commentPeriodService.add(this.application.currentPeriod)));
       } else {
-        observables = observables.concat(this.commentPeriodService.save(this.application.currentPeriod));
+        observables = observables.pipe(concat(this.commentPeriodService.save(this.application.currentPeriod)));
       }
     }
 
@@ -542,7 +560,7 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     // NB: delete first and add below -- in case the user wants to simultaneously
     //     delete an old decision and add a new decision
     if (this.decisionToDelete) {
-      observables = observables.concat(this.decisionService.delete(this.decisionToDelete));
+      observables = observables.pipe(concat(this.decisionService.delete(this.decisionToDelete)));
     }
     this.decisionToDelete = null; // assume delete succeeds
 
@@ -550,14 +568,16 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     if (this.application.decision) {
       if (!this.application.decision._id) {
         this.application.decision._application = this.application._id; // set back-reference
-        observables = observables.concat(this.decisionService.add(this.application.decision));
+        observables = observables.pipe(concat(this.decisionService.add(this.application.decision)));
       } else {
-        observables = observables.concat(this.decisionService.save(this.application.decision));
+        observables = observables.pipe(concat(this.decisionService.save(this.application.decision)));
       }
     }
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
@@ -570,7 +590,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
         () => { // onCompleted
           // reload app with documents, current period and decision for next step
           this.applicationService.getById(this.application._id, { getDocuments: true, getCurrentPeriod: true, getDecision: true })
-            .takeUntil(this.ngUnsubscribe)
+            .pipe(
+              takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(
               application2 => {
                 this.saveApplication2(application2);
@@ -594,7 +616,7 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     if (application2.isPublished && application2.documents) {
       for (const doc of application2.documents) {
         if (!doc.isPublished) {
-          observables = observables.concat(this.documentService.publish(doc));
+          observables = observables.pipe(concat(this.documentService.publish(doc)));
         }
       }
     }
@@ -602,14 +624,14 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     // auto-publish comment period
     if (application2.isPublished && application2.currentPeriod) {
       if (!application2.currentPeriod.isPublished) {
-        observables = observables.concat(this.commentPeriodService.publish(application2.currentPeriod));
+        observables = observables.pipe(concat(this.commentPeriodService.publish(application2.currentPeriod)));
       }
     }
 
     // auto-publish decision
     if (application2.isPublished && application2.decision) {
       if (!application2.decision.isPublished) {
-        observables = observables.concat(this.decisionService.publish(application2.decision));
+        observables = observables.pipe(concat(this.decisionService.publish(application2.decision)));
       }
     }
 
@@ -618,13 +640,15 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
       for (const doc of this.application.decision.documents) {
         if (!doc._id) {
           doc['formData'].append('_decision', application2.decision._id); // set back-reference
-          observables = observables.concat(this.documentService.add(doc['formData']));
+          observables = observables.pipe(concat(this.documentService.add(doc['formData'])));
         }
       }
     }
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
@@ -637,7 +661,9 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
         () => { // onCompleted
           // reload app with decision for next step
           this.applicationService.getById(application2._id, { getDecision: true })
-            .takeUntil(this.ngUnsubscribe)
+            .pipe(
+              takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(
               application3 => {
                 this.saveApplication3(application3);
@@ -661,16 +687,18 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     if (application3.decision && application3.decision.documents) {
       for (const doc of application3.decision.documents) {
         if (!doc.isPublished) {
-          observables = observables.concat(this.documentService.publish(doc));
+          observables = observables.pipe(concat(this.documentService.publish(doc)));
         }
       }
     }
 
     // save application
-    observables = observables.concat(this.applicationService.save(this.application));
+    observables = observables.pipe(concat(this.applicationService.save(this.application)));
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below

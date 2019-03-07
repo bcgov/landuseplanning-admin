@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Params } from '@angular/router';
+// import { Params } from '@angular/router';
 // import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable } from 'rxjs/Observable';
-import { throwError } from 'rxjs';
+// import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
 
@@ -35,7 +35,7 @@ export class ApiService {
   public isMS: boolean; // IE, Edge, etc
   // private jwtHelper: JwtHelperService;
   pathAPI: string;
-  params: Params;
+  // params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
 
   constructor(
@@ -109,18 +109,20 @@ export class ApiService {
 
   login(username: string, password: string): Observable<boolean> {
     return this.http.post<LocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
-      .map(res => {
-        // login successful if there's a jwt token in the response
-        if (res && res.accessToken) {
-          this.token = res.accessToken;
+      .pipe(
+        map(res => {
+          // login successful if there's a jwt token in the response
+          if (res && res.accessToken) {
+            this.token = res.accessToken;
 
-          // store username and jwt token in local storage to keep user logged in between page refreshes
-          window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: this.token }));
+            // store username and jwt token in local storage to keep user logged in between page refreshes
+            window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: this.token }));
 
-          return true; // successful login
-        }
-        return false; // failed login
-      });
+            return true; // successful login
+          }
+          return false; // failed login
+        })
+      );
   }
 
   logout() {

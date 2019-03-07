@@ -30,7 +30,7 @@ import { KeycloakService } from 'app/services/keycloak.service';
 export class HeaderComponent implements OnInit {
   isNavMenuOpen = false;
   welcomeMsg: String;
-  private _api: ApiService;
+  // private _api: ApiService;
   public jwt: {
     username: String,
     realm_access: {
@@ -44,8 +44,8 @@ export class HeaderComponent implements OnInit {
     private keycloakService: KeycloakService,
     public router: Router
   ) {
-    this._api = api;
-    router.events.subscribe(val => {
+    // this._api = api;
+    router.events.subscribe(() => {
       const token = this.keycloakService.getToken();
       // TODO: Change this to observe the change in the _api.token
       if (token) {

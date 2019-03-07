@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { User } from 'app/models/user';
@@ -36,7 +36,9 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.sysadmins = [];
     this.standards = [];
     this.userService.getAll()
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         data => {
           this.loading = false;
@@ -71,7 +73,9 @@ export class UsersComponent implements OnInit, OnDestroy {
         // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         isConfirmed => {
           // we get dialog result
@@ -97,7 +101,9 @@ export class UsersComponent implements OnInit, OnDestroy {
         // closeByClickingOutside: true,
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe((isConfirmed) => {
         // we get dialog result
         if (isConfirmed) {

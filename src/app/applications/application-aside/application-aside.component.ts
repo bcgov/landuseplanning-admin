@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, SimpleChanges } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
 import * as _ from 'lodash';
 
@@ -143,7 +143,9 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
       // NB: always reload results to reduce chance of race condition
       //     with drawing map and features
       this.featureService.getByApplicationId(this.application._id)
-        .takeUntil(this.ngUnsubscribe)
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        )
         .subscribe(
           features => {
             try {
@@ -173,7 +175,9 @@ export class ApplicationAsideComponent implements OnInit, OnChanges, OnDestroy {
     if (app.tantalisID) {
       const self = this; // for closure function below
       this.featureService.getByTantalisId(app.tantalisID)
-        .takeUntil(this.ngUnsubscribe)
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        )
         .subscribe(
           features => {
             if (self.fg) {

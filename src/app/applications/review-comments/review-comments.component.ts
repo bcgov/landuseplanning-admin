@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -58,14 +58,18 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // get data from route resolver
     this.route.data
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         (data: { application: Application }) => {
           if (data.application) {
             this.application = data.application;
 
             this.commentService.getCountByPeriodId(this.application.currentPeriod._id)
-              .takeUntil(this.ngUnsubscribe)
+              .pipe(
+                takeUntil(this.ngUnsubscribe)
+              )
               .subscribe(
                 value => {
                   this.pageCount = value ? Math.ceil(value / this.PAGE_SIZE) : 1;
@@ -93,7 +97,9 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
       // get a page of comments
       this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
-        .takeUntil(this.ngUnsubscribe)
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        )
         .subscribe(
           comments => {
             this.loading = false;
@@ -139,7 +145,9 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   exportToExcel() {
     // get all comments
     this.commentService.getAllByApplicationId(this.application._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         comments => {
           // FUTURE: instead of flattening, copy to new 'export object' with user-friendly keys?

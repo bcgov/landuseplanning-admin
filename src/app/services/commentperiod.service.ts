@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
@@ -21,30 +20,34 @@ export class CommentPeriodService {
   // get all comment periods for the specified application id
   getAllByApplicationId(appId: string): Observable<CommentPeriod[]> {
     return this.api.getPeriodsByAppId(appId)
-      .map(res => {
-        if (res && res.length > 0) {
-          const periods: Array<CommentPeriod> = [];
-          res.forEach(cp => {
-            periods.push(new CommentPeriod(cp));
-          });
-          return periods;
-        }
-        return [];
-      })
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        map(res => {
+          if (res && res.length > 0) {
+            const periods: Array<CommentPeriod> = [];
+            res.forEach(cp => {
+              periods.push(new CommentPeriod(cp));
+            });
+            return periods;
+          }
+          return [];
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // get a specific comment period by its id
   getById(periodId: string): Observable<CommentPeriod> {
     return this.api.getPeriod(periodId)
-      .map(res => {
-        if (res && res.length > 0) {
-          // return the first (only) comment period
-          return new CommentPeriod(res[0]);
-        }
-        return null;
-      })
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        map(res => {
+          if (res && res.length > 0) {
+            // return the first (only) comment period
+            return new CommentPeriod(res[0]);
+          }
+          return null;
+        }),
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   add(orig: CommentPeriod): Observable<CommentPeriod> {
@@ -55,7 +58,9 @@ export class CommentPeriodService {
     delete period._id;
 
     return this.api.addCommentPeriod(period)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   save(orig: CommentPeriod): Observable<CommentPeriod> {
@@ -63,22 +68,30 @@ export class CommentPeriodService {
     const period = _.cloneDeep(orig);
 
     return this.api.saveCommentPeriod(period)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   delete(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.deleteCommentPeriod(period)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   publish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.publishCommentPeriod(period)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   unPublish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.unPublishCommentPeriod(period)
-      .catch(error => this.api.handleError(error));
+      .pipe(
+        catchError(error => this.api.handleError(error))
+      );
   }
 
   // returns first period

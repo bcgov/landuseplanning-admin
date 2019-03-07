@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { SearchService } from 'app/services/search.service';
@@ -35,7 +35,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // get search terms from route
     this.route.params
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(params => {
         if (params.keywords) {
           // remove empty and duplicate items
@@ -63,7 +65,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.applications.length = 0; // empty the list
 
     this.searchService.getAppsByClidDtid(this.keywords)
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         applications => {
           applications.forEach(application => {

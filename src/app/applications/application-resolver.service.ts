@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
@@ -16,7 +16,7 @@ export class ApplicationDetailResolver implements Resolve<Application> {
     private applicationService: ApplicationService
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Application> {
+  resolve(route: ActivatedRouteSnapshot): Observable<Application> {
     const appId = route.paramMap.get('appId');
 
     if (appId === '0') {

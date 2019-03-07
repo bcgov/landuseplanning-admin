@@ -36,20 +36,23 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
     request = this.addAuthHeader(request);
 
-    return next.handle(request).catch(error => {
-      if (error.status === 403) {
-        return this.refreshToken().pipe(
-          switchMap(() => {
-            request = this.addAuthHeader(request);
-            return next.handle(request);
-          }),
-          catchError((err) => {
-            return Observable.throw(err);
-          })
-        );
-      }
-      return Observable.throw(error);
-    });
+    return next.handle(request)
+      .pipe(
+        catchError(error => {
+          if (error.status === 403) {
+            return this.refreshToken().pipe(
+              switchMap(() => {
+                request = this.addAuthHeader(request);
+                return next.handle(request);
+              }),
+              catchError((err) => {
+                return Observable.throw(err);
+              })
+            );
+          }
+          return Observable.throw(error);
+        })
+      );
   }
 
   /**

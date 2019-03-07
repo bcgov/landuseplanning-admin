@@ -1,6 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 
 import { ApplicationService } from './application.service';

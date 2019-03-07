@@ -2,10 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/concat';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
+import { takeUntil, concat } from 'rxjs/operators';
 
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Application } from 'app/models/application';
@@ -47,7 +45,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // get data from route resolver
     this.route.data
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         (data: { application: Application }) => {
           if (data.application) {
@@ -79,7 +79,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
-        .takeUntil(this.ngUnsubscribe);
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        );
       return;
     }
 
@@ -92,7 +94,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
-        .takeUntil(this.ngUnsubscribe);
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        );
       return;
     }
 
@@ -103,7 +107,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         isConfirmed => {
           if (isConfirmed) {
@@ -120,37 +126,39 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
     // delete comment period
     if (this.application.currentPeriod) {
-      observables = observables.concat(this.commentPeriodService.delete(this.application.currentPeriod));
+      observables = observables.pipe(concat(this.commentPeriodService.delete(this.application.currentPeriod)));
     }
 
     // delete decision documents
     if (this.application.decision && this.application.decision.documents) {
       for (const doc of this.application.decision.documents) {
-        observables = observables.concat(this.documentService.delete(doc));
+        observables = observables.pipe(concat(this.documentService.delete(doc)));
       }
     }
 
     // delete decision
     if (this.application.decision) {
-      observables = observables.concat(this.decisionService.delete(this.application.decision));
+      observables = observables.pipe(concat(this.decisionService.delete(this.application.decision)));
     }
 
     // delete application documents
     if (this.application.documents) {
       for (const doc of this.application.documents) {
-        observables = observables.concat(this.documentService.delete(doc));
+        observables = observables.pipe(concat(this.documentService.delete(doc)));
       }
     }
 
     // delete features
-    observables = observables.concat(this.featureService.deleteByApplicationId(this.application._id));
+    observables = observables.pipe(concat(this.featureService.deleteByApplicationId(this.application._id)));
 
     // delete application
     // do this last in case of prior failures
-    observables = observables.concat(this.applicationService.delete(this.application));
+    observables = observables.pipe(concat(this.applicationService.delete(this.application)));
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
@@ -179,7 +187,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         })
-        .takeUntil(this.ngUnsubscribe);
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        );
       return;
     }
 
@@ -190,7 +200,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         isConfirmed => {
           if (isConfirmed) {
@@ -207,28 +219,28 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
     // publish comment period
     if (this.application.currentPeriod && !this.application.currentPeriod.isPublished) {
-      observables = observables.concat(this.commentPeriodService.publish(this.application.currentPeriod));
+      observables = observables.pipe(concat(this.commentPeriodService.publish(this.application.currentPeriod)));
     }
 
     // publish decision documents
     if (this.application.decision && this.application.decision.documents) {
       for (const doc of this.application.decision.documents) {
         if (!doc.isPublished) {
-          observables = observables.concat(this.documentService.publish(doc));
+          observables = observables.pipe(concat(this.documentService.publish(doc)));
         }
       }
     }
 
     // publish decision
     if (this.application.decision && !this.application.decision.isPublished) {
-      observables = observables.concat(this.decisionService.publish(this.application.decision));
+      observables = observables.pipe(concat(this.decisionService.publish(this.application.decision)));
     }
 
     // publish application documents
     if (this.application.documents) {
       for (const doc of this.application.documents) {
         if (!doc.isPublished) {
-          observables = observables.concat(this.documentService.publish(doc));
+          observables = observables.pipe(concat(this.documentService.publish(doc)));
         }
       }
     }
@@ -236,17 +248,19 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     // publish application
     // do this last in case of prior failures
     if (!this.application.isPublished) {
-      observables = observables.concat(this.applicationService.publish(this.application));
+      observables = observables.pipe(concat(this.applicationService.publish(this.application)));
     }
 
     // finally, save publish date (first time only)
     if (!this.application.publishDate) {
       this.application.publishDate = new Date(); // now
-      observables = observables.concat(this.applicationService.save(this.application));
+      observables = observables.pipe(concat(this.applicationService.save(this.application)));
     }
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
@@ -261,7 +275,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           this.snackBarRef = this.snackBar.open('Application published...', null, { duration: 2000 });
           // reload all data
           this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true })
-            .takeUntil(this.ngUnsubscribe)
+            .pipe(
+              takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(
               application => {
                 this.isPublishing = false;
@@ -284,28 +300,28 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
     // unpublish comment period
     if (this.application.currentPeriod && this.application.currentPeriod.isPublished) {
-      observables = observables.concat(this.commentPeriodService.unPublish(this.application.currentPeriod));
+      observables = observables.pipe(concat(this.commentPeriodService.unPublish(this.application.currentPeriod)));
     }
 
     // unpublish decision documents
     if (this.application.decision && this.application.decision.documents) {
       for (const doc of this.application.decision.documents) {
         if (doc.isPublished) {
-          observables = observables.concat(this.documentService.unPublish(doc));
+          observables = observables.pipe(concat(this.documentService.unPublish(doc)));
         }
       }
     }
 
     // unpublish decision
     if (this.application.decision && this.application.decision.isPublished) {
-      observables = observables.concat(this.decisionService.unPublish(this.application.decision));
+      observables = observables.pipe(concat(this.decisionService.unPublish(this.application.decision)));
     }
 
     // unpublish application documents
     if (this.application.documents) {
       for (const doc of this.application.documents) {
         if (doc.isPublished) {
-          observables = observables.concat(this.documentService.unPublish(doc));
+          observables = observables.pipe(concat(this.documentService.unPublish(doc)));
         }
       }
     }
@@ -313,11 +329,13 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     // unpublish application
     // do this last in case of prior failures
     if (this.application.isPublished) {
-      observables = observables.concat(this.applicationService.unPublish(this.application));
+      observables = observables.pipe(concat(this.applicationService.unPublish(this.application)));
     }
 
     observables
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
@@ -332,7 +350,9 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
           this.snackBarRef = this.snackBar.open('Application unpublished...', null, { duration: 2000 });
           // reload all data
           this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true })
-            .takeUntil(this.ngUnsubscribe)
+            .pipe(
+              takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(
               application => {
                 this.isUnpublishing = false;
