@@ -24,7 +24,7 @@ export class TopicService {
   ) { }
 
   // get all topics
-  getAllTopics(pageNum: number = 0, pageSize: number = 10, sortBy: string = null): Observable<Object> {
+  getAllTopics(pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
     return this.api.getTopics(pageNum, pageSize, sortBy)
     .map((res: any) => {
       if (res) {
