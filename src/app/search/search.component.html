@@ -2,10 +2,10 @@
   <div class="container-fluid-padding">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Find</li>
+        <li class="breadcrumb-item active" aria-current="page">Search</li>
       </ol>
     </nav>
-    <h1>Find Environmental Assessment Projects</h1>
+    <h1>Search Environmental Assessment Projects</h1>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
       <label class="form-check-inline">
         <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'All'"
@@ -30,7 +30,7 @@
           <!-- prevent searching if input is empty or we're already searching -->
           <button class="btn btn-primary" type="submit" [disabled]="!terms.keywords || searching">
             <i class="spinner rotating" [hidden]="!searching"></i>
-            <span>{{searching ? 'Searching...' : 'Find'}}</span>
+            <span>{{searching ? 'Searching...' : 'Search'}}</span>
           </button>
         </div>
       </div>
