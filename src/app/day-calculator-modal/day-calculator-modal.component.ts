@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, HostListener } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Dictionary } from 'lodash';
 import * as moment from 'moment';
@@ -294,5 +294,10 @@ export class DayCalculatorModalComponent implements OnInit {
       // convert moment date back to Date() object so it displays in datepicker
       this.startDate = { 'day': startDateMoment.day(), 'month': startDateMoment.month(), 'year': startDateMoment.year() };
     }
+  }
+
+  // Handle escape key press.
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.dismiss();
   }
 }
