@@ -19,9 +19,13 @@
     ],
     "interface-over-type-literal": true,
     "label-position": true,
+    "max-classes-per-file": false,
     "max-line-length": [
-      false,
-      140
+      true,
+      {
+        "limit": 120,
+        "ignore-pattern": "^import |^export {(.*?)}|class [a-zA-Z]+ implements |//"
+      }
     ],
     "member-access": false,
     "member-ordering": [
@@ -46,6 +50,13 @@
     "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
+    "no-implicit-dependencies": [
+      true,
+      [
+        "app"
+      ],
+      "dev"
+    ],
     "no-inferrable-types": [
       true,
       "ignore-params"
@@ -53,12 +64,14 @@
     "no-shadowed-variable": true,
     "no-string-literal": false,
     "no-string-throw": true,
+    "no-submodule-imports": false,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
+    "object-literal-shorthand": false,
     "one-line": [
       true,
       "check-open-brace",
@@ -66,10 +79,19 @@
       "check-else",
       "check-whitespace"
     ],
+    "only-arrow-functions": [
+      true,
+      "allow-declarations",
+      "allow-named-functions"
+    ],
+    "ordered-imports": false,
+    "prefer-conditional-expression": false,
     "prefer-const": true,
     "quotemark": [
       true,
-      "single"
+      "single",
+      "avoid-escape",
+      "avoid-template"
     ],
     "radix": true,
     "semicolon": [
@@ -91,7 +113,15 @@
       }
     ],
     "unified-signatures": true,
-    "variable-name": false,
+    "variable-name": [
+      true,
+      "check-format",
+      "ban-keywords",
+      "allow-leading-underscore",
+      "allow-snake-case",
+      "allow-pascal-case",
+      "require-const-for-all-caps"
+    ],
     "whitespace": [
       true,
       "check-branch",
@@ -121,5 +151,9 @@
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true
-  }
+  },
+  "extends": [
+    "tslint:latest",
+    "tslint-config-prettier"
+  ]
 }

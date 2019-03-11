@@ -1,0 +1,7 @@
+dist
+
+# use stylelint for scss linting/formatting
+*.scss
+
+# prettier currently has some issues with dropping the closing ">" on to a new line
+*.html
