@@ -18,18 +18,17 @@ describe('CommentService', () => {
         CommentService,
         { provide: ApiService },
         { provide: DocumentService },
-        { provide: CommentPeriodService },
+        { provide: CommentPeriodService }
       ]
     });
 
     service = TestBed.get(CommentService);
-    comment = new Comment({commentPeriod: commentPeriod});
+    comment = new Comment({ commentPeriod: commentPeriod });
   });
 
   it('should be created', inject([CommentService], (commentService: CommentService) => {
     expect(commentService).toBeTruthy();
   }));
-
 
   // These predicate functions do not always return booleans, they can return undefined
   describe('isAccepted()', () => {

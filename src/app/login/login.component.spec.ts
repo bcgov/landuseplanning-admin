@@ -28,10 +28,9 @@ describe('LoginComponent', () => {
       providers: [
         { provide: ApiService },
         { provide: KeycloakService, useValue: mockKeycloakService },
-        { provide: Router, useValue: routerSpy },
+        { provide: Router, useValue: routerSpy }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -4,6 +4,7 @@
   @include flex-box();
   @include flex-direction(column);
   @include flex(1 1 auto);
+
   overflow: hidden;
 }
 

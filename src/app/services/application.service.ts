@@ -14,7 +14,7 @@ import { FeatureService } from './feature.service';
 import { Application } from 'app/models/application';
 import { CommentPeriod } from 'app/models/commentperiod';
 
-interface GetParameters {
+interface IGetParameters {
   getFeatures?: boolean;
   getDocuments?: boolean;
   getCurrentPeriod?: boolean;
@@ -23,7 +23,6 @@ interface GetParameters {
 
 @Injectable()
 export class ApplicationService {
-
   // statuses / query param options
   readonly ABANDONED = 'AB';
   readonly APPLICATION_UNDER_REVIEW = 'AUR';
@@ -49,101 +48,96 @@ export class ApplicationService {
     private commentService: CommentService,
     private decisionService: DecisionService,
     private featureService: FeatureService
-  ) { }
+  ) {}
 
   // get count of applications
   getCount(): Observable<number> {
-    return this.api.getCountApplications()
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.getCountApplications().pipe(catchError(error => this.api.handleError(error)));
   }
 
   // get all applications
-  getAll(params: GetParameters = null): Observable<Application[]> {
+  getAll(params: IGetParameters = null): Observable<Application[]> {
     // first get just the applications
     // NB: max 1000 records
-    return this.api.getApplications(0, 1000)
-      .pipe(
-        flatMap(apps => {
-          if (!apps || apps.length === 0) {
-            // NB: forkJoin([]) will complete immediately
-            // so return empty observable instead
-            return of([] as Application[]);
-          }
-          const observables: Array<Observable<Application>> = [];
-          apps.forEach(app => {
-            // now get the rest of the data for each application
-            observables.push(this._getExtraAppData(new Application(app), params || {}));
-          });
-          return forkJoin(observables);
-        }),
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.getApplications(0, 1000).pipe(
+      flatMap(apps => {
+        if (!apps || apps.length === 0) {
+          // NB: forkJoin([]) will complete immediately
+          // so return empty observable instead
+          return of([] as Application[]);
+        }
+        const observables: Array<Observable<Application>> = [];
+        apps.forEach(app => {
+          // now get the rest of the data for each application
+          observables.push(this._getExtraAppData(new Application(app), params || {}));
+        });
+        return forkJoin(observables);
+      }),
+      catchError(error => this.api.handleError(error))
+    );
   }
 
   // get applications by their Crown Land ID
-  getByCrownLandID(clid: string, params: GetParameters = null): Observable<Application[]> {
+  getByCrownLandID(clid: string, params: IGetParameters = null): Observable<Application[]> {
     // first get just the applications
-    return this.api.getApplicationsByCrownLandID(clid)
-      .pipe(
-        flatMap(apps => {
-          if (!apps || apps.length === 0) {
-            // NB: forkJoin([]) will complete immediately
-            // so return empty observable instead
-            return of([] as Application[]);
-          }
-          const observables: Array<Observable<Application>> = [];
-          apps.forEach(app => {
-            // now get the rest of the data for each application
-            observables.push(this._getExtraAppData(new Application(app), params || {}));
-          });
-          return forkJoin(observables);
-        }),
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.getApplicationsByCrownLandID(clid).pipe(
+      flatMap(apps => {
+        if (!apps || apps.length === 0) {
+          // NB: forkJoin([]) will complete immediately
+          // so return empty observable instead
+          return of([] as Application[]);
+        }
+        const observables: Array<Observable<Application>> = [];
+        apps.forEach(app => {
+          // now get the rest of the data for each application
+          observables.push(this._getExtraAppData(new Application(app), params || {}));
+        });
+        return forkJoin(observables);
+      }),
+      catchError(error => this.api.handleError(error))
+    );
   }
 
   // get a specific application by its Tantalis ID
-  getByTantalisID(tantalisID: number, params: GetParameters = null): Observable<Application> {
+  getByTantalisID(tantalisID: number, params: IGetParameters = null): Observable<Application> {
     // first get just the application
-    return this.api.getApplicationByTantalisId(tantalisID)
-      .pipe(
-        flatMap(apps => {
-          if (!apps || apps.length === 0) {
-            return of(null as Application);
-          }
-          // now get the rest of the data for this application
-          return this._getExtraAppData(new Application(apps[0]), params || {});
-        }),
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.getApplicationByTantalisId(tantalisID).pipe(
+      flatMap(apps => {
+        if (!apps || apps.length === 0) {
+          return of(null as Application);
+        }
+        // now get the rest of the data for this application
+        return this._getExtraAppData(new Application(apps[0]), params || {});
+      }),
+      catchError(error => this.api.handleError(error))
+    );
   }
 
   // get a specific application by its object id
-  getById(appId: string, params: GetParameters = null): Observable<Application> {
+  getById(appId: string, params: IGetParameters = null): Observable<Application> {
     // first get just the application
-    return this.api.getApplication(appId)
-      .pipe(
-        flatMap(apps => {
-          if (!apps || apps.length === 0) {
-            return of(null as Application);
-          }
-          // now get the rest of the data for this application
-          return this._getExtraAppData(new Application(apps[0]), params || {});
-        }),
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.getApplication(appId).pipe(
+      flatMap(apps => {
+        if (!apps || apps.length === 0) {
+          return of(null as Application);
+        }
+        // now get the rest of the data for this application
+        return this._getExtraAppData(new Application(apps[0]), params || {});
+      }),
+      catchError(error => this.api.handleError(error))
+    );
   }
 
-  private _getExtraAppData(application: Application, { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getDecision = false }: GetParameters): Observable<Application> {
+  private _getExtraAppData(
+    application: Application,
+    { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getDecision = false }: IGetParameters
+  ): Observable<Application> {
     return forkJoin(
       getFeatures ? this.featureService.getByApplicationId(application._id) : of(null),
       getDocuments ? this.documentService.getAllByApplicationId(application._id) : of(null),
       getCurrentPeriod ? this.commentPeriodService.getAllByApplicationId(application._id) : of(null),
       getDecision ? this.decisionService.getByApplicationId(application._id, { getDocuments: true }) : of(null)
-    )
-    .pipe(
+    ).pipe(
       map(payloads => {
         if (getFeatures) {
           application.features = payloads[0];
@@ -154,7 +148,7 @@ export class ApplicationService {
         }
 
         if (getCurrentPeriod) {
-          const periods: Array<CommentPeriod> = payloads[2];
+          const periods: CommentPeriod[] = payloads[2];
           application.currentPeriod = this.commentPeriodService.getCurrent(periods);
 
           // user-friendly comment period status
@@ -166,19 +160,16 @@ export class ApplicationService {
           if (application.currentPeriod && this.commentPeriodService.isOpen(cpStatusCode)) {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            application.currentPeriod['daysRemaining']
-              = moment(application.currentPeriod.endDate).diff(moment(today), 'days') + 1; // including today
+            application.currentPeriod['daysRemaining'] =
+              moment(application.currentPeriod.endDate).diff(moment(today), 'days') + 1; // including today
           }
 
           // get the number of comments for the current comment period only
           // multiple comment periods are currently not supported
           if (application.currentPeriod) {
-            this.commentService.getCountByPeriodId(application.currentPeriod._id)
-              .subscribe(
-                numComments => {
-                  application['numComments'] = numComments;
-                }
-              );
+            this.commentService.getCountByPeriodId(application.currentPeriod._id).subscribe(numComments => {
+              application['numComments'] = numComments;
+            });
           }
         }
 
@@ -205,8 +196,14 @@ export class ApplicationService {
         }
 
         // derive retire date
-        if (application.statusHistoryEffectiveDate && [this.DECISION_APPROVED, this.DECISION_NOT_APPROVED, this.ABANDONED].includes(appStatusCode)) {
-          application.retireDate = moment(application.statusHistoryEffectiveDate).endOf('day').add(6, 'months').toDate();
+        if (
+          application.statusHistoryEffectiveDate &&
+          [this.DECISION_APPROVED, this.DECISION_NOT_APPROVED, this.ABANDONED].includes(appStatusCode)
+        ) {
+          application.retireDate = moment(application.statusHistoryEffectiveDate)
+            .endOf('day')
+            .add(6, 'months')
+            .toDate();
           // set flag if retire date is in the past
           application.isRetired = moment(application.retireDate).isBefore();
         }
@@ -242,10 +239,7 @@ export class ApplicationService {
       app.legalDescription = app.legalDescription.replace(/\n/g, '\\n');
     }
 
-    return this.api.addApplication(app)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.addApplication(app).pipe(catchError(error => this.api.handleError(error)));
   }
 
   // update existing application
@@ -267,31 +261,19 @@ export class ApplicationService {
       app.legalDescription = app.legalDescription.replace(/\n/g, '\\n');
     }
 
-    return this.api.saveApplication(app)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.saveApplication(app).pipe(catchError(error => this.api.handleError(error)));
   }
 
   delete(app: Application): Observable<Application> {
-    return this.api.deleteApplication(app)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.deleteApplication(app).pipe(catchError(error => this.api.handleError(error)));
   }
 
   publish(app: Application): Observable<Application> {
-    return this.api.publishApplication(app)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.publishApplication(app).pipe(catchError(error => this.api.handleError(error)));
   }
 
   unPublish(app: Application): Observable<Application> {
-    return this.api.unPublishApplication(app)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.unPublishApplication(app).pipe(catchError(error => this.api.handleError(error)));
   }
 
   /**
@@ -342,15 +324,31 @@ export class ApplicationService {
   /**
    * Map status code to Tantalis Status(es).
    */
-  getTantalisStatus(statusCode: string): Array<string> {
+  getTantalisStatus(statusCode: string): string[] {
     if (statusCode) {
       switch (statusCode.toUpperCase()) {
-        case this.ABANDONED: return ['ABANDONED', 'CANCELLED', 'OFFER NOT ACCEPTED', 'OFFER RESCINDED', 'RETURNED', 'REVERTED', 'SOLD', 'SUSPENDED', 'WITHDRAWN'];
-        case this.APPLICATION_UNDER_REVIEW: return ['ACCEPTED', 'ALLOWED', 'PENDING', 'RECEIVED'];
-        case this.APPLICATION_REVIEW_COMPLETE: return ['OFFER ACCEPTED', 'OFFERED'];
-        case this.DECISION_APPROVED: return ['ACTIVE', 'COMPLETED', 'DISPOSITION IN GOOD STANDING', 'EXPIRED', 'HISTORIC'];
-        case this.DECISION_NOT_APPROVED: return ['DISALLOWED'];
-        case this.UNKNOWN: return null;
+        case this.ABANDONED:
+          return [
+            'ABANDONED',
+            'CANCELLED',
+            'OFFER NOT ACCEPTED',
+            'OFFER RESCINDED',
+            'RETURNED',
+            'REVERTED',
+            'SOLD',
+            'SUSPENDED',
+            'WITHDRAWN'
+          ];
+        case this.APPLICATION_UNDER_REVIEW:
+          return ['ACCEPTED', 'ALLOWED', 'PENDING', 'RECEIVED'];
+        case this.APPLICATION_REVIEW_COMPLETE:
+          return ['OFFER ACCEPTED', 'OFFERED'];
+        case this.DECISION_APPROVED:
+          return ['ACTIVE', 'COMPLETED', 'DISPOSITION IN GOOD STANDING', 'EXPIRED', 'HISTORIC'];
+        case this.DECISION_NOT_APPROVED:
+          return ['DISALLOWED'];
+        case this.UNKNOWN:
+          return null;
       }
     }
     return null;
@@ -362,12 +360,18 @@ export class ApplicationService {
   getShortStatusString(statusCode: string): string {
     if (statusCode) {
       switch (statusCode) {
-        case this.ABANDONED: return 'Abandoned';
-        case this.APPLICATION_UNDER_REVIEW: return 'Under Review';
-        case this.APPLICATION_REVIEW_COMPLETE: return 'Decision Pending';
-        case this.DECISION_APPROVED: return 'Approved';
-        case this.DECISION_NOT_APPROVED: return 'Not Approved';
-        case this.UNKNOWN: return 'Unknown';
+        case this.ABANDONED:
+          return 'Abandoned';
+        case this.APPLICATION_UNDER_REVIEW:
+          return 'Under Review';
+        case this.APPLICATION_REVIEW_COMPLETE:
+          return 'Decision Pending';
+        case this.DECISION_APPROVED:
+          return 'Approved';
+        case this.DECISION_NOT_APPROVED:
+          return 'Not Approved';
+        case this.UNKNOWN:
+          return 'Unknown';
       }
     }
     return null;
@@ -379,39 +383,45 @@ export class ApplicationService {
   getLongStatusString(statusCode: string): string {
     if (statusCode) {
       switch (statusCode) {
-        case this.ABANDONED: return 'Abandoned';
-        case this.APPLICATION_UNDER_REVIEW: return 'Application Under Review';
-        case this.APPLICATION_REVIEW_COMPLETE: return 'Application Review Complete - Decision Pending';
-        case this.DECISION_APPROVED: return 'Decision: Approved - Tenure Issued';
-        case this.DECISION_NOT_APPROVED: return 'Decision: Not Approved';
-        case this.UNKNOWN: return 'Unknown Status';
+        case this.ABANDONED:
+          return 'Abandoned';
+        case this.APPLICATION_UNDER_REVIEW:
+          return 'Application Under Review';
+        case this.APPLICATION_REVIEW_COMPLETE:
+          return 'Application Review Complete - Decision Pending';
+        case this.DECISION_APPROVED:
+          return 'Decision: Approved - Tenure Issued';
+        case this.DECISION_NOT_APPROVED:
+          return 'Decision: Not Approved';
+        case this.UNKNOWN:
+          return 'Unknown Status';
       }
     }
     return null;
   }
 
   isAbandoned(statusCode: string): boolean {
-    return (statusCode === this.ABANDONED);
+    return statusCode === this.ABANDONED;
   }
 
   isApplicationUnderReview(statusCode: string): boolean {
-    return (statusCode === this.APPLICATION_UNDER_REVIEW);
+    return statusCode === this.APPLICATION_UNDER_REVIEW;
   }
 
   isApplicationReviewComplete(statusCode: string): boolean {
-    return (statusCode === this.APPLICATION_REVIEW_COMPLETE);
+    return statusCode === this.APPLICATION_REVIEW_COMPLETE;
   }
 
   isDecisionApproved(statusCode: string): boolean {
-    return (statusCode === this.DECISION_APPROVED);
+    return statusCode === this.DECISION_APPROVED;
   }
 
   isDecisionNotApproved(statusCode: string): boolean {
-    return (statusCode === this.DECISION_NOT_APPROVED);
+    return statusCode === this.DECISION_NOT_APPROVED;
   }
 
   isUnknown(statusCode: string): boolean {
-    return (statusCode === this.UNKNOWN);
+    return statusCode === this.UNKNOWN;
   }
 
   /**
@@ -427,17 +437,24 @@ export class ApplicationService {
   getRegionString(regionCode: string): string {
     if (regionCode) {
       switch (regionCode) {
-        case this.CARIBOO: return 'Cariboo, Williams Lake';
-        case this.KOOTENAY: return 'Kootenay, Cranbrook';
-        case this.LOWER_MAINLAND: return 'Lower Mainland, Surrey';
-        case this.OMENICA: return 'Omenica/Peace, Prince George';
-        case this.PEACE: return 'Peace, Ft. St. John';
-        case this.SKEENA: return 'Skeena, Smithers';
-        case this.SOUTHERN_INTERIOR: return 'Thompson Okanagan, Kamloops';
-        case this.VANCOUVER_ISLAND: return 'West Coast, Nanaimo';
+        case this.CARIBOO:
+          return 'Cariboo, Williams Lake';
+        case this.KOOTENAY:
+          return 'Kootenay, Cranbrook';
+        case this.LOWER_MAINLAND:
+          return 'Lower Mainland, Surrey';
+        case this.OMENICA:
+          return 'Omenica/Peace, Prince George';
+        case this.PEACE:
+          return 'Peace, Ft. St. John';
+        case this.SKEENA:
+          return 'Skeena, Smithers';
+        case this.SOUTHERN_INTERIOR:
+          return 'Thompson Okanagan, Kamloops';
+        case this.VANCOUVER_ISLAND:
+          return 'West Coast, Nanaimo';
       }
     }
     return null;
   }
-
 }

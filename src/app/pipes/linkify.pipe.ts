@@ -11,7 +11,6 @@ import * as LinkifyIt from 'linkify-it';
 @Pipe({ name: 'linkify' })
 export class LinkifyPipe implements PipeTransform {
   transform(str: string): string {
-
     if (!str) {
       return '';
     }

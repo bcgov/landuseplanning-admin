@@ -12,18 +12,12 @@ export class NotAuthorizedComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public loggedout = false;
 
-  constructor(
-    private route: ActivatedRoute
-  ) { }
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.route.queryParamMap
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(paramMap => {
-        this.loggedout = paramMap.get('loggedout') === 'true';
-      });
+    this.route.queryParamMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(paramMap => {
+      this.loggedout = paramMap.get('loggedout') === 'true';
+    });
   }
 
   login() {

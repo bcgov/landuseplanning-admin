@@ -13,12 +13,8 @@ describe('AddEditUserComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AddEditUserComponent],
       imports: [FormsModule],
-      providers: [
-        { provide: DialogService },
-        { provide: UserService },
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: DialogService }, { provide: UserService }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

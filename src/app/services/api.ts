@@ -18,7 +18,7 @@ import { Feature } from 'app/models/feature';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 
-interface LocalLoginResponse {
+interface ILocalLoginResponse {
   _id: string;
   title: string;
   created_at: string;
@@ -30,7 +30,6 @@ interface LocalLoginResponse {
 
 @Injectable()
 export class ApiService {
-
   public token: string;
   public isMS: boolean; // IE, Edge, etc
   // private jwtHelper: JwtHelperService;
@@ -38,10 +37,7 @@ export class ApiService {
   // params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
 
-  constructor(
-    private http: HttpClient,
-    private keycloakService: KeycloakService
-  ) {
+  constructor(private http: HttpClient, private keycloakService: KeycloakService) {
     // this.jwtHelper = new JwtHelperService();
     const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
@@ -99,7 +95,13 @@ export class ApiService {
   }
 
   handleError(error: any): Observable<never> {
-    const reason = error.message ? (error.error ? `${error.message} - ${error.error.message}` : error.message) : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
+    const reason = error.message
+      ? error.error
+        ? `${error.message} - ${error.error.message}`
+        : error.message
+      : error.status
+      ? `${error.status} - ${error.statusText}`
+      : 'Server error';
     console.log('API error =', reason);
     if (error && error.status === 403 && !this.keycloakService.isKeyCloakEnabled()) {
       window.location.href = '/admin/login';
@@ -108,7 +110,8 @@ export class ApiService {
   }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<LocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
+    return this.http
+      .post<ILocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
       .pipe(
         map(res => {
           // login successful if there's a jwt token in the response
@@ -157,8 +160,12 @@ export class ApiService {
       'type'
     ];
     let queryString = 'application?isDeleted=false&';
-    if (pageNum !== null) { queryString += `pageNum=${pageNum}&`; }
-    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (pageNum !== null) {
+      queryString += `pageNum=${pageNum}&`;
+    }
+    if (pageSize !== null) {
+      queryString += `pageSize=${pageSize}&`;
+    }
     queryString += `fields=${this.buildValues(fields)}`;
     return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
   }
@@ -191,14 +198,13 @@ export class ApiService {
   }
 
   getCountApplications(): Observable<number> {
-    const queryString = `application?isDeleted=false`;
-    return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' })
-      .pipe(
-        map(res => {
-          // retrieve the count from the response headers
-          return parseInt(res.headers.get('x-total-count'), 10);
-        })
-      );
+    const queryString = 'application?isDeleted=false';
+    return this.http.head<HttpResponse<object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' }).pipe(
+      map(res => {
+        // retrieve the count from the response headers
+        return parseInt(res.headers.get('x-total-count'), 10);
+      })
+    );
   }
 
   // NB: returns array
@@ -257,7 +263,7 @@ export class ApiService {
   }
 
   addApplication(app: Application): Observable<Application> {
-    const queryString = `application/`;
+    const queryString = 'application/';
     return this.http.post<Application>(`${this.pathAPI}/${queryString}`, app, {});
   }
 
@@ -285,34 +291,18 @@ export class ApiService {
   // Features
   //
   getFeaturesByTantalisId(tantalisId: number): Observable<Feature[]> {
-    const fields = [
-      'type',
-      'tags',
-      'geometry',
-      'geometryName',
-      'properties',
-      'isDeleted',
-      'applicationID'
-    ];
+    const fields = ['type', 'tags', 'geometry', 'geometryName', 'properties', 'isDeleted', 'applicationID'];
     const queryString = `feature?isDeleted=false&tantalisId=${tantalisId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   getFeaturesByApplicationId(applicationId: string): Observable<Feature[]> {
-    const fields = [
-      'type',
-      'tags',
-      'geometry',
-      'geometryName',
-      'properties',
-      'isDeleted',
-      'applicationID'
-    ];
+    const fields = ['type', 'tags', 'geometry', 'geometryName', 'properties', 'isDeleted', 'applicationID'];
     const queryString = `feature?isDeleted=false&applicationId=${applicationId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  deleteFeaturesByApplicationId(applicationID: string): Observable<Object> {
+  deleteFeaturesByApplicationId(applicationID: string): Observable<object> {
     const queryString = `feature/?applicationID=${applicationID}`;
     return this.http.delete(`${this.pathAPI}/${queryString}`, {});
   }
@@ -321,30 +311,20 @@ export class ApiService {
   // Decisions
   //
   getDecisionsByAppId(appId: string): Observable<Decision[]> {
-    const fields = [
-      '_addedBy',
-      '_application',
-      'name',
-      'description'
-    ];
+    const fields = ['_addedBy', '_application', 'name', 'description'];
     const queryString = `decision?_application=${appId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Decision[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
   getDecision(id: string): Observable<Decision[]> {
-    const fields = [
-      '_addedBy',
-      '_application',
-      'name',
-      'description'
-    ];
+    const fields = ['_addedBy', '_application', 'name', 'description'];
     const queryString = `decision/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<Decision[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   addDecision(decision: Decision): Observable<Decision> {
-    const queryString = `decision/`;
+    const queryString = 'decision/';
     return this.http.post<Decision>(`${this.pathAPI}/${queryString}`, decision, {});
   }
 
@@ -372,30 +352,20 @@ export class ApiService {
   // Comment Periods
   //
   getPeriodsByAppId(appId: string): Observable<CommentPeriod[]> {
-    const fields = [
-      '_addedBy',
-      '_application',
-      'startDate',
-      'endDate'
-    ];
+    const fields = ['_addedBy', '_application', 'startDate', 'endDate'];
     const queryString = `commentperiod?isDeleted=false&_application=${appId}&fields=${this.buildValues(fields)}`;
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
   getPeriod(id: string): Observable<CommentPeriod[]> {
-    const fields = [
-      '_addedBy',
-      '_application',
-      'startDate',
-      'endDate'
-    ];
+    const fields = ['_addedBy', '_application', 'startDate', 'endDate'];
     const queryString = `commentperiod/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   addCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
-    const queryString = `commentperiod/`;
+    const queryString = 'commentperiod/';
     return this.http.post<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, {});
   }
 
@@ -425,13 +395,12 @@ export class ApiService {
   getCountCommentsByPeriodId(periodId: string): Observable<number> {
     // NB: count only pending comments
     const queryString = `comment?isDeleted=false&commentStatus='Pending'&_commentPeriod=${periodId}`;
-    return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' })
-      .pipe(
-        map(res => {
-          // retrieve the count from the response headers
-          return parseInt(res.headers.get('x-total-count'), 10);
-        })
-      );
+    return this.http.head<HttpResponse<object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' }).pipe(
+      map(res => {
+        // retrieve the count from the response headers
+        return parseInt(res.headers.get('x-total-count'), 10);
+      })
+    );
   }
 
   getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Comment[]> {
@@ -447,9 +416,15 @@ export class ApiService {
     ];
 
     let queryString = `comment?isDeleted=false&_commentPeriod=${periodId}&`;
-    if (pageNum !== null) { queryString += `pageNum=${pageNum}&`; }
-    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    if (pageNum !== null) {
+      queryString += `pageNum=${pageNum}&`;
+    }
+    if (pageSize !== null) {
+      queryString += `pageSize=${pageSize}&`;
+    }
+    if (sortBy !== null) {
+      queryString += `sortBy=${sortBy}&`;
+    }
     queryString += `fields=${this.buildValues(fields)}`;
 
     return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, {});
@@ -472,7 +447,7 @@ export class ApiService {
   }
 
   addComment(comment: Comment): Observable<Comment> {
-    const queryString = `comment/`;
+    const queryString = 'comment/';
     return this.http.post<Comment>(`${this.pathAPI}/${queryString}`, comment, {});
   }
 
@@ -495,37 +470,19 @@ export class ApiService {
   // Documents
   //
   getDocumentsByAppId(appId: string): Observable<Document[]> {
-    const fields = [
-      '_application',
-      'documentFileName',
-      'displayName',
-      'internalURL',
-      'internalMime'
-    ];
+    const fields = ['_application', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
     const queryString = `document?isDeleted=false&_application=${appId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   getDocumentsByCommentId(commentId: string): Observable<Document[]> {
-    const fields = [
-      '_comment',
-      'documentFileName',
-      'displayName',
-      'internalURL',
-      'internalMime'
-    ];
+    const fields = ['_comment', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
     const queryString = `document?isDeleted=false&_comment=${commentId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   getDocumentsByDecisionId(decisionId: string): Observable<Document[]> {
-    const fields = [
-      '_decision',
-      'documentFileName',
-      'displayName',
-      'internalURL',
-      'internalMime'
-    ];
+    const fields = ['_decision', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
     const queryString = `document?isDeleted=false&_decision=${decisionId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
@@ -552,12 +509,7 @@ export class ApiService {
   }
 
   uploadDocument(formData: FormData): Observable<Document> {
-    const fields = [
-      'documentFileName',
-      'displayName',
-      'internalURL',
-      'internalMime'
-    ];
+    const fields = ['documentFileName', 'displayName', 'internalURL', 'internalMime'];
     const queryString = `document/?fields=${this.buildValues(fields)}`;
     return this.http.post<Document>(`${this.pathAPI}/${queryString}`, formData, {});
   }
@@ -616,12 +568,7 @@ export class ApiService {
   // Users
   //
   getUsers(): Observable<User[]> {
-    const fields = [
-      'displayName',
-      'username',
-      'firstName',
-      'lastName'
-    ];
+    const fields = ['displayName', 'username', 'firstName', 'lastName'];
     const queryString = `user?fields=${this.buildValues(fields)}`;
     return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
   }
@@ -632,7 +579,7 @@ export class ApiService {
   }
 
   addUser(user: User): Observable<User> {
-    const queryString = `user/`;
+    const queryString = 'user/';
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
@@ -641,11 +588,10 @@ export class ApiService {
   //
   private buildValues(collection: any[]): string {
     let values = '';
-    _.each(collection, function (a) {
+    _.each(collection, a => {
       values += a + '|';
     });
     // trim the last |
     return values.replace(/\|$/, '');
   }
-
 }

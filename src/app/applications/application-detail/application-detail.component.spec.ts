@@ -17,12 +17,11 @@ import { Application } from 'app/models/application';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActivatedRouteStub } from 'app/spec/helpers';
 
-
 describe('ApplicationDetailComponent', () => {
   let component: ApplicationDetailComponent;
   let fixture: ComponentFixture<ApplicationDetailComponent>;
   const existingApplication = new Application();
-  const validRouteData = {application: existingApplication};
+  const validRouteData = { application: existingApplication };
 
   const activatedRouteStub = new ActivatedRouteStub(validRouteData);
   const routerSpy = {
@@ -53,10 +52,9 @@ describe('ApplicationDetailComponent', () => {
         { provide: DocumentService },
         { provide: FeatureService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
-        { provide: Router, useValue: routerSpy },
+        { provide: Router, useValue: routerSpy }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -68,7 +66,6 @@ describe('ApplicationDetailComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
-
 
   describe('when the application is retrievable from the route', () => {
     beforeEach(() => {
@@ -82,7 +79,7 @@ describe('ApplicationDetailComponent', () => {
 
   describe('when the application is not available from the route', () => {
     beforeEach(() => {
-      activatedRouteStub.setData({something: 'went wrong'});
+      activatedRouteStub.setData({ something: 'went wrong' });
     });
 
     it('redirects to /search', () => {

@@ -8,6 +8,7 @@ $card-shadow: 0.02rem 0 0.2rem rgba(#000, 0.15);
   @include flex-box();
   @include flex-direction(column);
   @include flex(1 1 auto);
+
   overflow: hidden;
 }
 
@@ -100,6 +101,7 @@ section {
 
   li {
     @include flex-box();
+
     padding: 0.5rem 0;
     border-top: 1px dotted #ccc;
     background: #fff;
@@ -107,6 +109,7 @@ section {
 
   span.name {
     @include flex(0 0 12rem);
+
     margin: 0;
   }
 

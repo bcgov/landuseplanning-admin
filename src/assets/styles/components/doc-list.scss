@@ -8,6 +8,7 @@ $doc-list-link-color: #007bff;
   li {
     @include flex-box();
     @include flex-direction(row);
+
     background: #f7f8fa;
 
     + li {
@@ -40,8 +41,9 @@ $doc-list-link-color: #007bff;
     // Icon Column
     &.icon {
       @include flex(0 0 auto);
+
       padding-left: 0.75rem;
-  
+
       i {
         margin-top: 0.5rem;
         font-size: 1.35rem;
@@ -54,10 +56,11 @@ $doc-list-link-color: #007bff;
         }
       }
     }
-  
+
     // Name Column
     &.name {
       @include flex(1 1 auto);
+
       font-size: 0.875rem;
     }
 
@@ -76,6 +79,7 @@ $doc-list-link-color: #007bff;
 // Document List Publish Actions
 .publish-actions {
   @include flex(0 0 auto);
+
   padding-right: 0;
   overflow: visible;
 
@@ -95,11 +99,10 @@ $doc-list-link-color: #007bff;
   }
 }
 
-
 .doc-list.inline {
   margin: -0.2rem;
 
-  li { 
+  li {
     margin: 0.2rem;
     display: inline-block;
     width: auto;

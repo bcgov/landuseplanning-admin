@@ -20,14 +20,13 @@ class SortKey {
   templateUrl: './review-comments.component.html',
   styleUrls: ['./review-comments.component.scss']
 })
-
 export class ReviewCommentsComponent implements OnInit, OnDestroy {
   readonly PAGE_SIZE = 20;
 
   @ViewChild('commentListScrollContainer', { read: ElementRef })
   public commentListScrollContainer: ElementRef;
 
-  readonly sortKeys: Array<SortKey> = [
+  readonly sortKeys: SortKey[] = [
     { innerHTML: 'Oldest', value: '%2BdateAdded' },
     { innerHTML: 'Newest', value: '-dateAdded' },
     { innerHTML: 'Name (A-Z)', value: '%2BcontactName' },
@@ -36,8 +35,8 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   public loading = false;
   public application: Application = null;
-  public comments: Array<Comment> = [];
-  public alerts: Array<string> = [];
+  public comments: Comment[] = [];
+  public alerts: string[] = [];
   public currentComment: Comment;
   public pageCount = 1; // in case getCount() fails
   public pageNum = 1; // first page
@@ -53,36 +52,28 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
     private router: Router,
     private commentService: CommentService,
     private excelService: ExcelService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get data from route resolver
-    this.route.data
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        (data: { application: Application }) => {
-          if (data.application) {
-            this.application = data.application;
+    this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: { application: Application }) => {
+      if (data.application) {
+        this.application = data.application;
 
-            this.commentService.getCountByPeriodId(this.application.currentPeriod._id)
-              .pipe(
-                takeUntil(this.ngUnsubscribe)
-              )
-              .subscribe(
-                value => {
-                  this.pageCount = value ? Math.ceil(value / this.PAGE_SIZE) : 1;
-                  // get initial data
-                  this.getData();
-                });
-          } else {
-            alert('Uh-oh, couldn\'t load application');
-            // application not found --> navigate back to search
-            this.router.navigate(['/search']);
-          }
-        }
-      );
+        this.commentService
+          .getCountByPeriodId(this.application.currentPeriod._id)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(value => {
+            this.pageCount = value ? Math.ceil(value / this.PAGE_SIZE) : 1;
+            // get initial data
+            this.getData();
+          });
+      } else {
+        alert("Uh-oh, couldn't load application");
+        // application not found --> navigate back to search
+        this.router.navigate(['/search']);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -91,15 +82,17 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    if (this.application) { // safety check
+    if (this.application) {
+      // safety check
       this.loading = true;
       this.commentListScrollContainer.nativeElement.scrollTop = 0;
 
       // get a page of comments
-      this.commentService.getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, { getDocuments: true })
-        .pipe(
-          takeUntil(this.ngUnsubscribe)
-        )
+      this.commentService
+        .getAllByApplicationId(this.application._id, this.pageNum - 1, this.PAGE_SIZE, this.sortBy, {
+          getDocuments: true
+        })
+        .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(
           comments => {
             this.loading = false;
@@ -113,7 +106,9 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
           error => {
             this.loading = false;
             // if 403, redir to login page
-            if (error && error.status === 403) { this.router.navigate(['/login']); }
+            if (error && error.status === 403) {
+              this.router.navigate(['/login']);
+            }
             this.alerts.push('Error loading comments');
           }
         );
@@ -139,15 +134,14 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   }
 
   isCurrentComment(item: Comment): boolean {
-    return (item === this.currentComment);
+    return item === this.currentComment;
   }
 
   exportToExcel() {
     // get all comments
-    this.commentService.getAllByApplicationId(this.application._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
+    this.commentService
+      .getAllByApplicationId(this.application._id, 0, 1000000, null, { getDocuments: true }) // max 1M records
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         comments => {
           // FUTURE: instead of flattening, copy to new 'export object' with user-friendly keys?
@@ -172,10 +166,9 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
             return this.flatten_fastest(comment);
           });
 
-          const excelFileName = 'comments-'
-            + this.application.applicants.replace(/\s/g, '_')
-            + moment(new Date()).format('-YYYYMMDD');
-          const columnOrder: Array<string> = [
+          const excelFileName =
+            'comments-' + this.application.applicants.replace(/\s/g, '_') + moment(new Date()).format('-YYYYMMDD');
+          const columnOrder: string[] = [
             'cl_file',
             '_id',
             '_addedBy',
@@ -205,10 +198,10 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
   //
 
   // current fastest
-  private flatten_fastest(data: Object): Object {
+  private flatten_fastest(data: object): object {
     const result = {};
 
-    function recurse(cur: Object, prop: string) {
+    function recurse(cur: object, prop: string) {
       if (Object(cur) !== cur) {
         result[prop] = cur;
       } else if (Array.isArray(cur)) {
@@ -237,14 +230,14 @@ export class ReviewCommentsComponent implements OnInit, OnDestroy {
 
   // ES6 version
   // NB: doesn't return empty arrays
-  private flatten_es6(obj: Object, path: string = ''): Object {
+  private flatten_es6(obj: object, path: string = ''): object {
     if (!(obj instanceof Object)) {
       return { [path.replace(/\.$/g, '')]: obj };
     }
     return Object.keys(obj).reduce((output, key) => {
-      return (obj instanceof Array) ?
-        { ...output, ...this.flatten_es6(obj[key], path + '[' + key + '].') } :
-        { ...output, ...this.flatten_es6(obj[key], path + key + '.') };
+      return obj instanceof Array
+        ? { ...output, ...this.flatten_es6(obj[key], path + '[' + key + '].') }
+        : { ...output, ...this.flatten_es6(obj[key], path + key + '.') };
     }, {});
   }
 }

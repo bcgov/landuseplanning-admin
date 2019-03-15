@@ -1,20 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
 import { ApplicationService } from 'app/services/application.service';
 import { Application } from 'app/models/application';
 
-import { of } from 'rxjs';
-
 @Injectable()
 export class ApplicationDetailResolver implements Resolve<Application> {
-
-  constructor(
-    private applicationService: ApplicationService
-  ) { }
+  constructor(private applicationService: ApplicationService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<Application> {
     const appId = route.paramMap.get('appId');
@@ -56,8 +51,18 @@ export class ApplicationDetailResolver implements Resolve<Application> {
       }
 
       // derive retire date
-      if (application.statusHistoryEffectiveDate && [this.applicationService.DECISION_APPROVED, this.applicationService.DECISION_NOT_APPROVED, this.applicationService.ABANDONED].includes(appStatusCode)) {
-        application.retireDate = moment(application.statusHistoryEffectiveDate).endOf('day').add(6, 'months').toDate();
+      if (
+        application.statusHistoryEffectiveDate &&
+        [
+          this.applicationService.DECISION_APPROVED,
+          this.applicationService.DECISION_NOT_APPROVED,
+          this.applicationService.ABANDONED
+        ].includes(appStatusCode)
+      ) {
+        application.retireDate = moment(application.statusHistoryEffectiveDate)
+          .endOf('day')
+          .add(6, 'months')
+          .toDate();
         // set flag if retire date is in the past
         application.isRetired = moment(application.retireDate).isBefore();
       }
@@ -66,7 +71,11 @@ export class ApplicationDetailResolver implements Resolve<Application> {
     }
 
     // view/edit existing application
-    return this.applicationService.getById(appId, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true });
+    return this.applicationService.getById(appId, {
+      getFeatures: true,
+      getDocuments: true,
+      getCurrentPeriod: true,
+      getDecision: true
+    });
   }
-
 }

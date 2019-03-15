@@ -45,11 +45,6 @@ import { ExcelService } from 'app/services/excel.service';
     ReviewCommentsComponent,
     CommentDetailComponent
   ],
-  providers: [
-    ApiService,
-    ApplicationService,
-    ExcelService
-  ]
+  providers: [ApiService, ApplicationService, ExcelService]
 })
-
-export class ApplicationsModule { }
+export class ApplicationsModule {}

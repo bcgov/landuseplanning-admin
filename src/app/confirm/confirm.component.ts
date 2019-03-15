@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 
-export interface DataModel {
+export interface IDataModel {
   title: string;
   message: string;
   okOnly: boolean;
@@ -11,8 +11,7 @@ export interface DataModel {
   templateUrl: './confirm.component.html',
   styleUrls: ['./confirm.component.scss']
 })
-
-export class ConfirmComponent extends DialogComponent<DataModel, boolean> implements DataModel {
+export class ConfirmComponent extends DialogComponent<IDataModel, boolean> implements IDataModel {
   title = 'Confirm';
   message = 'Are you sure?';
   okOnly = false;

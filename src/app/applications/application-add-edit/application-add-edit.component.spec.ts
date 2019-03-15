@@ -19,7 +19,7 @@ xdescribe('ApplicationAddEditComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FormsModule, NgbModule, RouterTestingModule ],
+      imports: [FormsModule, NgbModule, RouterTestingModule],
       declarations: [ApplicationAddEditComponent, FileUploadComponent],
       providers: [
         { provide: DialogService },
@@ -28,10 +28,9 @@ xdescribe('ApplicationAddEditComponent', () => {
         { provide: ApplicationService },
         { provide: CommentPeriodService },
         { provide: DecisionService },
-        { provide: DocumentService },
+        { provide: DocumentService }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

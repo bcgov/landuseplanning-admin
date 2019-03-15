@@ -11,30 +11,20 @@ describe('UsersComponent', () => {
   let component: UsersComponent;
   let fixture: ComponentFixture<UsersComponent>;
 
-  const mockUserService = jasmine.createSpyObj('UserService', [
-    'getAll'
-  ]);
+  const mockUserService = jasmine.createSpyObj('UserService', ['getAll']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UsersComponent ],
-      imports: [ NgbModule ],
-      providers: [
-        { provide: DialogService },
-        { provide: UserService, useValue: mockUserService },
-      ]
-    })
-      .compileComponents();
+      declarations: [UsersComponent],
+      imports: [NgbModule],
+      providers: [{ provide: DialogService }, { provide: UserService, useValue: mockUserService }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UsersComponent);
     component = fixture.componentInstance;
-    mockUserService.getAll.and.returnValue(
-      of([
-        new User()
-      ])
-    );
+    mockUserService.getAll.and.returnValue(of([new User()]));
     fixture.detectChanges();
   });
 

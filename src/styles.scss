@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files. */
+
 /* This architecture roughly follows https://sass-guidelin.es/#the-7-1-pattern */
 
 //@import "~mygovbc-bootstrap-theme/dist/mygovbc-bootstrap-theme.min.css";
@@ -37,8 +38,6 @@
 @import "assets/styles/components/spinner.scss";
 @import "assets/styles/components/tab-nav.scss";
 @import "assets/styles/components/table.scss";
-
-
 
 // Third-party Components
 // Required for Angular Material styling: (ref: https://material.angular.io/guide/theming)

@@ -18,7 +18,7 @@
  * BROWSER POLYFILLS
  */
 
-/** IE9, IE10 and IE11 requires all of the following polyfills. **/
+/* IE9, IE10 and IE11 requires all of the following polyfills. */
 import 'core-js/es6/symbol';
 import 'core-js/es6/object';
 import 'core-js/es6/function';
@@ -41,26 +41,18 @@ import 'core-js/es7/array';
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
 
-/** IE10 and IE11 requires the following to support `@angular/animation`. */
-import 'web-animations-js';  // Run `npm install --save web-animations-js`.
+/* ALL Firefox browsers require the following to support `@angular/animation`. */
+/* IE10 and IE11 requires the following to support `@angular/animation`. */
+import 'web-animations-js'; // Run `npm install --save web-animations-js`.
 
-
-/** Evergreen browsers require these. **/
+/* Evergreen browsers require these. */
 import 'core-js/es6/reflect';
 import 'core-js/es7/reflect';
-
-
-/** ALL Firefox browsers require the following to support `@angular/animation`. **/
-import 'web-animations-js';  // Run `npm install --save web-animations-js`.
-
-
 
 /***************************************************************************************************
  * Zone JS is required by Angular itself.
  */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
-
-
+import 'zone.js/dist/zone'; // Included with Angular CLI.
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
@@ -72,7 +64,6 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  */
 // import 'intl';  // Run `npm install --save intl`.
 
-
 // Specific polyfill needed for IE11 using current packages as of Sep 24, 2018:
 // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
@@ -80,7 +71,7 @@ if (!String.prototype.padStart) {
   String.prototype.padStart = function padStart(targetLength, padString) {
     // tslint:disable-next-line:no-bitwise
     targetLength = targetLength >> 0; // truncate if number or convert non-number to 0;
-    padString = String((typeof padString !== 'undefined' ? padString : ' '));
+    padString = String(typeof padString !== 'undefined' ? padString : ' ');
     if (this.length > targetLength) {
       return String(this);
     } else {

@@ -2,6 +2,7 @@
 
 .app-header {
   @include clearfix;
+
   padding: 0;
   border-bottom: 4px solid $gold;
   background: $header-bg;
@@ -24,6 +25,7 @@
 
   .app-header--flex {
     @include flex(0 0 auto);
+
     position: relative;
     border-bottom-width: 4px;
     border-bottom-color: $gold;
@@ -38,7 +40,6 @@
   }
 }
 
-
 // Navbar Toggle Button
 .navbar-toggler {
   margin-right: 0.5rem;
@@ -48,7 +49,7 @@
   font-size: medium;
   font-weight: 600;
   outline: none; // override user agent stylesheet default
-  
+
   &:hover {
     cursor: pointer;
   }
@@ -83,7 +84,6 @@
     }
   }
 }
-
 
 // NAVBAR
 .navbar {
@@ -126,23 +126,23 @@
         font-size: $mn-dropdown-menu-size;
         white-space: normal;
         cursor: pointer;
-        
+
         strong {
           font-weight: 600;
           transition: color 0.2s ease-out;
         }
-        
+
         .dd-item-desc {
           display: block;
           font-size: small;
           opacity: 0.5;
           transition: opacity 0.2s ease-out;
         }
-        
+
         &:focus,
         &:hover {
           background: transparent;
-          
+
           strong {
             color: $mn-hover-color;
           }
@@ -163,18 +163,20 @@
 @media (min-width: 768px) {
   .navbar {
     background: transparent;
-    
+
     .navbar-nav {
       margin-top: 0;
-      
+
       .nav-link {
         height: 4.2rem; // 60px to match the branding height
         padding: 0.5rem 0.75rem !important;
         border-top: none;
+
         span {
           margin-top: 0.9rem;
           display: inline-block;
         }
+
         &:hover {
           background-color: #002663;
         }
@@ -190,9 +192,11 @@
           min-width: 10rem;
           padding: 0.5rem;
           background-color: #002663;
+
           &.dm-sm {
             min-width: 12rem;
           }
+
           .dropdown-item {
             padding: 0.5rem;
           }
@@ -203,15 +207,16 @@
             .dropdown-toggle {
               color: $mn-color;
             }
+
             .dropdown-menu {
               display: none;
             }
           }
 
           &:hover {
-            >a,
-            >a:hover,
-            >a:focus {
+            > a,
+            > a:hover,
+            > a:focus {
               background-color: #002663;
               border: none;
             }

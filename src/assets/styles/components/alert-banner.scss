@@ -3,11 +3,13 @@
 .alert-contents {
   @include flex-box();
   @include flex-direction(row);
+
   align-items: center;
 }
 
 .alert-contents i {
   @include flex(0 0 auto);
+
   margin-right: 1rem;
 }
 

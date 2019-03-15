@@ -13,7 +13,7 @@
         background: $table-alt-row-bg;
       }
     }
-  
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -38,26 +38,26 @@
         i {
           margin-top: -2px;
         }
-    
+
         &:active,
         &:focus,
         &:hover {
           text-decoration: none;
         }
-    
+
         .close-icon {
           display: inline-block;
         }
-    
+
         .open-icon {
           display: none;
         }
-    
+
         &.collapsed {
           .close-icon {
             display: none;
           }
-          
+
           .open-icon {
             display: inline-block;
           }

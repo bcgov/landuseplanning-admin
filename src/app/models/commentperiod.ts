@@ -10,9 +10,9 @@ export class CommentPeriod {
   isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
-    this._id          = obj && obj._id          || null;
-    this._addedBy     = obj && obj._addedBy     || null;
-    this._application = obj && obj._application || null;
+    this._id = (obj && obj._id) || null;
+    this._addedBy = (obj && obj._addedBy) || null;
+    this._application = (obj && obj._application) || null;
 
     if (obj && obj.startDate) {
       this.startDate = new Date(obj.startDate);

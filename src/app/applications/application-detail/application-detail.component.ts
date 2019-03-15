@@ -19,9 +19,7 @@ import { FeatureService } from 'app/services/feature.service';
   templateUrl: './application-detail.component.html',
   styleUrls: ['./application-detail.component.scss']
 })
-
 export class ApplicationDetailComponent implements OnInit, OnDestroy {
-
   public isPublishing = false;
   public isUnpublishing = false;
   public isDeleting = false;
@@ -40,30 +38,26 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     public decisionService: DecisionService,
     public documentService: DocumentService,
     public featureService: FeatureService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get data from route resolver
-    this.route.data
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        (data: { application: Application }) => {
-          if (data.application) {
-            this.application = data.application;
-          } else {
-            alert('Uh-oh, couldn\'t load application');
-            // application not found --> navigate back to search
-            this.router.navigate(['/search']);
-          }
-        }
-      );
+    this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: { application: Application }) => {
+      if (data.application) {
+        this.application = data.application;
+      } else {
+        alert("Uh-oh, couldn't load application");
+        // application not found --> navigate back to search
+        this.router.navigate(['/search']);
+      }
+    });
   }
 
   ngOnDestroy() {
     // dismiss any open snackbar
-    if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+    if (this.snackBarRef) {
+      this.snackBarRef.dismiss();
+    }
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -71,52 +65,56 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
 
   public deleteApplication() {
     if (this.application['numComments'] > 0) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Delete Application',
-          message: 'An application with submitted comments cannot be deleted.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .pipe(
-          takeUntil(this.ngUnsubscribe)
-        );
+      this.dialogService
+        .addDialog(
+          ConfirmComponent,
+          {
+            title: 'Cannot Delete Application',
+            message: 'An application with submitted comments cannot be deleted.',
+            okOnly: true
+          },
+          {
+            backdropColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        )
+        .pipe(takeUntil(this.ngUnsubscribe));
       return;
     }
 
     if (this.application.isPublished) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Delete Application',
-          message: 'Please unpublish application first.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .pipe(
-          takeUntil(this.ngUnsubscribe)
-        );
+      this.dialogService
+        .addDialog(
+          ConfirmComponent,
+          {
+            title: 'Cannot Delete Application',
+            message: 'Please unpublish application first.',
+            okOnly: true
+          },
+          {
+            backdropColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        )
+        .pipe(takeUntil(this.ngUnsubscribe));
       return;
     }
 
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Confirm Deletion',
-        message: 'Do you really want to delete this application?'
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            this.internalDeleteApplication();
-          }
+    this.dialogService
+      .addDialog(
+        ConfirmComponent,
+        {
+          title: 'Confirm Deletion',
+          message: 'Do you really want to delete this application?'
+        },
+        {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
         }
-      );
+      )
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(isConfirmed => {
+        if (isConfirmed) {
+          this.internalDeleteApplication();
+        }
+      });
   }
 
   private internalDeleteApplication() {
@@ -155,61 +153,61 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
     // do this last in case of prior failures
     observables = observables.pipe(concat(this.applicationService.delete(this.application)));
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isDeleting = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t delete application');
-          // TODO: should fully reload application here so we have latest non-deleted objects
-        },
-        () => { // onCompleted
-          this.isDeleting = false;
-          // delete succeeded --> navigate back to search
-          this.router.navigate(['/search']);
-        }
-      );
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isDeleting = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't delete application");
+        // TODO: should fully reload application here so we have latest non-deleted objects
+      },
+      () => {
+        // onCompleted
+        this.isDeleting = false;
+        // delete succeeded --> navigate back to search
+        this.router.navigate(['/search']);
+      }
+    );
   }
 
   public publishApplication() {
     if (!this.application.description) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Publish Application',
-          message: 'A description for this application is required to publish.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .pipe(
-          takeUntil(this.ngUnsubscribe)
-        );
+      this.dialogService
+        .addDialog(
+          ConfirmComponent,
+          {
+            title: 'Cannot Publish Application',
+            message: 'A description for this application is required to publish.',
+            okOnly: true
+          },
+          {
+            backdropColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        )
+        .pipe(takeUntil(this.ngUnsubscribe));
       return;
     }
 
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Confirm Publish',
-        message: 'Publishing this application will make it visible to the public. Are you sure you want to proceed?'
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            this.internalPublishApplication();
-          }
+    this.dialogService
+      .addDialog(
+        ConfirmComponent,
+        {
+          title: 'Confirm Publish',
+          message: 'Publishing this application will make it visible to the public. Are you sure you want to proceed?'
+        },
+        {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
         }
-      );
+      )
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(isConfirmed => {
+        if (isConfirmed) {
+          this.internalPublishApplication();
+        }
+      });
   }
 
   private internalPublishApplication() {
@@ -257,40 +255,42 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
       observables = observables.pipe(concat(this.applicationService.save(this.application)));
     }
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isPublishing = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t publish application');
-          // TODO: should fully reload application here so we have latest isPublished flags for objects
-        },
-        () => { // onCompleted
-          this.snackBarRef = this.snackBar.open('Application published...', null, { duration: 2000 });
-          // reload all data
-          this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true })
-            .pipe(
-              takeUntil(this.ngUnsubscribe)
-            )
-            .subscribe(
-              application => {
-                this.isPublishing = false;
-                this.application = application;
-              },
-              error => {
-                this.isPublishing = false;
-                console.log('error =', error);
-                alert('Uh-oh, couldn\'t reload application');
-              }
-            );
-        }
-      );
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isPublishing = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't publish application");
+        // TODO: should fully reload application here so we have latest isPublished flags for objects
+      },
+      () => {
+        // onCompleted
+        this.snackBarRef = this.snackBar.open('Application published...', null, { duration: 2000 });
+        // reload all data
+        this.applicationService
+          .getById(this.application._id, {
+            getFeatures: true,
+            getDocuments: true,
+            getCurrentPeriod: true,
+            getDecision: true
+          })
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(
+            application => {
+              this.isPublishing = false;
+              this.application = application;
+            },
+            error => {
+              this.isPublishing = false;
+              console.log('error =', error);
+              alert("Uh-oh, couldn't reload application");
+            }
+          );
+      }
+    );
   }
 
   public unPublishApplication() {
@@ -332,40 +332,41 @@ export class ApplicationDetailComponent implements OnInit, OnDestroy {
       observables = observables.pipe(concat(this.applicationService.unPublish(this.application)));
     }
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isUnpublishing = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t unpublish application');
-          // TODO: should fully reload application here so we have latest isPublished flags for objects
-        },
-        () => { // onCompleted
-          this.snackBarRef = this.snackBar.open('Application unpublished...', null, { duration: 2000 });
-          // reload all data
-          this.applicationService.getById(this.application._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: true })
-            .pipe(
-              takeUntil(this.ngUnsubscribe)
-            )
-            .subscribe(
-              application => {
-                this.isUnpublishing = false;
-                this.application = application;
-              },
-              error => {
-                this.isUnpublishing = false;
-                console.log('error =', error);
-                alert('Uh-oh, couldn\'t reload application');
-              }
-            );
-        }
-      );
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isUnpublishing = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't unpublish application");
+        // TODO: should fully reload application here so we have latest isPublished flags for objects
+      },
+      () => {
+        // onCompleted
+        this.snackBarRef = this.snackBar.open('Application unpublished...', null, { duration: 2000 });
+        // reload all data
+        this.applicationService
+          .getById(this.application._id, {
+            getFeatures: true,
+            getDocuments: true,
+            getCurrentPeriod: true,
+            getDecision: true
+          })
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(
+            application => {
+              this.isUnpublishing = false;
+              this.application = application;
+            },
+            error => {
+              this.isUnpublishing = false;
+              console.log('error =', error);
+              alert("Uh-oh, couldn't reload application");
+            }
+          );
+      }
+    );
   }
-
 }

@@ -2,7 +2,8 @@
   width: 100%;
   table-layout: fixed;
 
-  td, th {
+  td,
+  th {
     text-align: left;
 
     &:first-child {
@@ -70,8 +71,8 @@ th {
     height: calc(#{$table-sort-icon-size} * 2);
     display: inline-block;
 
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       content: ' ';
       position: absolute;
       display: block;
@@ -79,12 +80,12 @@ th {
       border-style: solid;
     }
 
-    &:before {
+    &::before {
       top: -1px;
       border-width: 0 $table-sort-icon-size $table-sort-icon-size $table-sort-icon-size;
     }
 
-    &:after {
+    &::after {
       content: ' ';
       bottom: -1px;
       border-width: $table-sort-icon-size $table-sort-icon-size 0 $table-sort-icon-size;
@@ -92,28 +93,28 @@ th {
 
     &.sort-asc,
     &.sort-desc {
-      &:before,
-      &:after {
+      &::before,
+      &::after {
         border-color: $table-sort-icon-active-color transparent;
       }
     }
 
     &.sort-asc {
-      &:before {
+      &::before {
         top: 25%;
       }
 
-      &:after {
+      &::after {
         display: none;
       }
     }
 
     &.sort-desc {
-      &:before {
+      &::before {
         display: none;
       }
 
-      &:after {
+      &::after {
         bottom: 25%;
       }
     }

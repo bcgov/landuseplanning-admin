@@ -43,18 +43,14 @@ describe('CommentPeriodService', () => {
       it('returns an empty CommentPeriod array', async(() => {
         apiSpy.getPeriodsByAppId.and.returnValue(of([] as CommentPeriod[]));
 
-        service
-          .getAllByApplicationId('123')
-          .subscribe(result => expect(result).toEqual([] as CommentPeriod[]));
+        service.getAllByApplicationId('123').subscribe(result => expect(result).toEqual([] as CommentPeriod[]));
       }));
     });
 
     describe('when one comment period is returned by the Api', () => {
       it('returns an array with one CommentPeriod element', async(() => {
         const today = new Date();
-        const commentPeriods: CommentPeriod[] = [
-          new CommentPeriod({ _id: '1', startDate: today, endDate: today })
-        ];
+        const commentPeriods: CommentPeriod[] = [new CommentPeriod({ _id: '1', startDate: today, endDate: today })];
         apiSpy.getPeriodsByAppId.and.returnValue(of(commentPeriods));
 
         service.getAllByApplicationId('123').subscribe(result => {
@@ -82,9 +78,7 @@ describe('CommentPeriodService', () => {
 
     describe('when an exception is thrown', () => {
       it('ApiService.handleError is called and the error is re-thrown', async(() => {
-        apiSpy.getPeriodsByAppId.and.returnValue(
-          throwError(new Error('someError'))
-        );
+        apiSpy.getPeriodsByAppId.and.returnValue(throwError(new Error('someError')));
 
         apiSpy.handleError.and.callFake(error => {
           expect(error).toEqual(Error('someError'));
@@ -113,9 +107,7 @@ describe('CommentPeriodService', () => {
       it('returns an empty CommentPeriod array', async(() => {
         apiSpy.getPeriod.and.returnValue(of(null as CommentPeriod));
 
-        service
-          .getById('123')
-          .subscribe(result => expect(result).toEqual(null));
+        service.getById('123').subscribe(result => expect(result).toEqual(null));
       }));
     });
 
@@ -183,9 +175,7 @@ describe('CommentPeriodService', () => {
       it('returns null', async(() => {
         apiSpy.addCommentPeriod.and.returnValue(of(null as CommentPeriod));
 
-        service
-          .add(new CommentPeriod())
-          .subscribe(result => expect(result).toEqual(null));
+        service.add(new CommentPeriod()).subscribe(result => expect(result).toEqual(null));
       }));
     });
 
@@ -211,8 +201,7 @@ describe('CommentPeriodService', () => {
           startDate: new Date(),
           endDate: new Date(),
           internal: {
-            notes:
-              'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
+            notes: 'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
             _addedBy: 'addedby'
           },
           description:
@@ -257,9 +246,7 @@ describe('CommentPeriodService', () => {
 
     describe('when an exception is thrown', () => {
       it('ApiService.handleError is called and the error is re-thrown', async(() => {
-        apiSpy.addCommentPeriod.and.returnValue(
-          throwError(new Error('someError'))
-        );
+        apiSpy.addCommentPeriod.and.returnValue(throwError(new Error('someError')));
 
         apiSpy.handleError.and.callFake(error => {
           expect(error).toEqual(Error('someError'));
@@ -288,9 +275,7 @@ describe('CommentPeriodService', () => {
       it('returns null', async(() => {
         apiSpy.saveCommentPeriod.and.returnValue(of(null as CommentPeriod));
 
-        service
-          .save(new CommentPeriod())
-          .subscribe(result => expect(result).toEqual(null));
+        service.save(new CommentPeriod()).subscribe(result => expect(result).toEqual(null));
       }));
     });
 
@@ -316,8 +301,7 @@ describe('CommentPeriodService', () => {
           startDate: new Date(),
           endDate: new Date(),
           internal: {
-            notes:
-              'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
+            notes: 'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
             _addedBy: 'addedby'
           },
           description:
@@ -342,9 +326,7 @@ describe('CommentPeriodService', () => {
 
     describe('when an exception is thrown', () => {
       it('ApiService.handleError is called and the error is re-thrown', async(() => {
-        apiSpy.saveCommentPeriod.and.returnValue(
-          throwError(new Error('someError'))
-        );
+        apiSpy.saveCommentPeriod.and.returnValue(throwError(new Error('someError')));
 
         apiSpy.handleError.and.callFake(error => {
           expect(error).toEqual(Error('someError'));
@@ -373,9 +355,7 @@ describe('CommentPeriodService', () => {
       it('returns null', async(() => {
         apiSpy.deleteCommentPeriod.and.returnValue(of(null as CommentPeriod));
 
-        service
-          .delete(new CommentPeriod())
-          .subscribe(result => expect(result).toEqual(null));
+        service.delete(new CommentPeriod()).subscribe(result => expect(result).toEqual(null));
       }));
     });
 
@@ -401,8 +381,7 @@ describe('CommentPeriodService', () => {
           startDate: new Date(),
           endDate: new Date(),
           internal: {
-            notes:
-              'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
+            notes: 'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
             _addedBy: 'addedby'
           },
           description:
@@ -427,9 +406,7 @@ describe('CommentPeriodService', () => {
 
     describe('when an exception is thrown', () => {
       it('ApiService.handleError is called and the error is re-thrown', async(() => {
-        apiSpy.deleteCommentPeriod.and.returnValue(
-          throwError(new Error('someError'))
-        );
+        apiSpy.deleteCommentPeriod.and.returnValue(throwError(new Error('someError')));
 
         apiSpy.handleError.and.callFake(error => {
           expect(error).toEqual(Error('someError'));
@@ -458,9 +435,7 @@ describe('CommentPeriodService', () => {
       it('returns null', async(() => {
         apiSpy.publishCommentPeriod.and.returnValue(of(null as CommentPeriod));
 
-        service
-          .publish(new CommentPeriod())
-          .subscribe(result => expect(result).toEqual(null));
+        service.publish(new CommentPeriod()).subscribe(result => expect(result).toEqual(null));
       }));
     });
 
@@ -486,8 +461,7 @@ describe('CommentPeriodService', () => {
           startDate: new Date(),
           endDate: new Date(),
           internal: {
-            notes:
-              'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
+            notes: 'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
             _addedBy: 'addedby'
           },
           description:
@@ -512,9 +486,7 @@ describe('CommentPeriodService', () => {
 
     describe('when an exception is thrown', () => {
       it('ApiService.handleError is called and the error is re-thrown', async(() => {
-        apiSpy.publishCommentPeriod.and.returnValue(
-          throwError(new Error('someError'))
-        );
+        apiSpy.publishCommentPeriod.and.returnValue(throwError(new Error('someError')));
 
         apiSpy.handleError.and.callFake(error => {
           expect(error).toEqual(Error('someError'));
@@ -541,13 +513,9 @@ describe('CommentPeriodService', () => {
 
     describe('when no comment period is returned by the api', () => {
       it('returns null', async(() => {
-        apiSpy.unPublishCommentPeriod.and.returnValue(
-          of(null as CommentPeriod)
-        );
+        apiSpy.unPublishCommentPeriod.and.returnValue(of(null as CommentPeriod));
 
-        service
-          .unPublish(new CommentPeriod())
-          .subscribe(result => expect(result).toEqual(null));
+        service.unPublish(new CommentPeriod()).subscribe(result => expect(result).toEqual(null));
       }));
     });
 
@@ -573,8 +541,7 @@ describe('CommentPeriodService', () => {
           startDate: new Date(),
           endDate: new Date(),
           internal: {
-            notes:
-              'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
+            notes: 'This is a note. With multiple sentences.\nAnd new lines.\n\nAnd symbols !@#$%^&*()_+{}:";\',.<>.',
             _addedBy: 'addedby'
           },
           description:
@@ -599,9 +566,7 @@ describe('CommentPeriodService', () => {
 
     describe('when an exception is thrown', () => {
       it('ApiService.handleError is called and the error is re-thrown', async(() => {
-        apiSpy.unPublishCommentPeriod.and.returnValue(
-          throwError(new Error('someError'))
-        );
+        apiSpy.unPublishCommentPeriod.and.returnValue(throwError(new Error('someError')));
 
         apiSpy.handleError.and.callFake(error => {
           expect(error).toEqual(Error('someError'));
@@ -622,15 +587,12 @@ describe('CommentPeriodService', () => {
 
   describe('getCurrent()', () => {
     it('returns the first comment period passed', () => {
-      let current = service.getCurrent([
-        new CommentPeriod({ _id: '1' }),
-        new CommentPeriod({ _id: '2' })
-      ]);
+      const current = service.getCurrent([new CommentPeriod({ _id: '1' }), new CommentPeriod({ _id: '2' })]);
       expect(current._id).toBe(new CommentPeriod({ _id: '1' })._id);
     });
 
     it('returns null if the array is empty', () => {
-      let current = service.getCurrent([]);
+      const current = service.getCurrent([]);
       expect(current).toBeNull();
     });
   });
