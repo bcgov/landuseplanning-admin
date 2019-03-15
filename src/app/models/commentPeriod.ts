@@ -117,10 +117,10 @@ export class CommentPeriod {
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const days = moment(obj.dateCompleted).diff(moment(today), 'days') + 1;
       this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
-      if (days <= 0) {
-        this.commentPeriodStatus = 'Completed';
+      if (days > 0) {
+        this.commentPeriodStatus = 'Opened';
       } else {
-        this.commentPeriodStatus = 'In progress';
+        this.commentPeriodStatus = 'Closed';
       }
     }
 

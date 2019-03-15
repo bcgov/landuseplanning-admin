@@ -28,18 +28,17 @@ export class CommentPeriodService {
   }
 
   // get all comment periods for the specified project id
-  getAllByProjectId(projId: string): Observable<CommentPeriod[]> {
-    return this.api.getPeriodsByProjId(projId)
+  getAllByProjectId(projId: string, pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
+    return this.api.getPeriodsByProjId(projId, pageNum, pageSize, sortBy)
       .map(res => {
-        if (res && res.length > 0) {
+        if (res) {
           const periods: Array<CommentPeriod> = [];
-          res.forEach(cp => {
+          res[0].results.forEach(cp => {
             periods.push(new CommentPeriod(cp));
           });
-          console.log(periods);
-          return periods;
+          return { totalCount: res[0].total_items, data: periods };
         }
-        return [];
+        return {};
       })
       .catch(error => this.api.handleError(error));
   }
