@@ -117,7 +117,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     // AddEditUserComponent,
     ConfirmComponent,
     DayCalculatorModalComponent,
-    AddEditTopicComponent
+    AddEditTopicComponent,
   ],
   bootstrap: [AppComponent]
 })

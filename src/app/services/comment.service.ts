@@ -41,7 +41,7 @@ export class CommentService {
     // first get the comment periods
     return this.commentPeriodService.getAllByProjectId(appId)
       .mergeMap(periods => {
-        if (periods && periods.length > 0) {
+        if (periods > 0) {
           // get comments for first comment period only
           // multiple comment periods are currently not supported
           return this.getAllByPeriodId(periods[0]._id, pageNum, pageSize, sortBy, params);

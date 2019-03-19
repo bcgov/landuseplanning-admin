@@ -4,9 +4,6 @@
 <h2 *ngIf="!loading">
   Comment Periods
 </h2>
-<ul class="list-group">
-  <li class="list-group-item" *ngFor="let period of commentPeriods">
-    <p>Status: {{period.commentPeriodStatus}}</p>
-    <p>{{period.dateStarted | date:'longDate'}} - {{period.dateCompleted | date:'longDate'}}</p>
-  </li>
-</ul>
+
+<app-table-template [columns]="commentPeriodTableColumns" [data]="commentPeriodTableData"
+  (onPageNumUpdate)='getPaginatedComments($event)'></app-table-template>

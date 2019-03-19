@@ -10,6 +10,7 @@ import { CommentPeriodsComponent } from './comment-periods.component';
 
 // modules
 import { SharedModule } from 'app//shared/shared.module';
+import { CommentPeriodTableRowComponent } from './comment-period-table-row/comment-period-table-row.component';
 
 @NgModule({
   imports: [
@@ -21,9 +22,12 @@ import { SharedModule } from 'app//shared/shared.module';
     SharedModule
   ],
   declarations: [
-    CommentPeriodsComponent
+    CommentPeriodsComponent,
+    CommentPeriodTableRowComponent
   ],
   entryComponents: [
+    CommentPeriodsComponent,
+    CommentPeriodTableRowComponent
   ]
 })
 export class CommentPeriodsModule { }

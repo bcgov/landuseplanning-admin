@@ -304,17 +304,20 @@ export class ApiService {
   //
   // Comment Periods
   //
-  getPeriodsByProjId(projId: string): Observable<CommentPeriod[]> {
+  getPeriodsByProjId(projId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
     const fields = [
       'project',
       'dateStarted',
       'dateCompleted'
     ];
-    const sort = '&sortBy=-dateStarted';
 
-    let queryString = `commentperiod?&project=${projId}&fields=${this.buildValues(fields)}`;
-    if (sort !== null) { queryString += `&sortBy=${sort}`; }
-    return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
+    let queryString = `commentperiod?&project=${projId}&`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
@@ -616,11 +619,11 @@ export class ApiService {
       'title',
       'type'];
 
-      let queryString = `vc?projectId=${projectId}&`;
-      if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
-      if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-      if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
-      queryString += `fields=${this.buildValues(fields)}`;
+    let queryString = `vc?projectId=${projectId}&`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }

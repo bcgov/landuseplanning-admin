@@ -9,13 +9,17 @@ import { PublishedPipe } from 'app/shared/pipes/published.pipe';
 import { ObjectFilterPipe } from 'app/shared/pipes/object-filter.pipe';
 import { VarDirective } from 'app/shared/utils/ng-var.directive';
 import { FileUploadComponent } from 'app/file-upload/file-upload.component';
-import { ItemTableComponent } from 'app/shared/components/item-table/item-table.component';
+import { TableTemplateComponent } from 'app/shared/components/table-template/table-template.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+
+import { TableDirective } from './components/table-template/table.directive';
 
 @NgModule({
   imports: [
     BrowserModule,
     MatSlideToggleModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    NgxPaginationModule
   ],
   declarations: [
     OrderByPipe,
@@ -24,7 +28,8 @@ import { ItemTableComponent } from 'app/shared/components/item-table/item-table.
     ObjectFilterPipe,
     VarDirective,
     FileUploadComponent,
-    ItemTableComponent
+    TableTemplateComponent,
+    TableDirective
   ],
   exports: [
     MatSlideToggleModule,
@@ -34,7 +39,8 @@ import { ItemTableComponent } from 'app/shared/components/item-table/item-table.
     PublishedPipe,
     VarDirective,
     FileUploadComponent,
-    ItemTableComponent
+    TableTemplateComponent,
+    NgxPaginationModule
   ]
 })
 
