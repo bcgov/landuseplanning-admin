@@ -11,7 +11,10 @@
         <a [ngClass]="{'active': currentMenu === 'milestones'}" class="project-menu" [routerLink]="['p', currentProjectId, 'milestones']"><i class="material-icons mr-3">playlist_add</i>Milestones</a>
   </section>
   <section class="bg-secondary">
-    <a [ngClass]="{'active': currentProjectId === 'projects'}" [routerLink]="['/projects']"><i class="material-icons mr-3">view_list</i>ALL PROJECTS</a>
-    <a [ngClass]="{'active': currentProjectId === 'administration'}" [routerLink]="['/administration']"><i class="material-icons mr-3 ">settings</i>SETTINGS</a>
+    <a [ngClass]="{'active': currentProjectId === 'projects'}" [routerLink]="['/projects']"><i class="material-icons mr-3">view_list</i>All Projects</a>
+    <a [ngClass]="{'active': currentProjectId === 'map'}" [routerLink]="['/map']"><i class="material-icons mr-3 ">pin_drop</i>Map</a>
+    <a [ngClass]="{'active': currentProjectId === 'metrics'}" [routerLink]="['/metrics']"><i class="material-icons mr-3 ">assessment</i>Metrics</a>
+    <a [ngClass]="{'active': currentProjectId === 'activity'}" [routerLink]="['/activity']"><i class="material-icons mr-3 ">notifications_active</i>Activity Posts</a>
+    <a [ngClass]="{'active': currentProjectId === 'administration'}" [routerLink]="['/administration']"><i class="material-icons mr-3 ">settings</i>Settings</a>
   </section>
 </div>
