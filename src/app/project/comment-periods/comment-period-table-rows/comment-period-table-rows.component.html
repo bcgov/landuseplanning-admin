@@ -1,5 +1,5 @@
 <tr
-    *ngFor="let commentPeriod of commentPeriods | paginate: { itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }">
+    *ngFor="let commentPeriod of commentPeriods | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }">
     <td scope="row">{{commentPeriod.commentPeriodStatus}}</td>
     <td>{{commentPeriod.dateStarted | date:'longDate'}}</td>
     <td>{{commentPeriod.dateCompleted | date:'longDate'}}</td>

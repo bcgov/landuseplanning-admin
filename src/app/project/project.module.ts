@@ -5,7 +5,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ProjectRoutingModule } from './project-routing.module';
-import { CommentPeriodsModule } from './comment-periods/comment-periods.module';
 import { SharedModule } from 'app/shared/shared.module';
 
 // components
@@ -25,6 +24,9 @@ import { ValuedComponentsComponent } from './valued-components/valued-components
 import { ApiService } from 'app/services/api';
 import { ExcelService } from 'app/services/excel.service';
 import { ProjectService } from 'app/services/project.service';
+import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
+import { CommentPeriodTableRowsComponent } from './comment-periods/comment-period-table-rows/comment-period-table-rows.component';
+import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
 
 @NgModule({
   imports: [
@@ -33,7 +35,6 @@ import { ProjectService } from 'app/services/project.service';
     NgbModule.forRoot(),
     NgxPaginationModule,
     ProjectRoutingModule,
-    CommentPeriodsModule,
     SharedModule
   ],
   declarations: [
@@ -47,7 +48,15 @@ import { ProjectService } from 'app/services/project.service';
     ProjectDetailComponent,
     ProjectUpdatesComponent,
     ReviewCommentsComponent,
-    ValuedComponentsComponent
+    CommentPeriodsComponent,
+    CommentPeriodTableRowsComponent,
+    ValuedComponentsComponent,
+    ValuedComponentTableRowsComponent
+  ],
+  entryComponents: [
+    CommentPeriodsComponent,
+    CommentPeriodTableRowsComponent,
+    ValuedComponentTableRowsComponent
   ],
   exports: [
     CommentDetailComponent,
