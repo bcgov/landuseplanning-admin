@@ -15,6 +15,7 @@ export class SidebarComponent {
   public showProjectDetails = false;
   public showProjectDetailsSubItems = false;
   public currentProjectId = '';
+  public currentMenu = '';
 
   constructor(router: Router) {
     router.events.filter((event: any) => event instanceof NavigationEnd)
@@ -53,8 +54,10 @@ export class SidebarComponent {
         }
       }
       this.currentProjectId = urlArray[1];
+      this.currentMenu = urlArray[2];
       this.showProjectDetails = true;
     } else {
+      this.currentProjectId = urlArray[0];
       this.showProjectDetails = false;
     }
   }

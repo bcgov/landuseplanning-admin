@@ -49,6 +49,9 @@ import { ValuedComponentService } from './services/valued-component.service';
 import { TokenInterceptor } from 'app/shared/utils/token-interceptor';
 import { DayCalculatorModalComponent } from './day-calculator-modal/day-calculator-modal.component';
 import { AddEditTopicComponent } from 'app/administration/topics/add-edit-topic/add-edit-topic.component';
+import { MapComponent } from './map/map.component';
+import { MetricsComponent } from './metrics/metrics.component';
+import { ActivityComponent } from './activity/activity.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -70,7 +73,10 @@ export function kcFactory(keycloakService: KeycloakService) {
     ProjectComponent,
     SearchComponent,
     SidebarComponent,
-    TopicsComponent
+    TopicsComponent,
+    MapComponent,
+    MetricsComponent,
+    ActivityComponent
   ],
   imports: [
     BrowserAnimationsModule,
