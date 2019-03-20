@@ -1,17 +1,17 @@
 <div class="sidebar">
   <section [hidden]='!showProjectDetails' class="bg-light">
-    <a class="dropdown-btn " [routerLink]="['p', currentProjectId]">
+    <a [ngClass]="{'active': currentMenu === 'project-details'}" class="dropdown-btn " [routerLink]="['p', currentProjectId]">
         Project Details
       </a>
-        <a [routerLink]="['p', currentProjectId, 'compliance']"><i class="material-icons mr-3">event_note</i>Compliance</a>
-        <a [routerLink]="['p', currentProjectId, 'valued-components']"><i class="material-icons mr-3">view_list</i>Valued Components</a>
-        <a [routerLink]="['p', currentProjectId, 'project-updates']"><i class="material-icons mr-3">fiber_new</i>Project Updates</a>
-        <a [routerLink]="['p', currentProjectId, 'project-contracts']"><i class="material-icons mr-3">person</i>Project Contacts</a>
-        <a [routerLink]="['p', currentProjectId, 'comment-periods']"><i class="material-icons mr-3">comment</i>Comment Periods</a>
-        <a [routerLink]="['p', currentProjectId, 'milestones']"><i class="material-icons mr-3">playlist_add</i>Milestones</a>
+        <a [ngClass]="{'active': currentMenu === 'compliance'}" class="project-menu" [routerLink]="['p', currentProjectId, 'compliance']"><i class="material-icons mr-3">event_note</i>Compliance</a>
+        <a [ngClass]="{'active': currentMenu === 'valued-components'}" class="project-menu" [routerLink]="['p', currentProjectId, 'valued-components']"><i class="material-icons mr-3">view_list</i>Valued Components</a>
+        <a [ngClass]="{'active': currentMenu === 'project-updates'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-updates']"><i class="material-icons mr-3">fiber_new</i>Project Updates</a>
+        <a [ngClass]="{'active': currentMenu === 'project-contracts'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-contracts']"><i class="material-icons mr-3">person</i>Project Contacts</a>
+        <a [ngClass]="{'active': currentMenu === 'comment-periods'}" class="project-menu" [routerLink]="['p', currentProjectId, 'comment-periods']"><i class="material-icons mr-3">comment</i>Comment Periods</a>
+        <a [ngClass]="{'active': currentMenu === 'milestones'}" class="project-menu" [routerLink]="['p', currentProjectId, 'milestones']"><i class="material-icons mr-3">playlist_add</i>Milestones</a>
   </section>
   <section class="bg-secondary">
-    <a [routerLink]="['/projects']"><i class="material-icons mr-3">view_list</i>ALL PROJECTS</a>
-    <a [routerLink]="['/administration']"><i class="material-icons mr-3 ">settings</i>SETTINGS</a>
+    <a [ngClass]="{'active': currentProjectId === 'projects'}" [routerLink]="['/projects']"><i class="material-icons mr-3">view_list</i>ALL PROJECTS</a>
+    <a [ngClass]="{'active': currentProjectId === 'administration'}" [routerLink]="['/administration']"><i class="material-icons mr-3 ">settings</i>SETTINGS</a>
   </section>
 </div>
