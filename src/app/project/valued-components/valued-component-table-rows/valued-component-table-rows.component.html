@@ -1,0 +1,10 @@
+<tr *ngFor="let valuedComponent of valuedComponents | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
+    class="clickable-row">
+    <td scope="row">{{valuedComponent.type}}</td>
+    <td>{{valuedComponent.title}}</td>
+    <td>{{valuedComponent.pillar}}</td>
+    <td>{{valuedComponent.parent}}</td>
+    <!-- <td>
+            <button type="button" (click)="deleteVC(valuedComponent)" class="btn btn-danger">Delete</button>
+        </td> -->
+</tr>

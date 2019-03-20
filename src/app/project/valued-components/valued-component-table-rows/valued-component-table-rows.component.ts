@@ -4,18 +4,18 @@ import { TableComponent } from 'app/shared/components/table-template/table.compo
 import { TableObject } from 'app/shared/components/table-template/table-object';
 
 @Component({
-    selector: 'tbody[app-comment-period-table-row]',
-    templateUrl: './comment-period-table-row.component.html'
+    selector: 'tbody[app-valued-component-table-rows]',
+    templateUrl: './valued-component-table-rows.component.html'
 })
 
-export class CommentPeriodTableRowComponent implements OnInit, TableComponent {
+export class ValuedComponentTableRowsComponent implements OnInit, TableComponent {
     @Input() data: TableObject;
 
-    public commentPeriods: any;
+    public valuedComponents: any;
     public paginationData: any;
 
     ngOnInit() {
-        this.commentPeriods = this.data.data;
+        this.valuedComponents = this.data.data;
         this.paginationData = this.data.paginationData;
     }
 }

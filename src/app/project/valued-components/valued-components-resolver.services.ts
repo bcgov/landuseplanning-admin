@@ -3,7 +3,6 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/r
 import { Observable } from 'rxjs/Observable';
 
 import { ValuedComponentService } from 'app/services/valued-component.service';
-import { ValuedComponent } from 'app/models/valuedComponent';
 
 @Injectable()
 export class ValuedComponentsResolver implements Resolve<Observable<object>> {

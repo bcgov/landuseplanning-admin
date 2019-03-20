@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ComponentFactoryResolver, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, ComponentFactoryResolver, OnDestroy, ViewChild, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 
 import { TableDirective } from './table.directive';
 import { TableObject } from './table-object';
@@ -9,7 +9,7 @@ import { TableComponent } from './table.component';
   templateUrl: './table-template.component.html',
   styleUrls: ['./table-template.component.scss']
 })
-export class TableTemplateComponent implements OnInit, OnDestroy {
+export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
   @Input() data: TableObject;
   @Input() columns: String[];
   @ViewChild(TableDirective) tableHost: TableDirective;
@@ -22,6 +22,17 @@ export class TableTemplateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadComponent();
+    // console.log(this.data);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // only run when property "data" changed
+    if (changes['data']) {
+      this.data.component = changes['data'].currentValue.component;
+      this.data.data = changes['data'].currentValue.data;
+      this.data.paginationData = changes['data'].currentValue.paginationData;
+      this.loadComponent();
+    }
   }
 
   ngOnDestroy() {

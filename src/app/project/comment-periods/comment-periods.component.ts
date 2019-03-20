@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { CommentPeriod } from 'app/models/commentPeriod';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 
-import { CommentPeriodTableRowComponent } from 'app/project/comment-periods/comment-period-table-row/comment-period-table-row.component';
+import { CommentPeriodTableRowsComponent } from 'app/project/comment-periods/comment-period-table-rows/comment-period-table-rows.component';
 
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
@@ -92,7 +92,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       );
     });
     this.commentPeriodTableData = new TableObject(
-      CommentPeriodTableRowComponent,
+      CommentPeriodTableRowsComponent,
       cpList,
       {
         pageSize: this.pageSize,
@@ -110,13 +110,11 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     this.commentPeriodService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
+        this.updateUrl();
         this.currentPage = pageNumber;
         this.totalListItems = res.totalCount;
         this.commentPeriods = res.data;
-
-        this.updateUrl();
         this.initCPRowData();
-
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });

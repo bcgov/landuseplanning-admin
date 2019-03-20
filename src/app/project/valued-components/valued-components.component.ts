@@ -2,11 +2,10 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestro
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ValuedComponent } from 'app/models/valuedComponent';
-import { ConfirmComponent } from 'app/confirm/confirm.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { ValuedComponentService } from 'app/services/valued-component.service';
 import { PlatformLocation } from '@angular/common';
+import { TableObject } from 'app/shared/components/table-template/table-object';
+import { ValuedComponentTableRowsComponent } from './valued-component-table-rows/valued-component-table-rows.component';
 
 @Component({
   selector: 'app-valued-components',
@@ -18,11 +17,21 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public valuedComponents: ValuedComponent[] = null;
   public vcsLoading = true;
+
+  public valuedComponentTableData: TableObject;
+  public valuedComponentTableColumns: String[] = [
+    'Type',
+    'Title',
+    'Pillar',
+    'Parent'
+  ];
+
   public pageNum = 0;
   public pageSize = 10;
   public currentPage = 1;
   public totalVcs = 0;
   public sortBy = '';
+
   private currentProjectId = '';
 
   constructor(
@@ -30,8 +39,6 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     private platformLocation: PlatformLocation,
     private router: Router,
     private valuedComponentService: ValuedComponentService,
-    private modalService: NgbModal,
-    private dialogService: DialogService,
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
@@ -45,6 +52,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
           this.totalVcs = res.valuedComponents.totalCount;
           this.valuedComponents = res.valuedComponents.data;
           this.currentProjectId = res.valuedComponents.projectId;
+          this.setVCRowData();
           this._changeDetectionRef.detectChanges();
         } else {
           alert('Uh-oh, couldn\'t load valued components');
@@ -70,7 +78,30 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   //   return;
   // }
 
-  getPaginatedVcs(pageNumber) {
+  setVCRowData() {
+    let vcList = [];
+    this.valuedComponents.forEach(valuedComponent => {
+      vcList.push(
+        {
+          type: valuedComponent.type,
+          title: valuedComponent.title,
+          pillar: valuedComponent.pillar,
+          parent: valuedComponent.parent == null ? 'None' : valuedComponent.parent
+        }
+      );
+    });
+    this.valuedComponentTableData = new TableObject(
+      ValuedComponentTableRowsComponent,
+      vcList,
+      {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage,
+        totalListItems: this.totalVcs
+      }
+    );
+  }
+
+  getPaginatedVCs(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
 
@@ -83,6 +114,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
         this.totalVcs = res.totalCount;
         this.valuedComponents = res.data;
         this.vcsLoading = false;
+        this.setVCRowData();
         this._changeDetectionRef.detectChanges();
       });
   }

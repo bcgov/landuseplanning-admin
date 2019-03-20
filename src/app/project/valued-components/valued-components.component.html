@@ -1,31 +1,4 @@
 <div class="search-container">
-  <div class="container">
-    <table class="table table-bordered">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
-          <th scope="col">Type</th>
-          <th scope="col">Pillar</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let valuedComponent of valuedComponents | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: totalVcs }"
-            class="clickable-row">
-          <td scope="row">{{valuedComponent.name}}</td>
-          <td>{{valuedComponent.description}}</td>
-          <td>{{valuedComponent.type}}</td>
-          <td>{{valuedComponent.pillar}}</td>
-          <td>
-            <button type="button" (click)="deleteVC(valuedComponent)" class="btn btn-danger">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="page-controls">
-        <div class="spinner" [ngClass]="{ 'hidden': !vcsLoading }"></div>
-        <pagination-controls (pageChange)="getPaginatedVcs($event)" id="server"></pagination-controls>
-    </div>
-  </div>
+  <app-table-template [columns]="valuedComponentTableColumns" [data]="valuedComponentTableData"
+    (onPageNumUpdate)='getPaginatedVCs($event)'></app-table-template>
 </div>
