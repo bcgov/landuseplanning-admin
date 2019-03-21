@@ -17,6 +17,9 @@ export class ValuedComponentService {
             .map((res: any) => {
                 if (res) {
                     let valuedComponents: Array<ValuedComponent> = [];
+                    if (!res || res.length === 0) {
+                      return { projectId: projectId, totalCount: 0, data: [] };
+                    }
                     res[0].results.forEach(valuedComponent => {
                         valuedComponents.push(new ValuedComponent(valuedComponent));
                     });

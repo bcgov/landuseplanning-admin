@@ -1,4 +1,8 @@
 <div class="search-container">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Valued Components</li>
+    </ol>
+    
   <app-table-template [columns]="valuedComponentTableColumns" [data]="valuedComponentTableData"
     (onPageNumUpdate)='getPaginatedVCs($event)'></app-table-template>
 </div>

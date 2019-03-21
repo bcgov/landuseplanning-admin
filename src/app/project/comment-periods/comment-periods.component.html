@@ -1,9 +1,9 @@
 <div class="spinner-container full-screen" *ngIf="loading">
   <div class="spinner-new rotating"></div>
 </div>
-<h2 *ngIf="!loading">
-  Comment Periods
-</h2>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">Comment Periods</li>
+</ol>
 
 <app-table-template [columns]="commentPeriodTableColumns" [data]="commentPeriodTableData"
   (onPageNumUpdate)='getPaginatedComments($event)'></app-table-template>
