@@ -15,9 +15,9 @@
     "lint:scss": "stylelint src/**/*.scss",
     "lint": "npm-run-all -l -s -c lint:*",
     "lint-fix:ts-1": "ng lint base-app2 --fix --format=stylish",
-    "lint-fix:ts-2": "prettier src/**/*.ts --write --loglevel warn",
+    "lint-fix:ts-2": "prettier ./**/*.ts --write --loglevel warn",
     "lint-fix:ts": "npm-run-all -l -s -c lint-fix:ts-*",
-    "lint-fix:scss": "stylelint src/**/*.scss --fix",
+    "lint-fix:scss": "stylelint ./**/*.scss --fix",
     "lint-fix": "npm-run-all -l -s -c lint-fix:ts lint-fix:scss"
   },
   "private": true,

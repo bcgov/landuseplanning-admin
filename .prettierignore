@@ -1,4 +1,10 @@
+node_modules
+
 dist
+openshift
+sonar-runner
+
+.vscode
 
 # use stylelint for scss linting/formatting
 *.scss
