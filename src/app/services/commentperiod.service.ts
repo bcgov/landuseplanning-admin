@@ -30,9 +30,12 @@ export class CommentPeriodService {
   // get all comment periods for the specified project id
   getAllByProjectId(projId: string, pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
     return this.api.getPeriodsByProjId(projId, pageNum, pageSize, sortBy)
-      .map(res => {
+      .map((res: any) => {
         if (res) {
           const periods: Array<CommentPeriod> = [];
+          if (!res || res.length === 0) {
+            return { totalCount: 0, data: [] };
+          }
           res[0].results.forEach(cp => {
             periods.push(new CommentPeriod(cp));
           });
