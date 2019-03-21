@@ -13,13 +13,8 @@ describe('CommentDetailComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [CommentDetailComponent, NewlinesPipe],
-      providers: [
-        { provide: ApiService },
-        { provide: CommentService },
-        { provide: DocumentService },
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: ApiService }, { provide: CommentService }, { provide: DocumentService }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

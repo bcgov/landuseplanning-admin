@@ -5,7 +5,6 @@ import { Application } from 'app/models/application';
   name: 'objectFilter'
 })
 export class ObjectFilterPipe implements PipeTransform {
-
   transform(value: Application[], q: string) {
     if (!q || q === '') {
       return value;

@@ -4,7 +4,7 @@ import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import { User } from 'app/models/user';
 import { UserService } from 'app/services/user.service';
 
-export interface DataModel {
+export interface IDataModel {
   title: string;
   message: string;
   model: User;
@@ -17,7 +17,7 @@ export interface DataModel {
 
 // NOTE: dialog components must not implement OnDestroy
 //       otherwise they don't return a result
-export class AddEditUserComponent extends DialogComponent<DataModel, boolean> implements DataModel, OnInit {
+export class AddEditUserComponent extends DialogComponent<IDataModel, boolean> implements IDataModel, OnInit {
   title: string;
   message: string;
   model: User;
@@ -26,8 +26,7 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
   powers: string[];
   networkMsg: string;
 
-  constructor(dialogService: DialogService,
-    private userService: UserService) {
+  constructor(dialogService: DialogService, private userService: UserService) {
     super(dialogService);
   }
 
@@ -50,29 +49,29 @@ export class AddEditUserComponent extends DialogComponent<DataModel, boolean> im
   save() {
     this.networkMsg = '';
     if (this.isNew) {
-      this.userService.add(this.user)
-        .subscribe(
-          () => {
-            this.result = true;
-            this.isNew = false;
-            this.close();
-          },
-          error => {
-            console.log('error =', error);
-            this.networkMsg = error;
-          });
+      this.userService.add(this.user).subscribe(
+        () => {
+          this.result = true;
+          this.isNew = false;
+          this.close();
+        },
+        error => {
+          console.log('error =', error);
+          this.networkMsg = error;
+        }
+      );
     } else {
-      this.userService.save(this.user)
-        .subscribe(
-          () => {
-            this.result = true;
-            this.isNew = false;
-            this.close();
-          },
-          error => {
-            console.log('error =', error);
-            this.networkMsg = error;
-          });
+      this.userService.save(this.user).subscribe(
+        () => {
+          this.result = true;
+          this.isNew = false;
+          this.close();
+        },
+        error => {
+          console.log('error =', error);
+          this.networkMsg = error;
+        }
+      );
     }
   }
 }

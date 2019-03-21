@@ -30,7 +30,7 @@ $nav-tab-bg-active: #fff;
       color: #333;
       border: $nav-tab-border-width solid transparent;
       border-bottom-width: 0;
-      background: rgba($nav-tab-bg,0.5);
+      background: rgba($nav-tab-bg, 0.5);
     }
 
     &.active {
@@ -39,18 +39,18 @@ $nav-tab-bg-active: #fff;
       border-width: $nav-tab-border-width;
       border-bottom-width: 0;
       background: $nav-tab-bg-active;
-  
+
       &:focus,
       &:hover {
-        border-bottom-color: transparent;
         border: $nav-tab-border-width solid $nav-tab-border-color;
+        border-bottom-color: transparent;
         border-bottom-width: 0;
       }
     }
 
     i {
       margin-top: -0.2rem;
-      margin-right: 0.20rem;
+      margin-right: 0.2rem;
       margin-left: -0.2rem;
       vertical-align: middle;
     }

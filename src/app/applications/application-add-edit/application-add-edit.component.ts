@@ -5,8 +5,7 @@ import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { Subject } from 'rxjs';
-import { Observable, of } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { takeUntil, concat } from 'rxjs/operators';
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -29,7 +28,6 @@ const DEFAULT_DAYS = 30;
   templateUrl: './application-add-edit.component.html',
   styleUrls: ['./application-add-edit.component.scss']
 })
-
 export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('applicationForm') applicationForm: NgForm;
 
@@ -45,8 +43,8 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   private docsToDelete: Document[] = [];
   private decisionToDelete: Decision = null;
-  public applicationFiles: Array<File> = [];
-  public decisionFiles: Array<File> = [];
+  public applicationFiles: File[] = [];
+  public decisionFiles: File[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -94,16 +92,18 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     }
 
     // otherwise prompt the user with observable (asynchronous) dialog
-    return this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Unsaved Changes',
-        message: 'Click OK to discard your changes or Cancel to return to the application.'
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      );
+    return this.dialogService
+      .addDialog(
+        ConfirmComponent,
+        {
+          title: 'Unsaved Changes',
+          message: 'Click OK to discard your changes or Cancel to return to the application.'
+        },
+        {
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      )
+      .pipe(takeUntil(this.ngUnsubscribe));
   }
 
   // this is needed because we don't have a form control that is marked as dirty
@@ -153,40 +153,34 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnInit() {
     // get data from route resolver
-    this.route.data
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        (data: { application: Application }) => {
-          if (data.application) {
-            this.application = data.application;
+    this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: { application: Application }) => {
+      if (data.application) {
+        this.application = data.application;
 
-            // add comment period if there isn't one already (not just on create but also on edit --
-            // this will fix the situation where existing applications don't have a comment period)
-            if (!this.application.currentPeriod) {
-              this.application.currentPeriod = new CommentPeriod();
-              // set startDate
-              const now = new Date();
-              const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-              this.application.currentPeriod.startDate = today;
-              this.startDate = this.dateToNgbDate(this.application.currentPeriod.startDate);
-              // set delta and endDate
-              this.onDeltaChg(DEFAULT_DAYS);
-            } else {
-              // set startDate
-              this.startDate = this.dateToNgbDate(this.application.currentPeriod.startDate);
-              // set endDate and delta
-              this.endDate = this.dateToNgbDate(this.application.currentPeriod.endDate);
-              this.onEndDateChg(this.endDate);
-            }
-          } else {
-            alert('Uh-oh, couldn\'t load application');
-            // application not found --> navigate back to search
-            this.router.navigate(['/search']);
-          }
+        // add comment period if there isn't one already (not just on create but also on edit --
+        // this will fix the situation where existing applications don't have a comment period)
+        if (!this.application.currentPeriod) {
+          this.application.currentPeriod = new CommentPeriod();
+          // set startDate
+          const now = new Date();
+          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          this.application.currentPeriod.startDate = today;
+          this.startDate = this.dateToNgbDate(this.application.currentPeriod.startDate);
+          // set delta and endDate
+          this.onDeltaChg(DEFAULT_DAYS);
+        } else {
+          // set startDate
+          this.startDate = this.dateToNgbDate(this.application.currentPeriod.startDate);
+          // set endDate and delta
+          this.endDate = this.dateToNgbDate(this.application.currentPeriod.endDate);
+          this.onEndDateChg(this.endDate);
         }
-      );
+      } else {
+        alert("Uh-oh, couldn't load application");
+        // application not found --> navigate back to search
+        this.router.navigate(['/search']);
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -202,23 +196,25 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnDestroy() {
     // dismiss any open snackbar
-    if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+    if (this.snackBarRef) {
+      this.snackBarRef.dismiss();
+    }
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
   private dateToNgbDate(date: Date): NgbDateStruct {
-    return date ? { 'year': date.getFullYear(), 'month': date.getMonth() + 1, 'day': date.getDate() } : null;
+    return date ? { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() } : null;
   }
 
   private ngbDateToDate(date: NgbDateStruct): Date {
-    return new Date(date.year, (date.month - 1), date.day);
+    return new Date(date.year, date.month - 1, date.day);
   }
 
   // used in template
   public isValidDate(date: NgbDateStruct): boolean {
-    return (date && !isNaN(date.year) && !isNaN(date.month) && !isNaN(date.day));
+    return date && !isNaN(date.year) && !isNaN(date.month) && !isNaN(date.day);
   }
 
   public onStartDateChg(startDate: NgbDateStruct) {
@@ -255,19 +251,23 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     if (start) {
       // when start changes, adjust end accordingly
       this.application.currentPeriod.endDate = new Date(this.application.currentPeriod.startDate);
-      this.application.currentPeriod.endDate.setDate(this.application.currentPeriod.startDate.getDate() + this.delta - 1);
+      this.application.currentPeriod.endDate.setDate(
+        this.application.currentPeriod.startDate.getDate() + this.delta - 1
+      );
       this.endDate = this.dateToNgbDate(this.application.currentPeriod.endDate);
-
     } else if (delta) {
       // when delta changes, adjust end accordingly
       this.application.currentPeriod.endDate = new Date(this.application.currentPeriod.startDate);
-      this.application.currentPeriod.endDate.setDate(this.application.currentPeriod.startDate.getDate() + this.delta - 1);
+      this.application.currentPeriod.endDate.setDate(
+        this.application.currentPeriod.startDate.getDate() + this.delta - 1
+      );
       this.endDate = this.dateToNgbDate(this.application.currentPeriod.endDate);
-
     } else if (end) {
       // when end changes, adjust delta accordingly
       // use moment to handle Daylight Saving Time changes
-      this.delta = moment(this.application.currentPeriod.endDate).diff(moment(this.application.currentPeriod.startDate), 'days') + 1;
+      this.delta =
+        moment(this.application.currentPeriod.endDate).diff(moment(this.application.currentPeriod.startDate), 'days') +
+        1;
     }
   }
 
@@ -295,12 +295,14 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
 
   // add application or decision documents
   public addDocuments(files: FileList, documents: Document[]) {
-    if (files && documents) { // safety check
+    if (files && documents) {
+      // safety check
+      // tslint:disable-next-line:prefer-for-of
       for (let i = 0; i < files.length; i++) {
         if (files[i]) {
           // ensure file is not already in the list
-          if (_.find(documents, doc => (doc.documentFileName === files[i].name))) {
-            this.snackBarRef = this.snackBar.open('Can\'t add duplicate file', null, { duration: 2000 });
+          if (_.find(documents, doc => doc.documentFileName === files[i].name)) {
+            this.snackBarRef = this.snackBar.open("Can't add duplicate file", null, { duration: 2000 });
             continue;
           }
 
@@ -321,9 +323,10 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
 
   // delete application or decision document
   public deleteDocument(doc: Document, documents: Document[]) {
-    if (doc && documents) { // safety check
+    if (doc && documents) {
+      // safety check
       // remove doc from current list
-      _.remove(documents, item => (item.documentFileName === doc.documentFileName));
+      _.remove(documents, item => item.documentFileName === doc.documentFileName);
 
       if (doc._id) {
         // save document for removal from db when application is saved
@@ -338,35 +341,37 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     this.isSubmitSaveClicked = true;
 
     if (this.applicationForm.invalid) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Create Application',
-          message: 'Please check for required fields or errors.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .pipe(
-          takeUntil(this.ngUnsubscribe)
-        );
+      this.dialogService
+        .addDialog(
+          ConfirmComponent,
+          {
+            title: 'Cannot Create Application',
+            message: 'Please check for required fields or errors.',
+            okOnly: true
+          },
+          {
+            backdropColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        )
+        .pipe(takeUntil(this.ngUnsubscribe));
       return;
     }
 
     this.isSubmitting = true;
 
     // add application
-    this.applicationService.add(this.application)
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
+    this.applicationService
+      .add(this.application)
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-        application2 => { // onNext
+        application2 => {
+          // onNext
           this.addApplication2(application2);
         },
         error => {
           this.isSubmitting = false;
           console.log('error =', error);
-          alert('Uh-oh, couldn\'t create application');
+          alert("Uh-oh, couldn't create application");
         }
       );
   }
@@ -396,37 +401,34 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
       observables = observables.pipe(concat(this.decisionService.add(this.application.decision)));
     }
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isSubmitting = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t add application, part 2');
-        },
-        () => { // onCompleted
-          // reload app with decision for next step
-          this.applicationService.getById(application2._id, { getDecision: true })
-            .pipe(
-              takeUntil(this.ngUnsubscribe)
-            )
-            .subscribe(
-              application3 => {
-                this.addApplication3(application3);
-              },
-              error => {
-                this.isSubmitting = false;
-                console.log('error =', error);
-                alert('Uh-oh, couldn\'t reload application, part 2');
-              }
-            );
-        }
-      );
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isSubmitting = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't add application, part 2");
+      },
+      () => {
+        // onCompleted
+        // reload app with decision for next step
+        this.applicationService
+          .getById(application2._id, { getDecision: true })
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(
+            application3 => {
+              this.addApplication3(application3);
+            },
+            error => {
+              this.isSubmitting = false;
+              console.log('error =', error);
+              alert("Uh-oh, couldn't reload application, part 2");
+            }
+          );
+      }
+    );
   }
 
   // this is part 3 of adding an application and all its objects
@@ -442,36 +444,34 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
       }
     }
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isSubmitting = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t save application, part 3');
-        },
-        () => { // onCompleted
-          // we don't need to reload data since we're navigating away below
-          // this.isSubmitting = false; // LOOKS BETTER WITHOUT THIS
-          // this.snackBarRef = this.snackBar.open('Application created...', null, { duration: 2000 }); // not displayed due to navigate below
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isSubmitting = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't save application, part 3");
+      },
+      () => {
+        // onCompleted
+        // we don't need to reload data since we're navigating away below
+        // this.isSubmitting = false; // LOOKS BETTER WITHOUT THIS
+        // this.snackBarRef = this.snackBar.open('Application created...', null, { duration: 2000 }); // not displayed due to navigate below
 
-          this.applicationForm.form.markAsPristine();
-          if (this.application.documents) {
-            this.application.documents = []; // negate unsaved document check
-          }
-          if (this.application.decision && this.application.decision.documents) {
-            this.application.decision.documents = []; // negate unsaved document check
-          }
-
-          // add succeeded --> navigate to details page
-          this.router.navigate(['/a', application3._id]);
+        this.applicationForm.form.markAsPristine();
+        if (this.application.documents) {
+          this.application.documents = []; // negate unsaved document check
         }
-      );
+        if (this.application.decision && this.application.decision.documents) {
+          this.application.decision.documents = []; // negate unsaved document check
+        }
+
+        // add succeeded --> navigate to details page
+        this.router.navigate(['/a', application3._id]);
+      }
+    );
   }
 
   // this is part 1 of saving an application and all its objects
@@ -481,46 +481,52 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
 
     if (this.applicationForm.invalid) {
       if (this.application.isPublished) {
-        this.dialogService.addDialog(ConfirmComponent,
-          {
-            title: 'Cannot Publish Changes',
-            message: 'Please check for required fields or errors.',
-            okOnly: true
-          }, {
-            backdropColor: 'rgba(0, 0, 0, 0.5)'
-          })
-          .pipe(
-            takeUntil(this.ngUnsubscribe)
-          );
+        this.dialogService
+          .addDialog(
+            ConfirmComponent,
+            {
+              title: 'Cannot Publish Changes',
+              message: 'Please check for required fields or errors.',
+              okOnly: true
+            },
+            {
+              backdropColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          )
+          .pipe(takeUntil(this.ngUnsubscribe));
         return;
       } else {
-        this.dialogService.addDialog(ConfirmComponent,
-          {
-            title: 'Cannot Save Application',
-            message: 'Please check for required fields or errors.',
-            okOnly: true
-          }, {
-            backdropColor: 'rgba(0, 0, 0, 0.5)'
-          })
-          .pipe(
-            takeUntil(this.ngUnsubscribe)
-          );
+        this.dialogService
+          .addDialog(
+            ConfirmComponent,
+            {
+              title: 'Cannot Save Application',
+              message: 'Please check for required fields or errors.',
+              okOnly: true
+            },
+            {
+              backdropColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          )
+          .pipe(takeUntil(this.ngUnsubscribe));
         return;
       }
     }
 
     if (this.application.isPublished && !this.application.description) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Publish Changes',
-          message: 'A description for this application is required to publish.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .pipe(
-          takeUntil(this.ngUnsubscribe)
-        );
+      this.dialogService
+        .addDialog(
+          ConfirmComponent,
+          {
+            title: 'Cannot Publish Changes',
+            message: 'A description for this application is required to publish.',
+            okOnly: true
+          },
+          {
+            backdropColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        )
+        .pipe(takeUntil(this.ngUnsubscribe));
       return;
     }
 
@@ -574,37 +580,34 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
       }
     }
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isSaving = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t save application, part 1');
-        },
-        () => { // onCompleted
-          // reload app with documents, current period and decision for next step
-          this.applicationService.getById(this.application._id, { getDocuments: true, getCurrentPeriod: true, getDecision: true })
-            .pipe(
-              takeUntil(this.ngUnsubscribe)
-            )
-            .subscribe(
-              application2 => {
-                this.saveApplication2(application2);
-              },
-              error => {
-                this.isSaving = false;
-                console.log('error =', error);
-                alert('Uh-oh, couldn\'t reload application, part 1');
-              }
-            );
-        }
-      );
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isSaving = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't save application, part 1");
+      },
+      () => {
+        // onCompleted
+        // reload app with documents, current period and decision for next step
+        this.applicationService
+          .getById(this.application._id, { getDocuments: true, getCurrentPeriod: true, getDecision: true })
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(
+            application2 => {
+              this.saveApplication2(application2);
+            },
+            error => {
+              this.isSaving = false;
+              console.log('error =', error);
+              alert("Uh-oh, couldn't reload application, part 1");
+            }
+          );
+      }
+    );
   }
 
   // this is part 2 of saving an application and all its objects
@@ -645,37 +648,34 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
       }
     }
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isSaving = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t save application, part 2');
-        },
-        () => { // onCompleted
-          // reload app with decision for next step
-          this.applicationService.getById(application2._id, { getDecision: true })
-            .pipe(
-              takeUntil(this.ngUnsubscribe)
-            )
-            .subscribe(
-              application3 => {
-                this.saveApplication3(application3);
-              },
-              error => {
-                this.isSaving = false;
-                console.log('error =', error);
-                alert('Uh-oh, couldn\'t reload application, part 2');
-              }
-            );
-        }
-      );
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isSaving = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't save application, part 2");
+      },
+      () => {
+        // onCompleted
+        // reload app with decision for next step
+        this.applicationService
+          .getById(application2._id, { getDecision: true })
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(
+            application3 => {
+              this.saveApplication3(application3);
+            },
+            error => {
+              this.isSaving = false;
+              console.log('error =', error);
+              alert("Uh-oh, couldn't reload application, part 2");
+            }
+          );
+      }
+    );
   }
 
   // this is part 3 of saving an application and all its objects
@@ -695,48 +695,45 @@ export class ApplicationAddEditComponent implements OnInit, AfterViewInit, OnDes
     // save application
     observables = observables.pipe(concat(this.applicationService.save(this.application)));
 
-    observables
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
-        },
-        error => {
-          this.isSaving = false;
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t save application, part 3');
-        },
-        () => { // onCompleted
-          // we don't need to reload data since we're navigating away below
-          // this.isSaving = false; // LOOKS BETTER WITHOUT THIS
-          // this.snackBarRef = this.snackBar.open('Application saved...', null, { duration: 2000 }); // not displayed due to navigate below
+    observables.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      () => {
+        // onNext
+        // do nothing here - see onCompleted() function below
+      },
+      error => {
+        this.isSaving = false;
+        console.log('error =', error);
+        alert("Uh-oh, couldn't save application, part 3");
+      },
+      () => {
+        // onCompleted
+        // we don't need to reload data since we're navigating away below
+        // this.isSaving = false; // LOOKS BETTER WITHOUT THIS
+        // this.snackBarRef = this.snackBar.open('Application saved...', null, { duration: 2000 }); // not displayed due to navigate below
 
-          this.applicationForm.form.markAsPristine();
+        this.applicationForm.form.markAsPristine();
 
-          if (this.application.documents) {
-            for (const doc of this.application.documents) {
-              // assign 'arbitrary' id to docs so that:
-              // 1) unsaved document check passes
-              // 2) page doesn't jump around
-              doc._id = '0';
-            }
+        if (this.application.documents) {
+          for (const doc of this.application.documents) {
+            // assign 'arbitrary' id to docs so that:
+            // 1) unsaved document check passes
+            // 2) page doesn't jump around
+            doc._id = '0';
           }
-
-          if (this.application.decision && this.application.decision.documents) {
-            for (const doc of this.application.decision.documents) {
-              // assign 'arbitrary' id to docs so that:
-              // 1) unsaved document check passes
-              // 2) page doesn't jump around
-              doc._id = '0';
-            }
-          }
-
-          // save succeeded --> navigate to details page
-          this.router.navigate(['/a', application3._id]);
         }
-      );
-  }
 
+        if (this.application.decision && this.application.decision.documents) {
+          for (const doc of this.application.decision.documents) {
+            // assign 'arbitrary' id to docs so that:
+            // 1) unsaved document check passes
+            // 2) page doesn't jump around
+            doc._id = '0';
+          }
+        }
+
+        // save succeeded --> navigate to details page
+        this.router.navigate(['/a', application3._id]);
+      }
+    );
+  }
 }

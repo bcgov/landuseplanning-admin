@@ -8,8 +8,7 @@ import { NewlinesPipe } from 'app/pipes/newlines.pipe';
 import { ApplicationService } from 'app/services/application.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Application } from 'app/models/application';
-import { of } from 'rxjs';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('ApplicationListComponent', () => {
   let component: ApplicationListComponent;
@@ -25,12 +24,8 @@ describe('ApplicationListComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ApplicationListComponent, OrderByPipe, NewlinesPipe],
       imports: [RouterTestingModule, MatSlideToggleModule],
-      providers: [
-        { provide: ApplicationService, useValue: applicationServiceStub },
-        { provide: CommentPeriodService }
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: ApplicationService, useValue: applicationServiceStub }, { provide: CommentPeriodService }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -44,13 +39,10 @@ describe('ApplicationListComponent', () => {
   });
 
   describe('when applications are returned from the service', () => {
-    const existingApplications = [
-      new Application(),
-      new Application()
-    ];
+    const existingApplications = [new Application(), new Application()];
 
     beforeEach(() => {
-      let applicationService = TestBed.get(ApplicationService);
+      const applicationService = TestBed.get(ApplicationService);
       spyOn(applicationService, 'getAll').and.returnValue(of(existingApplications));
     });
 
@@ -62,12 +54,12 @@ describe('ApplicationListComponent', () => {
 
   describe('when the application service throws an error', () => {
     beforeEach(() => {
-      let applicationService = TestBed.get(ApplicationService);
+      const applicationService = TestBed.get(ApplicationService);
       spyOn(applicationService, 'getAll').and.returnValue(throwError('Beep boop server error'));
     });
 
     it('redirects to root', () => {
-      let navigateSpy = spyOn((<any>component).router, 'navigate');
+      const navigateSpy = spyOn((component as any).router, 'navigate');
 
       component.ngOnInit();
 

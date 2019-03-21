@@ -2,8 +2,10 @@
 
 :host {
   display: block;
+
   @include flex-box();
   @include flex-direction(column);
+
   position: fixed;
   top: 0;
   right: 0;
@@ -20,6 +22,7 @@ app-header {
   @include flex-box();
   @include flex(1 1 auto);
   @include flex-direction(column);
+
   position: relative;
   margin-top: 68px;
   overflow-y: auto;

@@ -14,13 +14,12 @@ import { Application } from 'app/models/application';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-
 export class SearchComponent implements OnInit, OnDestroy {
   public terms = new SearchTerms();
   public searching = false;
   public ranSearch = false;
-  public keywords: Array<string> = [];
-  public applications: Array<Application> = [];
+  public keywords: string[] = [];
+  public applications: Application[] = [];
   public count = 0; // for template
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
@@ -30,29 +29,27 @@ export class SearchComponent implements OnInit, OnDestroy {
     public searchService: SearchService, // also used in template
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get search terms from route
-    this.route.params
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(params => {
-        if (params.keywords) {
-          // remove empty and duplicate items
-          this.terms.keywords = _.uniq(_.compact(params.keywords.split(','))).join(' ');
-        }
+    this.route.params.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
+      if (params.keywords) {
+        // remove empty and duplicate items
+        this.terms.keywords = _.uniq(_.compact(params.keywords.split(','))).join(' ');
+      }
 
-        if (!_.isEmpty(this.terms.getParams())) {
-          this.doSearch();
-        }
-      });
+      if (!_.isEmpty(this.terms.getParams())) {
+        this.doSearch();
+      }
+    });
   }
 
   ngOnDestroy() {
     // dismiss any open snackbar
-    if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+    if (this.snackBarRef) {
+      this.snackBarRef.dismiss();
+    }
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -61,18 +58,17 @@ export class SearchComponent implements OnInit, OnDestroy {
   private doSearch() {
     this.searching = true;
     this.count = 0;
-    this.keywords = this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' '))) || []; // safety checks
+    this.keywords = (this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' ')))) || []; // safety checks
     this.applications.length = 0; // empty the list
 
-    this.searchService.getAppsByClidDtid(this.keywords)
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
+    this.searchService
+      .getAppsByClidDtid(this.keywords)
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         applications => {
           applications.forEach(application => {
             // add if not already in list
-            if (!_.find(this.applications, app => { return app.tantalisID === application.tantalisID; })) {
+            if (!_.find(this.applications, app => app.tantalisID === application.tantalisID)) {
               this.applications.push(application);
             }
           });
@@ -88,17 +84,21 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.snackBarRef = this.snackBar.open('Error searching applications ...', 'RETRY');
           this.snackBarRef.onAction().subscribe(() => this.onSubmit());
         },
-        () => { // onCompleted
+        () => {
+          // onCompleted
           // update variables on completion
           this.searching = false;
           this.ranSearch = true;
-        });
+        }
+      );
   }
 
   // reload page with current search terms
   public onSubmit() {
     // dismiss any open snackbar
-    if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+    if (this.snackBarRef) {
+      this.snackBarRef.dismiss();
+    }
 
     // NOTE: Angular Router doesn't reload page on same URL
     // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
@@ -136,5 +136,4 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.snackBarRef = this.snackBar.open('Error creating application ...', null, { duration: 3000 });
     }
   }
-
 }

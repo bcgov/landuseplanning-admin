@@ -14,19 +14,18 @@ import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add
   styleUrls: ['./users.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class UsersComponent implements OnInit, OnDestroy {
-  public users: Array<User>;
+  public users: User[];
   public loading = true;
-  public sysadmins: Array<User> = [];
-  public standards: Array<User> = [];
+  public sysadmins: User[] = [];
+  public standards: User[] = [];
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private userService: UserService,
     private dialogService: DialogService,
     private _changeDetectionRef: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.refreshUsersUI();
@@ -35,21 +34,19 @@ export class UsersComponent implements OnInit, OnDestroy {
   refreshUsersUI() {
     this.sysadmins = [];
     this.standards = [];
-    this.userService.getAll()
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
+    this.userService
+      .getAll()
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         data => {
           this.loading = false;
           this.users = data;
-          const self = this;
           // console.log('roles:', data);
-          _.each(data, function (i) {
+          _.each(data, i => {
             if (_.some(i.roles, _.method('includes', 'sysadmin'))) {
-              self.sysadmins.push(i);
+              this.sysadmins.push(i);
             } else {
-              self.standards.push(i);
+              this.standards.push(i);
             }
           });
           // Force change detection since we changed a bound property after the normal check cycle and outside anything
@@ -58,53 +55,56 @@ export class UsersComponent implements OnInit, OnDestroy {
         },
         () => {
           this.loading = false;
-        });
-  }
-
-  addUser() {
-    this.dialogService.addDialog(AddEditUserComponent,
-      {
-        title: 'Create User',
-        message: 'Add',
-        model: null
-      }, {
-        // index: 0,
-        // autoCloseTimeout: 10000,
-        // closeByClickingOutside: true,
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(
-        isConfirmed => {
-          // we get dialog result
-          if (isConfirmed) {
-            // console.log('saved');
-            this.refreshUsersUI();
-          } else {
-            // console.log('canceled');
-          }
         }
       );
   }
 
-  selectUser(user) {
-    this.dialogService.addDialog(AddEditUserComponent,
-      {
-        title: 'Edit User',
-        message: 'Save',
-        model: user
-      }, {
-        // index: 0,
-        // autoCloseTimeout: 10000,
-        // closeByClickingOutside: true,
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
+  addUser() {
+    this.dialogService
+      .addDialog(
+        AddEditUserComponent,
+        {
+          title: 'Create User',
+          message: 'Add',
+          model: null
+        },
+        {
+          // index: 0,
+          // autoCloseTimeout: 10000,
+          // closeByClickingOutside: true,
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        }
       )
-      .subscribe((isConfirmed) => {
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(isConfirmed => {
+        // we get dialog result
+        if (isConfirmed) {
+          // console.log('saved');
+          this.refreshUsersUI();
+        } else {
+          // console.log('canceled');
+        }
+      });
+  }
+
+  selectUser(user) {
+    this.dialogService
+      .addDialog(
+        AddEditUserComponent,
+        {
+          title: 'Edit User',
+          message: 'Save',
+          model: user
+        },
+        {
+          // index: 0,
+          // autoCloseTimeout: 10000,
+          // closeByClickingOutside: true,
+          backdropColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      )
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(isConfirmed => {
         // we get dialog result
         if (isConfirmed) {
           // console.log('saved');

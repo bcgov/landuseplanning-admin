@@ -5,6 +5,7 @@
 
   li {
     @include clearfix();
+
     margin-top: 1px;
     padding: 0.5rem 1rem;
     font-size: 0.9375rem;
@@ -27,7 +28,7 @@
 
 .list-group-item {
   border: none;
-  
+
   &:nth-child(odd) {
     background: $list-row-bg;
   }

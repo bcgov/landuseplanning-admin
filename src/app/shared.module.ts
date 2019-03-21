@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MatSlideToggleModule } from '@angular/material';
-import { MatSnackBarModule } from '@angular/material';
+import { MatSnackBarModule, MatSlideToggleModule } from '@angular/material';
 
 import { OrderByPipe } from 'app/pipes/order-by.pipe';
 import { NewlinesPipe } from 'app/pipes/newlines.pipe';
@@ -13,11 +12,7 @@ import { VarDirective } from 'app/utils/ng-var.directive';
 import { FileUploadComponent } from 'app/file-upload/file-upload.component';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    MatSlideToggleModule,
-    MatSnackBarModule
-  ],
+  imports: [BrowserModule, MatSlideToggleModule, MatSnackBarModule],
   declarations: [
     OrderByPipe,
     NewlinesPipe,
@@ -38,5 +33,4 @@ import { FileUploadComponent } from 'app/file-upload/file-upload.component';
     FileUploadComponent
   ]
 })
-
-export class SharedModule { }
+export class SharedModule {}

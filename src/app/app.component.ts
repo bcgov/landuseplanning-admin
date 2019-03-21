@@ -6,12 +6,8 @@ import { ConfigService } from './services/config.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-
 export class AppComponent implements OnInit, OnDestroy {
-
-  constructor(
-    private configService: ConfigService
-  ) { }
+  constructor(private configService: ConfigService) {}
 
   ngOnInit() {
     this.configService.init();
@@ -20,5 +16,4 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.configService.destroy();
   }
-
 }

@@ -14,8 +14,8 @@ export class SearchResults {
   status: string;
   hostname: string;
 
-  features: Array<Feature> = [];
-  sidsFound: Array<string> = [];
+  features: Feature[] = [];
+  sidsFound: string[] = [];
 
   // New Data
   CROWN_LANDS_FILE: string;
@@ -29,32 +29,32 @@ export class SearchResults {
   TENURE_SUBTYPE: string;
   TENURE_TYPE: string;
   areaHectares: number;
-  centroid: Array<number> = []; // [lng, lat]
-  interestedParties: Array<InterestedParty> = [];
-  parcels: Array<Feature> = [];
+  centroid: number[] = []; // [lng, lat]
+  interestedParties: InterestedParty[] = [];
+  parcels: Feature[] = [];
   statusHistoryEffectiveDate: Date = null;
 
   constructor(search?: any, hostname?: any) {
-    this._id           = search && search._id           || null;
-    this.totalFeatures = search && search.totalFeatures || 0;
-    this.crs           = search && search.crs           || null;
-    this.type          = search && search.type          || null;
-    this.status        = search && search.status        || null;
-    this.hostname      = hostname;
+    this._id = (search && search._id) || null;
+    this.totalFeatures = (search && search.totalFeatures) || 0;
+    this.crs = (search && search.crs) || null;
+    this.type = (search && search.type) || null;
+    this.status = (search && search.status) || null;
+    this.hostname = hostname;
 
-    this.CROWN_LANDS_FILE            = search && search.CROWN_LANDS_FILE            || null;
-    this.DISPOSITION_TRANSACTION_SID = search && search.DISPOSITION_TRANSACTION_SID || null;
-    this.RESPONSIBLE_BUSINESS_UNIT   = search && search.RESPONSIBLE_BUSINESS_UNIT   || null;
-    this.TENURE_LOCATION             = search && search.TENURE_LOCATION             || null;
-    this.TENURE_PURPOSE              = search && search.TENURE_PURPOSE              || null;
-    this.TENURE_STAGE                = search && search.TENURE_STAGE                || null;
-    this.TENURE_STATUS               = search && search.TENURE_STATUS               || null;
-    this.TENURE_SUBPURPOSE           = search && search.TENURE_SUBPURPOSE           || null;
-    this.TENURE_SUBTYPE              = search && search.TENURE_SUBTYPE              || null;
-    this.TENURE_TYPE                 = search && search.TENURE_TYPE                 || null;
-    this.TENURE_TYPE                 = search && search.TENURE_TYPE                 || null;
-    this.areaHectares                = search && search.areaHectares                || null;
-    this.parcels                     = search && search.parcels                     || null;
+    this.CROWN_LANDS_FILE = (search && search.CROWN_LANDS_FILE) || null;
+    this.DISPOSITION_TRANSACTION_SID = (search && search.DISPOSITION_TRANSACTION_SID) || null;
+    this.RESPONSIBLE_BUSINESS_UNIT = (search && search.RESPONSIBLE_BUSINESS_UNIT) || null;
+    this.TENURE_LOCATION = (search && search.TENURE_LOCATION) || null;
+    this.TENURE_PURPOSE = (search && search.TENURE_PURPOSE) || null;
+    this.TENURE_STAGE = (search && search.TENURE_STAGE) || null;
+    this.TENURE_STATUS = (search && search.TENURE_STATUS) || null;
+    this.TENURE_SUBPURPOSE = (search && search.TENURE_SUBPURPOSE) || null;
+    this.TENURE_SUBTYPE = (search && search.TENURE_SUBTYPE) || null;
+    this.TENURE_TYPE = (search && search.TENURE_TYPE) || null;
+    this.TENURE_TYPE = (search && search.TENURE_TYPE) || null;
+    this.areaHectares = (search && search.areaHectares) || null;
+    this.parcels = (search && search.parcels) || null;
 
     if (search && search.date) {
       this.date = new Date(search.date);
@@ -95,7 +95,7 @@ export class SearchResults {
 }
 
 export class SearchArray {
-  items: Array<SearchResults> = [];
+  items: SearchResults[] = [];
 
   constructor(obj?: any) {
     // copy items
@@ -107,7 +107,7 @@ export class SearchArray {
   }
 
   sort() {
-    this.items.sort(function (a: SearchResults, b: SearchResults) {
+    this.items.sort((a: SearchResults, b: SearchResults) => {
       const aDate = a && a.date ? new Date(a.date).getTime() : 0;
       const bDate = b && b.date ? new Date(b.date).getTime() : 0;
       return bDate - aDate;
@@ -131,9 +131,9 @@ export class SearchTerms {
   dateEnd: NgbDateStruct;
 
   constructor(obj?: any) {
-    this.keywords  = obj && obj.keywords  || null;
-    this.dateStart = obj && obj.dateStart || null;
-    this.dateEnd   = obj && obj.dateEnd   || null;
+    this.keywords = (obj && obj.keywords) || null;
+    this.dateStart = (obj && obj.dateStart) || null;
+    this.dateEnd = (obj && obj.dateEnd) || null;
   }
 
   getParams(): Params {

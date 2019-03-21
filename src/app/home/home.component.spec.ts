@@ -9,27 +9,20 @@ describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
-  const mockApplicationService = jasmine.createSpyObj('ApplicationService', [
-    'getCount'
-  ]);
+  const mockApplicationService = jasmine.createSpyObj('ApplicationService', ['getCount']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
       imports: [RouterTestingModule],
-      providers: [
-        { provide: ApplicationService, useValue: mockApplicationService}
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: ApplicationService, useValue: mockApplicationService }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    mockApplicationService.getCount.and.returnValue(
-      of(2)
-    );
+    mockApplicationService.getCount.and.returnValue(of(2));
     fixture.detectChanges();
   });
 

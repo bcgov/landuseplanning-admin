@@ -11,9 +11,8 @@ describe('NotAuthorizedComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [NotAuthorizedComponent],
-      imports: [ RouterTestingModule ],
-    })
-      .compileComponents();
+      imports: [RouterTestingModule]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
