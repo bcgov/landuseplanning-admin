@@ -1,12 +1,15 @@
 <div class="top-container">
   <div class="p-3">
-    <div class="row">
-      <div class="col-6">
+      <div class="row">
+        <div [class.active]="hidden" class="col-1">
+            <button class="btn icon-btn mobile-nav-btn" (click)="toggleSideNav()"><i class="material-icons mr-3">menu</i></button>
+        </div>
+        <div class="col-11">
         <h1 class="pl-4">
           {{project.name}}
         </h1>
       </div>
-      <div class="col-6">
+      <!-- <div class="col-6">
         <div class="row">
           <div class="col-3">
             <div class="subway-circle rounded-circle bg-success"></div>label
@@ -21,7 +24,7 @@
             <div class="subway-circle rounded-circle bg-success"></div>label
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>

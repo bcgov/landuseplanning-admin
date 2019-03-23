@@ -1,5 +1,5 @@
-<div class="sidebar">
-  <section [hidden]='!showProjectDetails' class="bg-light">
+<div class="sidebar" [ngClass]="{'isOpen': isOpen === 'true'}" >
+  <section class="bg-light">
     <a [ngClass]="{'active': currentMenu === 'project-details'}" class="dropdown-btn " [routerLink]="['p', currentProjectId]">
         Project Details
       </a>
