@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 import { container } from '@angular/core/src/render3/instructions';
+
+import { SideBarService } from 'app/services/sidebar.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,20 +11,30 @@ import { container } from '@angular/core/src/render3/instructions';
   styleUrls: ['./sidebar.component.scss']
 })
 
-export class SidebarComponent {
-
+export class SidebarComponent implements OnInit {
+  public isNavMenuOpen = false;
   public routerSnapshot = null;
   public showProjectDetails = false;
   public showProjectDetailsSubItems = false;
   public currentProjectId = '';
   public currentMenu = '';
 
-  constructor(router: Router) {
+  @HostBinding('class.is-open')
+  isOpen = false;
+
+  constructor(router: Router,
+              private sideBarService: SideBarService) {
     router.events.filter((event: any) => event instanceof NavigationEnd)
-        .subscribe(event => {
-            this.routerSnapshot = event;
-            this.SetActiveSidebarItem();
-        });
+    .subscribe(event => {
+        this.routerSnapshot = event;
+        this.SetActiveSidebarItem();
+    });
+  }
+
+  ngOnInit() {
+    this.sideBarService.change.subscribe(isOpen => {
+      this.isOpen = isOpen;
+    });
   }
 
   SetActiveSidebarItem() {
@@ -64,5 +76,13 @@ export class SidebarComponent {
 
   toggleDropdown() {
     this.showProjectDetailsSubItems = !this.showProjectDetailsSubItems;
+  }
+
+  toggleNav() {
+    this.isNavMenuOpen = !this.isNavMenuOpen;
+  }
+
+  closeNav() {
+    this.isNavMenuOpen = false;
   }
 }

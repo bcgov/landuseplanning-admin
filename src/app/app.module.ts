@@ -43,6 +43,7 @@ import { ProjectService } from 'app/services/project.service';
 import { SearchService } from 'app/services/search.service';
 import { UserService } from 'app/services/user.service';
 import { TopicService } from 'app/services/topic.service';
+import { SideBarService } from 'app/services/sidebar.service';
 import { ValuedComponentService } from './services/valued-component.service';
 
 // feature modules
@@ -117,6 +118,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     SearchService,
     UserService,
     TopicService,
+    SideBarService,
     ValuedComponentService
   ],
   entryComponents: [

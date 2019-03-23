@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ConfigService } from './services/config.service';
+import { SideBarService } from 'app/services/sidebar.service';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +10,19 @@ import { ConfigService } from './services/config.service';
 
 export class AppComponent implements OnInit, OnDestroy {
 
+  @HostBinding('class.sidebarcontrol')
+  isOpen = false;
+
   constructor(
-    private configService: ConfigService
+    private configService: ConfigService,
+    private sideBarService: SideBarService
   ) { }
 
   ngOnInit() {
     this.configService.init();
+    this.sideBarService.change.subscribe(isOpen => {
+      this.isOpen = isOpen;
+    });
   }
 
   ngOnDestroy() {
