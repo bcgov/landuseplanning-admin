@@ -187,7 +187,7 @@
       }
     },
     {
-      "apiVersion": "autoscaling/v2beta1",
+      "apiVersion": "autoscaling/v1",
       "kind": "HorizontalPodAutoscaler",
       "metadata": {
         "name": "${NAME}-${TAG_NAME}",
@@ -196,11 +196,9 @@
         }
       },
       "spec": {
-        "scaleRef": {
+        "scaleTargetRef": {
           "kind": "DeploymentConfig",
-          "name": "${NAME}-${TAG_NAME}",
-          "apiVersion": "autoscaling/v2beta1",
-          "subresource": "scale"
+          "name": "${NAME}-${TAG_NAME}"
         },
         "minReplicas": 2,
         "maxReplicas": 4
@@ -244,7 +242,7 @@
       "description": "The exposed hostname that will route to the service, e.g., myappname.pathfinder.gov.bc.ca, if left blank a value will be defaulted.",
       "displayName": "Application Hostname",
       "name": "APPLICATION_DOMAIN",
-      "value": "gcpe-lup-dev.pathfinder.gov.bc.ca/admin/"
+      "value": "gcpe-lup-dev.pathfinder.gov.bc.ca"
     },
     {
       "description": "The TAG name for this environment, e.g., dev, test, prod",
