@@ -19,18 +19,31 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   public vcsLoading = true;
 
   public valuedComponentTableData: TableObject;
-  public valuedComponentTableColumns: String[] = [
-    'Type',
-    'Title',
-    'Pillar',
-    'Parent'
+  public valuedComponentTableColumns: any[] = [
+    {
+      name: 'Type',
+      value: 'type'
+    },
+    {
+      name: 'Title',
+      value: 'title'
+    },
+    {
+      name: 'Pillar',
+      value: 'pillar'
+    },
+    {
+      name: 'Parent',
+      value: 'parent'
+    }
   ];
 
   public pageNum = 0;
+  public sortBy = '';
+  public sortDirection = 0;
   public pageSize = 10;
   public currentPage = 1;
   public totalVcs = 0;
-  public sortBy = '';
 
   private currentProjectId = '';
 
@@ -96,21 +109,38 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       {
         pageSize: this.pageSize,
         currentPage: this.currentPage,
-        totalListItems: this.totalVcs
-      }
+        totalListItems: this.totalVcs,
+        sortBy: this.sortBy,
+        sortDirection: this.sortDirection,
+        }
     );
   }
 
-  getPaginatedVCs(pageNumber) {
+  setColumnSort(column) {
+    this.sortBy = column;
+    this.sortDirection = this.sortDirection > 0 ? -1 : 1;
+    this.getPaginatedVCs(this.currentPage, this.sortBy, this.sortDirection);
+  }
+
+  getPaginatedVCs(pageNumber, sortBy, sortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
 
+    if (sortBy === undefined) {
+      sortBy = this.sortBy;
+      sortDirection = this.sortDirection;
+    }
+
+    let sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+
     this.vcsLoading = true;
-    this.valuedComponentService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize)
+    this.valuedComponentService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize, sorting)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.currentPage = pageNumber;
-        this.updateUrl();
+        this.sortBy = sortBy;
+        this.sortDirection = this.sortDirection;
+        this.updateUrl(sorting);
         this.totalVcs = res.totalCount;
         this.valuedComponents = res.data;
         this.vcsLoading = false;
@@ -119,11 +149,12 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateUrl() {
+  updateUrl(sorting) {
     let currentUrl = this.router.url;
     currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
     currentUrl = currentUrl.split('?')[0];
     currentUrl += `?currentPage=${this.currentPage}&pageSize=${this.pageSize}`;
+    currentUrl += `&sortBy=${sorting}`;
     currentUrl += '&ms=' + new Date().getTime();
     window.history.replaceState({}, '', currentUrl);
   }

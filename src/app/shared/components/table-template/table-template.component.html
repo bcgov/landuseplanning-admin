@@ -1,7 +1,9 @@
 <table class="table table-bordered">
   <thead class="thead-light">
     <tr>
-      <th *ngFor="let column of columns">{{column}}</th>
+      <th *ngFor="let entry of columns" class="project-table__name-col sortable" (click)="sort(entry.value)">{{entry.name}}
+        <i class="sort" [ngClass]="{'sort-asc': (column == entry.value && direction < 0), 'sort-desc': (column == entry.value && direction > 0) }" aria-hidden="true"></i>
+      </th>
     </tr>
   </thead>
   <ng-template table-host></ng-template>

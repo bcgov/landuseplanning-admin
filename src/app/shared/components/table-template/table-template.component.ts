@@ -11,10 +11,13 @@ import { TableComponent } from './table.component';
 })
 export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
   @Input() data: TableObject;
-  @Input() columns: String[];
+  @Input() columns: any[];
   @ViewChild(TableDirective) tableHost: TableDirective;
 
   @Output() onPageNumUpdate: EventEmitter<any> = new EventEmitter();
+  @Output() onColumnSort: EventEmitter<any> = new EventEmitter();
+  public column: string = null;
+  public direction = 0;
 
   interval: any;
 
@@ -28,11 +31,18 @@ export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges) {
     // only run when property "data" changed
     if (changes['data']) {
+      console.log(changes['data']);
       this.data.component = changes['data'].currentValue.component;
       this.data.data = changes['data'].currentValue.data;
       this.data.paginationData = changes['data'].currentValue.paginationData;
+      this.direction = changes['data'].currentValue.paginationData.sortDirection;
+      this.column = changes['data'].currentValue.paginationData.sortBy;
       this.loadComponent();
     }
+  }
+
+  public sort(property: string) {
+    this.onColumnSort.emit(property);
   }
 
   ngOnDestroy() {

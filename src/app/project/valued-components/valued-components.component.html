@@ -2,7 +2,9 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item active" aria-current="page">Valued Components</li>
     </ol>
-    
-  <app-table-template [columns]="valuedComponentTableColumns" [data]="valuedComponentTableData"
-    (onPageNumUpdate)='getPaginatedVCs($event)'></app-table-template>
+  <app-table-template
+    [columns]="valuedComponentTableColumns"
+    [data]="valuedComponentTableData"
+    (onColumnSort)='setColumnSort($event)'
+    (onPageNumUpdate)='getPaginatedVCs($event, null, null)'></app-table-template>
 </div>
