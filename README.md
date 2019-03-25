@@ -1,10 +1,10 @@
-# bcgov/nrts-prc-admin
+# bcgov/gcpe-lup-admin
 
-Administrative front-end for the ACRFD (formerly: PRC) application.
+Administrative front-end for the Land Use Planning application. Based on the PRC Application [bcgov/nrts-prc-admin](https://github.com/bcgov/nrts-prc-admin)
 
-* [Admin](https://github.com/bcgov/nrts-prc-admin) - front-end for admin users.
-* [Public](https://github.com/bcgov/nrts-prc-public) - front-end for public users.
-* [Api](https://github.com/bcgov/nrts-prc-api) - back-end that serves both admin and public requests.
+* [Admin](https://github.com/bcgov/gcpe-lup-admin) - front-end for admin users.
+* [Public](https://github.com/bcgov/gcpe-lup-public) - front-end for public users.
+* [Api](https://github.com/bcgov/gcpe-lup-api) - back-end that serves both admin and public requests.
 
 # Prerequisites
 
@@ -15,7 +15,7 @@ Administrative front-end for the ACRFD (formerly: PRC) application.
 | ng         | 6.x.x   | https://cli.angular.io/ | Angular CLI                               |
 | yarn       | latest  | https://yarnpkg.com/en/ | Package Manager (more efficient than npm) |
 
-_Note: This app also requires [bcgov/nrts-prc-api](https://github.com/bcgov/nrts-prc-api) to handle its requests and authentication._
+_Note: This app also requires [bcgov/nrts-prc-api](https://github.com/bcgov/gcpe-lup-api) to handle its requests and authentication._
 
 ## Install [Node + NPM](https://nodejs.org/en/)
 
@@ -240,7 +240,7 @@ ng new my-app --routing --style scss
 
 # OpenShift Build and Deployment
 
-For dev, test, and prod builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/nrts-prc-public/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using nginx.
+For dev, test, and prod builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/gcpe-lup-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using nginx.
 
 # How to Contribute
 
