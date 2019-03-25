@@ -41,6 +41,7 @@
 
     .toggle-filter-btn {
       @include flex(0 0 auto);
+
       height: 2.75rem;
       margin-left: -1px;
       padding: 0.5rem;
@@ -87,6 +88,7 @@
 
       .form-group {
         @include flex(1 1 33%);
+
         margin-left: -1px;
 
         .form-control {

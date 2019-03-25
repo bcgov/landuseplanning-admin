@@ -6,10 +6,7 @@ import { ApplicationService } from 'app/services/application.service';
 describe('ApplicationDetailResolverService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ApplicationDetailResolver,
-        { provide: ApplicationService }
-      ]
+      providers: [ApplicationDetailResolver, { provide: ApplicationService }]
     });
   });
 

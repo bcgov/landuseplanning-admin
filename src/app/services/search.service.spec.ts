@@ -14,11 +14,7 @@ describe('SearchService', () => {
         SearchService,
         {
           provide: ApiService,
-          useValue: jasmine.createSpyObj('ApiService', [
-            'searchAppsByCLID',
-            'searchAppsByDTID',
-            'handleError'
-          ])
+          useValue: jasmine.createSpyObj('ApiService', ['searchAppsByCLID', 'searchAppsByDTID', 'handleError'])
         },
         {
           provide: ApplicationService,
@@ -57,9 +53,7 @@ describe('SearchService', () => {
 
       describe('when no applications or search results are returned', () => {
         it('returns an empty array of applications', async(() => {
-          ApplicationServiceSpy.getByCrownLandID.and.returnValue(
-            of([] as Application[])
-          );
+          ApplicationServiceSpy.getByCrownLandID.and.returnValue(of([] as Application[]));
 
           apiSpy.searchAppsByCLID.and.returnValue(of([] as SearchResults[]));
 
@@ -70,7 +64,7 @@ describe('SearchService', () => {
       });
 
       describe('when application results from within PRC are returned', () => {
-        let result: Array<Application[]>;
+        let result: Application[][];
         beforeEach(async(() => {
           result = [];
 
@@ -123,13 +117,11 @@ describe('SearchService', () => {
       });
 
       describe('when application results from Tantalis are returned', () => {
-        let result: Array<Application[]>;
+        let result: Application[][];
         beforeEach(async(() => {
           result = [];
 
-          ApplicationServiceSpy.getByCrownLandID.and.returnValue(
-            of([] as Application[])
-          );
+          ApplicationServiceSpy.getByCrownLandID.and.returnValue(of([] as Application[]));
 
           apiSpy.searchAppsByCLID.and.returnValue(
             of([
@@ -242,9 +234,7 @@ describe('SearchService', () => {
           });
 
           it('builds and sets a client string', () => {
-            expect(prcResult[0].client).toBe(
-              'legal-name-1, first-name-3 last-name-3'
-            );
+            expect(prcResult[0].client).toBe('legal-name-1, first-name-3 last-name-3');
             expect(prcResult[1].client).toBe('first-name-2 last-name-2');
           });
 
@@ -273,9 +263,7 @@ describe('SearchService', () => {
         });
 
         it('calls ApplicationService getStatusString', () => {
-          expect(ApplicationServiceSpy.getStatusString).toHaveBeenCalledWith(
-            'someStatusCode'
-          );
+          expect(ApplicationServiceSpy.getStatusString).toHaveBeenCalledWith('someStatusCode');
         });
 
         it('calls ApplicationService getStatusCode', () => {
@@ -291,16 +279,12 @@ describe('SearchService', () => {
     describe('when getAppByDTID returns results', () => {
       beforeEach(() => {
         // Only testing calls to getAppByDTID
-        spyOn(service, 'getAppsByCLID').and.returnValue(
-          of([] as Application[])
-        );
+        spyOn(service, 'getAppsByCLID').and.returnValue(of([] as Application[]));
       });
 
       describe('when no applications or search results are returned', () => {
         it('returns an empty array of applications', async(() => {
-          ApplicationServiceSpy.getByTantalisID.and.returnValue(
-            of(null as Application)
-          );
+          ApplicationServiceSpy.getByTantalisID.and.returnValue(of(null as Application));
 
           apiSpy.searchAppsByDTID.and.returnValue(of(null as SearchResults));
 
@@ -311,13 +295,11 @@ describe('SearchService', () => {
       });
 
       describe('when application results from within PRC are returned', () => {
-        let result: Array<Application[]>;
+        let result: Application[][];
         beforeEach(async(() => {
           result = [];
 
-          ApplicationServiceSpy.getByTantalisID.and.returnValue(
-            of(new Application({ _id: '2' }))
-          );
+          ApplicationServiceSpy.getByTantalisID.and.returnValue(of(new Application({ _id: '2' })));
 
           apiSpy.searchAppsByDTID.and.returnValue(of(null as SearchResults));
 
@@ -361,13 +343,11 @@ describe('SearchService', () => {
       });
 
       describe('when application results from Tantalis are returned', () => {
-        let result: Array<Application[]>;
+        let result: Application[][];
         beforeEach(async(() => {
           result = [];
 
-          ApplicationServiceSpy.getByTantalisID.and.returnValue(
-            of(null as Application)
-          );
+          ApplicationServiceSpy.getByTantalisID.and.returnValue(of(null as Application));
 
           apiSpy.searchAppsByDTID.and.returnValue(
             of(
@@ -447,9 +427,7 @@ describe('SearchService', () => {
           });
 
           it('builds and sets a client string', () => {
-            expect(tantalisResult[0].client).toBe(
-              'legal-name-1, first-name-3 last-name-3'
-            );
+            expect(tantalisResult[0].client).toBe('legal-name-1, first-name-3 last-name-3');
           });
 
           it('does not have an _id', () => {
@@ -474,9 +452,7 @@ describe('SearchService', () => {
         });
 
         it('calls ApplicationService getStatusString', () => {
-          expect(ApplicationServiceSpy.getStatusString).toHaveBeenCalledWith(
-            'someStatusCode'
-          );
+          expect(ApplicationServiceSpy.getStatusString).toHaveBeenCalledWith('someStatusCode');
         });
 
         it('calls ApplicationService getStatusCode', () => {
@@ -491,19 +467,13 @@ describe('SearchService', () => {
 
     describe('when multiple applications are returned', () => {
       it('returns a merged array of applications', async(() => {
-        spyOn(service, 'getAppsByCLID').and.returnValue(
-          of([new Application({ _id: 1 }), new Application({ _id: 2 })])
-        );
+        spyOn(service, 'getAppsByCLID').and.returnValue(of([new Application({ _id: 1 }), new Application({ _id: 2 })]));
 
         spyOn(service, 'getAppByDTID').and.returnValue(
-          of([
-            new Application({ _id: 2 }),
-            new Application({ _id: 3 }),
-            new Application({ _id: 4 })
-          ])
+          of([new Application({ _id: 2 }), new Application({ _id: 3 }), new Application({ _id: 4 })])
         );
 
-        let resultingApplications = new Set<Application>();
+        const resultingApplications = new Set<Application>();
         service.getAppsByClidDtid(['123', '234']).subscribe(
           result => {
             result.forEach(element => {
@@ -535,9 +505,7 @@ describe('SearchService', () => {
 
     describe('when an exception is thrown', () => {
       it('ApiService.handleError is called and the error is re-thrown', async(() => {
-        spyOn(service, 'getAppsByCLID').and.returnValue(
-          throwError(Error('someError'))
-        );
+        spyOn(service, 'getAppsByCLID').and.returnValue(throwError(Error('someError')));
 
         spyOn(service, 'getAppByDTID').and.returnValue(of([]));
 

@@ -31,10 +31,7 @@ describe('SearchComponent', () => {
     }
   };
   const snackbarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
-  const snackBarRef = jasmine.createSpyObj('MatSnackBarRef', [
-    'onAction',
-    'dismiss'
-  ]);
+  const snackBarRef = jasmine.createSpyObj('MatSnackBarRef', ['onAction', 'dismiss']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -90,10 +87,7 @@ describe('SearchComponent', () => {
         spyOn(searchService, 'getAppsByClidDtid').and.callThrough();
         component.ngOnInit();
 
-        expect(searchService.getAppsByClidDtid).toHaveBeenCalledWith([
-          '88888',
-          '99999'
-        ]);
+        expect(searchService.getAppsByClidDtid).toHaveBeenCalledWith(['88888', '99999']);
       });
     });
 
@@ -124,17 +118,12 @@ describe('SearchComponent', () => {
           tantalisID: 'TANT_TWO'
         });
 
-        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
-          of([applicationOne, applicationTwo])
-        );
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(of([applicationOne, applicationTwo]));
 
         component.ngOnInit();
         fixture.detectChanges();
 
-        expect(component.applications).toEqual([
-          applicationOne,
-          applicationTwo
-        ]);
+        expect(component.applications).toEqual([applicationOne, applicationTwo]);
         expect(component.count).toEqual(2);
       });
 
@@ -148,9 +137,7 @@ describe('SearchComponent', () => {
           tantalisID: 'TANT_ONE'
         });
 
-        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
-          of([duplicateApplication])
-        );
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(of([duplicateApplication]));
 
         component.ngOnInit();
 
@@ -159,25 +146,17 @@ describe('SearchComponent', () => {
       });
 
       it('renders an error if the search service throws one', () => {
-        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
-          throwError('Something went wrong!')
-        );
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(throwError('Something went wrong!'));
 
         snackbarSpy.open.and.returnValue(snackBarRef);
         snackBarRef.onAction.and.returnValue(of({}));
-        let navigateSpy = spyOn((<any>component).router, 'navigate');
+        const navigateSpy = spyOn((component as any).router, 'navigate');
 
         component.ngOnInit();
 
-        expect(snackbarSpy.open).toHaveBeenCalledWith(
-          'Error searching applications ...',
-          'RETRY'
-        );
+        expect(snackbarSpy.open).toHaveBeenCalledWith('Error searching applications ...', 'RETRY');
 
-        expect(navigateSpy).toHaveBeenCalledWith([
-          'search',
-          jasmine.anything()
-        ]);
+        expect(navigateSpy).toHaveBeenCalledWith(['search', jasmine.anything()]);
       });
     });
   });
@@ -193,7 +172,7 @@ describe('SearchComponent', () => {
       spyOn(searchService, 'getAppsByClidDtid').and.callThrough();
 
       fixture.whenStable().then(() => {
-        let navigateSpy = spyOn((<any>component).router, 'navigate');
+        const navigateSpy = spyOn((component as any).router, 'navigate');
         searchInput.value = '77777';
         searchInput.dispatchEvent(new Event('change'));
         fixture.detectChanges();
@@ -203,10 +182,7 @@ describe('SearchComponent', () => {
         // searchForm.submit();
 
         // expect(searchService.getAppsByClidDtid).toHaveBeenCalledWith(['77777']);
-        expect(navigateSpy).toHaveBeenCalledWith([
-          'search',
-          { ms: jasmine.anything() }
-        ]);
+        expect(navigateSpy).toHaveBeenCalledWith(['search', { ms: jasmine.anything() }]);
         done();
       });
     });
@@ -244,9 +220,7 @@ describe('SearchComponent', () => {
 
     describe('with application results', () => {
       beforeEach(() => {
-        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(
-          of([valemontApplication, applicationTwo])
-        );
+        spyOn(searchService, 'getAppsByClidDtid').and.returnValue(of([valemontApplication, applicationTwo]));
       });
 
       it('displays the application details on the page', () => {
@@ -254,10 +228,8 @@ describe('SearchComponent', () => {
 
         fixture.detectChanges();
 
-        searchTable = fixture.debugElement.query(
-          By.css('.search-results table')
-        );
-        let firstApplicationRow = searchTable.query(By.css('.app-details'));
+        searchTable = fixture.debugElement.query(By.css('.search-results table'));
+        const firstApplicationRow = searchTable.query(By.css('.app-details'));
         expect(firstApplicationRow).toBeDefined();
 
         const firstAppRowEl = firstApplicationRow.nativeElement;
@@ -286,20 +258,14 @@ describe('SearchComponent', () => {
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(
-            By.css('.search-results table')
-          );
-          let firstCommentDetailsRow = searchTable.query(
-            By.css('.app-comment-details')
-          );
+          searchTable = fixture.debugElement.query(By.css('.search-results table'));
+          const firstCommentDetailsRow = searchTable.query(By.css('.app-comment-details'));
           expect(firstCommentDetailsRow).toBeDefined();
           const firstCommentRowEl = firstCommentDetailsRow.nativeElement;
 
           expect(firstCommentRowEl.textContent).toContain('200 comments');
           expect(firstCommentRowEl.textContent).toContain('Commenting Closed');
-          expect(firstCommentRowEl.textContent).toContain(
-            'September 29, 2018 to December 1, 2018'
-          );
+          expect(firstCommentRowEl.textContent).toContain('September 29, 2018 to December 1, 2018');
         });
 
         it('renders the "Actions" button', () => {
@@ -307,10 +273,8 @@ describe('SearchComponent', () => {
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(
-            By.css('.search-results table')
-          );
-          let firstButton = searchTable.query(By.css('button'));
+          searchTable = fixture.debugElement.query(By.css('.search-results table'));
+          const firstButton = searchTable.query(By.css('button'));
           const firstButtonEl = firstButton.nativeElement;
           expect(firstButtonEl.textContent).toContain('Actions');
         });
@@ -326,12 +290,8 @@ describe('SearchComponent', () => {
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(
-            By.css('.search-results table')
-          );
-          let firstCommentDetailsRow = searchTable.query(
-            By.css('.app-comment-details')
-          );
+          searchTable = fixture.debugElement.query(By.css('.search-results table'));
+          const firstCommentDetailsRow = searchTable.query(By.css('.app-comment-details'));
           expect(firstCommentDetailsRow).toBeFalsy();
         });
 
@@ -340,10 +300,8 @@ describe('SearchComponent', () => {
 
           fixture.detectChanges();
 
-          searchTable = fixture.debugElement.query(
-            By.css('.search-results table')
-          );
-          let firstButton = searchTable.query(By.css('button'));
+          searchTable = fixture.debugElement.query(By.css('.search-results table'));
+          const firstButton = searchTable.query(By.css('button'));
           const firstButtonEl = firstButton.nativeElement;
           expect(firstButtonEl.textContent).toContain('Create');
         });
@@ -354,13 +312,9 @@ describe('SearchComponent', () => {
 
         fixture.detectChanges();
 
-        searchTable = fixture.debugElement.query(
-          By.css('.search-results table')
-        );
+        searchTable = fixture.debugElement.query(By.css('.search-results table'));
 
-        let appDetailsRows = searchTable.nativeElement.querySelectorAll(
-          'tr.app-details'
-        );
+        const appDetailsRows = searchTable.nativeElement.querySelectorAll('tr.app-details');
         expect(appDetailsRows.length).toBe(2);
       });
     });

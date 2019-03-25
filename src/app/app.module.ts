@@ -97,13 +97,9 @@ export function kcFactory(keycloakService: KeycloakService) {
     CanDeactivateGuard,
     ConfigService
   ],
-  entryComponents: [
-    ConfirmComponent,
-    AddEditUserComponent
-  ],
+  entryComponents: [ConfirmComponent, AddEditUserComponent],
   bootstrap: [AppComponent]
 })
-
 export class AppModule {
   constructor(applicationRef: ApplicationRef) {
     Object.defineProperty(applicationRef, '_rootComponents', { get: () => applicationRef['components'] });

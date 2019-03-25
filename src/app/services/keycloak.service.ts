@@ -49,8 +49,8 @@ export class KeycloakService {
   private getParameterByName(name) {
     const url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');
-    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    const results = regex.exec(url);
     if (!results) {
       return null;
     }
@@ -63,7 +63,6 @@ export class KeycloakService {
   init(): Promise<any> {
     this.loggedOut = this.getParameterByName('loggedout');
 
-    const self = this;
     if (this.keycloakEnabled) {
       // Bootup KC
       this.keycloakEnabled = true;
@@ -76,56 +75,58 @@ export class KeycloakService {
 
         // console.log('KC Auth init.');
 
-        self.keycloakAuth = new Keycloak(config);
+        this.keycloakAuth = new Keycloak(config);
 
-        self.keycloakAuth.onAuthSuccess = function () {
+        this.keycloakAuth.onAuthSuccess = () => {
           // console.log('onAuthSuccess');
         };
 
-        self.keycloakAuth.onAuthError = function () {
+        this.keycloakAuth.onAuthError = () => {
           console.log('onAuthError');
         };
 
-        self.keycloakAuth.onAuthRefreshSuccess = function () {
+        this.keycloakAuth.onAuthRefreshSuccess = () => {
           // console.log('onAuthRefreshSuccess');
         };
 
-        self.keycloakAuth.onAuthRefreshError = function () {
+        this.keycloakAuth.onAuthRefreshError = () => {
           console.log('onAuthRefreshError');
         };
 
-        self.keycloakAuth.onAuthLogout = function () {
+        this.keycloakAuth.onAuthLogout = () => {
           // console.log('onAuthLogout');
         };
 
         // Try to get refresh tokens in the background
-        self.keycloakAuth.onTokenExpired = function () {
-          self.keycloakAuth.updateToken()
-            .success(function (refreshed) {
+        this.keycloakAuth.onTokenExpired = () => {
+          this.keycloakAuth
+            .updateToken()
+            .success(refreshed => {
               console.log('KC refreshed token?:', refreshed);
             })
-            .error((err) => {
+            .error(err => {
               console.log('KC refresh error:', err);
             });
         };
 
         // Initialize.
-        self.keycloakAuth.init({})
-          .success((auth) => {
-            // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
+        this.keycloakAuth
+          .init({})
+          .success(auth => {
+            // console.log('KC Refresh Success?:', this.keycloakAuth.authServerUrl);
             console.log('KC Success:', auth);
             if (!auth) {
               if (this.loggedOut === 'true') {
                 // Don't do anything, they wanted to remain logged out.
                 resolve();
               } else {
-                self.keycloakAuth.login({ idpHint: 'idir' });
+                this.keycloakAuth.login({ idpHint: 'idir' });
               }
             } else {
               resolve();
             }
           })
-          .error((err) => {
+          .error(err => {
             console.log('KC error:', err);
             reject();
           });
@@ -173,7 +174,7 @@ export class KeycloakService {
     return new Observable(observer => {
       this.keycloakAuth
         .updateToken(30)
-        .success(function(refreshed) {
+        .success(refreshed => {
           console.log('KC refreshed token?:', refreshed);
           observer.next();
           observer.complete();
@@ -193,7 +194,14 @@ export class KeycloakService {
     // https://logon.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
     // https://logontest.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
     if (this.keycloakEnabled) {
-      return this.keycloakAuth.authServerUrl + '/realms/' + this.keycloakRealm + '/protocol/openid-connect/logout?redirect_uri=' + window.location.origin + '/admin/not-authorized?loggedout=true';
+      return (
+        this.keycloakAuth.authServerUrl +
+        '/realms/' +
+        this.keycloakRealm +
+        '/protocol/openid-connect/logout?redirect_uri=' +
+        window.location.origin +
+        '/admin/not-authorized?loggedout=true'
+      );
     } else {
       // go to the /login page
       return window.location.origin + '/admin/login';

@@ -18,14 +18,10 @@ describe('HeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: ApiService },
-        { provide: KeycloakService, useValue: mockKeycloakService },
-      ],
+      providers: [{ provide: ApiService }, { provide: KeycloakService, useValue: mockKeycloakService }],
       declarations: [HeaderComponent],
       imports: [RouterTestingModule, BrowserAnimationsModule]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -6,10 +6,7 @@ import { ApiService } from 'app/services/api';
 describe('UserService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        UserService,
-        { provide: ApiService }
-      ]
+      providers: [UserService, { provide: ApiService }]
     });
   });
 

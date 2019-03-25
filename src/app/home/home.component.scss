@@ -2,6 +2,7 @@
 
 :host {
   display: block;
+
   /* fill the entire viewport and offset the fixed header and footer height (68px + 61px = 129px;) */
   min-height: calc(100vh - 129px);
   background-position: center -8rem;
@@ -10,7 +11,7 @@
 }
 
 @media (min-width: 768px) and
-       (orientation: portrait) {
+  (orientation: portrait) {
   :host {
     background-size: 200%;
     background-position: center -15rem;
@@ -54,12 +55,12 @@
   .home-title-container {
     margin-top: 4rem;
     margin-bottom: 4rem;
-  
+
     h1 {
       font-size: 2.8rem;
       line-height: 2.5rem;
     }
-  
+
     h2 {
       font-size: 1.8rem;
       line-height: 1.8rem;
@@ -84,6 +85,7 @@
 
       &-item {
         @include flex-box();
+
         padding: 0.2rem 0.5rem;
         border-top: 1px solid $white;
         font-size: 0.875rem;
@@ -118,11 +120,11 @@ main {
   .home-page {
     &__header {
       margin-top: 4rem;
-      
+
       h1 {
         font-size: 2rem;
         line-height: 2rem;
-        
+
         span {
           display: inline-block;
         }
@@ -131,6 +133,7 @@ main {
       h2 {
         font-size: 1.5rem;
         line-height: 1.5rem;
+
         span {
           display: inline-block;
         }
@@ -149,6 +152,7 @@ main {
           font-size: 2.8rem;
           line-height: 2.5rem;
         }
+
         h2 {
           font-size: 1.8rem;
           line-height: 1.8rem;
@@ -166,6 +170,7 @@ main {
           font-size: 2.8rem;
           line-height: 2.8rem;
         }
+
         h2 {
           line-height: 2rem;
           font-size: 2rem;

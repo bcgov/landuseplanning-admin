@@ -1,8 +1,4 @@
-import {
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest
-} from '@angular/common/http';
+import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'app/services/keycloak.service';
 import { Observable, Subject } from 'rxjs';
@@ -17,7 +13,7 @@ import { catchError, switchMap, tap } from 'rxjs/operators';
  */
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  private refreshTokenInProgress: Boolean = false;
+  private refreshTokenInProgress = false;
 
   private tokenRefreshedSource = new Subject();
   private tokenRefreshed$ = this.tokenRefreshedSource.asObservable();
@@ -26,7 +22,8 @@ export class TokenInterceptor implements HttpInterceptor {
 
   /**
    * Main request intercept handler to automatically add the bearer auth token to every request.
-   * If the auth token expires mid-request, the requests 403 response will be caught, the auth token will be refreshed, and the request will be re-tried.
+   * If the auth token expires mid-request, the requests 403 response will be caught, the auth token will be
+   * refreshed, and the request will be re-tried.
    *
    * @param {HttpRequest<any>} request
    * @param {HttpHandler} next
@@ -36,23 +33,22 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
     request = this.addAuthHeader(request);
 
-    return next.handle(request)
-      .pipe(
-        catchError(error => {
-          if (error.status === 403) {
-            return this.refreshToken().pipe(
-              switchMap(() => {
-                request = this.addAuthHeader(request);
-                return next.handle(request);
-              }),
-              catchError((err) => {
-                return Observable.throw(err);
-              })
-            );
-          }
-          return Observable.throw(error);
-        })
-      );
+    return next.handle(request).pipe(
+      catchError(error => {
+        if (error.status === 403) {
+          return this.refreshToken().pipe(
+            switchMap(() => {
+              request = this.addAuthHeader(request);
+              return next.handle(request);
+            }),
+            catchError(err => {
+              return Observable.throw(err);
+            })
+          );
+        }
+        return Observable.throw(error);
+      })
+    );
   }
 
   /**

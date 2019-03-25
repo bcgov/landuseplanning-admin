@@ -9,17 +9,12 @@ import { KeycloakService } from 'app/services/keycloak.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-
 export class LoginComponent implements OnInit {
   model: any = {};
   loading = false;
   error = '';
 
-  constructor(
-    private router: Router,
-    private api: ApiService,
-    private keycloakService: KeycloakService
-  ) { }
+  constructor(private router: Router, private api: ApiService, private keycloakService: KeycloakService) {}
 
   ngOnInit() {
     // Redir to the main index page if they try to get here.

@@ -41,7 +41,7 @@ describe('ReviewCommentsComponent', () => {
     _id: 'SECOND_COMMENT',
     name: 'Apples are tasty'
   });
-  let comments = [firstComment, secondComment];
+  const comments = [firstComment, secondComment];
   let sortSelector: HTMLSelectElement;
 
   const commentServiceStub = {
@@ -58,17 +58,10 @@ describe('ReviewCommentsComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         NgbModule,
-        RouterTestingModule.withRoutes([
-          { path: 'search', component: SearchComponent }
-        ]),
+        RouterTestingModule.withRoutes([{ path: 'search', component: SearchComponent }]),
         FormsModule
       ],
-      declarations: [
-        ReviewCommentsComponent,
-        NewlinesPipe,
-        CommentDetailStubComponent,
-        SearchComponent
-      ],
+      declarations: [ReviewCommentsComponent, NewlinesPipe, CommentDetailStubComponent, SearchComponent],
       providers: [
         { provide: CommentService, useValue: commentServiceStub },
         { provide: ExcelService },
@@ -107,9 +100,7 @@ describe('ReviewCommentsComponent', () => {
 
         component.ngOnInit();
 
-        expect(commentService.getCountByPeriodId).toHaveBeenCalledWith(
-          'COMMENT_PERIOD_ID'
-        );
+        expect(commentService.getCountByPeriodId).toHaveBeenCalledWith('COMMENT_PERIOD_ID');
       });
 
       it('pageCount is calculated by the number of comments divided by 20, rounded up', () => {
@@ -135,9 +126,9 @@ describe('ReviewCommentsComponent', () => {
 
         component.ngOnInit();
 
-        let expectedPageNumber = 0;
-        let expectedPageSize = 20;
-        let expectedSortFilter = '-dateAdded';
+        const expectedPageNumber = 0;
+        const expectedPageSize = 20;
+        const expectedSortFilter = '-dateAdded';
 
         expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
           'APPLICATION_ID',
@@ -154,12 +145,10 @@ describe('ReviewCommentsComponent', () => {
       });
 
       it('redirects to login if the commment service returns a 403', () => {
-        let forbiddenError = { status: 403, message: 'Permission Denied!' };
+        const forbiddenError = { status: 403, message: 'Permission Denied!' };
 
-        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
-          throwError(forbiddenError)
-        );
-        let navigateSpy = spyOn((<any>component).router, 'navigate');
+        spyOn(commentService, 'getAllByApplicationId').and.returnValue(throwError(forbiddenError));
+        const navigateSpy = spyOn((component as any).router, 'navigate');
 
         component.ngOnInit();
 
@@ -167,9 +156,7 @@ describe('ReviewCommentsComponent', () => {
       });
 
       it('adds the error message to the alerts', () => {
-        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
-          throwError('Houston we have a problem')
-        );
+        spyOn(commentService, 'getAllByApplicationId').and.returnValue(throwError('Houston we have a problem'));
 
         component.ngOnInit();
 
@@ -179,16 +166,14 @@ describe('ReviewCommentsComponent', () => {
 
     describe('sorting', () => {
       it('pulls down new comments when the sort selection is changed', () => {
-        spyOn(commentService, 'getAllByApplicationId').and.returnValue(
-          of([secondComment, firstComment])
-        );
+        spyOn(commentService, 'getAllByApplicationId').and.returnValue(of([secondComment, firstComment]));
 
         sortSelector.value = '%2BcontactName';
         sortSelector.dispatchEvent(new Event('change'));
 
-        let expectedPageNumber = 0;
-        let expectedPageSize = 20;
-        let expectedSortFilter = '%2BcontactName';
+        const expectedPageNumber = 0;
+        const expectedPageSize = 20;
+        const expectedSortFilter = '%2BcontactName';
 
         expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
           'APPLICATION_ID',
@@ -207,19 +192,13 @@ describe('ReviewCommentsComponent', () => {
       let previousPage: DebugElement;
 
       beforeEach(() => {
-        nextPage = fixture.debugElement.query(
-          By.css('button[title="View Next Page"')
-        );
-        previousPage = fixture.debugElement.query(
-          By.css('button[title="View Previous Page"')
-        );
+        nextPage = fixture.debugElement.query(By.css('button[title="View Next Page"'));
+        previousPage = fixture.debugElement.query(By.css('button[title="View Previous Page"'));
       });
 
       describe('when "View Next Page" is clicked', () => {
         it('pulls down the next 20 comments', done => {
-          spyOn(commentService, 'getAllByApplicationId').and.returnValue(
-            of([secondComment, firstComment])
-          );
+          spyOn(commentService, 'getAllByApplicationId').and.returnValue(of([secondComment, firstComment]));
 
           component.pageNum = 2;
 
@@ -228,9 +207,9 @@ describe('ReviewCommentsComponent', () => {
 
             // Comment service expects a zero-indexed page number, which is why the expected
             // page number is 2. 2 is actually the third page.
-            let expectedPageNumber = 2;
-            let expectedPageSize = 20;
-            let expectedSortFilter = '-dateAdded';
+            const expectedPageNumber = 2;
+            const expectedPageSize = 20;
+            const expectedSortFilter = '-dateAdded';
 
             expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
               'APPLICATION_ID',
@@ -256,9 +235,9 @@ describe('ReviewCommentsComponent', () => {
 
             // Comment service expects a zero-indexed page number, which is why the expected
             // page number is 0. 0 is the first page.
-            let expectedPageNumber = 0;
-            let expectedPageSize = 20;
-            let expectedSortFilter = '-dateAdded';
+            const expectedPageNumber = 0;
+            const expectedPageSize = 20;
+            const expectedSortFilter = '-dateAdded';
 
             expect(commentService.getAllByApplicationId).toHaveBeenCalledWith(
               'APPLICATION_ID',
@@ -280,7 +259,7 @@ describe('ReviewCommentsComponent', () => {
     });
 
     it('redirects to /search', () => {
-      let navigateSpy = spyOn((<any>component).router, 'navigate');
+      const navigateSpy = spyOn((component as any).router, 'navigate');
 
       component.ngOnInit();
 

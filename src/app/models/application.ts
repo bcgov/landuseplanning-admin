@@ -10,7 +10,7 @@ export class Application {
   agency: string;
   areaHectares: number;
   businessUnit: string;
-  centroid: Array<number> = []; // [lng, lat]
+  centroid: number[] = []; // [lng, lat]
   cl_file: number;
   client: string;
   description: string = null;
@@ -26,7 +26,7 @@ export class Application {
   tenureStage: string;
   type: string;
   statusHistoryEffectiveDate: Date = null;
-  tags: Array<string> = [];
+  tags: string[] = [];
 
   region: string; // region code derived from Business Unit
   appStatus: string; // user-friendly application status
@@ -41,31 +41,31 @@ export class Application {
   // associated data
   currentPeriod: CommentPeriod = null;
   decision: Decision = null;
-  documents: Array<Document> = [];
-  features: Array<Feature> = [];
+  documents: Document[] = [];
+  features: Feature[] = [];
 
   constructor(obj?: any) {
-    this._id          = obj && obj._id          || null;
-    this.agency       = obj && obj.agency       || null;
-    this.areaHectares = obj && obj.areaHectares || null;
-    this.businessUnit = obj && obj.businessUnit || null;
-    this.cl_file      = obj && obj.cl_file      || null;
-    this.client       = obj && obj.client       || null;
-    this.location     = obj && obj.location     || null;
-    this.name         = obj && obj.name         || null;
-    this.purpose      = obj && obj.purpose      || null;
-    this.status       = obj && obj.status       || null;
-    this.subpurpose   = obj && obj.subpurpose   || null;
-    this.subtype      = obj && obj.subtype      || null;
-    this.tantalisID   = obj && obj.tantalisID   || null; // not zero
-    this.tenureStage  = obj && obj.tenureStage  || null;
-    this.type         = obj && obj.type         || null;
-    this.region       = obj && obj.region       || null;
-    this.appStatus    = obj && obj.appStatus    || null;
-    this.cpStatus     = obj && obj.cpStatus     || null;
-    this.clFile       = obj && obj.clFile       || null;
-    this.applicants   = obj && obj.applicants   || null;
-    this.isRetired    = obj && obj.isRetired    || null;
+    this._id = (obj && obj._id) || null;
+    this.agency = (obj && obj.agency) || null;
+    this.areaHectares = (obj && obj.areaHectares) || null;
+    this.businessUnit = (obj && obj.businessUnit) || null;
+    this.cl_file = (obj && obj.cl_file) || null;
+    this.client = (obj && obj.client) || null;
+    this.location = (obj && obj.location) || null;
+    this.name = (obj && obj.name) || null;
+    this.purpose = (obj && obj.purpose) || null;
+    this.status = (obj && obj.status) || null;
+    this.subpurpose = (obj && obj.subpurpose) || null;
+    this.subtype = (obj && obj.subtype) || null;
+    this.tantalisID = (obj && obj.tantalisID) || null; // not zero
+    this.tenureStage = (obj && obj.tenureStage) || null;
+    this.type = (obj && obj.type) || null;
+    this.region = (obj && obj.region) || null;
+    this.appStatus = (obj && obj.appStatus) || null;
+    this.cpStatus = (obj && obj.cpStatus) || null;
+    this.clFile = (obj && obj.clFile) || null;
+    this.applicants = (obj && obj.applicants) || null;
+    this.isRetired = (obj && obj.isRetired) || null;
 
     if (obj && obj.publishDate) {
       this.publishDate = new Date(obj.publishDate);

@@ -48,10 +48,7 @@ describe('ApplicationService', () => {
 
   const documentServiceStub = {
     getAllByApplicationId(applicationId: string) {
-      const documents = [
-        new Document({ _id: 'DDDDD' }),
-        new Document({ _id: 'EEEEE' })
-      ];
+      const documents = [new Document({ _id: 'DDDDD' }), new Document({ _id: 'EEEEE' })];
       return of(documents);
     }
   };
@@ -66,7 +63,7 @@ describe('ApplicationService', () => {
     },
 
     getCurrent(periods: CommentPeriod[]): CommentPeriod {
-      return (periods.length > 0) ? periods[0] : null;
+      return periods.length > 0 ? periods[0] : null;
     },
 
     getStatusCode(period: CommentPeriod): string {
@@ -103,7 +100,7 @@ describe('ApplicationService', () => {
         { provide: CommentPeriodService, useValue: commentPeriodServiceStub },
         { provide: CommentService, useValue: commentServiceStub },
         { provide: DecisionService, useValue: decisionServiceStub },
-        { provide: FeatureService, useValue: featureServiceStub },
+        { provide: FeatureService, useValue: featureServiceStub }
       ]
     });
 
@@ -123,7 +120,7 @@ describe('ApplicationService', () => {
     });
 
     describe('application properties', () => {
-      let existingApplication = new Application({
+      const existingApplication = new Application({
         _id: 'AAAA'
       });
 
@@ -137,7 +134,7 @@ describe('ApplicationService', () => {
       it('sets the appStatus property', () => {
         existingApplication.status = 'ACCEPTED';
         service.getAll().subscribe(applications => {
-          let application = applications[0];
+          const application = applications[0];
           expect(application.appStatus).toBe('Application Under Review');
         });
       });
@@ -145,7 +142,7 @@ describe('ApplicationService', () => {
       it('clFile property is padded to be seven digits', () => {
         existingApplication.cl_file = 7777;
         service.getAll().subscribe(applications => {
-          let application = applications[0];
+          const application = applications[0];
           expect(application.clFile).toBe('0007777');
         });
       });
@@ -153,7 +150,7 @@ describe('ApplicationService', () => {
       it('clFile property is null if there is no cl_file property', () => {
         existingApplication.cl_file = null;
         service.getAll().subscribe(applications => {
-          let application = applications[0];
+          const application = applications[0];
           expect(application.clFile).toBeUndefined();
         });
       });
@@ -161,7 +158,7 @@ describe('ApplicationService', () => {
       it('sets the region property', () => {
         existingApplication.businessUnit = 'SK - LAND MGMNT - SKEENA FIELD OFFICE';
         service.getAll().subscribe(applications => {
-          let application = applications[0];
+          const application = applications[0];
           expect(application.region).toBeDefined();
           expect(application.region).toEqual(service.SKEENA);
         });
@@ -174,13 +171,21 @@ describe('ApplicationService', () => {
 
     describe('with the getCurrentPeriod Parameter', () => {
       // let commentPeriodService;
-      const firstAppCommentPeriod = new CommentPeriod({ _id: 'CP_FOR_FIRST_APP', startDate: new Date(2018, 10, 1), endDate: new Date(2018, 11, 10) });
-      const secondAppCommentPeriod = new CommentPeriod({ _id: 'CP_FOR_SECOND_APP', startDate: new Date(2018, 10, 1), endDate: new Date(2018, 11, 10) });
+      const firstAppCommentPeriod = new CommentPeriod({
+        _id: 'CP_FOR_FIRST_APP',
+        startDate: new Date(2018, 10, 1),
+        endDate: new Date(2018, 11, 10)
+      });
+      const secondAppCommentPeriod = new CommentPeriod({
+        _id: 'CP_FOR_SECOND_APP',
+        startDate: new Date(2018, 10, 1),
+        endDate: new Date(2018, 11, 10)
+      });
 
       beforeEach(() => {
-        let commentPeriodService = TestBed.get(CommentPeriodService);
+        const commentPeriodService = TestBed.get(CommentPeriodService);
 
-        spyOn(commentPeriodService, 'getAllByApplicationId').and.callFake((applicationId) => {
+        spyOn(commentPeriodService, 'getAllByApplicationId').and.callFake(applicationId => {
           if (applicationId === 'BBBB') {
             return of([firstAppCommentPeriod]);
           } else if (applicationId === 'CCCC') {
@@ -189,14 +194,15 @@ describe('ApplicationService', () => {
         });
       });
 
+      // tslint:disable-next-line:max-line-length
       it('makes a call to commentPeriodService.getAllByApplicationId for each application and retrieves the comment period', () => {
         service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
-          let firstApplication = applications[0];
+          const firstApplication = applications[0];
           expect(firstApplication.currentPeriod).toBeDefined();
           expect(firstApplication.currentPeriod).not.toBeNull();
           expect(firstApplication.currentPeriod._id).toBe('CP_FOR_FIRST_APP');
 
-          let secondApplication = applications[1];
+          const secondApplication = applications[1];
           expect(secondApplication.currentPeriod).toBeDefined();
           expect(secondApplication.currentPeriod).not.toBeNull();
           expect(secondApplication.currentPeriod._id).toBe('CP_FOR_SECOND_APP');
@@ -205,7 +211,7 @@ describe('ApplicationService', () => {
 
       it('sets the cpStatus to the commentPeriodService.getStatusString result', () => {
         service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
-          let firstApplication = applications[0];
+          const firstApplication = applications[0];
           expect(firstApplication.cpStatus).toBe('Commenting Open');
         });
       });
@@ -213,10 +219,10 @@ describe('ApplicationService', () => {
       describe('if the comment period is open', () => {
         beforeEach(() => {
           jasmine.clock().install();
-          let commentPeriodService = TestBed.get(CommentPeriodService);
+          const commentPeriodService = TestBed.get(CommentPeriodService);
 
           const currentTime = new Date(2018, 11, 1);
-          let today = moment(currentTime).toDate();
+          const today = moment(currentTime).toDate();
           jasmine.clock().mockDate(today);
 
           spyOn(commentPeriodService, 'isOpen').and.returnValue(true);
@@ -231,7 +237,7 @@ describe('ApplicationService', () => {
           firstAppCommentPeriod.endDate = new Date(2018, 11, 10);
 
           service.getAll({ getCurrentPeriod: true }).subscribe(applications => {
-            let firstApplication = applications[0];
+            const firstApplication = applications[0];
 
             expect(firstApplication.currentPeriod.daysRemaining).toBeDefined();
 
@@ -242,7 +248,7 @@ describe('ApplicationService', () => {
 
       describe('if the comment period is not open', () => {
         beforeEach(() => {
-          let commentPeriodService = TestBed.get(CommentPeriodService);
+          const commentPeriodService = TestBed.get(CommentPeriodService);
           spyOn(commentPeriodService, 'isOpen').and.returnValue(false);
         });
 
@@ -258,7 +264,7 @@ describe('ApplicationService', () => {
 
       describe('numComments', () => {
         beforeEach(() => {
-          let commentService = TestBed.get(CommentService);
+          const commentService = TestBed.get(CommentService);
 
           spyOn(commentService, 'getCountByPeriodId').and.returnValue(of(42));
         });
@@ -274,7 +280,7 @@ describe('ApplicationService', () => {
 
     describe('without the getCurrentPeriod Parameter', () => {
       it('does not call commentPeriodService.getAllByApplicationId', () => {
-        let commentPeriodService = TestBed.get(CommentPeriodService);
+        const commentPeriodService = TestBed.get(CommentPeriodService);
         spyOn(commentPeriodService, 'getAllByApplicationId');
         expect(commentPeriodService.getAllByApplicationId).not.toHaveBeenCalled();
       });
@@ -296,7 +302,7 @@ describe('ApplicationService', () => {
     });
 
     describe('application properties', () => {
-      let existingApplication = new Application({
+      const existingApplication = new Application({
         _id: 'AAAA'
       });
 
@@ -350,7 +356,7 @@ describe('ApplicationService', () => {
 
     describe('without the getFeatures Parameter', () => {
       it('does not call featureService.getByApplicationId', () => {
-        let featureService = TestBed.get(FeatureService);
+        const featureService = TestBed.get(FeatureService);
         spyOn(featureService, 'getByApplicationId');
         expect(featureService.getByApplicationId).not.toHaveBeenCalled();
       });
@@ -376,7 +382,7 @@ describe('ApplicationService', () => {
 
     describe('without the getDocuments Parameter', () => {
       it('does not call documentService.getAllByApplicationId', () => {
-        let documentService = TestBed.get(DocumentService);
+        const documentService = TestBed.get(DocumentService);
         spyOn(documentService, 'getAllByApplicationId');
         expect(documentService.getAllByApplicationId).not.toHaveBeenCalled();
       });
@@ -390,6 +396,7 @@ describe('ApplicationService', () => {
     });
 
     describe('with the getCurrentPeriod Parameter', () => {
+      // tslint:disable-next-line:max-line-length
       it('makes a call to commentPeriodService.getAllByApplicationId and attaches the first resulting comment period', () => {
         service.getById('AAAA', { getCurrentPeriod: true }).subscribe(application => {
           expect(application.currentPeriod).toBeDefined();
@@ -405,7 +412,7 @@ describe('ApplicationService', () => {
       });
 
       describe('if the comment period is open', () => {
-        let periodExpiringOnTheTenth = new CommentPeriod({
+        const periodExpiringOnTheTenth = new CommentPeriod({
           _id: 'CCCC',
           startDate: new Date(2018, 10, 1),
           endDate: new Date(2018, 11, 10)
@@ -415,10 +422,10 @@ describe('ApplicationService', () => {
           jasmine.clock().install();
 
           const currentTime = new Date(2018, 11, 1);
-          let today = moment(currentTime).toDate();
+          const today = moment(currentTime).toDate();
           jasmine.clock().mockDate(today);
 
-          let commentPeriodService = TestBed.get(CommentPeriodService);
+          const commentPeriodService = TestBed.get(CommentPeriodService);
           spyOn(commentPeriodService, 'isOpen').and.returnValue(true);
           spyOn(commentPeriodService, 'getAllByApplicationId').and.returnValue(of([periodExpiringOnTheTenth]));
         });
@@ -437,7 +444,7 @@ describe('ApplicationService', () => {
 
       describe('if the comment period is not open', () => {
         beforeEach(() => {
-          let commentPeriodService = TestBed.get(CommentPeriodService);
+          const commentPeriodService = TestBed.get(CommentPeriodService);
 
           spyOn(commentPeriodService, 'isOpen').and.returnValue(false);
         });
@@ -451,7 +458,7 @@ describe('ApplicationService', () => {
 
       describe('numComments', () => {
         beforeEach(() => {
-          let commentService = TestBed.get(CommentService);
+          const commentService = TestBed.get(CommentService);
 
           spyOn(commentService, 'getCountByPeriodId').and.returnValue(of(42));
         });
@@ -466,7 +473,7 @@ describe('ApplicationService', () => {
 
     describe('without the getCurrentPeriod Parameter', () => {
       it('does not call commentPeriodService.getAllByApplicationId', () => {
-        let commentPeriodService = TestBed.get(CommentPeriodService);
+        const commentPeriodService = TestBed.get(CommentPeriodService);
         spyOn(commentPeriodService, 'getAllByApplicationId');
         expect(commentPeriodService.getAllByApplicationId).not.toHaveBeenCalled();
       });
@@ -490,7 +497,7 @@ describe('ApplicationService', () => {
 
     describe('without the getDecision Parameter', () => {
       it('does not call decisionService.getByApplicationId', () => {
-        let decisionService = TestBed.get(DecisionService);
+        const decisionService = TestBed.get(DecisionService);
         spyOn(decisionService, 'getByApplicationId');
         expect(decisionService.getByApplicationId).not.toHaveBeenCalled();
       });
@@ -612,33 +619,44 @@ describe('ApplicationService', () => {
 
   describe('getTantalisStatus()', () => {
     it('with "AB" status it returns Abandoned codes', () => {
-      expect(service.getTantalisStatus(service.ABANDONED)).toEqual(
-        ['ABANDONED', 'CANCELLED', 'OFFER NOT ACCEPTED', 'OFFER RESCINDED', 'RETURNED', 'REVERTED', 'SOLD', 'SUSPENDED', 'WITHDRAWN']
-      );
+      expect(service.getTantalisStatus(service.ABANDONED)).toEqual([
+        'ABANDONED',
+        'CANCELLED',
+        'OFFER NOT ACCEPTED',
+        'OFFER RESCINDED',
+        'RETURNED',
+        'REVERTED',
+        'SOLD',
+        'SUSPENDED',
+        'WITHDRAWN'
+      ]);
     });
 
     it('with "AUR" status it returns Application Under Review codes', () => {
-      expect(service.getTantalisStatus(service.APPLICATION_UNDER_REVIEW)).toEqual(
-        ['ACCEPTED', 'ALLOWED', 'PENDING', 'RECEIVED']
-      );
+      expect(service.getTantalisStatus(service.APPLICATION_UNDER_REVIEW)).toEqual([
+        'ACCEPTED',
+        'ALLOWED',
+        'PENDING',
+        'RECEIVED'
+      ]);
     });
 
     it('with "ARC" status it returns Application Review Complete codes', () => {
-      expect(service.getTantalisStatus(service.APPLICATION_REVIEW_COMPLETE)).toEqual(
-        ['OFFER ACCEPTED', 'OFFERED']
-      );
+      expect(service.getTantalisStatus(service.APPLICATION_REVIEW_COMPLETE)).toEqual(['OFFER ACCEPTED', 'OFFERED']);
     });
 
     it('with "DA" status it returns Decision Approved codes', () => {
-      expect(service.getTantalisStatus(service.DECISION_APPROVED)).toEqual(
-        ['ACTIVE', 'COMPLETED', 'DISPOSITION IN GOOD STANDING', 'EXPIRED', 'HISTORIC']
-      );
+      expect(service.getTantalisStatus(service.DECISION_APPROVED)).toEqual([
+        'ACTIVE',
+        'COMPLETED',
+        'DISPOSITION IN GOOD STANDING',
+        'EXPIRED',
+        'HISTORIC'
+      ]);
     });
 
     it('with "DNA" status it returns Decision Not Approved codes', () => {
-      expect(service.getTantalisStatus(service.DECISION_NOT_APPROVED)).toEqual(
-        ['DISALLOWED']
-      );
+      expect(service.getTantalisStatus(service.DECISION_NOT_APPROVED)).toEqual(['DISALLOWED']);
     });
   });
 
@@ -678,7 +696,9 @@ describe('ApplicationService', () => {
     });
 
     it('with "ARC" code it returns "Application Review Complete - Decision Pending" string', () => {
-      expect(service.getLongStatusString(service.APPLICATION_REVIEW_COMPLETE)).toBe('Application Review Complete - Decision Pending');
+      expect(service.getLongStatusString(service.APPLICATION_REVIEW_COMPLETE)).toBe(
+        'Application Review Complete - Decision Pending'
+      );
     });
 
     it('with "DA" code it returns "Decision: Approved - Tenure Issued" string', () => {
@@ -808,7 +828,9 @@ describe('ApplicationService', () => {
     });
 
     it('with "VI - LAND MGMNT - VANCOUVER ISLAND SERVICE REGION" it returns "VI" code', () => {
-      expect(service.getRegionCode('VI - LAND MGMNT - VANCOUVER ISLAND SERVICE REGION')).toEqual(service.VANCOUVER_ISLAND);
+      expect(service.getRegionCode('VI - LAND MGMNT - VANCOUVER ISLAND SERVICE REGION')).toEqual(
+        service.VANCOUVER_ISLAND
+      );
     });
 
     it('returns Falsy if Business Unit is empty', () => {

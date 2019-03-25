@@ -9,21 +9,17 @@ import { ApplicationService } from 'app/services/application.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-
 export class HomeComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  constructor(
-    private applicationService: ApplicationService
-  ) { }
+  constructor(private applicationService: ApplicationService) {}
 
   ngOnInit() {
     // although we aren't currently using numApplications,
     // this verifies our login token and redirects in case of error
-    this.applicationService.getCount()
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
+    this.applicationService
+      .getCount()
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         () => {},
         () => {

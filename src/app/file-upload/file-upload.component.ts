@@ -8,20 +8,19 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, HostList
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.scss']
 })
-
 export class FileUploadComponent {
   public dragDropClass = 'dragarea';
   @Input() fileExt = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt'];
   @Input() maxFiles = 5;
   @Input() maxSize = 5; // in MB
-  @Input() files: Array<File> = [];
+  @Input() files: File[] = [];
   @Input() showInfo = true;
   @Input() showList = true;
   @Output() filesChange = new EventEmitter();
   @ViewChild('file') fileInput: ElementRef;
-  public errors: Array<string> = [];
+  public errors: string[] = [];
 
-  constructor() { }
+  constructor() {}
 
   @HostListener('dragover', ['$event']) onDragOver(event) {
     this.dragDropClass = 'droparea';
@@ -62,6 +61,7 @@ export class FileUploadComponent {
     this.errors = []; // clear previous errors
 
     if (this.isValidFiles(files)) {
+      // tslint:disable-next-line:prefer-for-of
       for (let i = 0; i < files.length; i++) {
         this.files.push(files[i]);
       }
@@ -80,16 +80,22 @@ export class FileUploadComponent {
   }
 
   private isValidFiles(files: FileList): boolean {
-    if (this.maxFiles > 0) { this.validateMaxFiles(files); }
-    if (this.fileExt.length > 0) { this.validateFileExtensions(files); }
-    if (this.maxSize > 0) { this.validateFileSizes(files); }
-    return (this.errors.length === 0);
+    if (this.maxFiles > 0) {
+      this.validateMaxFiles(files);
+    }
+    if (this.fileExt.length > 0) {
+      this.validateFileExtensions(files);
+    }
+    if (this.maxSize > 0) {
+      this.validateFileSizes(files);
+    }
+    return this.errors.length === 0;
   }
 
   private validateMaxFiles(files: FileList): boolean {
-    if ((files.length + this.files.length) > this.maxFiles) {
+    if (files.length + this.files.length > this.maxFiles) {
       this.errors.push('Too many files');
-      setTimeout(() => this.errors = [], 5000);
+      setTimeout(() => (this.errors = []), 5000);
       return false;
     }
     return true;
@@ -97,12 +103,19 @@ export class FileUploadComponent {
 
   private validateFileExtensions(files: FileList): boolean {
     let ret = true;
-    const extensions = this.fileExt.map(function (x) { return x.toUpperCase().trim(); });
+    const extensions = this.fileExt.map(x => {
+      return x.toUpperCase().trim();
+    });
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < files.length; i++) {
-      const ext = files[i].name.toUpperCase().split('.').pop() || files[i].name;
+      const ext =
+        files[i].name
+          .toUpperCase()
+          .split('.')
+          .pop() || files[i].name;
       if (!extensions.includes(ext)) {
         this.errors.push('Invalid extension: ' + files[i].name);
-        setTimeout(() => this.errors = [], 5000);
+        setTimeout(() => (this.errors = []), 5000);
         ret = false;
       }
     }
@@ -111,12 +124,13 @@ export class FileUploadComponent {
 
   private validateFileSizes(files: FileList): boolean {
     let ret = true;
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < files.length; i++) {
       const fileSizeinMB = files[i].size / 1024 / 1024; // in MB
       const size = Math.round(fileSizeinMB * 100) / 100; // convert up to 2 decimal places
       if (size > this.maxSize) {
         this.errors.push('File too large: ' + files[i].name);
-        setTimeout(() => this.errors = [], 5000);
+        setTimeout(() => (this.errors = []), 5000);
         ret = false;
       }
     }

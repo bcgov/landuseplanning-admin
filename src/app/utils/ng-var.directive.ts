@@ -8,7 +8,6 @@ import { Directive, Input, ViewContainerRef, TemplateRef } from '@angular/core';
   // tslint:disable-next-line:directive-selector
   selector: '[ngVar]'
 })
-
 export class VarDirective {
   @Input()
   set ngVar(context: any) {
@@ -18,7 +17,7 @@ export class VarDirective {
 
   context: any = {};
 
-  constructor(private vcRef: ViewContainerRef, private templateRef: TemplateRef<any>) { }
+  constructor(private vcRef: ViewContainerRef, private templateRef: TemplateRef<any>) {}
 
   updateView() {
     this.vcRef.clear();

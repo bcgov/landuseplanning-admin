@@ -6,7 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'published'
 })
-
 export class PublishedPipe implements PipeTransform {
   transform(items: any[]): any {
     if (!items) {

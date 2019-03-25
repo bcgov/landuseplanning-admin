@@ -7,11 +7,7 @@ import { DocumentService } from 'app/services/document.service';
 describe('DecisionService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        DecisionService,
-        { provide: ApiService },
-        { provide: DocumentService },
-      ]
+      providers: [DecisionService, { provide: ApiService }, { provide: DocumentService }]
     });
   });
 

@@ -21,12 +21,11 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
   templateUrl: './application-list.component.html',
   styleUrls: ['./application-list.component.scss']
 })
-
 export class ApplicationListComponent implements OnInit, OnDestroy {
   public loading = true;
   private paramMap: ParamMap = null;
   public showOnlyOpenApps: boolean;
-  public applications: Array<Application> = [];
+  public applications: Application[] = [];
   public column: string = null;
   public direction = 0;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
@@ -37,26 +36,21 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
     public commentPeriodService: CommentPeriodService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get optional query parameters
-    this.route.queryParamMap
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(paramMap => {
-        this.paramMap = paramMap;
+    this.route.queryParamMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(paramMap => {
+      this.paramMap = paramMap;
 
-        // set initial filters
-        this.resetFilters();
-      });
+      // set initial filters
+      this.resetFilters();
+    });
 
     // get data
-    this.applicationService.getAll({ getCurrentPeriod: true })
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
+    this.applicationService
+      .getAll({ getCurrentPeriod: true })
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         applications => {
           this.loading = false;
@@ -65,7 +59,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         error => {
           this.loading = false;
           console.log(error);
-          alert('Uh-oh, couldn\'t load applications');
+          alert("Uh-oh, couldn't load applications");
           // applications not found --> navigate back to home
           this.router.navigate(['/']);
         }
@@ -94,7 +88,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   private resetFilters() {
-    this.showOnlyOpenApps = (this.paramMap.get('showOnlyOpenApps') === 'true');
+    this.showOnlyOpenApps = this.paramMap.get('showOnlyOpenApps') === 'true';
     this.column = this.paramMap.get('col'); // == null if col isn't present
     this.direction = +this.paramMap.get('dir'); // == 0 if dir isn't present
   }
@@ -112,8 +106,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   public showThisApp(item: Application) {
     const statusCode = item && this.commentPeriodService.getStatusCode(item.currentPeriod);
-    return !this.showOnlyOpenApps
-      || this.commentPeriodService.isOpen(statusCode)
-      || this.commentPeriodService.isNotStarted(statusCode);
+    return (
+      !this.showOnlyOpenApps ||
+      this.commentPeriodService.isOpen(statusCode) ||
+      this.commentPeriodService.isNotStarted(statusCode)
+    );
   }
 }

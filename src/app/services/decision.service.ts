@@ -7,74 +7,66 @@ import { ApiService } from './api';
 import { DocumentService } from './document.service';
 import { Decision } from 'app/models/decision';
 
-interface GetParameters {
+interface IGetParameters {
   getDocuments?: boolean;
 }
 
 @Injectable()
 export class DecisionService {
-
-  constructor(
-    private api: ApiService,
-    private documentService: DocumentService
-  ) { }
+  constructor(private api: ApiService, private documentService: DocumentService) {}
 
   // get decision for the specified application id
-  getByApplicationId(appId: string, params: GetParameters = null): Observable<Decision> {
+  getByApplicationId(appId: string, params: IGetParameters = null): Observable<Decision> {
     // first get the decision data
-    return this.api.getDecisionsByAppId(appId)
-      .pipe(
-        flatMap(res => {
-          if (res && res.length > 0) {
-            // return the first (only) decision
-            const decision = new Decision(res[0]);
+    return this.api.getDecisionsByAppId(appId).pipe(
+      flatMap(res => {
+        if (res && res.length > 0) {
+          // return the first (only) decision
+          const decision = new Decision(res[0]);
 
-            // now get the documents for this decision
-            if (params && params.getDocuments) {
-              return this.documentService.getAllByDecisionId(decision._id)
-                .pipe(
-                  map(documents => {
-                    decision.documents = documents;
-                    return decision;
-                  })
-                );
-            }
-
-            return of(decision);
+          // now get the documents for this decision
+          if (params && params.getDocuments) {
+            return this.documentService.getAllByDecisionId(decision._id).pipe(
+              map(documents => {
+                decision.documents = documents;
+                return decision;
+              })
+            );
           }
-          return of(null as Decision);
-        }),
-        catchError(error => this.api.handleError(error))
-      );
+
+          return of(decision);
+        }
+        return of(null as Decision);
+      }),
+      catchError(error => this.api.handleError(error))
+    );
   }
 
   // get a specific decision by its id
-  getById(decisionId, params: GetParameters = null): Observable<Decision> {
+  getById(decisionId, params: IGetParameters = null): Observable<Decision> {
     // first get the decision data
-    return this.api.getDecision(decisionId)
-      .pipe(
-        flatMap(res => {
-          if (res && res.length > 0) {
-            // return the first (only) decision
-            const decision = new Decision(res[0]);
+    return this.api.getDecision(decisionId).pipe(
+      flatMap(res => {
+        if (res && res.length > 0) {
+          // return the first (only) decision
+          const decision = new Decision(res[0]);
 
-            // now get the documents for this decision
-            if (params && params.getDocuments) {
-              return this.documentService.getAllByDecisionId(decision._id)
-                .pipe(
-                  map(documents => {
-                    decision.documents = documents;
-                    return decision;
-                  })
-                );
-            }
-
-            return of(decision);
+          // now get the documents for this decision
+          if (params && params.getDocuments) {
+            return this.documentService.getAllByDecisionId(decision._id).pipe(
+              map(documents => {
+                decision.documents = documents;
+                return decision;
+              })
+            );
           }
-          return of(null as Decision);
-        }),
-        catchError(error => this.api.handleError(error))
-      );
+
+          return of(decision);
+        }
+        return of(null as Decision);
+      }),
+      catchError(error => this.api.handleError(error))
+    );
   }
 
   add(orig: Decision): Observable<Decision> {
@@ -87,10 +79,7 @@ export class DecisionService {
     // don't send documents
     delete decision.documents;
 
-    return this.api.addDecision(decision)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.addDecision(decision).pipe(catchError(error => this.api.handleError(error)));
   }
 
   save(orig: Decision): Observable<Decision> {
@@ -100,31 +89,18 @@ export class DecisionService {
     // don't send documents
     delete decision.documents;
 
-    return this.api.saveDecision(decision)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.saveDecision(decision).pipe(catchError(error => this.api.handleError(error)));
   }
 
   delete(decision: Decision): Observable<Decision> {
-    return this.api.deleteDecision(decision)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.deleteDecision(decision).pipe(catchError(error => this.api.handleError(error)));
   }
 
   publish(decision: Decision): Observable<Decision> {
-    return this.api.publishDecision(decision)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.publishDecision(decision).pipe(catchError(error => this.api.handleError(error)));
   }
 
   unPublish(decision: Decision): Observable<Decision> {
-    return this.api.unPublishDecision(decision)
-      .pipe(
-        catchError(error => this.api.handleError(error))
-      );
+    return this.api.unPublishDecision(decision).pipe(catchError(error => this.api.handleError(error)));
   }
-
 }

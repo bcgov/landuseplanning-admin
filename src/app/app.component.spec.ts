@@ -1,7 +1,5 @@
 import { TestBed, async } from '@angular/core/testing';
-import {
-  RouterTestingModule
-} from '@angular/router/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -21,16 +19,12 @@ describe('AppComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        HeaderComponent,
-        FooterComponent
-      ],
+      declarations: [AppComponent, HeaderComponent, FooterComponent],
       imports: [RouterTestingModule, BrowserAnimationsModule],
       providers: [
         { provide: ApiService },
         { provide: ConfigService, useValue: configService },
-        { provide: KeycloakService, useValue: mockKeycloakService },
+        { provide: KeycloakService, useValue: mockKeycloakService }
       ]
     }).compileComponents();
   }));
@@ -45,6 +39,8 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('span.navbar-brand__title').textContent).toContain('Applications, Comments & Reasons for Decision');
+    expect(compiled.querySelector('span.navbar-brand__title').textContent).toContain(
+      'Applications, Comments & Reasons for Decision'
+    );
   }));
 });
