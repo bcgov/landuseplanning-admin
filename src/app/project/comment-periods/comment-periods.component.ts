@@ -22,17 +22,34 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
 
 
   public commentPeriods: CommentPeriod[] = null;
-  public commentPeriodTableColumns: String[] = [
-    'Status',
-    'Start Date',
-    'End Date',
-    'Published',
-    'Comment Data'
+  public commentPeriodTableColumns: any[] = [
+    {
+      name: 'Status',
+      value: 'commentPeriodStatus'
+    },
+    {
+      name: 'Start Date',
+      value: 'dateStarted'
+    },
+    {
+      name: 'End Date',
+      value: 'dateCompleted'
+    },
+    {
+      name: 'Published',
+      value: 'isPublished'
+    },
+    {
+      name: 'Comment Data',
+      value: 'commentData'
+    }
   ];
   public commentPeriodTableData: TableObject;
   public loading = true;
 
   public pageNum = 0;
+  public sortBy = '';
+  public sortDirection = 0;
   public pageSize = 10;
   public currentPage = 1;
   public totalListItems = 0;
@@ -69,6 +86,12 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       );
   }
 
+  setColumnSort(column) {
+    this.sortBy = column;
+    this.sortDirection = this.sortDirection > 0 ? -1 : 1;
+    this.getPaginatedComments(this.currentPage, this.sortBy, this.sortDirection);
+  }
+
   initCPRowData() {
     let cpList = [];
     this.commentPeriods.forEach(commentPeriod => {
@@ -97,34 +120,46 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       {
         pageSize: this.pageSize,
         currentPage: this.currentPage,
-        totalListItems: this.totalListItems
+        totalListItems: this.totalListItems,
+        sortBy: this.sortBy,
+        sortDirection: this.sortDirection
       }
     );
   }
 
-  public getPaginatedComments(pageNumber) {
+  public getPaginatedComments(pageNumber, sortBy, sortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
 
+    if (sortBy === undefined) {
+      sortBy = this.sortBy;
+      sortDirection = this.sortDirection;
+    }
+
+    let sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+
     this.loading = true;
-    this.commentPeriodService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize)
+    this.commentPeriodService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize, sorting)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
-        this.updateUrl();
         this.currentPage = pageNumber;
+        this.sortBy = sortBy;
+        this.sortDirection = this.sortDirection;
+        this.updateUrl(sorting);
         this.totalListItems = res.totalCount;
         this.commentPeriods = res.data;
-        this.initCPRowData();
         this.loading = false;
+        this.initCPRowData();
         this._changeDetectionRef.detectChanges();
       });
   }
 
-  updateUrl() {
+  updateUrl(sorting) {
     let currentUrl = this.router.url;
     currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
     currentUrl = currentUrl.split('?')[0];
     currentUrl += `?currentPage=${this.currentPage}&pageSize=${this.pageSize}`;
+    currentUrl += `&sortBy=${sorting}`;
     currentUrl += '&ms=' + new Date().getTime();
     window.history.replaceState({}, '', currentUrl);
   }
