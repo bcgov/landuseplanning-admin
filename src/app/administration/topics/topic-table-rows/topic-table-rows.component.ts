@@ -11,7 +11,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'tbody[app-topic-table-rows]',
-  templateUrl: './topic-table-rows.component.html'
+  templateUrl: './topic-table-rows.component.html',
+  styleUrls: ['./topic-table-rows.component.scss']
 })
 
 export class TopicTableRowsComponent implements OnInit, TableComponent {
