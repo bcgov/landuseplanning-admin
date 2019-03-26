@@ -28,23 +28,28 @@ export class TopicsComponent implements OnInit, OnDestroy {
   public topicTableColumns: any[] = [
     {
       name: 'Name',
-      value: 'name'
+      value: 'name',
+      width: 'col-4'
     },
     {
       name: 'Description',
-      value: 'description'
+      value: 'description',
+      width: 'col-4'
     },
     {
       name: 'Type',
-      value: 'type'
+      value: 'type',
+      width: 'col-1'
     },
     {
       name: 'Pillar',
-      value: 'pillar'
+      value: 'pillar',
+      width: 'col-2'
     },
     {
       name: 'Action',
-      value: 'null'
+      value: 'null',
+      width: 'col-1'
     }
   ];
 
