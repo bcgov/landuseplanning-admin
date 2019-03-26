@@ -25,23 +25,28 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   public commentPeriodTableColumns: any[] = [
     {
       name: 'Status',
-      value: 'commentPeriodStatus'
+      value: 'commentPeriodStatus',
+      width: 'col-3'
     },
     {
       name: 'Start Date',
-      value: 'dateStarted'
+      value: 'dateStarted',
+      width: 'col-3'
     },
     {
       name: 'End Date',
-      value: 'dateCompleted'
+      value: 'dateCompleted',
+      width: 'col-2'
     },
     {
       name: 'Published',
-      value: 'isPublished'
+      value: 'isPublished',
+      width: 'col-2'
     },
     {
       name: 'Comment Data',
-      value: 'commentData'
+      value: 'commentData',
+      width: 'col-2'
     }
   ];
   public commentPeriodTableData: TableObject;

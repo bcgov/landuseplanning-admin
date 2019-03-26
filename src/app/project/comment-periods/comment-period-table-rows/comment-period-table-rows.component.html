@@ -1,7 +1,8 @@
-<tr
+<tr class="d-flex"
     *ngFor="let commentPeriod of commentPeriods | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }">
-    <td scope="row">{{commentPeriod.commentPeriodStatus}}</td>
-    <td>{{commentPeriod.dateStarted | date:'longDate'}}</td>
-    <td>{{commentPeriod.dateCompleted | date:'longDate'}}</td>
-    <td>{{commentPeriod.read}}</td>
+    <td scope="row" class="col-3">{{commentPeriod.commentPeriodStatus}}</td>
+    <td scope="row" class="col-3">{{commentPeriod.dateStarted | date:'longDate'}}</td>
+    <td scope="row" class="col-2">{{commentPeriod.dateCompleted | date:'longDate'}}</td>
+    <td scope="row" class="col-2">{{commentPeriod.read}}</td>
+    <td scope="row" class="col-2">{{commentPeriod.commentData}}</td>
 </tr>
