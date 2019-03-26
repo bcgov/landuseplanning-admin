@@ -1,0 +1,11 @@
+@import "assets/styles/base/base.scss";
+
+tr {
+    background: transparent;
+    .accordion__collapse-header {
+        background: $table-row-bg;
+    }
+    &:nth-child(even) {
+        background: $table-alt-row-bg;
+    }
+}

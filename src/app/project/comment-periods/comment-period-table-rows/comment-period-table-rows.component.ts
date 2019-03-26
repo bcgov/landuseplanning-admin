@@ -5,7 +5,8 @@ import { TableObject } from 'app/shared/components/table-template/table-object';
 
 @Component({
     selector: 'tbody[app-comment-period-table-rows]',
-    templateUrl: './comment-period-table-rows.component.html'
+    templateUrl: './comment-period-table-rows.component.html',
+    styleUrls: ['./comment-period-table-rows.component.scss']
 })
 
 export class CommentPeriodTableRowsComponent implements OnInit, TableComponent {
