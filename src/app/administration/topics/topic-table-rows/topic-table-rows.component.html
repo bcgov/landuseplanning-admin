@@ -1,10 +1,10 @@
 <tr *ngFor="let topic of topics | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
-    class="clickable-row">
-    <td scope="row">{{topic.name}}</td>
-    <td>{{topic.description}}</td>
-    <td>{{topic.type}}</td>
-    <td>{{topic.pillar}}</td>
-    <td>
+    class="clickable-row d-flex">
+    <td class="col-4" scope="row">{{topic.name}}</td>
+    <td class="col-4" scope="row">{{topic.description}}</td>
+    <td class="col-1" scope="row">{{topic.type}}</td>
+    <td class="col-2" scope="row">{{topic.pillar}}</td>
+    <td class="col-1" scope="row">
         <app-dropdown-template [items]="dropdownItems" (itemSelected)="selectItem($event, topic)">
         </app-dropdown-template>
     </td>
