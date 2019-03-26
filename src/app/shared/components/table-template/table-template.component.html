@@ -1,8 +1,15 @@
 <table class="table table-bordered">
   <thead class="thead-light">
-    <tr>
-      <th *ngFor="let entry of columns" class="project-table__name-col sortable" (click)="sort(entry.value)">{{entry.name}}
-        <i class="sort" [ngClass]="{'sort-asc': (column == entry.value && direction < 0), 'sort-desc': (column == entry.value && direction > 0) }" aria-hidden="true"></i>
+    <tr class="d-flex">
+      <th *ngFor="let entry of columns"
+          class="project-table__name-col sortable"
+          (click)="sort(entry.value)"
+          [ngClass]="entry.width"
+          >
+          {{entry.name}}
+          <i class="sort"
+             [ngClass]="{'sort-asc': (column == entry.value && direction < 0), 'sort-desc': (column == entry.value && direction > 0) }"
+             aria-hidden="true"></i>
       </th>
     </tr>
   </thead>

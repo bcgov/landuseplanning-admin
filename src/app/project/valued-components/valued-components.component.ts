@@ -22,19 +22,23 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   public valuedComponentTableColumns: any[] = [
     {
       name: 'Type',
-      value: 'type'
+      value: 'type',
+      width: 'col-3'
     },
     {
       name: 'Title',
-      value: 'title'
+      value: 'title',
+      width: 'col-5'
     },
     {
       name: 'Pillar',
-      value: 'pillar'
+      value: 'pillar',
+      width: 'col-2'
     },
     {
       name: 'Parent',
-      value: 'parent'
+      value: 'parent',
+      width: 'col-2'
     }
   ];
 
