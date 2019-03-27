@@ -1,6 +1,8 @@
 # Get community edition of nodejs v8.x (LTS)
 FROM centos/nodejs-8-centos7
 
+ENV PATH="/opt/rh/rh-nodejs8/root/usr/bin/:$PATH"
+
 # Switch to root for package installs
 USER 0
 
