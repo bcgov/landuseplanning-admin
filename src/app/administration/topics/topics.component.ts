@@ -3,15 +3,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlatformLocation } from '@angular/common';
-import { DialogService } from 'ng2-bootstrap-modal';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Topic } from 'app/models/topic';
 import { TopicService } from 'app/services/topic.service';
-import { TableObject } from 'app/shared/components/table-template/table-object';
+
 import { TopicTableRowsComponent } from './topic-table-rows/topic-table-rows.component';
 import { AddEditTopicComponent } from './add-edit-topic/add-edit-topic.component';
+
+import { Topic } from 'app/models/topic';
+import { TableObject } from 'app/shared/components/table-template/table-object';
+
+import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 @Component({
   selector: 'app-users',
@@ -54,7 +57,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   ];
 
   public pageNum = 1;
-  public pageSize = 15;
+  public pageSize = 10;
   public currentPage = 1;
   public totalTopics = 0;
   public sortBy = '';
@@ -63,18 +66,18 @@ export class TopicsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private platformLocation: PlatformLocation,
     private route: ActivatedRoute,
     private topicService: TopicService,
     private router: Router,
     private modalService: NgbModal,
+    private tableTemplateUtils: TableTemplateUtils,
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.currentPage = params.currentPage ? params.currentPage : 1;
-      this.pageSize = params.pageSize || 15;
+      this.pageSize = params.pageSize || 10;
       this.topicService.getAllTopics(params.currentPage, params.pageSize)
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
@@ -130,12 +133,17 @@ export class TopicsComponent implements OnInit, OnDestroy {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
 
-    if (sortBy === undefined) {
+    if (sortBy == null) {
       sortBy = this.sortBy;
       sortDirection = this.sortDirection;
     }
 
-    let sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+    // This accounts for when there is no defined column sort and the user clicks a pagination button.
+    // API needs sorting to be null for it to not blow up.
+    let sorting = null;
+    if (sortBy !== '') {
+      sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+    }
 
     this.topicsLoading = true;
     this.topicService.getAllTopics(pageNumber, this.pageSize, sorting)
@@ -144,23 +152,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
         this.currentPage = pageNumber;
         this.sortBy = sortBy;
         this.sortDirection = this.sortDirection;
-        this.updateUrl(sorting);
+        this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
         this.totalTopics = res.totalCount;
         this.topics = res.data;
         this.topicsLoading = false;
         this.setTopicRowData();
         this._changeDetectionRef.detectChanges();
       });
-  }
-
-  updateUrl(sorting) {
-    let currentUrl = this.router.url;
-    currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
-    currentUrl = currentUrl.split('?')[0];
-    currentUrl += `?currentPage=${this.currentPage}&pageSize=${this.pageSize}`;
-    currentUrl += `&sortBy=${sorting}`;
-    currentUrl += '&ms=' + new Date().getTime();
-    window.history.replaceState({}, '', currentUrl);
   }
 
   ngOnDestroy() {

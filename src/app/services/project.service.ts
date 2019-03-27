@@ -44,34 +44,19 @@ export class ProjectService {
   }
 
   // get all projects
-  getAll(params: GetParameters = null): Observable<Project[]> {
-    // first get just the projects
-    return this.api.getProjects()
-    .map(projects => {
-      // const projects = res.text() ? res.json() : [];
-      projects.forEach((project, i) => {
-        projects[i] = new Project(project);
-        // FUTURE: derive region code, etc ?
-      });
-      return projects;
+  getAll(pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
+    return this.api.getProjects(pageNum, pageSize, sortBy)
+    .map((res: any) => {
+      if (res) {
+        let projects: Array<Project> = [];
+        res[0].results.forEach(project => {
+          projects.push(new Project(project));
+        });
+        return { totalCount: res[0].total_items, data: projects };
+      }
+      return {};
     })
-      // .pipe(
-      //   flatMap(projs => {
-      //     if (
-      //       !projs || projs.length === 0) {
-      //       // NB: forkJoin([]) will complete immediately
-      //       // so return empty observable instead
-      //       return of([] as Project[]);
-      //     }
-      //     const observables: Array<Observable<Project>> = [];
-      //     projs.forEach(proj => {
-      //       // now get the rest of the data for each project
-      //       observables.push(this._getExtraAppData(new Project(proj), params || {}));
-      //     });
-      //     return forkJoin(observables);
-      //   })
-      // )
-      .catch(error => this.api.handleError(error));
+    .catch(error => this.api.handleError(error));
   }
 
   getById(projId: string, params: GetParameters = null): Observable<Project> {
