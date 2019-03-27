@@ -9,12 +9,11 @@
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
       <div class="input-group main-search-field">
         <input class="form-control" type="text" name="keywordInput" id="keywordInput" [(ngModel)]="terms.keywords"
-          [disabled]="searching" autofocus />
+          autofocus />
         <div class="input-group-append">
           <!-- prevent searching if input is empty or we're already searching -->
-          <button class="btn btn-primary" type="submit" [disabled]="searching">
-            <i class="spinner rotating" [hidden]="!searching"></i>
-            <span>{{searching ? 'Searching...' : 'Search'}}</span>
+          <button class="btn btn-primary" type="submit">
+            <span>Search</span>
           </button>
         </div>
       </div>
