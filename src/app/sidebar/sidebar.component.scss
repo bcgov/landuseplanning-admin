@@ -9,6 +9,7 @@
   margin-top: 71px;
   height: calc(100% - 71px - 41px);
   overflow: auto;
+  transition: 0.3s;
 }
 
 /* Sidebar links */
@@ -18,6 +19,7 @@
   background: #003366;
   padding: 16px;
   text-decoration: none;
+  transition: 0.3s;
 }
 
 .sidebar .project-menu {
@@ -71,6 +73,7 @@
   text-align: left;
   cursor: pointer;
   outline: none;
+  transition: 0.3s;
 }
 
 /* On mouse-over */

@@ -104,6 +104,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.projects.forEach(project => {
       projectList.push(
         {
+          _id: project._id,
           name: project.name,
           proponent: project.proponent,
           type: project.type,
