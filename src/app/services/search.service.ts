@@ -22,8 +22,8 @@ export class SearchService {
     private projectService: ProjectService
   ) { }
 
-  getSearchResults(keys: string, dataset: string): Observable<any[]> {
-    const searchResults = this.api.searchKeywords(keys, dataset)
+  getSearchResults(keys: string, dataset: string, fields: any[], pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<any[]> {
+    const searchResults = this.api.searchKeywords(keys, dataset, fields, pageNum, pageSize, sortBy)
     .map(res => {
       let allResults = <any>[];
       res.forEach(item => {

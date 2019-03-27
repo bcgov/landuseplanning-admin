@@ -624,11 +624,11 @@ export class ApiService {
       'title',
       'type'];
 
-    let queryString = `vc?projectId=${projectId}&`;
-    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
-    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
-    queryString += `fields=${this.buildValues(fields)}`;
+    let queryString = `vc?projectId=${projectId}`;
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    queryString += `&fields=${this.buildValues(fields)}`;
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
@@ -636,8 +636,21 @@ export class ApiService {
   //
   // Searching
   //
-  searchKeywords(keys: string, dataset: string): Observable<SearchResults[]> {
-    const queryString = `public/search?keywords=${keys}&dataset=${dataset}`;
+  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null): Observable<SearchResults[]> {
+    let queryString = `public/search?dataset=${dataset}`;
+    if (fields && fields.length > 0) {
+      fields.map(item => {
+        queryString += `&${item.name}=${item.value}`;
+      });
+    }
+    if (keys) {
+      queryString += `&keywords=${keys}`;
+    }
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    queryString += `&fields=${this.buildValues(fields)}`;
+    console.log('queryString:', queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 

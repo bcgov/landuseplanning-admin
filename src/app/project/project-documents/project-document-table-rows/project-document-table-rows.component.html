@@ -1,0 +1,10 @@
+<tr *ngFor="let document of documents | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
+    class="clickable-row d-flex">
+    <td scope="row" class="col-8">{{document.displayName}}</td>
+    <td scope="row" class="col-2">{{document.datePosted | date:'longDate'}}</td>
+    <td scope="row" class="col-1">{{document.documentType}}</td>
+    <td scope="row" class="col-1">{{document.documentFileSize}}</td>
+    <!-- <td>
+            <button type="button" (click)="deleteVC(valuedComponent)" class="btn btn-danger">Delete</button>
+        </td> -->
+</tr>
