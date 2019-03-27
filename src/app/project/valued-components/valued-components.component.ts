@@ -6,6 +6,7 @@ import { ValuedComponentService } from 'app/services/valued-component.service';
 import { PlatformLocation } from '@angular/common';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { ValuedComponentTableRowsComponent } from './valued-component-table-rows/valued-component-table-rows.component';
+import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 @Component({
   selector: 'app-valued-components',
@@ -53,10 +54,10 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private platformLocation: PlatformLocation,
     private router: Router,
     private valuedComponentService: ValuedComponentService,
-    private _changeDetectionRef: ChangeDetectorRef
+    private _changeDetectionRef: ChangeDetectorRef,
+    private tableTemplateUtils: TableTemplateUtils,
   ) { }
 
   ngOnInit() {
@@ -130,12 +131,15 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
 
-    if (sortBy === undefined) {
+    if (sortBy == null) {
       sortBy = this.sortBy;
       sortDirection = this.sortDirection;
     }
 
-    let sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+    let sorting = null;
+    if (sortBy !== '') {
+      sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+    }
 
     this.vcsLoading = true;
     this.valuedComponentService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize, sorting)
@@ -144,23 +148,13 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
         this.currentPage = pageNumber;
         this.sortBy = sortBy;
         this.sortDirection = this.sortDirection;
-        this.updateUrl(sorting);
+        this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
         this.totalVcs = res.totalCount;
         this.valuedComponents = res.data;
         this.vcsLoading = false;
         this.setVCRowData();
         this._changeDetectionRef.detectChanges();
       });
-  }
-
-  updateUrl(sorting) {
-    let currentUrl = this.router.url;
-    currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
-    currentUrl = currentUrl.split('?')[0];
-    currentUrl += `?currentPage=${this.currentPage}&pageSize=${this.pageSize}`;
-    currentUrl += `&sortBy=${sorting}`;
-    currentUrl += '&ms=' + new Date().getTime();
-    window.history.replaceState({}, '', currentUrl);
   }
 
   ngOnDestroy() {

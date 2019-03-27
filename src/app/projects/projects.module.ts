@@ -9,6 +9,7 @@ import { SharedModule } from 'app/shared/shared.module';
 
 // components
 import { ProjectListComponent } from './project-list/project-list.component';
+import { ProjectListTableRowsComponent } from './project-list/project-list-table-rows/project-list-table-rows.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,11 @@ import { ProjectListComponent } from './project-list/project-list.component';
     SharedModule
   ],
   declarations: [
-    ProjectListComponent
+    ProjectListComponent,
+    ProjectListTableRowsComponent
+  ],
+  entryComponents: [
+    ProjectListTableRowsComponent
   ],
   exports: [
     ProjectListComponent

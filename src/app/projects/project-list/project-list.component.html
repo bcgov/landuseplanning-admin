@@ -1,76 +1,36 @@
 <div class="search-container">
   <div class="fb-container bg-faded">
-  <section class="container-fluid-padding" id="anchor-point">
-  <div class="spinner-container full-screen" *ngIf="loading">
-    <div class="spinner-new rotating"></div>
-  </div>
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item active" aria-current="page">All Projects</li>
-    </ol>
-  </nav>
+    <section class="container-fluid-padding" id="anchor-point">
+      <div class="spinner-container full-screen" *ngIf="loading">
+        <div class="spinner-new rotating"></div>
+      </div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active" aria-current="page">All Projects</li>
+        </ol>
+      </nav>
 
-  <main *ngIf="!loading">
-    <section>
-      <h2>Environmental Assessments in British Columbia</h2>
-      <p class="tab-intro">Use the list below to navigate to individual Projects. Click on any project to go directly to its details page.</p>
+      <main *ngIf="!loading">
+        <section>
+          <h2>Environmental Assessments in British Columbia</h2>
+          <p class="tab-intro">Use the list below to navigate to individual Projects. Click on any project to go
+            directly to its details page.</p>
 
-      <button class="btn btn-primary" [routerLink]="['/arou/0/edit']">
-        <i class="material-icons">add</i>
-        <span>Create New project</span>
-      </button>
+          <button class="btn btn-primary mb-4" [routerLink]="['/arou/0/edit']">
+            <i class="material-icons">add</i>
+            <span>Create New project</span>
+          </button>
 
-      <!-- <div class="project-list__options">
+          <!-- <div class="project-list__options">
         <mat-slide-toggle color="primary" [checked]="showOnlyOpenApps" (change)="showOnlyOpenAppsChange($event.checked)">
           Only show projects with an open or future comment period
         </mat-slide-toggle>
-      </div> -->
-
-      <table class="table project-table">
-        <thead class="project-table__sort-header">
-          <tr>
-            <th class="project-table__name-col sortable" (click)="sort('name')">Name
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'name' && direction < 0), 'sort-desc': (column == 'name' && direction > 0) }" aria-hidden="true"></i>
-            </th>
-            <th class="project-table__cl_file-col sortable" (click)="sort('proponent')">Proponent
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'proponent' && direction < 0), 'sort-desc': (column == 'proponent' && direction > 0) }" aria-hidden="true"></i>
-            </th>
-            <th class="project-table__purpose-col sortable" (click)="sort('type')">Type
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'type' && direction < 0), 'sort-desc': (column == 'type' && direction > 0) }" aria-hidden="true"></i>
-            </th>
-            <th class="project-table__region-col sortable" (click)="sort('region')">Region
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'region' && direction < 0), 'sort-desc': (column == 'region' && direction > 0) }" aria-hidden="true"></i>
-            </th>
-            <th class="project-table__status-col sortable" (click)="sort('currentPhaseName')">Phase
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'currentPhaseName' && direction < 0), 'sort-desc': (column == 'currentPhaseName' && direction > 0) }" aria-hidden="true"></i>
-            </th>
-            <th class="project-table__commenting-col sortable" (click)="sort('eacDecision')">Decision
-              <i class="sort" [ngClass]="{'sort-asc': (column == 'eacDecision' && direction < 0), 'sort-desc': (column == 'eacDecision' && direction > 0) }" aria-hidden="true"></i>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <ng-template ngFor let-item [ngForOf]="projects | orderBy: {property: column, direction: direction}">
-            <tr class="clickable-row" [routerLink]="['/p', item._id]">
-              <td class="accordion__collapse-item p-0" colspan="6">
-                <div class="accordion__collapse-header">
-                  <span class="accordion__collapse-header--column project-table__name-col">{{item.name || '-'}}</span>
-                  <span class="accordion__collapse-header--column project-table__cl_file-col">
-                    <!-- <a [routerLink]="['/a', item._id]">{{item['proponent'] || '-'}}</a> -->-
-                  </span>
-                  <span class="accordion__collapse-header--column project-table__purpose-col">{{item.type || '-'}}</span>
-                  <span class="accordion__collapse-header--column project-table__region-col">{{item.region || '-'}}</span>
-                  <span class="accordion__collapse-header--column project-table__status-col">{{item.currentPhaseName || '-'}}</span>
-                  <span class="accordion__collapse-header--column project-table__commenting-col">{{item.eacDecision}}</span>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-        </tbody>
-      </table>
+        </div> -->
+          <app-table-template [columns]="projectTableColumns" [data]="projectTableData"
+            (onColumnSort)='setColumnSort($event)' (onPageNumUpdate)='getPaginatedProjects($event, null, null)'>
+          </app-table-template>
+        </section>
+      </main>
     </section>
-  </main>
-</section>
-</div>
+  </div>
 </div>

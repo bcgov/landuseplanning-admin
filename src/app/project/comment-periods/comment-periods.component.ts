@@ -9,6 +9,7 @@ import { TableObject } from 'app/shared/components/table-template/table-object';
 import { CommentPeriodTableRowsComponent } from 'app/project/comment-periods/comment-period-table-rows/comment-period-table-rows.component';
 
 import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 @Component({
   selector: 'app-comment-periods',
@@ -65,7 +66,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     private router: Router,
     private _changeDetectionRef: ChangeDetectorRef,
     private commentPeriodService: CommentPeriodService,
-    private platformLocation: PlatformLocation,
+    private tableTemplateUtils: TableTemplateUtils
   ) { }
 
   ngOnInit() {
@@ -82,7 +83,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
             this.initCPRowData();
             this._changeDetectionRef.detectChanges();
           } else {
-            alert('Uh-oh, couldn\'t load project');
+            alert('Uh-oh, couldn\'t load comment periods');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
             this.loading = false;
@@ -136,12 +137,15 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
 
-    if (sortBy === undefined) {
+    if (sortBy == null) {
       sortBy = this.sortBy;
       sortDirection = this.sortDirection;
     }
 
-    let sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+    let sorting = null;
+    if (sortBy !== '') {
+      sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
+    }
 
     this.commentPeriodService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize, sorting)
       .takeUntil(this.ngUnsubscribe)
@@ -149,23 +153,13 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
         this.currentPage = pageNumber;
         this.sortBy = sortBy;
         this.sortDirection = this.sortDirection;
-        this.updateUrl(sorting);
+        this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
         this.totalListItems = res.totalCount;
         this.commentPeriods = res.data;
         this.loading = false;
         this.initCPRowData();
         this._changeDetectionRef.detectChanges();
       });
-  }
-
-  updateUrl(sorting) {
-    let currentUrl = this.router.url;
-    currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
-    currentUrl = currentUrl.split('?')[0];
-    currentUrl += `?currentPage=${this.currentPage}&pageSize=${this.pageSize}`;
-    currentUrl += `&sortBy=${sorting}`;
-    currentUrl += '&ms=' + new Date().getTime();
-    window.history.replaceState({}, '', currentUrl);
   }
 
   ngOnDestroy() {

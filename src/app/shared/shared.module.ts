@@ -14,6 +14,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 
 import { TableDirective } from './components/table-template/table.directive';
 import { DropdownTemplateComponent } from './components/dropdown-template/dropdown-template.component';
+import { TableTemplateUtils } from './utils/table-template-utils';
 
 @NgModule({
   imports: [
@@ -45,6 +46,9 @@ import { DropdownTemplateComponent } from './components/dropdown-template/dropdo
     FileUploadComponent,
     TableTemplateComponent,
     NgxPaginationModule
+  ],
+  providers: [
+    TableTemplateUtils
   ]
 })
 

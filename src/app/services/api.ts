@@ -105,7 +105,7 @@ export class ApiService {
   //
   // Projects
   //
-  getProjects(): Observable<Project[]> {
+  getProjects(pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
     const fields = [
       'eacDecision',
       'name',
@@ -116,9 +116,14 @@ export class ApiService {
       'currentPhaseName',
       'decisionDate'
     ];
-    // NB: max 1000 records
-    const queryString = `project?pageNum=0&pageSize=1000&fields=${this.buildValues(fields)}`;
-    return this.http.get<Project[]>(`${this.pathAPI}/${queryString}`, {});
+
+    let queryString = `project?`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
