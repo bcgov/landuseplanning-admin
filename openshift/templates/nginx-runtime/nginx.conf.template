@@ -68,13 +68,22 @@ http {
 
     # serve our angular app here
     location / {
-        alias   /tmp/app/dist/;
-        gzip            on;
-        gzip_min_length 1000;
-        gzip_types      *;
-        
-        try_files $uri$args $uri$args/ /admin/index.html;
-    }
+	        root   /tmp/app/dist/dist;
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html;
+            gzip            on;
+            gzip_min_length 1000;
+            gzip_types      *;
+
+            sendfile off;
+            expires -1;
+
+            # propagate SMGOV_* headers
+            add_header  SMGOV_USERGUID $http_smgov_userguid;
+            add_header  SMGOV_USERDISPLAYNAME  $http_smgov_userdisplayname;
+            add_header  SMGOV_USERTYPE  $http_smgov_usertype;
+            add_header  SMGOV_USERIDENTIFIER  $http_smgov_useridentifier;			
+           }
     
     # redirect server error pages to the static page /50x.html
     error_page   500 502 503 504  /50x.html;
