@@ -50,12 +50,18 @@ export class SearchTerms {
   dateStart: NgbDateStruct;
   dateEnd: NgbDateStruct;
   dataset: string;
+  currentPage: number;
+  sortBy: string;
+  sortDirection: number;
 
   constructor(obj?: any) {
     this.keywords  = obj && obj.keywords  || null;
     this.dateStart = obj && obj.dateStart || null;
     this.dateEnd   = obj && obj.dateEnd   || null;
     this.dataset   = obj && obj.dataset   || null;
+    this.currentPage   = obj && obj.currentPage   || null;
+    this.sortBy   = obj && obj.sortBy   || null;
+    this.sortDirection   = obj && obj.sortDirection   || null;
   }
 
   getParams(): Params {
@@ -71,6 +77,15 @@ export class SearchTerms {
     }
     if (this.dateEnd) {
       params['dateend'] = this.getDateParam(this.dateEnd);
+    }
+    if (this.currentPage) {
+      params['currentPage'] = this.currentPage;
+    }
+    if (this.sortBy) {
+      params['sortBy'] = this.sortBy;
+    }
+    if (this.sortDirection) {
+      params['sortDirection'] = this.sortDirection;
     }
 
     return params;

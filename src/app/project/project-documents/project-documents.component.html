@@ -1,0 +1,39 @@
+<div class="search-container">
+  <div class="container-fluid-padding">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Documents</li>
+      </ol>
+    </nav>
+    <p>Search Documents within this project</p>
+    <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
+      <div class="input-group main-search-field">
+        <input class="form-control" type="text" name="keywordInput" id="keywordInput" [(ngModel)]="terms.keywords"
+          [disabled]="searching" autofocus />
+        <div class="input-group-append">
+          <!-- prevent searching if input is empty or we're already searching -->
+          <button class="btn btn-primary" type="submit" [disabled]="searching">
+            <i class="spinner rotating" [hidden]="!searching"></i>
+            <span>{{searching ? 'Searching...' : 'Search'}}</span>
+          </button>
+        </div>
+      </div>
+      <div>
+        <p *ngIf="!loading && totalCount == 0">
+          No result<span *ngIf="count != 1">s</span> found for "{{keywords}}"
+        </p>
+        <p *ngIf="!loading && totalCount > 0">
+          Showing {{totalCount}} result<span *ngIf="totalCount != 1">s</span> for "{{keywords}}"
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<br>
+
+<app-table-template *ngIf="!loading && totalCount != 0"
+[columns]="documentTableColumns"
+[data]="documentTableData"
+(onColumnSort)='setColumnSort($event)'
+(onPageNumUpdate)='getPaginatedDocs($event, null, null)'></app-table-template>

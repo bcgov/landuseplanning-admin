@@ -25,8 +25,10 @@ import { ApiService } from 'app/services/api';
 import { ExcelService } from 'app/services/excel.service';
 import { ProjectService } from 'app/services/project.service';
 import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
+import { DocumentTableRowsComponent } from './project-documents/project-document-table-rows/project-document-table-rows.component';
 import { CommentPeriodTableRowsComponent } from './comment-periods/comment-period-table-rows/comment-period-table-rows.component';
 import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
+import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 
 @NgModule({
   imports: [
@@ -51,12 +53,15 @@ import { CommentPeriodsComponent } from './comment-periods/comment-periods.compo
     CommentPeriodsComponent,
     CommentPeriodTableRowsComponent,
     ValuedComponentsComponent,
-    ValuedComponentTableRowsComponent
+    ValuedComponentTableRowsComponent,
+    ProjectDocumentsComponent,
+    DocumentTableRowsComponent
   ],
   entryComponents: [
     CommentPeriodsComponent,
     CommentPeriodTableRowsComponent,
-    ValuedComponentTableRowsComponent
+    ValuedComponentTableRowsComponent,
+    DocumentTableRowsComponent
   ],
   exports: [
     CommentDetailComponent,

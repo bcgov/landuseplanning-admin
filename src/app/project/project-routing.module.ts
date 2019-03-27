@@ -10,12 +10,14 @@ import { ProjectAddEditComponent } from './project-add-edit/project-add-edit.com
 import { ProjectComponent } from './project.component';
 import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentsComponent } from './review-comments/review-comments.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 
 import { ProjectResolver } from './project-resolver.service';
 import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
+import { DocumentsResolver } from './project-documents/project-document-resolver.services';
 
 const routes: Routes = [
   {
@@ -33,6 +35,13 @@ const routes: Routes = [
       {
         path: 'project-details',
         component: ProjectDetailComponent,
+      },
+      {
+        path: 'project-documents',
+        component: ProjectDocumentsComponent,
+        resolve: {
+          documents: DocumentsResolver
+        }
       },
       {
         path: 'compliance',
@@ -93,7 +102,8 @@ const routes: Routes = [
   providers: [
     ProjectResolver,
     CommentPeriodsResolver,
-    ValuedComponentsResolver
+    ValuedComponentsResolver,
+    DocumentsResolver
   ]
 })
 

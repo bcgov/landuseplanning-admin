@@ -8,6 +8,9 @@ export class Document {
   _comment: string; // objectid -> Comment
   documentFileName: string;
   displayName: string;
+  documentType: string;
+  datePosted: string;
+  documentFileSize: string;
   internalURL: string;
   isDeleted: boolean;
   internalMime: string;
@@ -23,6 +26,9 @@ export class Document {
     this._comment         = obj && obj._comment         || null;
     this.documentFileName = obj && obj.documentFileName || null;
     this.displayName      = obj && obj.displayName      || null;
+    this.documentType      = obj && obj.documentType      || null;
+    this.datePosted      = obj && obj.datePosted      || null;
+    this.documentFileSize      = obj && obj.documentFileSize      || null;
     this.internalURL      = obj && obj.internalURL      || null;
     this.isDeleted        = obj && obj.isDeleted        || null;
     this.internalMime     = obj && obj.internalMime     || null;
