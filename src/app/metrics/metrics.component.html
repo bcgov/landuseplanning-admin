@@ -3,9 +3,28 @@
         <section class="container-fluid-padding">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Metrics</li>
+                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
               </ol>
             </nav>
         </section>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Action</th>
+              <th scope="col">User</th>
+              <th scope="col">meta</th>
+              <th scope="col">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data">
+              <td>{{item.action || 'New Item'}}</td>
+              <td>{{item.performedBy || item.addedBy }}</td>
+              <td>{{item._objectSchema}}</td>
+              <td>{{item.timestamp | date:'full'}}</td>
+            </tr>
+          </tbody>
+        </table>
     </div>
 </div>

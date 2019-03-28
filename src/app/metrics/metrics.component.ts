@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from 'app/services/api';
 
 @Component({
   selector: 'app-metrics',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MetricsComponent implements OnInit {
 
-  constructor() { }
+  public data: any[] = null;
+
+  constructor(private api: ApiService) { }
 
   ngOnInit() {
+    this.api.getMetrics(0, 25, null)
+    .subscribe(res => {
+      this.data = res;
+    });
   }
-
 }

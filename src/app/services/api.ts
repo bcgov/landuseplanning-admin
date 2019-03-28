@@ -637,7 +637,7 @@ export class ApiService {
   // Searching
   //
   searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null): Observable<SearchResults[]> {
-    let queryString = `public/search?dataset=${dataset}`;
+    let queryString = `search?dataset=${dataset}`;
     if (fields && fields.length > 0) {
       fields.map(item => {
         queryString += `&${item.name}=${item.value}`;
@@ -646,6 +646,31 @@ export class ApiService {
     if (keys) {
       queryString += `&keywords=${keys}`;
     }
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    queryString += `&fields=${this.buildValues(fields)}`;
+    console.log('queryString:', queryString);
+    return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  //
+  // Metrics
+  //
+  getMetrics(pageNum: number, pageSize: number, sortBy: string = null): Observable<SearchResults[]> {
+    let queryString = `audit?`;
+    let fields = ['fields',
+                  'performedBy',
+                  'deletedBy',
+                  'updatedBy',
+                  'addedBy',
+                  'meta',
+                  'action',
+                  'objId',
+                  'keywords',
+                  'timestamp',
+                  '_objectSchema'];
+
     if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
