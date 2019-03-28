@@ -49,6 +49,8 @@ fi
 # Set the CI_BUILD to false by default.
 CI_BUILD=${CI_BUILD:-false}
 echo "---> Installing application dependencies"
+
+npm install -g stylelint
   
 if [ "$CI_BUILD" == "true" ]; then
   yarn install  
