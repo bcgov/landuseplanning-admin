@@ -3,9 +3,19 @@
       <li class="breadcrumb-item active" aria-current="page">Valued Components</li>
   </ol>
 
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+
   <app-table-template
+    *ngIf="totalListItems > 0"
     [columns]="valuedComponentTableColumns"
     [data]="valuedComponentTableData"
     (onColumnSort)='setColumnSort($event)'
-    (onPageNumUpdate)='getPaginatedVCs($event, null, null)'></app-table-template>
+    (onPageNumUpdate)='getPaginatedVCs($event, null, null)'>
+  </app-table-template>
+  
+  <div *ngIf="totalListItems == 0">
+    This project has no valued components.
+  </div>
 </div>

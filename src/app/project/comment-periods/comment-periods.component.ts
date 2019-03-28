@@ -76,18 +76,20 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       .subscribe(
         (res: any) => {
           if (res) {
-            this.loading = false;
             this.totalListItems = res.commentPeriods.totalCount;
-            this.commentPeriods = res.commentPeriods.data;
-            this.currentProjectId = this.commentPeriods[0].project;
-            this.initCPRowData();
-            this._changeDetectionRef.detectChanges();
+            if (this.totalListItems > 0) {
+              this.commentPeriods = res.commentPeriods.data;
+              this.currentProjectId = this.commentPeriods[0].project;
+              this.initCPRowData();
+              this.loading = false;
+            }
           } else {
             alert('Uh-oh, couldn\'t load comment periods');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
-            this.loading = false;
           }
+          this.loading = false;
+          this._changeDetectionRef.detectChanges();
         }
       );
   }
@@ -137,6 +139,8 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
 
+    this.loading = true;
+
     if (sortBy == null) {
       sortBy = this.sortBy;
       sortDirection = this.sortDirection;
@@ -156,8 +160,8 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
         this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
         this.totalListItems = res.totalCount;
         this.commentPeriods = res.data;
-        this.loading = false;
         this.initCPRowData();
+        this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
   }

@@ -5,15 +5,24 @@
         <li class="breadcrumb-item"><a routerLink="/administration">Settings</a></li>
         <li class="breadcrumb-item active" aria-current="page">Topics</li>
       </ol>
-      <button type="button" class="btn btn-primary" (click)="addTopic()">Add new Topic</button>
+      <button type="button" class="btn btn-primary mb-3" (click)="addTopic()">Add new Topic</button>
     </nav>
-    &nbsp;
-    <div *ngIf="topicTableData">
+
+    <div class="spinner-container" *ngIf="loading">
+      <div class="spinner-new rotating"></div>
+    </div>
+
+    <div *ngIf="totalListItems > 0">
       <app-table-template
-      [columns]="topicTableColumns"
-      [data]="topicTableData"
-      (onColumnSort)='setColumnSort($event)'
-      (onPageNumUpdate)='getPaginatedTopics($event)'></app-table-template>
+        [columns]="topicTableColumns"
+        [data]="topicTableData"
+        (onColumnSort)='setColumnSort($event)'
+        (onPageNumUpdate)='getPaginatedTopics($event)'>
+      </app-table-template>
+    </div>
+
+    <div *ngIf="totalListItems == 0">
+      There are no topics.
     </div>
   </div>
 </div>
