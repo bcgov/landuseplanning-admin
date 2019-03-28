@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o --base-href /admin/ --deploy-url /admin/",
-    "build": "npm run lint && npm run stylelint && ng build --prod --deploy-url /admin/ --base-href /admin/",
+    "build": "npm run lint && ng build --prod --deploy-url /admin/ --base-href /admin/",
     "postinstall": "ng build --prod --deploy-url /admin/ --base-href /admin/",
     "test": "echo Test suite should be run with `npm run tests` or npm `run tests-ci`",
     "tests": "ng test",
