@@ -25,7 +25,7 @@ import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 export class TopicsComponent implements OnInit, OnDestroy {
   public topics: Array<Topic>;
-  public topicsLoading = true;
+  public loading = true;
 
   public topicTableData: TableObject;
   public topicTableColumns: any[] = [
@@ -59,7 +59,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   public pageNum = 1;
   public pageSize = 10;
   public currentPage = 1;
-  public totalTopics = 0;
+  public totalListItems = 0;
   public sortBy = '';
   public sortDirection = 0;
 
@@ -82,17 +82,18 @@ export class TopicsComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
           if (res) {
-            this.topicsLoading = false;
-            this.totalTopics = res.totalCount;
-            this.topics = res.data;
-            this.setTopicRowData();
-            this._changeDetectionRef.detectChanges();
+            this.totalListItems = res.totalCount;
+            if (this.totalListItems > 0) {
+              this.topics = res.data;
+              this.setTopicRowData();
+            }
           } else {
             alert('Uh-oh, couldn\'t load topics');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
-            this.topicsLoading = false;
           }
+          this.loading = false;
+          this._changeDetectionRef.detectChanges();
         });
     });
   }
@@ -116,7 +117,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
       {
         pageSize: this.pageSize,
         currentPage: this.currentPage,
-        totalListItems: this.totalTopics,
+        totalListItems: this.totalListItems,
         sortBy: this.sortBy,
         sortDirection: this.sortDirection
       }
@@ -132,6 +133,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   getPaginatedTopics(pageNumber, sortBy, sortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
+    this.loading = true;
 
     if (sortBy == null) {
       sortBy = this.sortBy;
@@ -145,7 +147,6 @@ export class TopicsComponent implements OnInit, OnDestroy {
       sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
     }
 
-    this.topicsLoading = true;
     this.topicService.getAllTopics(pageNumber, this.pageSize, sorting)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
@@ -153,10 +154,10 @@ export class TopicsComponent implements OnInit, OnDestroy {
         this.sortBy = sortBy;
         this.sortDirection = this.sortDirection;
         this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
-        this.totalTopics = res.totalCount;
+        this.totalListItems = res.totalCount;
         this.topics = res.data;
-        this.topicsLoading = false;
         this.setTopicRowData();
+        this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
   }

@@ -17,7 +17,7 @@ import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 export class ValuedComponentsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public valuedComponents: ValuedComponent[] = null;
-  public vcsLoading = true;
+  public loading = true;
 
   public valuedComponentTableData: TableObject;
   public valuedComponentTableColumns: any[] = [
@@ -48,7 +48,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   public sortDirection = 0;
   public pageSize = 10;
   public currentPage = 1;
-  public totalVcs = 0;
+  public totalListItems = 0;
 
   private currentProjectId = '';
 
@@ -66,18 +66,19 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res) {
-          this.vcsLoading = false;
-          this.totalVcs = res.valuedComponents.totalCount;
-          this.valuedComponents = res.valuedComponents.data;
-          this.currentProjectId = res.valuedComponents.projectId;
-          this.setVCRowData();
-          this._changeDetectionRef.detectChanges();
+          this.totalListItems = res.valuedComponents.totalCount;
+          if (this.totalListItems > 0) {
+            this.valuedComponents = res.valuedComponents.data;
+            this.currentProjectId = res.valuedComponents.projectId;
+            this.setVCRowData();
+          }
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
-          this.vcsLoading = false;
         }
+        this.loading = false;
+        this._changeDetectionRef.detectChanges();
       }
       );
   }
@@ -114,10 +115,10 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       {
         pageSize: this.pageSize,
         currentPage: this.currentPage,
-        totalListItems: this.totalVcs,
+        totalListItems: this.totalListItems,
         sortBy: this.sortBy,
         sortDirection: this.sortDirection
-        }
+      }
     );
   }
 
@@ -130,6 +131,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   getPaginatedVCs(pageNumber, sortBy, sortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
+    this.loading = true;
 
     if (sortBy == null) {
       sortBy = this.sortBy;
@@ -141,7 +143,6 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
     }
 
-    this.vcsLoading = true;
     this.valuedComponentService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize, sorting)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
@@ -149,10 +150,10 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
         this.sortBy = sortBy;
         this.sortDirection = this.sortDirection;
         this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
-        this.totalVcs = res.totalCount;
+        this.totalListItems = res.totalCount;
         this.valuedComponents = res.data;
-        this.vcsLoading = false;
         this.setVCRowData();
+        this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
   }

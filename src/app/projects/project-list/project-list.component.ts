@@ -61,7 +61,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   public pageNum = 1;
   public pageSize = 15;
   public currentPage = 1;
-  public totalProjects = 0;
+  public totalListItems = 0;
   public sortBy = '';
   public sortDirection = 0;
 
@@ -84,17 +84,18 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
           if (res) {
-            this.loading = false;
-            this.totalProjects = res.totalCount;
-            this.projects = res.data;
-            this.setProjectRowData();
-            this._changeDetectionRef.detectChanges();
+            this.totalListItems = res.totalCount;
+            if (this.totalListItems > 0) {
+              this.projects = res.data;
+              this.setProjectRowData();
+            }
           } else {
             alert('Uh-oh, couldn\'t load topics');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
-            this.loading = false;
           }
+          this.loading = false;
+          this._changeDetectionRef.detectChanges();
         });
     });
   }
@@ -120,7 +121,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       {
         pageSize: this.pageSize,
         currentPage: this.currentPage,
-        totalListItems: this.totalProjects,
+        totalListItems: this.totalListItems,
         sortBy: this.sortBy,
         sortDirection: this.sortDirection
       }
@@ -136,6 +137,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   getPaginatedProjects(pageNumber, sortBy, sortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
+
+    this.loading = true;
 
     if (sortBy == null) {
       sortBy = this.sortBy;
@@ -155,9 +158,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this.sortBy = sortBy;
         this.sortDirection = this.sortDirection;
         this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
-        this.totalProjects = res.totalCount;
+        this.totalListItems = res.totalCount;
         this.projects = res.data;
         this.setProjectRowData();
+        this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
   }
