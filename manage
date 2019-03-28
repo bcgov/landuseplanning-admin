@@ -124,6 +124,7 @@ build-web() {
     -e "NG_BASE_HREF=${WEB_BASE_HREF}" \
     -e "NG_DEPLOY_URL=${WEB_DEPLOY_URL}" \
     --volume "${COMPOSE_PROJECT_NAME}_gnd-npm-cache:/opt/app-root/src/.npm" \
+	--volume "${COMPOSE_PROJECT_NAME}_node_modules:/opt/app-root/src/.npm-global/lib/node_modules" \
 	--volume "${COMPOSE_PROJECT_NAME}_tmp:/tmp" \
 	--runtime-image nginx-runtime \
     -a /opt/app-root/src/dist:app/dist \
