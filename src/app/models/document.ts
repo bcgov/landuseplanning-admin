@@ -15,15 +15,18 @@ export class Document {
   isDeleted: boolean;
   internalMime: string;
   tags: Array<string>;
-
+  checkbox: boolean;
+  project: string;
   isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
     this._id              = obj && obj._id              || null;
+    this.project              = obj && obj.project              || null;
     this._addedBy         = obj && obj._addedBy         || null;
     this._application     = obj && obj._application     || null;
     this._decision        = obj && obj._decision        || null;
     this._comment         = obj && obj._comment         || null;
+    this.checkbox         = obj && obj.checkbox         || null;
     this.documentFileName = obj && obj.documentFileName || null;
     this.displayName      = obj && obj.displayName      || null;
     this.documentType      = obj && obj.documentType      || null;

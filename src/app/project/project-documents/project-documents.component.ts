@@ -4,10 +4,12 @@ import { Subject } from 'rxjs';
 import { Document } from 'app/models/document';
 import { DocumentService } from 'app/services/document.service';
 import { SearchService } from 'app/services/search.service';
+import { DialogService } from 'ng2-bootstrap-modal';
 import { PlatformLocation } from '@angular/common';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { DocumentTableRowsComponent } from './project-document-table-rows/project-document-table-rows.component';
 import { SearchTerms, SearchResults } from 'app/models/search';
+import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 @Component({
   selector: 'app-project-documents',
@@ -23,9 +25,14 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public documentTableData: TableObject;
   public documentTableColumns: any[] = [
     {
+      name: '',
+      value: 'check',
+      width: 'col-sm'
+    },
+    {
       name: 'Name',
       value: 'displayName',
-      width: 'col-8'
+      width: 'col-7'
     },
     {
       name: 'Date',
@@ -50,6 +57,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public pageSize = 10;
   public currentPage = 1;
   public totalCount = 0;
+  public selectedCount = 0;
   public keywords = '';
 
   private currentProjectId = '';
@@ -57,6 +65,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private platformLocation: PlatformLocation,
+    private dialogService: DialogService,
     private router: Router,
     private documentService: DocumentService,
     private searchService: SearchService,
@@ -102,6 +111,59 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     });
   }
 
+  public checkChange(event) {
+  }
+
+  public selectAction(action) {
+    // select all documents
+    switch (action) {
+      case 'selectAll':
+        this.documentTableData.data.map((item) => {
+          item.checkbox = true;
+        });
+        this._changeDetectionRef.detectChanges();
+      break;
+    case 'edit':
+      break;
+    case 'delete':
+        this.deleteDocument();
+      break;
+    case 'download':
+      break;
+    case 'copyLink':
+      break;
+    }
+  }
+
+  deleteDocument() {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Delete Document',
+        message: 'Click <strong>OK</strong> to delete this Document or <strong>Cancel</strong> to return to the list.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            // Delete the Document(s)
+            let itemsToDelete = [];
+            this.documentTableData.data.map((item) => {
+              if (item.checkbox === true) {
+                itemsToDelete.push( { promise: this.documentService.delete(item).toPromise(), item: item });
+              }
+            });
+
+            return Promise.all(itemsToDelete).then(() => {
+              // Reload main page.
+              this.onSubmit();
+            });
+          }
+        }
+      );
+  }
+
   public onSubmit() {
     // dismiss any open snackbar
     // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
@@ -137,7 +199,9 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             displayName: document.displayName,
             datePosted: document.datePosted,
             documentType: document.documentType,
-            documentFileSize: document.documentFileSize
+            documentFileSize: document.documentFileSize,
+            _id: document._id,
+            project: document.project
           }
         );
       });
@@ -159,6 +223,22 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.sortBy = column;
     this.sortDirection = this.sortDirection > 0 ? -1 : 1;
     this.getPaginatedDocs(this.currentPage, this.sortBy, this.sortDirection);
+  }
+
+  isEnabled(button) {
+    switch (button) {
+      case 'copyLink':
+      case 'download':
+        return this.selectedCount === 1;
+        break;
+      default:
+        return this.selectedCount > 0;
+      break;
+    }
+  }
+
+  updateSelectedRow(count) {
+    this.selectedCount = count;
   }
 
   getPaginatedDocs(pageNumber, sortBy, sortDirection) {

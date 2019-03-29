@@ -25,7 +25,7 @@ export class TopicTableRowsComponent implements OnInit, TableComponent {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private changeDetoctorRef: ChangeDetectorRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private dialogService: DialogService,
     private modalService: NgbModal,
     private topicService: TopicService,
@@ -53,7 +53,7 @@ export class TopicTableRowsComponent implements OnInit, TableComponent {
               .subscribe(
                 () => {
                   this.topics.splice(this.topics.indexOf(topic), 1);
-                  this.changeDetoctorRef.detectChanges();
+                  this.changeDetectorRef.detectChanges();
                 },
                 error => {
                   console.log('error =', error);
@@ -82,7 +82,7 @@ export class TopicTableRowsComponent implements OnInit, TableComponent {
             newTopicArray.push(x);
           }
           this.topics = newTopicArray;
-          this.changeDetoctorRef.detectChanges();
+          this.changeDetectorRef.detectChanges();
         });
       }
     });
