@@ -15,6 +15,7 @@ export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(TableDirective) tableHost: TableDirective;
 
   @Output() onPageNumUpdate: EventEmitter<any> = new EventEmitter();
+  @Output() onSelectedRow: EventEmitter<any> = new EventEmitter();
   @Output() onColumnSort: EventEmitter<any> = new EventEmitter();
   public column: string = null;
   public direction = 0;
@@ -55,6 +56,9 @@ export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
 
     let componentRef = viewContainerRef.createComponent(componentFactory);
     (<TableComponent>componentRef.instance).data = this.data;
+    componentRef.instance.selectedCount.subscribe(msg => {
+      this.onSelectedRow.emit(msg);
+    });
   }
 
   updatePageNumber(pageNum) {
