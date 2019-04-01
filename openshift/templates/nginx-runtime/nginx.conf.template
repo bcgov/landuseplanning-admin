@@ -3,7 +3,6 @@ worker_processes  auto;
 error_log  /var/log/nginx/error.log;
 pid        /var/run/nginx.pid;
 
-
 events {
     worker_connections  4096;
 }
@@ -17,17 +16,17 @@ http {
     # ip filtering
     #%IpFilterRules%
 
-    geo $loggable {
-        default 1;
-        %RealIpFrom% 0;
-    }
+#    geo $loggable {
+#        default 1;
+#        %RealIpFrom% 0;
+#    }
 
     # Use a w3c standard log format
     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
-
-    access_log  /var/log/nginx/access.log  main if=$loggable;
+	access_log  /var/log/nginx/access.log  main;
+#    access_log  /var/log/nginx/access.log  main if=$loggable;
 
     sendfile        on;
     #tcp_nopush     on;
@@ -37,10 +36,10 @@ http {
     #gzip  on;
 
     #real_ip module
-    set_real_ip_from %RealIpFrom%;
+ #   set_real_ip_from %RealIpFrom%;
     #%AdditionalRealIpFromRules%
-    real_ip_recursive on;
-    real_ip_header    X-Forwarded-For;
+ #   real_ip_recursive on;
+ #   real_ip_header    X-Forwarded-For;
 
     #throttle zones
     limit_req_zone $binary_remote_addr zone=bra1:10m rate=1r/s;
@@ -68,7 +67,8 @@ http {
 
     # serve our angular app here
     location / {
-	        root   /tmp/app/dist/dist;
+	# important - the root folder must be where your index.htm file is.
+	        root   /tmp/app/dist;
             index  index.html index.htm;
             try_files $uri $uri/ /index.html;
             gzip            on;
@@ -84,12 +84,36 @@ http {
             add_header  SMGOV_USERTYPE  $http_smgov_usertype;
             add_header  SMGOV_USERIDENTIFIER  $http_smgov_useridentifier;			
            }
+	
+	location /api/ {
+	
+        # proxy all traffic to this URL, 
+        # note the trailing slash strips out the /proxy path on 
+        # the request to the upstream server
+        proxy_pass %API_URL%;		
+                		
+    }
     
     # redirect server error pages to the static page /50x.html
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
         root   /usr/share/nginx/html;
     }
+	
+	# For status of ngnix service, OpenShift is configured to call this
+	location /nginx_status {
+		# Enable Nginx stats
+		stub_status on;
+
+		# Only allow access from localhost
+		allow all;
+
+		# Other request should be denied
+		# deny all;
+
+		# No need to log this request, its just noise
+		access_log off;
+	}
 
 }
 
