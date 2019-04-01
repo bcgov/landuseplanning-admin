@@ -67,7 +67,8 @@ http {
 
     # serve our angular app here
     location / {
-	        root   /tmp/app/dist/dist;
+	# important - the root folder must be where your index.htm file is.
+	        root   /tmp/app/dist;
             index  index.html index.htm;
             try_files $uri $uri/ /index.html;
             gzip            on;
