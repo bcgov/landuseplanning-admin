@@ -56,9 +56,13 @@ export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
 
     let componentRef = viewContainerRef.createComponent(componentFactory);
     (<TableComponent>componentRef.instance).data = this.data;
-    componentRef.instance.selectedCount.subscribe(msg => {
-      this.onSelectedRow.emit(msg);
-    });
+
+    // Don't subscribe if it doesn't exist.
+    if (componentRef.instance.selectedCount) {
+      componentRef.instance.selectedCount.subscribe(msg => {
+        this.onSelectedRow.emit(msg);
+      });
+    }
   }
 
   updatePageNumber(pageNum) {
