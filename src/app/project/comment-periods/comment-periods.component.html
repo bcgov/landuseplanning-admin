@@ -1,7 +1,12 @@
 <div class="search-container">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item active" aria-current="page">Comment Periods</li>
-  </ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item" aria-current="page">
+            <a [routerLink]="['/p', projectId]">Project Details</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Comment Periods
+        </li>
+    </ol>
 
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>

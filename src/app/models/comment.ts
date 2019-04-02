@@ -87,52 +87,42 @@ class Review {
 
 export class Comment {
   _id: string;
-  _addedBy: string;
-  _commentPeriod: string; // object id -> CommentPeriod
-  commentNumber: number;
-  comment: string = null;
-  commentAuthor: CommentAuthor;
-  review: Review;
+  author: string;
+  comment: string;
+  commentId: number;
   dateAdded: Date;
-  commentStatus: string;
-  tags: Array<string>;
+  dateUpdated: Date;
+  isAnonymous: boolean;
+  location: string;
+  eaoStatus: string;
+  period: string;
 
-  documents: Array<Document> = [];
-
-  isPublished = false; // depends on tags; see below
+  // Permissions
+  read: Array<String> = [];
+  write: Array<String> = [];
+  delete: Array<String> = [];
 
   constructor(obj?: any) {
-    this._id            = obj && obj._id            || null;
-    this._addedBy       = obj && obj._addedBy       || null;
-    this._commentPeriod = obj && obj._commentPeriod || null;
-    this.commentNumber  = obj && obj.commentNumber  || 0;
-    this.dateAdded      = obj && obj.dateAdded      || null;
-    this.commentStatus  = obj && obj.commentStatus  || null;
+    this._id            = obj && obj._id         || null;
+    this.author         = obj && obj.author      || null;
+    this.commentId      = obj && obj.commentId   || null;
+    this.dateAdded      = obj && obj.dateAdded   || null;
+    this.dateUpdated    = obj && obj.dateUpdated || null;
+    this.delete         = obj && obj.delete      || null;
+    this.isAnonymous    = obj && obj.isAnonymous || null;
+    this.location       = obj && obj.location    || null;
+    this.eaoStatus       = obj && obj.eaoStatus    || null;
+    this.period         = obj && obj.period      || null;
+    this.read           = obj && obj.read        || null;
+    this.write          = obj && obj.write       || null;
 
-    this.commentAuthor = new CommentAuthor(obj && obj.commentAuthor || null);
-
-    this.review = new Review(obj && obj.review || null);
+    if (obj && obj.dateAdded) {
+      this.dateAdded = new Date(obj.dateAdded);
+    }
 
     // replace \\n (JSON format) with newlines
     if (obj && obj.comment) {
       this.comment = obj.comment.replace(/\\n/g, '\n');
-    }
-
-    // copy documents
-    if (obj && obj.documents) {
-      for (const doc of obj.documents) {
-        this.documents.push(doc);
-      }
-    }
-
-    // wrap isPublished around the tags we receive for this object
-    if (obj && obj.tags) {
-      for (const tag of obj.tags) {
-        if (_.includes(tag, 'public')) {
-          this.isPublished = true;
-          break;
-        }
-      }
     }
   }
 }
