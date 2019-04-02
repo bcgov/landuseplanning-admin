@@ -27,7 +27,7 @@ export class CommentPeriod {
   isVetted: String;
   milestone: String;
   openCommentPeriod: String;
-  openHouses: String;
+  openHouses: Array<Object>;
   periodType: String;
   phase: String;
   phaseName: String;
@@ -67,9 +67,7 @@ export class CommentPeriod {
     this.classifiedPercent    = obj && obj.classifiedPercent    || null;
     this.commenterRoles       = obj && obj.commenterRoles       || null;
     this.dateAdded            = obj && obj.dateAdded            || null;
-    // this.dateCompleted        = obj && obj.dateCompleted        || null;
     this.dateCompletedEst     = obj && obj.dateCompletedEst     || null;
-    // this.dateStarted          = obj && obj.dateStarted          || null;
     this.dateStartedEst       = obj && obj.dateStartedEst       || null;
     this.dateUpdated          = obj && obj.dateUpdated          || null;
     this.downloadRoles        = obj && obj.downloadRoles        || null;
@@ -116,7 +114,7 @@ export class CommentPeriod {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const days = moment(obj.dateCompleted).diff(moment(today), 'days') + 1;
-      this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
+      this.daysRemaining = (days < 1 ? 0 : days) + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
       if (days > 0) {
         this.commentPeriodStatus = 'Opened';
       } else {

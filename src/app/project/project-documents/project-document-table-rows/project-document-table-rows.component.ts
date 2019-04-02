@@ -39,7 +39,6 @@ export class DocumentTableRowsComponent implements OnInit, TableComponent {
   }
 
   goToItem(item) {
-    // alert(`p/${item.project}/project-documents/${item._id}`)
     this.router.navigate([`p/${item.project}/project-documents/${item._id}`]);
   }
 }

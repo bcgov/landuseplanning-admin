@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PlatformLocation } from '@angular/common';
 import { Subject } from 'rxjs';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
@@ -21,18 +20,17 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   private currentProjectId;
 
-
   public commentPeriods: CommentPeriod[] = null;
   public commentPeriodTableColumns: any[] = [
     {
       name: 'Status',
       value: 'commentPeriodStatus',
-      width: 'col-3'
+      width: 'col-1'
     },
     {
       name: 'Start Date',
       value: 'dateStarted',
-      width: 'col-3'
+      width: 'col-2'
     },
     {
       name: 'End Date',
@@ -40,14 +38,19 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       width: 'col-2'
     },
     {
+      name: 'Days Remaining',
+      value: 'daysRemaining',
+      width: 'col-2'
+    },
+    {
       name: 'Published',
       value: 'isPublished',
-      width: 'col-2'
+      width: 'col-1'
     },
     {
       name: 'Comment Data',
       value: 'commentData',
-      width: 'col-2'
+      width: 'col-4'
     }
   ];
   public commentPeriodTableData: TableObject;
@@ -59,7 +62,6 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   public pageSize = 10;
   public currentPage = 1;
   public totalListItems = 0;
-
 
   constructor(
     private route: ActivatedRoute,
@@ -81,9 +83,9 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
               this.commentPeriods = res.commentPeriods.data;
               this.currentProjectId = this.commentPeriods[0].project;
               this.initCPRowData();
-              this.loading = false;
             }
           } else {
+            console.log(res);
             alert('Uh-oh, couldn\'t load comment periods');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
@@ -116,9 +118,12 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
           commentPeriodStatus: commentPeriod.commentPeriodStatus,
           dateStarted: commentPeriod.dateStarted,
           dateCompleted: commentPeriod.dateCompleted,
+          daysRemaining: commentPeriod.daysRemaining,
           read: isPublished,
           // TODO: Figure out pending, deferred, published, rejected
           // commmentData:
+          _id: commentPeriod._id,
+          project: commentPeriod.project
         }
       );
     });

@@ -15,7 +15,6 @@ import { ProjectsModule } from 'app/projects/projects.module';
 import { SharedModule } from './shared/shared.module';
 
 // components
-// import { AddEditUserComponent } from 'app/administration/users/add-edit-user/add-edit-user.component';
 import { AdministrationComponent } from 'app/administration/administration.component';
 import { AppComponent } from 'app/app.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
@@ -61,7 +60,6 @@ export function kcFactory(keycloakService: KeycloakService) {
 
 @NgModule({
   declarations: [
-    // AddEditUserComponent,
     AdministrationComponent,
     AppComponent,
     ConfirmComponent,
@@ -124,7 +122,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     ValuedComponentService
   ],
   entryComponents: [
-    // AddEditUserComponent,
     ConfirmComponent,
     DayCalculatorModalComponent,
     AddEditTopicComponent,

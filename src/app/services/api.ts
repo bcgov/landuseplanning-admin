@@ -320,6 +320,7 @@ export class ApiService {
     if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
     if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
     if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `count=true&`;
     queryString += `fields=${this.buildValues(fields)}`;
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
@@ -328,10 +329,46 @@ export class ApiService {
   // NB: returns array with 1 element
   getPeriod(id: string): Observable<CommentPeriod[]> {
     const fields = [
-      '_addedBy',
-      '_project',
-      'startDate',
-      'endDate'
+      '_id',
+      '__v',
+      '_schemaName',
+      'addedBy',
+      'additionalText',
+      'ceaaAdditionalText',
+      'ceaaInformationLabel',
+      'ceaaRelatedDocuments',
+      'classificationRoles',
+      'classifiedPercent',
+      'commenterRoles',
+      'dateAdded',
+      'dateCompleted',
+      'dateCompletedEst',
+      'dateStarted',
+      'dateStartedEst',
+      'dateUpdated',
+      'downloadRoles',
+      'informationLabel',
+      'instructions',
+      'isClassified',
+      'isPublished',
+      'isResolved',
+      'isVetted',
+      'milestone',
+      'openCommentPeriod',
+      'openHouses',
+      'periodType',
+      'phase',
+      'phaseName',
+      'project',
+      'publishedPercent',
+      'rangeOption',
+      'rangeType',
+      'relatedDocuments',
+      'resolvedPercent',
+      'updatedBy',
+      'userCan',
+      'vettedPercent',
+      'vettingRoles'
     ];
     const queryString = `commentperiod/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});

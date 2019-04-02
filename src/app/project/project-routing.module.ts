@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 
+import { CommentPeriodComponent } from './comment-period/comment-period.component';
 import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
 import { CommentPeriodsResolver } from './comment-periods/comment-periods-resolver.services';
 import { ComplianceComponent } from './compliance/compliance.component';
@@ -18,6 +19,7 @@ import { ValuedComponentsComponent } from './valued-components/valued-components
 import { ProjectResolver } from './project-resolver.service';
 import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
 import { DocumentsResolver } from './project-documents/project-document-resolver.services';
+import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 
 const routes: Routes = [
   {
@@ -63,6 +65,13 @@ const routes: Routes = [
         component: ProjectContactsComponent,
       },
       {
+        path: 'cp/:commentPeriodId',
+        component: CommentPeriodComponent,
+        resolve: {
+          commentPeriod: CommentPeriodResolver
+        }
+      },
+      {
         path: 'comment-periods',
         component: CommentPeriodsComponent,
         resolve: {
@@ -102,6 +111,7 @@ const routes: Routes = [
   providers: [
     ProjectResolver,
     CommentPeriodsResolver,
+    CommentPeriodResolver,
     ValuedComponentsResolver,
     DocumentsResolver
   ]

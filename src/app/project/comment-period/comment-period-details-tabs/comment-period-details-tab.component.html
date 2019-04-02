@@ -1,0 +1,137 @@
+<section id="comment-period-details-container">
+    <div class="row">
+        <div class="col-12 header-underline">
+            <h3>
+                <strong>
+                    COMMMENT PERIOD
+                </strong>
+            </h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            <h6>
+                <strong>
+                    DATE RANGE:&nbsp;
+                </strong>
+                {{commentPeriod.dateStarted | date: 'LLLL'}} -
+                {{commentPeriod.dateCompleted | date}}
+                ({{commentPeriod.daysRemaining}})
+            </h6>
+        </div>
+        <div class="col-2">
+            <h6>
+                <strong>
+                    CALCULATED AS:&nbsp;
+                </strong>
+            </h6>
+        </div>
+        <div class="col-6">
+            <h6>
+                <strong>
+                    STATUS:&nbsp;
+                </strong>
+                <i class="material-icons align-middle">
+                    question_answer
+                </i>
+                Commenting {{commentPeriod.commentPeriodStatus}}
+            </h6>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-6">
+            <h6>
+                <strong>
+                    DESCRIPTION
+                </strong>
+            </h6>
+            <p>{{commentPeriod.instructions}}</p>
+            <p>{{commentPeriod.additionalText}}</p>
+            <p>{{commentPeriod.informationLabel}}</p>
+        </div>
+        <div class="col-6">
+            <h6>
+                <strong>
+                    MILESTONE(S):
+                </strong>
+            </h6>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 header-underline">
+            <h3>
+                <strong>
+                    COMMENTS RECEIVED
+                </strong>
+            </h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <h6>
+                <strong>
+                    TOTAL:&nbsp;
+                </strong>
+            </h6>
+        </div>
+        <div class="col-6">
+            <h6>
+                <strong>
+                    VALUED COMPONENTS WITH COMMENT COUNTS
+                </strong>
+            </h6>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div>
+                <app-comment-stats></app-comment-stats>
+            </div>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-12 header-underline">
+            <h3>
+                <strong>
+                    OPEN HOUSE
+                </strong>
+            </h3>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="commentPeriod.openHouses.length !== 0">
+        <div class="col-12">
+            <ul class="list-group">
+                <li class="list-group-item" *ngFor="let openHouse of commentPeriod.openHouses">
+                    <h6>
+                        <strong>
+                            DATE:&nbsp;
+                        </strong>
+                        {{openHouse.eventDate | date}}
+                    </h6>
+                    <h6>
+                        <strong>
+                            DESCRIPTION
+                        </strong>
+                    </h6>
+                    <p>{{openHouse.description}}</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div *ngIf="commentPeriod.openHouses.length === 0">
+        There are no open houses associated with this comment period.
+    </div>
+</section>
