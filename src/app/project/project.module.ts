@@ -19,6 +19,8 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentsComponent } from './review-comments/review-comments.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
+import { CommentPeriodDetailsTabComponent } from './comment-period/comment-period-details-tabs/comment-period-details-tab.component';
+import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
 
 // services
 import { ApiService } from 'app/services/api';
@@ -29,6 +31,8 @@ import { DocumentTableRowsComponent } from './project-documents/project-document
 import { CommentPeriodTableRowsComponent } from './comment-periods/comment-period-table-rows/comment-period-table-rows.component';
 import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
+import { CommentPeriodComponent } from './comment-period/comment-period.component';
+import { MatTabsModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -36,12 +40,15 @@ import { ProjectDocumentsComponent } from './project-documents/project-documents
     FormsModule,
     NgbModule.forRoot(),
     NgxPaginationModule,
+    MatTabsModule,
     ProjectRoutingModule,
     SharedModule
   ],
   declarations: [
+    CommentPeriodComponent,
     CommentDetailComponent,
     ComplianceComponent,
+    DocumentTableRowsComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
     ProjectAddEditComponent,
@@ -55,9 +62,11 @@ import { ProjectDocumentsComponent } from './project-documents/project-documents
     ValuedComponentsComponent,
     ValuedComponentTableRowsComponent,
     ProjectDocumentsComponent,
-    DocumentTableRowsComponent
+    CommentPeriodDetailsTabComponent,
+    ReviewCommentsTabComponent
   ],
   entryComponents: [
+    CommentPeriodComponent,
     CommentPeriodsComponent,
     CommentPeriodTableRowsComponent,
     ValuedComponentTableRowsComponent,

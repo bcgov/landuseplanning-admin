@@ -1,8 +1,12 @@
 <tr class="d-flex"
     *ngFor="let commentPeriod of commentPeriods | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }">
-    <td scope="row" class="col-3">{{commentPeriod.commentPeriodStatus}}</td>
-    <td scope="row" class="col-3">{{commentPeriod.dateStarted | date:'longDate'}}</td>
-    <td scope="row" class="col-2">{{commentPeriod.dateCompleted | date:'longDate'}}</td>
-    <td scope="row" class="col-2">{{commentPeriod.read}}</td>
-    <td scope="row" class="col-2">{{commentPeriod.commentData}}</td>
+    <td scope="row" class="col-1" (click)="goToItem(commentPeriod)">{{commentPeriod.commentPeriodStatus}}</td>
+    <td scope="row" class="col-2" (click)="goToItem(commentPeriod)">{{commentPeriod.dateStarted | date:'longDate'}}</td>
+    <td scope="row" class="col-2" (click)="goToItem(commentPeriod)">{{commentPeriod.dateCompleted | date:'longDate'}}
+    </td>
+    <td scope="row" class="col-2" (click)="goToItem(commentPeriod)">{{commentPeriod.daysRemaining}}</td>
+    <td scope="row" class="col-1 text-center badge" (click)="goToItem(commentPeriod)">{{commentPeriod.read}}</td>
+    <td scope="row" class="col-4" (click)="goToItem(commentPeriod)">
+        <app-comment-stats></app-comment-stats>
+    </td>
 </tr>
