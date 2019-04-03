@@ -8,7 +8,6 @@ import { ProjectRoutingModule } from './project-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 
 // components
-import { CommentDetailComponent } from './review-comments/comment-detail/comment-detail.component';
 import { ComplianceComponent } from './compliance/compliance.component';
 import { IndigenousNationsComponent } from './indigenous-nations/indigenous-nations.component';
 import { MilestonesComponent } from './milestones/milestones.component';
@@ -17,7 +16,6 @@ import { ProjectAsideComponent } from './project-aside/project-aside.component';
 import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
-import { ReviewCommentsComponent } from './review-comments/review-comments.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 import { CommentPeriodDetailsTabComponent } from './comment-period/comment-period-details-tabs/comment-period-details-tab.component';
 import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
@@ -33,6 +31,7 @@ import { CommentPeriodsComponent } from './comment-periods/comment-periods.compo
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { CommentPeriodComponent } from './comment-period/comment-period.component';
 import { MatTabsModule } from '@angular/material';
+import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 
 @NgModule({
   imports: [
@@ -46,7 +45,6 @@ import { MatTabsModule } from '@angular/material';
   ],
   declarations: [
     CommentPeriodComponent,
-    CommentDetailComponent,
     ComplianceComponent,
     DocumentTableRowsComponent,
     IndigenousNationsComponent,
@@ -56,24 +54,24 @@ import { MatTabsModule } from '@angular/material';
     ProjectContactsComponent,
     ProjectDetailComponent,
     ProjectUpdatesComponent,
-    ReviewCommentsComponent,
     CommentPeriodsComponent,
     CommentPeriodTableRowsComponent,
     ValuedComponentsComponent,
     ValuedComponentTableRowsComponent,
     ProjectDocumentsComponent,
     CommentPeriodDetailsTabComponent,
-    ReviewCommentsTabComponent
+    ReviewCommentsTabComponent,
+    ReviewCommentsTabTableRowsComponent
   ],
   entryComponents: [
     CommentPeriodComponent,
     CommentPeriodsComponent,
     CommentPeriodTableRowsComponent,
     ValuedComponentTableRowsComponent,
-    DocumentTableRowsComponent
+    DocumentTableRowsComponent,
+    ReviewCommentsTabTableRowsComponent
   ],
   exports: [
-    CommentDetailComponent,
     ComplianceComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
@@ -82,7 +80,6 @@ import { MatTabsModule } from '@angular/material';
     ProjectContactsComponent,
     ProjectDetailComponent,
     ProjectUpdatesComponent,
-    ReviewCommentsComponent,
     ValuedComponentsComponent
   ],
   providers: [

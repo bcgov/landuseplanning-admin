@@ -1,0 +1,9 @@
+<tr *ngFor="let comment of comments | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
+  class="clickable-row d-flex">
+    <td (click)="goToItem(comment)" scope="row" class="col-3">{{comment.author}}</td>
+    <td (click)="goToItem(comment)" scope="row" class="col-3">{{comment.dateAdded | date:'longDate'}}</td>
+    <td (click)="goToItem(comment)" scope="row" class="col-1">Attachments</td>
+    <td (click)="goToItem(comment)" scope="row" class="col-1">Response</td>
+    <td (click)="goToItem(comment)" scope="row" class="col-2">{{comment.location}}</td>
+    <td (click)="goToItem(comment)" scope="row" class="col-2">{{comment.eaoStatus}}</td>
+</tr>

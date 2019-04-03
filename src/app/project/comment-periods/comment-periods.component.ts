@@ -21,6 +21,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   private currentProjectId;
 
+  public projectId: string;
   public commentPeriods: CommentPeriod[] = null;
   public commentPeriodTableColumns: any[] = [
     {
@@ -68,6 +69,10 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.route.parent.params.subscribe(params => {
+      this.projectId = params.projId;
+    });
+
     this.route.params.subscribe(params => {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
     });

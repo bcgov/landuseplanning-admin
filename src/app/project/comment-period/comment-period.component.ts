@@ -12,6 +12,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CommentPeriodComponent implements OnInit {
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+
+  public projectId: string;
   commentPeriod: CommentPeriod;
   loading: Boolean = true;
 
@@ -21,6 +23,10 @@ export class CommentPeriodComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.route.parent.params.subscribe(params => {
+      this.projectId = params.projId;
+    });
+
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
