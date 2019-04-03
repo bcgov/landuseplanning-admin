@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ValuedComponent } from 'app/models/valuedComponent';
 import { ValuedComponentService } from 'app/services/valued-component.service';
-import { PlatformLocation } from '@angular/common';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { ValuedComponentTableRowsComponent } from './valued-component-table-rows/valued-component-table-rows.component';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 
 @Component({
   selector: 'app-valued-components',
@@ -43,12 +43,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     }
   ];
 
-  public pageNum = 0;
-  public sortBy = '';
-  public sortDirection = 0;
-  public pageSize = 10;
-  public currentPage = 1;
-  public totalListItems = 0;
+  public tableParams: TableParamsObject = new TableParamsObject();
 
   private currentProjectId = '';
 
@@ -57,17 +52,21 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     private router: Router,
     private valuedComponentService: ValuedComponentService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private tableTemplateUtils: TableTemplateUtils,
+    private tableTemplateUtils: TableTemplateUtils
   ) { }
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+    });
+
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res) {
-          this.totalListItems = res.valuedComponents.totalCount;
-          if (this.totalListItems > 0) {
+          this.tableParams.totalListItems = res.valuedComponents.totalCount;
+          if (this.tableParams.totalListItems > 0) {
             this.valuedComponents = res.valuedComponents.data;
             this.currentProjectId = res.valuedComponents.projectId;
             this.setVCRowData();
@@ -112,46 +111,29 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     this.valuedComponentTableData = new TableObject(
       ValuedComponentTableRowsComponent,
       vcList,
-      {
-        pageSize: this.pageSize,
-        currentPage: this.currentPage,
-        totalListItems: this.totalListItems,
-        sortBy: this.sortBy,
-        sortDirection: this.sortDirection
-      }
+      this.tableParams
     );
   }
 
   setColumnSort(column) {
-    this.sortBy = column;
-    this.sortDirection = this.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedVCs(this.currentPage, this.sortBy, this.sortDirection);
+    this.tableParams.sortBy = column;
+    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
+    this.getPaginatedVCs(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
   }
 
-  getPaginatedVCs(pageNumber, sortBy, sortDirection) {
+  getPaginatedVCs(pageNumber, newSortBy, newSortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    if (sortBy == null) {
-      sortBy = this.sortBy;
-      sortDirection = this.sortDirection;
-    }
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
 
-    let sorting = null;
-    if (sortBy !== '') {
-      sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
-    }
-
-    this.valuedComponentService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize, sorting)
+    this.valuedComponentService.getAllByProjectId(this.currentProjectId, pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
-        this.currentPage = pageNumber;
-        this.sortBy = sortBy;
-        this.sortDirection = this.sortDirection;
-        this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
-        this.totalListItems = res.totalCount;
+        this.tableParams.totalListItems = res.totalCount;
         this.valuedComponents = res.data;
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
         this.setVCRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();

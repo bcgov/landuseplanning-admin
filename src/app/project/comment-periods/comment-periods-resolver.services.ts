@@ -4,17 +4,19 @@ import { Observable } from 'rxjs/Observable';
 
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
+import { Constants } from 'app/shared/utils/constants';
+
 @Injectable()
 export class CommentPeriodsResolver implements Resolve<Object> {
 
   constructor(
-    private commentPeriodService: CommentPeriodService
+    private commentPeriodService: CommentPeriodService,
   ) { }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const projectId = route.parent.paramMap.get('projId');
-    const pageNum = Number(route.queryParams['pageNum'] ? route.queryParams['pageNum'] : 1);
-    const pageSize = Number(route.queryParams['pageSize'] ? route.queryParams['pageSize'] : 10);
+    const pageNum = Number(route.queryParams['pageNum'] ? route.queryParams['pageNum'] : Constants.tableDefaults.DEFAULT_CURRENT_PAGE);
+    const pageSize = Number(route.queryParams['pageSize'] ? route.queryParams['pageSize'] : Constants.tableDefaults.DEFAULT_PAGE_SIZE);
 
     const sortBy = '-dateStarted';
 

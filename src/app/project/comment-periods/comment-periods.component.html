@@ -8,14 +8,14 @@
   </div>
 
   <app-table-template
-    *ngIf="totalListItems > 0"
+    *ngIf="tableParams.totalListItems > 0"
     [columns]="commentPeriodTableColumns"
     [data]="commentPeriodTableData"
     (onColumnSort)='setColumnSort($event)'
     (onPageNumUpdate)='getPaginatedComments($event, null, null)'>
   </app-table-template>
 
-  <div *ngIf="totalListItems == 0">
+  <div *ngIf="tableParams.totalListItems == 0">
     This project has no comment periods.
   </div>
 </div>
