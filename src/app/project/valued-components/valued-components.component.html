@@ -8,14 +8,14 @@
   </div>
 
   <app-table-template
-    *ngIf="totalListItems > 0"
+    *ngIf="tableParams.totalListItems > 0"
     [columns]="valuedComponentTableColumns"
     [data]="valuedComponentTableData"
     (onColumnSort)='setColumnSort($event)'
     (onPageNumUpdate)='getPaginatedVCs($event, null, null)'>
   </app-table-template>
   
-  <div *ngIf="totalListItems == 0">
+  <div *ngIf="tableParams.totalListItems == 0">
     This project has no valued components.
   </div>
 </div>
