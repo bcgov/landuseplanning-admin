@@ -11,6 +11,7 @@ import { ProjectAddEditComponent } from './project-add-edit/project-add-edit.com
 import { ProjectComponent } from './project.component';
 import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentsComponent } from './review-comments/review-comments.component';
@@ -44,6 +45,10 @@ const routes: Routes = [
         resolve: {
           documents: DocumentsResolver
         }
+      },
+      {
+        path: 'project-documents/upload',
+        component: UploadComponent,
       },
       {
         path: 'compliance',

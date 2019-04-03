@@ -17,6 +17,7 @@ export class Document {
   tags: Array<string>;
   checkbox: boolean;
   project: string;
+  upfile: File;
   isPublished = false; // depends on tags; see below
 
   constructor(obj?: any) {
@@ -35,6 +36,8 @@ export class Document {
     this.internalURL      = obj && obj.internalURL      || null;
     this.isDeleted        = obj && obj.isDeleted        || null;
     this.internalMime     = obj && obj.internalMime     || null;
+
+    this.upfile     = obj && obj.upfile     || null;
 
     // wrap isPublished around the tags we receive for this object
     if (obj && obj.tags) {
