@@ -462,25 +462,29 @@ export class ApiService {
       );
   }
 
-  getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Comment[]> {
+  getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string, count: boolean): Observable<Object> {
     const fields = [
-      '_addedBy',
-      '_commentPeriod',
-      'commentNumber',
+      '_id',
+      'author',
       'comment',
-      'commentAuthor',
-      'review',
+      'commentId',
       'dateAdded',
-      'commentStatus'
+      'dateUpdated',
+      'isAnonymous',
+      'location',
+      'eaoStatus',
+      'period',
+      'read'
     ];
 
-    let queryString = `comment?isDeleted=false&_commentPeriod=${periodId}&`;
-    if (pageNum !== null) { queryString += `pageNum=${pageNum}&`; }
-    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
-    queryString += `fields=${this.buildValues(fields)}`;
+    let queryString = `comment?&period=${periodId}`;
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (count !== null) { queryString += `&count=${count}`; }
+    queryString += `&fields=${this.buildValues(fields)}`;
 
-    return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, {});
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element

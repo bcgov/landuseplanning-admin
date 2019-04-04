@@ -9,6 +9,7 @@ import { CommentPeriodTableRowsComponent } from 'app/project/comment-periods/com
 
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 
 @Component({
   selector: 'app-comment-periods',
@@ -20,6 +21,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   private currentProjectId;
 
+  public projectId: string;
   public commentPeriods: CommentPeriod[] = null;
   public commentPeriodTableColumns: any[] = [
     {
@@ -56,12 +58,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   public commentPeriodTableData: TableObject;
   public loading = true;
 
-  public pageNum = 0;
-  public sortBy = '';
-  public sortDirection = 0;
-  public pageSize = 10;
-  public currentPage = 1;
-  public totalListItems = 0;
+  public tableParams: TableParamsObject = new TableParamsObject();
 
   constructor(
     private route: ActivatedRoute,
@@ -72,17 +69,25 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.route.parent.params.subscribe(params => {
+      this.projectId = params.projId;
+    });
+
+    this.route.params.subscribe(params => {
+      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+    });
+
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         (res: any) => {
           if (res) {
-            this.totalListItems = res.commentPeriods.totalCount;
-            if (this.totalListItems > 0) {
+            this.tableParams.totalListItems = res.commentPeriods.totalCount;
+            if (this.tableParams.totalListItems > 0) {
               this.commentPeriods = res.commentPeriods.data;
               this.currentProjectId = this.commentPeriods[0].project;
-              this.initCPRowData();
+              this.setCPRowData();
             }
           } else {
             console.log(res);
@@ -97,12 +102,12 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   setColumnSort(column) {
-    this.sortBy = column;
-    this.sortDirection = this.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedComments(this.currentPage, this.sortBy, this.sortDirection);
+    this.tableParams.sortBy = column;
+    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
+    this.getPaginatedComments(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
   }
 
-  initCPRowData() {
+  setCPRowData() {
     let cpList = [];
     this.commentPeriods.forEach(commentPeriod => {
       // Determine if the CP is published by checking in read is Public
@@ -130,42 +135,24 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     this.commentPeriodTableData = new TableObject(
       CommentPeriodTableRowsComponent,
       cpList,
-      {
-        pageSize: this.pageSize,
-        currentPage: this.currentPage,
-        totalListItems: this.totalListItems,
-        sortBy: this.sortBy,
-        sortDirection: this.sortDirection
-      }
+      this.tableParams
     );
   }
 
-  public getPaginatedComments(pageNumber, sortBy, sortDirection) {
+  public getPaginatedComments(pageNumber, newSortBy, newSortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
-
     this.loading = true;
 
-    if (sortBy == null) {
-      sortBy = this.sortBy;
-      sortDirection = this.sortDirection;
-    }
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
 
-    let sorting = null;
-    if (sortBy !== '') {
-      sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
-    }
-
-    this.commentPeriodService.getAllByProjectId(this.currentProjectId, pageNumber, this.pageSize, sorting)
+    this.commentPeriodService.getAllByProjectId(this.currentProjectId, pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
-        this.currentPage = pageNumber;
-        this.sortBy = sortBy;
-        this.sortDirection = this.sortDirection;
-        this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
-        this.totalListItems = res.totalCount;
+        this.tableParams.totalListItems = res.totalCount;
         this.commentPeriods = res.data;
-        this.initCPRowData();
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
+        this.setCPRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });

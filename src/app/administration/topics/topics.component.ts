@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
-import { PlatformLocation } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { TopicService } from 'app/services/topic.service';
@@ -15,6 +14,7 @@ import { Topic } from 'app/models/topic';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 
 @Component({
   selector: 'app-users',
@@ -56,12 +56,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     }
   ];
 
-  public pageNum = 1;
-  public pageSize = 10;
-  public currentPage = 1;
-  public totalListItems = 0;
-  public sortBy = '';
-  public sortDirection = 0;
+  public tableParams: TableParamsObject = new TableParamsObject();
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
@@ -75,15 +70,16 @@ export class TopicsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.currentPage = params.currentPage ? params.currentPage : 1;
-      this.pageSize = params.pageSize || 10;
-      this.topicService.getAllTopics(params.currentPage, params.pageSize)
+    this.route.params.subscribe(params => {
+      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+
+      this.topicService.getAllTopics(this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortString)
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
           if (res) {
-            this.totalListItems = res.totalCount;
-            if (this.totalListItems > 0) {
+            console.log(res);
+            this.tableParams.totalListItems = res.totalCount;
+            if (this.tableParams.totalListItems > 0) {
               this.topics = res.data;
               this.setTopicRowData();
             }
@@ -114,48 +110,29 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.topicTableData = new TableObject(
       TopicTableRowsComponent,
       topicList,
-      {
-        pageSize: this.pageSize,
-        currentPage: this.currentPage,
-        totalListItems: this.totalListItems,
-        sortBy: this.sortBy,
-        sortDirection: this.sortDirection
-      }
+      this.tableParams
     );
   }
 
   setColumnSort(column) {
-    this.sortBy = column;
-    this.sortDirection = this.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedTopics(this.currentPage, this.sortBy, this.sortDirection);
+    this.tableParams.sortBy = column;
+    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
+    this.getPaginatedTopics(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
   }
 
-  getPaginatedTopics(pageNumber, sortBy, sortDirection) {
+  getPaginatedTopics(pageNumber, newSortBy, newSortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    if (sortBy == null) {
-      sortBy = this.sortBy;
-      sortDirection = this.sortDirection;
-    }
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
 
-    // This accounts for when there is no defined column sort and the user clicks a pagination button.
-    // API needs sorting to be null for it to not blow up.
-    let sorting = null;
-    if (sortBy !== '') {
-      sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
-    }
-
-    this.topicService.getAllTopics(pageNumber, this.pageSize, sorting)
+    this.topicService.getAllTopics(pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
-        this.currentPage = pageNumber;
-        this.sortBy = sortBy;
-        this.sortDirection = this.sortDirection;
-        this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
-        this.totalListItems = res.totalCount;
+        this.tableParams.totalListItems = res.totalCount;
         this.topics = res.data;
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
         this.setTopicRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
@@ -171,7 +148,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     let dlg = this.modalService.open(AddEditTopicComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
     dlg.result.then(result => {
       if (result.isSaved) {
-        this.getPaginatedTopics(this.pageNum, this.sortBy, this.sortDirection);
+        this.getPaginatedTopics(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
       }
     });
   }

@@ -15,7 +15,6 @@ import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
-import { ReviewCommentsComponent } from './review-comments/review-comments.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 
 import { ProjectResolver } from './project-resolver.service';
@@ -101,13 +100,6 @@ const routes: Routes = [
         canDeactivate: [CanDeactivateGuard]
       },
     ]
-  },
-  {
-    path: 'comments/:projId',
-    component: ReviewCommentsComponent,
-    resolve: {
-      project: ProjectResolver
-    }
   }
 ];
 

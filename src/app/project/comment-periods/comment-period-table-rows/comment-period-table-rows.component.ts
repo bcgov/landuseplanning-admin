@@ -26,7 +26,6 @@ export class CommentPeriodTableRowsComponent implements OnInit, TableComponent {
     }
 
     goToItem(item) {
-        console.log(`p/${item.project}/cp/${item._id}`);
         this.router.navigate([`p/${item.project}/cp/${item._id}`]);
     }
 }

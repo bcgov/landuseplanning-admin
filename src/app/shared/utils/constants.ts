@@ -1,4 +1,9 @@
 export class Constants {
+  public static readonly tableDefaults = {
+    DEFAULT_CURRENT_PAGE: 1,
+    DEFAULT_PAGE_SIZE: 10
+  };
+
   public static readonly types = [
     'CERTIFICATE OF PURCHASE',
     'CROWN GRANT',

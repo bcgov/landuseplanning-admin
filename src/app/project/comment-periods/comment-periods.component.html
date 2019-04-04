@@ -1,21 +1,26 @@
 <div class="search-container">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item active" aria-current="page">Comment Periods</li>
-  </ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item" aria-current="page">
+            <a [routerLink]="['/p', projectId]">Project Details</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Comment Periods
+        </li>
+    </ol>
 
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>
 
   <app-table-template
-    *ngIf="totalListItems > 0"
+    *ngIf="tableParams.totalListItems > 0"
     [columns]="commentPeriodTableColumns"
     [data]="commentPeriodTableData"
     (onColumnSort)='setColumnSort($event)'
     (onPageNumUpdate)='getPaginatedComments($event, null, null)'>
   </app-table-template>
 
-  <div *ngIf="totalListItems == 0">
+  <div *ngIf="tableParams.totalListItems == 0">
     This project has no comment periods.
   </div>
 </div>

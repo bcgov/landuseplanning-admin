@@ -1,4 +1,8 @@
 <div class="search-container">
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  
   <div class="container-fluid-padding">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
@@ -8,20 +12,13 @@
       <button type="button" class="btn btn-primary mb-3" (click)="addTopic()">Add new Topic</button>
     </nav>
 
-    <div class="spinner-container" *ngIf="loading">
-      <div class="spinner-new rotating"></div>
-    </div>
-
-    <div *ngIf="totalListItems > 0">
-      <app-table-template
-        [columns]="topicTableColumns"
-        [data]="topicTableData"
-        (onColumnSort)='setColumnSort($event)'
+    <div *ngIf="tableParams.totalListItems > 0">
+      <app-table-template [columns]="topicTableColumns" [data]="topicTableData" (onColumnSort)='setColumnSort($event)'
         (onPageNumUpdate)='getPaginatedTopics($event)'>
       </app-table-template>
     </div>
 
-    <div *ngIf="totalListItems == 0">
+    <div *ngIf="tableParams.totalListItems == 0">
       There are no topics.
     </div>
   </div>
