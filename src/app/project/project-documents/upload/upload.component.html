@@ -6,7 +6,6 @@
         <li class="breadcrumb-item">Upload Document(s)</li>
       </ol>
     </nav>
-    
   </div>
 </div>
 
@@ -67,10 +66,12 @@
           <div class="form-group">
             <label for="inputAddress2">Labels</label>
             <div>
-            <button (click)="addLabel()"
-                    class="btn btn-outline-secondary mr-1"
+            <a [ngClass]="{'active': currentProjectId === 'activity'}" [routerLink]="['/p', this.currentProjectId,'project-documents', 'upload', 'add-label']">
+              <button class="btn btn-outline-secondary mr-1"
                     type="button"
-                    id="button-cl"><i class="material-icons">list</i>Add Labels</button></div>
+                    id="button-d">
+              <i class="material-icons">list</i>Add Label(s)</button></a>
+            </div>
           </div>
       </form>
 </div>

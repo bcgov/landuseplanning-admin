@@ -34,6 +34,7 @@ import { ProjectDocumentsComponent } from './project-documents/project-documents
 import { CommentPeriodComponent } from './comment-period/comment-period.component';
 import { MatTabsModule } from '@angular/material';
 import { UploadComponent } from './project-documents/upload/upload.component';
+import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 
 @NgModule({
   imports: [
@@ -65,7 +66,8 @@ import { UploadComponent } from './project-documents/upload/upload.component';
     ProjectDocumentsComponent,
     CommentPeriodDetailsTabComponent,
     ReviewCommentsTabComponent,
-    UploadComponent
+    UploadComponent,
+    AddLabelComponent
   ],
   entryComponents: [
     CommentPeriodComponent,

@@ -16,7 +16,7 @@ import { DocumentService } from 'app/services/document.service';
 export class UploadComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  private projectId: string;
+  private currentProjectId: string;
   private projectFiles: Document[] = [];
   private documents: Document[] = [];
   public documentDate: NgbDateStruct = null;
@@ -29,9 +29,9 @@ export class UploadComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // const projectId = route.parent.paramMap.get('projId');
+    // const currentProjectId = route.parent.paramMap.get('projId');
     this.route.parent.paramMap.subscribe(params => {
-      this.projectId = params.get('projId');
+      this.currentProjectId = params.get('projId');
     });
   }
 
@@ -42,7 +42,7 @@ export class UploadComponent implements OnInit {
     this.documents.map(doc => {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
-      formData.append('project', this.projectId);
+      formData.append('project', this.currentProjectId);
       formData.append('type', 'typeDocYay');
       formData.append('milestone', 'milestoneDocYay');
       formData.append('documentDate', moment(this.documentDate));
@@ -68,14 +68,9 @@ export class UploadComponent implements OnInit {
         },
         () => { // onCompleted
           // delete succeeded --> navigate back to search
-          this.router.navigate(['p', this.projectId, 'project-documents']);
+          this.router.navigate(['p', this.currentProjectId, 'project-documents']);
         }
       );
-  }
-
-  public addLabel() {
-    // TODO: Pop the addLabel modal and assign.
-
   }
 
   public addDocuments(files: FileList, documents: Document[]) {

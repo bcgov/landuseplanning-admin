@@ -13,6 +13,7 @@ import { ProjectContactsComponent } from './project-contacts/project-contacts.co
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
+import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentsComponent } from './review-comments/review-comments.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
@@ -49,6 +50,10 @@ const routes: Routes = [
       {
         path: 'project-documents/upload',
         component: UploadComponent,
+      },
+      {
+        path: 'project-documents/upload/add-label',
+        component: AddLabelComponent,
       },
       {
         path: 'compliance',

@@ -1,0 +1,19 @@
+<div class="search-container">
+  <div class="container-fluid-padding">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId, 'project-documents', 'upload']">Upload Document(s)</a></li>
+        <li class="breadcrumb-item">Add Label(s)</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+
+<div class="input-group-prepend">
+    <button (click)="saveLabels()"
+    class="btn btn-outline-primary mr-1"
+    type="button"
+    id="button-cl"><i class="material-icons">save</i>Save</button>
+</div>
