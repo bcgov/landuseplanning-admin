@@ -31,6 +31,8 @@ import { CommentPeriodsComponent } from './comment-periods/comment-periods.compo
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { CommentPeriodComponent } from './comment-period/comment-period.component';
 import { MatTabsModule } from '@angular/material';
+import { UploadComponent } from './project-documents/upload/upload.component';
+import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 
 @NgModule({
@@ -61,6 +63,8 @@ import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-com
     ProjectDocumentsComponent,
     CommentPeriodDetailsTabComponent,
     ReviewCommentsTabComponent,
+    UploadComponent,
+    AddLabelComponent,
     ReviewCommentsTabTableRowsComponent
   ],
   entryComponents: [
@@ -69,6 +73,7 @@ import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-com
     CommentPeriodTableRowsComponent,
     ValuedComponentTableRowsComponent,
     DocumentTableRowsComponent,
+    UploadComponent,
     ReviewCommentsTabTableRowsComponent
   ],
   exports: [

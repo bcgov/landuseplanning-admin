@@ -590,7 +590,7 @@ export class ApiService {
       'internalURL',
       'internalMime'
     ];
-    const queryString = `document/?fields=${this.buildValues(fields)}`;
+    const queryString = `document?fields=${this.buildValues(fields)}`;
     return this.http.post<Document>(`${this.pathAPI}/${queryString}`, formData, {});
   }
 

@@ -11,7 +11,9 @@ import { ProjectAddEditComponent } from './project-add-edit/project-add-edit.com
 import { ProjectComponent } from './project.component';
 import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
+import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 
@@ -43,6 +45,14 @@ const routes: Routes = [
         resolve: {
           documents: DocumentsResolver
         }
+      },
+      {
+        path: 'project-documents/upload',
+        component: UploadComponent,
+      },
+      {
+        path: 'project-documents/upload/add-label',
+        component: AddLabelComponent,
       },
       {
         path: 'compliance',
