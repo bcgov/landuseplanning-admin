@@ -60,7 +60,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public selectedCount = 0;
   public keywords = '';
 
-  private currentProjectId = '';
+  public currentProjectId = '';
 
   constructor(
     private route: ActivatedRoute,

@@ -2,7 +2,7 @@
   <div class="container-fluid-padding">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', projectId, 'project-documents']">Documents</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
         <li class="breadcrumb-item">Upload Document(s)</li>
       </ol>
     </nav>
@@ -32,7 +32,7 @@
               <label for="inputAddress">Document Date</label>
               <div class="input-group">
                 <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="endDP" [(ngModel)]="documentDate"
-                  ngbDatepicker #documentDatePicker="ngbDatepicker" (change)="updateEndDateAlert()" />
+                  ngbDatepicker #documentDatePicker="ngbDatepicker" />
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary calendar" (click)="documentDatePicker.toggle()"
                     type="button"></button>
@@ -43,7 +43,7 @@
               <label for="inputAddress">Upload Date</label>
               <div class="input-group">
                 <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="endDP" [(ngModel)]="uploadDate"
-                  ngbDatepicker #uploadDatePicker="ngbDatepicker" (change)="updateEndDateAlert()" />
+                  ngbDatepicker #uploadDatePicker="ngbDatepicker"  />
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary calendar" (click)="uploadDatePicker.toggle()"
                     type="button"></button>

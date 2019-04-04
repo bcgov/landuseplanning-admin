@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./add-label.component.scss']
 })
 export class AddLabelComponent implements OnInit {
-  private currentProjectId: string;
+  public currentProjectId: string;
 
   constructor(
     private router: Router,

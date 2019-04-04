@@ -16,9 +16,9 @@ import { DocumentService } from 'app/services/document.service';
 export class UploadComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  private currentProjectId: string;
-  private projectFiles: Document[] = [];
-  private documents: Document[] = [];
+  public currentProjectId: string;
+  public projectFiles: Document[] = [];
+  public documents: Document[] = [];
   public documentDate: NgbDateStruct = null;
   public uploadDate: NgbDateStruct = null;
 
