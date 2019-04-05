@@ -1,10 +1,10 @@
 @import "assets/styles/base/base.scss";
 
 .app-footer {
-    border-top: 4px solid $gold;
-    background: $footer-bg;
+    background: $bg-dark;
+    border-top: none;
     color: $footer-color;
-
+    position: relative;
     .container {
         padding: 0.5rem 1.5rem;
     }

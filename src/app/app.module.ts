@@ -20,6 +20,7 @@ import { AppComponent } from 'app/app.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { FooterComponent } from 'app/footer/footer.component';
 import { HeaderComponent } from 'app/header/header.component';
+import { ToggleButtonComponent } from 'app/toggle-button/toggle-button.component';
 import { HomeComponent } from 'app/home/home.component';
 import { LoginComponent } from 'app/login/login.component';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
@@ -67,6 +68,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AddEditTopicComponent,
     FooterComponent,
     HeaderComponent,
+    ToggleButtonComponent,
     HomeComponent,
     LoginComponent,
     NotAuthorizedComponent,

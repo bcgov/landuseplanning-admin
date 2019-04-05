@@ -1,37 +1,50 @@
 /* The side navigation menu */
 .sidebar {
   margin: 0;
-  padding: 5px;
+  padding: 7px 0 5px 5px;
   width: 250px;
-  background-color: #003366;
+  background-color: #38598a;
   position: fixed;
   /* Probably should not hardcode to account for the footer*/
-  margin-top: 71px;
-  height: calc(100% - 71px - 41px);
+  height: calc(100% - 71px - 37px);
   overflow: auto;
   transition: 0.3s;
+  @media screen and (min-width: 768px) {
+    margin-top: 71px;
+  }
 }
 
 /* Sidebar links */
 .sidebar a {
   display: block;
   color: white;
-  background: #003366;
   padding: 16px;
   text-decoration: none;
   transition: 0.3s;
 }
 
+.project-nav {
+  border-bottom: 1px solid #036;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+  .dropdown-btn {
+    margin-bottom: 10px;
+  }
+}
+
 .sidebar .project-menu {
-  background-color: #617b96;
-  padding-left: 2rem;
+  padding: 4px 16px 12px;
+  padding-left: 1.4rem;
 }
 
 /* Active/current link */
 .sidebar a.active {
-  border-bottom: 4px solid #FCB118;
-  // background-color: #FCB118;
-  color: white;
+  color: #FCB118;
+}
+
+.sidebar .dropdown-btn {
+  background: #036;
+  border-radius: 4px 0 0 4px;
 }
 
 /* Links on mouse-over */
@@ -89,10 +102,10 @@
 }
 
 /* Add an active class to the active dropdown button */
-.active {
-  background-color: #003366;
-  color: white;
-}
+// .active {
+//   background-color: #003366;
+//   color: white;
+// }
 
 /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
 .project-details-dropdown-container {
