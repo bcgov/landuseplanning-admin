@@ -48,16 +48,20 @@ export class UploadComponent implements OnInit {
       switch (item.type) {
         case 'doctype':
           this.doctypes.push(item);
-        break;
+          break;
         case 'author':
           this.authors.push(item);
-        break;
+          break;
+        case 'label':
+          this.labels.push(item);
+          break;
       }
     });
 
     this.myForm = new FormGroup({
       'doctypesel': new FormControl(),
       'authorsel': new FormControl(),
+      'labelsel': new FormControl(),
       'milestonesel': new FormControl(),
       'documentDate': new FormControl(),
       'uploadDate': new FormControl(),
