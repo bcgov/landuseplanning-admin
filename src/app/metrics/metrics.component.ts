@@ -13,9 +13,9 @@ export class MetricsComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit() {
-    this.api.getMetrics(0, 25, null)
-    .subscribe(res => {
-      this.data = res;
-    });
+    // this.api.getMetrics(0, 25, null)
+    // .subscribe(res => {
+    //   this.data = res;
+    // });
   }
 }
