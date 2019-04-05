@@ -34,7 +34,10 @@
 
 .sidebar .project-menu {
   padding: 4px 16px 12px;
-  padding-left: 1.4rem;
+  padding-left: .8rem;
+  .material-icons {
+    margin-right: .5rem;
+  }
 }
 
 /* Active/current link */
