@@ -1,6 +1,6 @@
 // modules
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -43,7 +43,8 @@ import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-com
     NgxPaginationModule,
     MatTabsModule,
     ProjectRoutingModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ],
   declarations: [
     CommentPeriodComponent,

@@ -8,8 +8,20 @@ import { Document } from 'app/models/document';
 
 @Injectable()
 export class DocumentService {
+  private currentState: any;
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {
+    this.currentState = {
+    };
+  }
+
+  setState(state: any) {
+    this.currentState[state.type] = state;
+  }
+
+  getState() {
+    return this.currentState;
+  }
 
   // get all documents for the specified application id
   getAllByApplicationId(id: string): Observable<Document[]> {

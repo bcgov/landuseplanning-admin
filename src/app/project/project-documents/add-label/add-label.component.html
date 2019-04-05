@@ -11,9 +11,17 @@
 </div>
 
 
-<div class="input-group-prepend">
+<div class="btn-group" role="group" aria-label="Action Buttons">
+  <div class="input-group-prepend">
     <button (click)="saveLabels()"
     class="btn btn-outline-primary mr-1"
     type="button"
     id="button-cl"><i class="material-icons">save</i>Save</button>
+  </div>
+  <div class="input-group-prepend">
+    <button (click)="cancel()"
+    class="btn btn-outline-primary mr-1"
+    type="button"
+    id="button-cl"><i class="material-icons">cancel</i>Cancel</button>
+  </div>
 </div>

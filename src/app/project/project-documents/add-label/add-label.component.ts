@@ -1,5 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { DocumentService } from 'app/services/document.service';
 
 @Component({
   selector: 'app-add-label',
@@ -11,7 +13,8 @@ export class AddLabelComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private documentService: DocumentService
   ) { }
 
   ngOnInit() {
@@ -21,7 +24,12 @@ export class AddLabelComponent implements OnInit {
   }
 
   saveLabels() {
-    console.log('saving labels to form');
+    // TODO
+    this.documentService.setState({type: 'return', picklist: 'alwayspicked'});
+    this.router.navigate(['p', this.currentProjectId, 'project-documents', 'upload']);
+  }
+
+  cancel() {
     this.router.navigate(['p', this.currentProjectId, 'project-documents', 'upload']);
   }
 }
