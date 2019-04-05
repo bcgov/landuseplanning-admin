@@ -2,7 +2,8 @@
   <div class="container-fluid-padding">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a
+            [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
         <li class="breadcrumb-item">Upload Document(s)</li>
       </ol>
     </nav>
@@ -10,70 +11,71 @@
 </div>
 
 <div class="form-group mb-0">
-    <form>
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <label for="inputEmail4">Document Type</label>
-            <select id="inputState" class="form-control">
-              <option selected>Choose...</option>
-              <option>...</option>
-            </select>
-          </div>
-          <div class="form-group col-md-4">
-              <label for="inputState">Milestone</label>
-              <select id="inputState" class="form-control">
-                <option selected>Choose...</option>
-                <option>...</option>
-              </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-4">
-              <label for="inputAddress">Document Date</label>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="endDP" [(ngModel)]="documentDate"
-                  ngbDatepicker #documentDatePicker="ngbDatepicker" />
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary calendar" (click)="documentDatePicker.toggle()"
-                    type="button"></button>
-                </div>
-              </div>
-            </div>
-            <div class="form-group col-md-4">
-              <label for="inputAddress">Upload Date</label>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="endDP" [(ngModel)]="uploadDate"
-                  ngbDatepicker #uploadDatePicker="ngbDatepicker"  />
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary calendar" (click)="uploadDatePicker.toggle()"
-                    type="button"></button>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <label for="inputDocumentName">Document Name</label>
-            <input type="text" class="form-control" id="inputDocumentName">
+  <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="docType">Document Type*</label>
+        <select required id="inputDocType" class="form-control" name="doctypesel" formControlName="doctypesel">
+          <option *ngFor="let t of doctypes" [ngValue]="t">{{t.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="inputAuthor">Author*</label>
+        <select required id="inputAuthor" class="form-control" name="authorsel" formControlName="authorsel">
+          <option *ngFor="let t of authors" [ngValue]="t">{{t.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="inputMilestone">Milestone</label>
+        <select id="inputMilestone" class="form-control" name="milestonesel" formControlName="milestonesel">
+          <option *ngFor="let t of milestones" [ngValue]="t">{{t.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="inputAddress">Document Date*</label>
+        <div class="input-group">
+          <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="docDate" formControlName="documentDate"
+            ngbDatepicker #documentDatePicker="ngbDatepicker" />
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="documentDatePicker.toggle()"
+              type="button"></button>
           </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-12">
-            <label for="inputDescription">Description</label>
-            <input type="text" class="form-control" id="inputDescription">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="inputAddress">Upload Date*</label>
+        <div class="input-group">
+          <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="uploadDate" formControlName="uploadDate"
+            ngbDatepicker #uploadDatePicker="ngbDatepicker" />
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="uploadDatePicker.toggle()"
+              type="button"></button>
           </div>
         </div>
-          <div class="form-group">
-            <label for="inputAddress2">Labels</label>
-            <div>
-            <a [ngClass]="{'active': currentProjectId === 'activity'}" [routerLink]="['/p', this.currentProjectId,'project-documents', 'upload', 'add-label']">
-              <button class="btn btn-outline-secondary mr-1"
-                    type="button"
-                    id="button-d">
-              <i class="material-icons">list</i>Add Label(s)</button></a>
-            </div>
-          </div>
-      </form>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <label for="documentName">Document Name</label>
+        <input type="text" class="form-control" id="documentName" name="documentName" formControlName="documentName">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <label for="inputDescription">Description</label>
+        <input type="text" class="form-control" id="inputDescription" name="description" formControlName="description">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputAddress2">Labels</label>
+      <div>
+        <button (click)="addLabels()" class="btn btn-outline-secondary mr-1" type="button" id="button-d">
+            <i class="material-icons">list</i>Add Label(s)</button>
+      </div>
+    </div>
+  </form>
 </div>
 
 <div class="form-group mb-0">
@@ -81,25 +83,24 @@
     (filesChange)="addDocuments($event, documents); projectFiles = []"></app-file-upload>
   <br>
   <ul class="doc-list mb-3" *ngIf="documents?.length > 0">
-      <li *ngFor="let doc of documents">
-        <span class="cell icon">
-          <i class="material-icons">insert_drive_file</i>
-        </span>
-        <span class="cell name" [title]="doc.displayName || ''">
-          <span class="cell__txt-content">{{doc.documentFileName}}</span>
-        </span>
-        <span class="cell actions">
-          <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc, documents)">
-            <i class="material-icons">delete</i>
-          </button>
-        </span>
-      </li>
+    <li *ngFor="let doc of documents">
+      <span class="cell icon">
+        <i class="material-icons">insert_drive_file</i>
+      </span>
+      <span class="cell name" [title]="doc.displayName || ''">
+        <span class="cell__txt-content">{{doc.documentFileName}}</span>
+      </span>
+      <span class="cell actions">
+        <button class="btn btn-icon" type="button" title="Delete this document"
+          (click)="deleteDocument(doc, documents)">
+          <i class="material-icons">delete</i>
+        </button>
+      </span>
+    </li>
   </ul>
 </div>
 
 <div class="input-group-prepend">
-    <button (click)="uploadDocuments()"
-    class="btn btn-outline-primary mr-1"
-    type="button"
-    id="button-cl"><i class="material-icons">arrow_upward</i>Upload</button>
+  <button [disabled]="!myForm.valid" (click)="uploadDocuments()" class="btn btn-outline-primary mr-1" type="submit" id="button-cl"><i
+      class="material-icons">arrow_upward</i>Upload</button>
 </div>

@@ -126,6 +126,10 @@ export class ApiService {
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  getFullDataSet(dataSet: string): Observable<any> {
+    return this.http.get<any>(`${this.pathAPI}/search?pageSize=1000&dataset=${dataSet}`, {});
+  }
+
   // NB: returns array with 1 element
   getProject(id: string): Observable<Project[]> {
     const fields = [

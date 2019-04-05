@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormGroup, FormControl, FormArray, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Document } from 'app/models/document';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment-timezone';
 import { DocumentService } from 'app/services/document.service';
+import { ConfigService } from 'app/services/config.service';
 
 @Component({
   selector: 'app-upload',
@@ -17,22 +19,81 @@ export class UploadComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   public currentProjectId: string;
+  public authorsel: any;
   public projectFiles: Document[] = [];
   public documents: Document[] = [];
   public documentDate: NgbDateStruct = null;
   public uploadDate: NgbDateStruct = null;
+  public doctypes: any[] = [];
+  public authors: any[] = [];
+  public labels: any[] = [];
+  public milestones: any[] = [];  // Get this from the project's data.
+  public myForm: FormGroup;
 
   constructor(
     private router: Router,
     private documentService: DocumentService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private config: ConfigService
   ) { }
 
   ngOnInit() {
-    // const currentProjectId = route.parent.paramMap.get('projId');
+
+    let theState = this.documentService.getState();
+    console.log('current state:', theState);
     this.route.parent.paramMap.subscribe(params => {
       this.currentProjectId = params.get('projId');
     });
+    this.config.lists.map(item => {
+      switch (item.type) {
+        case 'doctype':
+          this.doctypes.push(item);
+        break;
+        case 'author':
+          this.authors.push(item);
+        break;
+      }
+    });
+
+    this.myForm = new FormGroup({
+      'doctypesel': new FormControl(),
+      'authorsel': new FormControl(),
+      'milestonesel': new FormControl(),
+      'documentDate': new FormControl(),
+      'uploadDate': new FormControl(),
+      'documentName': new FormControl(),
+      'description': new FormControl()
+    });
+
+    let today = new Date();
+    let todayObj = {
+      year: today.getFullYear(),
+      month: today.getMonth(),
+      day: today.getDate()
+    };
+
+    this.myForm.controls.documentDate.setValue(todayObj);
+    this.myForm.controls.uploadDate.setValue(todayObj);
+
+    if (theState.form) {
+      this.myForm = theState.form.form;
+    }
+
+    if (theState.documents) {
+      this.documents = theState.documents.docs;
+    }
+  }
+
+  addLabels() {
+    console.log('Adding labels');
+    this.documentService.setState({ type: 'form', form: this.myForm });
+    this.documentService.setState({ type: 'documents', docs: this.documents });
+    this.router.navigate(['/p', this.currentProjectId, 'project-documents', 'upload', 'add-label']);
+  }
+
+  register (myForm: FormGroup) {
+    console.log('Successful registration');
+    console.log(myForm);
   }
 
   public uploadDocuments() {
@@ -43,14 +104,14 @@ export class UploadComponent implements OnInit {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
       formData.append('project', this.currentProjectId);
-      formData.append('type', 'typeDocYay');
-      formData.append('milestone', 'milestoneDocYay');
-      formData.append('documentDate', moment(this.documentDate));
-      formData.append('uploadDate', moment(this.uploadDate));
-      formData.append('documentName', 'documentNameDocYay');
+      formData.append('type', this.myForm.value.doctypesel && this.myForm.value.doctypesel._id);
+      formData.append('milestone', this.myForm.value.milestonesel && this.myForm.value.milestonesel._id);
+      formData.append('documentDate', moment(this.myForm.value.documentDate));
+      formData.append('uploadDate', moment(this.myForm.value.uploadDate));
+      formData.append('documentName', this.myForm.value.documentName || doc.documentFileName);
       formData.append('documentFileName', doc.documentFileName);
-      formData.append('description', 'descriptionDocYay');
-      formData.append('labels', 'labelsDocYay');
+      formData.append('description', this.myForm.value.description);
+      formData.append('author', this.myForm.value.authorsel && this.myForm.value.authorsel._id);
       formData.append('displayName', doc.documentFileName);
       observables = observables.concat(this.documentService.add(formData));
     });
@@ -68,6 +129,9 @@ export class UploadComponent implements OnInit {
         },
         () => { // onCompleted
           // delete succeeded --> navigate back to search
+          // Clear out the document state that was stored previously.
+          this.documentService.setState({ type: 'form', form: null });
+          this.documentService.setState({ type: 'documents', docs: null });
           this.router.navigate(['p', this.currentProjectId, 'project-documents']);
         }
       );
