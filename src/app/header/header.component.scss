@@ -239,6 +239,8 @@
   background-position: 8px center;
   background-repeat: no-repeat;
   white-space: normal;
+  width: 100%;
+  max-width: 300px;
 }
 
 .navbar-brand__title {
@@ -261,7 +263,6 @@
   font-size: 0.5rem;
   font-weight: 700;
   vertical-align: top;
-  width: 600px;
 }
 
 @media (min-width: 1200px) {

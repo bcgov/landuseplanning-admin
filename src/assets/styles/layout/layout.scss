@@ -7,9 +7,44 @@ app-root {
   flex-direction: column;
 }
 
-.sidebarcontrol div.content {
-  margin-left: 0px !important;
+div.content {
+  transition: .25s all;
+  height: 1000px;
 }
+
+@media screen and (min-width: 768px) {
+  div.content {
+    margin-left: 250px;
+  }
+  .sidebarcontrol div.content {
+    margin-left: 0px;
+  }
+  .sidebarcontrol {
+    .slidebtn {
+      transform: rotate(180deg);
+      -webkit-transform: rotate(180deg);
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  div.content {
+    margin-left: 0;
+  }
+  .sidebarcontrol div.content {
+    margin-left: 250px;
+  }
+  .slidebtn {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+  }
+  .sidebarcontrol {
+    .slidebtn {
+      transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+    }
+  }
+}
+
 
 // Container
 .container {
@@ -209,4 +244,8 @@ hr {
   @include flex(1 1 auto);
   overflow-y: scroll;
   background: white;
+}
+
+.breadcrumb {
+  margin-left: 20px;
 }

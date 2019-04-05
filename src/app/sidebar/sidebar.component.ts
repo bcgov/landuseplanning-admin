@@ -19,7 +19,7 @@ export class SidebarComponent implements OnInit {
   public currentProjectId = '';
   public currentMenu = '';
 
-  @HostBinding('class.is-open')
+  @HostBinding('class.is-toggled')
   isOpen = false;
 
   constructor(router: Router,

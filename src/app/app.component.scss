@@ -9,7 +9,6 @@
   right: 0;
   bottom: 0;
   left: 0;
-  overflow-y: hidden;
 }
 
 app-header {
@@ -20,30 +19,16 @@ app-header {
   @include flex-box();
   @include flex(1 1 auto);
   @include flex-direction(column);
+  background: #fff;
   position: relative;
-  margin-top: 68px;
   overflow-y: auto;
+  @media screen and (min-width: 768px) {
+    margin-top: 68px;
+  }
 }
-
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-// div.content.is-open {
-//   margin-left: 0px;
-//   height: 1000px;
-// }
 
 // @media screen and (max-width: 650px) {
 //   div.content {margin-left: 0;}
 // }
 
-.is-open {
-  visibility: hidden;
-  overflow: hidden;
-  z-index: 5;
-  position: absolute;
-}
 
-
-div.content {
-  margin-left: 250px;
-  height: 1000px;
-}

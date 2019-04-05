@@ -6,6 +6,7 @@ import {
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import { ToggleButtonComponent } from './shared/toggle-button/toggle-button.component';
 import { ApiService } from 'app/services/api';
 import { ConfigService } from 'app/services/config.service';
 import { KeycloakService } from 'app/services/keycloak.service';
@@ -24,6 +25,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         HeaderComponent,
+        ToggleButtonComponent,
         FooterComponent
       ],
       imports: [RouterTestingModule, BrowserAnimationsModule],
