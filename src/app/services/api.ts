@@ -716,10 +716,10 @@ export class ApiService {
                   'timestamp',
                   '_objectSchema'];
 
-    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
-    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
-    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
-    queryString += `&fields=${this.buildValues(fields)}`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
     console.log('queryString:', queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
