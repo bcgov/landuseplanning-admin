@@ -114,7 +114,7 @@ export class UploadComponent implements OnInit {
       formData.append('documentName', this.myForm.value.documentName || doc.documentFileName);
       formData.append('documentFileName', doc.documentFileName);
       formData.append('description', this.myForm.value.description);
-      formData.append('author', this.myForm.value.authorsel);
+      formData.append('documentAuthor', this.myForm.value.authorsel);
       formData.append('displayName', doc.documentFileName);
       observables = observables.concat(this.documentService.add(formData));
     });

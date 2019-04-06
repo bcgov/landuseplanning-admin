@@ -16,10 +16,12 @@ import { ProjectDocumentsComponent } from './project-documents/project-documents
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
+import { DocumentDetailComponent } from './project-documents/detail/detail.component';
 
 import { ProjectResolver } from './project-resolver.service';
 import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
 import { DocumentsResolver } from './project-documents/project-document-resolver.services';
+import { DocumentDetailResolver } from './project-documents/detail/document-detail-resolver.service';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 
 const routes: Routes = [
@@ -49,6 +51,13 @@ const routes: Routes = [
       {
         path: 'project-documents/upload',
         component: UploadComponent,
+      },
+      {
+        path: 'project-documents/detail/:docId',
+        component: DocumentDetailComponent,
+        resolve: {
+          project: DocumentDetailResolver
+        }
       },
       {
         path: 'project-documents/upload/add-label',
@@ -115,7 +124,8 @@ const routes: Routes = [
     CommentPeriodsResolver,
     CommentPeriodResolver,
     ValuedComponentsResolver,
-    DocumentsResolver
+    DocumentsResolver,
+    DocumentDetailResolver
   ]
 })
 

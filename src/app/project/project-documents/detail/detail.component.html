@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page"><a
+              [routerLink]="['/p', document.project]">Project Details</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a
+              [routerLink]="['/p', document.project, 'project-documents']">Documents</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Document Details</li>
+        </ol>
+        <section>
+          <h2>Display Name</h2>
+          <p>{{document.displayName || 'No display name set'}}</p>
+        </section>
+        <section>
+          <h2>Details</h2>
+          <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <span class="list-group-item">Filename:</span>
+                  </div>
+                  <div class="col-8">
+                    <span class="value">{{document.documentFileName || '-'}}</span>
+                  </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <span class="list-group-item">Type:</span>
+                  </div>
+                  <div class="col-8">
+                    <span class="value">{{document.type | listConverter }}</span>
+                  </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <span class="list-group-item">Author:</span>
+                  </div>
+                  <div class="col-8">
+                    <span class="value">{{document.documentAuthor | listConverter}}</span>
+                  </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <span class="list-group-item">Milestone:</span>
+                  </div>
+                  <div class="col-8">
+                    <span class="value">{{document.milestone | listConverter}}</span>
+                  </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <span class="list-group-item">Filesize:</span>
+                  </div>
+                  <div class="col-8">
+                    <span class="value">{{document.documentFileSize || '-'}}</span>
+                  </div>
+                </div>
+            </li>
+          </ul>
+        </section>
+    </div>
+  </div>

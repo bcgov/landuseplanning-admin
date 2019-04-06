@@ -3,6 +3,8 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item active" aria-current="page"><a
+            [routerLink]="['/p', currentProjectId]">Project Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a
             [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
         <li class="breadcrumb-item">Upload Document(s)</li>
       </ol>

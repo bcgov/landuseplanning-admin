@@ -16,6 +16,7 @@ import { TableDirective } from './components/table-template/table.directive';
 import { DropdownTemplateComponent } from './components/dropdown-template/dropdown-template.component';
 import { TableTemplateUtils } from './utils/table-template-utils';
 import { CommentStatsComponent } from './components/comment-stats/comment-stats.component';
+import { ListConverterPipe } from './pipes/list-converter.pipe';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { CommentStatsComponent } from './components/comment-stats/comment-stats.
     DropdownTemplateComponent,
     FileUploadComponent,
     TableTemplateComponent,
-    TableDirective
+    TableDirective,
+    ListConverterPipe
   ],
   exports: [
     MatSlideToggleModule,
@@ -48,7 +50,8 @@ import { CommentStatsComponent } from './components/comment-stats/comment-stats.
     DropdownTemplateComponent,
     FileUploadComponent,
     TableTemplateComponent,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ListConverterPipe
   ],
   providers: [
     TableTemplateUtils

@@ -679,6 +679,15 @@ export class ApiService {
   }
 
   //
+  // Get Item via search endpoint
+  //
+  getItem(_id: string, schema: string): Observable<SearchResults[]> {
+    let queryString = `search?dataset=Item&_id=${_id}&_schemaName=${schema}`;
+    console.log('queryString:', queryString);
+    return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  //
   // Searching
   //
   searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null): Observable<SearchResults[]> {

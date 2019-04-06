@@ -34,6 +34,7 @@ import { MatTabsModule } from '@angular/material';
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
+import { DocumentDetailComponent } from './project-documents/detail/detail.component';
 
 @NgModule({
   imports: [
@@ -66,7 +67,8 @@ import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-com
     ReviewCommentsTabComponent,
     UploadComponent,
     AddLabelComponent,
-    ReviewCommentsTabTableRowsComponent
+    ReviewCommentsTabTableRowsComponent,
+    DocumentDetailComponent
   ],
   entryComponents: [
     CommentPeriodComponent,
