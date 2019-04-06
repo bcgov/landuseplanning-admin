@@ -15,13 +15,8 @@ export class DocumentService {
     };
   }
 
-  setState(state: any) {
-    this.currentState[state.type] = state;
-  }
-
-  getState() {
-    return this.currentState;
-  }
+  get state(): any { return this.currentState; }
+  set state(state: any) { this.currentState[state.type] = state.data; }
 
   // get all documents for the specified application id
   getAllByApplicationId(id: string): Observable<Document[]> {

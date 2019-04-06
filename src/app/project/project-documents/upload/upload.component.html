@@ -14,21 +14,21 @@
   <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
     <div class="form-row">
       <div class="form-group col-md-4">
-        <label for="docType">Document Type*</label>
-        <select required id="inputDocType" class="form-control" name="doctypesel" formControlName="doctypesel">
-          <option *ngFor="let t of doctypes" [ngValue]="t">{{t.name}}</option>
+        <label for="doctypesel">Document Type*</label>
+        <select required class="form-control" formControlName="doctypesel">
+          <option *ngFor="let type of doctypes" [ngValue]="type._id">{{type.name}}</option>
         </select>
       </div>
       <div class="form-group col-md-4">
-        <label for="inputAuthor">Author*</label>
-        <select required id="inputAuthor" class="form-control" name="authorsel" formControlName="authorsel">
-          <option *ngFor="let t of authors" [ngValue]="t">{{t.name}}</option>
+        <label for="authorsel">Author*</label>
+        <select required class="form-control" formControlName="authorsel">
+          <option *ngFor="let author of authors" [ngValue]="author._id">{{author.name}}</option>
         </select>
       </div>
       <div class="form-group col-md-4">
-        <label for="inputLabel">Label</label>
-        <select id="inputLabel" class="form-control" name="labelsel" formControlName="labelsel">
-          <option *ngFor="let t of labels" [ngValue]="t">{{t.name}}</option>
+        <label for="labelsel">Milestone</label>
+        <select required class="form-control" formControlName="labelsel">
+          <option *ngFor="let label of labels" [ngValue]="label._id">{{label.name}}</option>
         </select>
       </div>
     </div>
@@ -69,10 +69,13 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="inputAddress2">Labels</label>
-      <div>
-        <button (click)="addLabels()" class="btn btn-outline-secondary mr-1" type="button" id="button-d">
-            <i class="material-icons">list</i>Add Label(s)</button>
+      <button (click)="addLabels()" class="btn btn-outline-secondary mr-1" type="button" id="button-d">
+        <i class="material-icons">list</i>Add Label(s)
+      </button>
+      <div class="row">
+        <div *ngFor="let label of labels" class="form-group col">
+          <span *ngIf="label.selected" class="badge badge-pill badge-primary">{{label.name}}</span>
+        </div>
       </div>
     </div>
   </form>

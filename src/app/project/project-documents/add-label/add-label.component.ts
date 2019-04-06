@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormGroup, FormControl, FormArray, NgForm, ReactiveFormsModule } from '@angular/forms';
 
 import { DocumentService } from 'app/services/document.service';
 
@@ -10,6 +11,8 @@ import { DocumentService } from 'app/services/document.service';
 })
 export class AddLabelComponent implements OnInit {
   public currentProjectId: string;
+  public myForm: FormGroup;
+  public labels: any[] = [];
 
   constructor(
     private router: Router,
@@ -21,12 +24,29 @@ export class AddLabelComponent implements OnInit {
     this.route.parent.paramMap.subscribe(params => {
       this.currentProjectId = params.get('projId');
     });
+
+    this.myForm = new FormGroup({
+      'doctypesel': new FormControl(),
+      'authorsel': new FormControl(),
+      'labelsel': new FormControl(),
+      'milestonesel': new FormControl(),
+      'documentDate': new FormControl(),
+      'uploadDate': new FormControl(),
+      'documentName': new FormControl(),
+      'description': new FormControl()
+    });
+
+    this.labels = this.documentService.state.labels;
   }
 
-  saveLabels() {
-    // TODO
-    this.documentService.setState({type: 'return', picklist: 'alwayspicked'});
-    this.router.navigate(['p', this.currentProjectId, 'project-documents', 'upload']);
+  toggleSelected(label: any) {
+    label.selected = !label.selected;
+    this.documentService.state.labels = this.labels;
+  }
+
+  register (myForm: FormGroup) {
+    console.log('Successful registration');
+    console.log(myForm);
   }
 
   cancel() {
