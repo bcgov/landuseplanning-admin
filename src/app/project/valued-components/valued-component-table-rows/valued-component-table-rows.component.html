@@ -1,5 +1,5 @@
 <tr *ngFor="let valuedComponent of valuedComponents | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
-    class="clickable-row d-flex">
+    class="clickable-row">
     <td scope="row" class="col-3">{{valuedComponent.type}}</td>
     <td scope="row" class="col-5">{{valuedComponent.title}}</td>
     <td scope="row" class="col-2">{{valuedComponent.pillar}}</td>

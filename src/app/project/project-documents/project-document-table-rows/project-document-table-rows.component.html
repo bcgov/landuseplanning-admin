@@ -1,5 +1,5 @@
 <tr *ngFor="let document of documents | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
-  class="clickable-row d-flex">
+  class="clickable-row">
     <td (click)="selectItem(document)"
         scope="row"
         class="col-sm">
