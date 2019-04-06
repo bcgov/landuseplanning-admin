@@ -19,7 +19,7 @@ export class Document {
   project: string;
   upfile: File;
   type: string;
-  author: string;
+  documentAuthor: string;
   milestone: string;
   description: string;
   isPublished = false; // depends on tags; see below
@@ -42,7 +42,7 @@ export class Document {
     this.upfile     = obj && obj.upfile     || null;
 
     this.type      = obj && obj.type      || null;
-    this.author      = obj && obj.author      || null;
+    this.documentAuthor      = obj && obj.documentAuthor      || null;
     this.milestone      = obj && obj.milestone      || null;
     this.description      = obj && obj.description      || null;
 

@@ -2,7 +2,9 @@
   <div class="container-fluid-padding">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Documents</li>
+          <li class="breadcrumb-item active" aria-current="page"><a
+            [routerLink]="['/p', currentProjectId]">Project Details</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Documents</li>
       </ol>
     </nav>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
