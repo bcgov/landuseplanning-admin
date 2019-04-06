@@ -2,26 +2,32 @@
   <div class="container-fluid-padding">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
-        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId, 'project-documents', 'upload']">Upload Document(s)</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a
+            [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a
+            [routerLink]="['/p', currentProjectId, 'project-documents', 'upload']">Upload Document(s)</a></li>
         <li class="breadcrumb-item">Add Label(s)</li>
       </ol>
     </nav>
   </div>
 </div>
 
+<div class="form-group mb-0">
+  <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+    <div class="form-row">
+      <div *ngFor="let label of labels" class="form-group col">
+        <button type="button" class="col-12 btn" (click)="toggleSelected(label)"
+          [ngClass]="label.selected ? 'btn-primary' : 'btn-secondary'">{{label.name}}<span
+            class="badge"></span></button>
+      </div>
+    </div>
+  </form>
+</div>
+
 
 <div class="btn-group" role="group" aria-label="Action Buttons">
   <div class="input-group-prepend">
-    <button (click)="saveLabels()"
-    class="btn btn-outline-primary mr-1"
-    type="button"
-    id="button-cl"><i class="material-icons">save</i>Save</button>
-  </div>
-  <div class="input-group-prepend">
-    <button (click)="cancel()"
-    class="btn btn-outline-primary mr-1"
-    type="button"
-    id="button-cl"><i class="material-icons">cancel</i>Cancel</button>
+    <button class="btn btn-outline-primary mr-1" type="button" id="button-cl" [routerLink]="['/p', currentProjectId, 'project-documents', 'upload']"><i
+        class="material-icons">arrow_back</i>Back</button>
   </div>
 </div>
