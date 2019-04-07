@@ -59,19 +59,8 @@ export class CommentPeriodService {
       .catch(error => this.api.handleError(error));
   }
 
-  add(orig: CommentPeriod): Observable<CommentPeriod> {
-    // make a (deep) copy of the passed-in comment period so we don't change it
-    const period = _.cloneDeep(orig);
-
-    // ID must not exist on POST
-    delete period._id;
-
-    // replace newlines with \\n (JSON format)
-    // if (period.instructions) {
-    //   period.instructions = period.instructions.replace(/\n/g, '\\n');
-    // }
-
-    return this.api.addCommentPeriod(period)
+  add(commentPeriod: CommentPeriod): Observable<CommentPeriod> {
+    return this.api.addCommentPeriod(commentPeriod)
       .catch(error => this.api.handleError(error));
   }
 
