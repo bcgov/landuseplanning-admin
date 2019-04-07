@@ -19,10 +19,10 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of data">
-              <td>{{item.action || 'New Item'}}</td>
-              <td>{{item.performedBy || item.addedBy }}</td>
-              <td>{{item._objectSchema}}</td>
-              <td>{{item.timestamp | date:'full'}}</td>
+              <td data-label="Action">{{item.action || 'New Item'}}</td>
+              <td data-label="User">{{item.performedBy || item.addedBy }}</td>
+              <td data-label="Meta">{{item._objectSchema}}</td>
+              <td data-label="Timestamp">{{item.timestamp | date:'full'}}</td>
             </tr>
           </tbody>
         </table>

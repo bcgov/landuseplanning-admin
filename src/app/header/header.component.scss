@@ -48,7 +48,7 @@
   font-size: medium;
   font-weight: 600;
   outline: none; // override user agent stylesheet default
-  
+
   &:hover {
     cursor: pointer;
   }
@@ -93,6 +93,11 @@
 
   .navbar-nav {
     margin-top: 0.5rem;
+    @media screen and (max-width: 600px) {
+      .btn-group {
+        display: block;
+      }
+    }
 
     .nav-link {
       position: relative;
@@ -126,23 +131,23 @@
         font-size: $mn-dropdown-menu-size;
         white-space: normal;
         cursor: pointer;
-        
+
         strong {
           font-weight: 600;
           transition: color 0.2s ease-out;
         }
-        
+
         .dd-item-desc {
           display: block;
           font-size: small;
           opacity: 0.5;
           transition: opacity 0.2s ease-out;
         }
-        
+
         &:focus,
         &:hover {
           background: transparent;
-          
+
           strong {
             color: $mn-hover-color;
           }
@@ -163,10 +168,10 @@
 @media (min-width: 768px) {
   .navbar {
     background: transparent;
-    
+
     .navbar-nav {
       margin-top: 0;
-      
+
       .nav-link {
         height: 4.2rem; // 60px to match the branding height
         padding: 0.5rem 0.75rem !important;

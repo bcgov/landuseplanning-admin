@@ -46,8 +46,8 @@
 
         &.sort-asc,
         &.sort-desc {
-          color: $black;
-          border-bottom-color: $table-header-sort-active;
+          color: #007bff;
+          border-bottom-color: #007bff;
           background: transparent;
           text-shadow: none;
         }
@@ -84,7 +84,7 @@ th {
       content: ' ';
       position: absolute;
       display: block;
-      border-color: $table-sort-icon-color transparent;
+      border-color: #007bff transparent;
       border-style: solid;
     }
 
@@ -103,7 +103,7 @@ th {
     &.sort-desc {
       &:before,
       &:after {
-        border-color: $table-sort-icon-active-color transparent;
+        border-color: #007bff transparent;
       }
     }
 
@@ -139,6 +139,15 @@ th {
     flex-wrap: wrap;
     border-bottom: none;
   }
+
+  .table thead:before {
+    content: 'Sort by:';
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+    display: block;
+  }
+
   .table tr {
     border-bottom: 3px solid #ddd;
     display: block;
@@ -151,6 +160,7 @@ th {
     display: block;
     width: 100%;
     max-width: 100%;
+    min-height: 34px;
   }
 
   .table td::before {
@@ -174,6 +184,7 @@ th {
     flex: 33%;
     user-select: none;
     max-width: 33%;
+    border-color: #fff;
   }
 
 }
