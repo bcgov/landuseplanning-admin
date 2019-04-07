@@ -19,14 +19,9 @@ import { ProjectUpdatesComponent } from './project-updates/project-updates.compo
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 import { CommentPeriodDetailsTabComponent } from './comment-period/comment-period-details-tabs/comment-period-details-tab.component';
 import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
-
-// services
-import { ApiService } from 'app/services/api';
-import { ExcelService } from 'app/services/excel.service';
-import { ProjectService } from 'app/services/project.service';
 import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
 import { DocumentTableRowsComponent } from './project-documents/project-document-table-rows/project-document-table-rows.component';
-import { CommentPeriodTableRowsComponent } from './comment-periods/comment-period-table-rows/comment-period-table-rows.component';
+import { CommentPeriodsTableRowsComponent } from './comment-periods/comment-periods-table-rows/comment-periods-table-rows.component';
 import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { CommentPeriodComponent } from './comment-period/comment-period.component';
@@ -35,6 +30,13 @@ import { UploadComponent } from './project-documents/upload/upload.component';
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 import { DocumentDetailComponent } from './project-documents/detail/detail.component';
+import { CreateCommentPeriodComponent } from './comment-periods/create-comment-period/create-comment-period.component';
+
+// services
+import { ApiService } from 'app/services/api';
+import { ExcelService } from 'app/services/excel.service';
+import { ProjectService } from 'app/services/project.service';
+import { StorageService } from 'app/services/storage.service';
 
 @NgModule({
   imports: [
@@ -59,7 +61,7 @@ import { DocumentDetailComponent } from './project-documents/detail/detail.compo
     ProjectDetailComponent,
     ProjectUpdatesComponent,
     CommentPeriodsComponent,
-    CommentPeriodTableRowsComponent,
+    CommentPeriodsTableRowsComponent,
     ValuedComponentsComponent,
     ValuedComponentTableRowsComponent,
     ProjectDocumentsComponent,
@@ -68,12 +70,13 @@ import { DocumentDetailComponent } from './project-documents/detail/detail.compo
     UploadComponent,
     AddLabelComponent,
     ReviewCommentsTabTableRowsComponent,
-    DocumentDetailComponent
+    DocumentDetailComponent,
+    CreateCommentPeriodComponent
   ],
   entryComponents: [
     CommentPeriodComponent,
     CommentPeriodsComponent,
-    CommentPeriodTableRowsComponent,
+    CommentPeriodsTableRowsComponent,
     ValuedComponentTableRowsComponent,
     DocumentTableRowsComponent,
     UploadComponent,
@@ -93,7 +96,8 @@ import { DocumentDetailComponent } from './project-documents/detail/detail.compo
   providers: [
     ApiService,
     ExcelService,
-    ProjectService
+    ProjectService,
+    StorageService
   ]
 })
 

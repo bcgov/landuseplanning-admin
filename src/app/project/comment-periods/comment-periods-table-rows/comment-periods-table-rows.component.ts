@@ -5,12 +5,12 @@ import { TableObject } from 'app/shared/components/table-template/table-object';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'tbody[app-comment-period-table-rows]',
-    templateUrl: './comment-period-table-rows.component.html',
-    styleUrls: ['./comment-period-table-rows.component.scss']
+    selector: 'tbody[app-comment-periods-table-rows]',
+    templateUrl: './comment-periods-table-rows.component.html',
+    styleUrls: ['./comment-periods-table-rows.component.scss']
 })
 
-export class CommentPeriodTableRowsComponent implements OnInit, TableComponent {
+export class CommentPeriodsTableRowsComponent implements OnInit, TableComponent {
     @Input() data: TableObject;
 
     public commentPeriods: any;
