@@ -1,9 +1,9 @@
 <tr *ngFor="let valuedComponent of valuedComponents | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
-    class="clickable-row d-flex">
-    <td scope="row" class="col-3">{{valuedComponent.type}}</td>
-    <td scope="row" class="col-5">{{valuedComponent.title}}</td>
-    <td scope="row" class="col-2">{{valuedComponent.pillar}}</td>
-    <td scope="row" class="col-2">{{valuedComponent.parent}}</td>
+    class="clickable-row">
+    <td data-label="Type" scope="row" class="col-3">{{valuedComponent.type}}</td>
+    <td data-label="Title" scope="row" class="col-5">{{valuedComponent.title}}</td>
+    <td data-label="Pillar" scope="row" class="col-2">{{valuedComponent.pillar}}</td>
+    <td data-label="Parent" scope="row" class="col-2">{{valuedComponent.parent}}</td>
     <!-- <td>
             <button type="button" (click)="deleteVC(valuedComponent)" class="btn btn-danger">Delete</button>
         </td> -->

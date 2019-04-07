@@ -24,12 +24,10 @@
 }
 
 .project-nav {
-  border-bottom: 1px solid #036;
+  background: #003367;
+  border-radius: 4px 0 0 4px;
   padding-bottom: 12px;
   margin-bottom: 10px;
-  .dropdown-btn {
-    margin-bottom: 10px;
-  }
 }
 
 .sidebar .project-menu {
@@ -53,7 +51,7 @@
 /* Links on mouse-over */
 .sidebar a:hover:not(.active) {
   background-color: #FCB118;
-  color: white;
+  color: #036;
 }
 
 
