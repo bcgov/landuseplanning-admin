@@ -54,7 +54,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.8.1",
     "@angular-devkit/schematics": "0.0.40",
-    "@angular/cli": "^1.5.x",
+    "@angular/cli": "^6.2.1",
     "@angular/compiler": "^6.1.7",
     "@angular/compiler-cli": "^6.1.7",
     "@types/arcgis-js-api": "4.6.0",
