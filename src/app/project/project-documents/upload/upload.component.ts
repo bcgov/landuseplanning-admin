@@ -7,8 +7,9 @@ import { Observable, of } from 'rxjs';
 import { Document } from 'app/models/document';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment-timezone';
-import { DocumentService } from 'app/services/document.service';
 import { ConfigService } from 'app/services/config.service';
+import { StorageService } from 'app/services/storage.service';
+import { DocumentService } from 'app/services/document.service';
 
 @Component({
   selector: 'app-upload',
@@ -32,6 +33,7 @@ export class UploadComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private storageService: StorageService,
     private documentService: DocumentService,
     private route: ActivatedRoute,
     private config: ConfigService
@@ -55,8 +57,8 @@ export class UploadComponent implements OnInit {
       }
     });
 
-    if (this.documentService.state.form) {
-      this.myForm = this.documentService.state.form;
+    if (this.storageService.state.form) {
+      this.myForm = this.storageService.state.form;
     } else {
       this.myForm = new FormGroup({
         'doctypesel': new FormControl(),
@@ -77,20 +79,20 @@ export class UploadComponent implements OnInit {
       this.myForm.controls.uploadDate.setValue(todayObj);
     }
 
-    if (this.documentService.state.documents) {
-      this.documents = this.documentService.state.documents;
+    if (this.storageService.state.documents) {
+      this.documents = this.storageService.state.documents;
     }
 
-    if (this.documentService.state.labels) {
-      this.labels = this.documentService.state.labels;
+    if (this.storageService.state.labels) {
+      this.labels = this.storageService.state.labels;
     }
   }
 
   addLabels() {
     console.log('Adding labels');
-    this.documentService.state = { type: 'form', data: this.myForm };
-    this.documentService.state = { type: 'documents', data: this.documents };
-    this.documentService.state = { type: 'labels', data: this.labels };
+    this.storageService.state = { type: 'form', data: this.myForm };
+    this.storageService.state = { type: 'documents', data: this.documents };
+    this.storageService.state = { type: 'labels', data: this.labels };
     this.router.navigate(['/p', this.currentProjectId, 'project-documents', 'upload', 'add-label']);
   }
 
@@ -119,9 +121,9 @@ export class UploadComponent implements OnInit {
       observables = observables.concat(this.documentService.add(formData));
     });
 
-    this.documentService.state = { type: 'form', data: null };
-    this.documentService.state = { type: 'documents', data: null };
-    this.documentService.state = { type: 'labels', data: null };
+    this.storageService.state = { type: 'form', data: null };
+    this.storageService.state = { type: 'documents', data: null };
+    this.storageService.state = { type: 'labels', data: null };
 
     observables
       .takeUntil(this.ngUnsubscribe)

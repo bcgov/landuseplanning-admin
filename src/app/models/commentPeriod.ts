@@ -12,7 +12,7 @@ export class CommentPeriod {
   classificationRoles: String;
   classifiedPercent: Number;
   commenterRoles: String;
-  dateAdded: String;
+  dateAdded: Date;
   dateCompleted: Date;
   dateCompletedEst: String;
   dateStarted: Date;
@@ -100,6 +100,10 @@ export class CommentPeriod {
     this.currentPage          = obj && obj.currentPage          || null;
     this.pageSize             = obj && obj.pageSize             || null;
     this.totalComments        = obj && obj.totalComments        || null;
+
+    if (obj && obj.dateAdded) {
+      this.dateAdded = new Date(obj.dateAdded);
+    }
 
     if (obj && obj.dateStarted) {
       this.dateStarted = new Date(obj.dateStarted);
