@@ -1,16 +1,26 @@
 <section id="comment-period-details">
-    <div class="row">
-        <div class="col-12 header-underline">
+    <div class="row header-underline">
+        <div class="col-md-10">
             <h3>
                 <strong>
                     COMMMENT PERIOD
                 </strong>
             </h3>
         </div>
+        <div class="col-md-2 text-right">
+            <div ngbDropdown placement="bottom-right" class="d-inline-block">
+                <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
+                <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+                    <button class="dropdown-item">Edit</button>
+                    <button class="dropdown-item">Add a comment</button>
+                    <button class="dropdown-item" (click)="togglePublishState()">{{publishAction}}</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
-        <div class="col-4">
+        <div class="col-md-6">
             <h6>
                 <strong>
                     DATE RANGE:&nbsp;
@@ -20,14 +30,15 @@
                 ({{commentPeriod.daysRemaining}})
             </h6>
         </div>
-        <div class="col-2">
+        <div class="col-md-2">
             <h6>
                 <strong>
-                    CALCULATED AS:&nbsp;
+                    PUBLISHED STATE:&nbsp;
                 </strong>
             </h6>
+            {{commentPeriodPublishedStatus}}
         </div>
-        <div class="col-6">
+        <div class="col-md-4">
             <h6>
                 <strong>
                     STATUS:&nbsp;
@@ -43,7 +54,7 @@
     <br>
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-8">
             <h6>
                 <strong>
                     DESCRIPTION
@@ -53,7 +64,7 @@
             <p>{{commentPeriod.additionalText}}</p>
             <p>{{commentPeriod.informationLabel}}</p>
         </div>
-        <div class="col-6">
+        <div class="col-md-4">
             <h6>
                 <strong>
                     MILESTONE(S):
@@ -75,29 +86,22 @@
     </div>
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-6">
             <h6>
                 <strong>
                     TOTAL:&nbsp;
                 </strong>
             </h6>
+            <div>
+                <app-comment-stats></app-comment-stats>
+            </div>
         </div>
-        <div class="col-6">
+        <div class="col-md-6">
             <h6>
                 <strong>
                     VALUED COMPONENTS WITH COMMENT COUNTS
                 </strong>
             </h6>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-6">
-            <div>
-                <app-comment-stats></app-comment-stats>
-            </div>
-        </div>
-        <div class="col-6">
         </div>
     </div>
 </section>

@@ -126,8 +126,8 @@ export class CommentPeriod {
       }
     }
 
-    // if (obj && obj.comments) {
-    //   this.comments.push(obj.comments);
-    // }
+    if (obj && obj.read) {
+      this.isPublished = obj.read.includes('public');
+    }
   }
 }
