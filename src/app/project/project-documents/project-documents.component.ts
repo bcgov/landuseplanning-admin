@@ -27,7 +27,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     {
       name: '',
       value: 'check',
-      width: 'col-sm'
+      width: 'col-1'
     },
     {
       name: 'Name',
@@ -36,7 +36,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Date',
-      value: 'datePosted',
+      value: 'date',
       width: 'col-2'
     },
     {
@@ -197,7 +197,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         documentList.push(
           {
             displayName: document.displayName,
-            datePosted: document.datePosted,
+            date: document.dateUploaded || document.datePosted,
             documentType: document.documentType,
             documentFileSize: document.documentFileSize,
             _id: document._id,

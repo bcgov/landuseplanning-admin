@@ -10,6 +10,8 @@ export class Document {
   displayName: string;
   documentType: string;
   datePosted: string;
+  dateUploaded: string;
+  dateReceived: string;
   documentFileSize: string;
   internalURL: string;
   isDeleted: boolean;
@@ -34,6 +36,8 @@ export class Document {
     this.displayName      = obj && obj.displayName      || null;
     this.documentType      = obj && obj.documentType      || null;
     this.datePosted      = obj && obj.datePosted      || null;
+    this.dateUploaded      = obj && obj.dateUploaded      || null;
+    this.dateReceived      = obj && obj.dateReceived      || null;
     this.documentFileSize      = obj && obj.documentFileSize      || null;
     this.internalURL      = obj && obj.internalURL      || null;
     this.isDeleted        = obj && obj.isDeleted        || null;
