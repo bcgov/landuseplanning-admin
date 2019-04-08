@@ -5,7 +5,7 @@
     <td scope="row" class="col-2" data-label="Ends Date" (click)="goToItem(commentPeriod)">{{commentPeriod.dateCompleted | date:'longDate'}}
     </td>
     <td scope="row" class="col-2" data-label="Days Remaining" (click)="goToItem(commentPeriod)">{{commentPeriod.daysRemaining}}</td>
-    <td scope="row" class="col-1 text-center badge" data-label="Published" (click)="goToItem(commentPeriod)">{{commentPeriod.read}}</td>
+    <td scope="row" class="col-1" data-label="Published" (click)="goToItem(commentPeriod)">{{commentPeriod.read}}</td>
     <td scope="row" class="col-4" data-label="Comment Data" (click)="goToItem(commentPeriod)">
         <app-comment-stats></app-comment-stats>
     </td>

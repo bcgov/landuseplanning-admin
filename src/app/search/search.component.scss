@@ -1,7 +1,5 @@
 // Move somewhere global
 h1 {
-  font-size: 2.5rem;
-  font-weight: 400;
   letter-spacing: -0.05rem;
 }
 
@@ -16,7 +14,6 @@ h2 {
 }
 .container-fluid-padding {
   padding: 1.5rem;
-  padding-top: .5rem
 }
 .btn-sm {
   i {
@@ -26,9 +23,13 @@ h2 {
 
 // Search Container
 .search-container {
-  padding-top: 1.5rem;
   padding-bottom: .5rem;
   background: #f7f8fa;
+}
+
+.search-result {
+  margin-top: 12px;
+  margin-bottom: 0;
 }
 
 form {
