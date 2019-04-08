@@ -25,7 +25,7 @@ import { CommentPeriodsTableRowsComponent } from './comment-periods/comment-peri
 import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { CommentPeriodComponent } from './comment-period/comment-period.component';
-import { MatTabsModule } from '@angular/material';
+import { MatTabsModule, MatMenuModule } from '@angular/material';
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
@@ -47,7 +47,8 @@ import { StorageService } from 'app/services/storage.service';
     MatTabsModule,
     ProjectRoutingModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatMenuModule
   ],
   declarations: [
     CommentPeriodComponent,
