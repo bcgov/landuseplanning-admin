@@ -78,7 +78,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.count = 0;
     this.keywords = this.terms.keywords;
 
-    this.searchService.getSearchResults(this.keywords, this.terms.dataset, null)
+    this.searchService.getSearchResults(this.keywords, this.terms.dataset, null, 1, 2000)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         results => {
