@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, NgForm, ReactiveFormsModule } from '@angular/forms';
 
-import { DocumentService } from 'app/services/document.service';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-add-label',
@@ -17,7 +17,7 @@ export class AddLabelComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private documentService: DocumentService
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -36,12 +36,13 @@ export class AddLabelComponent implements OnInit {
       'description': new FormControl()
     });
 
-    this.labels = this.documentService.state.labels;
+    this.labels = this.storageService.state.labels;
+    console.log('labels:', this.labels);
   }
 
   toggleSelected(label: any) {
     label.selected = !label.selected;
-    this.documentService.state.labels = this.labels;
+    this.storageService.state.labels = this.labels;
   }
 
   register (myForm: FormGroup) {
