@@ -16,6 +16,10 @@ $card-shadow: 0.02rem 0 0.2rem rgba(#000, 0.15);
   box-shadow: $card-shadow;
 }
 
+.breadcrumb {
+  margin-left: 0;
+}
+
 .aside-card {
   background: $card-bg;
   box-shadow: $card-shadow;

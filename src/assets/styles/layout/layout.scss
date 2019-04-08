@@ -23,9 +23,11 @@ div.content {
     .slidebtn {
       transform: rotate(180deg);
       -webkit-transform: rotate(180deg);
+      border-radius: 6px 0 0 6px;
     }
   }
 }
+
 @media screen and (max-width: 768px) {
   div.content {
     margin-left: 0;
@@ -41,6 +43,7 @@ div.content {
     .slidebtn {
       transform: rotate(0deg);
       -webkit-transform: rotate(0deg);
+      border-radius: 0 6px 6px 0;
     }
   }
 }
@@ -196,7 +199,7 @@ hr {
 // Page Title Container
 .title-container {
   @include flex-box();
-  
+
   &__title {
     @include flex(1 1 auto);
     margin: 0;
@@ -206,10 +209,10 @@ hr {
       font-size: 1.65rem;
     }
   }
-  
+
   &__actions {
     @include flex(0 0 auto);
-  
+
     .btn {
       min-width: 5rem;
       font-size: 0.875rem;
@@ -228,12 +231,11 @@ hr {
 }
 
 .top-container {
-  @include flex(0 0 auto); 
+  @include flex(0 0 auto);
   position: relative;
-  padding-right: 5px; // Offset approximate width of scrollbar
   box-shadow: 0 0 0.5rem rgba(0,0,0,0.15);
   z-index: 999;
-  
+
   .container {
     padding-top: 1rem;
     padding-bottom: 1rem;

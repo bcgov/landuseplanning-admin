@@ -1,7 +1,7 @@
 /* The side navigation menu */
 .sidebar {
   margin: 0;
-  padding: 7px 0 5px 5px;
+  padding: 8px 0 15px 5px;
   width: 250px;
   background-color: #38598a;
   position: fixed;
@@ -9,6 +9,7 @@
   height: calc(100% - 71px - 37px);
   overflow: auto;
   transition: 0.3s;
+
   @media screen and (min-width: 768px) {
     margin-top: 71px;
   }
@@ -18,7 +19,7 @@
 .sidebar a {
   display: block;
   color: white;
-  padding: 16px;
+  padding: 8px 12px;
   text-decoration: none;
   transition: 0.3s;
 }
@@ -27,7 +28,7 @@
   background: #003367;
   border-radius: 4px 0 0 4px;
   padding-bottom: 12px;
-  margin-bottom: 10px;
+  margin: 12px 0 8px;
 }
 
 .sidebar .project-menu {
