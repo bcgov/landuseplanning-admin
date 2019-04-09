@@ -3,9 +3,11 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item active" aria-current="page"><a
+          [routerLink]="['/p', currentProjectId]">Project Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a
             [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
         <li class="breadcrumb-item active" aria-current="page"><a
-            [routerLink]="['/p', currentProjectId, 'project-documents', 'upload']">Upload Document(s)</a></li>
+            [routerLink]="back.url">{{back.label}}</a></li>
         <li class="breadcrumb-item">Add Label(s)</li>
       </ol>
     </nav>
@@ -27,7 +29,7 @@
 
 <div class="btn-group" role="group" aria-label="Action Buttons">
   <div class="input-group-prepend">
-    <button class="btn btn-outline-primary mr-1" type="button" id="button-cl" [routerLink]="['/p', currentProjectId, 'project-documents', 'upload']"><i
+    <button class="btn btn-outline-primary mr-1" type="button" id="button-cl" [routerLink]="back.url"><i
         class="material-icons">arrow_back</i>Back</button>
   </div>
 </div>
