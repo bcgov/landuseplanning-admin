@@ -33,7 +33,7 @@ export class AddLabelComponent implements OnInit {
       'milestonesel': new FormControl(),
       'documentDate': new FormControl(),
       'uploadDate': new FormControl(),
-      'documentName': new FormControl(),
+      'displayName': new FormControl(),
       'description': new FormControl()
     });
 

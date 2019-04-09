@@ -66,7 +66,7 @@ export class UploadComponent implements OnInit {
         'labelsel': new FormControl(),
         'documentDate': new FormControl(),
         'uploadDate': new FormControl(),
-        'documentName': new FormControl(),
+        'displayName': new FormControl(),
         'description': new FormControl()
       });
       let today = new Date();
@@ -110,17 +110,18 @@ export class UploadComponent implements OnInit {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
       formData.append('project', this.currentProjectId);
-      formData.append('type', this.myForm.value.doctypesel);
-      formData.append('documentSource', 'PROJECT');
-      formData.append('milestone', this.myForm.value.labelsel);
-      formData.append('documentDate', moment(this.myForm.value.documentDate));
-      formData.append('uploadDate', moment(this.myForm.value.uploadDate));
-      formData.append('documentName', this.myForm.value.documentName || doc.documentFileName);
+
       formData.append('documentFileName', doc.documentFileName);
+
+      formData.append('documentSource', 'PROJECT');
+
+      formData.append('displayName', this.myForm.value.displayName);
+      formData.append('milestone', this.myForm.value.labelsel);
+      formData.append('uploadDate', moment(this.myForm.value.uploadDate));
+      formData.append('documentDate', moment(this.myForm.value.documentDate));
+      formData.append('type', this.myForm.value.doctypesel);
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);
-      formData.append('displayName', doc.documentFileName);
-      formData.append('internalOriginalName', doc.documentFileName);
       observables = observables.concat(this.documentService.add(formData));
     });
 

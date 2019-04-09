@@ -33,23 +33,23 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Name',
-      value: 'documentFileName',
-      width: 'col-7'
+      value: 'displayName',
+      width: 'col-6'
     },
     {
       name: 'Date',
-      value: 'date',
+      value: 'documentDate',
       width: 'col-2'
     },
     {
       name: 'Type',
-      value: 'documentType',
-      width: 'col-1'
+      value: 'type',
+      width: 'col-2'
     },
     {
-      name: 'Size',
-      value: 'documentFileSize',
-      width: 'col-1'
+      name: 'Milestone',
+      value: 'milestone',
+      width: 'col-2'
     }
   ];
 
@@ -224,10 +224,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
           {
             // displayName: document.displayName || document.internalOriginalName,
             // date: document.dateUploaded || document.datePosted,
-            documentFileName: document.documentFileName,
-            date: document.dateUploaded,
-            documentType: document.documentType,
-            documentFileSize: document.documentFileSize,
+            displayName: document.displayName,
+            documentDate: document.documentDate,
+            type: document.type,
+            milestone: document.milestone,
             _id: document._id,
             project: document.project
           }
