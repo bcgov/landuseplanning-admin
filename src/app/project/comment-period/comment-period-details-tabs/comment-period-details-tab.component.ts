@@ -3,6 +3,7 @@ import { CommentPeriod } from 'app/models/commentPeriod';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Subject } from 'rxjs/Subject';
 import { MatSnackBar } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-comment-period-details-tab',
@@ -18,14 +19,22 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
 
   public commentPeriodPublishedStatus: string;
   public publishAction: string;
+  public projectId: string;
 
   constructor(
     private commentPeriodService: CommentPeriodService,
+    private route: ActivatedRoute,
+    private router: Router,
     private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
     this.setPublishStatus();
+
+    this.route.parent.params.subscribe(params => {
+      this.projectId = params.projId;
+    });
+
   }
 
   setPublishStatus() {
@@ -47,14 +56,14 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
           );
       } else {
         this.commentPeriodService.publish(this.commentPeriod)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          (res => {
-            this.commentPeriod.isPublished = true;
-            this.setPublishStatus();
-            this.openSnackBar('This comment period has been published.', 'Close');
-          })
-        );
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            (res => {
+              this.commentPeriod.isPublished = true;
+              this.setPublishStatus();
+              this.openSnackBar('This comment period has been published.', 'Close');
+            })
+          );
       }
     }
   }
@@ -63,5 +72,9 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  editCommentPeriod() {
+    this.router.navigateByUrl(`/p/${this.projectId}/cp/${this.commentPeriod._id}/edit`);
   }
 }

@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 
 export class CommentPeriod {
-  _id: string;
   __v: Number;
+  _id: string;
   _schemaName: String;
   addedBy: String;
   additionalText: String;
@@ -17,7 +17,7 @@ export class CommentPeriod {
   dateCompletedEst: String;
   dateStarted: Date;
   dateStartedEst: String;
-  dateUpdated: String;
+  dateUpdated: Date;
   downloadRoles: String;
   informationLabel: String;
   instructions: String;
@@ -55,8 +55,8 @@ export class CommentPeriod {
   totalComments: number;
 
   constructor(obj?: any) {
-    this._id                  = obj && obj._id                  || null;
     this.__v                  = obj && obj.__v                  || null;
+    this._id                  = obj && obj._id                  || null;
     this._schemaName          = obj && obj._schemaName          || null;
     this.addedBy              = obj && obj.addedBy              || null;
     this.additionalText       = obj && obj.additionalText       || null;
@@ -66,7 +66,6 @@ export class CommentPeriod {
     this.classificationRoles  = obj && obj.classificationRoles  || null;
     this.classifiedPercent    = obj && obj.classifiedPercent    || null;
     this.commenterRoles       = obj && obj.commenterRoles       || null;
-    this.dateAdded            = obj && obj.dateAdded            || null;
     this.dateCompletedEst     = obj && obj.dateCompletedEst     || null;
     this.dateStartedEst       = obj && obj.dateStartedEst       || null;
     this.dateUpdated          = obj && obj.dateUpdated          || null;
@@ -109,12 +108,10 @@ export class CommentPeriod {
       this.dateStarted = new Date(obj.dateStarted);
     }
 
-    if (obj && obj.dateCompleted) {
-      this.dateCompleted = new Date(obj.dateCompleted);
-    }
-
     // get comment period days remaining and determine status of the period
     if (obj && obj.dateCompleted) {
+      this.dateCompleted = new Date(obj.dateCompleted);
+
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const days = moment(obj.dateCompleted).diff(moment(today), 'days') + 1;

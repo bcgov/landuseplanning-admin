@@ -156,7 +156,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   public addCommentPeriod() {
-    this.router.navigate(['p', this.projectId, 'comment-periods', 'create']);
+    this.router.navigate(['p', this.projectId, 'comment-periods', 'add']);
   }
 
   ngOnDestroy() {

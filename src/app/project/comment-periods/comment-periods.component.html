@@ -8,9 +8,13 @@
     </li>
   </ol>
 
-  <div class="mb-2">
-    <h1>Comment Periods</h1>
-    <button type="button" class="btn btn-primary mb-3" (click)="addCommentPeriod()">Add new comment period</button>
+  <div class="row mb-2">
+    <div class="col-md-8">
+      <h1>Comment Periods</h1>
+    </div>
+    <div class="col-md-4 text-right">
+      <button type="button" class="btn btn-primary mb-3" (click)="addCommentPeriod()">Add new comment period</button>
+    </div>
   </div>
 
   <div class="spinner-container" *ngIf="loading">

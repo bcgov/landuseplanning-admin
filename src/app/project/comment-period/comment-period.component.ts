@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommentPeriod } from 'app/models/commentPeriod';
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-comment-period',
@@ -19,7 +20,8 @@ export class CommentPeriodComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -34,6 +36,7 @@ export class CommentPeriodComponent implements OnInit {
         (data) => {
           if (data.commentPeriod) {
             this.commentPeriod = data.commentPeriod;
+            this.storageService.state = { type: 'currentCommentPeriod', data: this.commentPeriod };
           } else {
             alert('Uh-oh, couldn\'t load comment period ');
             // comment period not found --> navigate back to search

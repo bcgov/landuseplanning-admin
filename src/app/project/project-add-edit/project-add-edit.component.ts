@@ -397,7 +397,7 @@ export class ProjectAddEditComponent implements OnInit, OnDestroy {
         },
         () => { // onCompleted
           // reload app with decision for next step
-          this.projectService.getById(project2._id, { getDecision: false })
+          this.projectService.getById(project2._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               project3 => {
@@ -563,7 +563,7 @@ export class ProjectAddEditComponent implements OnInit, OnDestroy {
         },
         () => { // onCompleted
           // reload app with documents, current period and decision for next step
-          this.projectService.getById(this.project._id, { getDocuments: true, getCurrentPeriod: true, getDecision: false })
+          this.projectService.getById(this.project._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               project2 => {

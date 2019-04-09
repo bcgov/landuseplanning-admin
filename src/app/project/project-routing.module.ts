@@ -24,7 +24,7 @@ import { ValuedComponentsResolver } from './valued-components/valued-components-
 import { DocumentsResolver } from './project-documents/project-document-resolver.services';
 import { DocumentDetailResolver } from './project-documents/detail/document-detail-resolver.service';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
-import { CreateCommentPeriodComponent } from './comment-periods/create-comment-period/create-comment-period.component';
+import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 
 const routes: Routes = [
   {
@@ -93,15 +93,22 @@ const routes: Routes = [
         component: ProjectContactsComponent,
       },
       {
-        path: 'cp/:commentPeriodId',
-        component: CommentPeriodComponent,
+        path: 'cp/:commentPeriodId/edit',
+        component: AddEditCommentPeriodComponent,
         resolve: {
           commentPeriod: CommentPeriodResolver
         }
       },
       {
-        path: 'comment-periods/create',
-        component: CreateCommentPeriodComponent,
+        path: 'cp/:commentPeriodId',
+        component: CommentPeriodComponent,
+        resolve: {
+          commentPeriod: CommentPeriodResolver,
+        }
+      },
+      {
+        path: 'comment-periods/add',
+        component: AddEditCommentPeriodComponent,
       },
       {
         path: 'comment-periods',
