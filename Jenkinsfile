@@ -7,7 +7,7 @@ pipeline {
           try {
             echo "Building: ${env.JOB_NAME} #${env.BUILD_ID}"
             notifyBuild("Building: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOW")
-            openshiftBuild bldCfg: 'admin-angular-on-nginx-build-angular-app-build', showBuildLogs: 'true'
+            openshiftBuild bldCfg: 'eagle-admin-angular', showBuildLogs: 'true'
           } catch (e) {
             notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
             error('Stopping early…')
@@ -20,7 +20,7 @@ pipeline {
         script {
           try {
             notifyBuild("Deploying: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOW")
-            openshiftBuild bldCfg: 'admin-angular-on-nginx-build', showBuildLogs: 'true'
+            openshiftBuild bldCfg: 'eagle-admin-build', showBuildLogs: 'true'
           } catch (e) {
             notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
             error('Stopping early…')
