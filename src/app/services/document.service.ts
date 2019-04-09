@@ -84,6 +84,11 @@ export class DocumentService {
       .catch(error => this.api.handleError(error));
   }
 
+  update(formData: FormData, _id: any): Observable<Document> {
+    return this.api.updateDocument(formData, _id)
+      .catch(error => this.api.handleError(error));
+  }
+
   delete(document: Document): Observable<Document> {
     return this.api.deleteDocument(document)
       .catch(error => this.api.handleError(error));

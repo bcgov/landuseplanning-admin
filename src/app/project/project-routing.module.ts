@@ -17,6 +17,7 @@ import { AddLabelComponent } from './project-documents/add-label/add-label.compo
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 import { DocumentDetailComponent } from './project-documents/detail/detail.component';
+import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
 
 import { ProjectResolver } from './project-resolver.service';
 import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
@@ -52,6 +53,14 @@ const routes: Routes = [
       {
         path: 'project-documents/upload',
         component: UploadComponent,
+      },
+      {
+        path: 'project-documents/edit',
+        component: DocumentEditComponent,
+      },
+      {
+        path: 'project-documents/edit/add-label',
+        component: AddLabelComponent,
       },
       {
         path: 'project-documents/detail/:docId',

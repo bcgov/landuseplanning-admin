@@ -93,6 +93,7 @@ export class UploadComponent implements OnInit {
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'documents', data: this.documents };
     this.storageService.state = { type: 'labels', data: this.labels };
+    this.storageService.state.back = { url: ['/p', this.currentProjectId, 'project-documents', 'upload'], label: 'Upload Document(s)'};
     this.router.navigate(['/p', this.currentProjectId, 'project-documents', 'upload', 'add-label']);
   }
 

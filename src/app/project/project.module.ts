@@ -37,6 +37,7 @@ import { ApiService } from 'app/services/api';
 import { ExcelService } from 'app/services/excel.service';
 import { ProjectService } from 'app/services/project.service';
 import { StorageService } from 'app/services/storage.service';
+import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
 
 @NgModule({
   imports: [
@@ -72,7 +73,8 @@ import { StorageService } from 'app/services/storage.service';
     AddLabelComponent,
     ReviewCommentsTabTableRowsComponent,
     DocumentDetailComponent,
-    CreateCommentPeriodComponent
+    CreateCommentPeriodComponent,
+    DocumentEditComponent
   ],
   entryComponents: [
     CommentPeriodComponent,

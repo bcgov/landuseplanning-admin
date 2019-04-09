@@ -13,6 +13,7 @@ export class AddLabelComponent implements OnInit {
   public currentProjectId: string;
   public myForm: FormGroup;
   public labels: any[] = [];
+  public back: any = {};
 
   constructor(
     private router: Router,
@@ -37,6 +38,7 @@ export class AddLabelComponent implements OnInit {
     });
 
     this.labels = this.storageService.state.labels;
+    this.back = this.storageService.state.back;
     console.log('labels:', this.labels);
   }
 
@@ -51,6 +53,6 @@ export class AddLabelComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['p', this.currentProjectId, 'project-documents', 'upload']);
+    this.router.navigate(this.back.url);
   }
 }

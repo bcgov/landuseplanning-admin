@@ -96,7 +96,7 @@ export class KeycloakService {
 
         // Try to get refresh tokens in the background
         self.keycloakAuth.onTokenExpired = function () {
-          self.keycloakAuth.updateToken()
+          self.keycloakAuth.updateToken(180)
             .success(function (refreshed) {
               console.log('KC refreshed token?:', refreshed);
             })

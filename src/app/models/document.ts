@@ -22,6 +22,7 @@ export class Document {
   project: string;
   upfile: File;
   type: string;
+  labels: any[];
   documentAuthor: string;
   milestone: string;
   description: string;
@@ -44,6 +45,7 @@ export class Document {
     this.isDeleted        = obj && obj.isDeleted        || null;
     this.internalMime     = obj && obj.internalMime     || null;
     this.internalOriginalName     = obj && obj.internalOriginalName     || null;
+    this.labels     = obj && obj.labels     || null;
 
     this.upfile     = obj && obj.upfile     || null;
 

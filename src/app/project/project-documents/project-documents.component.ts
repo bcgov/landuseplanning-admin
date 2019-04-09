@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Document } from 'app/models/document';
 import { DocumentService } from 'app/services/document.service';
+import { StorageService } from 'app/services/storage.service';
 import { ApiService } from 'app/services/api';
 import { SearchService } from 'app/services/search.service';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -71,7 +72,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     private api: ApiService,
     private documentService: DocumentService,
     private searchService: SearchService,
-    private _changeDetectionRef: ChangeDetectorRef
+    private _changeDetectionRef: ChangeDetectorRef,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -125,7 +127,20 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         });
         this._changeDetectionRef.detectChanges();
       break;
-    case 'edit':
+      case 'edit':
+        let selectedDocs = [];
+        this.documentTableData.data.map((item) => {
+          if (item.checkbox === true) {
+            selectedDocs.push(this.documents.filter(d => d._id === item._id)[0]);
+          }
+        });
+        // Store and send to the edit page.
+        this.storageService.state.selectedDocs = selectedDocs;
+        // Set labels if doc size === 1
+        if (selectedDocs.length === 1) {
+          this.storageService.state.labels = selectedDocs[0].labels;
+        }
+        this.router.navigate(['p', this.currentProjectId, 'project-documents', 'edit']);
       break;
     case 'delete':
         this.deleteDocument();
@@ -274,7 +289,13 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     console.log('pageNumber', pageNumber);
 
     this.loading = true;
-    this.searchService.getSearchResults(this.keywords, 'Document', [{ 'name': 'project', 'value': this.currentProjectId }], pageNumber, this.pageSize, sorting)
+    this.searchService.getSearchResults(this.keywords,
+                                        'Document',
+                                        [{ 'name': 'project', 'value': this.currentProjectId }],
+                                        pageNumber,
+                                        this.pageSize,
+                                        sorting,
+                                        '[documentSource]=PROJECT')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.currentPage = pageNumber;

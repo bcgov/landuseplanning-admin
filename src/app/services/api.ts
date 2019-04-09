@@ -592,6 +592,11 @@ export class ApiService {
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  updateDocument(formData: FormData, _id: any): Observable<Document> {
+    const queryString = `document/${_id}`;
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, formData, {});
+  }
+
   deleteDocument(doc: Document): Observable<Document> {
     const queryString = `document/${doc._id}`;
     return this.http.delete<Document>(`${this.pathAPI}/${queryString}`, {});

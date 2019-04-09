@@ -1,0 +1,105 @@
+<div class="search-container">
+  <div class="container-fluid-padding">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId]">Project
+            Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a
+            [routerLink]="['/p', currentProjectId, 'project-documents']">Documents</a></li>
+        <li class="breadcrumb-item">Edit Document(s)</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<label>You are editing the following files:</label>
+<div class="container-fluid-padding">
+
+  <ul class="list-group" *ngFor="let document of documents">
+    <li class="list-group-item">{{document.documentName || '-'}} ({{document.documentFileName}})</li>
+  </ul>
+
+  <div class="form-group mb-0">
+    <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="doctypesel">Document Type*</label>
+          <select required class="form-control" formControlName="doctypesel">
+            <option *ngFor="let type of doctypes" [ngValue]="type._id">{{type.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="authorsel">Author*</label>
+          <select required class="form-control" formControlName="authorsel">
+            <option *ngFor="let author of authors" [ngValue]="author._id">{{author.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="labelsel">Milestone</label>
+          <select required class="form-control" formControlName="labelsel">
+            <option *ngFor="let label of labels" [ngValue]="label._id">{{label.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="inputAddress">Document Date*</label>
+          <div class="input-group">
+            <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="docDate"
+              formControlName="documentDate" ngbDatepicker #documentDatePicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="documentDatePicker.toggle()"
+                type="button"></button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="inputAddress">Upload Date*</label>
+          <div class="input-group">
+            <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="uploadDate"
+              formControlName="uploadDate" ngbDatepicker #uploadDatePicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="uploadDatePicker.toggle()"
+                type="button"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="documentName">Document Name</label>
+          <input type="text" class="form-control" id="documentName" name="documentName" formControlName="documentName">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="inputDescription">Description</label>
+          <input type="text" class="form-control" id="inputDescription" name="description"
+            formControlName="description">
+        </div>
+      </div>
+      <!-- <div class="form-group">
+        <button (click)="addLabels()" class="btn btn-outline-secondary mr-1" type="button" id="button-d">
+          <i class="material-icons">list</i>Add Label(s)
+        </button>
+        <div class="row">
+          <div *ngFor="let label of labels" class="form-group col">
+            <span *ngIf="label.selected" class="badge badge-pill badge-primary">{{label.name}}</span>
+          </div>
+        </div>
+      </div> -->
+    </form>
+  </div>
+</div>
+
+
+<div class="btn-group" role="group" aria-label="Action Buttons">
+  <div class="input-group-prepend">
+    <button class="btn btn-outline-primary mr-1" type="button" id="button-cl"
+      [routerLink]="['/p', currentProjectId, 'project-documents']"><i class="material-icons">arrow_back</i>Back</button>
+  </div>
+  <div class="input-group-prepend">
+    <button [disabled]="!myForm.valid" (click)="save()" class="btn btn-outline-primary mr-1" type="submit" id="button-cl"><i
+        class="material-icons">save</i>Save</button>
+  </div>
+</div>

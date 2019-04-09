@@ -20,6 +20,7 @@ export class ConfigService {
     // TODO: Get all constants.
     this.api.getFullDataSet('List')
     .subscribe(res => {
+      console.log('lists:', res);
       // Store here for later use across the application.
       this._lists = res[0].searchResults;
     });
