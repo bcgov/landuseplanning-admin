@@ -70,7 +70,7 @@ export class DocumentEditComponent implements OnInit {
             'labelsel': new FormControl(this.documents[0].milestone),
             'documentDate': new FormControl(this.documents[0].documentDate),
             'uploadDate': new FormControl(this.documents[0].uploadDate),
-            'documentName': new FormControl(this.documents[0].documentName),
+            'displayName': new FormControl(this.documents[0].displayName),
             'description': new FormControl(this.documents[0].description)
           });
         } else {
@@ -80,7 +80,7 @@ export class DocumentEditComponent implements OnInit {
             'labelsel': new FormControl(),
             'documentDate': new FormControl(),
             'uploadDate': new FormControl(),
-            'documentName': new FormControl(),
+            'displayName': new FormControl(),
             'description': new FormControl()
           });
         }
@@ -113,17 +113,19 @@ export class DocumentEditComponent implements OnInit {
     this.documents.map(doc => {
       const formData = new FormData();
       formData.append('project', this.currentProjectId);
-      formData.append('type', this.myForm.value.doctypesel);
       formData.append('documentSource', 'PROJECT');
-      formData.append('milestone', this.myForm.value.labelsel);
-      formData.append('documentDate', moment(this.myForm.value.documentDate));
-      formData.append('uploadDate', moment(this.myForm.value.uploadDate));
-      formData.append('documentName', this.myForm.value.documentName || doc.documentFileName);
+
       formData.append('documentFileName', doc.documentFileName);
+
+      formData.append('displayName', this.myForm.value.displayName);
+      formData.append('milestone', this.myForm.value.labelsel);
+      formData.append('uploadDate', moment(this.myForm.value.uploadDate));
+      formData.append('documentDate', moment(this.myForm.value.documentDate));
+      formData.append('type', this.myForm.value.doctypesel);
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);
-      formData.append('displayName', doc.documentName);
-      formData.append('internalOriginalName', doc.documentFileName);
+
+      // TODO
       formData.append('labels', JSON.stringify(theLabels));
       observables = observables.concat(this.documentService.update(formData, doc._id));
     });

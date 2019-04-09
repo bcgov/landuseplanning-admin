@@ -16,7 +16,7 @@
 <div class="container-fluid-padding">
 
   <ul class="list-group" *ngFor="let document of documents">
-    <li class="list-group-item">{{document.documentName || '-'}} ({{document.documentFileName}})</li>
+    <li class="list-group-item">{{document.displayName || '-'}} ({{document.documentFileName}})</li>
   </ul>
 
   <div class="form-group mb-0">
@@ -67,8 +67,8 @@
       </div>
       <div class="form-row">
         <div class="form-group col-md-12">
-          <label for="documentName">Document Name</label>
-          <input type="text" class="form-control" id="documentName" name="documentName" formControlName="documentName">
+          <label for="displayName">Document Name</label>
+          <input type="text" class="form-control" id="displayName" name="displayName" formControlName="displayName">
         </div>
       </div>
       <div class="form-row">
