@@ -1,19 +1,25 @@
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" *ngIf="document">
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page"><a
-              [routerLink]="['/p', document.project]">Project Details</a></li>
+              [routerLink]="['/p', project._id]">Project Details</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a
-              [routerLink]="['/p', document.project, 'project-documents']">Documents</a></li>
+              [routerLink]="['/p', project._id, 'project-documents']">Documents</a></li>
             <li class="breadcrumb-item active" aria-current="page">Document Details</li>
         </ol>
         <section>
-          <h2>Display Name</h2>
-          <p>{{document.displayName || 'No display name set'}}</p>
-        </section>
-        <section>
           <h2>Details</h2>
           <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <span class="list-group-item">Display Name:</span>
+                  </div>
+                  <div class="col-8">
+                    <span class="value">{{document.displayName || '-'}}</span>
+                  </div>
+                </div>
+            </li>
             <li class="list-group-item">
                 <div class="row">
                   <div class="col-4">
@@ -31,6 +37,16 @@
                   </div>
                   <div class="col-8">
                     <span class="value">{{document.type | listConverter }}</span>
+                  </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <span class="list-group-item">Date:</span>
+                  </div>
+                  <div class="col-8">
+                    <span class="value">{{document.dateUploaded | date }}</span>
                   </div>
                 </div>
             </li>
@@ -63,6 +79,11 @@
                     <span class="value">{{document.documentFileSize || '-'}}</span>
                   </div>
                 </div>
+            </li>
+            <li class="list-group-item">
+              <div class="row">
+                <button class="btn btn-primary" type="button" (click)="api.downloadDocument(document)">Download</button>
+              </div>
             </li>
           </ul>
         </section>

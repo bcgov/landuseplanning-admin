@@ -3,15 +3,17 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/r
 import { Observable } from 'rxjs/Observable';
 
 import { SearchService } from 'app/services/search.service';
+import { DocumentService } from 'app/services/document.service';
 
 @Injectable()
 export class DocumentDetailResolver implements Resolve<Observable<object>> {
   constructor(
-    private searchService: SearchService
+    private searchService: SearchService,
+    private documentService: DocumentService
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<object> {
     const docId = route.paramMap.get('docId');
-    return this.searchService.getItem(docId, 'Document');
+    return this.documentService.getById(docId);
   }
 }

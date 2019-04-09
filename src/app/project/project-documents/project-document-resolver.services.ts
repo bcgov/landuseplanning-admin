@@ -14,7 +14,14 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
     const projectId = route.parent.paramMap.get('projId');
     const pageNum = Number(route.queryParams['pageNum'] ? route.queryParams['pageNum'] : 1);
     const pageSize = Number(route.queryParams['pageSize'] ? route.queryParams['pageSize'] : 10);
+    const sortBy = route.queryParams['sortBy'] ? route.queryParams['sortBy'] : null;
     const keywords = route.params.keywords;
-    return this.searchService.getSearchResults(keywords, 'Document', [{ 'name': 'project', 'value': projectId }], pageNum, pageSize);
+    return this.searchService.getSearchResults(keywords,
+                                              'Document',
+                                              [{ 'name': 'project', 'value': projectId }],
+                                              pageNum,
+                                              pageSize,
+                                              sortBy,
+                                              '[documentSource]=PROJECT');
   }
 }

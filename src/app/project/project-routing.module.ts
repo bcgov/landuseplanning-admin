@@ -57,7 +57,7 @@ const routes: Routes = [
         path: 'project-documents/detail/:docId',
         component: DocumentDetailComponent,
         resolve: {
-          project: DocumentDetailResolver
+          document: DocumentDetailResolver
         }
       },
       {

@@ -568,7 +568,27 @@ export class ApiService {
 
   // NB: returns array with 1 element
   getDocument(id: string): Observable<Document[]> {
-    const queryString = `document/${id}`;
+    const fields = [
+      '_addedBy',
+      'documentFileName',
+      'internalOriginalName',
+      'displayName',
+      'documentType',
+      'datePosted',
+      'dateUploaded',
+      'dateReceived',
+      'documentFileSize',
+      'internalURL',
+      'internalMime',
+      'checkbox',
+      'project',
+      'type',
+      'documentAuthor',
+      'milestone',
+      'description',
+      'isPublished'
+    ];
+    const queryString = `document/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -690,7 +710,7 @@ export class ApiService {
   //
   // Searching
   //
-  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null): Observable<SearchResults[]> {
+  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier = null): Observable<SearchResults[]> {
     let queryString = `search?dataset=${dataset}`;
     if (fields && fields.length > 0) {
       fields.map(item => {
@@ -703,6 +723,9 @@ export class ApiService {
     if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (queryModifier !== null) {
+      queryString += `&query` + queryModifier;
+    }
     queryString += `&fields=${this.buildValues(fields)}`;
     console.log('queryString:', queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});

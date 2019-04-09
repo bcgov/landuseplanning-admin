@@ -110,6 +110,7 @@ export class UploadComponent implements OnInit {
       formData.append('upfile', doc.upfile);
       formData.append('project', this.currentProjectId);
       formData.append('type', this.myForm.value.doctypesel);
+      formData.append('documentSource', 'PROJECT');
       formData.append('milestone', this.myForm.value.labelsel);
       formData.append('documentDate', moment(this.myForm.value.documentDate));
       formData.append('uploadDate', moment(this.myForm.value.uploadDate));
@@ -118,6 +119,7 @@ export class UploadComponent implements OnInit {
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);
       formData.append('displayName', doc.documentFileName);
+      formData.append('internalOriginalName', doc.documentFileName);
       observables = observables.concat(this.documentService.add(formData));
     });
 

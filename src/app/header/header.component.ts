@@ -56,17 +56,13 @@ export class HeaderComponent implements OnInit {
       const token = this.keycloakService.getToken();
       // TODO: Change this to observe the change in the _api.token
       if (token) {
-        // console.log("token:", token);
         const jwt = new JwtUtil().decodeToken(token);
-        // console.log('jwt:', jwt);
         this.welcomeMsg = jwt ? ('Hello ' + jwt.preferred_username) : 'Login';
-        // console.log("this:", this.welcomeMsg);
         this.jwt = jwt;
       } else {
         this.welcomeMsg = 'Login';
         this.jwt = null;
       }
-      // console.log('val:', val instanceof NavigationEnd);
     });
   }
 
