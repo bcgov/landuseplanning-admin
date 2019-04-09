@@ -7,7 +7,7 @@
              aria-label="Checkbox for row item"
              [(ngModel)]='document.checkbox'>
     </td>
-    <td data-label="Name" (click)="goToItem(document)" scope="row" class="col-7">{{document.displayName}}</td>
+    <td data-label="Name" (click)="goToItem(document)" scope="row" class="col-7">{{document.documentFileName}}</td>
     <td data-label="Date" (click)="goToItem(document)" scope="row" class="col-2">{{document.date | date:'longDate'}}</td>
     <td data-label="Type" (click)="goToItem(document)" scope="row" class="col-1">{{document.documentType}}</td>
     <td data-label="Size" (click)="goToItem(document)" scope="row" class="col-1">{{document.documentFileSize}}</td>

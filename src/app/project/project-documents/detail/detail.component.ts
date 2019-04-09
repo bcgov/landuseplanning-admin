@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Document } from 'app/models/document';
+import { Project } from 'app/models/project';
+import { ApiService } from 'app/services/api';
 
 @Component({
   selector: 'app-detail',
@@ -11,16 +13,27 @@ import { Document } from 'app/models/document';
 export class DocumentDetailComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public document: Document = null;
+  public project: Project = null;
 
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private api: ApiService,
+    private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.route.data
+    this.route.parent.data
     .takeUntil(this.ngUnsubscribe)
-    .subscribe((res: any) => {
-      this.document = res.project.data;
+    .subscribe((data: any) => {
+      this.project = data.project;
+      this._changeDetectionRef.detectChanges();
+
+      this.route.data
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res: any) => {
+        this.document = res.document;
+        this._changeDetectionRef.detectChanges();
+      });
     });
   }
 

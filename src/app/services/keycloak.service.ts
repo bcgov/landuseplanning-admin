@@ -101,7 +101,7 @@ export class KeycloakService {
               console.log('KC refreshed token?:', refreshed);
             })
             .error((err) => {
-              console.log('KC refresh error:', err);
+              console.log('onTokenExpired:KC refresh error:', err);
             });
         };
 

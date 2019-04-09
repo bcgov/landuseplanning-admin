@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Document } from 'app/models/document';
 import { DocumentService } from 'app/services/document.service';
+import { ApiService } from 'app/services/api';
 import { SearchService } from 'app/services/search.service';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { PlatformLocation } from '@angular/common';
@@ -31,7 +32,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Name',
-      value: 'displayName',
+      value: 'documentFileName',
       width: 'col-7'
     },
     {
@@ -67,6 +68,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     private platformLocation: PlatformLocation,
     private dialogService: DialogService,
     private router: Router,
+    private api: ApiService,
     private documentService: DocumentService,
     private searchService: SearchService,
     private _changeDetectionRef: ChangeDetectorRef
@@ -129,6 +131,15 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         this.deleteDocument();
       break;
     case 'download':
+        let promises = [];
+        this.documentTableData.data.map((item) => {
+          if (item.checkbox === true) {
+            promises.push(this.api.downloadDocument(this.documents.filter(d => d._id === item._id)[0]));
+          }
+        });
+        return Promise.all(promises).then(() => {
+          console.log('Download initiated for file(s)');
+        });
       break;
     case 'copyLink':
       break;
@@ -196,8 +207,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       this.documents.forEach(document => {
         documentList.push(
           {
-            displayName: document.displayName,
-            date: document.dateUploaded || document.datePosted,
+            // displayName: document.displayName || document.internalOriginalName,
+            // date: document.dateUploaded || document.datePosted,
+            documentFileName: document.documentFileName,
+            date: document.dateUploaded,
             documentType: document.documentType,
             documentFileSize: document.documentFileSize,
             _id: document._id,
@@ -228,7 +241,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   isEnabled(button) {
     switch (button) {
       case 'copyLink':
-      case 'download':
         return this.selectedCount === 1;
         break;
       default:

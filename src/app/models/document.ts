@@ -7,6 +7,7 @@ export class Document {
   _decision: string; // objectid -> Decision
   _comment: string; // objectid -> Comment
   documentFileName: string;
+  internalOriginalName: string;
   displayName: string;
   documentType: string;
   datePosted: string;
@@ -42,6 +43,7 @@ export class Document {
     this.internalURL      = obj && obj.internalURL      || null;
     this.isDeleted        = obj && obj.isDeleted        || null;
     this.internalMime     = obj && obj.internalMime     || null;
+    this.internalOriginalName     = obj && obj.internalOriginalName     || null;
 
     this.upfile     = obj && obj.upfile     || null;
 
