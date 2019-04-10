@@ -121,6 +121,23 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public selectAction(action) {
     // select all documents
     switch (action) {
+      case 'copyLink':
+        this.documentTableData.data.map((item) => {
+          if (item.checkbox === true) {
+            let selBox = document.createElement('textarea');
+            selBox.style.position = 'fixed';
+            selBox.style.left = '0';
+            selBox.style.top = '0';
+            selBox.style.opacity = '0';
+            selBox.value = window.location.href.split(';')[0] + `/detail/${item._id}`;
+            document.body.appendChild(selBox);
+            selBox.focus();
+            selBox.select();
+            document.execCommand('copy');
+            document.body.removeChild(selBox);
+          }
+        });
+        break;
       case 'selectAll':
         this.documentTableData.data.map((item) => {
           item.checkbox = true;
