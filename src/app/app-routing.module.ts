@@ -8,7 +8,10 @@ import { AdministrationComponent } from './administration/administration.compone
 import { TopicsComponent } from './administration/topics/topics.component';
 import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
+import { ContactsComponent } from './contacts/contacts.component';
 import { ActivityComponent } from './activity/activity.component';
+
+import { ContactsResolverService } from './contacts/contacts-resolver.service';
 
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 
@@ -42,6 +45,13 @@ const routes: Routes = [
     component: MetricsComponent
   },
   {
+    path: 'contacts',
+    component: ContactsComponent,
+    resolve: {
+      users: ContactsResolverService
+    }
+  },
+  {
     path: 'activity',
     component: ActivityComponent
   },
@@ -66,7 +76,8 @@ const routes: Routes = [
     RouterModule
   ],
   providers: [
-    CanDeactivateGuard
+    CanDeactivateGuard,
+    ContactsResolverService
   ]
 })
 

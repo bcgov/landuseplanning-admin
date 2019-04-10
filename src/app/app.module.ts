@@ -54,6 +54,8 @@ import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
 import { ActivityComponent } from './activity/activity.component';
 import { TopicTableRowsComponent } from './administration/topics/topic-table-rows/topic-table-rows.component';
+import { ContactsComponent } from './contacts/contacts.component';
+import { UserTableRowsComponent } from './contacts/user-table-rows/user-table-rows.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -79,7 +81,9 @@ export function kcFactory(keycloakService: KeycloakService) {
     TopicTableRowsComponent,
     MapComponent,
     MetricsComponent,
-    ActivityComponent
+    ActivityComponent,
+    ContactsComponent,
+    UserTableRowsComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -127,7 +131,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     ConfirmComponent,
     DayCalculatorModalComponent,
     AddEditTopicComponent,
-    TopicTableRowsComponent
+    TopicTableRowsComponent,
+    UserTableRowsComponent
   ],
   bootstrap: [AppComponent]
 })
