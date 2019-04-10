@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
-import { StorageService } from 'app/services/storage.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Subject } from 'rxjs/Subject';
 import { MatSnackBar } from '@angular/material';
+import { ConfigService } from 'app/services/config.service';
+import { Utils } from 'app/shared/utils/utils';
 
 @Component({
   selector: 'app-add-edit-comment-period',
@@ -20,18 +21,12 @@ export class AddEditCommentPeriodComponent implements OnInit {
   public projectName;
   public projectId;
   public commentPeriod = new CommentPeriod;
+  public milestones: any[] = [];
 
   public isEditing = false;
 
   public infoForCommentPreview = '%information for comment%';
   public descriptionPreview = '%description%';
-
-  public openHouses = [{
-    'eventDate': {},
-    'description': ''
-  }];
-  public openHouseDate: Date;
-  public openHouseDescription;
 
   public publishedState = 'unpublished';
   public commentPeriodForm: FormGroup;
@@ -39,12 +34,15 @@ export class AddEditCommentPeriodComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private commentPeriodService: CommentPeriodService,
+    private config: ConfigService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private utils: Utils
   ) { }
 
   ngOnInit() {
+    // Check if we're editing
     this.route.url.subscribe(segments => {
       segments.forEach(segment => {
         if (segment.path === 'edit') {
@@ -52,6 +50,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
         }
       });
     });
+
+    // Get data related to current project
     this.route.parent.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(data => {
@@ -65,14 +65,29 @@ export class AddEditCommentPeriodComponent implements OnInit {
         }
       });
 
+    this.config.lists.map(item => {
+      switch (item.type) {
+        case 'doctype':
+          break;
+        case 'author':
+          break;
+        case 'label':
+          this.milestones.push(Object.assign({}, item));
+          break;
+      }
+    });
+
+    // Prep comment period form.
     this.commentPeriodForm = new FormGroup({
       'startDate': new FormControl(),
       'endDate': new FormControl(),
       'publishedStateSel': new FormControl(),
       'infoForCommentText': new FormControl(),
       'descriptionText': new FormControl(),
+      'milestoneSel': new FormControl(),
       openHouses: this.formBuilder.array([])
     });
+
     if (this.isEditing) {
       this.initForEditing();
     } else {
@@ -80,7 +95,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
     }
   }
 
-  initForEditing() {
+  private initForEditing() {
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -96,22 +111,25 @@ export class AddEditCommentPeriodComponent implements OnInit {
         }
       );
 
-    this.commentPeriodForm.controls.startDate.setValue(this.convertJSDateToNGBDate(this.commentPeriod.dateStarted));
-    this.commentPeriodForm.controls.endDate.setValue(this.convertJSDateToNGBDate(this.commentPeriod.dateCompleted));
+    // Date started and completed
+    this.commentPeriodForm.controls.startDate.setValue(this.utils.convertJSDateToNGBDate(this.commentPeriod.dateStarted));
+    this.commentPeriodForm.controls.endDate.setValue(this.utils.convertJSDateToNGBDate(this.commentPeriod.dateCompleted));
 
+    // Publish state
     this.commentPeriodForm.controls.publishedStateSel.setValue(this.commentPeriod.isPublished ? 'published' : 'unpublished');
 
-    let firstSentance = this.commentPeriod.instructions.split('.')[0] + '. ';
-    this.commentPeriodForm.controls.infoForCommentText.setValue(firstSentance.split(' for')[0].replace('Comment Period on the ', ''));
-    this.updateInfoForCommentPreview();
-    this.commentPeriodForm.controls.descriptionText.setValue(this.commentPeriod.instructions.replace(firstSentance, ''));
-    this.updateDescriptionPreview();
+    // Instructions
+    this.extractVarsFromInstructions(this.commentPeriod.instructions, this.commentPeriodForm);
 
+    // Milestone
+    this.commentPeriodForm.controls.milestoneSel.setValue(this.commentPeriod.milestone);
+
+    // Open houses
     if (this.commentPeriod.openHouses.length > 0) {
       this.commentPeriod.openHouses.forEach(openHouse => {
         this.addOpenHouseRowWithFields(
           this.formBuilder.group({
-            eventDate: this.convertJSDateToNGBDate(new Date(openHouse['eventDate'])),
+            eventDate: this.utils.convertJSDateToNGBDate(new Date(openHouse['eventDate'])),
             description: openHouse['description']
           })
         );
@@ -121,55 +139,13 @@ export class AddEditCommentPeriodComponent implements OnInit {
     }
   }
 
-  initOpenHouseRow(): FormGroup {
-    return this.formBuilder.group({
-      eventDate: null,
-      description: null
-    });
-  }
-
-  addOpenHouseRow(): void {
-    const openHouseArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
-    openHouseArray.push(this.initOpenHouseRow());
-  }
-
-  addOpenHouseRowWithFields(openHouse): void {
-    const openHouseArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
-    openHouseArray.push(openHouse);
-  }
-
-  removeOpenHouseRow(rowIndex: number): void {
-    const openHousesArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
-    if (openHousesArray.length > 1) {
-      openHousesArray.removeAt(rowIndex);
-    } else {
-      alert('You cannot delete the last row.');
-    }
-  }
-
-  convertJSDateToNGBDate(jSDate: Date) {
-    return {
-      'year': jSDate.getFullYear(),
-      'month': jSDate.getMonth() + 1,
-      'day': jSDate.getDate()
-    };
-  }
-
-  convertFormGroupNGBDateToJSDate(nGBDate) {
-    return new Date(
-      nGBDate.year,
-      nGBDate.month - 1,
-      nGBDate.day
-    );
-  }
-
   public onSubmit() {
     // TODO: Calulator integration.
     // TODO: Custom validation for start and end date.
 
     // Check start and end date
-    this.commentPeriod.dateStarted = this.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('startDate').value);
-    this.commentPeriod.dateCompleted = this.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('endDate').value);
+    this.commentPeriod.dateStarted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('startDate').value);
+    this.commentPeriod.dateCompleted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('endDate').value);
 
     // Check published state
     this.commentPeriod.read = ['staff', 'sysadmin'];
@@ -186,7 +162,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
     this.commentPeriod.instructions += this.commentPeriodForm.get('descriptionText').value;
 
     // Check milestones
-    // TODO: need to configure picklist for milestones
+    this.commentPeriod.milestone = this.commentPeriodForm.get('milestoneSel').value;
 
     // Check open house date
     this.commentPeriod.openHouses = [];
@@ -194,7 +170,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
       if (openHouse.description !== null && openHouse.eventDate !== null) {
         this.commentPeriod.openHouses.push({
           description: openHouse.description,
-          eventDate: this.convertFormGroupNGBDateToJSDate(openHouse.eventDate)
+          eventDate: this.utils.convertFormGroupNGBDateToJSDate(openHouse.eventDate)
         });
       } else if (openHouse.description !== null || openHouse.eventDate !== null) {
         // TODO: We should use form errors.
@@ -237,6 +213,56 @@ export class AddEditCommentPeriodComponent implements OnInit {
         );
     }
   }
+
+  public onCancel() {
+    if (confirm(`Are you sure you want to discard all changes?`)) {
+      if (this.isEditing) {
+        this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
+      } else {
+        this.router.navigate(['/p', this.projectId, 'comment-periods']);
+      }
+    }
+  }
+
+  register() {
+    console.log('Successful registration');
+    console.log(this.commentPeriodForm);
+  }
+
+  private extractVarsFromInstructions(instructionString: String, form: FormGroup) {
+    let firstSentance = instructionString.split('.')[0] + '. ';
+    form.controls.infoForCommentText.setValue(firstSentance.split(' for')[0].replace('Comment Period on the ', ''));
+    this.updateInfoForCommentPreview();
+    form.controls.descriptionText.setValue(instructionString.replace(firstSentance, ''));
+    this.updateDescriptionPreview();
+  }
+
+  private initOpenHouseRow(): FormGroup {
+    return this.formBuilder.group({
+      eventDate: null,
+      description: null
+    });
+  }
+
+  public addOpenHouseRow(): void {
+    const openHouseArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
+    openHouseArray.push(this.initOpenHouseRow());
+  }
+
+  public addOpenHouseRowWithFields(openHouse): void {
+    const openHouseArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
+    openHouseArray.push(openHouse);
+  }
+
+  public removeOpenHouseRow(rowIndex: number): void {
+    const openHousesArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
+    if (openHousesArray.length > 1) {
+      openHousesArray.removeAt(rowIndex);
+    } else {
+      alert('You cannot delete the last row.');
+    }
+  }
+
   public updateInfoForCommentPreview() {
     this.infoForCommentPreview = this.commentPeriodForm.get('infoForCommentText').value;
   }
@@ -245,7 +271,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
     this.descriptionPreview = this.commentPeriodForm.get('descriptionText').value;
   }
 
-  openSnackBar(message: string, action: string) {
+  public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
