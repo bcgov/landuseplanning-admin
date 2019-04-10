@@ -216,8 +216,6 @@ export class AddEditCommentPeriodComponent implements OnInit {
             alert('Uh-oh, couldn\'t edit comment period');
           },
           () => { // onCompleted
-            // delete succeeded --> navigate back to search
-            // Clear out the document state that was stored previously.
             this.openSnackBar('This comment period was created successfuly.', 'Close');
             this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
           }
@@ -233,8 +231,6 @@ export class AddEditCommentPeriodComponent implements OnInit {
             alert('Uh-oh, couldn\'t add new comment period');
           },
           () => { // onCompleted
-            // delete succeeded --> navigate back to search
-            // Clear out the document state that was stored previously.
             this.openSnackBar('This comment period was created successfuly.', 'Close');
             this.router.navigate(['p', this.projectId, 'comment-periods']);
           }
