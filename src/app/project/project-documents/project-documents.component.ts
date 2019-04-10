@@ -139,9 +139,17 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         });
         break;
       case 'selectAll':
+        let someSelected = false;
         this.documentTableData.data.map((item) => {
-          item.checkbox = true;
+          if (item.checkbox === true) {
+            someSelected = true;
+          }
         });
+        this.documentTableData.data.map((item) => {
+          item.checkbox = !someSelected;
+        });
+
+        this.selectedCount = someSelected ? 0 : this.documentTableData.data.length;
         this._changeDetectionRef.detectChanges();
       break;
       case 'edit':
