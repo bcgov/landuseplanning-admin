@@ -29,7 +29,7 @@
     </ol>
 </div>
 
-<form [formGroup]="commentPeriodForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="commentPeriodForm" (ngSubmit)="register()">
     <div class="form-row">
         <div class="form-group col-md-4">
             <label for="inputStartDate">Start Date*</label>
@@ -95,8 +95,11 @@
 
     <div class="form-row">
         <div class="form-group col-md-6">
-            <label for="milestone">Content for Comment [Milestones]</label>
-            <p>*milestone picker goes here*</p>
+            <label for="milestoneSel">Content for Comment [Milestones]*</label>
+            <select required class="form-control" formControlName="milestoneSel">
+                <option disabled selected value>-- select an option --</option>
+                <option *ngFor="let milestone of milestones" [ngValue]="milestone._id">{{milestone.name}}</option>
+            </select>
         </div>
     </div>
 
@@ -136,6 +139,9 @@
     </div>
 
     <div class="text-right">
-        <button [disabled]="!commentPeriodForm.valid" class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+        &nbsp;
+        <button [disabled]="!commentPeriodForm.valid" class="btn btn-primary" type="submit"
+            (click)="onSubmit()">Save</button>
     </div>
 </form>
