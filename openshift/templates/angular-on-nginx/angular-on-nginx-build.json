@@ -26,34 +26,38 @@
       "spec": {
         "runPolicy": "Serial",
         "completionDeadlineSeconds": 1800,
+        "output": {
+            "to": {
+                "kind": "ImageStreamTag",
+                "name": "${NAME}:latest"
+            }
+        },
         "source": {
-          "type": "Git",
-          "git": {
-            "uri": "${GIT_SOURCE_URL}"
-          }
+            "dockerfile": "FROM admin-nginx-runtime:latest\nCOPY * /tmp/app/dist/\nCMD  /usr/libexec/s2i/run",
+            "images": [
+                {
+                    "from": {
+                        "kind": "ImageStreamTag",
+                        "name": "admin-angular-builder:latest"
+                    },
+                    "paths": [
+                        {
+                            "destinationDir": "tmp",
+                            "sourcePath": "/opt/app-root/src/dist/."
+                        }
+                    ]
+                }
+            ],
+            "type": "Dockerfile"
         },
         "strategy": {
-          "type": "Source",
-          "sourceStrategy": {
-            "from": {
-                "kind": "ImageStreamTag",
-                "name": "admin-angular-builder:latest"
+            "dockerStrategy": {
+                "from": {
+                    "kind": "ImageStreamTag",
+                    "name": "admin-nginx-runtime:latest"
+                }
             },
-            "runtimeImage": {
-              "kind": "ImageStreamTag",
-              "name": "admin-nginx-runtime:latest"
-            },
-            "runtimeArtifacts": [{
-              "sourcePath": "/opt/app-root/src/dist/",
-              "destinationDir": "tmp/app"
-            }]
-          }
-        },
-        "output": {
-          "to": {
-            "kind": "ImageStreamTag",
-            "name": "${NAME}:latest"
-          }
+            "type": "Docker"
         },
         "resources": {
           "requests": {

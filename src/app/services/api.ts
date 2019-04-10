@@ -51,45 +51,21 @@ export class ApiService {
         this.env = 'local';
         break;
 
-      case 'nrts-prc-dev.pathfinder.gov.bc.ca':
+      case 'gcpe-lup-dev.pathfinder.gov.bc.ca':
         // Dev
-        this.pathAPI = 'https://nrts-prc-dev.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
         break;
 
-      case 'nrts-prc-test.pathfinder.gov.bc.ca':
+      case 'gcpe-lup-test.pathfinder.gov.bc.ca':
         // Test
-        this.pathAPI = 'https://nrts-prc-test.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://gcpe-lup-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
-        break;
-
-      case 'nrts-prc-demo.pathfinder.gov.bc.ca':
-        // Demo
-        this.pathAPI = 'https://nrts-prc-demo.pathfinder.gov.bc.ca/api';
-        this.env = 'demo';
-        break;
-
-      case 'nrts-prc-scale.pathfinder.gov.bc.ca':
-        // Scale
-        this.pathAPI = 'https://nrts-prc-scale.pathfinder.gov.bc.ca/api';
-        this.env = 'scale';
-        break;
-
-      case 'nrts-prc-beta.pathfinder.gov.bc.ca':
-        // Beta
-        this.pathAPI = 'https://nrts-prc-beta.pathfinder.gov.bc.ca/api';
-        this.env = 'beta';
-        break;
-
-      case 'nrts-prc-master.pathfinder.gov.bc.ca':
-        // Master
-        this.pathAPI = 'https://nrts-prc-master.pathfinder.gov.bc.ca/api';
-        this.env = 'master';
         break;
 
       default:
         // Prod
-        this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
+        this.pathAPI = 'https://landuseplanning.gov.bc.ca/api';
         this.env = 'prod';
     }
   }
