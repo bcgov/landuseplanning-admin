@@ -13,17 +13,17 @@ export class ConfigService {
   private _baseLayerName = 'World Topographic'; // NB: must match a valid base layer name
   private _lists = [];
 
-  constructor(private api: ApiService) { }
-
-  // called by app constructor
-  public init() {
-    // TODO: Get all constants.
+  constructor(private api: ApiService) {
     this.api.getFullDataSet('List')
     .subscribe(res => {
-      console.log('lists:', res);
+      console.log('svc lists:', res);
       // Store here for later use across the application.
       this._lists = res[0].searchResults;
     });
+  }
+
+  // called by app constructor
+  public init() {
   }
 
   // called by app constructor
