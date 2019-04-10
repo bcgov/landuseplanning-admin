@@ -35,11 +35,9 @@ export class DocumentEditComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.parent.paramMap.subscribe(params => {
-      this.currentProjectId = params.get('projId');
-    });
-
     this.documents = this.storageService.state.selectedDocs;
+    this.currentProjectId = this.documents[0].project;
+
 
     // Check if documents are null (nav straight to this page)
     if (!this.documents || this.documents.length === 0) {

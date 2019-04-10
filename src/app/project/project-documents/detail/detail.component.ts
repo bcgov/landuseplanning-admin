@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { Document } from 'app/models/document';
 import { Project } from 'app/models/project';
 import { ApiService } from 'app/services/api';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-detail',
@@ -17,8 +18,10 @@ export class DocumentDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private api: ApiService,
-    private _changeDetectionRef: ChangeDetectorRef
+    private _changeDetectionRef: ChangeDetectorRef,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -37,4 +40,9 @@ export class DocumentDetailComponent implements OnInit {
     });
   }
 
+  onEdit() {
+    this.storageService.state.selectedDocs = [this.document];
+    this.storageService.state.labels = this.document.labels;
+    this.router.navigate(['p', this.document.project, 'project-documents', 'edit']);
+  }
 }
