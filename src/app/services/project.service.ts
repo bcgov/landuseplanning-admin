@@ -59,29 +59,12 @@ export class ProjectService {
     .catch(error => this.api.handleError(error));
   }
 
-  getById(projId: string, params: GetParameters = null): Observable<Project> {
+  getById(projId: string): Observable<Project> {
     return this.api.getProject(projId)
       .map(projects => {
         // return the first (only) project
         return projects.length > 0 ? new Project(projects[0]) : null;
       })
-      // .mergeMap(project => {
-      //   if (!project) { return of(null as Project); }
-      //   const promises: Array<Promise<any>> = [];
-
-      //   // Get the current comment period
-      //   promises.push(this.commentPeriodService.getAllByProjectId(project._id)
-      //     .toPromise()
-      //     .then(periods => {
-      //       project.commentPeriods = periods;
-      //     })
-      //   );
-
-      //   return Promise.all(promises).then(() => {
-      //     this.project = project;
-      //     return this.project;
-      //   });
-      // })
       .catch(error => this.api.handleError(error));
   }
 

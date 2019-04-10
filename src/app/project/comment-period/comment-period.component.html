@@ -7,7 +7,7 @@
       <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-      {{commentPeriod.dateStarted | date: 'LLLL'}} - {{commentPeriod.dateCompleted | date}}
+        {{commentPeriod.dateStarted | date: 'MMMM d'}} - {{commentPeriod.dateCompleted | date}}
     </li>
   </ol>
 

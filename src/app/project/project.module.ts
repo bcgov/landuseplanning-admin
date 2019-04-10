@@ -8,29 +8,29 @@ import { ProjectRoutingModule } from './project-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 
 // components
+import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
+import { AddLabelComponent } from './project-documents/add-label/add-label.component';
+import { CommentPeriodComponent } from './comment-period/comment-period.component';
+import { CommentPeriodDetailsTabComponent } from './comment-period/comment-period-details-tabs/comment-period-details-tab.component';
+import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
+import { CommentPeriodsTableRowsComponent } from './comment-periods/comment-periods-table-rows/comment-periods-table-rows.component';
 import { ComplianceComponent } from './compliance/compliance.component';
+import { DocumentDetailComponent } from './project-documents/detail/detail.component';
+import { DocumentTableRowsComponent } from './project-documents/project-document-table-rows/project-document-table-rows.component';
 import { IndigenousNationsComponent } from './indigenous-nations/indigenous-nations.component';
+import { MatTabsModule, MatMenuModule } from '@angular/material';
 import { MilestonesComponent } from './milestones/milestones.component';
 import { ProjectAddEditComponent } from './project-add-edit/project-add-edit.component';
 import { ProjectAsideComponent } from './project-aside/project-aside.component';
 import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
-import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
-import { ValuedComponentsComponent } from './valued-components/valued-components.component';
-import { CommentPeriodDetailsTabComponent } from './comment-period/comment-period-details-tabs/comment-period-details-tab.component';
-import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
-import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
-import { DocumentTableRowsComponent } from './project-documents/project-document-table-rows/project-document-table-rows.component';
-import { CommentPeriodsTableRowsComponent } from './comment-periods/comment-periods-table-rows/comment-periods-table-rows.component';
-import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
-import { CommentPeriodComponent } from './comment-period/comment-period.component';
-import { MatTabsModule, MatMenuModule } from '@angular/material';
-import { UploadComponent } from './project-documents/upload/upload.component';
-import { AddLabelComponent } from './project-documents/add-label/add-label.component';
+import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
+import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
-import { DocumentDetailComponent } from './project-documents/detail/detail.component';
-import { CreateCommentPeriodComponent } from './comment-periods/create-comment-period/create-comment-period.component';
+import { UploadComponent } from './project-documents/upload/upload.component';
+import { ValuedComponentsComponent } from './valued-components/valued-components.component';
+import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
 
 // services
 import { ApiService } from 'app/services/api';
@@ -44,16 +44,24 @@ import { DocumentEditComponent } from './project-documents/document-edit/documen
     CommonModule,
     FormsModule,
     NgbModule.forRoot(),
-    NgxPaginationModule,
+    MatMenuModule,
     MatTabsModule,
+    NgxPaginationModule,
     ProjectRoutingModule,
-    SharedModule,
     ReactiveFormsModule,
-    MatMenuModule
+    SharedModule
   ],
   declarations: [
+    AddEditCommentPeriodComponent,
+    AddLabelComponent,
     CommentPeriodComponent,
+    CommentPeriodDetailsTabComponent,
+    CommentPeriodsComponent,
+    CommentPeriodsTableRowsComponent,
     ComplianceComponent,
+    DocumentDetailComponent,
+    DocumentDetailComponent,
+    DocumentEditComponent,
     DocumentTableRowsComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
@@ -61,29 +69,22 @@ import { DocumentEditComponent } from './project-documents/document-edit/documen
     ProjectAsideComponent,
     ProjectContactsComponent,
     ProjectDetailComponent,
-    ProjectUpdatesComponent,
-    CommentPeriodsComponent,
-    CommentPeriodsTableRowsComponent,
-    ValuedComponentsComponent,
-    ValuedComponentTableRowsComponent,
     ProjectDocumentsComponent,
-    CommentPeriodDetailsTabComponent,
+    ProjectUpdatesComponent,
     ReviewCommentsTabComponent,
-    UploadComponent,
-    AddLabelComponent,
     ReviewCommentsTabTableRowsComponent,
-    DocumentDetailComponent,
-    CreateCommentPeriodComponent,
-    DocumentEditComponent
+    UploadComponent,
+    ValuedComponentsComponent,
+    ValuedComponentTableRowsComponent
   ],
   entryComponents: [
     CommentPeriodComponent,
     CommentPeriodsComponent,
     CommentPeriodsTableRowsComponent,
-    ValuedComponentTableRowsComponent,
     DocumentTableRowsComponent,
+    ReviewCommentsTabTableRowsComponent,
     UploadComponent,
-    ReviewCommentsTabTableRowsComponent
+    ValuedComponentTableRowsComponent
   ],
   exports: [
     ComplianceComponent,

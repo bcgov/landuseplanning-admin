@@ -11,21 +11,20 @@
             <div ngbDropdown placement="bottom-right" class="d-inline-block">
                 <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
                 <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
-                    <button class="dropdown-item">Edit</button>
+                    <button class="dropdown-item" (click)="editCommentPeriod()">Edit</button>
                     <button class="dropdown-item">Add a comment</button>
                     <button class="dropdown-item" (click)="togglePublishState()">{{publishAction}}</button>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-6">
             <h6>
                 <strong>
                     DATE RANGE:&nbsp;
                 </strong>
-                {{commentPeriod.dateStarted | date: 'LLLL'}} -
+                {{commentPeriod.dateStarted | date: 'MMMM d'}} -
                 {{commentPeriod.dateCompleted | date}}
                 ({{commentPeriod.daysRemaining}})
             </h6>

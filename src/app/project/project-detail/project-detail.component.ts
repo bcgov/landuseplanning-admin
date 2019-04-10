@@ -248,7 +248,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Project published...', null, { duration: 2000 });
           // reload all data
-          this.projectService.getById(this.project._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: false })
+          this.projectService.getById(this.project._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               project => {
@@ -319,7 +319,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Project unpublished...', null, { duration: 2000 });
           // reload all data
-          this.projectService.getById(this.project._id, { getFeatures: true, getDocuments: true, getCurrentPeriod: true, getDecision: false })
+          this.projectService.getById(this.project._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               project => {
