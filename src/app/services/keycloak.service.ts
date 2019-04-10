@@ -88,6 +88,7 @@ export class KeycloakService {
 
         self.keycloakAuth.onAuthRefreshError = function () {
           console.log('onAuthRefreshError');
+          self.keycloakAuth.login({ idpHint: 'idir' });
         };
 
         self.keycloakAuth.onAuthLogout = function () {
@@ -102,6 +103,7 @@ export class KeycloakService {
             })
             .error((err) => {
               console.log('onTokenExpired:KC refresh error:', err);
+              self.keycloakAuth.login({ idpHint: 'idir' });
             });
         };
 
