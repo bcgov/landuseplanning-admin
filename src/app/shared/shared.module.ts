@@ -18,6 +18,7 @@ import { TableTemplateUtils } from './utils/table-template-utils';
 import { CommentStatsComponent } from './components/comment-stats/comment-stats.component';
 import { ListConverterPipe } from './pipes/list-converter.pipe';
 import { OrgNamePipe } from './pipes/org-name.pipe';
+import { Utils } from './utils/utils';
 
 @NgModule({
   imports: [
@@ -57,7 +58,8 @@ import { OrgNamePipe } from './pipes/org-name.pipe';
     OrgNamePipe
   ],
   providers: [
-    TableTemplateUtils
+    TableTemplateUtils,
+    Utils
   ]
 })
 

@@ -1,7 +1,6 @@
 import * as moment from 'moment';
 
 export class CommentPeriod {
-  __v: Number;
   _id: string;
   _schemaName: String;
   addedBy: String;
@@ -55,7 +54,6 @@ export class CommentPeriod {
   totalComments: number;
 
   constructor(obj?: any) {
-    this.__v                  = obj && obj.__v                  || null;
     this._id                  = obj && obj._id                  || null;
     this._schemaName          = obj && obj._schemaName          || null;
     this.addedBy              = obj && obj.addedBy              || null;
@@ -106,6 +104,10 @@ export class CommentPeriod {
 
     if (obj && obj.dateStarted) {
       this.dateStarted = new Date(obj.dateStarted);
+    }
+
+    if (obj && obj.dateUpdated) {
+      this.dateUpdated = new Date(obj.dateUpdated);
     }
 
     // get comment period days remaining and determine status of the period

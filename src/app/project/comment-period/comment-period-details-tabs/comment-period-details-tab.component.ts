@@ -77,4 +77,24 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
   editCommentPeriod() {
     this.router.navigateByUrl(`/p/${this.projectId}/cp/${this.commentPeriod._id}/edit`);
   }
+
+  deleteCommentPeriod() {
+    if (confirm(`Are you sure you want to delete this comment period?`)) {
+      this.commentPeriodService.delete(this.commentPeriod)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          () => { },
+          error => {
+            console.log('error =', error);
+            alert('Uh-oh, couldn\'t delete comment period');
+          },
+          () => { // onCompleted
+            // delete succeeded --> navigate back to search
+            // Clear out the document state that was stored previously.
+            this.openSnackBar('This comment period has been deleted', 'Close');
+            this.router.navigate(['p', this.projectId, 'comment-periods']);
+          }
+        );
+    }
+  }
 }
