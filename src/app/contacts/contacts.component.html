@@ -1,0 +1,32 @@
+<div class="search-container">
+  <div class="fb-container bg-faded">
+    <section class="container-fluid-padding" id="anchor-point">
+      <div class="spinner-container" *ngIf="loading">
+        <div class="spinner-new rotating"></div>
+      </div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active" aria-current="page">All Contacts</li>
+        </ol>
+      </nav>
+
+      <main *ngIf="!loading">
+        <section>
+          <button class="btn btn-primary mb-4" [routerLink]="['contacts/edit']">
+            <i class="material-icons">add</i>
+            <span>Create New Contact</span>
+          </button>
+
+          <app-table-template *ngIf="!loading && totalCount != 0"
+                              (checkboxChange)='checkChange($event)'
+                              [columns]="documentTableColumns"
+                              [data]="documentTableData"
+                              (onColumnSort)='setColumnSort($event)'
+                              (onSelectedRow)='updateSelectedRow($event)'
+                              (onPageNumUpdate)='getPaginatedDocs($event, null, null)'>
+          </app-table-template>
+        </section>
+      </main>
+    </section>
+  </div>
+</div>
