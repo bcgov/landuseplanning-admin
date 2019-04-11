@@ -25,6 +25,7 @@ export class DocumentEditComponent implements OnInit {
   public labels: any[] = [];
   public documentDate: NgbDateStruct = null;
   public uploadDate: NgbDateStruct = null;
+  public loading = true;
 
   constructor(
     private router: Router,
@@ -96,9 +97,12 @@ export class DocumentEditComponent implements OnInit {
         // this.labels = this.storageService.state.labels;
       }
     }
+    this.loading = false;
   }
 
   save() {
+    this.loading = true;
+
     // Save all the elements to all the documents.
     console.log('this.myForm:', this.myForm);
     // go through and upload one at a time.
@@ -147,6 +151,7 @@ export class DocumentEditComponent implements OnInit {
           // delete succeeded --> navigate back to search
           // Clear out the document state that was stored previously.
           this.router.navigate(['p', this.currentProjectId, 'project-documents']);
+          this.loading = false;
         }
       );
   }

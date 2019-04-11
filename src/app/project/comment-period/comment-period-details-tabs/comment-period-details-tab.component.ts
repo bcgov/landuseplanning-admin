@@ -20,6 +20,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
   public commentPeriodPublishedStatus: string;
   public publishAction: string;
   public projectId: string;
+  public loading = true;
 
   constructor(
     private commentPeriodService: CommentPeriodService,
@@ -33,6 +34,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
 
     this.route.parent.params.subscribe(params => {
       this.projectId = params.projId;
+      this.loading = false;
     });
 
   }
@@ -44,6 +46,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
 
   public togglePublishState() {
     if (confirm(`Are you sure you want to ${this.publishAction} this comment period?`)) {
+      this.loading = true;
       if (this.commentPeriod.isPublished) {
         this.commentPeriodService.unPublish(this.commentPeriod)
           .takeUntil(this.ngUnsubscribe)
@@ -52,6 +55,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
               this.commentPeriod.isPublished = false;
               this.setPublishStatus();
               this.openSnackBar('This comment period has been un-published.', 'Close');
+              this.loading = false;
             })
           );
       } else {
@@ -62,6 +66,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
               this.commentPeriod.isPublished = true;
               this.setPublishStatus();
               this.openSnackBar('This comment period has been published.', 'Close');
+              this.loading = false;
             })
           );
       }
@@ -80,6 +85,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
 
   deleteCommentPeriod() {
     if (confirm(`Are you sure you want to delete this comment period?`)) {
+      this.loading = true;
       this.commentPeriodService.delete(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -91,6 +97,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
           () => { // onCompleted
             // delete succeeded --> navigate back to search
             // Clear out the document state that was stored previously.
+            this.loading = false;
             this.openSnackBar('This comment period has been deleted', 'Close');
             this.router.navigate(['p', this.projectId, 'comment-periods']);
           }
