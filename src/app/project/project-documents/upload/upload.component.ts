@@ -30,6 +30,7 @@ export class UploadComponent implements OnInit {
   public labels: any[] = [];
   public milestones: any[] = [];  // Get this from the project's data.
   public myForm: FormGroup;
+  public loading = true;
 
   constructor(
     private router: Router,
@@ -86,6 +87,7 @@ export class UploadComponent implements OnInit {
     if (this.storageService.state.labels) {
       this.labels = this.storageService.state.labels;
     }
+    this.loading = false;
   }
 
   addLabels() {
@@ -103,6 +105,8 @@ export class UploadComponent implements OnInit {
   }
 
   public uploadDocuments() {
+    this.loading = true;
+
     // go through and upload one at a time.
     let observables = of(null);
 
@@ -144,6 +148,7 @@ export class UploadComponent implements OnInit {
           // delete succeeded --> navigate back to search
           // Clear out the document state that was stored previously.
           this.router.navigate(['p', this.currentProjectId, 'project-documents']);
+          this.loading = false;
         }
       );
   }

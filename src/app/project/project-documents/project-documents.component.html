@@ -31,6 +31,10 @@
   </div>
 </div>
 
+<div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+</div>
+
 <div class="input-group-prepend">
   <button (click)="selectAction('selectAll')"
           class="btn btn-outline-secondary mr-1"

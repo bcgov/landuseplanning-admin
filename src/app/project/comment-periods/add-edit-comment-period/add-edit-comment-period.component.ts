@@ -31,6 +31,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
   public publishedState = 'unpublished';
   public commentPeriodForm: FormGroup;
 
+  public loading = true;
+
   constructor(
     private route: ActivatedRoute,
     private commentPeriodService: CommentPeriodService,
@@ -93,6 +95,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
     } else {
       this.addOpenHouseRow();
     }
+    this.loading = false;
   }
 
   private initForEditing() {
@@ -140,6 +143,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
   }
 
   public onSubmit() {
+    this.loading = true;
     // TODO: Calulator integration.
     // TODO: Custom validation for start and end date.
 
@@ -192,6 +196,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
             alert('Uh-oh, couldn\'t edit comment period');
           },
           () => { // onCompleted
+            this.loading = false;
             this.openSnackBar('This comment period was created successfuly.', 'Close');
             this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
           }
@@ -207,6 +212,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
             alert('Uh-oh, couldn\'t add new comment period');
           },
           () => { // onCompleted
+            this.loading = false;
             this.openSnackBar('This comment period was created successfuly.', 'Close');
             this.router.navigate(['p', this.projectId, 'comment-periods']);
           }

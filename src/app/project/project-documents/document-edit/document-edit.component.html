@@ -15,6 +15,10 @@
 <label>You are editing the following files:</label>
 <div class="container-fluid-padding">
 
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+
   <ul class="list-group" *ngFor="let document of documents">
     <li class="list-group-item">{{document.displayName || '-'}} ({{document.documentFileName}})</li>
   </ul>

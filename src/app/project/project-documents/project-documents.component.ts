@@ -94,7 +94,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
           if (res) {
-            this.loading = false;
             if (res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
               this.totalCount = res.documents[0].data.meta[0].searchResultsTotal;
               this.documents = res.documents[0].data.searchResults;
@@ -102,6 +101,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
               this.totalCount = 0;
               this.documents = [];
             }
+            this.loading = false;
             this.setDocumentRowData();
             this._changeDetectionRef.detectChanges();
           } else {
@@ -187,6 +187,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   }
 
   deleteDocument() {
+    this.loading = true;
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Delete Document',
@@ -205,12 +206,13 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
                 itemsToDelete.push( { promise: this.documentService.delete(item).toPromise(), item: item });
               }
             });
-
+            this.loading = false;
             return Promise.all(itemsToDelete).then(() => {
               // Reload main page.
               this.onSubmit();
             });
           }
+          this.loading = false;
         }
       );
   }
@@ -296,6 +298,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   getPaginatedDocs(pageNumber, sortBy, sortDirection) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
+    this.loading = true;
 
     console.log(pageNumber, sortBy, sortDirection);
 
@@ -313,7 +316,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     console.log('sorting', sorting);
     console.log('pageNumber', pageNumber);
 
-    this.loading = true;
     this.searchService.getSearchResults(this.keywords,
                                         'Document',
                                         [{ 'name': 'project', 'value': this.currentProjectId }],
@@ -329,8 +331,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         this.updateUrl(sorting);
         this.totalCount = res[0].data.meta[0].searchResultsTotal;
         this.documents = res[0].data.searchResults;
-        this.loading = false;
         this.setDocumentRowData();
+        this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
   }
