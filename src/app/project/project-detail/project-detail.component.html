@@ -7,9 +7,10 @@
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
           <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
-            <button class="dropdown-item" (click)="editCommentPeriod()">Edit</button>
-            <button class="dropdown-item" (click)="togglePublishState()">{{publishAction}}</button>
-            <button class="dropdown-item" (click)="deleteCommentPeriod()">Delete</button>
+            <!-- Replace click events -->
+            <button class="dropdown-item">Edit</button>
+            <button class="dropdown-item"></button>
+            <button class="dropdown-item">Delete</button>
           </div>
         </div>
       </div>
@@ -25,7 +26,7 @@
         </div>
         <div class="label-pair">
           <h3 for="nature">Project Nature: </h3>
-          <p id="nature">{{project.nature || '-'}}</p>
+          <p id="nature">Nature<!-- Replace --></p>
         </div>
         <div class="label-pair">
           <h3 for="type">Type: </h3>
@@ -52,11 +53,11 @@
         </div>
         <div class="label-pair">
           <h3 for="lat">Lat: </h3>
-          <p id="lat">{{project.lat || '-'}}</p>
+          <p id="lat"> lat <!-- Replace --></p>
         </div>
         <div class="label-pair">
           <h3 for="lat">Long: </h3>
-          <p id="lat">{{project.long || '-'}}</p>
+          <p id="lat"> long <!-- Replace --></p>
         </div>
       </section>
       <section>
@@ -75,11 +76,11 @@
         </div>
         <div class="label-pair">
           <h3 for="ea">Capital Investment: </h3>
-          <p id="ea">{{project.investment || '-'}}</p>
+          <p id="ea">Investment<!-- Replace --></p>
         </div>
         <div class="label-pair">
           <h3 for="notes">Notes: </h3>
-          <p id="notes">{{project.notes || '-'}}</p>
+          <p id="notes">Notes and stuff <!-- Replace --></p>
         </div>
       </section>
       <section>
