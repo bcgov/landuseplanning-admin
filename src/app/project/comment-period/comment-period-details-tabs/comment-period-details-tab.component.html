@@ -3,13 +3,11 @@
 </div>
 
 <section id="comment-period-details">
-    <div class="row header-underline">
+    <div class="row">
         <div class="col-md-10">
-            <h3>
-                <strong>
-                    COMMMENT PERIOD
-                </strong>
-            </h3>
+            <h2>
+                COMMMENT PERIOD
+            </h2>
         </div>
         <div class="col-md-2 text-right">
             <div ngbDropdown placement="bottom-right" class="d-inline-block">
@@ -24,34 +22,34 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <h6>
-                <strong>
-                    DATE RANGE:&nbsp;
-                </strong>
+        <div class="col-md-5">
+            <h3>
+                DATE RANGE:&nbsp;
+            </h3>
+            <p>
                 {{commentPeriod.dateStarted | date: 'MMMM d'}} -
                 {{commentPeriod.dateCompleted | date}}
                 ({{commentPeriod.daysRemaining}})
-            </h6>
+            </p>
         </div>
-        <div class="col-md-2">
-            <h6>
-                <strong>
-                    PUBLISHED STATE:&nbsp;
-                </strong>
-            </h6>
-            {{commentPeriodPublishedStatus}}
+        <div class="col-md-3">
+            <h3>
+                PUBLISHED STATE:&nbsp;
+            </h3>
+            <p>
+                {{commentPeriodPublishedStatus}}
+            </p>
         </div>
-        <div class="col-md-4">
-            <h6>
-                <strong>
-                    STATUS:&nbsp;
-                </strong>
+        <div class="col-md-3">
+            <h3>
+                STATUS:&nbsp;
+            </h3>
+            <p>
                 <i class="material-icons align-middle">
                     question_answer
                 </i>
                 Commenting {{commentPeriod.commentPeriodStatus}}
-            </h6>
+            </p>
         </div>
     </div>
 
@@ -59,21 +57,17 @@
 
     <div class="row">
         <div class="col-md-8">
-            <h6>
-                <strong>
-                    DESCRIPTION
-                </strong>
-            </h6>
+            <h3>
+                DESCRIPTION
+            </h3>
             <p>{{commentPeriod.instructions}}</p>
             <p>{{commentPeriod.additionalText}}</p>
             <p>{{commentPeriod.informationLabel}}</p>
         </div>
         <div class="col-md-4">
-            <h6>
-                <strong>
-                    MILESTONE(S):
-                </strong>
-            </h6>
+            <h3>
+                MILESTONE(S):
+            </h3>
             <p>{{commentPeriod.milestone | listConverter}}</p>
         </div>
     </div>
@@ -81,44 +75,40 @@
 
 <section id="comments-received-details">
     <div class="row">
-        <div class="col-12 header-underline">
-            <h3>
-                <strong>
-                    COMMENTS RECEIVED
-                </strong>
-            </h3>
+        <div class="col-12">
+            <h2>
+                COMMENTS RECEIVED
+            </h2>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6">
-            <h6>
+            <h3>
                 <strong>
                     TOTAL:&nbsp;
                 </strong>
-            </h6>
+            </h3>
             <div>
                 <app-comment-stats></app-comment-stats>
             </div>
         </div>
         <div class="col-md-6">
-            <h6>
+            <h3>
                 <strong>
                     VALUED COMPONENTS WITH COMMENT COUNTS
                 </strong>
-            </h6>
+            </h3>
         </div>
     </div>
 </section>
 
 <section id="open-house-details">
     <div class="row">
-        <div class="col-12 header-underline">
-            <h3>
-                <strong>
-                    OPEN HOUSE
-                </strong>
-            </h3>
+        <div class="col-12">
+            <h2>
+                OPEN HOUSE
+            </h2>
         </div>
     </div>
 
@@ -126,23 +116,21 @@
         <div class="col-12">
             <ul class="list-group">
                 <li class="list-group-item" *ngFor="let openHouse of commentPeriod.openHouses">
-                    <h6>
-                        <strong>
-                            DATE:&nbsp;
-                        </strong>
+                    <h3>
+                        DATE:&nbsp;
+                    </h3>
+                    <p>
                         {{openHouse.eventDate | date}}
-                    </h6>
-                    <h6>
-                        <strong>
-                            DESCRIPTION
-                        </strong>
-                    </h6>
+                    </p>
+                    <h3>
+                        DESCRIPTION
+                    </h3>
                     <p>{{openHouse.description}}</p>
                 </li>
             </ul>
         </div>
     </div>
     <div *ngIf="commentPeriod.openHouses.length === 0">
-        There are no open houses associated with this comment period.
+        <p>There are no open houses associated with this comment period.</p>
     </div>
 </section>

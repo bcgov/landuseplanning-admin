@@ -28,6 +28,13 @@ import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-commen
 
 const routes: Routes = [
   {
+    path: 'add',
+    component: ProjectAddEditComponent,
+    resolve: {
+      project: ProjectResolver
+    }
+  },
+  {
     path: 'p/:projId',
     component: ProjectComponent,
     resolve: {

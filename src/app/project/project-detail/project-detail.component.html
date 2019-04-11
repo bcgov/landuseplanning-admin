@@ -1,73 +1,148 @@
 <div class="row">
   <div class="col-md-12">
-      <ol class="breadcrumb">
-          <li class="breadcrumb-item active" aria-current="page">Project Details</li>
-      </ol>
+      <div class="action-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Project Details</li>
+        </ol>
+        <div ngbDropdown placement="bottom-right" class="d-inline-block">
+          <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
+          <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+            <!-- Replace click events -->
+            <button class="dropdown-item">Edit</button>
+            <button class="dropdown-item"></button>
+            <button class="dropdown-item">Delete</button>
+          </div>
+        </div>
+      </div>
       <section>
-        <h2>Description</h2>
-        <p>{{project.description || 'No project description available'}}</p>
+        <h2>Basic Information</h2>
+        <div class="label-pair">
+          <h3 for="name">Project Name: </h3>
+          <p id="name">{{project.name || '-'}}</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="proponent">Proponent: </h3>
+          <p id="proponent">{{project.proponent || '-'}}</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="nature">Project Nature: </h3>
+          <p id="nature">Nature<!-- Replace --></p>
+        </div>
+        <div class="label-pair">
+          <h3 for="type">Type: </h3>
+          <p class="type">{{project.type || '-'}}</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="type">Sub-Type: </h3>
+          <p class="type">{{project.sector || '-'}}</p>
+        </div>
+        <div class="label-pair full">
+          <h3 for="description">Description: </h3>
+          <p id="description">{{project.description || 'No project description available'}}</p>
+        </div>
       </section>
       <section>
-        <h2>Details</h2>
-        <ul class="nv-list">
-          <li>
-            <span class="name">Proponent:</span>
-            <span class="value">{{project.proponent || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Region:</span>
-            <!-- TODO: we need to figure out how to interpret region codes. -->
-            <span class="value">{{project.region || '-' | titlecase}}</span>
-          </li>
-          <li>
-            <span class="name">Location:</span>
-            <span class="value">{{project.location || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Type:</span>
-            <span class="value">{{project.type || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">Sub-type:</span>
-            <span class="value">{{project.sector || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">EA Decision:</span>
-            <span class="value">{{project.eacDecision || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">CEAA Involvement:</span>
-            <span class="value">{{project.CEAAInvolvement || '-'}}</span>
-          </li>
-          <li>
-            <span class="name">CEAA URL:</span>
-            <span class="value"><a href="{{project.CEAALink}}">{{project.CEAALink || '-'}}</a></span>
-          </li>
-          <li>
-            <span class="name">Project Lead:</span>
-            <span class="value">
-              {{project.projectLead || '-'}}<br />
-              {{project.projectLeadPhone || '-'}}<br />
-              <a href="mailTo:{{project.projectLeadEmail}}">{{project.projectLeadEmail || '-'}}</a>
-            </span>
-          </li>
-          <li>
-            <span class="name">Executive Project Director:</span>
-            <span class="value">
-              {{project.responsibleEPD || '-'}}<br />
-              {{project.responsibleEPDPhone || '-'}}<br />
-              <a href="mailTo:{{project.responsibleEPDEmail}}">{{project.responsibleEPDEmail || '-'}}</a>
-            </span>
-          </li>
-          <li>
-            <span class="name">Compliance & Enforcement Lead:</span>
-            <span class="value">
-              {{project.CELead || '-'}}<br />
-              {{project.CELeadPhone || '-'}}<br />
-              <a href="mailTo:{{project.CELeadEmail}}">{{project.CELeadEmail || '-'}}</a>
-            </span>
-          </li>
-        </ul>
+        <h2>Location</h2>
+        <div class="label-pair">
+          <h3 for="location">Location: </h3>
+          <p id="location">{{project.location || '-'}}</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="region">Region: </h3>
+          <p id="region">{{project.region || '-' | titlecase}}</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="lat">Lat: </h3>
+          <p id="lat"> lat <!-- Replace --></p>
+        </div>
+        <div class="label-pair">
+          <h3 for="lat">Long: </h3>
+          <p id="lat"> long <!-- Replace --></p>
+        </div>
+      </section>
+      <section>
+        <h2>Supplementary Information</h2>
+        <div class="label-pair">
+          <h3 for="ceaa">CEAA Involvement: </h3>
+          <p id="ceaa">{{project.CEAAInvolvement || '-'}}</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="ceaa-url">CEAA URL: </h3>
+          <p id="ceaa-url"><a href="{{project.CEAALink}}">{{project.CEAALink || '-'}}</a></p>
+        </div>
+        <div class="label-pair">
+          <h3 for="ea">EA Decision: </h3>
+          <p id="ea">{{project.eacDecision || '-'}}</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="ea">Capital Investment: </h3>
+          <p id="ea">Investment<!-- Replace --></p>
+        </div>
+        <div class="label-pair">
+          <h3 for="notes">Notes: </h3>
+          <p id="notes">Notes and stuff <!-- Replace --></p>
+        </div>
+      </section>
+      <section>
+        <h2>Project Status'</h2>
+        <div class="label-pair">
+          <h3 for="ea">EA Readiness Status: </h3>
+          <!-- REPLACE -->
+          <p id="ea">{{project.eacDecision || '-'}} | Sep 12,2014</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="project-status">Project Status: </h3>
+          <!-- REPLACE -->
+          <p id="project-status">Active | Sep 12,2014</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="active-status">Active Status: </h3>
+          <!-- REPLACE -->
+          <p id="active-status">Operational | Sep 12,2014</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="eac-status">Eac Status: </h3>
+          <!-- REPLACE -->
+          <p id="eac-status">EAC Issued | Sep 12,2014</p>
+        </div>
+        <div class="label-pair">
+          <h3 for="substantially">Substantially Started: </h3>
+          <!-- REPLACE -->
+          <p id="substantially">Yes | Sep 12,2014</p>
+        </div>
+      </section>
+      <section class="people">
+        <h2>People</h2>
+        <div class="col">
+          <h3 for="project-lead">Project Lead</h3>
+          <p id="project-lead">
+            <i class="material-icons mr-3" role="presentation">person</i>{{project.projectLead || '-'}}<br />
+            <i class="material-icons mr-3" role="presentation">phone</i>
+            {{project.projectLeadPhone || '-'}}<br />
+            <i class="material-icons mr-3" role="presentation">email</i>
+            <a href="mailTo:{{project.projectLeadEmail}}">{{project.projectLeadEmail || '-'}}</a>
+          </p>
+        </div>
+        <div class="col">
+          <h3 for="epd">Executive Project Director</h3>
+          <p id="epd">
+            <i class="material-icons mr-3" role="presentation">person</i>{{project.responsibleEPD || '-'}}<br />
+            <i class="material-icons mr-3" role="presentation">phone</i>
+            {{project.responsibleEPDPhone || '-'}}<br />
+            <i class="material-icons mr-3" role="presentation">email</i>
+            <a href="mailTo:{{project.responsibleEPDEmail}}">{{project.responsibleEPDEmail || '-'}}</a>
+          </p>
+        </div>
+        <div class="col">
+          <h3 for="ce-lead">Compliance & Enforcement Lead</h3>
+          <p id="ce-lead">
+            <i class="material-icons mr-3" role="presentation">person</i>{{project.CELead || '-'}}<br />
+            <i class="material-icons mr-3" role="presentation">phone</i>
+            {{project.CELeadPhone || '-'}}<br />
+            <i class="material-icons mr-3" role="presentation">email</i>
+            <a href="mailTo:{{project.CELeadEmail}}">{{project.CELeadEmail || '-'}}</a>
+          </p>
+        </div>
       </section>
       <section>
         <h2>Documents</h2>
