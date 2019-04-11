@@ -18,10 +18,10 @@ app-header {
 app-toggle-button {
   position: fixed;
   z-index: 1000;
-  margin-top: 24px;
+  margin-top: 14px;
   margin-left: 0;
   @media screen and (max-width: 768px) {
-    margin-top: 10px;
+    margin-top: 7px;
   }
 }
 

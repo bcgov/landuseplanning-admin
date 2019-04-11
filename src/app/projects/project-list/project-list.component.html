@@ -4,22 +4,22 @@
       <div class="spinner-container" *ngIf="loading">
         <div class="spinner-new rotating"></div>
       </div>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
+      <div class="action-container">
+        <ol class="breadcrumb" aria-label="breadcrumb">
           <li class="breadcrumb-item active" aria-current="page">All Projects</li>
         </ol>
-      </nav>
-
+        <div>
+          <button class="btn btn-primary" [routerLink]="['/arou/0/edit']">
+            <i class="material-icons">add</i>
+            Create New project
+          </button>
+        </div>
+      </div>
       <main *ngIf="!loading">
         <section>
           <h2>Environmental Assessments in British Columbia</h2>
           <p class="tab-intro">Use the list below to navigate to individual Projects. Click on any project to go
             directly to its details page.</p>
-
-          <button class="btn btn-primary mb-4" [routerLink]="['/arou/0/edit']">
-            <i class="material-icons">add</i>
-            <span>Create New project</span>
-          </button>
 
           <!-- <div class="project-list__options">
         <mat-slide-toggle color="primary" [checked]="showOnlyOpenApps" (change)="showOnlyOpenAppsChange($event.checked)">

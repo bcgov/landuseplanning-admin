@@ -150,6 +150,24 @@ main {
   }
 }
 
+.action-container {
+  margin-bottom: 20px;
+  @media screen and (min-width: 768px) {
+    display: flex;
+    ol {
+      flex: 100%;
+      margin-right: 10px;
+    }
+  }
+  .btn {
+    padding: 0.74rem 0.75rem;
+    width: 188px;
+    i {
+      margin-top: -7px;
+    }
+  }
+}
+
 @media (min-width: 760px) {
   main {
     h2 {
