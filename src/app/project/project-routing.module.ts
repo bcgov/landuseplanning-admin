@@ -7,7 +7,6 @@ import { CommentPeriodsComponent } from './comment-periods/comment-periods.compo
 import { CommentPeriodsResolver } from './comment-periods/comment-periods-resolver.services';
 import { ComplianceComponent } from './compliance/compliance.component';
 import { MilestonesComponent } from './milestones/milestones.component';
-import { ProjectAddEditComponent } from './project-add-edit/project-add-edit.component';
 import { ProjectComponent } from './project.component';
 import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
@@ -27,13 +26,6 @@ import { CommentPeriodResolver } from './comment-period/comment-period-resolver.
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 
 const routes: Routes = [
-  {
-    path: 'add',
-    component: ProjectAddEditComponent,
-    resolve: {
-      project: ProjectResolver
-    }
-  },
   {
     path: 'p/:projId',
     component: ProjectComponent,
@@ -127,15 +119,7 @@ const routes: Routes = [
       {
         path: 'milestones',
         component: MilestonesComponent,
-      },
-      {
-        path: 'edit',
-        component: ProjectAddEditComponent,
-        resolve: {
-          project: ProjectResolver
-        },
-        canDeactivate: [CanDeactivateGuard]
-      },
+      }
     ]
   }
 ];
