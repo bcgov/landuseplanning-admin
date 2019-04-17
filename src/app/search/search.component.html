@@ -2,7 +2,7 @@
   <div class="container-fluid-padding">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Search</li>
+        <li class="breadcrumb-item active" aria-current="page">Global Search</li>
       </ol>
     </nav>
     <h1>Search Environmental Assessment Projects</h1>
@@ -24,8 +24,14 @@
           (click)='handleRadioChange("Vc")'>Valued Components
       </label>
       <div class="input-group main-search-field">
-        <input class="form-control" type="text" name="keywordInput" id="keywordInput" [(ngModel)]="terms.keywords"
-          [disabled]="searching" autofocus />
+        <input class="form-control"
+                type="text"
+                name="keywordInput"
+                placeholder="Enter keywords to search..."
+                id="keywordInput"
+                [(ngModel)]="terms.keywords"
+                [disabled]="searching"
+                autofocus />
         <div class="input-group-append">
           <!-- prevent searching if input is empty or we're already searching -->
           <button class="btn btn-primary" type="submit" [disabled]="!terms.keywords || searching">

@@ -9,8 +9,13 @@
     </nav>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
       <div class="input-group main-search-field">
-        <input class="form-control" type="text" name="keywordInput" id="keywordInput" [(ngModel)]="terms.keywords"
-          autofocus />
+        <input class="form-control"
+                type="text"
+                name="keywordInput"
+                placeholder="Enter keywords to search..."
+                id="keywordInput"
+                [(ngModel)]="terms.keywords"
+                autofocus />
         <div class="input-group-append">
           <!-- prevent searching if input is empty or we're already searching -->
           <button class="btn btn-primary" type="submit">
@@ -23,7 +28,7 @@
           No result<span *ngIf="count != 1">s</span> found for "{{keywords}}"
         </p>
         <div *ngIf="!loading && totalCount > 0">
-          {{totalCount}} result<span *ngIf="totalCount != 1">s</span><span *ngIf="keywords"> for "{{keywords}}"</span>
+          {{totalCount}} result<span *ngIf="totalCount != 1">s found</span>
         </div>
         <br>
       </div>
