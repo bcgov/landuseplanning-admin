@@ -45,7 +45,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
 
   public tableParams: TableParamsObject = new TableParamsObject();
 
-  private currentProjectId = '';
+  public currentProjectId = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +60,12 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
     });
 
+    this.route.parent.paramMap
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe(paramMap => {
+      this.currentProjectId = paramMap.get('projId');
+    });
+
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -68,7 +74,6 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
           this.tableParams.totalListItems = res.valuedComponents.totalCount;
           if (this.tableParams.totalListItems > 0) {
             this.valuedComponents = res.valuedComponents.data;
-            this.currentProjectId = res.valuedComponents.projectId;
             this.setVCRowData();
           }
         } else {

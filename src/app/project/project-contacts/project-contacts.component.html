@@ -1,5 +1,32 @@
 <div class="search-container">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Project Contacts</li>
-    </ol>
+  <div class="container-fluid-padding">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId]">Project
+            Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contacts</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="mx-3">
+  <mat-tab-group>
+    <mat-tab label="CONTACTS">
+      <br>
+      <!-- <app-comment-period-details-tab [commentPeriod]="commentPeriod"></app-comment-period-details-tab> -->
+    </mat-tab>
+    <mat-tab label="PARTICIPATING INDIGENOUS NATIONS">
+      <!-- <app-review-comments-tab></app-review-comments-tab> -->
+    </mat-tab>
+    <mat-tab label="GROUPS">
+      <!-- <app-review-comments-tab></app-review-comments-tab> -->
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<div class="bottom-container">
+  <div class="container">
+    <legend>COMING SOON</legend>
+  </div>
 </div>

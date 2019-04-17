@@ -1,21 +1,28 @@
 <div class="search-container">
-  <ol class="breadcrumb">
-      <li class="breadcrumb-item active" aria-current="page">Valued Components</li>
-  </ol>
-
-  <div class="spinner-container" *ngIf="loading">
-    <div class="spinner-new rotating"></div>
+  <div class="container-fluid-padding">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/p', currentProjectId]">Project
+            Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Valued Components</li>
+      </ol>
+    </nav>
   </div>
+</div>
 
-  <app-table-template
-    *ngIf="tableParams.totalListItems > 0"
-    [columns]="valuedComponentTableColumns"
-    [data]="valuedComponentTableData"
-    (onColumnSort)='setColumnSort($event)'
-    (onPageNumUpdate)='getPaginatedVCs($event, null, null)'>
-  </app-table-template>
-  
-  <div *ngIf="tableParams.totalListItems == 0">
-    This project has no valued components.
+<div class="bottom-container">
+  <div class="container">
+    <div class="spinner-container" *ngIf="loading">
+      <div class="spinner-new rotating"></div>
+    </div>
+
+    <app-table-template *ngIf="tableParams.totalListItems > 0" [columns]="valuedComponentTableColumns"
+      [data]="valuedComponentTableData" (onColumnSort)='setColumnSort($event)'
+      (onPageNumUpdate)='getPaginatedVCs($event, null, null)'>
+    </app-table-template>
+
+    <div *ngIf="tableParams.totalListItems == 0">
+      This project has no valued components.
+    </div>
   </div>
 </div>
