@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommentPeriod } from 'app/models/commentPeriod';
-import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { Subject } from 'rxjs/Subject';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+
+import { CommentPeriod } from 'app/models/commentPeriod';
+
+import { CommentPeriodService } from 'app/services/commentperiod.service';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-comment-period-details-tab',
@@ -24,19 +27,15 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
 
   constructor(
     private commentPeriodService: CommentPeriodService,
-    private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
     this.setPublishStatus();
-
-    this.route.parent.params.subscribe(params => {
-      this.projectId = params.projId;
-      this.loading = false;
-    });
-
+    this.projectId = this.storageService.state.currentProject._id;
+    this.loading = false;
   }
 
   setPublishStatus() {

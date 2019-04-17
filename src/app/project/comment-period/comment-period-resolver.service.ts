@@ -13,7 +13,6 @@ export class CommentPeriodResolver implements Resolve<Object> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const commentPeriodId = route.paramMap.get('commentPeriodId');
-
     // force-reload so we always have latest data
     return this.commentPeriodService.getById(commentPeriodId);
   }

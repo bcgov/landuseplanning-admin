@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 
 import { CommentPeriodComponent } from './comment-period/comment-period.component';
 import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
@@ -18,15 +17,17 @@ import { DocumentDetailComponent } from './project-documents/detail/detail.compo
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
+import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
+import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
+import { AddEditProjectComponent } from 'app/projects/add-edit-project/add-edit-project.component';
 
 import { ProjectResolver } from './project-resolver.service';
 import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
 import { DocumentsResolver } from './project-documents/project-document-resolver.services';
 import { DocumentDetailResolver } from './project-documents/detail/document-detail-resolver.service';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
-import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 import { TopicResolver } from './valued-components/add-vc/topic-resolver.services';
-import { AddEditProjectComponent } from 'app/projects/add-edit-project/add-edit-project.component';
+import { ReviewCommentResolver } from './comment-period/review-comment/review-comment-resolver.service';
 
 const routes: Routes = [
   {
@@ -106,20 +107,6 @@ const routes: Routes = [
         component: ProjectContactsComponent,
       },
       {
-        path: 'cp/:commentPeriodId/edit',
-        component: AddEditCommentPeriodComponent,
-        resolve: {
-          commentPeriod: CommentPeriodResolver
-        }
-      },
-      {
-        path: 'cp/:commentPeriodId',
-        component: CommentPeriodComponent,
-        resolve: {
-          commentPeriod: CommentPeriodResolver,
-        }
-      },
-      {
         path: 'comment-periods/add',
         component: AddEditCommentPeriodComponent,
       },
@@ -129,6 +116,44 @@ const routes: Routes = [
         resolve: {
           commentPeriods: CommentPeriodsResolver
         }
+      },
+      {
+        path: 'cp/:commentPeriodId',
+        resolve: {
+          commentPeriod: CommentPeriodResolver,
+        },
+        children: [
+          {
+            path: '',
+            redirectTo: 'comment-period-details',
+            pathMatch: 'full'
+          },
+          {
+            path: 'comment-period-details',
+            component: CommentPeriodComponent
+          },
+          {
+            path: 'edit',
+            component: AddEditCommentPeriodComponent
+          },
+          {
+            path: 'c/:commentId',
+            resolve: {
+              comment: ReviewCommentResolver
+            },
+            children: [
+              {
+                path: '',
+                redirectTo: 'comment-details',
+                pathMatch: 'full'
+              },
+              {
+                path: 'comment-details',
+                component: ReviewCommentComponent
+              }
+            ]
+          }
+        ]
       },
       {
         path: 'milestones',
@@ -146,13 +171,15 @@ const routes: Routes = [
     RouterModule
   ],
   providers: [
-    ProjectResolver,
-    CommentPeriodsResolver,
     CommentPeriodResolver,
-    ValuedComponentsResolver,
+    CommentPeriodsResolver,
+    DocumentDetailResolver,
     DocumentsResolver,
     DocumentDetailResolver,
-    TopicResolver
+    TopicResolver,
+    ProjectResolver,
+    ReviewCommentResolver,
+    ValuedComponentsResolver
   ]
 })
 

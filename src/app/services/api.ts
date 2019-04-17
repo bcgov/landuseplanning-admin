@@ -11,7 +11,6 @@ import * as _ from 'lodash';
 import { KeycloakService } from 'app/services/keycloak.service';
 
 import { Project } from 'app/models/project';
-import { Client } from 'app/models/client';
 import { Comment } from 'app/models/comment';
 import { CommentPeriod } from 'app/models/commentPeriod';
 import { Decision } from 'app/models/decision';
@@ -505,14 +504,25 @@ export class ApiService {
   // NB: returns array with 1 element
   getComment(id: string): Observable<Comment[]> {
     const fields = [
-      '_addedBy',
-      '_commentPeriod',
-      'commentNumber',
+      '_id',
+      'author',
       'comment',
-      'commentAuthor',
-      'review',
+      'commentId',
       'dateAdded',
-      'commentStatus'
+      'dateUpdated',
+      'eaoNotes',
+      'eaoStatus',
+      'isAnonymous',
+      'location',
+      'period',
+      'proponentNotes',
+      'proponentStatus',
+      'publishedNotes',
+      'rejectedNotes',
+      'rejectedReason',
+      'read',
+      'write',
+      'delete'
     ];
     const queryString = `comment/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, {});
@@ -528,14 +538,10 @@ export class ApiService {
     return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, comment, {});
   }
 
-  publishComment(comment: Comment): Observable<Comment> {
-    const queryString = `comment/${comment._id}/publish`;
-    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, null, {});
-  }
-
-  unPublishComment(comment: Comment): Observable<Comment> {
-    const queryString = `comment/${comment._id}/unpublish`;
-    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, null, {});
+  updateCommentStatus(comment: Comment, status: string): Observable<Comment> {
+    const queryString = `comment/${comment._id}/status`;
+    console.log(this.http.put<Comment>(`${this.pathAPI}/${queryString}`, status, {}));
+    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, {'status': status}, {});
   }
 
   //

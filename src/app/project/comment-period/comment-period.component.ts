@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { CommentPeriod } from 'app/models/commentPeriod';
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { CommentPeriod } from 'app/models/commentPeriod';
+
 import { StorageService } from 'app/services/storage.service';
 
 @Component({
@@ -14,9 +16,9 @@ export class CommentPeriodComponent implements OnInit {
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
+  public commentPeriod: CommentPeriod;
+  public loading: Boolean = true;
   public projectId: string;
-  commentPeriod: CommentPeriod;
-  loading: Boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,25 +27,28 @@ export class CommentPeriodComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.parent.params.subscribe(params => {
-      this.projectId = params.projId;
-    });
+    this.projectId = this.storageService.state.currentProject._id;
 
     // get data from route resolver
-    this.route.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (data) => {
-          if (data.commentPeriod) {
-            this.commentPeriod = data.commentPeriod;
-            this.storageService.state = { type: 'currentCommentPeriod', data: this.commentPeriod };
-          } else {
-            alert('Uh-oh, couldn\'t load comment period ');
-            // comment period not found --> navigate back to search
-            this.router.navigate(['/search']);
+    if (this.storageService.state.currentCommentPeriod == null) {
+      this.route.data
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          (data) => {
+            if (data.commentPeriod) {
+              this.commentPeriod = data.commentPeriod;
+              this.storageService.state = { type: 'currentCommentPeriod', data: this.commentPeriod };
+            } else {
+              alert('Uh-oh, couldn\'t load comment period ');
+              // comment period not found --> navigate back to search
+              this.router.navigate(['/search']);
+            }
+            this.loading = false;
           }
-          this.loading = false;
-        }
-      );
+        );
+    } else {
+      this.commentPeriod = this.storageService.state.currentCommentPeriod;
+      this.loading = false;
+    }
   }
 }

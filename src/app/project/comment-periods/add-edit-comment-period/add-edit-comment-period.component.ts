@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
@@ -8,6 +8,7 @@ import { Subject } from 'rxjs/Subject';
 import { MatSnackBar } from '@angular/material';
 import { ConfigService } from 'app/services/config.service';
 import { Utils } from 'app/shared/utils/utils';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-add-edit-comment-period',
@@ -40,6 +41,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private snackBar: MatSnackBar,
+    private storageService: StorageService,
     private utils: Utils
   ) { }
 
@@ -54,18 +56,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
     });
 
     // Get data related to current project
-    this.route.parent.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(data => {
-        if (data.project) {
-          this.projectId = data.project._id;
-          this.projectName = data.project.name;
-        } else {
-          alert('Uh-oh, couldn\'t load project');
-          // project not found --> navigate back to search
-          this.router.navigate(['/search']);
-        }
-      });
+    this.projectId = this.storageService.state.currentProject._id;
+    this.projectName = this.storageService.state.currentProject.name;
 
     this.config.lists.map(item => {
       switch (item.type) {
@@ -230,7 +222,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
     }
   }
 
-  register() {
+   public register() {
     console.log('Successful registration');
     console.log(this.commentPeriodForm);
   }
