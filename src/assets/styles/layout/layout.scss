@@ -268,7 +268,15 @@ hr {
 
 .breadcrumb {
   margin-left: 20px;
-  border: 1px solid rgba(0, 51, 102, 0.8);
-  background: white;
-  text-decoration-line: underline
+  border: 1px solid white;
+  background: #38598A;
+}
+
+.breadcrumb-item a {
+  color: white;
+  text-decoration-line: underline;
+}
+
+.breadcrumb-item.active {
+  color: #FCBA19;
 }
