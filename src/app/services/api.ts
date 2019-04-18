@@ -154,6 +154,7 @@ export class ApiService {
       'type',
       'addedBy',
       'build',
+      'intake',
       'CEAALink',
       'code',
       'commodity',

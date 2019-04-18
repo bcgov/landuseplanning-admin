@@ -26,7 +26,7 @@
         </div>
         <div class="label-pair">
           <h3 for="nature">Project Nature: </h3>
-          <p id="nature">Nature<!-- Replace --></p>
+          <p id="nature">{{project.nature || 'No nature description available'}}</p>
         </div>
         <div class="label-pair">
           <h3 for="type">Type: </h3>
@@ -53,11 +53,11 @@
         </div>
         <div class="label-pair">
           <h3 for="lat">Lat: </h3>
-          <p id="lat"> lat <!-- Replace --></p>
+          <p id="lat">{{project.centroid[1]}}</p>
         </div>
         <div class="label-pair">
           <h3 for="lat">Long: </h3>
-          <p id="lat"> long <!-- Replace --></p>
+          <p id="lat">{{project.centroid[0]}}</p>
         </div>
       </section>
       <section>
@@ -76,39 +76,34 @@
         </div>
         <div class="label-pair">
           <h3 for="ea">Capital Investment: </h3>
-          <p id="ea">Investment<!-- Replace --></p>
+          <p id="ea">{{project.intake.investment || '-'}}</p>
         </div>
         <div class="label-pair">
           <h3 for="notes">Notes: </h3>
-          <p id="notes">Notes and stuff <!-- Replace --></p>
+          <p id="notes">{{project.intake.investmentNotes || '-'}}</p>
         </div>
       </section>
       <section>
         <h2>Project Status'</h2>
-        <div class="label-pair">
+        <div class="label-pair" *ngIf="project.eaDecision">
           <h3 for="ea">EA Readiness Status: </h3>
-          <!-- REPLACE -->
-          <p id="ea">{{project.eacDecision || '-'}} | Sep 12,2014</p>
+          <p id="ea">{{project.eaDecision.label || '-'}} | {{project.eaDecision.date | date: 'longDate' || '-'}}</p>
         </div>
-        <div class="label-pair">
+        <div class="label-pair" *ngIf="project.status">
           <h3 for="project-status">Project Status: </h3>
-          <!-- REPLACE -->
-          <p id="project-status">Active | Sep 12,2014</p>
+          <p id="project-status">{{project.status || '-'}}</p>
         </div>
-        <div class="label-pair">
+        <div class="label-pair" *ngIf="project.operational">
           <h3 for="active-status">Active Status: </h3>
-          <!-- REPLACE -->
-          <p id="active-status">Operational | Sep 12,2014</p>
+          <p id="active-status">{{project.operational.label || '-'}} | {{project.operational.date | date: 'longDate' || '-'}}</p>
         </div>
-        <div class="label-pair">
+        <div class="label-pair" *ngIf="project.eacDecision">
           <h3 for="eac-status">Eac Status: </h3>
-          <!-- REPLACE -->
-          <p id="eac-status">EAC Issued | Sep 12,2014</p>
+          <p id="eac-status">{{project.eacDecision || '-'}} | {{project.decisionDate | date: 'longDate' || '-'}}</p>
         </div>
-        <div class="label-pair">
+        <div class="label-pair" *ngIf="project.substantiallyStarted">
           <h3 for="substantially">Substantially Started: </h3>
-          <!-- REPLACE -->
-          <p id="substantially">Yes | Sep 12,2014</p>
+          <p id="substantially">{{project.substantiallyStarted.label || '-'}} | {{project.substantiallyStarted.date | date: 'longDate' || '-'}}</p>
         </div>
       </section>
       <section class="people">
@@ -143,31 +138,6 @@
             <a href="mailTo:{{project.CELeadEmail}}">{{project.CELeadEmail || '-'}}</a>
           </p>
         </div>
-      </section>
-      <section>
-        <h2>Documents</h2>
-        <ul class="doc-list">
-          <!-- <li *ngFor="let doc of project.documents">
-                <span class="cell icon">
-                  <i class="material-icons link" (click)="api.openDocument(doc)">
-                    insert_drive_file
-                  </i>
-                </span>
-                <span class="cell name" [title]="doc.displayName || ''">
-                  <span class="cell__txt-content">
-                    <a (click)="api.openDocument(doc)">{{doc.documentFileName}}</a>
-                  </span>
-                </span>
-                <span class="cell actions">
-                <button class="btn btn-icon" type="button" title="Download this document" (click)="api.downloadDocument(doc)">
-                    <i class="material-icons">file_download</i>
-                  </button>
-                </span>
-              </li>
-              <li class="no-results" *ngIf="project.documents.length === 0">
-                <em>No project documents</em>
-              </li> -->
-        </ul>
       </section>
   </div>
 </div>

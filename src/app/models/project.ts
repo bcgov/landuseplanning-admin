@@ -40,6 +40,10 @@ export class Project {
   epicProjectID: Number;
   fedElecDist: String;
   // TODO: intake
+  intake: {
+    investment: any;
+    investmentNotes: any;
+  };
   isTermsAgreed: Boolean;
   overallProgress: Number;
   primaryContact: String;
@@ -50,6 +54,12 @@ export class Project {
   status: String;
   substitution: Boolean;
   updatedBy: String;
+
+  nature: any;
+  eaDecision: any;
+  operational: any;
+  substantiallyStarted: any;
+
 
   // Permissions
   read: Array<String> = [];
@@ -83,7 +93,14 @@ export class Project {
     this.responsibleEPDPhone = obj && obj.responsibleEPDPhone || null;
     this.type                = obj && obj.type                || null;
     this.addedBy             = obj && obj.addedBy             || null;
+    this.intake              = obj && obj.intake              || null;
     this.build               = obj && obj.build               || null;
+
+    this.nature               = obj && obj.nature               || null;
+    this.eaDecision           = obj && obj.eaDecision               || null;
+    this.operational          = obj && obj.operational               || null;
+    this.substantiallyStarted = obj && obj.substantiallyStarted               || null;
+
     this.CEAALink            = obj && obj.CEAALink            || null;
     this.code                = obj && obj.code                || null;
     this.commodity           = obj && obj.commodity           || null;

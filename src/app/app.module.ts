@@ -57,6 +57,7 @@ import { TopicTableRowsComponent } from './administration/topics/topic-table-row
 import { ContactsComponent } from './contacts/contacts.component';
 import { UserTableRowsComponent } from './contacts/user-table-rows/user-table-rows.component';
 import { ActivityTableRowsComponent } from 'app/activity/activity-table-rows/activity-table-rows.component';
+import { CurrencyPipe } from '@angular/common';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -119,6 +120,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     CommentService,
     ConfigService,
     CookieService,
+    CurrencyPipe,
     DecisionService,
     DocumentService,
     // FeatureService,
