@@ -1,0 +1,12 @@
+<tr *ngFor="let entry of entries | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
+    class="clickable-row">
+    <td data-label="Headline" scope="row" class="col-4">{{entry.headline}}</td>
+    <td data-label="Project" scope="row" class="col-2">{{entry.project}}</td>
+    <td data-label="Type" scope="row" class="col-2">{{entry.type}}</td>
+    <td data-label="Date Added" scope="row" class="col-2">{{entry.dateAdded | date: 'longDate'}}</td>
+    <td data-label="Priority" scope="row" class="col-1">{{entry.priority}}</td>
+    <td data-label="Status" scope="row" class="col-1">{{entry.active}}</td>
+    <!-- <td>
+            <button type="button" (click)="deleteVC(entry)" class="btn btn-danger">Delete</button>
+        </td> -->
+</tr>
