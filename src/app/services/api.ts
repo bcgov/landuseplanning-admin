@@ -15,7 +15,7 @@ import { Comment } from 'app/models/comment';
 import { CommentPeriod } from 'app/models/commentPeriod';
 import { Decision } from 'app/models/decision';
 import { Document } from 'app/models/document';
-import { Feature } from 'app/models/feature';
+// import { Feature } from 'app/models/recentActivity';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 import { Topic } from 'app/models/topic';
@@ -221,41 +221,41 @@ export class ApiService {
     return this.http.put<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
 
-  //
-  // Features
-  //
-  getFeaturesByTantalisId(tantalisId: number): Observable<Feature[]> {
-    const fields = [
-      'type',
-      'tags',
-      'geometry',
-      'geometryName',
-      'properties',
-      'isDeleted',
-      'projectID'
-    ];
-    const queryString = `feature?isDeleted=false&tantalisId=${tantalisId}&fields=${this.buildValues(fields)}`;
-    return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
-  }
+  // //
+  // // Features
+  // //
+  // getFeaturesByTantalisId(tantalisId: number): Observable<Feature[]> {
+  //   const fields = [
+  //     'type',
+  //     'tags',
+  //     'geometry',
+  //     'geometryName',
+  //     'properties',
+  //     'isDeleted',
+  //     'projectID'
+  //   ];
+  //   const queryString = `feature?isDeleted=false&tantalisId=${tantalisId}&fields=${this.buildValues(fields)}`;
+  //   return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
+  // }
 
-  getFeaturesByProjectId(projectId: string): Observable<Feature[]> {
-    const fields = [
-      'type',
-      'tags',
-      'geometry',
-      'geometryName',
-      'properties',
-      'isDeleted',
-      'projectID'
-    ];
-    const queryString = `feature?isDeleted=false&projectId=${projectId}&fields=${this.buildValues(fields)}`;
-    return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
-  }
+  // getFeaturesByProjectId(projectId: string): Observable<Feature[]> {
+  //   const fields = [
+  //     'type',
+  //     'tags',
+  //     'geometry',
+  //     'geometryName',
+  //     'properties',
+  //     'isDeleted',
+  //     'projectID'
+  //   ];
+  //   const queryString = `feature?isDeleted=false&projectId=${projectId}&fields=${this.buildValues(fields)}`;
+  //   return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
+  // }
 
-  deleteFeaturesByProjectId(projectID: string): Observable<Object> {
-    const queryString = `feature/?projectID=${projectID}`;
-    return this.http.delete(`${this.pathAPI}/${queryString}`, {});
-  }
+  // deleteFeaturesByProjectId(projectID: string): Observable<Object> {
+  //   const queryString = `feature/?projectID=${projectID}`;
+  //   return this.http.delete(`${this.pathAPI}/${queryString}`, {});
+  // }
 
   //
   // Decisions

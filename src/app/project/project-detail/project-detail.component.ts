@@ -14,7 +14,6 @@ import { ProjectService } from 'app/services/project.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
-import { FeatureService } from 'app/services/feature.service';
 import { ProjectComponent } from '../project.component';
 
 @Component({
@@ -41,7 +40,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public commentPeriodService: CommentPeriodService,
     public decisionService: DecisionService,
     public documentService: DocumentService,
-    public featureService: FeatureService,
     private projectComponent: ProjectComponent
   ) { }
 

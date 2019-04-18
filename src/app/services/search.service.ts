@@ -8,9 +8,6 @@ import * as _ from 'lodash';
 import { ApiService } from './api';
 import { ProjectService } from 'app/services/project.service';
 import { SearchResults } from 'app/models/search';
-import { Client } from 'app/models/client';
-import { Project } from 'app/models/project';
-import { Feature } from 'app/models/feature';
 
 @Injectable()
 export class SearchService {

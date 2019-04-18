@@ -12,7 +12,6 @@ import { DocumentService } from './document.service';
 import { CommentPeriodService } from './commentperiod.service';
 import { CommentService } from './comment.service';
 import { DecisionService } from './decision.service';
-import { FeatureService } from './feature.service';
 
 import { Project } from 'app/models/project';
 import { CommentPeriod } from 'app/models/commentPeriod';
@@ -27,14 +26,14 @@ interface GetParameters {
 @Injectable()
 export class ProjectService {
   private project: Project = null; // for caching
+  private projectList: Project[] = [];
 
   constructor(
     private api: ApiService,
     private documentService: DocumentService,
     private commentPeriodService: CommentPeriodService,
     private commentService: CommentService,
-    private decisionService: DecisionService,
-    private featureService: FeatureService
+    private decisionService: DecisionService
   ) { }
 
   // get count of projects
@@ -48,11 +47,12 @@ export class ProjectService {
     return this.api.getProjects(pageNum, pageSize, sortBy)
     .map((res: any) => {
       if (res) {
-        let projects: Array<Project> = [];
+        // let projects: Array<Project> = [];
+        this.projectList = [];
         res[0].results.forEach(project => {
-          projects.push(new Project(project));
+          this.projectList.push(new Project(project));
         });
-        return { totalCount: res[0].total_items, data: projects };
+        return { totalCount: res[0].total_items, data: this.projectList };
       }
       return {};
     })
