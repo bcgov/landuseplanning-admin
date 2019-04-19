@@ -16,8 +16,23 @@
       <div class="spinner-new rotating"></div>
     </div>
 
-    <app-table-template *ngIf="tableParams.totalListItems > 0" [columns]="valuedComponentTableColumns"
-      [data]="valuedComponentTableData" (onColumnSort)='setColumnSort($event)'
+    <div class="input-group-prepend">
+      <button (click)="selectAction('selectAll')"
+              class="btn btn-outline-secondary mr-1"
+              type="button"
+              id="button-sa">Select All</button>
+      <button (click)="selectAction('delete')"
+              class="btn btn-outline-secondary mr-1"
+              [disabled]="!isEnabled('delete')"
+              type="button"
+              id="button-d"><i class="material-icons">delete</i>Delete</button>
+    </div>
+
+    <app-table-template *ngIf="tableParams.totalListItems > 0"
+      [columns]="tableColumns"
+      [data]="tableData"
+      (onColumnSort)='setColumnSort($event)'
+      (onSelectedRow)='updateSelectedRow($event)'
       (onPageNumUpdate)='getPaginatedVCs($event, null, null)'>
     </app-table-template>
 

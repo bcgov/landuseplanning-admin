@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 
 import { TableComponent } from 'app/shared/components/table-template/table.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
@@ -11,6 +11,7 @@ import { TableObject } from 'app/shared/components/table-template/table-object';
 
 export class ValuedComponentTableRowsComponent implements OnInit, TableComponent {
     @Input() data: TableObject;
+    @Output() selectedCount: EventEmitter<any> = new EventEmitter();
 
     public valuedComponents: any;
     public paginationData: any;
@@ -18,5 +19,17 @@ export class ValuedComponentTableRowsComponent implements OnInit, TableComponent
     ngOnInit() {
         this.valuedComponents = this.data.data;
         this.paginationData = this.data.paginationData;
+    }
+
+    selectItem(item) {
+      item.checkbox = !item.checkbox;
+
+      let count = 0;
+      this.valuedComponents.map(row => {
+        if (row.checkbox === true) {
+          count++;
+        }
+      });
+      this.selectedCount.emit(count);
     }
 }

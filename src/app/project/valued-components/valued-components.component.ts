@@ -7,6 +7,10 @@ import { TableObject } from 'app/shared/components/table-template/table-object';
 import { ValuedComponentTableRowsComponent } from './valued-component-table-rows/valued-component-table-rows.component';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+import { DialogService } from 'ng2-bootstrap-modal';
+import { StorageService } from 'app/services/storage.service';
+import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { SearchTerms, SearchResults } from 'app/models/search';
 
 @Component({
   selector: 'app-valued-components',
@@ -17,10 +21,19 @@ import { TableParamsObject } from 'app/shared/components/table-template/table-pa
 export class ValuedComponentsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public valuedComponents: ValuedComponent[] = null;
+  public terms = new SearchTerms();
   public loading = true;
+  public currentPage = 1;
+  public sortBy = '';
+  public sortDirection = 0;
 
-  public valuedComponentTableData: TableObject;
-  public valuedComponentTableColumns: any[] = [
+  public tableData: TableObject;
+  public tableColumns: any[] = [
+    {
+      name: '',
+      value: 'check',
+      width: 'col-1'
+    },
     {
       name: 'Type',
       value: 'type',
@@ -45,14 +58,17 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
 
   public tableParams: TableParamsObject = new TableParamsObject();
 
+  public selectedCount = 0;
   public currentProjectId = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private valuedComponentService: ValuedComponentService,
+    private dialogService: DialogService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private tableTemplateUtils: TableTemplateUtils
+    private tableTemplateUtils: TableTemplateUtils,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -74,7 +90,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
           this.tableParams.totalListItems = res.valuedComponents.totalCount;
           if (this.tableParams.totalListItems > 0) {
             this.valuedComponents = res.valuedComponents.data;
-            this.setVCRowData();
+            this.setRowData();
           }
         } else {
           alert('Uh-oh, couldn\'t load valued components');
@@ -101,19 +117,20 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   //   return;
   // }
 
-  setVCRowData() {
+  setRowData() {
     let vcList = [];
     this.valuedComponents.forEach(valuedComponent => {
       vcList.push(
         {
           type: valuedComponent.type,
+          _id: valuedComponent._id,
           title: valuedComponent.title,
           pillar: valuedComponent.pillar,
           parent: valuedComponent.parent == null ? 'None' : valuedComponent.parent
         }
       );
     });
-    this.valuedComponentTableData = new TableObject(
+    this.tableData = new TableObject(
       ValuedComponentTableRowsComponent,
       vcList,
       this.tableParams
@@ -139,10 +156,101 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
         this.tableParams.totalListItems = res.totalCount;
         this.valuedComponents = res.data;
         this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
-        this.setVCRowData();
+        this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
+  }
+
+  public selectAction(action) {
+    // select all valuedComponents
+    switch (action) {
+      case 'selectAll':
+        let someSelected = false;
+        this.tableData.data.map((item) => {
+          if (item.checkbox === true) {
+            someSelected = true;
+          }
+        });
+        this.tableData.data.map((item) => {
+          item.checkbox = !someSelected;
+        });
+
+        this.selectedCount = someSelected ? 0 : this.tableData.data.length;
+        this._changeDetectionRef.detectChanges();
+      break;
+    case 'delete':
+        this.delete();
+      break;
+    }
+  }
+
+  isEnabled(button) {
+    switch (button) {
+      default:
+        return this.selectedCount > 0;
+      break;
+    }
+  }
+
+  updateSelectedRow(count) {
+    this.selectedCount = count;
+  }
+
+  delete() {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Delete Document',
+        message: 'Click <strong>OK</strong> to delete this Document or <strong>Cancel</strong> to return to the list.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            this.loading = true;
+            // Delete the Document(s)
+            let itemsToDelete = [];
+            this.tableData.data.map((item) => {
+              if (item.checkbox === true) {
+                itemsToDelete.push( { promise: this.valuedComponentService.delete(item).toPromise(), item: item });
+              }
+            });
+            this.loading = false;
+            return Promise.all(itemsToDelete).then(() => {
+              // Reload main page.
+              this.onSubmit();
+            });
+          }
+          this.loading = false;
+        }
+      );
+  }
+
+  onSubmit() {
+    // dismiss any open snackbar
+    // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+
+    // NOTE: Angular Router doesn't reload page on same URL
+    // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
+    // WORKAROUND: add timestamp to force URL to be different than last time
+
+    // Reset page.
+    this.currentPage = 1;
+    this.sortBy = '';
+    this.sortDirection = 0;
+
+    const params = this.terms.getParams();
+    params['ms'] = new Date().getMilliseconds();
+    params['dataset'] = this.terms.dataset;
+    params['currentPage'] = this.tableParams.currentPage;
+    params['sortBy'] = this.terms.sortBy;
+    params['sortDirection'] = this.terms.sortDirection;
+
+    console.log('params =', params);
+    console.log('nav:', ['p', this.currentProjectId, 'valued-components', params]);
+    this.router.navigate(['p', this.currentProjectId, 'valued-components', params]);
   }
 
   ngOnDestroy() {

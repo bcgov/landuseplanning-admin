@@ -28,5 +28,13 @@ export class ValuedComponentService {
                 return {};
             }).catch(error => this.api.handleError(error));
     }
+
+    delete(item: string) {
+      console.log("DELETE:", item);
+      return this.api.deleteVC(item)
+      .map(() => {
+        return {};
+      }).catch(error => this.api.handleError(error));
+  }
 }
 

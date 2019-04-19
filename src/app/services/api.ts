@@ -712,6 +712,10 @@ export class ApiService {
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
+  deleteVC(vc: any): Observable<ValuedComponent> {
+    const queryString = `vc/${vc._id}`;
+    return this.http.delete<ValuedComponent>(`${this.pathAPI}/${queryString}`, {});
+  }
 
   //
   // Get Item via search endpoint
