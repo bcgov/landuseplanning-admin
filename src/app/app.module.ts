@@ -37,7 +37,7 @@ import { CommentService } from 'app/services/comment.service';
 import { ConfigService } from 'app/services/config.service';
 import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
-import { FeatureService } from 'app/services/feature.service';
+// import { FeatureService } from 'app/services/recent-activity';
 import { KeycloakService } from 'app/services/keycloak.service';
 import { ProjectService } from 'app/services/project.service';
 import { SearchService } from 'app/services/search.service';
@@ -56,6 +56,8 @@ import { ActivityComponent } from './activity/activity.component';
 import { TopicTableRowsComponent } from './administration/topics/topic-table-rows/topic-table-rows.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { UserTableRowsComponent } from './contacts/user-table-rows/user-table-rows.component';
+import { ActivityTableRowsComponent } from 'app/activity/activity-table-rows/activity-table-rows.component';
+import { CurrencyPipe } from '@angular/common';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -83,7 +85,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     MetricsComponent,
     ActivityComponent,
     ContactsComponent,
-    UserTableRowsComponent
+    UserTableRowsComponent,
+    ActivityTableRowsComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -117,9 +120,10 @@ export function kcFactory(keycloakService: KeycloakService) {
     CommentService,
     ConfigService,
     CookieService,
+    CurrencyPipe,
     DecisionService,
     DocumentService,
-    FeatureService,
+    // FeatureService,
     ProjectService,
     SearchService,
     UserService,
@@ -132,7 +136,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     DayCalculatorModalComponent,
     AddEditTopicComponent,
     TopicTableRowsComponent,
-    UserTableRowsComponent
+    UserTableRowsComponent,
+    ActivityTableRowsComponent
   ],
   bootstrap: [AppComponent]
 })

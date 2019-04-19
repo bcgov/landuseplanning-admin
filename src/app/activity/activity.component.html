@@ -7,6 +7,13 @@
 	  	<button class="btn btn-primary"><i class="material-icons">add</i> Add Activity</button>
 	  </div>
 	</div>
-	<app-table-template>
+  <app-table-template
+      [columns]="tableColumns"
+      [data]="tableData"
+      (onColumnSort)='setColumnSort($event)'
+      (onPageNumUpdate)='getPaginated($event, null, null)'>
   </app-table-template>
+  <div *ngIf="tableParams.totalListItems == 0">
+    No Activities/Updates. {{tableParams.totalListItems}}
+  </div>
 </section>

@@ -20,7 +20,6 @@ import { DocumentTableRowsComponent } from './project-documents/project-document
 import { IndigenousNationsComponent } from './indigenous-nations/indigenous-nations.component';
 import { MatTabsModule, MatMenuModule } from '@angular/material';
 import { MilestonesComponent } from './milestones/milestones.component';
-import { ProjectAsideComponent } from './project-aside/project-aside.component';
 import { ProjectContactsComponent } from './project-contacts/project-contacts.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
@@ -64,7 +63,6 @@ import { DocumentEditComponent } from './project-documents/document-edit/documen
     DocumentTableRowsComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
-    ProjectAsideComponent,
     ProjectContactsComponent,
     ProjectDetailComponent,
     ProjectDocumentsComponent,
@@ -88,7 +86,6 @@ import { DocumentEditComponent } from './project-documents/document-edit/documen
     ComplianceComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
-    ProjectAsideComponent,
     ProjectContactsComponent,
     ProjectDetailComponent,
     ProjectUpdatesComponent,

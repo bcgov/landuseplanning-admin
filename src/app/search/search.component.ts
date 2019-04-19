@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, OnDestroy, ViewChild, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -12,7 +12,8 @@ import { Project } from 'app/models/project';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+  styleUrls: ['./search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class SearchComponent implements OnInit, OnDestroy {
@@ -23,11 +24,14 @@ export class SearchComponent implements OnInit, OnDestroy {
   public count = 0; // for template
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
+  public currentPage: 1;
+  public pageSize: 10;
 
   public results: Array<any> = [];
 
   constructor(
     public snackBar: MatSnackBar,
+    private _changeDetectionRef: ChangeDetectorRef,
     public searchService: SearchService, // also used in template
     private router: Router,
     private route: ActivatedRoute
@@ -53,7 +57,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         }
 
         if (!_.isEmpty(this.terms.getParams())) {
-          this.doSearch();
+          let cur = params.currentPage ? params.currentPage : 1;
+          let size = params.pageSize ? params.pageSize : 25;
+          this.doSearch(cur, size);
         }
       });
   }
@@ -71,14 +77,16 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.onSubmit();
   }
 
-  private doSearch() {
+  private doSearch(pageNumber, pageSize) {
     this.results = [];
 
     this.searching = true;
     this.count = 0;
     this.keywords = this.terms.keywords;
+    this.currentPage = pageNumber;
+    this.pageSize = pageSize;
 
-    this.searchService.getSearchResults(this.keywords, this.terms.dataset, null, 1, 2000)
+    this.searchService.getSearchResults(this.keywords, this.terms.dataset, null, pageNumber, pageSize)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         results => {
@@ -89,6 +97,9 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.count = 0;
             this.results = [];
           }
+          this.searching = false;
+          this.ranSearch = true;
+          this._changeDetectionRef.detectChanges();
         },
         error => {
           console.log('error =', error);
@@ -102,9 +113,14 @@ export class SearchComponent implements OnInit, OnDestroy {
         },
         () => { // onCompleted
           // update variables on completion
-          this.searching = false;
-          this.ranSearch = true;
         });
+  }
+
+  updatePageNumber(pageNumber) {
+    // Go to top of page after clicking to a different page.
+    window.scrollTo(0, 0);
+    this.currentPage = pageNumber;
+    this.onSubmit();
   }
 
   // reload page with current search terms
@@ -118,35 +134,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
     params['dataset'] = this.terms.dataset;
+    params['currentPage'] = this.currentPage ? this.currentPage : 1;
+    params['pageSize'] = this.pageSize ? this.pageSize : 10;
 
     // console.log('params =', params);
     this.router.navigate(['search', params]);
   }
-
-  public onImport(project: Project) {
-    if (project) {
-      // save project data from search results
-      const params = {
-        // initial data
-        // purpose: project.purpose,
-        // subpurpose: project.subpurpose,
-        // type: project.type,
-        // subtype: project.subtype,
-        // status: project.status,
-        // tenureStage: project.tenureStage,
-        // location: project.location,
-        // businessUnit: project.businessUnit,
-        // cl_file: project.cl_file,
-        // tantalisID: project.tantalisID,
-        // legalDescription: project.legalDescription,
-        // client: project.client
-      };
-      // go to add-edit page
-      this.router.navigate(['/a', 0, 'edit'], { queryParams: params });
-    } else {
-      console.log('error, invalid project =', project);
-      this.snackBarRef = this.snackBar.open('Error creating project ...', null, { duration: 3000 });
-    }
-  }
-
 }

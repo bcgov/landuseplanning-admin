@@ -1,20 +1,20 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { FeatureService } from './feature.service';
+import { RecentActivityService } from './recent-activity';
 import { ApiService } from 'app/services/api';
 
 
-describe('FeatureService', () => {
+describe('RecentActivityService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        FeatureService,
+        RecentActivityService,
         { provide: ApiService }
       ]
     });
   });
 
-  it('should be created', inject([FeatureService], (service: FeatureService) => {
+  it('should be created', inject([RecentActivityService], (service: RecentActivityService) => {
     expect(service).toBeTruthy();
   }));
 });

@@ -12,6 +12,7 @@ import { ContactsComponent } from './contacts/contacts.component';
 import { ActivityComponent } from './activity/activity.component';
 
 import { ContactsResolverService } from './contacts/contacts-resolver.service';
+import { ActivityComponentResolver } from './activity/activity-component-resolver.services';
 
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 
@@ -53,7 +54,10 @@ const routes: Routes = [
   },
   {
     path: 'activity',
-    component: ActivityComponent
+    component: ActivityComponent,
+    resolve: {
+      activities: ActivityComponentResolver
+    }
   },
   {
     // default route
@@ -77,7 +81,8 @@ const routes: Routes = [
   ],
   providers: [
     CanDeactivateGuard,
-    ContactsResolverService
+    ContactsResolverService,
+    ActivityComponentResolver
   ]
 })
 

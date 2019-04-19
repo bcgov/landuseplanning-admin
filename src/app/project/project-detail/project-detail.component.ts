@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -14,7 +15,6 @@ import { ProjectService } from 'app/services/project.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
-import { FeatureService } from 'app/services/feature.service';
 import { ProjectComponent } from '../project.component';
 
 @Component({
@@ -39,14 +39,15 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     public projectService: ProjectService, // also used in template
     public commentPeriodService: CommentPeriodService,
+    private cp: CurrencyPipe,
     public decisionService: DecisionService,
     public documentService: DocumentService,
-    public featureService: FeatureService,
     private projectComponent: ProjectComponent
   ) { }
 
   ngOnInit() {
     this.project = this.projectComponent.project;
+    this.project.intake.investment = this.cp.transform(this.project.intake.investment, '', true, '1.0-0');
   }
 
   ngOnDestroy() {
