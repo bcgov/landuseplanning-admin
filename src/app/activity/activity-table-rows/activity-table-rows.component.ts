@@ -42,7 +42,7 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
 
     // Promise.all(this.data.data.map(async item => {
     //   if (item.project) {
-    //     let res = await this.projectService.getById(item.project).toPromise();
+    //     let res = await this.projectService.getById(item.project._id).toPromise();
     //     item.projectName = res.name;
     //     this._changeDetectionRef.detectChanges();
     //   }

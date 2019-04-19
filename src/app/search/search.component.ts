@@ -78,7 +78,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.count = 0;
     this.keywords = this.terms.keywords;
 
-    this.searchService.getSearchResults(this.keywords, this.terms.dataset, null, 1, 2000)
+    this.searchService.getSearchResults(this.keywords, this.terms.dataset, null, 1, 25)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         results => {
@@ -122,31 +122,4 @@ export class SearchComponent implements OnInit, OnDestroy {
     // console.log('params =', params);
     this.router.navigate(['search', params]);
   }
-
-  public onImport(project: Project) {
-    if (project) {
-      // save project data from search results
-      const params = {
-        // initial data
-        // purpose: project.purpose,
-        // subpurpose: project.subpurpose,
-        // type: project.type,
-        // subtype: project.subtype,
-        // status: project.status,
-        // tenureStage: project.tenureStage,
-        // location: project.location,
-        // businessUnit: project.businessUnit,
-        // cl_file: project.cl_file,
-        // tantalisID: project.tantalisID,
-        // legalDescription: project.legalDescription,
-        // client: project.client
-      };
-      // go to add-edit page
-      this.router.navigate(['/a', 0, 'edit'], { queryParams: params });
-    } else {
-      console.log('error, invalid project =', project);
-      this.snackBarRef = this.snackBar.open('Error creating project ...', null, { duration: 3000 });
-    }
-  }
-
 }

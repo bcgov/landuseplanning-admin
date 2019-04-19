@@ -106,7 +106,7 @@ export class ActivityComponent implements OnInit {
         list.push(
           {
             _id: item._id,
-            project: item.project && item.project.length > 0 ? item.project[0].name : '',
+            project: item.project,
             headline: item.headline,
             type: item.type,
             dateAdded: item.dateAdded,

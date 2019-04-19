@@ -60,22 +60,20 @@
         <div *ngFor="let result of results">
           <div class="app-details" *ngIf="result._schemaName === 'Project'">
             <div class="card">
-              <h2 class="card-header"><i class="material-icons">assignment</i>&nbsp;&nbsp;&nbsp;Project</h2>
+              <h2 class="card-header"><i class="material-icons">assignment</i>&nbsp;&nbsp;&nbsp;Project<span><a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View Project</a></span></h2>
               <div class="card-body">
                 <h5 class="card-title">{{result.name}}</h5>
                 <p class="card-text">{{result.type}} / {{result.sector}}</p>
                 <p class="card-text">{{result.location}}</p>
-                <a [routerLink]="['/p', result._id]" class="btn btn-primary float-right">View Project</a>
               </div>
             </div>
           </div>
           <div class="app-details" *ngIf="result._schemaName === 'Document'">
             <div class="card">
-              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document</h2>
+              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document<span *ngIf="result.project"> ({{result.project.name}}) <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary float-right">View Project</a></span></h2>
               <div class="card-body">
-                <h5 class="card-title">{{result.displayName}}</h5>
+                  <h5 class="card-title">{{result.displayName}}</h5>
                 <p class="card-text">{{result.datePosted | date:'medium'}}</p>
-                <a [routerLink]="['/p', result.project]" class="btn btn-primary float-right">View Project</a>
                 <a href="#" class="btn btn-primary">Download Document</a>
               </div>
             </div>
