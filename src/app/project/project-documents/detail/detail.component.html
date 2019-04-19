@@ -1,12 +1,18 @@
 <div class="row">
   <div class="container-fluid-padding">
-      <div class="col-md-12" *ngIf="document">
+      <div class="action-container col-md-12" *ngIf="document">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page"><a
-              [routerLink]="['/p', project._id]">Project Details</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a
-              [routerLink]="['/p', project._id, 'project-documents']">Documents</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Document Details</li>
+          <li class="breadcrumb-item" >
+            <a [routerLink]="['/projects']">All Projects</a>
+          </li>
+          <!-- ADD PROPERTY projectID project.name -->
+<!--           <li class="breadcrumb-item" >
+            <a [routerLink]="['/p', projectId]"> {{project.name}}
+            </a>
+          </li> -->
+          <li class="breadcrumb-item active" aria-current="page"><a
+            [routerLink]="['/p', project._id, 'project-documents']">Documents</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Document Details</li>
         </ol>
         <section>
           <h2>Details</h2>
