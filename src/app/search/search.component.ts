@@ -134,8 +134,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
     params['dataset'] = this.terms.dataset;
-    params['currentPage'] = this.currentPage;
-    params['pageSize'] = this.pageSize;
+    params['currentPage'] = this.currentPage ? this.currentPage : 1;
+    params['pageSize'] = this.pageSize ? this.pageSize : 10;
 
     // console.log('params =', params);
     this.router.navigate(['search', params]);
