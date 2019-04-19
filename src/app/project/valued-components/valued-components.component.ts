@@ -221,6 +221,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
             return Promise.all(itemsToDelete).then(() => {
               // Reload main page.
               this.onSubmit();
+              this._changeDetectionRef.detectChanges();
             });
           }
           this.loading = false;

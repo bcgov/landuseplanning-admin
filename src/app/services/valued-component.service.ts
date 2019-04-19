@@ -30,7 +30,6 @@ export class ValuedComponentService {
     }
 
     delete(item: string) {
-      console.log("DELETE:", item);
       return this.api.deleteVC(item)
       .map(() => {
         return {};
