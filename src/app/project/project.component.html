@@ -1,8 +1,8 @@
-<div class="top-container">
+<!-- <div class="top-container">
   <h1>
-    {{project.name}}
+
   </h1>
-  <!-- <div class="col-6">
+  <div class="col-6">
     <div class="row">
       <div class="col-3">
         <div class="subway-circle rounded-circle bg-success"></div>label
@@ -17,13 +17,13 @@
         <div class="subway-circle rounded-circle bg-success"></div>label
       </div>
     </div>
-  </div> -->
-</div>
+  </div>
+</div> -->
 <div class="bottom-container">
   <div class="spinner-container full-screen" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>
-  <div class="p-4" *ngIf="!loading">
+  <div *ngIf="!loading">
     <router-outlet></router-outlet>
   </div>
 </div>

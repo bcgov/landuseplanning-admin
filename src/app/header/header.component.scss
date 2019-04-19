@@ -3,7 +3,6 @@
 .app-header {
   @include clearfix;
   padding: 0;
-  border-bottom: 4px solid $gold;
   background: $header-bg;
   color: $header-font-color;
   z-index: 1001;
@@ -15,26 +14,20 @@
     top: 0;
     left: 0;
     right: 0;
-    border-bottom-style: solid;
-    border-bottom-width: 0;
-    border-bottom-color: rgba(#5475a7, 0.4);
-    background-color: transparent;
     transition: all linear 0.2s;
   }
 
   .app-header--flex {
     @include flex(0 0 auto);
     position: relative;
-    border-bottom-width: 4px;
-    border-bottom-color: $gold;
     background: $header-bg;
     color: $header-font-color;
   }
 
   .app-header--solid {
-    border-bottom: 4px solid $gold;
     background: $header-bg;
     color: $header-font-color;
+    padding: 2px 0 6px;
   }
 }
 
