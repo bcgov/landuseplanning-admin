@@ -19,7 +19,7 @@
 .sidebar a {
   display: block;
   color: white;
-  padding: 8px 12px;
+  padding: 5px 12px 11px;
   text-decoration: none;
   transition: 0.3s;
 }
@@ -28,12 +28,13 @@
   background: #003367;
   border-radius: 4px 0 0 4px;
   padding-bottom: 12px;
-  margin: 12px 0 8px;
+  margin: 6px 0 8px;
 }
 
 .sidebar .project-menu {
   padding: 4px 16px 12px;
   padding-left: .8rem;
+
   .material-icons {
     margin-right: .5rem;
   }

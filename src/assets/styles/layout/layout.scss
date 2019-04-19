@@ -12,6 +12,10 @@ div.content {
   height: 1000px;
 }
 
+.container-fluid-padding {
+  padding: 98px 1.5rem 14px;
+}
+
 @media screen and (min-width: 768px) {
   div.content {
     margin-left: 250px;
@@ -151,12 +155,18 @@ main {
 }
 
 .action-container {
-  margin-bottom: 20px;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  background: #e9ecef;
+  top: 7px;
+  padding: 10px 10px 12px 38px;
+
   @media screen and (min-width: 768px) {
     display: flex;
     ol {
       flex: 100%;
-      margin-right: 10px;
+      margin: 10px;
     }
   }
   .btn {
@@ -267,16 +277,17 @@ hr {
 }
 
 .breadcrumb {
-  margin-left: 20px;
-  border: 1px solid white;
-  background: #38598A;
+  font-size: 1.2rem;
+  padding: 0;
+  letter-spacing: -0.025em;
+  font-weight: 500;
 }
 
 .breadcrumb-item a {
-  color: white;
-  text-decoration-line: underline;
+  color: #007bff;
+  font-size: 1.2rem;
 }
 
 .breadcrumb-item.active {
-  color: #FCBA19;
+  color: #036;
 }
