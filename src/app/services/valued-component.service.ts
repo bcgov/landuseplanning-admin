@@ -12,7 +12,7 @@ export class ValuedComponentService {
         private api: ApiService,
     ) { }
 
-    getAllByProjectId(projectId: String, pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
+    getAllByProjectId(projectId: String, pageNum: number = 1, pageSize: number = 10000, sortBy: string = null): Observable<Object> {
         return this.api.getValuedComponentsByProjectId(projectId, pageNum, pageSize, sortBy)
             .map((res: any) => {
                 if (res) {
@@ -29,11 +29,19 @@ export class ValuedComponentService {
             }).catch(error => this.api.handleError(error));
     }
 
+    addToProject(item: any, projectId: any) {
+      return this.api.addVCToProject(item, projectId)
+      .map(() => {
+        return {};
+      })
+      .catch(error => this.api.handleError(error));
+    }
+
     delete(item: string) {
       return this.api.deleteVC(item)
       .map(() => {
         return {};
       }).catch(error => this.api.handleError(error));
-  }
+    }
 }
 

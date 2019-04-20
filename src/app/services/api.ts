@@ -712,6 +712,10 @@ export class ApiService {
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
+  addVCToProject(vc: any, project: any): Observable<ValuedComponent> {
+    const queryString = `vc/`;
+    return this.http.post<ValuedComponent>(`${this.pathAPI}/${queryString}`, vc, {});
+  }
   deleteVC(vc: any): Observable<ValuedComponent> {
     const queryString = `vc/${vc._id}`;
     return this.http.delete<ValuedComponent>(`${this.pathAPI}/${queryString}`, {});

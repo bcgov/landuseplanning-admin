@@ -29,6 +29,7 @@ import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-com
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
+import { TopicTableRowsComponent } from './valued-components/add-vc/topic-table-rows/topic-table-rows.component';
 
 // services
 import { ApiService } from 'app/services/api';
@@ -36,6 +37,7 @@ import { ExcelService } from 'app/services/excel.service';
 import { ProjectService } from 'app/services/project.service';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
+import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
 
 @NgModule({
   imports: [
@@ -71,7 +73,9 @@ import { DocumentEditComponent } from './project-documents/document-edit/documen
     ReviewCommentsTabTableRowsComponent,
     UploadComponent,
     ValuedComponentsComponent,
-    ValuedComponentTableRowsComponent
+    ValuedComponentTableRowsComponent,
+    AddVcComponent,
+    TopicTableRowsComponent
   ],
   entryComponents: [
     CommentPeriodComponent,
@@ -80,7 +84,8 @@ import { DocumentEditComponent } from './project-documents/document-edit/documen
     DocumentTableRowsComponent,
     ReviewCommentsTabTableRowsComponent,
     UploadComponent,
-    ValuedComponentTableRowsComponent
+    ValuedComponentTableRowsComponent,
+    TopicTableRowsComponent
   ],
   exports: [
     ComplianceComponent,

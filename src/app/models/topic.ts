@@ -6,6 +6,7 @@ export class Topic {
   description: string;
   type: string;
   pillar: string;
+  parent: any;
 
   documents: Array<Document> = [];
 
@@ -16,6 +17,7 @@ export class Topic {
     this.name        = obj && obj.name        || null;
     this.description = obj && obj.description || null;
     this.type        = obj && obj.type        || 0;
+    this.parent        = obj && obj.parent        || 0;
     this.pillar      = obj && obj.pillar      || null;
   }
 }

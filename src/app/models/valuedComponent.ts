@@ -10,6 +10,7 @@ export class ValuedComponent {
     stage: String;
     title: String;
     type: String;
+    topic: String;
 
     // Permissions
     read: Array<String> = [];
@@ -18,6 +19,7 @@ export class ValuedComponent {
 
     constructor(obj?: any) {
         this._id         = obj && obj._id         || null;
+        this.topic         = obj && obj.topic         || null;
         this._schemaName = obj && obj._schemaName || null;
         this.code        = obj && obj.code        || null;
         this.description = obj && obj.description || null;

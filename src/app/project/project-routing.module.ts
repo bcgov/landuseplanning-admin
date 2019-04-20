@@ -14,9 +14,10 @@ import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
-import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 import { DocumentDetailComponent } from './project-documents/detail/detail.component';
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
+import { ValuedComponentsComponent } from './valued-components/valued-components.component';
+import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
 
 import { ProjectResolver } from './project-resolver.service';
 import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
@@ -24,6 +25,7 @@ import { DocumentsResolver } from './project-documents/project-document-resolver
 import { DocumentDetailResolver } from './project-documents/detail/document-detail-resolver.service';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
+import { TopicResolver } from './valued-components/add-vc/topic-resolver.services';
 
 const routes: Routes = [
   {
@@ -84,6 +86,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'valued-components/add',
+        component: AddVcComponent,
+        resolve: {
+          topics: TopicResolver
+        }
+      },
+      {
         path: 'project-updates',
         component: ProjectUpdatesComponent,
       },
@@ -137,7 +146,8 @@ const routes: Routes = [
     CommentPeriodResolver,
     ValuedComponentsResolver,
     DocumentsResolver,
-    DocumentDetailResolver
+    DocumentDetailResolver,
+    TopicResolver
   ]
 })
 

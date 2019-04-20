@@ -9,38 +9,32 @@
           <a [routerLink]="['/p', projectId]"> {{project.name}}
           </a>
         </li> -->
-        <li class="breadcrumb-item active" aria-current="page">Valued Components</li>
+        <li class="breadcrumb-item active" aria-current="page">Add Valued Components</li>
       </ol>
     </nav>
     <div class="spinner-container" *ngIf="loading">
       <div class="spinner-new rotating"></div>
     </div>
 
-    <div class="input-group-prepend">
-      <button (click)="selectAction('selectAll')"
+    <button (click)="selectAction('cancel')"
               class="btn btn-outline-secondary mr-1"
               type="button"
-              id="button-sa">Select All</button>
-      <button (click)="selectAction('addNew')"
+              id="button-d"><i class="material-icons">cancel</i>Cancel</button>
+    <button (click)="selectAction('save')"
               class="btn btn-outline-secondary mr-1"
               type="button"
-              id="button-sa">Add VC</button>
-      <button (click)="selectAction('delete')"
-              class="btn btn-outline-secondary mr-1"
-              [disabled]="!isEnabled('delete')"
-              type="button"
-              id="button-d"><i class="material-icons">delete</i>Delete</button>
-    </div>
+              id="button-d"><i class="material-icons">save</i>Save</button>
+              <br>
 
     <app-table-template *ngIf="tableParams.totalListItems > 0"
       [columns]="tableColumns"
       [data]="tableData"
       (onColumnSort)='setColumnSort($event)'
       (onSelectedRow)='updateSelectedRow($event)'
-      (onPageNumUpdate)='getPaginatedVCs($event, null, null)'>
+      (onPageNumUpdate)='getPaginated($event, null, null)'>
     </app-table-template>
 
     <div *ngIf="tableParams.totalListItems == 0">
-      This project has no valued components.
+      This project has no valued components. 
     </div>
 </main>

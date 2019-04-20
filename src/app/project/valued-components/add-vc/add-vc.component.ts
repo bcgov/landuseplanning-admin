@@ -1,0 +1,180 @@
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { TableObject } from 'app/shared/components/table-template/table-object';
+import { ValuedComponentService } from 'app/services/valued-component.service';
+import { ValuedComponent } from 'app/models/valuedComponent';
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+import { Topic } from 'app/models/topic';
+import { TopicTableRowsComponent } from './topic-table-rows/topic-table-rows.component';
+import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+import { TopicService } from 'app/services/topic.service';
+
+@Component({
+  selector: 'app-add-vc',
+  templateUrl: './add-vc.component.html',
+  styleUrls: ['./add-vc.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class AddVcComponent implements OnInit {
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  public topics: Topic[] = null;
+  public currentProjectId: string;
+  public tableParams: TableParamsObject = new TableParamsObject();
+  public loading = true;
+  public selectedCount = 0;
+
+  public tableData: TableObject;
+  public tableColumns: any[] = [
+    {
+      name: '',
+      value: 'check',
+      width: 'col-1'
+    },
+    {
+      name: 'Name',
+      value: 'name',
+      width: 'col-3'
+    },
+    {
+      name: 'Description',
+      value: 'description',
+      width: 'col-5'
+    },
+    {
+      name: 'Type',
+      value: 'type',
+      width: 'col-2'
+    },
+    {
+      name: 'Pillar',
+      value: 'pillar',
+      width: 'col-2'
+    },
+    {
+      name: 'Parent',
+      value: 'parent',
+      width: 'col-2'
+    }
+  ];
+
+  constructor(
+    private router: Router,
+    private _changeDetectionRef: ChangeDetectorRef,
+    private tableTemplateUtils: TableTemplateUtils,
+    private valuedComponentService: ValuedComponentService,
+    private topicService: TopicService,
+    private route: ActivatedRoute
+  ) { }
+
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+    });
+    // This page always renders full list.
+    this.tableParams.pageSize = 1000;
+
+    this.route.parent.paramMap.subscribe(params => {
+      this.currentProjectId = params.get('projId');
+    });
+
+    this.route.data
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res: any) => {
+        if (res) {
+          this.tableParams.totalListItems = res.topics.totalCount;
+          if (this.tableParams.totalListItems > 0) {
+            this.topics = res.topics.data;
+            this.setRowData();
+          }
+        } else {
+          alert('Uh-oh, couldn\'t load valued components');
+          // project not found --> navigate back to search
+          this.router.navigate(['/search']);
+        }
+        this.loading = false;
+        this._changeDetectionRef.detectChanges();
+      }
+      );
+  }
+
+  updateSelectedRow(count) {
+    this.selectedCount = count;
+  }
+
+  public selectAction(action) {
+    // select all valuedComponents
+    switch (action) {
+      case 'save':
+        // Save the new topic to the project's vc list.
+        let itemsToAdd = [];
+        this.tableData.data.map((item) => {
+          if (item.checkbox === true) {
+            let vc = new ValuedComponent(item);
+            // Move _id to topic for linking to original.
+            vc.topic = vc._id;
+            delete vc._id;
+            vc.project = this.currentProjectId;
+            vc.title = vc.description;
+            itemsToAdd.push( { promise: this.valuedComponentService.addToProject(vc, this.currentProjectId).toPromise(), item: item });
+          }
+        });
+        this.loading = false;
+        return Promise.all(itemsToAdd).then(() => {
+          // Back to vc page.
+          this.router.navigate(['p', this.currentProjectId, 'valued-components']);
+        });
+      break;
+    case 'cancel':
+      this.router.navigate(['p', this.currentProjectId, 'valued-components']);
+      break;
+    }
+  }
+
+  setRowData() {
+    let topicList = [];
+    this.topics.forEach(topic => {
+      topicList.push(
+        {
+          _id: topic._id,
+          name: topic.name,
+          description: topic.description,
+          type: topic.type,
+          pillar: topic.pillar,
+          parent: topic.parent === 0 ? 'None' : topic.parent
+        }
+      );
+    });
+    this.tableData = new TableObject(
+      TopicTableRowsComponent,
+      topicList,
+      this.tableParams
+    );
+  }
+
+  setColumnSort(column) {
+    this.tableParams.sortBy = column;
+    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
+    this.getPaginated(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+  }
+
+  getPaginated(pageNumber, newSortBy, newSortDirection) {
+    // Go to top of page after clicking to a different page.
+    window.scrollTo(0, 0);
+    this.loading = true;
+
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+
+    this.topicService.getAllTopics(pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res: any) => {
+        this.tableParams.totalListItems = res.totalCount;
+        this.topics = res.data;
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
+        this.setRowData();
+        this.loading = false;
+        this._changeDetectionRef.detectChanges();
+      });
+  }
+
+}

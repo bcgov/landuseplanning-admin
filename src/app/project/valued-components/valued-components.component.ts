@@ -126,7 +126,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
           _id: valuedComponent._id,
           title: valuedComponent.title,
           pillar: valuedComponent.pillar,
-          parent: valuedComponent.parent == null ? 'None' : valuedComponent.parent
+          parent: valuedComponent.parent === null ? 'None' : valuedComponent.parent
         }
       );
     });
@@ -181,6 +181,9 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       break;
     case 'delete':
         this.delete();
+      break;
+    case 'addNew':
+      this.router.navigate(['p', this.currentProjectId, 'valued-components', 'add']);
       break;
     }
   }
