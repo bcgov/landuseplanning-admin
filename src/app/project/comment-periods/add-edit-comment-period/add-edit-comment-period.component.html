@@ -25,19 +25,19 @@
 <div *ngIf="isEditing">
   <div class="action-container">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', projectId]">Project Details</a>
-      </li>
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
-      </li>
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id]">{{commentPeriod.dateStarted | date: 'LLLL'}} -
-              {{commentPeriod.dateCompleted | date}}</a>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page">
-        Edit
-      </li>
+        <li class="breadcrumb-item" aria-current="page">
+            <a [routerLink]="['/p', projectId]">Project Details</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">
+            <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">
+            <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id, 'comment-period-details']">{{commentPeriod.dateStarted | date: 'LLLL'}} -
+                {{commentPeriod.dateCompleted | date}}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Edit
+        </li>
     </ol>
   </div>
 </div>

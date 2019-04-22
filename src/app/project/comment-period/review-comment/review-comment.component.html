@@ -1,0 +1,128 @@
+<ol class="breadcrumb" *ngIf="commentPeriod">
+  <li class="breadcrumb-item" aria-current="page">
+    <a [routerLink]="['/p', projectId]">Project Details</a>
+  </li>
+  <li class="breadcrumb-item" aria-current="page">
+    <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+  </li>
+  <li class="breadcrumb-item" aria-current="page">
+    <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id]">
+      {{commentPeriod.dateStarted | date: 'MMMM d'}} - {{commentPeriod.dateCompleted | date}}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    Comment
+  </li>
+</ol>
+
+<div class="spinner-container" *ngIf="loading">
+  <div class="spinner-new rotating"></div>
+</div>
+<form [formGroup]="commentReviewForm" (ngSubmit)="register()">
+  <div class="form-row">
+    <div class="form-group col-md-8">
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <div class="btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-primary" [class.active]="commentReviewForm.get('isPublished').value">
+            <input type="checkbox" (click)="setEaoStatus('Published')" autocomplete="off"
+              formControlName="isPublished">Publish
+          </label>
+        </div>
+        &nbsp;
+        <div class="btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-primary" [class.active]="commentReviewForm.get('isDeferred').value">
+            <input type="checkbox" (click)="setEaoStatus('Deferred')" autocomplete="off"
+              formControlName="isDeferred">Defer
+          </label>
+        </div>
+        &nbsp;
+        <div class="btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-primary" [class.active]="commentReviewForm.get('isRejected').value">
+            <input type="checkbox" (click)="setEaoStatus('Rejected')" autocomplete="off"
+              formControlName="isRejected">Reject
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="text-right">
+        <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+        &nbsp;
+        <button [disabled]="!commentReviewForm.valid" class="btn btn-primary" type="submit"
+          (click)="onSubmit()">Save</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <b>
+            # {{comment.commentId}}
+          </b>
+        </div>
+        <div class="col-md-6 text-right">
+          {{comment.dateAdded | date: 'medium'}}
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <b>
+            {{comment.author}}
+          </b>
+          <br>
+          {{comment.location}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {{comment.comment}}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <h6>
+            ATTACHMENTS
+          </h6>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <h6>
+            VALUED COMPONENTS
+          </h6>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="proponentResponse">Proponent Response</label>
+          <textarea id="proponentResponse" class="form-control" rows="3" name="proponentResponseText"
+            formControlName="proponentResponseText"></textarea>
+        </div>
+      </div>
+      <div class="form-row" *ngIf="commentReviewForm.get('isPublished').value">
+        <div class="form-group col-md-12">
+          <label for="publishedNotes">Notes</label>
+          <textarea id="publishedNotes" class="form-control" rows="3" name="publishedNotesText"
+            formControlName="publishedNotesText"></textarea>
+        </div>
+      </div>
+      <div class="form-row" *ngIf="commentReviewForm.get('isDeferred').value">
+        <div class="form-group col-md-12">
+          <label for="deferralNotes">Deferral Note*</label>
+          <textarea id="deferralNotes" class="form-control" rows="3" name="deferralNotesText"
+            formControlName="deferralNotesText"></textarea>
+        </div>
+      </div>
+      <div class="form-row" *ngIf="commentReviewForm.get('isRejected').value">
+        <div class="form-group col-md-12">
+          <label for="rejectionNotes">Rejection Note*</label>
+          <textarea id="rejectionNotes" class="form-control" rows="3" name="rejectionNotesText"
+            formControlName="rejectionNotesText"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

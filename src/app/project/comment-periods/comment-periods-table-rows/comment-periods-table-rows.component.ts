@@ -25,7 +25,7 @@ export class CommentPeriodsTableRowsComponent implements OnInit, TableComponent 
         this.paginationData = this.data.paginationData;
     }
 
-    goToItem(item) {
-        this.router.navigate([`p/${item.project}/cp/${item._id}`]);
+    goToItem(commentPeriod) {
+        this.router.navigate([`p/${commentPeriod.project}/cp/${commentPeriod._id}/comment-period-details`]);
     }
 }

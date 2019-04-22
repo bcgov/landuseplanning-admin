@@ -69,17 +69,16 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private route: ActivatedRoute,
+    private _changeDetectionRef: ChangeDetectorRef,
     private commentService: CommentService,
+    private route: ActivatedRoute,
     private router: Router,
-    private tableTemplateUtils: TableTemplateUtils,
-    private _changeDetectionRef: ChangeDetectorRef
+    private tableTemplateUtils: TableTemplateUtils
   ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.commentPeriodId = params.commentPeriodId;
-      console.log(params.pending);
       this.filter.pending = params.pending == null || params.pending === 'false' ? false : true;
       this.filter.published = params.published == null || params.published === 'false' ? false : true;
       this.filter.deferred = params.deferred == null || params.deferred === 'false' ? false : true;
@@ -128,13 +127,15 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
     this.comments.forEach(comment => {
       commentList.push(
         {
-          author: comment.author,
-          dateAdded: comment.dateAdded,
+          _id: comment._id,
           attachments: null,
-          response: null,
-          location: comment.location,
+          author: comment.author,
+          comment: comment.comment,
+          dateAdded: comment.dateAdded,
           eaoStatus: comment.eaoStatus,
-          comment: comment.comment
+          location: comment.location,
+          period: comment.period,
+          response: null
         }
       );
     });

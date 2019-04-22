@@ -38,6 +38,7 @@ import { ProjectService } from 'app/services/project.service';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
 import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
+import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 
 @NgModule({
   imports: [
@@ -69,6 +70,7 @@ import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
     ProjectDetailComponent,
     ProjectDocumentsComponent,
     ProjectUpdatesComponent,
+    ReviewCommentComponent,
     ReviewCommentsTabComponent,
     ReviewCommentsTabTableRowsComponent,
     UploadComponent,

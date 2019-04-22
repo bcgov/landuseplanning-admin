@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Project } from 'app/models/project';
 import { Subject } from 'rxjs';
 import { SideBarService } from 'app/services/sidebar.service';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-project',
@@ -19,7 +20,8 @@ export class ProjectComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private sidebarService: SideBarService
+    private sidebarService: SideBarService,
+    private storageService: StorageService
   ) { }
 
   toggleSideNav() {
@@ -35,6 +37,7 @@ export class ProjectComponent implements OnInit {
       (data: { project: Project }) => {
         if (data.project) {
           this.project = data.project;
+          this.storageService.state = { type: 'currentProject', data: this.project };
           this.loading = false;
         } else {
           alert('Uh-oh, couldn\'t load project');

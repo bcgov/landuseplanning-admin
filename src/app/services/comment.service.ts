@@ -1,27 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { map, flatMap } from 'rxjs/operators';
-import { of, forkJoin } from 'rxjs';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
-import { CommentPeriodService } from './commentperiod.service';
-import { DocumentService } from './document.service';
 import { Comment } from 'app/models/comment';
-
-interface GetParameters {
-  getDocuments?: boolean;
-}
 
 @Injectable()
 export class CommentService {
-
-  readonly accepted = 'Accepted';
-  readonly pending = 'Pending';
-  readonly rejected = 'Rejected';
 
   constructor(
     private api: ApiService,
@@ -33,8 +21,45 @@ export class CommentService {
       .catch(error => this.api.handleError(error));
   }
 
+  getById(commentId: string): Observable<Comment> {
+    return this.api.getComment(commentId)
+      .map(comments => {
+        // return the first (only) comment
+        return comments && comments.length > 0 ? new Comment(comments[0]) : null;
+      })
+      .catch(error => this.api.handleError(error));
+  }
+
+  save(comment: Comment): Observable<Comment> {
+    // make a (deep) copy of the passed-in comment so we don't change it
+    const newComment = _.cloneDeep(comment);
+
+    return this.api.saveComment(newComment)
+      .catch(error => this.api.handleError(error));
+  }
+
+  publish(comment: Comment): Observable<Comment> {
+    return this.api.updateCommentStatus(comment, 'Published')
+      .catch(error => this.api.handleError(error));
+  }
+
+  defer(comment: Comment): Observable<Comment> {
+    return this.api.updateCommentStatus(comment, 'Deferred')
+      .catch(error => this.api.handleError(error));
+  }
+
+  reject(comment: Comment): Observable<Comment> {
+    return this.api.updateCommentStatus(comment, 'Rejected')
+      .catch(error => this.api.handleError(error));
+  }
+
+  removeStatus(comment: Comment): Observable<Comment> {
+    return this.api.updateCommentStatus(comment, 'Reset')
+      .catch(error => this.api.handleError(error));
+  }
+
   // get all comments for the specified comment period id
-  getByPeriodId(periodId: string, pageNum: number = null, pageSize: number = null, sortBy: string, count: boolean = true, filter: Object = {}): Observable<Object> {
+  getByPeriodId(periodId: string, pageNum: number = null, pageSize: number = null, sortBy: string = null, count: boolean = true, filter: Object = {}): Observable<Object> {
     return this.api.getCommentsByPeriodId(periodId, pageNum, pageSize, sortBy, count, filter)
       .map((res: any) => {
         if (res) {
