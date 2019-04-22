@@ -26,6 +26,7 @@ import { DocumentDetailResolver } from './project-documents/detail/document-deta
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 import { TopicResolver } from './valued-components/add-vc/topic-resolver.services';
+import { AddEditProjectComponent } from 'app/projects/add-edit-project/add-edit-project.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
         path: '',
         redirectTo: 'project-details',
         pathMatch: 'full'
+      },
+      {
+        path: 'edit',
+        component: AddEditProjectComponent
       },
       {
         path: 'project-details',

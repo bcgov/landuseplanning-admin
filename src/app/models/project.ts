@@ -60,6 +60,11 @@ export class Project {
   operational: any;
   substantiallyStarted: any;
 
+  // TODO: New Stuff?
+  eaStatusDate: any;
+  projectStatusDate: any;
+  substantiallyDate: any;
+  activeDate: any;
 
   // Permissions
   read: Array<String> = [];
@@ -100,6 +105,12 @@ export class Project {
     this.eaDecision           = obj && obj.eaDecision               || null;
     this.operational          = obj && obj.operational               || null;
     this.substantiallyStarted = obj && obj.substantiallyStarted               || null;
+
+    this.eaStatusDate               = obj && obj.eaStatusDate               || null;
+    this.projectStatusDate               = obj && obj.projectStatusDate               || null;
+    this.substantiallyDate               = obj && obj.substantiallyDate               || null;
+    this.activeDate               = obj && obj.activeDate               || null;
+
 
     this.CEAALink            = obj && obj.CEAALink            || null;
     this.code                = obj && obj.code                || null;

@@ -149,61 +149,36 @@ export class ProjectService {
   }
 
   // create new project
-  // add(item: any): Observable<Project> {
-  //   const proj = new Project(item);
+  add(item: Project): Observable<Project> {
+    delete item._id;
 
-  //   // boilerplate for new project
-  //   proj.agency = 'Crown Land Allocation';
-  //   proj.name = item.cl_file && item.cl_file.toString();
+    // replace newlines with \\n (JSON format)
+    if (item.description) {
+      item.description = item.description.replace(/\n/g, '\\n');
+    }
 
-  //   // id must not exist on POST
-  //   delete proj._id;
-
-  //   // don't send attached data (features, documents, etc)
-  //   delete proj.features;
-  //   delete proj.documents;
-  //   delete proj.currentPeriods;
-  //   delete proj.decision;
-
-  //   // replace newlines with \\n (JSON format)
-  //   if (proj.description) {
-  //     proj.description = proj.description.replace(/\n/g, '\\n');
-  //   }
-  //   if (proj.legalDescription) {
-  //     proj.legalDescription = proj.legalDescription.replace(/\n/g, '\\n');
-  //   }
-
-  //   return this.api.addProject(proj)
-  //     .catch(error => this.api.handleError(error));
-  // }
+    return this.api.addProject(item)
+    .catch(error => this.api.handleError(error));
+  }
 
   // update existing project
-  // save(orig: Project): Observable<Project> {
-  //   // make a (deep) copy of the passed-in project so we don't change it
-  //   const proj = _.cloneDeep(orig);
+  save(orig: Project): Observable<Project> {
+    // make a (deep) copy of the passed-in project so we don't change it
+    const proj = _.cloneDeep(orig);
 
-  //   // don't send attached data (features, documents, etc)
-  //   delete proj.features;
-  //   delete proj.documents;
-  //   delete proj.currentPeriods;
-  //   delete proj.decision;
+    // replace newlines with \\n (JSON format)
+    if (proj.description) {
+      proj.description = proj.description.replace(/\n/g, '\\n');
+    }
 
-  //   // replace newlines with \\n (JSON format)
-  //   if (proj.description) {
-  //     proj.description = proj.description.replace(/\n/g, '\\n');
-  //   }
-  //   if (proj.legalDescription) {
-  //     proj.legalDescription = proj.legalDescription.replace(/\n/g, '\\n');
-  //   }
+    return this.api.saveProject(proj)
+      .catch(error => this.api.handleError(error));
+  }
 
-  //   return this.api.saveProject(proj)
-  //     .catch(error => this.api.handleError(error));
-  // }
-
-  // delete(proj: Project): Observable<Project> {
-  //   return this.api.deleteProject(proj)
-  //     .catch(error => this.api.handleError(error));
-  // }
+  delete(proj: Project): Observable<Project> {
+    return this.api.deleteProject(proj)
+      .catch(error => this.api.handleError(error));
+  }
 
   // publish(proj: Project): Observable<Project> {
   //   return this.api.publishProject(proj)

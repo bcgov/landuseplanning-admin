@@ -11,6 +11,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { ProjectListTableRowsComponent } from './project-list-table-rows/project-list-table-rows.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-project-list',
@@ -73,6 +74,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     public commentPeriodService: CommentPeriodService,
     private tableTemplateUtils: TableTemplateUtils,
+    private storageService: StorageService,
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
@@ -98,6 +100,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
           this._changeDetectionRef.detectChanges();
         });
     });
+  }
+
+  addProject() {
+    this.storageService.state.back = { url: ['/projects'], label: 'All Projects(s)'};
+    this.router.navigate(['/projects', 'add']);
   }
 
   setProjectRowData() {

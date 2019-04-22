@@ -16,6 +16,7 @@ import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
 import { ProjectComponent } from '../project.component';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-project-detail',
@@ -41,13 +42,29 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public commentPeriodService: CommentPeriodService,
     private cp: CurrencyPipe,
     public decisionService: DecisionService,
+    private storageService: StorageService,
     public documentService: DocumentService,
     private projectComponent: ProjectComponent
   ) { }
 
   ngOnInit() {
     this.project = this.projectComponent.project;
-    this.project.intake.investment = this.cp.transform(this.project.intake.investment, '', true, '1.0-0');
+    // Handles when we come back to this page.
+
+    // TODO fix
+    if (this.project.intake === null) {
+      this.project.intake = { investment: '', investmentNotes: '' };
+    }
+
+    if (this.project.intake.investment !== '' && this.project.intake.investment[0] !== '$') {
+      this.project.intake.investment = this.cp.transform(this.project.intake.investment, '', true, '1.0-0');
+    }
+  }
+
+  editProject() {
+    this.storageService.state.project = this.project;
+    this.storageService.state.back = { url: ['/p', this.project._id, 'project-details'], label: 'Edit Project' };
+    this.router.navigate(['p', this.project._id, 'edit']);
   }
 
   ngOnDestroy() {

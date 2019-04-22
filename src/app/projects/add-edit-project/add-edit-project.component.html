@@ -27,50 +27,48 @@
     </ol> -->
   </div>
 
-  <!-- <form [formGroup]="projectForm" (ngSubmit)="register()"> -->
-  <form>
-  <!--   <div class="text-right">
+  <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+    <div class="text-right">
       <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
       &nbsp;
-      <button [disabled]="!commentPeriodForm.valid" class="btn btn-primary" type="submit"
+      <button  class="btn btn-primary" type="submit"
           (click)="onSubmit()">Save</button>
-    </div> -->
+    </div>
    <section>
       <h2>Basic Information</h2>
       <div class="flex-container">
         <div class="label-pair">
           <label for="name">Project Name* </label>
-          <input name="name" id="name" type="text" class="form-control" />
+          <input name="name" id="name" formControlName="name" type="text" class="form-control" />
         </div>
         <div class="label-pair add-row">
           <label for="proponent">Proponent* </label>
-          <input name="proponent" id="proponent" type="text" class="form-control" />
+          <input name="proponent" id="proponent" formControlName="proponent" type="text" class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair">
           <label for="nature">Project Nature </label>
-          <select name="nature" id="nature" class="form-control">
+          <select name="nature" id="nature" formControlName="nature" class="form-control">
             <option>Pick Project Nature</option>
             <option>Option 1</option>
           </select>
         </div>
         <div class="label-pair">
           <label for="type">Type* </label>
-          <select name="type" id="type" class="form-control">
-            <option>Pick Project Type</option>
-            <option>Option 1</option>
+          <select name="type" id="type" formControlName="type" class="form-control" (change)="onChangeType($event)">
+            <option *ngFor="let type of PROJECT_TYPES" [ngValue]="type">{{type}}</option>
           </select>
         </div>
         <div class="label-pair">
-          <label for="type">Sub-Type* </label>
-          <Select name="sub-type" id="sub-type" class="form-control">
-            <option>Pick Project Nature</option>
-            <option>Option 1</option>
-          </Select>
+          <label for="sector">Sub-Type* </label>
+          <select name="sector" id="sector" formControlName="sector" class="form-control">
+            <option *ngFor="let sector of sectorsSelected" [ngValue]="sector">{{sector}}</option>
+
+          </select>
         </div>
         <div class="label-pair med">
           <label for="description">Description* </label>
-          <textarea name="description" id="description" class="form-control"></textarea>
+          <textarea name="description" id="description" formControlName="description" class="form-control"></textarea>
         </div>
       </div>
     </section>
@@ -79,60 +77,55 @@
       <div class="flex-container">
         <div class="label-pair med">
           <label for="location">Location </label>
-          <input name="location" id="location" type="text" class="form-control" />
+          <input name="location" id="location" formControlName="location" type="text" class="form-control" />
         </div>
         <div class="label-pair">
           <label for="region">Region* </label>
-          <select name="region" id="region" class="form-control">
-            <option>Pick a Region</option>
-            <option>Option 1</option>
+          <select required class="form-control" formControlName="region">
+            <option *ngFor="let region of regions" [ngValue]="region">{{region.name}}</option>
           </select>
         </div>
         <div class="label-pair sm">
           <label for="lat">Lat* </label>
-          <input name="lat" id="lat" type="text" class="form-control" />
+          <input name="lat" id="lat" formControlName="lat" type="text" class="form-control" />
         </div>
         <div class="label-pair sm">
-          <label for="lat">Long* </label>
-          <input name="lat" id="lat" type="text" class="form-control" />
+          <label for="lon">Long* </label>
+          <input name="lon" id="lon" formControlName="lon" type="text" class="form-control" />
         </div>
-        <div class="label-pair file">
-          <label for="add-file">Add Shape File </label>
+        <!-- <div class="label-pair file">
+          <label for="addFile">Add Shape File </label>
           <div class="input-group">
             <i class="material-icons" role="presentation">attach_file</i>
-            <input name="add-file" id="add-file" type="file" class="form-control" />
+            <input name="addFile" id="addFile" formControlName="addFile" type="file" class="form-control" />
           </div>
-        </div>
+        </div> -->
       </div>
     </section>
     <section>
       <h2>Supplementary Information</h2>
       <div class="flex-container">
         <div class="label-pair">
-          <label for="ceaa">CEAA Involvement </label>
-          <select name="ceaa" id="ceaa" class="form-control">
-            <option>Pick CEAA Involvement</option>
-            <option>Option 1</option>
+          <label for="CEAAInvolvement">CEAA Involvement </label>
+          <select name="CEAAInvolvement" id="CEAAInvolvement" formControlName="CEAAInvolvement" class="form-control">
+            <option>None</option>
+            <option>Yes</option>
           </select>
         </div>
         <div class="label-pair">
-          <label for="ceaa-url">CEAA URL </label>
-          <input name="ceaa-url" id="ceaa-url" type="text" class="form-control" />
-        </div>
-        <div class="label-pair">
-          <label for="ea">EA Decision </label>
-          <input name="ea" id="ea" type="text" class="form-control" />
+          <label for="CEAALink">CEAA URL </label>
+          <input name="CEAALink" id="CEAALink" formControlName="CEAALink" type="text" class="form-control" />
         </div>
         <div class="label-pair">
           <label for="capital">Capital Investment </label>
           <div class="money">
             <i class="material-icons mr-3" role="add">attach_money</i>
-            <input name="capital" id="capital" type="text" class="form-control" />
+            <input name="capital" id="capital" formControlName="capital" type="text" class="form-control" />
           </div>
         </div>
         <div class="label-pair med">
           <label for="notes">Notes </label>
-          <textarea name="notes" id="notes" type="text" class="form-control"></textarea>
+          <textarea name="notes" id="notes" formControlName="notes" type="text" class="form-control"></textarea>
         </div>
       </div>
     </section>
@@ -141,57 +134,57 @@
       <div class="flex-container">
         <fieldset class="form-group">
           <div class="label-pair">
-            <label for="ea-status">EA Readiness Determination </label>
-            <select name="ea-status" id="ea-status" class="form-control">
+            <label for="eaStatus">EA Readiness Determination </label>
+            <select name="eaStatus" id="eaStatus" formControlName="eaStatus" class="form-control">
               <option>Select Project Determination</option>
             </select>
           </div>
           <div class="label-pair">
-            <label for="ea-status-date">Determination Date </label>
+            <label for="eaStatusDate">Determination Date </label>
             <div class="input-group">
-              <input name="ea-status-date" id="ea-status-date" type="text" class="form-control"
-                  placeholder="Select an end date">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar"
-                      type="button"></button>
-              </div>
+              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="eaStatusDate"
+              formControlName="eaStatusDate" ngbDatepicker #eaStatusDatePicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="eaStatusDatePicker.toggle()"
+                type="button"></button>
+            </div>
             </div>
           </div>
         </fieldset>
         <fieldset class="form-group">
           <div class="label-pair">
-            <label for="project-status">Project Status </label>
-            <select name="project-status" id="project-status" class="form-control">
-              <option>Select Project Determination</option>
+            <label for="status">Project Status </label>
+            <select name="status" id="status" formControlName="status" class="form-control">
+              <option *ngFor="let status of PROJECT_STATUS" [ngValue]="status">{{status}}</option>
             </select>
           </div>
           <div class="label-pair">
-            <label for="project-status-date">Project Effective Date </label>
+            <label for="projectStatusDate">Project Effective Date </label>
             <div class="input-group">
-              <input name="project-status-date" id="project-status-date" type="text" class="form-control"
-                  placeholder="Select an end date">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar"
-                      type="button"></button>
-              </div>
+              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="projectStatusDate"
+              formControlName="projectStatusDate" ngbDatepicker #projectStatusDatePicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="projectStatusDatePicker.toggle()"
+                type="button"></button>
+            </div>
             </div>
           </div>
         </fieldset>
         <fieldset class="form-group">
           <div class="label-pair">
-            <label for="eac-status">Ea Decision </label>
-            <select name="eac-status" id="eac-status" type="text" class="form-control">
-              <option>Select Current Project Status</option>
+            <label for="eacDecision">Ea Decision </label>
+            <select required class="form-control" name="eacDecision" id="eacDecision" formControlName="eacDecision">
+              <option *ngFor="let eacDecision of EAC_DECISIONS" [ngValue]="eacDecision">{{eacDecision}}</option>
             </select>
           </div>
           <div class="label-pair">
-            <label for="project-status-date">Ea Decision Date </label>
+            <label for="decisionDate">Ea Decision Date </label>
             <div class="input-group">
-              <input name="project-status-date" id="project-status-date" type="text" class="form-control"
-                  placeholder="Select an end date">
+              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="decisionDate"
+                formControlName="decisionDate" ngbDatepicker #decisionDatePicker="ngbDatepicker" />
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar"
-                      type="button"></button>
+                <button class="btn btn-outline-secondary calendar" (click)="decisionDatePicker.toggle()"
+                  type="button"></button>
               </div>
             </div>
           </div>
@@ -199,45 +192,45 @@
         <fieldset class="form-group">
           <div class="label-pair">
             <label for="substantially">Substantially Started </label>
-            <div name="substantially" class="checkbox-group">
-              <div class="checkbox">
-                <input type="checkbox" id="yes" name="yes" />
-                <label for="yes">Yes</label>
+            <div name="substantially" class="radio-group">
+              <div class="radio">
+                <input type="radio" id="yes" value="yes" formControlName="substantially" name="substantially" />
+                <label for="yes" >Yes</label>
               </div>
-              <div class="checkbox">
-                <input type="checkbox" id="yes" name="yes" />
-                <label for="yes">No</label>
+              <div class="radio">
+                <input type="radio" id="no" value="no" formControlName="substantially" name="substantially" />
+                <label for="no">No</label>
               </div>
             </div>
           </div>
           <div class="label-pair">
-            <label for="substantially-date">Substantially Started Date </label>
+            <label for="substantiallyDate">Substantially Started Date </label>
             <div class="input-group">
-              <input name="substantially-date" id="substantially-date" type="text" class="form-control"
-                  placeholder="Select an end date">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar"
-                      type="button"></button>
-              </div>
+              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="substantiallyDate"
+              formControlName="substantiallyDate" ngbDatepicker #substantiallyDatePicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="substantiallyDatePicker.toggle()"
+                type="button"></button>
+            </div>
             </div>
           </div>
         </fieldset>
         <fieldset class="form-group">
           <div class="label-pair">
-            <label for="active-status">Active Phase </label>
-            <select name="active-status" id="active-status" type="text" class="form-control">
+            <label for="activeStatus">Active Phase </label>
+            <select name="activeStatus" id="activeStatus" formControlName="activeStatus" type="text" class="form-control">
               <option>Select Current Status</option>
             </select>
           </div>
           <div class="label-pair">
-            <label for="active-date">Phase Effective Date </label>
+            <label for="activeDate">Phase Effective Date </label>
             <div class="input-group">
-              <input name="active-date" id="active-date" type="text" class="form-control"
-                  placeholder="Select an end date">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar"
-                      type="button"></button>
-              </div>
+              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="activeDate"
+              formControlName="activeDate" ngbDatepicker #activeDatePicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="activeDatePicker.toggle()"
+                type="button"></button>
+            </div>
             </div>
           </div>
         </fieldset>
@@ -247,23 +240,23 @@
       <h2>People</h2>
       <div class="flex-container">
         <div class="label-pair add-row">
-          <label for="project-epd">Project EPD </label>
-          <input name="project-epd" id="project-epd" type="text" class="form-control" />
+          <label for="responsibleEPD">Project EPD </label>
+          <input name="responsibleEPD" id="responsibleEPD" formControlName="responsibleEPD" type="text" class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair add-row">
-          <label for="project-lead">Project Lead</label>
-          <input name="project-lead" id="project-lead" type="text" class="form-control" />
+          <label for="projectLead">Project Lead</label>
+          <input name="projectLead" id="projectLead" formControlName="projectLead" type="text" class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair add-row">
-          <label for="project-admin">Project Admin</label>
-          <input name="project-admin" id="project-admin" type="text" class="form-control" />
+          <label for="projectAdmin">Project Admin</label>
+          <input name="projectAdmin" id="projectAdmin" formControlName="projectAdmin" type="text" class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair add-row">
-          <label for="compliance-lead">Compliance Lead</label>
-          <input name="compliance-lead" id="compliance-lead" type="text" class="form-control" />
+          <label for="CELead">Compliance Lead</label>
+          <input name="CELead" id="CELead" formControlName="CELead" type="text" class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
       </div>

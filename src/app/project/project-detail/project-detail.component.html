@@ -9,7 +9,7 @@
     <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
     <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
       <!-- Replace click events -->
-      <button class="dropdown-item">Edit</button>
+      <button class="dropdown-item" (click)="editProject()">Edit</button>
       <button class="dropdown-item"></button>
       <button class="dropdown-item">Delete</button>
     </div>
