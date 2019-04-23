@@ -37,7 +37,7 @@ export class CommentPeriodComponent implements OnInit {
           (data) => {
             if (data.commentPeriod) {
               this.commentPeriod = data.commentPeriod;
-              this.storageService.state = { type: 'currentCommentPeriod', data: this.commentPeriod };
+              this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
             } else {
               alert('Uh-oh, couldn\'t load comment period ');
               // comment period not found --> navigate back to search
@@ -47,7 +47,7 @@ export class CommentPeriodComponent implements OnInit {
           }
         );
     } else {
-      this.commentPeriod = this.storageService.state.currentCommentPeriod;
+      this.commentPeriod = this.storageService.state.currentCommentPeriod.data;
       this.loading = false;
     }
   }

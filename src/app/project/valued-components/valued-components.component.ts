@@ -67,8 +67,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     private valuedComponentService: ValuedComponentService,
     private dialogService: DialogService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private tableTemplateUtils: TableTemplateUtils,
-    private storageService: StorageService
+    private tableTemplateUtils: TableTemplateUtils
   ) { }
 
   ngOnInit() {
@@ -77,10 +76,10 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     });
 
     this.route.parent.paramMap
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(paramMap => {
-      this.currentProjectId = paramMap.get('projId');
-    });
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(paramMap => {
+        this.currentProjectId = paramMap.get('projId');
+      });
 
     // get data from route resolver
     this.route.data
@@ -102,20 +101,6 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       }
       );
   }
-
-  // TODO: Add VC
-  // addVC(vc) {
-  //   let dlg = this.modalService.open(AddAddVComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
-  //   dlg.componentInstance.model = vc;
-  //   dlg.result.then(result => {
-  //     switch (result) {
-  //       case ModalResult.Save:
-  //         this.getPaginatedVcs(this.currentPage);
-  //       break;
-  //     }
-  //   });
-  //   return;
-  // }
 
   setRowData() {
     let vcList = [];
@@ -171,20 +156,18 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
           if (item.checkbox === true) {
             someSelected = true;
           }
-        });
-        this.tableData.data.map((item) => {
           item.checkbox = !someSelected;
         });
 
         this.selectedCount = someSelected ? 0 : this.tableData.data.length;
         this._changeDetectionRef.detectChanges();
-      break;
-    case 'delete':
+        break;
+      case 'delete':
         this.delete();
-      break;
-    case 'addNew':
-      this.router.navigate(['p', this.currentProjectId, 'valued-components', 'add']);
-      break;
+        break;
+      case 'addNew':
+        this.router.navigate(['p', this.currentProjectId, 'valued-components', 'add']);
+        break;
     }
   }
 
@@ -192,7 +175,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     switch (button) {
       default:
         return this.selectedCount > 0;
-      break;
+        break;
     }
   }
 
@@ -217,7 +200,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
             let itemsToDelete = [];
             this.tableData.data.map((item) => {
               if (item.checkbox === true) {
-                itemsToDelete.push( { promise: this.valuedComponentService.delete(item).toPromise(), item: item });
+                itemsToDelete.push({ promise: this.valuedComponentService.delete(item).toPromise(), item: item });
               }
             });
             this.loading = false;
