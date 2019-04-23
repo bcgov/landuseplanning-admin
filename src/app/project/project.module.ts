@@ -39,6 +39,8 @@ import { StorageService } from 'app/services/storage.service';
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
 import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
+import { GetValuedComponentsComponent } from './comment-period/review-comment/get-valued-components/get-valued-components.component';
+import { GetValuedComponentTableRowsComponent } from './comment-period/review-comment/get-valued-components/get-valued-component-table-rows/get-valued-component-table-rows.component';
 
 @NgModule({
   imports: [
@@ -77,7 +79,9 @@ import { ReviewCommentComponent } from './comment-period/review-comment/review-c
     ValuedComponentsComponent,
     ValuedComponentTableRowsComponent,
     AddVcComponent,
-    TopicTableRowsComponent
+    TopicTableRowsComponent,
+    GetValuedComponentsComponent,
+    GetValuedComponentTableRowsComponent
   ],
   entryComponents: [
     CommentPeriodComponent,
@@ -87,7 +91,8 @@ import { ReviewCommentComponent } from './comment-period/review-comment/review-c
     ReviewCommentsTabTableRowsComponent,
     UploadComponent,
     ValuedComponentTableRowsComponent,
-    TopicTableRowsComponent
+    TopicTableRowsComponent,
+    GetValuedComponentTableRowsComponent
   ],
   exports: [
     ComplianceComponent,
