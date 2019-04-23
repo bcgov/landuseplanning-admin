@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 
 import { TableComponent } from 'app/shared/components/table-template/table.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 // import { AddEditActivityComponent } from '../add-edit-activity/add-edit-activity.component';
 import { DialogService } from 'ng2-bootstrap-modal';
@@ -30,6 +31,7 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
 
   constructor(
     private _changeDetectionRef: ChangeDetectorRef,
+    private router: Router,
     private dialogService: DialogService,
     private modalService: NgbModal,
     private projectService: ProjectService
@@ -76,45 +78,8 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
     //   );
   }
 
-  editActivity(activity) {
-    // let dlg = this.modalService.open(AddEditActivityComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
-    // dlg.componentInstance.model = activity;
-    // dlg.result.then(result => {
-    //   if (result.isSaved) {
-    //     let newActivityArray = [];
-    //     this.activities.filter(x => {
-    //       if (x._id === result.newActivity._id) {
-    //         newActivityArray.push({
-    //           description: result.newActivity.description,
-    //           name: result.newActivity.name,
-    //           pillar: result.newActivity.pillar,
-    //           type: result.newActivity.type,
-    //           _id: result.newActivity._id
-    //         });
-    //       } else {
-    //         newActivityArray.push(x);
-    //       }
-    //       this.activities = newActivityArray;
-    //       this.changeDetectorRef.detectChanges();
-    //     });
-    //   }
-    // });
-    // return;
-  }
-
-  selectItem(item, activity) {
-    switch (item) {
-      case 'Edit': {
-        this.editActivity(activity);
-        break;
-      }
-      case 'Delete': {
-        this.deleteActivity(activity);
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+  goToItem(activity) {
+    console.log('activity:', activity);
+    this.router.navigate(['/activity', activity._id, 'edit']);
   }
 }

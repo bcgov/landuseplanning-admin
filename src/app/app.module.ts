@@ -2,11 +2,11 @@ import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { CookieService } from 'ngx-cookie-service';
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule, APP_INITIALIZER, ApplicationRef } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // modules
 import { AppRoutingModule } from 'app/app-routing.module';
@@ -58,6 +58,7 @@ import { ContactsComponent } from './contacts/contacts.component';
 import { UserTableRowsComponent } from './contacts/user-table-rows/user-table-rows.component';
 import { ActivityTableRowsComponent } from 'app/activity/activity-table-rows/activity-table-rows.component';
 import { CurrencyPipe } from '@angular/common';
+import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -86,12 +87,14 @@ export function kcFactory(keycloakService: KeycloakService) {
     ActivityComponent,
     ContactsComponent,
     UserTableRowsComponent,
-    ActivityTableRowsComponent
+    ActivityTableRowsComponent,
+    AddEditActivityComponent
   ],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     ProjectModule,
     ProjectsModule,
@@ -135,6 +138,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     ConfirmComponent,
     DayCalculatorModalComponent,
     AddEditTopicComponent,
+    AddEditActivityComponent,
     TopicTableRowsComponent,
     UserTableRowsComponent,
     ActivityTableRowsComponent

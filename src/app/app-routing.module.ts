@@ -15,6 +15,7 @@ import { ContactsResolverService } from './contacts/contacts-resolver.service';
 import { ActivityComponentResolver } from './activity/activity-component-resolver.services';
 
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
+import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
 
 const routes: Routes = [
   {
@@ -57,7 +58,18 @@ const routes: Routes = [
     component: ActivityComponent,
     resolve: {
       activities: ActivityComponentResolver
+    },
+  },
+  {
+    path: 'activity/:activityId/edit',
+    component: AddEditActivityComponent,
+    resolve: {
+      activity: ActivityComponentResolver
     }
+  },
+  {
+    path: 'activity/add',
+    component: AddEditActivityComponent
   },
   {
     // default route

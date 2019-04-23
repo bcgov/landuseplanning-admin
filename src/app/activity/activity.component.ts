@@ -72,31 +72,40 @@ export class ActivityComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
 
-    this.route.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((res: any) => {
-        if (res) {
-          if (res.activities[0].data.meta && res.activities[0].data.meta.length > 0) {
-            this.totalCount = res.activities[0].data.meta[0].searchResultsTotal;
-            this.entries = res.activities[0].data.searchResults;
+      this.route.data
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((res: any) => {
+          if (res) {
+            if (res.activities[0].data.meta && res.activities[0].data.meta.length > 0) {
+              this.totalCount = res.activities[0].data.meta[0].searchResultsTotal;
+              this.entries = res.activities[0].data.searchResults;
+            } else {
+              this.totalCount = 0;
+              this.entries = [];
+            }
+            this.loading = false;
+            this.setRowData();
           } else {
-            this.totalCount = 0;
-            this.entries = [];
+            alert('Uh-oh, couldn\'t load valued components');
+            // project not found --> navigate back to search
+            // this.router.navigate(['/search']);
+            this.loading = false;
           }
           this.loading = false;
-          this.setRowData();
-        } else {
-          alert('Uh-oh, couldn\'t load valued components');
-          // project not found --> navigate back to search
-          // this.router.navigate(['/search']);
-          this.loading = false;
+          this._changeDetectionRef.detectChanges();
         }
-        this.loading = false;
-        this._changeDetectionRef.detectChanges();
-      }
-    );
-  });
+        );
+    });
+  }
 
+  public selectAction(action) {
+    // select all documents
+    switch (action) {
+      case 'add':
+        // Add activity
+        this.router.navigate(['/activity', 'add']);
+        break;
+    }
   }
 
   setRowData() {
@@ -148,12 +157,12 @@ export class ActivityComponent implements OnInit {
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
 
     this.searchService.getSearchResults('',
-                                        'RecentActivity',
-                                        null,
-                                        pageNumber,
-                                        this.tableParams.pageSize,
-                                        sorting,
-                                        null)
+      'RecentActivity',
+      null,
+      pageNumber,
+      this.tableParams.pageSize,
+      sorting,
+      null)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res[0].data.meta && res[0].data.meta.length > 0) {

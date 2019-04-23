@@ -4,7 +4,10 @@
       <li class="breadcrumb-item active" aria-current="page">Activity Posts</li>
     </ol>
 	  <div class="dropdown">
-	  	<button class="btn btn-primary"><i class="material-icons">add</i> Add Activity</button>
+      <button (click)="selectAction('add')"
+              class="btn btn-primary"
+              type="button"
+              id="button-d"><i class="material-icons">add</i>Add Activity</button>
 	  </div>
 	</div>
   <app-table-template
@@ -13,7 +16,7 @@
       (onColumnSort)='setColumnSort($event)'
       (onPageNumUpdate)='getPaginated($event, null, null)'>
   </app-table-template>
-  <div *ngIf="tableParams.totalListItems == 0">
-    No Activities/Updates. {{tableParams.totalListItems}}
+  <div *ngIf="totalCount == 0">
+    No Activities/Updates.
   </div>
 </section>
