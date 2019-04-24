@@ -176,19 +176,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   public publishProject() {
-    if (!this.project.description) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Publish Project',
-          message: 'A description for this project is required to publish.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .takeUntil(this.ngUnsubscribe);
-      return;
-    }
-
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Confirm Publish',
@@ -209,49 +196,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   private internalPublishProject() {
     this.isPublishing = true;
 
-    let observables = of(null);
-
-    // publish comment period
-    // if (this.project.currentPeriods && !this.project.currentPeriods.isPublished) {
-    //   observables = observables.concat(this.commentPeriodService.publish(this.project.currentPeriods));
-    // }
-
-    // // publish decision documents
-    // if (this.project.decision && this.project.decision.documents) {
-    //   for (const doc of this.project.decision.documents) {
-    //     if (!doc.isPublished) {
-    //       observables = observables.concat(this.documentService.publish(doc));
-    //     }
-    //   }
-    // }
-
-    // // publish decision
-    // if (this.project.decision && !this.project.decision.isPublished) {
-    //   observables = observables.concat(this.decisionService.publish(this.project.decision));
-    // }
-
-    // // publish project documents
-    // if (this.project.documents) {
-    //   for (const doc of this.project.documents) {
-    //     if (!doc.isPublished) {
-    //       observables = observables.concat(this.documentService.publish(doc));
-    //     }
-    //   }
-    // }
-
-    // // publish project
-    // // do this last in case of prior failures
-    // if (!this.project.isPublished) {
-    //   observables = observables.concat(this.projectService.publish(this.project));
-    // }
-
-    // // finally, save publish date (first time only)
-    // if (!this.project.publishDate) {
-    //   this.project.publishDate = new Date(); // now
-    //   observables = observables.concat(this.projectService.save(this.project));
-    // }
-
-    observables
+    this.projectService.publish(this.project)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => { // onNext
@@ -286,66 +231,30 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   public unPublishProject() {
     this.isUnpublishing = true;
 
-    let observables = of(null);
-
-    // // unpublish comment period
-    // if (this.project.currentPeriods && this.project.currentPeriods.isPublished) {
-    //   observables = observables.concat(this.commentPeriodService.unPublish(this.project.currentPeriods));
-    // }
-
-    // // unpublish decision documents
-    // if (this.project.decision && this.project.decision.documents) {
-    //   for (const doc of this.project.decision.documents) {
-    //     if (doc.isPublished) {
-    //       observables = observables.concat(this.documentService.unPublish(doc));
-    //     }
-    //   }
-    // }
-
-    // // unpublish decision
-    // if (this.project.decision && this.project.decision.isPublished) {
-    //   observables = observables.concat(this.decisionService.unPublish(this.project.decision));
-    // }
-
-    // // unpublish project documents
-    // if (this.project.documents) {
-    //   for (const doc of this.project.documents) {
-    //     if (doc.isPublished) {
-    //       observables = observables.concat(this.documentService.unPublish(doc));
-    //     }
-    //   }
-    // }
-
-    // // unpublish project
-    // // do this last in case of prior failures
-    // if (this.project.isPublished) {
-    //   observables = observables.concat(this.projectService.unPublish(this.project));
-    // }
-
-    observables
+    this.projectService.unPublish(this.project)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => { // onNext
           // do nothing here - see onCompleted() function below
         },
         error => {
-          this.isUnpublishing = false;
+          this.isPublishing = false;
           console.log('error =', error);
-          alert('Uh-oh, couldn\'t unpublish project');
+          alert('Uh-oh, couldn\'t publish project');
           // TODO: should fully reload project here so we have latest isPublished flags for objects
         },
         () => { // onCompleted
-          this.snackBarRef = this.snackBar.open('Project unpublished...', null, { duration: 2000 });
+          this.snackBarRef = this.snackBar.open('Project un-published...', null, { duration: 2000 });
           // reload all data
           this.projectService.getById(this.project._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               project => {
-                this.isUnpublishing = false;
+                this.isPublishing = false;
                 this.project = project;
               },
               error => {
-                this.isUnpublishing = false;
+                this.isPublishing = false;
                 console.log('error =', error);
                 alert('Uh-oh, couldn\'t reload project');
               }

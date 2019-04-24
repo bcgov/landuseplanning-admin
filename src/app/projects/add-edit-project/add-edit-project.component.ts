@@ -134,6 +134,7 @@ export class AddEditProjectComponent implements OnInit {
 
   public projectName;
   public projectId;
+  public project;
 
   public isEditing = false;
 
@@ -164,6 +165,7 @@ export class AddEditProjectComponent implements OnInit {
     this.route.parent.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(data => {
+        this.project = data.project;
         this.buildForm(data);
         this.loading = false;
       });
@@ -221,8 +223,7 @@ export class AddEditProjectComponent implements OnInit {
         'activeDate': new FormControl(),
         'responsibleEPD': new FormControl(),
         'projectLead': new FormControl(),
-        'projectAdmin': new FormControl(),
-        'CELead': new FormControl()
+        'projectAdmin': new FormControl()
       });
     }
   }
@@ -289,8 +290,7 @@ export class AddEditProjectComponent implements OnInit {
       'activeDate': new FormControl(formData.activeDate),
       'responsibleEPD': new FormControl(formData.responsibleEPD),
       'projectLead': new FormControl(formData.projectLead),
-      'projectAdmin': new FormControl(formData.projectAdmin),
-      'CELead': new FormControl(formData.CELead)
+      'projectAdmin': new FormControl(formData.projectAdmin)
     });
     // this.myForm.controls.documentDate.setValue(decisionDateObj);
     this.sectorsSelected = this.PROJECT_SUBTYPES[formData.type];
@@ -338,8 +338,7 @@ export class AddEditProjectComponent implements OnInit {
               'activeDate': this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value),
               'responsibleEPD': form.controls.responsibleEPD.value,
               'projectLead': form.controls.projectLead.value,
-              'projectAdmin': form.controls.projectAdmin.value,
-              'CELead': form.controls.CELead.value
+              'projectAdmin': form.controls.projectAdmin.value
     };
   }
 

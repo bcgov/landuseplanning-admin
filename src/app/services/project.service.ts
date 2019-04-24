@@ -180,15 +180,16 @@ export class ProjectService {
       .catch(error => this.api.handleError(error));
   }
 
-  // publish(proj: Project): Observable<Project> {
-  //   return this.api.publishProject(proj)
-  //     .catch(error => this.api.handleError(error));
-  // }
+  publish(proj: Project): Observable<Project> {
+    console.log('publishgin');
+    return this.api.publishProject(proj)
+      .catch(error => this.api.handleError(error));
+  }
 
-  // unPublish(proj: Project): Observable<Project> {
-  //   return this.api.unPublishProject(proj)
-  //     .catch(error => this.api.handleError(error));
-  // }
+  unPublish(proj: Project): Observable<Project> {
+    return this.api.unPublishProject(proj)
+      .catch(error => this.api.handleError(error));
+  }
 
   // isAccepted(status: string): boolean {
   //   return (status && status.toUpperCase() === 'ACCEPTED');

@@ -9,9 +9,10 @@
     <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
     <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
       <!-- Replace click events -->
+      <button class="dropdown-item" [routerLink]="['/p', project._id, 'project-documents', 'upload']">Upload Document</button>
       <button class="dropdown-item" (click)="editProject()">Edit</button>
-      <button class="dropdown-item"></button>
-      <button class="dropdown-item">Delete</button>
+      <button class="dropdown-item" (click)="publishProject()">Publish</button>
+      <button class="dropdown-item" (click)="unPublishProject()">Un-Publish</button>
     </div>
   </div>
 </div>
@@ -130,11 +131,11 @@
     <div class="col">
       <h3 for="ce-lead">Compliance & Enforcement Lead</h3>
       <p id="ce-lead">
-        <i class="material-icons mr-3" role="presentation">person</i>{{project.CELead || '-'}}<br />
+        <i class="material-icons mr-3" role="presentation">person</i>Compliance & Enforcement Branch<br />
         <i class="material-icons mr-3" role="presentation">phone</i>
-        {{project.CELeadPhone || '-'}}<br />
+        250-387-0131<br />
         <i class="material-icons mr-3" role="presentation">email</i>
-        <a href="mailTo:{{project.CELeadEmail}}">{{project.CELeadEmail || '-'}}</a>
+        <a href="mailTo:eao.compliance@gov.bc.ca">eao.compliance@gov.bc.ca</a>
       </p>
     </div>
   </section>
