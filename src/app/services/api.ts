@@ -521,6 +521,7 @@ export class ApiService {
       'publishedNotes',
       'rejectedNotes',
       'rejectedReason',
+      'valuedComponents',
       'read',
       'write',
       'delete'

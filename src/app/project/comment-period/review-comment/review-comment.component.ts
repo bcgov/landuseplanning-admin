@@ -40,12 +40,13 @@ export class ReviewCommentComponent implements OnInit {
       .subscribe(data => {
         if (data.comment) {
           this.comment = data.comment;
+          this.storageService.state.currentVCs = { type: 'currentVCs', data: this.comment.valuedComponents };
           if (this.storageService.state.currentCommentPeriod) {
-            this.commentPeriod = this.storageService.state.currentCommentPeriod;
+            this.commentPeriod = this.storageService.state.currentCommentPeriod.data;
           } else if (data.commentPeriod) {
             // On a hard reload we need to get the comment period.
             this.commentPeriod = data.commentPeriod;
-            this.storageService.state = { type: 'currentCommentPeriod', data: this.commentPeriod };
+            this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
           } else {
             alert('Uh-oh, couldn\'t load comment period');
             // comment period not found --> navigate back to search
@@ -99,6 +100,9 @@ export class ReviewCommentComponent implements OnInit {
     }
 
     this.comment.proponentNotes = this.commentReviewForm.get('proponentResponseText').value;
+
+    this.comment.valuedComponents = this.storageService.state.currentVCs.data;
+    console.log(this.comment.valuedComponents);
 
     this.commentService.save(this.comment)
       .takeUntil(this.ngUnsubscribe)

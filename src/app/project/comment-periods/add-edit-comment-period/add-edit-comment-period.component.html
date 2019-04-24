@@ -1,160 +1,165 @@
-<div class="spinner-container" *ngIf="loading">
-    <div class="spinner-new rotating"></div>
-</div>
-
-<div *ngIf="!isEditing">
-  <div class="action-container">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item" >
-        <a [routerLink]="['/projects']">All Projects</a>
-      </li>
-      <!-- ADD PROPERTY projectID project.name -->
-<!--       <li class="breadcrumb-item" >
+<div class="action-container">
+    <div *ngIf="!isEditing">
+        <div class="action-container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a [routerLink]="['/projects']">All Projects</a>
+                </li>
+                <!-- ADD PROPERTY projectID project.name -->
+                <!--       <li class="breadcrumb-item" >
         <a [routerLink]="['/p', projectId]"> {{project.name}}
         </a>
       </li> -->
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page">
-        Add
-      </li>
-    </ol>
-  </div>
+                <li class="breadcrumb-item" aria-current="page">
+                    <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Add
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div *ngIf="isEditing">
+        <div class="action-container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page">
+                    <a [routerLink]="['/p', projectId]">Project Details</a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">
+                    <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">
+                    <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id, 'comment-period-details']">{{commentPeriod.dateStarted | date: 'LLLL'}}
+                        -
+                        {{commentPeriod.dateCompleted | date}}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Edit
+                </li>
+            </ol>
+        </div>
+    </div>
 </div>
-<div *ngIf="isEditing">
-  <div class="action-container">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item" aria-current="page">
-            <a [routerLink]="['/p', projectId]">Project Details</a>
-        </li>
-        <li class="breadcrumb-item" aria-current="page">
-            <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
-        </li>
-        <li class="breadcrumb-item" aria-current="page">
-            <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id, 'comment-period-details']">{{commentPeriod.dateStarted | date: 'LLLL'}} -
-                {{commentPeriod.dateCompleted | date}}</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            Edit
-        </li>
-    </ol>
-  </div>
-</div>
 
-<form [formGroup]="commentPeriodForm" (ngSubmit)="register()">
-  <div class="form-row">
-    <div class="form-group col-md-4">
-      <label for="inputStartDate">Start Date*</label>
-      <div class="input-group">
-        <input required id="inputStartDate" container='body' type="text" class="form-control"
-            placeholder="Select a start date" name="startDate" formControlName="startDate" ngbDatepicker
-            #startDatePicker="ngbDatepicker">
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary calendar" (click)="startDatePicker.toggle()"
-                type="button"></button>
-        </div>
-      </div>
+<main class="container-fluid-padding">
+    <div class="spinner-container" *ngIf="loading">
+        <div class="spinner-new rotating"></div>
     </div>
-    <div class="form-group col-md-4">
-      <label for="inputEndDate">End Date*</label>
-      <div class="input-group">
-        <input required id="inputEndDate" container='body' type="text" class="form-control"
-            placeholder="Select a end date" name="endDate" formControlName="endDate" ngbDatepicker
-            #endDatePicker="ngbDatepicker">
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary calendar" (click)="endDatePicker.toggle()"
-                type="button"></button>
-        </div>
-      </div>
-    </div>
-    <div class="form-group col-md-4">
-      <label for="publishedState">Published State*</label>
-      <select required id="publishedState" class="form-control" name="publishedStateSel"
-          formControlName="publishedStateSel">
-        <option disabled selected value>-- select an option --</option>
-        <option value="unpublished" selected="selected">Unpublished</option>
-        <option value="published">Published</option>
-      </select>
-    </div>
-  </div>
 
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="infoForComment">Information for Comment*</label>
-      <textarea required id="infoForComment" class="form-control" placeholder="%information for comment%"
-          (change)="updateInfoForCommentPreview()" rows="3" name="infoForCommentText"
-          formControlName="infoForCommentText"></textarea>
-    </div>
-    <div class="form-group col-md-6">
-      <label for="description">Description*</label>
-      <textarea required id="description" class="form-control" placeholder="%description%"
-          (change)="updateDescriptionPreview()" rows="3" name="descriptionText"
-          formControlName="descriptionText"></textarea>
-    </div>
-    <div>
-      <h6>
-        <i>
-          Preview for description:
-        </i>
-      </h6>
-      <p class="text-secondary">
-        Comment Period on the {{infoForCommentPreview}} for {{projectName}} Project.
-        <br>
-        {{descriptionPreview}}
-      </p>
-    </div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="milestoneSel">Content for Comment [Milestones]*</label>
-      <select required class="form-control" formControlName="milestoneSel">
-        <option disabled selected value>-- select an option --</option>
-        <option *ngFor="let milestone of milestones" [ngValue]="milestone._id">{{milestone.name}}</option>
-      </select>
-    </div>
-  </div>
-
-  <div formArrayName="openHouses">
-    <div class="form-row" *ngFor="let item of commentPeriodForm.get('openHouses')['controls']; let $index=index"
-        [formGroupName]="$index">
-      <div class="form-group col-md-4">
-        <label for="inputOpenHouseDate">Open House Date</label>
-        <div class="input-group">
-          <input type="text" id="inputOpenHouseDate" container='body' class="form-control"
-              placeholder="Select an open house date" name="eventDate" formControlName="eventDate"
-              ngbDatepicker #openHouseDatePicker="ngbDatepicker">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary calendar" (click)="openHouseDatePicker.toggle()"
-                  type="button"></button>
-          </div>
+    <form [formGroup]="commentPeriodForm" (ngSubmit)="register()">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="inputStartDate">Start Date*</label>
+                <div class="input-group">
+                    <input required id="inputStartDate" container='body' type="text" class="form-control"
+                        placeholder="Select a start date" name="startDate" formControlName="startDate" ngbDatepicker
+                        #startDatePicker="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="startDatePicker.toggle()"
+                            type="button"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="inputEndDate">End Date*</label>
+                <div class="input-group">
+                    <input required id="inputEndDate" container='body' type="text" class="form-control"
+                        placeholder="Select a end date" name="endDate" formControlName="endDate" ngbDatepicker
+                        #endDatePicker="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="endDatePicker.toggle()"
+                            type="button"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="publishedState">Published State*</label>
+                <select required id="publishedState" class="form-control" name="publishedStateSel"
+                    formControlName="publishedStateSel">
+                    <option disabled selected value>-- select an option --</option>
+                    <option value="unpublished" selected="selected">Unpublished</option>
+                    <option value="published">Published</option>
+                </select>
+            </div>
         </div>
-      </div>
-      <div class="form-group col-md-7">
-          <label for="openHouseDescription">Description</label>
-          <textarea id="openHouseDescription" class="form-control" rows="3" name="description"
-              formControlName="description"></textarea>
-      </div>
-      <div id="add-remove-open-house" class="col-md-1 text-right">
-        <div (click)="addOpenHouseRow()">
-          <i class="material-icons">
-              add
-          </i>
-        </div>
-        <div (click)="removeOpenHouseRow($index)">
-          <i class="material-icons">
-              remove
-          </i>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="text-right">
-    <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
-      &nbsp;
-    <button [disabled]="!commentPeriodForm.valid" class="btn btn-primary" type="submit"
-          (click)="onSubmit()">Save</button>
-  </div>
-</form>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="infoForComment">Information for Comment*</label>
+                <textarea required id="infoForComment" class="form-control" placeholder="%information for comment%"
+                    (change)="updateInfoForCommentPreview()" rows="3" name="infoForCommentText"
+                    formControlName="infoForCommentText"></textarea>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="description">Description*</label>
+                <textarea required id="description" class="form-control" placeholder="%description%"
+                    (change)="updateDescriptionPreview()" rows="3" name="descriptionText"
+                    formControlName="descriptionText"></textarea>
+            </div>
+            <div>
+                <h6>
+                    <i>
+                        Preview for description:
+                    </i>
+                </h6>
+                <p class="text-secondary">
+                    Comment Period on the {{infoForCommentPreview}} for {{projectName}} Project.
+                    <br>
+                    {{descriptionPreview}}
+                </p>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="milestoneSel">Content for Comment [Milestones]*</label>
+                <select required class="form-control" formControlName="milestoneSel">
+                    <option disabled selected value>-- select an option --</option>
+                    <option *ngFor="let milestone of milestones" [ngValue]="milestone._id">{{milestone.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div formArrayName="openHouses">
+            <div class="form-row" *ngFor="let item of commentPeriodForm.get('openHouses')['controls']; let $index=index"
+                [formGroupName]="$index">
+                <div class="form-group col-md-4">
+                    <label for="inputOpenHouseDate">Open House Date</label>
+                    <div class="input-group">
+                        <input type="text" id="inputOpenHouseDate" container='body' class="form-control"
+                            placeholder="Select an open house date" name="eventDate" formControlName="eventDate"
+                            ngbDatepicker #openHouseDatePicker="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary calendar" (click)="openHouseDatePicker.toggle()"
+                                type="button"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-7">
+                    <label for="openHouseDescription">Description</label>
+                    <textarea id="openHouseDescription" class="form-control" rows="3" name="description"
+                        formControlName="description"></textarea>
+                </div>
+                <div id="add-remove-open-house" class="col-md-1 text-right">
+                    <div (click)="addOpenHouseRow()">
+                        <i class="material-icons">
+                            add
+                        </i>
+                    </div>
+                    <div (click)="removeOpenHouseRow($index)">
+                        <i class="material-icons">
+                            remove
+                        </i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-right">
+            <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+            &nbsp;
+            <button [disabled]="!commentPeriodForm.valid" class="btn btn-primary" type="submit"
+                (click)="onSubmit()">Save</button>
+        </div>
+    </form>
+</main>
