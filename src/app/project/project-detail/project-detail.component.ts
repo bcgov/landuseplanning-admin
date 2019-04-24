@@ -17,6 +17,7 @@ import { DecisionService } from 'app/services/decision.service';
 import { DocumentService } from 'app/services/document.service';
 import { ProjectComponent } from '../project.component';
 import { StorageService } from 'app/services/storage.service';
+import { OrgService } from 'app/services/org.service';
 
 @Component({
   selector: 'app-project-detail',
@@ -43,6 +44,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private cp: CurrencyPipe,
     public decisionService: DecisionService,
     private storageService: StorageService,
+    private orgService: OrgService,
     public documentService: DocumentService,
     private projectComponent: ProjectComponent
   ) { }

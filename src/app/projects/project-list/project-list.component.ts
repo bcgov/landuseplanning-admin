@@ -12,6 +12,7 @@ import { ProjectListTableRowsComponent } from './project-list-table-rows/project
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 import { StorageService } from 'app/services/storage.service';
+import { OrgService } from 'app/services/org.service';
 
 @Component({
   selector: 'app-project-list',
@@ -72,6 +73,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
+    private orgService: OrgService,
     public commentPeriodService: CommentPeriodService,
     private tableTemplateUtils: TableTemplateUtils,
     private storageService: StorageService,
@@ -89,7 +91,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             this.totalListItems = res.totalCount;
             if (this.totalListItems > 0) {
               this.projects = res.data;
+              console.log('projects:', this.projects);
               this.setProjectRowData();
+              this._changeDetectionRef.detectChanges();
             }
           } else {
             alert('Uh-oh, couldn\'t load topics');

@@ -19,6 +19,7 @@ import { Document } from 'app/models/document';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 import { Topic } from 'app/models/topic';
+import { Org } from 'app/models/org';
 import { RecentActivity } from 'app/models/recentActivity';
 import { ValuedComponent } from 'app/models/valuedComponent';
 
@@ -106,7 +107,7 @@ export class ApiService {
   //
   // Projects
   //
-  getProjects(pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
+  getProjects(pageNum: number, pageSize: number, sortBy: string, populate: Boolean = true): Observable<Object> {
     const fields = [
       'eacDecision',
       'name',
@@ -122,6 +123,7 @@ export class ApiService {
     if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
     if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
     if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    if (populate !== null) { queryString += `populate=${populate}&`; }
     queryString += `fields=${this.buildValues(fields)}`;
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
@@ -187,7 +189,7 @@ export class ApiService {
       'write',
       'delete'
     ];
-    const queryString = `project/${id}?fields=${this.buildValues(fields)}`;
+    const queryString = `project/${id}?fields=${this.buildValues(fields)}` + '&populate=true';
     return this.http.get<Project[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -828,6 +830,32 @@ export class ApiService {
   addUser(user: User): Observable<User> {
     const queryString = `user/`;
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
+  }
+
+  getOrgs(): Observable<Org[]> {
+    const fields = [
+      'displayName',
+      'username',
+      'firstName',
+      'lastName'
+    ];
+    const queryString = `organization?fields=${this.buildValues(fields)}`;
+    return this.http.get<Org[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getOrg(id: any): Observable<Org> {
+    const queryString = `organization/${id}`;
+    return this.http.get<Org>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  saveOrg(org: Org): Observable<Org> {
+    const queryString = `organization/${org._id}`;
+    return this.http.put<Org>(`${this.pathAPI}/${queryString}`, org, {});
+  }
+
+  addOrg(org: Org): Observable<Org> {
+    const queryString = `organization/`;
+    return this.http.post<Org>(`${this.pathAPI}/${queryString}`, org, {});
   }
 
   //
