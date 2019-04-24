@@ -19,6 +19,7 @@ import { Document } from 'app/models/document';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 import { Topic } from 'app/models/topic';
+import { RecentActivity } from 'app/models/recentActivity';
 import { ValuedComponent } from 'app/models/valuedComponent';
 
 interface LocalLoginResponse {
@@ -786,6 +787,23 @@ export class ApiService {
     console.log('queryString:', queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
+
+  // Activity
+  addRecentActivity(topic: RecentActivity): Observable<RecentActivity> {
+    const queryString = `topic/`;
+    return this.http.post<RecentActivity>(`${this.pathAPI}/${queryString}`, topic, {});
+  }
+
+  saveRecentActivity(topic: RecentActivity): Observable<RecentActivity> {
+    const queryString = `topic/${topic._id}`;
+    return this.http.put<RecentActivity>(`${this.pathAPI}/${queryString}`, topic, {});
+  }
+
+  deleteRecentActivity(topic: RecentActivity): Observable<RecentActivity> {
+    const queryString = `topic/${topic._id}`;
+    return this.http.delete<RecentActivity>(`${this.pathAPI}/${queryString}`, {});
+  }
+
 
   //
   // Users

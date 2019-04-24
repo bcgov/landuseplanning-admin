@@ -47,6 +47,16 @@ export class RecentActivityService {
   // }
 
   // MBL TODO: PUT/POST functionality.
+  add(activity: RecentActivity) {
+    return this.api.addRecentActivity(activity)
+    .map(res => {
+      if (res) {
+        return new RecentActivity(res);
+      }
+      return [];
+    })
+    .catch(error => this.api.handleError(error));
+  }
 
   // TODO: publish/unpublish functionality
 

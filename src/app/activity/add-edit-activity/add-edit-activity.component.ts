@@ -5,6 +5,9 @@ import { Subject } from 'rxjs';
 import { ContentObserver } from '@angular/cdk/observers';
 import { ProjectService } from 'app/services/project.service';
 import { ConfigService } from 'app/services/config.service';
+import { RecentActivityService } from 'app/services/recent-activity';
+import { ActivityComponent } from '../activity.component';
+import { RecentActivity } from 'app/models/recentActivity';
 
 @Component({
   selector: 'app-add-edit-activity',
@@ -24,6 +27,7 @@ export class AddEditActivityComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private configService: ConfigService,
+    private recentActivityService: RecentActivityService,
     private projectService: ProjectService
   ) {
     console.log(this.configService.lists);
@@ -50,14 +54,18 @@ export class AddEditActivityComponent implements OnInit {
         .subscribe((res: any) => {
           if (res) {
             this.projects = res.data;
+
+            // Types
+            this.types = this.configService.lists.filter(item => {
+              return item.type === 'headlineType';
+            });
+
+            // Priorities
+            this.priorities = this.configService.lists.filter(item => {
+              return item.type === 'headlinePriority';
+            });
           }
         });
-
-        // Priorities
-        console.log('list:', this.configService.lists);
-
-        // Types
-        console.log('list:', this.configService.lists);
   }
 
   onCancel() {
@@ -66,6 +74,14 @@ export class AddEditActivityComponent implements OnInit {
 
   onSubmit() {
     console.log('submitting', this.myForm);
+    if (this.isEditing) {
+      alert('todo');
+    } else {
+      let activity = new RecentActivity();
+      this.recentActivityService.add(activity).subscribe(item => {
+        console.log('item:', item);
+      });
+    }
   }
 
   register (myForm: FormGroup) {
