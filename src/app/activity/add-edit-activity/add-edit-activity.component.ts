@@ -25,6 +25,15 @@ export class AddEditActivityComponent implements OnInit {
   public priorities = [];
   public activity: any;
 
+  public tinyMceSettings = {
+    skin_url: '/assets/tinymce/skins/lightgray',
+    inline: false,
+    statusbar: false,
+    browser_spellcheck: true,
+    height: 320,
+    plugins: 'fullscreen',
+  };
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -96,7 +105,7 @@ export class AddEditActivityComponent implements OnInit {
         documentUrl: this.myForm.controls.documentUrl.value,
         active: this.myForm.controls.active.value === 'yes' ? true : false,
       });
-      // console.log('saving:', activity);
+      console.log('saving:', this.myForm.controls.content.value);
       this.recentActivityService.save(activity)
       .subscribe(item => {
         // console.log('item', item);

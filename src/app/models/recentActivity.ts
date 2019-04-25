@@ -6,12 +6,14 @@ export class RecentActivity {
     priority: string;
     active: string;
     headline: string;
+    content: string;
 
     constructor(obj?: any) {
         this._id             = obj && obj._id             || null;
         this.type           = obj && obj.type           || null;
         this.project           = obj && obj.project           || null;
         this.dateAdded           = obj && obj.dateAdded           || null;
+        this.content           = obj && obj.content           || null;
         this.priority           = obj && obj.priority           || null;
         this.headline           = obj && obj.headline           || null;
         this.active           = obj && obj.active           || null;

@@ -13,6 +13,7 @@ import { AppRoutingModule } from 'app/app-routing.module';
 import { ProjectModule } from 'app/project/project.module';
 import { ProjectsModule } from 'app/projects/projects.module';
 import { SharedModule } from './shared/shared.module';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 // components
 import { AdministrationComponent } from 'app/administration/administration.component';
@@ -100,6 +101,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     ProjectModule,
     ProjectsModule,
     SharedModule,
+    EditorModule,
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     NgbModule.forRoot(),
     NgxPaginationModule,
