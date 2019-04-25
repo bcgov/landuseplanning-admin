@@ -29,8 +29,7 @@
         "../node_modules/moment/min/moment.min.js",
         "../node_modules/moment-timezone/builds/moment-timezone-with-data.min.js",
         "../node_modules/tinymce/tinymce.min.js",
-        "../node_modules/tinymce/themes/silver/theme.min.js",
-        "../node_modules/tinymce/plugins/fullscreen/plugin.js"
+        "../node_modules/tinymce/themes/silver/theme.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

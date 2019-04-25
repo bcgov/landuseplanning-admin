@@ -26,12 +26,9 @@ export class AddEditActivityComponent implements OnInit {
   public activity: any;
 
   public tinyMceSettings = {
-    skin_url: '/assets/tinymce/skins/lightgray',
-    inline: false,
-    statusbar: false,
+    skin: false,
     browser_spellcheck: true,
-    height: 320,
-    plugins: 'fullscreen',
+    height: 320
   };
 
   constructor(
