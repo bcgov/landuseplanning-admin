@@ -8,15 +8,14 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item active" aria-current="page">All Contacts</li>
         </ol>
+        <button class="btn btn-primary create-contact" [routerLink]="['contacts/edit']">
+          <i class="material-icons">add</i>
+          <span>Create New Contact</span>
+        </button>
       </nav>
 
       <main *ngIf="!loading">
         <section>
-          <button class="btn btn-primary mb-4" [routerLink]="['contacts/edit']">
-            <i class="material-icons">add</i>
-            <span>Create New Contact</span>
-          </button>
-
           <app-table-template *ngIf="!loading && totalCount != 0"
                               (checkboxChange)='checkChange($event)'
                               [columns]="documentTableColumns"

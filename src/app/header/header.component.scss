@@ -102,6 +102,11 @@
       font-size: $mn-font-size;
       font-weight: 700;
       cursor: pointer;
+      i {
+        margin-right: 4px;
+        margin-top: 3px;
+        font-size: 20px;
+      }
     }
 
     .dropdown {

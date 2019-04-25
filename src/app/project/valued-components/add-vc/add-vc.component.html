@@ -1,39 +1,39 @@
 <main class="container-fluid-padding">
-    <nav class="action-container" aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item" >
-          <a [routerLink]="['/projects']">All Projects</a>
-        </li>
-        <!-- ADD PROPERTY projectID project.name -->
+  <nav class="action-container" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" >
+        <a [routerLink]="['/projects']">All Projects</a>
+      </li>
+      <!-- ADD PROPERTY projectID project.name -->
 <!--         <li class="breadcrumb-item" >
-          <a [routerLink]="['/p', projectId]"> {{project.name}}
-          </a>
-        </li> -->
-        <li class="breadcrumb-item active" aria-current="page">Add Valued Components</li>
-      </ol>
-    </nav>
-    <div class="spinner-container" *ngIf="loading">
-      <div class="spinner-new rotating"></div>
+        <a [routerLink]="['/p', projectId]"> {{project.name}}
+        </a>
+      </li> -->
+      <li class="breadcrumb-item active" aria-current="page">Add Valued Components</li>
+    </ol>
+    <div class="btn-container">
+      <button (click)="selectAction('cancel')"
+                class="btn btn-primary"
+                type="cancel"
+                id="button-d">Cancel</button>
+      <button (click)="selectAction('save')"
+                class="btn btn-primary"
+                type="button"
+                id="button-d">Save</button>
     </div>
+  </nav>
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  <app-table-template *ngIf="tableParams.totalListItems > 0"
+    [columns]="tableColumns"
+    [data]="tableData"
+    (onColumnSort)='setColumnSort($event)'
+    (onSelectedRow)='updateSelectedRow($event)'
+    (onPageNumUpdate)='getPaginated($event, null, null)'>
+  </app-table-template>
 
-    <button (click)="selectAction('cancel')"
-              class="btn btn-outline-secondary mr-1"
-              type="button"
-              id="button-d"><i class="material-icons">cancel</i>Cancel</button>
-    <button (click)="selectAction('save')"
-              class="btn btn-outline-secondary mr-1"
-              type="button"
-              id="button-d"><i class="material-icons">save</i>Save</button>
-
-    <app-table-template *ngIf="tableParams.totalListItems > 0"
-      [columns]="tableColumns"
-      [data]="tableData"
-      (onColumnSort)='setColumnSort($event)'
-      (onSelectedRow)='updateSelectedRow($event)'
-      (onPageNumUpdate)='getPaginated($event, null, null)'>
-    </app-table-template>
-
-    <div *ngIf="tableParams.totalListItems == 0">
-      This project has no valued components. 
-    </div>
+  <div *ngIf="tableParams.totalListItems == 0">
+    This project has no valued components.
+  </div>
 </main>
