@@ -164,17 +164,44 @@ main {
 
   @media screen and (min-width: 768px) {
     display: flex;
+
     ol {
       flex: 100%;
       margin: 10px;
     }
   }
+
+  button[type="cancel"] {
+    background: none;
+    border-width: 2px;
+    color: #007bff;
+    font-weight: 600;
+  }
+
   .btn {
     padding: 0.74rem 0.75rem;
     width: 188px;
+
     i {
       margin-top: -7px;
     }
+  }
+}
+
+.btn-container {
+  display: flex;
+
+  button.btn {
+    margin-left: 10px;
+    width: 130px;
+  }
+}
+
+.flex-container {
+  @media screen and (min-width: 800px) {
+    display: flex;
+    flex: 1 auto;
+    flex-wrap: wrap;
   }
 }
 
@@ -277,17 +304,22 @@ hr {
 }
 
 .breadcrumb {
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 0;
   letter-spacing: -0.025em;
   font-weight: 500;
+  padding-top: 2px;
 }
 
 .breadcrumb-item a {
   color: #007bff;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .breadcrumb-item.active {
   color: #036;
+}
+
+.table td {
+  overflow: hidden;
 }
