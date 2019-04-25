@@ -94,7 +94,7 @@ export class DocumentEditComponent implements OnInit {
   }
 
   goBack() {
-    if (this.storageService.state.back.url) {
+    if (this.storageService.state.back && this.storageService.state.back.url) {
       this.router.navigate(this.storageService.state.back.url);
     } else {
       this.router.navigate(['/p', this.currentProjectId, 'project-documents']);
