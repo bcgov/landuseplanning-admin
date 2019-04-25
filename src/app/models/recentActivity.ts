@@ -1,5 +1,4 @@
 export class RecentActivity {
-    id: string;
     _id: string;
     project: any;
     type: string;
@@ -9,7 +8,7 @@ export class RecentActivity {
     headline: string;
 
     constructor(obj?: any) {
-        this.id             = obj && obj.id             || null;
+        this._id             = obj && obj._id             || null;
         this.type           = obj && obj.type           || null;
         this.project           = obj && obj.project           || null;
         this.dateAdded           = obj && obj.dateAdded           || null;

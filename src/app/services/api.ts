@@ -792,18 +792,18 @@ export class ApiService {
   }
 
   // Activity
-  addRecentActivity(topic: RecentActivity): Observable<RecentActivity> {
-    const queryString = `topic/`;
-    return this.http.post<RecentActivity>(`${this.pathAPI}/${queryString}`, topic, {});
+  addRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
+    const queryString = `recentActivity/`;
+    return this.http.post<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});
   }
 
-  saveRecentActivity(topic: RecentActivity): Observable<RecentActivity> {
-    const queryString = `topic/${topic._id}`;
-    return this.http.put<RecentActivity>(`${this.pathAPI}/${queryString}`, topic, {});
+  saveRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
+    const queryString = `recentActivity/${recentActivity._id}`;
+    return this.http.put<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});
   }
 
-  deleteRecentActivity(topic: RecentActivity): Observable<RecentActivity> {
-    const queryString = `topic/${topic._id}`;
+  deleteRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
+    const queryString = `recentActivity/${recentActivity._id}`;
     return this.http.delete<RecentActivity>(`${this.pathAPI}/${queryString}`, {});
   }
 

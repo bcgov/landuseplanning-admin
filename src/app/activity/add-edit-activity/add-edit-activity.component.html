@@ -44,16 +44,15 @@
       <div class="flex-container">
         <div class="label-pair med">
           <label for="project">Project* </label>
-          <select required class="form-control" formControlName="projectSel">
-            <option disabled selected value>-- select an option --</option>
+          <select required class="form-control" formControlName="project">
             <option *ngFor="let project of projects" [ngValue]="project._id">{{project.name}}</option>
           </select>
         </div>
         <div class="label-pair">
           <label for="type">Type* </label>
-          <select required class="form-control" formControlName="typeSel">
-            <option disabled selected value>-- select an option --</option>
-            <option *ngFor="let type of types" [ngValue]="type._id">{{type.name}}</option>
+          <select required class="form-control" formControlName="type">
+            <option>Public Comment Period</option>
+            <option>News</option>
           </select>
         </div>
       </div>
@@ -87,20 +86,22 @@
         <fieldset class="form-group">
           <div class="label-pair">
             <label for="priority">Priority* </label>
-            <select required class="form-control" formControlName="prioritySel">
-              <option disabled selected value>-- select an option --</option>
-              <option *ngFor="let priority of priorities" [ngValue]="priority._id">{{priority.name}}</option>
+            <select required class="form-control" formControlName="priority">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
             </select>
           </div>
           <div class="label-pair">
-            <label for="status">Published* </label>
-            <div name="status" class="radio-group">
+            <label for="active">Published* </label>
+            <div name="active" class="radio-group">
               <div class="radio">
-                <input type="radio" id="yes" value="yes" formControlName="status" name="status" />
+                <input type="radio" id="yes" value="yes" formControlName="active" name="active" />
                 <label for="yes">Yes</label>
               </div>
               <div class="radio">
-                <input type="radio" id="no" value="no" formControlName="status" name="status" />
+                <input type="radio" id="no" value="no" formControlName="active" name="active" />
                 <label for="no">No</label>
               </div>
             </div>

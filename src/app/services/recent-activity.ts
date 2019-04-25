@@ -58,6 +58,17 @@ export class RecentActivityService {
     .catch(error => this.api.handleError(error));
   }
 
+  save(activity: RecentActivity) {
+    return this.api.saveRecentActivity(activity)
+    .map(res => {
+      if (res) {
+        return new RecentActivity(res);
+      }
+      return [];
+    })
+    .catch(error => this.api.handleError(error));
+  }
+
   // TODO: publish/unpublish functionality
 
 }
