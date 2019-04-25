@@ -1,4 +1,4 @@
-<div class="action-container">
+<nav class="action-container">
   <ol class="breadcrumb">
     <li class="breadcrumb-item" >
       <a [routerLink]="['/projects']">All Projects</a>
@@ -15,7 +15,7 @@
       <button class="dropdown-item" (click)="unPublishProject()">Un-Publish</button>
     </div>
   </div>
-</div>
+</nav>
 <main class="container-fluid-padding">
   <h1 id="name">{{project.name}}</h1>
   <section>
@@ -138,30 +138,5 @@
         <a href="mailTo:eao.compliance@gov.bc.ca">eao.compliance@gov.bc.ca</a>
       </p>
     </div>
-  </section>
-  <section>
-    <h2>Documents</h2>
-    <ul class="doc-list">
-      <!-- <li *ngFor="let doc of project.documents">
-            <span class="cell icon">
-              <i class="material-icons link" (click)="api.openDocument(doc)">
-                insert_drive_file
-              </i>
-            </span>
-            <span class="cell name" [title]="doc.displayName || ''">
-              <span class="cell__txt-content">
-                <a (click)="api.openDocument(doc)">{{doc.documentFileName}}</a>
-              </span>
-            </span>
-            <span class="cell actions">
-            <button class="btn btn-icon" type="button" title="Download this document" (click)="api.downloadDocument(doc)">
-                <i class="material-icons">file_download</i>
-              </button>
-            </span>
-          </li>
-          <li class="no-results" *ngIf="project.documents.length === 0">
-            <em>No project documents</em>
-          </li> -->
-    </ul>
   </section>
 </main>

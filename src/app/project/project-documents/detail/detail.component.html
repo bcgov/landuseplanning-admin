@@ -1,108 +1,66 @@
-<div class="row">
-  <div class="container-fluid-padding">
-      <div class="action-container col-md-12" *ngIf="document">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item" >
-            <a [routerLink]="['/projects']">All Projects</a>
-          </li>
-          <!-- ADD PROPERTY projectID project.name -->
-<!--           <li class="breadcrumb-item" >
+<nav class="action-container">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/projects']">All Projects</a>
+    </li>
+    <!-- ADD PROPERTY projectID project.name -->
+    <!--           <li class="breadcrumb-item" >
             <a [routerLink]="['/p', projectId]"> {{project.name}}
             </a>
           </li> -->
-          <li class="breadcrumb-item active" aria-current="page"><a
-            [routerLink]="['/p', project._id, 'project-documents']">Documents</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Document Details</li>
-        </ol>
-        <section>
-          <h2>Details</h2>
-          <ul class="list-group">
-            <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
-                    <span class="list-group-item">Display Name:</span>
-                  </div>
-                  <div class="col-8">
-                    <span class="value">{{document.displayName || '-'}}</span>
-                  </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
-                    <span class="list-group-item">Filename:</span>
-                  </div>
-                  <div class="col-8">
-                    <span class="value">{{document.documentFileName || '-'}}</span>
-                  </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
-                    <span class="list-group-item">Type:</span>
-                  </div>
-                  <div class="col-8">
-                    <span class="value">{{document.type | listConverter }}</span>
-                  </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
-                    <span class="list-group-item">Date:</span>
-                  </div>
-                  <div class="col-8">
-                    <span class="value">{{document.dateUploaded | date }}</span>
-                  </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
-                    <span class="list-group-item">Author:</span>
-                  </div>
-                  <div class="col-8">
-                    <span class="value">{{document.documentAuthor | listConverter}}</span>
-                  </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
-                    <span class="list-group-item">Milestone:</span>
-                  </div>
-                  <div class="col-8">
-                    <span class="value">{{document.milestone | listConverter}}</span>
-                  </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
-                    <span class="list-group-item">Filesize:</span>
-                  </div>
-                  <div class="col-8">
-                    <span class="value">{{document.documentFileSize || '-'}}</span>
-                  </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-              <div class="row">
-                <button class="btn btn-primary" type="button" (click)="api.downloadDocument(document)">Download</button>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="row">
-                <button class="btn btn-primary" type="button" (click)="api.openDocument(document)">Open</button>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="row">
-                <button class="btn btn-primary" type="button" (click)="onEdit(document)">Edit</button>
-              </div>
-            </li>
-          </ul>
-        </section>
+    <li class="breadcrumb-item active" aria-current="page"><a
+        [routerLink]="['/p', project._id, 'project-documents']">Documents</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Document Details</li>
+  </ol>
+  <div ngbDropdown placement="bottom-right" class="d-inline-block">
+    <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
+    <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+      <button class="dropdown-item" (click)="onEdit()">Edit</button>
+      <button class="dropdown-item" (click)="api.openDocument(document)">Open</button>
+      <button class="dropdown-item" (click)="api.downloadDocument(document)">Download</button>
     </div>
   </div>
+</nav>
+<main class="container-fluid-padding" *ngIf="document">
+  <h1>Details</h1>
+  <section>
+    <div class="label-pair">
+      <h3 for="proponent">Display Name: </h3>
+      <p id="proponent">{{document.displayName || '-'}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="proponent">Filename: </h3>
+      <p id="proponent">{{document.documentFileName || '-'}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="proponent">Description: </h3>
+      <p id="proponent">{{document.description || '-'}}</p>
+    </div>
+  </section>
+  <section>
+    <div class="label-pair">
+      <h3 for="proponent">Type: </h3>
+      <p id="proponent">{{document.type | listConverter}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="proponent">Upload Date: </h3>
+      <p id="proponent">{{document.dateUploaded | date}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="proponent">Document Date: </h3>
+      <p id="proponent">{{document.datePosted | date}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="proponent">Author: </h3>
+      <p id="proponent">{{document.documentAuthor | listConverter}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="proponent">Milestone: </h3>
+      <p id="proponent">{{document.milestone | listConverter}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="proponent">Filesize: </h3>
+      <p id="proponent">{{document.documentFileSize || '-'}}</p>
+    </div>
+  </section>
+</main>

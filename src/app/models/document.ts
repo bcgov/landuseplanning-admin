@@ -21,8 +21,8 @@ export class Document {
 
   displayName: string;
   milestone: string;
-  uploadDate: string;
-  documentDate: string;
+  dateUploaded: string;
+  datePosted: string;
   type: string;
   description: string;
   documentAuthor: string;
@@ -52,8 +52,8 @@ export class Document {
 
     this.displayName      = obj && obj.displayName      || null;
     this.milestone      = obj && obj.milestone      || null;
-    this.uploadDate      = obj && obj.uploadDate      || null;
-    this.documentDate      = obj && obj.documentDate      || null;
+    this.dateUploaded      = obj && obj.dateUploaded      || null;
+    this.datePosted      = obj && obj.datePosted      || null;
     this.type      = obj && obj.type      || null;
     this.description      = obj && obj.description      || null;
     this.documentAuthor      = obj && obj.documentAuthor      || null;

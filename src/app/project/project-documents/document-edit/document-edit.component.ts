@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
 import { DocumentService } from 'app/services/document.service';
+import { Utils } from 'app/shared/utils/utils';
 
 @Component({
   selector: 'app-document-edit',
@@ -23,11 +24,12 @@ export class DocumentEditComponent implements OnInit {
   public doctypes: any[] = [];
   public authors: any[] = [];
   public labels: any[] = [];
-  public documentDate: NgbDateStruct = null;
-  public uploadDate: NgbDateStruct = null;
+  public datePosted: NgbDateStruct = null;
+  public dateUploaded: NgbDateStruct = null;
   public loading = true;
 
   constructor(
+    private utils: Utils,
     private router: Router,
     private route: ActivatedRoute,
     private config: ConfigService,
@@ -38,7 +40,6 @@ export class DocumentEditComponent implements OnInit {
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProjectId = this.documents[0].project;
-
 
     // Check if documents are null (nav straight to this page)
     if (!this.documents || this.documents.length === 0) {
@@ -67,8 +68,8 @@ export class DocumentEditComponent implements OnInit {
             'doctypesel': new FormControl(this.documents[0].type),
             'authorsel': new FormControl(this.documents[0].documentAuthor),
             'labelsel': new FormControl(this.documents[0].milestone),
-            'documentDate': new FormControl(this.documents[0].documentDate),
-            'uploadDate': new FormControl(this.documents[0].uploadDate),
+            'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].datePosted))),
+            'dateUploaded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].dateUploaded))),
             'displayName': new FormControl(this.documents[0].displayName),
             'description': new FormControl(this.documents[0].description)
           });
@@ -77,20 +78,12 @@ export class DocumentEditComponent implements OnInit {
             'doctypesel': new FormControl(),
             'authorsel': new FormControl(),
             'labelsel': new FormControl(),
-            'documentDate': new FormControl(),
-            'uploadDate': new FormControl(),
+            'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date())),
+            'dateUploaded': new FormControl(this.utils.convertJSDateToNGBDate(new Date())),
             'displayName': new FormControl(),
             'description': new FormControl()
           });
         }
-        let today = new Date();
-        let todayObj = {
-          year: today.getFullYear(),
-          month: today.getMonth(),
-          day: today.getDate()
-        };
-        this.myForm.controls.documentDate.setValue(todayObj);
-        this.myForm.controls.uploadDate.setValue(todayObj);
       }
 
       if (this.storageService.state.labels) {
@@ -98,6 +91,14 @@ export class DocumentEditComponent implements OnInit {
       }
     }
     this.loading = false;
+  }
+
+  goBack() {
+    if (this.storageService.state.back.url) {
+      this.router.navigate(this.storageService.state.back.url);
+    } else {
+      this.router.navigate(['/p', this.currentProjectId, 'project-documents']);
+    }
   }
 
   save() {
@@ -117,14 +118,14 @@ export class DocumentEditComponent implements OnInit {
       formData.append('project', this.currentProjectId);
       formData.append('documentSource', 'PROJECT');
 
-      formData.append('documentFileName', doc.documentFileName);
+      doc.documentFileName !== null ? formData.append('documentFileName', doc.documentFileName) : Function.prototype;
+      this.myForm.value.description !== null ? formData.append('description', this.myForm.value.description) : Function.prototype;
+      this.myForm.value.displayName !== null ? formData.append('displayName', this.myForm.value.displayName) : Function.prototype;
 
-      formData.append('displayName', this.myForm.value.displayName);
       formData.append('milestone', this.myForm.value.labelsel);
-      formData.append('uploadDate', moment(this.myForm.value.uploadDate));
-      formData.append('documentDate', moment(this.myForm.value.documentDate));
+      formData.append('dateUploaded', moment(this.myForm.value.dateUploaded));
+      formData.append('datePosted', moment(this.myForm.value.datePosted));
       formData.append('type', this.myForm.value.doctypesel);
-      formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);
 
       // TODO
@@ -150,7 +151,7 @@ export class DocumentEditComponent implements OnInit {
         () => { // onCompleted
           // delete succeeded --> navigate back to search
           // Clear out the document state that was stored previously.
-          this.router.navigate(['p', this.currentProjectId, 'project-documents']);
+          this.goBack();
           this.loading = false;
         }
       );

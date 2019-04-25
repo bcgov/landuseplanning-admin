@@ -23,8 +23,8 @@ export class UploadComponent implements OnInit {
   public authorsel: any;
   public projectFiles: Document[] = [];
   public documents: Document[] = [];
-  public documentDate: NgbDateStruct = null;
-  public uploadDate: NgbDateStruct = null;
+  public datePosted: NgbDateStruct = null;
+  public dateUploaded: NgbDateStruct = null;
   public doctypes: any[] = [];
   public authors: any[] = [];
   public labels: any[] = [];
@@ -65,19 +65,19 @@ export class UploadComponent implements OnInit {
         'doctypesel': new FormControl(),
         'authorsel': new FormControl(),
         'labelsel': new FormControl(),
-        'documentDate': new FormControl(),
-        'uploadDate': new FormControl(),
+        'datePosted': new FormControl(),
+        'dateUploaded': new FormControl(),
         'displayName': new FormControl(),
         'description': new FormControl()
       });
       let today = new Date();
       let todayObj = {
         year: today.getFullYear(),
-        month: today.getMonth(),
+        month: today.getMonth() + 1,
         day: today.getDate()
       };
-      this.myForm.controls.documentDate.setValue(todayObj);
-      this.myForm.controls.uploadDate.setValue(todayObj);
+      this.myForm.controls.datePosted.setValue(todayObj);
+      this.myForm.controls.dateUploaded.setValue(todayObj);
     }
 
     if (this.storageService.state.documents) {
@@ -121,8 +121,8 @@ export class UploadComponent implements OnInit {
 
       formData.append('displayName', this.myForm.value.displayName);
       formData.append('milestone', this.myForm.value.labelsel);
-      formData.append('uploadDate', moment(this.myForm.value.uploadDate));
-      formData.append('documentDate', moment(this.myForm.value.documentDate));
+      formData.append('dateUploaded', moment(this.myForm.value.dateUploaded));
+      formData.append('datePosted', moment(this.myForm.value.datePosted));
       formData.append('type', this.myForm.value.doctypesel);
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);

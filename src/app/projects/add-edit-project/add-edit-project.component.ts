@@ -171,15 +171,6 @@ export class AddEditProjectComponent implements OnInit {
       });
 
     this.back = this.storageService.state.back;
-      // let today = new Date();
-      // let todayObj = {
-      //   year: today.getFullYear(),
-      //   month: today.getMonth(),
-      //   day: today.getDate()
-      // };
-      // this.myForm.controls.documentDate.setValue(todayObj);
-      // this.myForm.controls.uploadDate.setValue(todayObj);
-    // }
   }
 
   buildForm(resolverData) {
@@ -292,7 +283,6 @@ export class AddEditProjectComponent implements OnInit {
       'projectLead': new FormControl(formData.projectLead),
       'projectAdmin': new FormControl(formData.projectAdmin)
     });
-    // this.myForm.controls.documentDate.setValue(decisionDateObj);
     this.sectorsSelected = this.PROJECT_SUBTYPES[formData.type];
     return theForm;
   }

@@ -38,7 +38,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Date',
-      value: 'documentDate',
+      value: 'datePosted',
       width: 'col-2'
     },
     {
@@ -252,7 +252,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             // displayName: document.displayName || document.internalOriginalName,
             // date: document.dateUploaded || document.datePosted,
             displayName: document.displayName,
-            documentDate: document.documentDate,
+            datePosted: document.datePosted,
             type: document.type,
             milestone: document.milestone,
             _id: document._id,

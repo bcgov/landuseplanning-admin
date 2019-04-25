@@ -8,7 +8,7 @@
              [(ngModel)]='document.checkbox'>
     </td>
     <td data-label="Name" (click)="goToItem(document)" scope="row" class="col-6">{{document.displayName}}</td>
-    <td data-label="Date" (click)="goToItem(document)" scope="row" class="col-2">{{document.documentDate | date:'longDate'}}</td>
+    <td data-label="Date" (click)="goToItem(document)" scope="row" class="col-2">{{document.datePosted | date:'longDate'}}</td>
     <td data-label="Type" (click)="goToItem(document)" scope="row" class="col-2">{{document.type | listConverter}}</td>
     <td data-label="Milestone" (click)="goToItem(document)" scope="row" class="col-2">{{document.milestone | listConverter}}</td>
     <!-- <td>

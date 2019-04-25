@@ -19,7 +19,7 @@ export class DocumentDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private api: ApiService,
+    public api: ApiService,
     private _changeDetectionRef: ChangeDetectorRef,
     private storageService: StorageService
   ) { }
@@ -43,6 +43,7 @@ export class DocumentDetailComponent implements OnInit {
   onEdit() {
     this.storageService.state.selectedDocs = [this.document];
     this.storageService.state.labels = this.document.labels;
+    this.storageService.state.back = { url: ['/p', this.document.project, 'project-documents', 'detail', this.document._id], label: 'View Document' };
     this.router.navigate(['p', this.document.project, 'project-documents', 'edit']);
   }
 }
