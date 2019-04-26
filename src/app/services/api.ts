@@ -592,6 +592,7 @@ export class ApiService {
     const fields = [
       '_addedBy',
       'documentFileName',
+      'labels',
       'internalOriginalName',
       'displayName',
       'documentType',

@@ -25,42 +25,48 @@
   <h1>Details</h1>
   <section>
     <div class="label-pair">
-      <h3 for="proponent">Display Name: </h3>
-      <p id="proponent">{{document.displayName || '-'}}</p>
+      <h3 for="displayName">Display Name: </h3>
+      <p id="displayName">{{document.displayName || '-'}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="proponent">Filename: </h3>
-      <p id="proponent">{{document.documentFileName || '-'}}</p>
+      <h3 for="documentFileName">Filename: </h3>
+      <p id="documentFileName">{{document.documentFileName || '-'}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="proponent">Description: </h3>
-      <p id="proponent">{{document.description || '-'}}</p>
+      <h3 for="description">Description: </h3>
+      <p id="description">{{document.description || '-'}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="tags">Labels: </h3>
+      <div *ngFor="let label of document.labels">
+          <button class="mr-2 badge badge-pill badge-info">{{label}}</button>
+      </div>
     </div>
   </section>
   <section>
     <div class="label-pair">
-      <h3 for="proponent">Type: </h3>
-      <p id="proponent">{{document.type | listConverter}}</p>
+      <h3 for="type">Type: </h3>
+      <p id="type">{{document.type | listConverter}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="proponent">Upload Date: </h3>
-      <p id="proponent">{{document.dateUploaded | date}}</p>
+      <h3 for="dateUploaded">Upload Date: </h3>
+      <p id="dateUploaded">{{document.dateUploaded | date}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="proponent">Document Date: </h3>
-      <p id="proponent">{{document.datePosted | date}}</p>
+      <h3 for="datePosted">Document Date: </h3>
+      <p id="datePosted">{{document.datePosted | date}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="proponent">Author: </h3>
-      <p id="proponent">{{document.documentAuthor | listConverter}}</p>
+      <h3 for="documentAuthor">Author: </h3>
+      <p id="documentAuthor">{{document.documentAuthor | listConverter}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="proponent">Milestone: </h3>
-      <p id="proponent">{{document.milestone | listConverter}}</p>
+      <h3 for="milestone">Milestone: </h3>
+      <p id="milestone">{{document.milestone | listConverter}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="proponent">Filesize: </h3>
-      <p id="proponent">{{document.documentFileSize || '-'}}</p>
+      <h3 for="documentFileSize">Filesize: </h3>
+      <p id="documentFileSize">{{document.documentFileSize || '-'}}</p>
     </div>
   </section>
 </main>

@@ -63,8 +63,8 @@ export class Document {
     this.labels     = obj && obj.labels     || null;
 
     // wrap isPublished around the tags we receive for this object
-    if (obj && obj.tags) {
-      for (const tag of obj.tags) {
+    if (obj && obj.read) {
+      for (const tag of obj.read) {
         if (_.includes(tag, 'public')) {
           this.isPublished = true;
           break;
