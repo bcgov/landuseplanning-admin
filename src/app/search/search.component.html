@@ -60,8 +60,6 @@
   </pagination-controls>
 </div>
 
-<div class="container-fluid-padding">
-  <div class="search-results">
     <div *ngIf="count > 0">
       <!-- ALL -->
       <div *ngIf="this.terms.dataset === 'All'">
@@ -139,8 +137,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
 </div>
 
 <div *ngIf="ranSearch && !searching && count != 0" class="page-controls text-center pt-3">
