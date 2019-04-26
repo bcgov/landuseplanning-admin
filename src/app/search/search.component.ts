@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { SearchService } from 'app/services/search.service';
 import { SearchTerms, SearchResults } from 'app/models/search';
 import { Project } from 'app/models/project';
+import { ApiService } from 'app/services/api';
 
 @Component({
   selector: 'app-search',
@@ -32,6 +33,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   constructor(
     public snackBar: MatSnackBar,
     private _changeDetectionRef: ChangeDetectorRef,
+    public api: ApiService,
     public searchService: SearchService, // also used in template
     private router: Router,
     private route: ActivatedRoute

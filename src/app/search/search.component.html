@@ -80,7 +80,8 @@
               <div class="card-body">
                   <h5 class="card-title">{{result.displayName}}</h5>
                 <p class="card-text">{{result.datePosted | date:'medium'}}</p>
-                <a href="#" class="btn btn-primary">Download Document</a>
+                  <button class="dropdown-item" (click)="api.openDocument(result._id)">Open</button>
+                  <button class="dropdown-item" (click)="api.downloadDocument(result._id)">Download</button>
               </div>
             </div>
           </div>
@@ -102,12 +103,12 @@
       <div *ngIf="this.terms.dataset === 'Document'">
         <div class="app-details" *ngFor="let result of results | paginate: { id: 'table-template-pagination', itemsPerPage: pageSize, currentPage: currentPage, totalItems: count }">
           <div class="card">
-              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document</h2>
+              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document<span *ngIf="result.project"> ({{result.project.name}}) <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary float-right">View Project</a></span></h2>
             <div class="card-body">
               <h5 class="card-title">{{result.displayName}}</h5>
               <p class="card-text">{{result.datePosted | date:'medium'}}</p>
-              <a [routerLink]="['/p', result.project]" class="btn btn-primary float-right">View Project</a>
-              <a href="#" class="btn btn-primary">Download Document</a>
+              <button class="dropdown-item" (click)="api.openDocument(result._id)">Open</button>
+              <button class="dropdown-item" (click)="api.downloadDocument(result._id)">Download</button>
             </div>
           </div>
         </div>

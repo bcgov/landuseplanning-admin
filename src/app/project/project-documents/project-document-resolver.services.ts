@@ -22,6 +22,7 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
                                               pageNum,
                                               pageSize,
                                               sortBy,
-                                              '[documentSource]=PROJECT');
+                                              '[documentSource]=PROJECT',
+                                              true);
   }
 }
