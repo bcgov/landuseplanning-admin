@@ -43,7 +43,7 @@ export class ProjectService {
   }
 
   // get all projects
-  getAll(pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
+  getAll(pageNum: number = 1, pageSize: number = 20, sortBy: string = null): Observable<Object> {
     return this.api.getProjects(pageNum, pageSize, sortBy)
     .map((res: any) => {
       if (res) {

@@ -83,7 +83,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.currentPage = params.currentPage ? params.currentPage : 1;
-      this.pageSize = params.pageSize || 15;
+      this.pageSize = params.pageSize || 20;
       this.projectService.getAll(params.currentPage, params.pageSize)
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
