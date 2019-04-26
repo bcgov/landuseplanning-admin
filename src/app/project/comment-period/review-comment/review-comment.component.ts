@@ -49,12 +49,14 @@ export class ReviewCommentComponent implements OnInit {
           this.comment = data.comment;
           this.storageService.state.currentVCs = { type: 'currentVCs', data: this.comment.valuedComponents };
 
-          this.comment.documentsList.forEach(document => {
-            this.documents.push({
-              document: document,
-              isEdited: false
+          if (this.comment.documentsList) {
+            this.comment.documentsList.forEach(document => {
+              this.documents.push({
+                document: document,
+                isEdited: false
+              });
             });
-          });
+          }
 
           if (this.storageService.state.currentCommentPeriod) {
             this.commentPeriod = this.storageService.state.currentCommentPeriod.data;

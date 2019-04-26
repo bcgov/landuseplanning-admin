@@ -1,32 +1,32 @@
-<form [formGroup]="commentReviewForm" (ngSubmit)="register()">
-  <nav class="action-container">
-    <ol class="breadcrumb" *ngIf="commentPeriod">
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', projectId]">Project Details</a>
-      </li>
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
-      </li>
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id]">
-          {{commentPeriod.dateStarted | date: 'MMMM d'}} - {{commentPeriod.dateCompleted | date}}
-        </a>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page">
-        Comment
-      </li>
-    </ol>
-    <div class="btn-container">
-      <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
-      &nbsp;
-      <button [disabled]="!commentReviewForm.valid" class="btn btn-primary" type="submit"
-        (click)="onSubmit()">Save</button>
-    </div>
-  </nav>
-  <main class="container-fluid-padding">
-    <div class="spinner-container" *ngIf="loading">
-      <div class="spinner-new rotating"></div>
-    </div>
+<nav class="action-container">
+  <ol class="breadcrumb" *ngIf="commentPeriod">
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/p', projectId]">Project Details</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id]">
+        {{commentPeriod.dateStarted | date: 'MMMM d'}} - {{commentPeriod.dateCompleted | date}}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Comment
+    </li>
+  </ol>
+  <div class="btn-container">
+    <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+    &nbsp;
+    <button [disabled]="!commentReviewForm.valid" class="btn btn-primary" type="submit"
+      (click)="onSubmit()">Save</button>
+  </div>
+</nav>
+<main class="container-fluid-padding">
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  <form *ngIf="commentReviewForm" [formGroup]="commentReviewForm" (ngSubmit)="register()">
     <div class="form-row">
       <div class="form-group col-md-8">
         <div class="btn-group btn-group-toggle">
@@ -84,25 +84,30 @@
         <div class="form-row">
           <div class="form-group col-md-12">
             <label for="proponentResponse"><b>Attachments</b></label>
-            <div class="card" *ngFor="let document of documents">
-              <div class="card-body">
-                <p class="card-text" (click)="downloadFile(document.document)">
-                  {{document.document.internalOriginalName}}
-                </p>
-                <a class="btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-primary" [class.active]="document.document.eaoStatus === 'Published'">
-                    <input type="checkbox" (click)="toggleDocumentPublish(document, 'publish')" autocomplete="off">
-                    Publish
-                  </label>
-                </a>
-                &nbsp;
-                <a class="btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-primary" [class.active]="document.document.eaoStatus === 'Rejected'">
-                    <input type="checkbox" (click)="toggleDocumentPublish(document, 'reject')" autocomplete="off">
-                    Reject
-                  </label>
-                </a>
+            <div *ngIf="documents.length > 0">
+              <div class="card" *ngFor="let document of documents">
+                <div class="card-body">
+                  <p class="card-text" (click)="downloadFile(document.document)">
+                    {{document.document.internalOriginalName}}
+                  </p>
+                  <a class="btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary" [class.active]="document.document.eaoStatus === 'Published'">
+                      <input type="checkbox" (click)="toggleDocumentPublish(document, 'publish')" autocomplete="off">
+                      Publish
+                    </label>
+                  </a>
+                  &nbsp;
+                  <a class="btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary" [class.active]="document.document.eaoStatus === 'Rejected'">
+                      <input type="checkbox" (click)="toggleDocumentPublish(document, 'reject')" autocomplete="off">
+                      Reject
+                    </label>
+                  </a>
+                </div>
               </div>
+            </div>
+            <div *ngIf="documents.length === 0">
+              <p>This comment has no associated docuemnts.</p>
             </div>
           </div>
         </div>
@@ -142,5 +147,5 @@
         <app-get-valued-components id="valuedComponents"></app-get-valued-components>
       </div>
     </div>
-  </main>
-</form>
+  </form>
+</main>

@@ -32,7 +32,7 @@ export class CommentService {
           if (!comments || comments.length === 0) {
             return of(null as Comment);
           }
-          if (comments[0].documents == null) {
+          if (comments[0].documents.length === 0) {
             return of(comments[0]);
           }
           // now get the rest of the data for this project
