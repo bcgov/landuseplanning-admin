@@ -27,7 +27,7 @@ export class ReviewCommentsTabTableRowsComponent implements OnInit, TableCompone
   ) { }
 
   ngOnInit() {
-    this.projectId = this.storageService.state.currentProject._id;
+    this.projectId = this.storageService.state.currentProject.data._id;
     this.comments = this.data.data;
     this.paginationData = this.data.paginationData;
   }

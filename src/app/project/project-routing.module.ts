@@ -28,6 +28,8 @@ import { DocumentDetailResolver } from './project-documents/detail/document-deta
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 import { TopicResolver } from './valued-components/add-vc/topic-resolver.services';
 import { ReviewCommentResolver } from './comment-period/review-comment/review-comment-resolver.service';
+import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
+import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
 
 const routes: Routes = [
   {
@@ -107,6 +109,13 @@ const routes: Routes = [
         component: ProjectContactsComponent,
       },
       {
+        path: 'comment-periods/add/add-documents',
+        component: AddDocumentComponent,
+        resolve: {
+          documents: AddDocumentsResolver
+        }
+      },
+      {
         path: 'comment-periods/add',
         component: AddEditCommentPeriodComponent,
       },
@@ -131,6 +140,13 @@ const routes: Routes = [
           {
             path: 'comment-period-details',
             component: CommentPeriodComponent
+          },
+          {
+            path: 'edit/add-documents',
+            component: AddDocumentComponent,
+            resolve: {
+              documents: AddDocumentsResolver
+            }
           },
           {
             path: 'edit',
@@ -171,6 +187,7 @@ const routes: Routes = [
     RouterModule
   ],
   providers: [
+    AddDocumentsResolver,
     CommentPeriodResolver,
     CommentPeriodsResolver,
     DocumentDetailResolver,

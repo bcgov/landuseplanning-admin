@@ -71,7 +71,7 @@ export class GetValuedComponentsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.currentProjectId = this.storageService.state.currentProject._id;
+    this.currentProjectId = this.storageService.state.currentProject.data._id;
     this.selectedVCs = this.storageService.state.currentVCs.data;
 
     // get data from route resolver

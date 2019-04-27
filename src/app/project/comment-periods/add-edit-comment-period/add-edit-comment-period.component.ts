@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material';
 import { ConfigService } from 'app/services/config.service';
 import { Utils } from 'app/shared/utils/utils';
 import { StorageService } from 'app/services/storage.service';
+import { DocumentService } from 'app/services/document.service';
 
 @Component({
   selector: 'app-add-edit-comment-period',
@@ -38,26 +39,46 @@ export class AddEditCommentPeriodComponent implements OnInit {
     private route: ActivatedRoute,
     private commentPeriodService: CommentPeriodService,
     private config: ConfigService,
+    private documentService: DocumentService,
     private formBuilder: FormBuilder,
     private router: Router,
     private snackBar: MatSnackBar,
-    private storageService: StorageService,
+    public storageService: StorageService,
     private utils: Utils
   ) { }
 
   ngOnInit() {
+    // BUG: Go to add docs. refresh. it will redirect and have errors.
+
     // Check if we're editing
     this.route.url.subscribe(segments => {
       segments.forEach(segment => {
         if (segment.path === 'edit') {
           this.isEditing = true;
+          // get data from route resolver
+          this.route.data
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe(
+              (data: any) => {
+                if (data.commentPeriod) {
+                  this.commentPeriod = data.commentPeriod;
+                  this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
+
+                  this.initSelectedDocs();
+                } else {
+                  alert('Uh-oh, couldn\'t load comment periods');
+                  // project not found --> navigate back to search
+                  this.router.navigate(['/search']);
+                }
+              }
+            );
         }
       });
     });
 
     // Get data related to current project
-    this.projectId = this.storageService.state.currentProject._id;
-    this.projectName = this.storageService.state.currentProject.name;
+    this.projectId = this.storageService.state.currentProject.data._id;
+    this.projectName = this.storageService.state.currentProject.data.name;
 
     this.config.lists.map(item => {
       switch (item.type) {
@@ -71,41 +92,34 @@ export class AddEditCommentPeriodComponent implements OnInit {
       }
     });
 
-    // Prep comment period form.
-    this.commentPeriodForm = new FormGroup({
-      'startDate': new FormControl(),
-      'endDate': new FormControl(),
-      'publishedStateSel': new FormControl(),
-      'infoForCommentText': new FormControl(),
-      'descriptionText': new FormControl(),
-      'milestoneSel': new FormControl(),
-      openHouses: this.formBuilder.array([])
-    });
-
-    if (this.isEditing) {
-      this.initForEditing();
+    if (this.storageService.state.addEditCPForm == null) {
+      // Prep comment period form.
+      this.commentPeriodForm = new FormGroup({
+        'startDate': new FormControl(),
+        'endDate': new FormControl(),
+        'publishedStateSel': new FormControl(),
+        'infoForCommentText': new FormControl(),
+        'descriptionText': new FormControl(),
+        'milestoneSel': new FormControl(),
+        openHouses: this.formBuilder.array([])
+      });
+      if (this.isEditing) {
+        this.initForEditing();
+      } else {
+        this.addOpenHouseRow();
+        if (this.storageService.state.selectedDocumentsForCP == null) {
+          this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [] };
+        }
+      }
     } else {
-      this.addOpenHouseRow();
+      this.commentPeriodForm = this.storageService.state.addEditCPForm.data;
     }
+
+
     this.loading = false;
   }
 
   private initForEditing() {
-    // get data from route resolver
-    this.route.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (data: any) => {
-          if (data.commentPeriod) {
-            this.commentPeriod = data.commentPeriod;
-          } else {
-            alert('Uh-oh, couldn\'t load comment periods');
-            // project not found --> navigate back to search
-            this.router.navigate(['/search']);
-          }
-        }
-      );
-
     // Date started and completed
     this.commentPeriodForm.controls.startDate.setValue(this.utils.convertJSDateToNGBDate(this.commentPeriod.dateStarted));
     this.commentPeriodForm.controls.endDate.setValue(this.utils.convertJSDateToNGBDate(this.commentPeriod.dateCompleted));
@@ -134,6 +148,22 @@ export class AddEditCommentPeriodComponent implements OnInit {
     }
   }
 
+  private initSelectedDocs() {
+    if (this.storageService.state.selectedDocumentsForCP == null) {
+      if (this.commentPeriod.relatedDocuments) {
+        this.documentService.getByMultiId(this.commentPeriod.relatedDocuments)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            data => {
+              this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: data };
+            }
+          );
+      } else {
+        this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: this.commentPeriod.relatedDocuments };
+      }
+    }
+  }
+
   public onSubmit() {
     this.loading = true;
     // TODO: Calulator integration.
@@ -157,6 +187,12 @@ export class AddEditCommentPeriodComponent implements OnInit {
     this.commentPeriod.instructions += ` for ${this.projectName} Project. `;
     this.commentPeriod.instructions += this.commentPeriodForm.get('descriptionText').value;
 
+    let docIdArray = [];
+    this.storageService.state.selectedDocumentsForCP.data.forEach(element => {
+      docIdArray.push(element._id);
+    });
+    this.commentPeriod.relatedDocuments = docIdArray;
+
     // Check milestones
     this.commentPeriod.milestone = this.commentPeriodForm.get('milestoneSel').value;
 
@@ -174,8 +210,6 @@ export class AddEditCommentPeriodComponent implements OnInit {
         return;
       }
     });
-
-    this.commentPeriod.project = this.projectId;
 
     // Submit
     if (this.isEditing) {
@@ -210,10 +244,12 @@ export class AddEditCommentPeriodComponent implements OnInit {
           }
         );
     }
+    this.storageService.state.selectedDocumentsForCP = null;
   }
 
   public onCancel() {
     if (confirm(`Are you sure you want to discard all changes?`)) {
+      this.storageService.state.selectedDocumentsForCP = null;
       if (this.isEditing) {
         this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
       } else {
@@ -222,7 +258,16 @@ export class AddEditCommentPeriodComponent implements OnInit {
     }
   }
 
-   public register() {
+  public addDocuments() {
+    this.storageService.state.addEditCPForm = { type: 'addEditCPForm', data: this.commentPeriodForm };
+    if (this.isEditing) {
+      this.router.navigate(['/p', this.commentPeriod.project, 'cp', this.commentPeriod._id, 'edit', 'add-documents']);
+    } else {
+      this.router.navigate(['/p', this.projectId, 'comment-periods', 'add', 'add-documents']);
+    }
+  }
+
+  public register() {
     console.log('Successful registration');
     console.log(this.commentPeriodForm);
   }
@@ -267,6 +312,10 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
   public updateDescriptionPreview() {
     this.descriptionPreview = this.commentPeriodForm.get('descriptionText').value;
+  }
+
+  public removeSelectedDoc(doc) {
+    this.storageService.state.selectedDocumentsForCP.data = this.storageService.state.selectedDocumentsForCP.data.filter(obj => obj._id !== doc._id);
   }
 
   public openSnackBar(message: string, action: string) {

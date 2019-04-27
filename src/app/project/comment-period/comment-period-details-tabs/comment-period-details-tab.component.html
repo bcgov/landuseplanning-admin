@@ -71,6 +71,17 @@
             <p>{{commentPeriod.milestone | listConverter}}</p>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>
+                RELATED DOCUMENT(S):
+            </h3>
+            <p *ngFor="let doc of commentPeriodDocs">
+                {{doc.displayName}}
+                <!-- TODO: We need to make these clickable. -->
+            </p>
+        </div>
+    </div>
 </section>
 
 <section id="comments-received-details">

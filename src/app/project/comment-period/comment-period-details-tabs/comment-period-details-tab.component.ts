@@ -7,6 +7,7 @@ import { CommentPeriod } from 'app/models/commentPeriod';
 
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { StorageService } from 'app/services/storage.service';
+import { DocumentService } from 'app/services/document.service';
 
 @Component({
   selector: 'app-comment-period-details-tab',
@@ -24,9 +25,11 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
   public publishAction: string;
   public projectId: string;
   public loading = true;
+  public commentPeriodDocs;
 
   constructor(
     private commentPeriodService: CommentPeriodService,
+    private documentService: DocumentService,
     private router: Router,
     private snackBar: MatSnackBar,
     private storageService: StorageService
@@ -34,7 +37,16 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
 
   ngOnInit() {
     this.setPublishStatus();
-    this.projectId = this.storageService.state.currentProject._id;
+    this.projectId = this.storageService.state.currentProject.data._id;
+
+    this.documentService.getByMultiId(this.commentPeriod.relatedDocuments)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        data => {
+          this.commentPeriodDocs = data;
+        }
+      );
+
     this.loading = false;
   }
 

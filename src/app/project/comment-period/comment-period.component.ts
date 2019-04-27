@@ -27,7 +27,9 @@ export class CommentPeriodComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.projectId = this.storageService.state.currentProject._id;
+    this.projectId = this.storageService.state.currentProject.data._id;
+    this.storageService.state.selectedDocumentsForCP = null;
+    this.storageService.state.addEditCPForm = null;
 
     // get data from route resolver
     if (this.storageService.state.currentCommentPeriod == null) {
@@ -37,7 +39,7 @@ export class CommentPeriodComponent implements OnInit {
           (data) => {
             if (data.commentPeriod) {
               this.commentPeriod = data.commentPeriod;
-              this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
+              this.storageService.state.selectedDocumentsForCP = null;
             } else {
               alert('Uh-oh, couldn\'t load comment period ');
               // comment period not found --> navigate back to search
