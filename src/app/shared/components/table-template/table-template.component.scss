@@ -1,1 +1,30 @@
+.table {
+	border: none;
 
+	thead th{
+    background-color: #e8eff5;
+    padding: .7rem 0.5rem .85rem;
+    border: none;
+  }
+
+  td {
+    border: none;
+  }
+
+  tr {
+    border: none;
+  }
+
+  tbody td {
+    padding: 0.25rem 0.5rem;
+  }
+
+	tr td:first-child,
+	tr th:first-child {
+		padding-left: 1rem;
+	}
+
+	thead {
+		border-bottom: none;
+	}
+}

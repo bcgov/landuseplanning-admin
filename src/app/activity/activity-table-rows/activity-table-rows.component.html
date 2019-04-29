@@ -6,7 +6,7 @@
     <td (click)="goToItem(entry)" data-label="Date Added" scope="row" class="col-2">{{entry.dateAdded | date: 'longDate'}}</td>
     <td (click)="goToItem(entry)" data-label="Priority" scope="row" class="col-1">{{entry.priority}}</td>
     <td (click)="goToItem(entry)" data-label="Status" scope="row" class="col-1">{{entry.active}}</td>
-    <!-- <td>
-            <button type="button" (click)="deleteVC(entry)" class="btn btn-danger">Delete</button>
-        </td> -->
+    <td>
+        <button type="button" (click)="deleteVC(entry)" class="btn btn-danger">Delete</button>
+    </td>
 </tr>

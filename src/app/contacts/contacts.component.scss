@@ -20,21 +20,6 @@
 }
 
 .project-table {
-  tbody {
-    tr {
-      background: transparent;
-
-      .accordion__collapse-header {
-        background: $table-row-bg;
-      }
-
-      &:nth-child(even) {
-        .accordion__collapse-header {
-          background: $table-alt-row-bg;
-        }
-      }
-    }
-  }
 
   .accordion__collapse-header {
     background: transparent;

@@ -57,14 +57,19 @@
 
   tbody {
     td {
-      padding: 0.25rem 0.5rem;
+      padding: 0.6rem 0.5rem;
       vertical-align: top;
+      border-top: none;
     }
   }
 
   + pagination-template {
     margin-top: 1rem;
   }
+}
+
+.table tr:nth-child(even) {
+  background: #f4f8fb;
 }
 
 th {
@@ -149,7 +154,6 @@ th {
   }
 
   .table tr {
-    border-bottom: 3px solid #ddd;
     display: block;
     margin-bottom: .625em;
     margin-bottom: 20px;
@@ -187,4 +191,8 @@ th {
     border-color: #fff;
   }
 
+}
+
+.table td {
+  overflow: hidden;
 }

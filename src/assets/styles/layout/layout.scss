@@ -1,5 +1,6 @@
 html, body {
   min-height: 100%;
+  font-family: 'Noto Sans', sans-serif;
 }
 
 app-root {
@@ -167,7 +168,7 @@ main {
 
     ol {
       flex: 100%;
-      margin: 10px;
+      margin-bottom: 0;
     }
   }
 
@@ -180,7 +181,7 @@ main {
 
   .btn {
     padding: 0.74rem 0.75rem;
-    width: 188px;
+    width: 202px;
 
     i {
       margin-top: -7px;
@@ -318,8 +319,4 @@ hr {
 
 .breadcrumb-item.active {
   color: #036;
-}
-
-.table td {
-  overflow: hidden;
 }

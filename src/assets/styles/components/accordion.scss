@@ -4,16 +4,6 @@
   &__collapse-item {
     margin-bottom: 0.25rem;
 
-    .accordion__collapse-header {
-      background: $table-row-bg;
-    }
-
-    &:nth-child(even) {
-      .accordion__collapse-header {
-        background: $table-alt-row-bg;
-      }
-    }
-  
     &:last-child {
       margin-bottom: 0;
     }
@@ -38,26 +28,26 @@
         i {
           margin-top: -2px;
         }
-    
+
         &:active,
         &:focus,
         &:hover {
           text-decoration: none;
         }
-    
+
         .close-icon {
           display: inline-block;
         }
-    
+
         .open-icon {
           display: none;
         }
-    
+
         &.collapsed {
           .close-icon {
             display: none;
           }
-          
+
           .open-icon {
             display: inline-block;
           }
