@@ -215,3 +215,71 @@ $cl-arrow-font-color: #fff;
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
 }
+
+.table {
+  border: none;
+
+  thead th{
+    background-color: #eef3f7;
+    padding: .75rem 0.5rem .5rem;
+    border: none;
+  }
+  th,
+  td {
+    border: none;
+    &.type {
+      max-width: 24%;
+    }
+    &.date {
+      max-width: 10%;
+    }
+    &.priority {
+      text-align: center;
+    }
+    &.delete {
+      .btn {
+        margin: 0;
+        padding: 0 1rem 0 0;
+        text-align: center;
+        line-height: 1;
+      }
+    }
+  }
+
+  tbody {
+    td {
+      padding: 0.25rem 0.5rem;
+    }
+    tr {
+      padding: 2px 0;
+    }
+  }
+
+  tr td:first-child,
+  tr th:first-child {
+    padding-left: 1rem;
+    max-width: 4.5%;
+  }
+
+  tr td:last-child,
+  tr th:last-child {
+    max-width: 4.5%;
+  }
+
+  thead {
+    border-bottom: none;
+    .pin i {
+      top: -8px;
+    }
+  }
+}
+
+.active-flag {
+  background: #5BB75C;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px 4px;
+  border-radius: 5px;
+  font-size: .8rem;
+}

@@ -10,12 +10,85 @@
               id="button-d"><i class="material-icons">add</i>Add Activity</button>
 	  </div>
 	</div>
-  <app-table-template
+<!--   <app-table-template
       [columns]="tableColumns"
       [data]="tableData"
       (onColumnSort)='setColumnSort($event)'
       (onPageNumUpdate)='getPaginated($event, null, null)'>
-  </app-table-template>
+  </app-table-template> -->
+  <table class="table">
+	  <thead class="thead-light">
+	    <tr>
+	      <th class="col-1 pin">
+	      	<i class="material-icons"
+	           aria-hidden="true">star</i>
+	           <i class="sort"
+	           aria-hidden="true"></i>
+	      </th>
+	      <th class="col-3">
+	      	Headline
+	      	<i class="sort"
+	           aria-hidden="true"></i>
+	      </th>
+	      <th class="col-2">
+	      	Project
+	      	<i class="sort"
+	           aria-hidden="true"></i>
+	      </th>
+	      <th class="col-2 type">
+	      	Type
+	      	<i class="sort"
+	           aria-hidden="true"></i>
+	      </th>
+	      <th class="col-2 date">
+	      	Date Added
+	      	<i class="sort"
+	           aria-hidden="true"></i>
+	      </th>
+	      <th class="col-1 priority">
+	      	Priority
+	      	<i class="sort"
+	           aria-hidden="true"></i>
+	      </th>
+	      <th class="col-1 ">
+	      	Status
+	      	<i class="sort"
+	           aria-hidden="true"></i>
+	      </th>
+	      <th class="col-1"></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<tr>
+	  		<td class="pin" class="col-1"><i class="material-icons">star</i></td>
+				<td data-label="Headline" scope="row" class="col-3">Public Comment and Open House</td>
+		    <td data-label="Project" scope="row" class="col-2">Kemess Underground</td>
+		    <td data-label="Type" scope="row" class="col-2 type">Public Comment Period</td>
+		    <td data-label="Date Added" scope="row" class="col-2 date">Feb 13, 2019</td>
+		    <td data-label="Priority" scope="row" class="col-1 priority">2</td>
+		    <td data-label="Status" scope="row" class="col-1">
+		        <span class="active-flag">Active</span>
+		    </td>
+		    <td class="delete col-1">
+		        <button type="button" (click)="deleteVC(entry)" class="btn"><i class="material-icons">delete</i></button>
+		    </td>
+	  	</tr>
+	  	<tr>
+	  		<td class="pin" class="col-1"><i class="material-icons">star</i></td>
+				<td data-label="Headline" scope="row" class="col-3">Public Comment and Open House</td>
+		    <td data-label="Project" scope="row" class="col-2">Kemess Underground</td>
+		    <td data-label="Type" scope="row" class="col-2 type">Public Comment Period</td>
+		    <td data-label="Date Added" scope="row" class="col-2 date">Feb 13, 2019</td>
+		    <td data-label="Priority" scope="row" class="col-1 priority">2</td>
+		    <td data-label="Status" scope="row" class="col-1">
+		        <span class="active-flag">Active</span>
+		    </td>
+		    <td class="delete col-1">
+		        <button type="button" (click)="deleteVC(entry)" class="btn"><i class="material-icons">delete</i></button>
+		    </td>
+	  	</tr>
+	  </tbody>
+	</table>
   <div *ngIf="totalCount == 0">
     No Activities/Updates.
   </div>

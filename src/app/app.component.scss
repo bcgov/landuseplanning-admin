@@ -9,6 +9,7 @@
   right: 0;
   bottom: 0;
   left: 0;
+  font-family: 'Noto Sans', sans-serif;
 }
 
 app-header {
@@ -29,6 +30,7 @@ app-toggle-button {
   background: #fff;
   position: relative;
   overflow-y: auto;
+  font-family: 'Noto Sans', sans-serif;
   @media screen and (min-width: 768px) {
     margin-top: 68px;
   }
