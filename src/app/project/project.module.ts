@@ -41,6 +41,8 @@ import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { GetValuedComponentsComponent } from './comment-period/review-comment/get-valued-components/get-valued-components.component';
 import { GetValuedComponentTableRowsComponent } from './comment-period/review-comment/get-valued-components/get-valued-component-table-rows/get-valued-component-table-rows.component';
+import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
+import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
 
 @NgModule({
   imports: [
@@ -55,8 +57,11 @@ import { GetValuedComponentTableRowsComponent } from './comment-period/review-co
     SharedModule
   ],
   declarations: [
+    AddDocumentComponent,
+    AddDocumentTableRowsComponent,
     AddEditCommentPeriodComponent,
     AddLabelComponent,
+    AddVcComponent,
     CommentPeriodComponent,
     CommentPeriodDetailsTabComponent,
     CommentPeriodsComponent,
@@ -66,6 +71,8 @@ import { GetValuedComponentTableRowsComponent } from './comment-period/review-co
     DocumentDetailComponent,
     DocumentEditComponent,
     DocumentTableRowsComponent,
+    GetValuedComponentsComponent,
+    GetValuedComponentTableRowsComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
     ProjectContactsComponent,
@@ -75,15 +82,13 @@ import { GetValuedComponentTableRowsComponent } from './comment-period/review-co
     ReviewCommentComponent,
     ReviewCommentsTabComponent,
     ReviewCommentsTabTableRowsComponent,
+    TopicTableRowsComponent,
     UploadComponent,
     ValuedComponentsComponent,
-    ValuedComponentTableRowsComponent,
-    AddVcComponent,
-    TopicTableRowsComponent,
-    GetValuedComponentsComponent,
-    GetValuedComponentTableRowsComponent
+    ValuedComponentTableRowsComponent
   ],
   entryComponents: [
+    AddDocumentTableRowsComponent,
     CommentPeriodComponent,
     CommentPeriodsComponent,
     CommentPeriodsTableRowsComponent,

@@ -1,45 +1,36 @@
-<div class="action-container">
+<nav class="action-container" aria-label="breadcrumb">
     <div *ngIf="!isEditing">
-        <div class="action-container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a [routerLink]="['/projects']">All Projects</a>
-                </li>
-                <!-- ADD PROPERTY projectID project.name -->
-                <!--       <li class="breadcrumb-item" >
-        <a [routerLink]="['/p', projectId]"> {{project.name}}
-        </a>
-      </li> -->
-                <li class="breadcrumb-item" aria-current="page">
-                    <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    Add
-                </li>
-            </ol>
-        </div>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a [routerLink]="['/projects']">All Projects</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">
+                <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Add
+            </li>
+        </ol>
     </div>
     <div *ngIf="isEditing">
-        <div class="action-container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item" aria-current="page">
-                    <a [routerLink]="['/p', projectId]">Project Details</a>
-                </li>
-                <li class="breadcrumb-item" aria-current="page">
-                    <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
-                </li>
-                <li class="breadcrumb-item" aria-current="page">
-                    <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id, 'comment-period-details']">{{commentPeriod.dateStarted | date: 'LLLL'}}
-                        -
-                        {{commentPeriod.dateCompleted | date}}</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    Edit
-                </li>
-            </ol>
-        </div>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" aria-current="page">
+                <a [routerLink]="['/p', projectId]">Project Details</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">
+                <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">
+                <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id, 'comment-period-details']">{{commentPeriod.dateStarted | date: 'LLLL'}}
+                    -
+                    {{commentPeriod.dateCompleted | date}}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Edit
+            </li>
+        </ol>
     </div>
-</div>
+</nav>
 
 <main class="container-fluid-padding">
     <div class="spinner-container" *ngIf="loading">
@@ -110,6 +101,24 @@
             </div>
         </div>
 
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="documentsSel">Related Documents</label>
+                <div *ngIf="storageService.state.selectedDocumentsForCP">
+                    <p *ngFor="let doc of storageService.state.selectedDocumentsForCP.data">
+                        {{doc.displayName}}&nbsp;
+                        <span>
+                            <i id="removeDoc" (click)="removeSelectedDoc(doc)" class="material-icons">
+                                clear
+                            </i>
+                        </span>
+                    </p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" type="button" (click)="addDocuments()">Add Documents</button>
+                </div>
+            </div>
+        </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="milestoneSel">Content for Comment [Milestones]*</label>

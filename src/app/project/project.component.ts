@@ -32,20 +32,20 @@ export class ProjectComponent implements OnInit {
   ngOnInit() {
     // get data from route resolver
     this.route.data
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(
-      (data: { project: Project }) => {
-        if (data.project) {
-          this.project = data.project;
-          this.storageService.state = { type: 'currentProject', data: this.project };
-          this.loading = false;
-        } else {
-          alert('Uh-oh, couldn\'t load project');
-          // project not found --> navigate back to search
-          this.router.navigate(['/search']);
-          this.loading = false;
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (data: { project: Project }) => {
+          if (data.project) {
+            this.project = data.project;
+            this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
+            this.loading = false;
+          } else {
+            alert('Uh-oh, couldn\'t load project');
+            // project not found --> navigate back to search
+            this.router.navigate(['/search']);
+            this.loading = false;
+          }
         }
-      }
-    );
+      );
   }
 }

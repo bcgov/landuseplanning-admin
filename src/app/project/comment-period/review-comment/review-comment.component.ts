@@ -78,7 +78,7 @@ export class ReviewCommentComponent implements OnInit {
         this.loading = false;
       });
 
-    this.projectId = this.storageService.state.currentProject._id;
+    this.projectId = this.storageService.state.currentProject.data._id;
 
   }
 

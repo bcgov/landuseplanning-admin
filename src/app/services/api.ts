@@ -573,7 +573,25 @@ export class ApiService {
     const fields = [
       '_id',
       'eaoStatus',
-      'internalOriginalName'
+      'internalOriginalName',
+      'documentFileName',
+      'labels',
+      'internalOriginalName',
+      'displayName',
+      'documentType',
+      'datePosted',
+      'dateUploaded',
+      'dateReceived',
+      'documentFileSize',
+      'internalURL',
+      'internalMime',
+      'checkbox',
+      'project',
+      'type',
+      'documentAuthor',
+      'milestone',
+      'description',
+      'isPublished'
     ];
     const queryString = `document?docIds=${this.buildValues(ids)}&fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
@@ -754,6 +772,7 @@ export class ApiService {
       queryString += `&query` + queryModifier;
     }
     queryString += `&fields=${this.buildValues(fields)}`;
+    console.log('here is the query', queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 

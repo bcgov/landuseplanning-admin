@@ -10,6 +10,7 @@ import { CommentPeriodsTableRowsComponent } from 'app/project/comment-periods/co
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-comment-periods',
@@ -64,10 +65,14 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     private router: Router,
     private _changeDetectionRef: ChangeDetectorRef,
     private commentPeriodService: CommentPeriodService,
+    private storageService: StorageService,
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
   ngOnInit() {
+    this.storageService.state.selectedDocumentsForCP = null;
+    this.storageService.state.addEditCPForm = null;
+
     this.route.parent.params.subscribe(params => {
       this.projectId = params.projId;
     });

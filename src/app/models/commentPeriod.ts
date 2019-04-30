@@ -34,7 +34,7 @@ export class CommentPeriod {
   publishedPercent: Number;
   rangeOption: String;
   rangeType: String;
-  relatedDocuments: String;
+  relatedDocuments: Array<String>;
   resolvedPercent: Number;
   updatedBy: String;
   userCan: String;
