@@ -1,51 +1,52 @@
-<nav class="action-container">
-  <ol class="breadcrumb" *ngIf="commentPeriod">
-    <li class="breadcrumb-item" aria-current="page">
-      <a [routerLink]="['/p', projectId]">Project Details</a>
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/projects']">All Projects</a>
     </li>
     <li class="breadcrumb-item" aria-current="page">
       <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
     </li>
     <li class="breadcrumb-item" aria-current="page">
-      <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id]">
-        {{commentPeriod.dateStarted | date: 'MMMM d'}} - {{commentPeriod.dateCompleted | date}}
-      </a>
+      <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id]">{{commentPeriod.dateStarted | date: 'MMMM d'}} -
+        {{commentPeriod.dateCompleted | date}}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-      Comment
+      Add Comment
     </li>
   </ol>
   <div class="btn-container">
     <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
     &nbsp;
-    <button [disabled]="!commentReviewForm.valid" class="btn btn-primary" type="submit"
+    <button [disabled]="!addCommentForm.valid" class="btn btn-primary" type="submit"
       (click)="onSubmit()">Save</button>
   </div>
 </nav>
+
+
 <main class="container-fluid-padding">
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>
-  <form *ngIf="commentReviewForm" [formGroup]="commentReviewForm" (ngSubmit)="register()">
+  <form *ngIf="addCommentForm" [formGroup]="addCommentForm" (ngSubmit)="register()">
     <div class="form-row">
       <div class="form-group col-md-8">
         <div class="btn-group btn-group-toggle">
           <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary" [class.active]="commentReviewForm.get('isPublished').value">
+            <label class="btn btn-primary" [class.active]="addCommentForm.get('isPublished').value">
               <input type="checkbox" (click)="setEaoStatus('Published')" autocomplete="off"
                 formControlName="isPublished">Publish
             </label>
           </div>
           &nbsp;
           <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary" [class.active]="commentReviewForm.get('isDeferred').value">
+            <label class="btn btn-primary" [class.active]="addCommentForm.get('isDeferred').value">
               <input type="checkbox" (click)="setEaoStatus('Deferred')" autocomplete="off"
                 formControlName="isDeferred">Defer
             </label>
           </div>
           &nbsp;
           <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary" [class.active]="commentReviewForm.get('isRejected').value">
+            <label class="btn btn-primary" [class.active]="addCommentForm.get('isRejected').value">
               <input type="checkbox" (click)="setEaoStatus('Rejected')" autocomplete="off"
                 formControlName="isRejected">Reject
             </label>
@@ -55,35 +56,38 @@
     </div>
     <div class="row">
       <div class="col-md-8">
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <b>
-              # {{comment.commentId}}
-            </b>
-          </div>
-          <div class="col-md-6 text-right">
-            {{comment.dateAdded | date: 'medium'}}
+        <div class="form-row mb-3">
+          <div class="form-group col-md-12">
+            <label for="author"><b>Author*</b></label>
+            <textarea required id="author" class="form-control" rows="1" name="authorText"
+              formControlName="authorText"></textarea>
           </div>
         </div>
-        <div class="row mb-3">
-          <div class="col-md-12">
-            <b>
-              {{comment.author}}
-            </b>
-            <br>
-            {{comment.location}}
+        <div class="form-row mb-3">
+          <div class="form-group col-md-12">
+            <label for="location"><b>Location*</b></label>
+            <textarea required id="location" class="form-control" rows="1" name="locationText"
+              formControlName="locationText"></textarea>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            {{comment.comment}}
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="comment"><b>Comment*</b></label>
+            <textarea required id="comment" class="form-control" rows="3" name="commentText"
+              formControlName="commentText"></textarea>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="form-row">
           <div class="form-group col-md-12">
-            <label for="proponentResponse"><b>Attachments</b></label>
+            <label for="isAnonymousCheckBox"><b>Is Anonymous</b></label>&nbsp;
+            <input id="isAnonymousCheckBox" type="checkbox" name="isAnonymous" formControlName="isAnonymous">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="attachments"><b>Attachments</b></label>
             <div *ngIf="documents.length > 0">
               <div class="card" *ngFor="let document of documents">
                 <div class="card-body">
@@ -115,28 +119,52 @@
           <div class="form-group col-md-12">
             <label for="proponentResponse"><b>Proponent Response</b></label>
             <textarea id="proponentResponse" class="form-control" rows="3" name="proponentResponseText"
-              formControlName="proponentResponseText"></textarea>
+            formControlName="proponentResponseText"></textarea>
           </div>
         </div>
-        <div class="form-row" *ngIf="commentReviewForm.get('isPublished').value">
+        <div class="form-row" *ngIf="addCommentForm.get('isPublished').value">
           <div class="form-group col-md-12">
             <label for="publishedNotes"><b>Notes</b></label>
             <textarea id="publishedNotes" class="form-control" rows="3" name="publishedNotesText"
               formControlName="publishedNotesText"></textarea>
           </div>
         </div>
-        <div class="form-row" *ngIf="commentReviewForm.get('isDeferred').value">
+        <div class="form-row" *ngIf="addCommentForm.get('isDeferred').value">
           <div class="form-group col-md-12">
             <label for="deferralNotes"><b>Deferral Note*</b></label>
             <textarea id="deferralNotes" class="form-control" rows="3" name="deferralNotesText"
               formControlName="deferralNotesText"></textarea>
           </div>
         </div>
-        <div class="form-row" *ngIf="commentReviewForm.get('isRejected').value">
+        <div class="form-row" *ngIf="addCommentForm.get('isRejected').value">
           <div class="form-group col-md-12">
             <label for="rejectionNotes"><b>Rejection Note*</b></label>
             <textarea id="rejectionNotes" class="form-control" rows="3" name="rejectionNotesText"
               formControlName="rejectionNotesText"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="inputAddDate"><b>Date Added*</b></label>
+        <div class="input-group">
+          <input required id="inputAddDate" container='body' type="text" class="form-control"
+            placeholder="Select an add date" name="dateAdded" formControlName="dateAdded" ngbDatepicker
+            #addDatePicker="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="addDatePicker.toggle()" type="button"></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="inputPostDate"><b>Date Posted*</b></label>
+        <div class="input-group">
+          <input required id="inputPostDate" container='body' type="text" class="form-control"
+            placeholder="Select a post date" name="datePosted" formControlName="datePosted" ngbDatepicker
+            #postDatePicker="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="postDatePicker.toggle()" type="button"></button>
           </div>
         </div>
       </div>
