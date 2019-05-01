@@ -43,6 +43,7 @@ import { GetValuedComponentsComponent } from './comment-period/review-comment/ge
 import { GetValuedComponentTableRowsComponent } from './comment-period/review-comment/get-valued-components/get-valued-component-table-rows/get-valued-component-table-rows.component';
 import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
 import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
+import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
 
 @NgModule({
   imports: [
@@ -57,6 +58,7 @@ import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-commen
     SharedModule
   ],
   declarations: [
+    AddCommentComponent,
     AddDocumentComponent,
     AddDocumentTableRowsComponent,
     AddEditCommentPeriodComponent,

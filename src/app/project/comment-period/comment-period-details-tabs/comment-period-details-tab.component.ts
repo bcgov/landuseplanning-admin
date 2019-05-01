@@ -115,4 +115,8 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
         );
     }
   }
+
+  public addComment() {
+    this.router.navigate(['/p', this.commentPeriod.project, 'cp', this.commentPeriod._id, 'add-comment']);
+  }
 }

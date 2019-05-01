@@ -88,7 +88,7 @@ export class ActivityComponent implements OnInit {
           } else {
             alert('Uh-oh, couldn\'t load valued components');
             // project not found --> navigate back to search
-            // this.router.navigate(['/search']);
+            this.router.navigate(['/search']);
             this.loading = false;
           }
           this.loading = false;

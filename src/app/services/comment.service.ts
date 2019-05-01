@@ -46,6 +46,11 @@ export class CommentService {
     // })
   }
 
+  add(comment: Comment): Observable<Comment> {
+    return this.api.addComment(comment)
+      .catch(error => this.api.handleError(error));
+  }
+
   save(comment: Comment): Observable<Comment> {
     // make a (deep) copy of the passed-in comment so we don't change it
     const newComment = _.cloneDeep(comment);

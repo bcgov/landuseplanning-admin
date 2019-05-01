@@ -7,6 +7,7 @@ export class Comment {
   comment: string;
   commentId: number;
   dateAdded: Date;
+  datePosted: Date;
   dateUpdated: Date;
   eaoNotes: string;
   eaoStatus: string;
@@ -33,6 +34,7 @@ export class Comment {
     this.author           = obj && obj.author           || null;
     this.commentId        = obj && obj.commentId        || null;
     this.dateAdded        = obj && obj.dateAdded        || null;
+    this.datePosted       = obj && obj.datePosted       || null;
     this.dateUpdated      = obj && obj.dateUpdated      || null;
     this.delete           = obj && obj.delete           || null;
     this.eaoNotes         = obj && obj.eaoNotes         || null;
@@ -57,8 +59,12 @@ export class Comment {
       this.dateAdded = new Date(obj.dateAdded);
     }
 
+    if (obj && obj.datePosted) {
+      this.datePosted = new Date(obj.datePosted);
+    }
+
     if (obj && obj.dateUpdated) {
-      this.dateAdded = new Date(obj.dateUpdated);
+      this.dateUpdated = new Date(obj.dateUpdated);
     }
 
     // replace \\n (JSON format) with newlines
