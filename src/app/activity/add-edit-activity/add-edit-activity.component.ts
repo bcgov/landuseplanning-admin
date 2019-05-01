@@ -54,8 +54,22 @@ export class AddEditActivityComponent implements OnInit {
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
-        this.buildForm(res.activity.data);
-        this.activity = res.activity.data;
+        if (Object.keys(res).length === 0 && res.constructor === Object) {
+          this.buildForm({
+            'headline': '',
+            'content': '',
+            'dateAdded': new Date(),
+            'project': '',
+            'active': '',
+            'priority': '',
+            'type': '',
+            'contentUrl': '',
+            'documentUrl': ''
+          });
+        } else {
+          this.buildForm(res.activity.data);
+          this.activity = res.activity.data;
+        }
         this.loading = false;
       });
 
@@ -112,7 +126,7 @@ export class AddEditActivityComponent implements OnInit {
       let activity = new RecentActivity({
         headline: this.myForm.controls.headline.value,
         content: this.myForm.controls.content.value,
-        dateAdded: this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateAdded').value),
+        dateAdded: new Date(),
         project: this.myForm.get('project').value,
         priority: this.myForm.get('priority').value,
         type: this.myForm.get('type').value,
