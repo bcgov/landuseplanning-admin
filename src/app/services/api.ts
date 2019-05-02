@@ -518,6 +518,7 @@ export class ApiService {
       'comment',
       'commentId',
       'dateAdded',
+      'datePosted',
       'dateUpdated',
       'documents',
       'eaoNotes',
