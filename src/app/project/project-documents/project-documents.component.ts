@@ -187,7 +187,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   }
 
   deleteDocument() {
-    this.loading = true;
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Delete Document',
@@ -199,6 +198,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .subscribe(
         isConfirmed => {
           if (isConfirmed) {
+            this.loading = true;
             // Delete the Document(s)
             let itemsToDelete = [];
             this.documentTableData.data.map((item) => {
