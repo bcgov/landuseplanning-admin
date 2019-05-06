@@ -30,6 +30,7 @@ export class CommentPeriodComponent implements OnInit {
     this.projectId = this.storageService.state.currentProject.data._id;
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
+    this.storageService.state.currentVCs = null;
 
     // get data from route resolver
     if (this.storageService.state.currentCommentPeriod == null) {

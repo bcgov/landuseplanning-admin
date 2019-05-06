@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { Subject } from 'rxjs';
+
+import { ApiService } from 'app/services/api';
+import { CommentService } from 'app/services/comment.service';
+import { DocumentService } from 'app/services/document.service';
 import { StorageService } from 'app/services/storage.service';
 
 import { Comment } from 'app/models/comment';
+import { CommentPeriod } from 'app/models/commentPeriod';
 import { Document } from 'app/models/document';
 
-import { CommentPeriod } from 'app/models/commentPeriod';
-import { FormGroup, FormControl } from '@angular/forms';
-import { CommentService } from 'app/services/comment.service';
-import { MatSnackBar } from '@angular/material';
-import { DocumentService } from 'app/services/document.service';
-import { ApiService } from 'app/services/api';
+import { Utils } from 'app/shared/utils/utils';
 
 @Component({
   selector: 'app-review-comment',
@@ -33,12 +35,13 @@ export class ReviewCommentComponent implements OnInit {
 
   constructor(
     private api: ApiService,
+    private commentService: CommentService,
+    private documentService: DocumentService,
     private route: ActivatedRoute,
     private router: Router,
-    private commentService: CommentService,
     private snackBar: MatSnackBar,
     private storageService: StorageService,
-    private documentService: DocumentService
+    private utils: Utils
   ) { }
 
   ngOnInit() {
@@ -84,25 +87,39 @@ export class ReviewCommentComponent implements OnInit {
 
   private initForm() {
     this.commentReviewForm = new FormGroup({
+      'dateAdded': new FormControl(),
+      'datePosted': new FormControl(),
       'deferralNotesText': new FormControl(),
+      'isAnonymous': new FormControl(),
       'isDeferred': new FormControl(),
       'isPublished': new FormControl(),
       'isRejected': new FormControl(),
       'proponentResponseText': new FormControl(),
-      'rejectionNotesText': new FormControl(),
-      'publishedNotesText': new FormControl()
+      'publishedNotesText': new FormControl(),
+      'rejectionNotesText': new FormControl()
     });
 
     this.setEaoStatus(this.comment.eaoStatus);
 
-    this.commentReviewForm.controls.proponentResponseText.setValue(this.comment.proponentNotes);
+    console.log(this.comment.dateAdded);
+
+    this.commentReviewForm.controls.dateAdded.setValue(this.utils.convertJSDateToNGBDate(new Date(this.comment.dateAdded)));
+    this.commentReviewForm.controls.datePosted.setValue(this.utils.convertJSDateToNGBDate(new Date(this.comment.datePosted)));
     this.commentReviewForm.controls.deferralNotesText.setValue(this.comment.eaoNotes);
-    this.commentReviewForm.controls.rejectionNotesText.setValue(this.comment.rejectedNotes);
+    this.commentReviewForm.controls.isAnonymous.setValue(this.comment.isAnonymous);
+    this.commentReviewForm.controls.proponentResponseText.setValue(this.comment.proponentNotes);
     this.commentReviewForm.controls.publishedNotesText.setValue(this.comment.publishedNotes);
+    this.commentReviewForm.controls.rejectionNotesText.setValue(this.comment.rejectedNotes);
   }
 
   public onSubmit() {
     this.loading = true;
+
+    this.comment.isAnonymous = this.commentReviewForm.get('isAnonymous').value;
+
+    this.comment.dateAdded = this.utils.convertFormGroupNGBDateToJSDate(this.commentReviewForm.get('dateAdded').value);
+    this.comment.datePosted = this.utils.convertFormGroupNGBDateToJSDate(this.commentReviewForm.get('datePosted').value);
+
     // TODO: Validation
     if (this.commentReviewForm.get('isPublished').value) {
       this.comment.publishedNotes = this.commentReviewForm.get('publishedNotesText').value;
@@ -150,8 +167,9 @@ export class ReviewCommentComponent implements OnInit {
           alert('Uh-oh, couldn\'t edit comment period');
         },
         () => { // onCompleted
-          this.loading = false;
           this.openSnackBar('This comment period was created successfuly.', 'Close');
+          this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
+          this.loading = false;
         }
       );
   }
