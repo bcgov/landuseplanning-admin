@@ -76,12 +76,23 @@
           </div>
           <div class="app-details" *ngIf="result._schemaName === 'Document'">
             <div class="card">
-              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document<span *ngIf="result.project"> ({{result.project.name}}) <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary float-right">View Project</a></span></h2>
+              <h5 class="card-header">
+                <i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document<span *ngIf="result.project"> ({{result.project.name}})
+                  <button class="btn btn-primary float-right btn-sm" (click)="api.openDocument(result._id)">Open</button>
+                  <button class="btn btn-primary float-right btn-sm" (click)="api.downloadDocument(result._id)">Download</button>
+                  <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary float-right btn-sm">View Project</a>
+                </span>
+              </h5>
               <div class="card-body">
-                  <h5 class="card-title">{{result.displayName}}</h5>
-                <p class="card-text">{{result.datePosted | date:'medium'}}</p>
-                  <button class="dropdown-item" (click)="api.openDocument(result._id)">Open</button>
-                  <button class="dropdown-item" (click)="api.downloadDocument(result._id)">Download</button>
+                <p class="card-title">{{result.displayName}}</p>
+                <p class="card-text">Date: {{result.datePosted | date:'medium'}}</p>
+                <p *ngIf="result.milestone" class="card-text">Milestone: {{result.milestone | listConverter}}</p>
+                <p *ngIf="result.description" class="card-text">Description: {{result.description}}</p>
+                <div class="label-pair">
+                  <div *ngFor="let label of result.labels">
+                      <button class="mr-2 badge badge-pill badge-info">{{label}}</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -103,14 +114,25 @@
       <div *ngIf="this.terms.dataset === 'Document'">
         <div class="app-details" *ngFor="let result of results | paginate: { id: 'table-template-pagination', itemsPerPage: pageSize, currentPage: currentPage, totalItems: count }">
           <div class="card">
-              <h2 class="card-header"><i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document<span *ngIf="result.project"> ({{result.project.name}}) <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary float-right">View Project</a></span></h2>
-            <div class="card-body">
-              <h5 class="card-title">{{result.displayName}}</h5>
-              <p class="card-text">{{result.datePosted | date:'medium'}}</p>
-              <button class="dropdown-item" (click)="api.openDocument(result._id)">Open</button>
-              <button class="dropdown-item" (click)="api.downloadDocument(result._id)">Download</button>
+              <h5 class="card-header">
+                <i class="material-icons">picture_as_pdf</i>&nbsp;&nbsp;&nbsp;Document<span *ngIf="result.project"> ({{result.project.name}})
+                  <button class="btn btn-primary float-right btn-sm" (click)="api.openDocument(result._id)">Open</button>
+                  <button class="btn btn-primary float-right btn-sm" (click)="api.downloadDocument(result._id)">Download</button>
+                  <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary float-right btn-sm">View Project</a>
+                </span>
+              </h5>
+              <div class="card-body">
+                <p class="card-title">{{result.displayName}}</p>
+                <p class="card-text">Date: {{result.datePosted | date:'medium'}}</p>
+                <p *ngIf="result.milestone" class="card-text">Milestone: {{result.milestone | listConverter}}</p>
+                <p *ngIf="result.description" class="card-text">Description: {{result.description}}</p>
+                <div class="label-pair">
+                  <div *ngFor="let label of result.labels">
+                      <button class="mr-2 badge badge-pill badge-info">{{label}}</button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
         </div>
       </div>
       <div *ngIf="this.terms.dataset === 'Project'">
