@@ -115,7 +115,6 @@ export class AddEditCommentPeriodComponent implements OnInit {
       this.commentPeriodForm = this.storageService.state.addEditCPForm.data;
     }
 
-
     this.loading = false;
   }
 
@@ -174,6 +173,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
     this.commentPeriod.dateCompleted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('endDate').value);
 
     // Check published state
+    // TODO: This should only be in the API.
     this.commentPeriod.read = ['staff', 'sysadmin'];
     this.commentPeriod.write = ['staff', 'sysadmin'];
     this.commentPeriod.delete = ['staff', 'sysadmin'];
@@ -213,6 +213,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
     // Submit
     if (this.isEditing) {
+      this.commentPeriod.project = this.projectId;
       this.commentPeriodService.save(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
