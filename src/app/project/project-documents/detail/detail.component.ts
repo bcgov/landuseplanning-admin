@@ -14,7 +14,7 @@ import { StorageService } from 'app/services/storage.service';
 export class DocumentDetailComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public document: Document = null;
-  public project: Project = null;
+  public currentProject: Project = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,19 +25,14 @@ export class DocumentDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.parent.data
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe((data: any) => {
-      this.project = data.project;
-      this._changeDetectionRef.detectChanges();
+    this.currentProject = this.storageService.state.currentProject.data;
 
-      this.route.data
+    this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.document = res.document;
         this._changeDetectionRef.detectChanges();
       });
-    });
   }
 
   onEdit() {

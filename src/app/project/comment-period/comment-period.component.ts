@@ -18,7 +18,7 @@ export class CommentPeriodComponent implements OnInit {
 
   public commentPeriod: CommentPeriod;
   public loading: Boolean = true;
-  public projectId: string;
+  public currentProject;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,7 +27,7 @@ export class CommentPeriodComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.projectId = this.storageService.state.currentProject.data._id;
+    this.currentProject = this.storageService.state.currentProject.data;
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
     this.storageService.state.currentVCs = null;

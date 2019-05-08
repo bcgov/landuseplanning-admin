@@ -4,11 +4,14 @@
       <li class="breadcrumb-item">
         <a [routerLink]="['/projects']">All Projects</a>
       </li>
-      <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', currentProjectId, 'comment-periods']">Comment Periods</a>
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
       </li>
       <li class="breadcrumb-item" aria-current="page">
-        <a [routerLink]="['/p', currentProjectId, 'comment-periods', 'add']">Add</a>
+        <a [routerLink]="['/p', currentProject._id, 'comment-periods']">Comment Periods</a>
+      </li>
+      <li class="breadcrumb-item" aria-current="page">
+        <a [routerLink]="['/p', currentProject._id, 'comment-periods', 'add']">Add</a>
       </li>
       <li class="breadcrumb-item active" aria-current="page">
         Add Documents
@@ -17,11 +20,15 @@
   </div>
   <div *ngIf="isEditing">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item" aria-current="page">
-        <a (click)="clearSelectedDocs(['/p', currentProjectId])" [routerLink]="">Project Details</a>
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/projects']">All Projects</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
       </li>
       <li class="breadcrumb-item" aria-current="page">
-        <a (click)="clearSelectedDocs(['/p', currentProjectId, 'comment-periods'])" [routerLink]="">Comment Periods</a>
+        <a (click)="clearSelectedDocs(['/p', currentProject._id, 'comment-periods'])" [routerLink]="">Comment
+          Periods</a>
       </li>
       <li class="breadcrumb-item" aria-current="page">
         <a [routerLink]="['/p', projectId, 'cp', currentCommentPeriod._id, 'comment-period-details']">{{currentCommentPeriod.dateStarted | date: 'LLLL'}}
@@ -29,7 +36,7 @@
           {{currentCommentPeriod .dateCompleted | date}}</a>
       </li>
       <li class="breadcrumb-item" aria-current="page">
-        <a (click)="clearSelectedDocs(['/p', currentProjectId, 'cp', currentCommentPeriod._id, 'edit'])"
+        <a (click)="clearSelectedDocs(['/p', currentProject._id, 'cp', currentCommentPeriod._id, 'edit'])"
           [routerLink]="">Edit</a>
       </li>
       <li class="breadcrumb-item active" aria-current="page">

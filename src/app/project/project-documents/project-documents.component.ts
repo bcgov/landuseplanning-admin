@@ -1,17 +1,21 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
-import { Subject } from 'rxjs';
-import { Document } from 'app/models/document';
-import { DocumentService } from 'app/services/document.service';
-import { StorageService } from 'app/services/storage.service';
-import { ApiService } from 'app/services/api';
-import { SearchService } from 'app/services/search.service';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { PlatformLocation } from '@angular/common';
-import { TableObject } from 'app/shared/components/table-template/table-object';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+
+import { Document } from 'app/models/document';
+import { SearchTerms } from 'app/models/search';
+
+import { ApiService } from 'app/services/api';
+import { DocumentService } from 'app/services/document.service';
+import { SearchService } from 'app/services/search.service';
+import { StorageService } from 'app/services/storage.service';
+
 import { DocumentTableRowsComponent } from './project-document-table-rows/project-document-table-rows.component';
-import { SearchTerms, SearchResults } from 'app/models/search';
+
 import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { TableObject } from 'app/shared/components/table-template/table-object';
 
 @Component({
   selector: 'app-project-documents',
@@ -62,7 +66,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public selectedCount = 0;
   public keywords = '';
 
-  public currentProjectId = '';
+  public currentProject;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,39 +84,35 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     // get data from route resolver
 
     this.route.params
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(params => {
-      this.keywords = params.keywords;
-    });
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(params => {
+        this.keywords = params.keywords;
+      });
 
-    this.route.parent.paramMap
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(paramMap => {
-      this.currentProjectId = paramMap.get('projId');
+    this.currentProject = this.storageService.state.currentProject.data;
 
-      this.route.data
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe((res: any) => {
-          if (res) {
-            if (res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-              this.totalCount = res.documents[0].data.meta[0].searchResultsTotal;
-              this.documents = res.documents[0].data.searchResults;
-            } else {
-              this.totalCount = 0;
-              this.documents = [];
-            }
-            this.loading = false;
-            this.setDocumentRowData();
-            this._changeDetectionRef.detectChanges();
+    this.route.data
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res: any) => {
+        if (res) {
+          if (res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
+            this.totalCount = res.documents[0].data.meta[0].searchResultsTotal;
+            this.documents = res.documents[0].data.searchResults;
           } else {
-            alert('Uh-oh, couldn\'t load valued components');
-            // project not found --> navigate back to search
-            this.router.navigate(['/search']);
-            this.loading = false;
+            this.totalCount = 0;
+            this.documents = [];
           }
+          this.loading = false;
+          this.setDocumentRowData();
+          this._changeDetectionRef.detectChanges();
+        } else {
+          alert('Uh-oh, couldn\'t load valued components');
+          // project not found --> navigate back to search
+          this.router.navigate(['/search']);
+          this.loading = false;
         }
+      }
       );
-    });
   }
 
   public checkChange(event) {
@@ -151,7 +151,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
         this.selectedCount = someSelected ? 0 : this.documentTableData.data.length;
         this._changeDetectionRef.detectChanges();
-      break;
+        break;
       case 'edit':
         let selectedDocs = [];
         this.documentTableData.data.map((item) => {
@@ -165,12 +165,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         if (selectedDocs.length === 1) {
           this.storageService.state.labels = selectedDocs[0].labels;
         }
-        this.router.navigate(['p', this.currentProjectId, 'project-documents', 'edit']);
-      break;
-    case 'delete':
+        this.router.navigate(['p', this.currentProject._id, 'project-documents', 'edit']);
+        break;
+      case 'delete':
         this.deleteDocument();
-      break;
-    case 'download':
+        break;
+      case 'download':
         let promises = [];
         this.documentTableData.data.map((item) => {
           if (item.checkbox === true) {
@@ -180,9 +180,9 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         return Promise.all(promises).then(() => {
           console.log('Download initiated for file(s)');
         });
-      break;
-    case 'copyLink':
-      break;
+        break;
+      case 'copyLink':
+        break;
     }
   }
 
@@ -203,7 +203,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             let itemsToDelete = [];
             this.documentTableData.data.map((item) => {
               if (item.checkbox === true) {
-                itemsToDelete.push( { promise: this.documentService.delete(item).toPromise(), item: item });
+                itemsToDelete.push({ promise: this.documentService.delete(item).toPromise(), item: item });
               }
             });
             this.loading = false;
@@ -239,8 +239,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
 
     console.log('params =', params);
-    console.log('nav:', ['p', this.currentProjectId, 'project-documents', params]);
-    this.router.navigate(['p', this.currentProjectId, 'project-documents', params]);
+    console.log('nav:', ['p', this.currentProject._id, 'project-documents', params]);
+    this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
   }
 
   setDocumentRowData() {
@@ -269,7 +269,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
           totalListItems: this.totalCount,
           sortBy: this.sortBy,
           sortDirection: this.sortDirection
-          }
+        }
       );
     }
   }
@@ -287,7 +287,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         break;
       default:
         return this.selectedCount > 0;
-      break;
+        break;
     }
   }
 
@@ -317,12 +317,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     console.log('pageNumber', pageNumber);
 
     this.searchService.getSearchResults(this.keywords,
-                                        'Document',
-                                        [{ 'name': 'project', 'value': this.currentProjectId }],
-                                        pageNumber,
-                                        this.pageSize,
-                                        sorting,
-                                        '[documentSource]=PROJECT')
+      'Document',
+      [{ 'name': 'project', 'value': this.currentProject._id }],
+      pageNumber,
+      this.pageSize,
+      sorting,
+      '[documentSource]=PROJECT')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.currentPage = pageNumber;

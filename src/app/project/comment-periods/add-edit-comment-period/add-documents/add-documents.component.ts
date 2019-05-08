@@ -1,14 +1,17 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { PlatformLocation } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
+
 import { Document } from 'app/models/document';
-import { StorageService } from 'app/services/storage.service';
+import { SearchTerms } from 'app/models/search';
+
 import { ApiService } from 'app/services/api';
 import { SearchService } from 'app/services/search.service';
-import { PlatformLocation } from '@angular/common';
-import { TableObject } from 'app/shared/components/table-template/table-object';
+import { StorageService } from 'app/services/storage.service';
+
 import { AddDocumentTableRowsComponent } from './add-document-table-rows/add-document-table-rows.component';
-import { SearchTerms } from 'app/models/search';
+import { TableObject } from 'app/shared/components/table-template/table-object';
 
 @Component({
   selector: 'app-add-documents',
@@ -62,18 +65,18 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   public selectedCount = 0;
   public keywords = '';
 
-  public currentProjectId = '';
+  public currentProject;
   public currentCommentPeriod;
   public originalSelectedDocs = [];
 
   constructor(
-    private route: ActivatedRoute,
-    private platformLocation: PlatformLocation,
-    private router: Router,
+    private _changeDetectionRef: ChangeDetectorRef,
     private api: ApiService,
     private location: PlatformLocation,
+    private platformLocation: PlatformLocation,
+    private route: ActivatedRoute,
+    private router: Router,
     private searchService: SearchService,
-    private _changeDetectionRef: ChangeDetectorRef,
     public storageService: StorageService
   ) {
     this.location.onPopState(() => {
@@ -86,7 +89,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
     // BUG: If you refresh while adding comment period, the page does not show up.
     let isRedirecting = false;
 
-    this.currentProjectId = this.storageService.state.currentProject.data._id;
+    this.currentProject = this.storageService.state.currentProject.data;
 
     // Check if we're editing
     this.route.url.subscribe(segments => {
@@ -99,7 +102,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
             this.route.parent.params.subscribe(params => {
               commentPeriodId = params.commentPeriodId;
             });
-            this.router.navigate(['/p', this.currentProjectId, 'cp', commentPeriodId, 'edit']);
+            this.router.navigate(['/p', this.currentProject._id, 'cp', commentPeriodId, 'edit']);
             this.loading = false;
           }
           this.currentCommentPeriod = this.storageService.state.currentCommentPeriod.data;
@@ -198,9 +201,9 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
         break;
       case 'submitDocs':
         if (this.isEditing) {
-          this.router.navigate(['/p', this.currentProjectId, 'cp', this.currentCommentPeriod._id, 'edit']);
+          this.router.navigate(['/p', this.currentProject._id, 'cp', this.currentCommentPeriod._id, 'edit']);
         } else {
-          this.router.navigate(['/p', this.currentProjectId, 'comment-periods', 'add']);
+          this.router.navigate(['/p', this.currentProject._id, 'comment-periods', 'add']);
         }
         break;
     }
@@ -228,8 +231,8 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
 
 
     console.log('params =', params);
-    console.log('nav:', ['p', this.currentProjectId, 'project-documents', params]);
-    this.router.navigate(['p', this.currentProjectId, 'project-documents', params]);
+    console.log('nav:', ['p', this.currentProject._id, 'project-documents', params]);
+    this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
   }
 
   setDocumentRowData() {
@@ -300,7 +303,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
 
     this.searchService.getSearchResults(this.keywords,
       'Document',
-      [{ 'name': 'project', 'value': this.currentProjectId }],
+      [{ 'name': 'project', 'value': this.currentProject._id }],
       pageNumber,
       this.pageSize,
       sorting,

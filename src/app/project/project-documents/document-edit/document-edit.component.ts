@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, FormArray, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, of } from 'rxjs';
-import * as moment from 'moment-timezone';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import * as moment from 'moment-timezone';
 
-import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
 import { DocumentService } from 'app/services/document.service';
+import { StorageService } from 'app/services/storage.service';
+
 import { Utils } from 'app/shared/utils/utils';
 
 @Component({
@@ -19,7 +20,7 @@ import { Utils } from 'app/shared/utils/utils';
 export class DocumentEditComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public documents: any[] = [];
-  public currentProjectId: any;
+  public currentProject;
   public myForm: FormGroup;
   public doctypes: any[] = [];
   public authors: any[] = [];
@@ -29,21 +30,20 @@ export class DocumentEditComponent implements OnInit {
   public loading = true;
 
   constructor(
-    private utils: Utils,
-    private router: Router,
-    private route: ActivatedRoute,
     private config: ConfigService,
     private documentService: DocumentService,
-    private storageService: StorageService
+    private router: Router,
+    private storageService: StorageService,
+    private utils: Utils
   ) { }
 
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
-    this.currentProjectId = this.documents[0].project;
+    this.currentProject = this.storageService.state.currentProject.data;
 
     // Check if documents are null (nav straight to this page)
     if (!this.documents || this.documents.length === 0) {
-      this.router.navigate(['p', this.currentProjectId, 'project-documents']);
+      this.router.navigate(['p', this.currentProject._id, 'project-documents']);
     } else {
       this.config.lists.map(item => {
         switch (item.type) {
@@ -97,7 +97,7 @@ export class DocumentEditComponent implements OnInit {
     if (this.storageService.state.back && this.storageService.state.back.url) {
       this.router.navigate(this.storageService.state.back.url);
     } else {
-      this.router.navigate(['/p', this.currentProjectId, 'project-documents']);
+      this.router.navigate(['/p', this.currentProject._id, 'project-documents']);
     }
   }
 
@@ -115,7 +115,7 @@ export class DocumentEditComponent implements OnInit {
 
     this.documents.map(doc => {
       const formData = new FormData();
-      formData.append('project', this.currentProjectId);
+      formData.append('project', this.currentProject._id);
       formData.append('documentSource', 'PROJECT');
 
       doc.documentFileName !== null ? formData.append('documentFileName', doc.documentFileName) : Function.prototype;
@@ -161,8 +161,8 @@ export class DocumentEditComponent implements OnInit {
     console.log('Adding labels');
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'labels', data: this.labels };
-    this.storageService.state.back = { url: ['/p', this.currentProjectId, 'project-documents', 'edit'], label: 'Edit Document(s)'};
-    this.router.navigate(['/p', this.currentProjectId, 'project-documents', 'edit', 'add-label']);
+    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-documents', 'edit'], label: 'Edit Document(s)'};
+    this.router.navigate(['/p', this.currentProject._id, 'project-documents', 'edit', 'add-label']);
   }
 
   register (myForm: FormGroup) {
