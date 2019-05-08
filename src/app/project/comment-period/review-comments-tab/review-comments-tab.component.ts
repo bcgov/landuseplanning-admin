@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReviewCommentsTabTableRowsComponent } from './review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 
 import { CommentService } from 'app/services/comment.service';
+import { StorageService } from 'app/services/storage.service';
 
 import { Comment } from 'app/models/comment';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
@@ -73,6 +74,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
     private commentService: CommentService,
     private route: ActivatedRoute,
     private router: Router,
+    private storageService: StorageService,
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
@@ -94,6 +96,16 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
           if (this.tableParams.totalListItems > 0) {
             this.comments = res.data;
             this.setCommentRowData();
+
+            // If there is a published comment, we are not allowed to delete the comment period.
+            let canDelete = true;
+            for (let comment of this.comments) {
+              if (comment.eaoStatus === 'Published') {
+                canDelete = false;
+                break;
+              }
+            }
+            this.storageService.state.canDeleteCommentPeriod = { type: 'canDeleteCommentPeriod', data: canDelete };
           }
         } else {
           alert('Uh-oh, couldn\'t load comments');
@@ -124,7 +136,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   setCommentRowData() {
     let commentList = [];
-    this.comments.forEach(comment => {
+    this.comments.map(comment => {
       commentList.push(
         {
           _id: comment._id,

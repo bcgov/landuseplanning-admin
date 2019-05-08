@@ -243,7 +243,8 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
             type: document.type,
             milestone: document.milestone,
             _id: document._id,
-            project: document.project
+            project: document.project,
+            documentFileName: document.documentFileName
           }
         );
       });

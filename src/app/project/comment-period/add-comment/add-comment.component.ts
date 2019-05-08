@@ -42,7 +42,6 @@ export class AddCommentComponent implements OnInit {
     private commentService: CommentService,
     private snackBar: MatSnackBar,
     private storageService: StorageService,
-    private documentService: DocumentService,
     private utils: Utils
   ) { }
 
