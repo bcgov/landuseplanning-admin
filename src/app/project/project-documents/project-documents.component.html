@@ -47,7 +47,7 @@
             id="button-sa">Select All</button>
     <button (click)="selectAction('edit')"
             class="btn btn-outline-secondary mr-1"
-            [disabled]="!isEnabled('edit')"
+            [disabled]="!isEnabled('edit') || selectedCount > 1"
             type="button"
             id="button-e"><i class="material-icons">edit</i>Edit</button>
     <button (click)="selectAction('copyLink')"
