@@ -54,11 +54,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     // Handles when we come back to this page.
 
     // TODO fix
-    if (this.project.intake === null) {
+    if (this.project && this.project.intake === null) {
       this.project.intake = { investment: '', investmentNotes: '' };
     }
 
-    if (this.project.intake.investment !== '' && this.project.intake.investment[0] !== '$') {
+    if (this.project && this.project.intake.investment !== '' && this.project.intake.investment[0] !== '$') {
       this.project.intake.investment = this.cp.transform(this.project.intake.investment, '', true, '1.0-0');
     }
   }

@@ -3,7 +3,7 @@
     <li class="breadcrumb-item" >
       <a [routerLink]="['/projects']">All Projects</a>
     </li>
-    <li class="breadcrumb-item active" >{{project.name}}</li>
+    <li class="breadcrumb-item active" >{{project && project.name}}</li>
   </ol>
   <div ngbDropdown placement="bottom-right" class="d-inline-block">
     <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
