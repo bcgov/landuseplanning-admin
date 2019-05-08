@@ -52,7 +52,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
     // Check if we're editing
     this.route.url.subscribe(segments => {
-      segments.forEach(segment => {
+      segments.map(segment => {
         if (segment.path === 'edit') {
           this.isEditing = true;
           // get data from route resolver
@@ -134,7 +134,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
     // Open houses
     if (this.commentPeriod.openHouses.length > 0) {
-      this.commentPeriod.openHouses.forEach(openHouse => {
+      this.commentPeriod.openHouses.map(openHouse => {
         this.addOpenHouseRowWithFields(
           this.formBuilder.group({
             eventDate: this.utils.convertJSDateToNGBDate(new Date(openHouse['eventDate'])),
@@ -173,12 +173,10 @@ export class AddEditCommentPeriodComponent implements OnInit {
     this.commentPeriod.dateCompleted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('endDate').value);
 
     // Check published state
-    // TODO: This should only be in the API.
-    this.commentPeriod.read = ['staff', 'sysadmin'];
-    this.commentPeriod.write = ['staff', 'sysadmin'];
-    this.commentPeriod.delete = ['staff', 'sysadmin'];
     if (this.commentPeriodForm.get('publishedStateSel').value === 'published') {
-      this.commentPeriod.read.push('public');
+      this.commentPeriod.isPublished = true;
+    } else {
+      this.commentPeriod.isPublished = false;
     }
 
     // Check info for comment
@@ -187,18 +185,20 @@ export class AddEditCommentPeriodComponent implements OnInit {
     this.commentPeriod.instructions += ` for ${this.projectName} Project. `;
     this.commentPeriod.instructions += this.commentPeriodForm.get('descriptionText').value;
 
-    let docIdArray = [];
-    this.storageService.state.selectedDocumentsForCP.data.forEach(element => {
-      docIdArray.push(element._id);
-    });
-    this.commentPeriod.relatedDocuments = docIdArray;
+    if (this.storageService.state.selectedDocumentsForCP) {
+      let docIdArray = [];
+      this.storageService.state.selectedDocumentsForCP.data.map(element => {
+        docIdArray.push(element._id);
+      });
+      this.commentPeriod.relatedDocuments = docIdArray;
+    }
 
     // Check milestones
     this.commentPeriod.milestone = this.commentPeriodForm.get('milestoneSel').value;
 
     // Check open house date
     this.commentPeriod.openHouses = [];
-    this.commentPeriodForm.get('openHouses').value.forEach(openHouse => {
+    this.commentPeriodForm.get('openHouses').value.map(openHouse => {
       if (openHouse.description !== null && openHouse.eventDate !== null) {
         this.commentPeriod.openHouses.push({
           description: openHouse.description,
@@ -213,7 +213,6 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
     // Submit
     if (this.isEditing) {
-      this.commentPeriod.project = this.projectId;
       this.commentPeriodService.save(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -229,6 +228,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
           }
         );
     } else {
+      this.commentPeriod.project = this.projectId;
       console.log('Attenpting to add comment period:', this.commentPeriod);
       this.commentPeriodService.add(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
