@@ -117,24 +117,39 @@
           <label for="CEAAInvolvement">CEAA Involvement </label>
           <select name="CEAAInvolvement" id="CEAAInvolvement" formControlName="CEAAInvolvement" class="form-control">
             <option>None</option>
+            <option>Panel</option>
+            <option>Panel (CEAA 2012)</option>
+            <option>Coordinated</option>
+            <option>Screening</option>
+            <option>Screening - Confirmed</option>
+            <option>Substituted</option>
+            <option>Substituted (Provincial Lead)</option>
+            <option>Comprehensive Study</option>
+            <option>Comprehensive Study - Unconfirmed</option>
+            <option>Comprehensive Study - Confirmed</option>
+            <option>Comprehensive Study (Pre CEAA 2012)</option>
+            <option>Comp Study</option>
+            <option>Comp Study - Unconfirmed</option>
+            <option>To be determined</option>
+            <option>Equivalent - NEB</option>
             <option>Yes</option>
           </select>
         </div>
-        <div class="label-pair">
+        <div class="label-pair med">
           <label for="CEAALink">CEAA URL </label>
           <input name="CEAALink" id="CEAALink" formControlName="CEAALink" type="text" class="form-control" />
-        </div>
-        <div class="label-pair">
-          <label for="capital">Capital Investment </label>
-          <div class="money">
-            <i class="material-icons mr-3" role="add">attach_money</i>
-            <input name="capital" id="capital" formControlName="capital" type="text" class="form-control" />
-          </div>
         </div>
         <div class="label-pair med">
           <label for="notes">Notes </label>
           <textarea name="notes" id="notes" formControlName="notes" type="text" class="form-control"></textarea>
         </div>
+        <div class="label-pair">
+            <label for="capital">Capital Investment </label>
+            <div class="money">
+              <i class="material-icons mr-3" role="add">attach_money</i>
+              <input name="capital" id="capital" formControlName="capital" type="text" class="form-control" />
+            </div>
+          </div>
       </div>
     </section>
     <section>
