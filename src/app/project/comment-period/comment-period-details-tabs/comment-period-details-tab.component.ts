@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
 
+import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
@@ -26,8 +27,10 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
   public projectId: string;
   public loading = true;
   public commentPeriodDocs;
+  public canDeleteCommentPeriod = false;
 
   constructor(
+    private api: ApiService,
     private commentPeriodService: CommentPeriodService,
     private documentService: DocumentService,
     private router: Router,
@@ -118,5 +121,17 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
 
   public addComment() {
     this.router.navigate(['/p', this.commentPeriod.project, 'cp', this.commentPeriod._id, 'add-comment']);
+  }
+
+  public downloadDocument(document) {
+    let promises = [];
+    promises.push(this.api.downloadDocument(document));
+    return Promise.all(promises).then(() => {
+      console.log('Download initiated for file');
+    });
+  }
+
+  public checkIfCanDelete() {
+    this.canDeleteCommentPeriod = this.storageService.state.canDeleteCommentPeriod.data;
   }
 }

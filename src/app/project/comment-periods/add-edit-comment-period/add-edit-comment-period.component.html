@@ -104,16 +104,22 @@
         <div class="form-row">
             <div class="form-group col-md-12">
                 <label for="documentsSel">Related Documents</label>
-                <div *ngIf="storageService.state.selectedDocumentsForCP">
-                    <p *ngFor="let doc of storageService.state.selectedDocumentsForCP.data">
-                        {{doc.displayName}}&nbsp;
-                        <span>
-                            <i id="removeDoc" (click)="removeSelectedDoc(doc)" class="material-icons">
-                                clear
-                            </i>
+                <ul class="doc-list mb-3" *ngIf="storageService.state.selectedDocumentsForCP">
+                    <li *ngFor="let doc of storageService.state.selectedDocumentsForCP.data">
+                        <span class="cell icon">
+                            <i class="material-icons">insert_drive_file</i>
                         </span>
-                    </p>
-                </div>
+                        <span class="cell name" [title]="doc.displayName || ''">
+                            <span class="cell__txt-content">{{doc.documentFileName}}</span>
+                        </span>
+                        <span class="cell actions">
+                            <button class="btn btn-icon" type="button" title="Delete this document"
+                                (click)="removeSelectedDoc(doc)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </span>
+                    </li>
+                </ul>
                 <div>
                     <button class="btn btn-primary" type="button" (click)="addDocuments()">Add Documents</button>
                 </div>
