@@ -24,7 +24,7 @@ export class ReviewCommentComponent implements OnInit {
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  public projectId;
+  public currentProject;
   public comment: Comment;
   public commentPeriod: CommentPeriod;
   public loading = true;
@@ -42,6 +42,8 @@ export class ReviewCommentComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.currentProject = this.storageService.state.currentProject.data;
+
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(data => {
@@ -68,9 +70,6 @@ export class ReviewCommentComponent implements OnInit {
         }
         this.loading = false;
       });
-
-    this.projectId = this.storageService.state.currentProject.data._id;
-
   }
 
   private initForm() {
@@ -134,7 +133,7 @@ export class ReviewCommentComponent implements OnInit {
         },
         () => { // onCompleted
           this.openSnackBar('This comment period was created successfuly.', 'Close');
-          this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
+          this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
           this.loading = false;
         }
       );
@@ -142,7 +141,7 @@ export class ReviewCommentComponent implements OnInit {
 
   public onCancel() {
     if (confirm(`Are you sure you want to discard all changes?`)) {
-      this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
+      this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
     }
   }
 

@@ -4,8 +4,11 @@
             <li class="breadcrumb-item">
                 <a [routerLink]="['/projects']">All Projects</a>
             </li>
+            <li class="breadcrumb-item">
+                <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+            </li>
             <li class="breadcrumb-item" aria-current="page">
-                <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+                <a [routerLink]="['/p', currentProject._id, 'comment-periods']">Comment Periods</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
                 Add
@@ -14,14 +17,17 @@
     </div>
     <div *ngIf="isEditing">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item" aria-current="page">
-                <a [routerLink]="['/p', projectId]">Project Details</a>
+            <li class="breadcrumb-item">
+                <a [routerLink]="['/projects']">All Projects</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
             </li>
             <li class="breadcrumb-item" aria-current="page">
-                <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+                <a [routerLink]="['/p', currentProject._id, 'comment-periods']">Comment Periods</a>
             </li>
             <li class="breadcrumb-item" aria-current="page">
-                <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id, 'comment-period-details']">{{commentPeriod.dateStarted | date: 'LLLL'}}
+                <a [routerLink]="['/p', currentProject._id, 'cp', commentPeriod._id, 'comment-period-details']">{{commentPeriod.dateStarted | date: 'LLLL'}}
                     -
                     {{commentPeriod.dateCompleted | date}}</a>
             </li>
@@ -94,7 +100,7 @@
                     </i>
                 </h6>
                 <p class="text-secondary">
-                    Comment Period on the {{infoForCommentPreview}} for {{projectName}} Project.
+                    Comment Period on the {{infoForCommentPreview}} for {{currentProject.name}} Project.
                     <br>
                     {{descriptionPreview}}
                 </p>

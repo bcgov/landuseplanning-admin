@@ -1,14 +1,20 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Subject } from 'rxjs';
+
 import { TableObject } from 'app/shared/components/table-template/table-object';
-import { ValuedComponentService } from 'app/services/valued-component.service';
-import { ValuedComponent } from 'app/models/valuedComponent';
-import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
-import { Topic } from 'app/models/topic';
-import { TopicTableRowsComponent } from './topic-table-rows/topic-table-rows.component';
-import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+
 import { TopicService } from 'app/services/topic.service';
+import { ValuedComponentService } from 'app/services/valued-component.service';
+
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+
+import { Topic } from 'app/models/topic';
+import { ValuedComponent } from 'app/models/valuedComponent';
+
+import { TopicTableRowsComponent } from './topic-table-rows/topic-table-rows.component';
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-add-vc',
@@ -19,7 +25,7 @@ import { TopicService } from 'app/services/topic.service';
 export class AddVcComponent implements OnInit {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public topics: Topic[] = null;
-  public currentProjectId: string;
+  public currentProject;
   public tableParams: TableParamsObject = new TableParamsObject();
   public loading = true;
   public selectedCount = 0;
@@ -59,12 +65,13 @@ export class AddVcComponent implements OnInit {
   ];
 
   constructor(
-    private router: Router,
     private _changeDetectionRef: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private router: Router,
+    private storageService: StorageService,
     private tableTemplateUtils: TableTemplateUtils,
-    private valuedComponentService: ValuedComponentService,
     private topicService: TopicService,
-    private route: ActivatedRoute
+    private valuedComponentService: ValuedComponentService
   ) { }
 
   ngOnInit() {
@@ -74,9 +81,7 @@ export class AddVcComponent implements OnInit {
     // This page always renders full list.
     this.tableParams.pageSize = 1000;
 
-    this.route.parent.paramMap.subscribe(params => {
-      this.currentProjectId = params.get('projId');
-    });
+    this.currentProject = this.storageService.state.currentProject.data;
 
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -114,20 +119,20 @@ export class AddVcComponent implements OnInit {
             // Move _id to topic for linking to original.
             vc.topic = vc._id;
             delete vc._id;
-            vc.project = this.currentProjectId;
+            vc.project = this.currentProject._id;
             vc.title = vc.description;
-            itemsToAdd.push( { promise: this.valuedComponentService.addToProject(vc, this.currentProjectId).toPromise(), item: item });
+            itemsToAdd.push({ promise: this.valuedComponentService.addToProject(vc, this.currentProject._id).toPromise(), item: item });
           }
         });
         this.loading = false;
         return Promise.all(itemsToAdd).then(() => {
           // Back to vc page.
-          this.router.navigate(['p', this.currentProjectId, 'valued-components']);
+          this.router.navigate(['p', this.currentProject._id, 'valued-components']);
         });
-      break;
-    case 'cancel':
-      this.router.navigate(['p', this.currentProjectId, 'valued-components']);
-      break;
+        break;
+      case 'cancel':
+        this.router.navigate(['p', this.currentProject._id, 'valued-components']);
+        break;
     }
   }
 

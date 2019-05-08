@@ -1,16 +1,20 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
+
+import { SearchTerms } from 'app/models/search';
 import { ValuedComponent } from 'app/models/valuedComponent';
-import { ValuedComponentService } from 'app/services/valued-component.service';
-import { TableObject } from 'app/shared/components/table-template/table-object';
-import { ValuedComponentTableRowsComponent } from './valued-component-table-rows/valued-component-table-rows.component';
-import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
-import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+
 import { DialogService } from 'ng2-bootstrap-modal';
 import { StorageService } from 'app/services/storage.service';
+import { ValuedComponentService } from 'app/services/valued-component.service';
+
+import { TableObject } from 'app/shared/components/table-template/table-object';
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+
 import { ConfirmComponent } from 'app/confirm/confirm.component';
-import { SearchTerms, SearchResults } from 'app/models/search';
+import { ValuedComponentTableRowsComponent } from './valued-component-table-rows/valued-component-table-rows.component';
 
 @Component({
   selector: 'app-valued-components',
@@ -59,15 +63,16 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   public tableParams: TableParamsObject = new TableParamsObject();
 
   public selectedCount = 0;
-  public currentProjectId = '';
+  public currentProject;
 
   constructor(
+    private _changeDetectionRef: ChangeDetectorRef,
+    private dialogService: DialogService,
     private route: ActivatedRoute,
     private router: Router,
-    private valuedComponentService: ValuedComponentService,
-    private dialogService: DialogService,
-    private _changeDetectionRef: ChangeDetectorRef,
-    private tableTemplateUtils: TableTemplateUtils
+    private storageService: StorageService,
+    private tableTemplateUtils: TableTemplateUtils,
+    private valuedComponentService: ValuedComponentService
   ) { }
 
   ngOnInit() {
@@ -75,11 +80,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
     });
 
-    this.route.parent.paramMap
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(paramMap => {
-        this.currentProjectId = paramMap.get('projId');
-      });
+    this.currentProject = this.storageService.state.currentProject.data;
 
     // get data from route resolver
     this.route.data
@@ -135,7 +136,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
 
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
 
-    this.valuedComponentService.getAllByProjectId(this.currentProjectId, pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
+    this.valuedComponentService.getAllByProjectId(this.currentProject._id, pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;
@@ -166,7 +167,7 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
         this.delete();
         break;
       case 'addNew':
-        this.router.navigate(['p', this.currentProjectId, 'valued-components', 'add']);
+        this.router.navigate(['p', this.currentProject._id, 'valued-components', 'add']);
         break;
     }
   }
@@ -236,8 +237,8 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     params['sortDirection'] = this.terms.sortDirection;
 
     console.log('params =', params);
-    console.log('nav:', ['p', this.currentProjectId, 'valued-components', params]);
-    this.router.navigate(['p', this.currentProjectId, 'valued-components', params]);
+    console.log('nav:', ['p', this.currentProject._id, 'valued-components', params]);
+    this.router.navigate(['p', this.currentProject._id, 'valued-components', params]);
   }
 
   ngOnDestroy() {

@@ -26,7 +26,7 @@ export class AddCommentComponent implements OnInit {
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  public projectId;
+  public currentProject;
   public comment = new Comment();
   public commentPeriod: CommentPeriod;
   public commentFiles: Array<File> = [];
@@ -50,13 +50,14 @@ export class AddCommentComponent implements OnInit {
       this.storageService.state.currentVCs = { type: 'currentVCs', data: [] };
     }
 
+    this.currentProject = this.storageService.state.currentProject.data;
+
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe((data: any) => {
         if (data) {
           this.commentPeriod = data.commentPeriod;
           this.initForm();
-          this.projectId = this.storageService.state.currentProject.data._id;
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
@@ -128,7 +129,7 @@ export class AddCommentComponent implements OnInit {
           alert('Uh-oh, couldn\'t add comment');
         },
         () => { // onCompleted
-          this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
+          this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
           this.loading = false;
           this.openSnackBar('This comment was updated successfuly.', 'Close');
         }
@@ -137,7 +138,7 @@ export class AddCommentComponent implements OnInit {
 
   public onCancel() {
     if (confirm(`Are you sure you want to discard all changes?`)) {
-      this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id]);
+      this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
     }
   }
 
@@ -188,9 +189,7 @@ export class AddCommentComponent implements OnInit {
   }
 
   public downloadFile(document: Document) {
-    let promises = [];
-    promises.push(this.api.downloadDocument(document));
-    return Promise.all(promises).then(() => {
+    return this.api.downloadDocument(document).then(() => {
       console.log('Download initiated for file(s)');
     });
   }
@@ -208,7 +207,7 @@ export class AddCommentComponent implements OnInit {
     this.documents.map(doc => {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
-      formData.append('project', this.projectId);
+      formData.append('project', this.currentProject._id);
       formData.append('documentFileName', doc.documentFileName);
 
       formData.append('documentSource', 'COMMENT');

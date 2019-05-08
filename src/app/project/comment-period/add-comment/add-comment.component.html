@@ -3,11 +3,14 @@
     <li class="breadcrumb-item">
       <a [routerLink]="['/projects']">All Projects</a>
     </li>
-    <li class="breadcrumb-item" aria-current="page">
-      <a [routerLink]="['/p', projectId, 'comment-periods']">Comment Periods</a>
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
     </li>
     <li class="breadcrumb-item" aria-current="page">
-      <a [routerLink]="['/p', projectId, 'cp', commentPeriod._id]">{{commentPeriod.dateStarted | date: 'MMMM d'}} -
+      <a [routerLink]="['/p', currentProject._id, 'comment-periods']">Comment Periods</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/p', currentProject._id, 'cp', commentPeriod._id]">{{commentPeriod.dateStarted | date: 'MMMM d'}} -
         {{commentPeriod.dateCompleted | date}}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
-import { Subject } from 'rxjs';
+
+import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-project-contacts',
@@ -8,18 +8,13 @@ import { Subject } from 'rxjs';
   styleUrls: ['./project-contacts.component.scss']
 })
 export class ProjectContactsComponent implements OnInit {
-  public currentProjectId = '';
-  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  public currentProject;
 
   constructor(
-    private route: ActivatedRoute
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
-    this.route.parent.paramMap
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(paramMap => {
-      this.currentProjectId = paramMap.get('projId');
-    });
+    this.currentProject = this.storageService.state.currentProject.data;
   }
 }
