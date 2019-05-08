@@ -122,6 +122,7 @@ export class ApiService {
       'type',
       'code',
       'currentPhaseName',
+      'epicProjectID',
       'decisionDate'
     ];
 

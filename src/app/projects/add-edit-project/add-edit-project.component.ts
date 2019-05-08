@@ -309,7 +309,7 @@ export class AddEditProjectComponent implements OnInit {
               'description': form.controls.description.value,
               'location': form.controls.location.value,
               'region': form.controls.region.value.id,
-              'centroid': [form.controls.lon.value[0], form.controls.lat.value[0]],
+              'centroid': [form.get('lon').value, form.get('lat').value],
               'addFile': form.controls.addFile.value,
               'CEAAInvolvement': form.controls.CEAAInvolvement.value,
               'CEAALink': form.controls.CEAALink.value,
