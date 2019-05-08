@@ -101,7 +101,7 @@
     </ul>
   </div>
   <div class="input-group-prepend">
-    <button [disabled]="!myForm.valid" (click)="uploadDocuments()" class="btn btn-outline-primary mr-1" type="submit"
+    <button [disabled]="!myForm.valid || documents?.length === 0" (click)="uploadDocuments()" class="btn btn-outline-primary mr-1" type="submit"
       id="button-cl"><i class="material-icons">arrow_upward</i>Upload</button>
   </div>
 </div>
