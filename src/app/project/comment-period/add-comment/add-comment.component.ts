@@ -2,7 +2,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { Subject, of } from 'rxjs';
+import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
 
 import { Utils } from 'app/shared/utils/utils';
@@ -13,7 +13,6 @@ import { Document } from 'app/models/document';
 
 import { ApiService } from 'app/services/api';
 import { CommentService } from 'app/services/comment.service';
-import { DocumentService } from 'app/services/document.service';
 import { StorageService } from 'app/services/storage.service';
 
 @Component({

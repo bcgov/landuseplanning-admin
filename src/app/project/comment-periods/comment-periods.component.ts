@@ -73,6 +73,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
+    this.storageService.state.currentCommentPeriod = null;
 
     this.currentProject = this.storageService.state.currentProject.data;
 
