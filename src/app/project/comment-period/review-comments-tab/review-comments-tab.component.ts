@@ -45,12 +45,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
     {
       name: 'Attachments',
       value: 'null',
-      width: 'col-1'
-    },
-    {
-      name: 'Response',
-      value: 'null',
-      width: 'col-1'
+      width: 'col-2'
     },
     {
       name: 'Location',
@@ -106,6 +101,8 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
               }
             }
             this.storageService.state.canDeleteCommentPeriod = { type: 'canDeleteCommentPeriod', data: canDelete };
+          } else {
+            this.storageService.state.canDeleteCommentPeriod = { type: 'canDeleteCommentPeriod', data: true };
           }
         } else {
           alert('Uh-oh, couldn\'t load comments');
@@ -140,14 +137,13 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       commentList.push(
         {
           _id: comment._id,
-          attachments: null,
+          attachments: comment.documents.length,
           author: comment.author,
           comment: comment.comment,
           dateAdded: comment.dateAdded,
           eaoStatus: comment.eaoStatus,
           location: comment.location,
           period: comment.period,
-          response: null
         }
       );
     });
