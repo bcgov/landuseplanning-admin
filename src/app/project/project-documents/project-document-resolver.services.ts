@@ -12,17 +12,18 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<object> {
     const projectId = route.parent.paramMap.get('projId');
-    const pageNum = Number(route.queryParams['pageNum'] ? route.queryParams['pageNum'] : 1);
-    const pageSize = Number(route.queryParams['pageSize'] ? route.queryParams['pageSize'] : 10);
-    const sortBy = route.queryParams['sortBy'] ? route.queryParams['sortBy'] : null;
+    const pageNum = route.params.pageNum ? route.params.pageNum : 1;
+    const pageSize = route.params.pageSize ? route.params.pageSize : 10;
+    const sortBy = route.params.sortBy && route.params.sortBy !== 'null' ? route.params.sortBy : null;
     const keywords = route.params.keywords;
-    return this.searchService.getSearchResults(keywords,
-                                              'Document',
-                                              [{ 'name': 'project', 'value': projectId }],
-                                              pageNum,
-                                              pageSize,
-                                              sortBy,
-                                              '[documentSource]=PROJECT',
-                                              true);
+    return this.searchService.getSearchResults(
+      keywords,
+      'Document',
+      [{ 'name': 'project', 'value': projectId }],
+      pageNum,
+      pageSize,
+      sortBy,
+      '[documentSource]=PROJECT',
+      true);
   }
 }
