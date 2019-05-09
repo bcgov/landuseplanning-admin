@@ -6,6 +6,6 @@
     <td scope="row" class="col-2" data-label="Days Remaining" (click)="goToItem(commentPeriod)">{{commentPeriod.daysRemaining}}</td>
     <td scope="row" class="col-1" data-label="Published" (click)="goToItem(commentPeriod)">{{commentPeriod.read}}</td>
     <td scope="row" class="col-4" data-label="Comment Data" (click)="goToItem(commentPeriod)">
-        <app-comment-stats></app-comment-stats>
+        <app-comment-stats [period]="commentPeriod"></app-comment-stats>
     </td>
 </tr>

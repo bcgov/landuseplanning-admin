@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 
 import { ApiService } from './api';
 import { CommentPeriod } from 'app/models/commentPeriod';
+import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
 
 @Injectable()
 export class CommentPeriodService {
@@ -53,6 +54,17 @@ export class CommentPeriodService {
         if (res && res.length > 0) {
           // return the first (only) comment period
           return new CommentPeriod(res[0]);
+        }
+        return null;
+      })
+      .catch(error => this.api.handleError(error));
+  }
+
+  getSummaryById(periodId: string): Observable<CommentPeriodSummary> {
+    return this.api.getPeriodSummary(periodId)
+      .map(res => {
+        if (res) {
+          return new CommentPeriodSummary(res);
         }
         return null;
       })

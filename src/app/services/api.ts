@@ -22,6 +22,7 @@ import { Topic } from 'app/models/topic';
 import { Org } from 'app/models/org';
 import { RecentActivity } from 'app/models/recentActivity';
 import { ValuedComponent } from 'app/models/valuedComponent';
+import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
 
 interface LocalLoginResponse {
   _id: string;
@@ -391,6 +392,53 @@ export class ApiService {
     ];
     const queryString = `commentperiod/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getPeriodSummary(id: string): Observable<CommentPeriodSummary> {
+    const fields = [
+      '_id',
+      '__v',
+      '_schemaName',
+      'addedBy',
+      'additionalText',
+      'ceaaAdditionalText',
+      'ceaaInformationLabel',
+      'ceaaRelatedDocuments',
+      'classificationRoles',
+      'classifiedPercent',
+      'commenterRoles',
+      'dateAdded',
+      'dateCompleted',
+      'dateCompletedEst',
+      'dateStarted',
+      'dateStartedEst',
+      'dateUpdated',
+      'downloadRoles',
+      'informationLabel',
+      'instructions',
+      'isClassified',
+      'isPublished',
+      'isResolved',
+      'isVetted',
+      'milestone',
+      'openCommentPeriod',
+      'openHouses',
+      'periodType',
+      'phase',
+      'phaseName',
+      'project',
+      'publishedPercent',
+      'rangeOption',
+      'rangeType',
+      'relatedDocuments',
+      'resolvedPercent',
+      'updatedBy',
+      'userCan',
+      'vettedPercent',
+      'vettingRoles'
+    ];
+    const queryString = `commentperiod/${id}/summary?fields=${this.buildValues(fields)}`;
+    return this.http.get<CommentPeriodSummary>(`${this.pathAPI}/${queryString}`, {});
   }
 
   addCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {

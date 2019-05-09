@@ -2,21 +2,21 @@
     <div class="col-3">
         Pending
         <br />
-        <span class="badge badge-secondary">0</span>
+        <span class="badge badge-secondary">{{summary?.Pending || 0}}</span>
     </div>
     <div class="col-3">
         Deferred
         <br />
-        <span class="badge badge-secondary bg-warning">0</span>
+        <span class="badge badge-secondary bg-warning">{{summary?.Deferred || 0}}</span>
     </div>
     <div class="col-3">
         Published
         <br />
-        <span class="badge badge-secondary bg-success">0</span>
+        <span class="badge badge-secondary bg-success">{{summary?.Published || 0}}</span>
     </div>
     <div class="col-3">
         Rejected
         <br />
-        <span class="badge badge-secondary bg-danger">0</span>
+        <span class="badge badge-secondary bg-danger">{{summary?.Rejected || 0}}</span>
     </div>
 </div>
