@@ -99,7 +99,7 @@
                   <span class="cell icon">
                     <i class="material-icons">insert_drive_file</i>
                   </span>
-                  <span class="cell name" [title]="document.internalOriginalName || ''">
+                  <span class="cell name clickable-row" [title]="document.internalOriginalName || ''" (click)='downloadDocument(document)'>
                     <span class="cell__txt-content">{{document.internalOriginalName}}</span>
                   </span>
                   <span class="cell actions">
