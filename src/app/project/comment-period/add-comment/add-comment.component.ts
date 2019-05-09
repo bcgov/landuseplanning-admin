@@ -116,7 +116,8 @@ export class AddCommentComponent implements OnInit {
     this.comment.period = this.commentPeriod._id;
 
     // go through and upload one at a time.
-    const documentsForm = this.uploadDocuments();
+    const documentsForm = this.setDocumentForm();
+    this.comment.documentsList = [];
     this.comment.documents = [];
 
     this.commentService.add(this.comment, documentsForm)
@@ -201,14 +202,14 @@ export class AddCommentComponent implements OnInit {
     }
   }
 
-  private uploadDocuments() {
+  private setDocumentForm() {
     let docForms = [];
     this.documents.map(doc => {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
       formData.append('project', this.currentProject._id);
       formData.append('documentFileName', doc.documentFileName);
-
+      formData.append('internalOriginalName', doc.internalOriginalName);
       formData.append('documentSource', 'COMMENT');
       formData.append('dateUploaded', moment());
       formData.append('datePosted', moment());
@@ -232,6 +233,7 @@ export class AddCommentComponent implements OnInit {
           const document = new Document();
           document.upfile = files[i];
           document.documentFileName = files[i].name;
+          document.internalOriginalName = files[i].name;
           if (this.addCommentForm.get('isRejected').value) {
             document.eaoStatus = 'Rejected';
           }

@@ -698,6 +698,7 @@ export class ApiService {
   uploadDocument(formData: FormData): Observable<Document> {
     const fields = [
       'documentFileName',
+      'internalOriginalName',
       'displayName',
       'internalURL',
       'internalMime'
