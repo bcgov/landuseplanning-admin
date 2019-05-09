@@ -537,6 +537,7 @@ export class ApiService {
       'commentId',
       'dateAdded',
       'dateUpdated',
+      'documents',
       'isAnonymous',
       'location',
       'eaoStatus',
