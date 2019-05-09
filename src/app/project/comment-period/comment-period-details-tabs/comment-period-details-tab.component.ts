@@ -26,7 +26,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
   public publishAction: string;
   public projectId: string;
   public loading = true;
-  public commentPeriodDocs;
+  public commentPeriodDocs = [];
   public canDeleteCommentPeriod = false;
 
   constructor(
@@ -42,13 +42,15 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
     this.setPublishStatus();
     this.projectId = this.storageService.state.currentProject.data._id;
 
-    this.documentService.getByMultiId(this.commentPeriod.relatedDocuments)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        data => {
-          this.commentPeriodDocs = data;
-        }
-      );
+    if (this.commentPeriod.relatedDocuments.length > 0) {
+      this.documentService.getByMultiId(this.commentPeriod.relatedDocuments)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          data => {
+            this.commentPeriodDocs = data;
+          }
+        );
+    }
 
     this.loading = false;
   }

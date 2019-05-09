@@ -106,6 +106,8 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
               }
             }
             this.storageService.state.canDeleteCommentPeriod = { type: 'canDeleteCommentPeriod', data: canDelete };
+          } else {
+            this.storageService.state.canDeleteCommentPeriod = { type: 'canDeleteCommentPeriod', data: true };
           }
         } else {
           alert('Uh-oh, couldn\'t load comments');
