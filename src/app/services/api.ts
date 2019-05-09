@@ -602,7 +602,7 @@ export class ApiService {
 
   updateCommentStatus(comment: Comment, status: string): Observable<Comment> {
     const queryString = `comment/${comment._id}/status`;
-    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, {'status': status}, {});
+    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, { 'status': status }, {});
   }
 
   //
@@ -634,6 +634,7 @@ export class ApiService {
       'dateUploaded',
       'dateReceived',
       'documentFileSize',
+      'documentSource',
       'internalURL',
       'internalMime',
       'checkbox',
@@ -661,6 +662,7 @@ export class ApiService {
       'dateUploaded',
       'dateReceived',
       'documentFileSize',
+      'documentSource',
       'internalURL',
       'internalMime',
       'checkbox',
@@ -698,6 +700,7 @@ export class ApiService {
   uploadDocument(formData: FormData): Observable<Document> {
     const fields = [
       'documentFileName',
+      'internalOriginalName',
       'displayName',
       'internalURL',
       'internalMime'
@@ -713,7 +716,12 @@ export class ApiService {
 
   public async downloadDocument(document: Document): Promise<void> {
     const blob = await this.downloadResource(document._id);
-    const filename = document.documentFileName;
+    let filename;
+    if (document.documentSource === 'COMMENT') {
+      filename = document.internalOriginalName;
+    } else {
+      filename = document.documentFileName;
+    }
 
     if (this.isMS) {
       window.navigator.msSaveBlob(blob, filename);

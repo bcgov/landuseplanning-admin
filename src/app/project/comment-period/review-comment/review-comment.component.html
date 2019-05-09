@@ -99,8 +99,8 @@
                   <span class="cell icon">
                     <i class="material-icons">insert_drive_file</i>
                   </span>
-                  <span class="cell name" [title]="document.documentFileName || ''">
-                    <span class="cell__txt-content">{{document.documentFileName}}</span>
+                  <span class="cell name clickable-row" [title]="document.internalOriginalName || ''" (click)='downloadDocument(document)'>
+                    <span class="cell__txt-content">{{document.internalOriginalName}}</span>
                   </span>
                   <span class="cell actions">
                     <a class="btn btn-light" [class.active]="document.eaoStatus === 'Published'" role="button"

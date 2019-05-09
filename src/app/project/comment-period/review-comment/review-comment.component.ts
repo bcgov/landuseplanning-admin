@@ -191,10 +191,8 @@ export class ReviewCommentComponent implements OnInit {
     }
   }
 
-  public downloadFile(document: Document) {
-    let promises = [];
-    promises.push(this.api.downloadDocument(document));
-    return Promise.all(promises).then(() => {
+  public downloadDocument(document: Document) {
+    return this.api.downloadDocument(document).then(() => {
       console.log('Download initiated for file(s)');
     });
   }
