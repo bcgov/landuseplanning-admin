@@ -9,6 +9,7 @@ export class Comment {
   dateAdded: Date;
   datePosted: Date;
   dateUpdated: Date;
+  documentSource: string;
   eaoNotes: string;
   eaoStatus: string;
   isAnonymous: boolean;
@@ -37,6 +38,7 @@ export class Comment {
     this.dateAdded        = obj && obj.dateAdded        || null;
     this.datePosted       = obj && obj.datePosted       || null;
     this.dateUpdated      = obj && obj.dateUpdated      || null;
+    this.documentSource   = obj && obj.documentSource   || null;
     this.delete           = obj && obj.delete           || null;
     this.eaoNotes         = obj && obj.eaoNotes         || null;
     this.eaoStatus        = obj && obj.eaoStatus        || null;
