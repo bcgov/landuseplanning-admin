@@ -62,10 +62,10 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   public tableParams: TableParamsObject = new TableParamsObject();
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private _changeDetectionRef: ChangeDetectorRef,
     private commentPeriodService: CommentPeriodService,
+    private route: ActivatedRoute,
+    private router: Router,
     private storageService: StorageService,
     private tableTemplateUtils: TableTemplateUtils
   ) { }
