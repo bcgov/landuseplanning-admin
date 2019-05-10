@@ -22,8 +22,14 @@
     <li class="list-group-item">{{document.displayName || '-'}} ({{document.documentFileName}})</li>
   </ul>
 
-  <div class="form-group mb-0">
+  <div class="form-group mb-0 mt-4">
     <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          Publish?&nbsp;
+          <input type="checkbox" [checked]="isPublished" (click)="togglePublish()">
+        </div>
+      </div>
       <div class="form-row">
         <div class="form-group col-md-4">
           <label for="doctypesel">Document Type*</label>

@@ -687,14 +687,14 @@ export class ApiService {
     return this.http.delete<Document>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  publishDocument(doc: Document): Observable<Document> {
-    const queryString = `document/${doc._id}/publish`;
-    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, doc, {});
+  publishDocument(docId: String): Observable<Document> {
+    const queryString = `document/${docId}/publish`;
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, {}, {});
   }
 
-  unPublishDocument(doc: Document): Observable<Document> {
-    const queryString = `document/${doc._id}/unpublish`;
-    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, doc, {});
+  unPublishDocument(docId: String): Observable<Document> {
+    const queryString = `document/${docId}/unpublish`;
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, {}, {});
   }
 
   uploadDocument(formData: FormData): Observable<Document> {

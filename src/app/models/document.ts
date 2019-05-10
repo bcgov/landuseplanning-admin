@@ -25,6 +25,8 @@ export class Document {
   labels: any[];
   isPublished = false; // depends on tags; see below
 
+  read: Array<String> = [];
+
   constructor(obj?: any) {
     this._id = obj && obj._id || null;
     this.project = obj && obj.project || null;
@@ -50,5 +52,7 @@ export class Document {
     this.checkbox = obj && obj.checkbox || null;
     this.upfile = obj && obj.upfile || null;
     this.labels = obj && obj.labels || null;
+
+    this.read = obj && obj.read || null;
   }
 }

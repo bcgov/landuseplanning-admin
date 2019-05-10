@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { Subject, of } from 'rxjs';
+import { Subject, of, forkJoin } from 'rxjs';
 import * as moment from 'moment-timezone';
 
 import { ConfigService } from 'app/services/config.service';
@@ -106,7 +106,7 @@ export class UploadComponent implements OnInit {
     this.loading = true;
 
     // go through and upload one at a time.
-    let observables = of(null);
+    let observables = [];
 
     this.documents.map(doc => {
       const formData = new FormData();
@@ -124,14 +124,14 @@ export class UploadComponent implements OnInit {
       formData.append('type', this.myForm.value.doctypesel);
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);
-      observables = observables.concat(this.documentService.add(formData));
+      observables.push(this.documentService.add(formData));
     });
 
     this.storageService.state = { type: 'form', data: null };
     this.storageService.state = { type: 'documents', data: null };
     this.storageService.state = { type: 'labels', data: null };
 
-    observables
+    forkJoin(observables)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => { // onNext

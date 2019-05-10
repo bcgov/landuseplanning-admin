@@ -57,13 +57,13 @@ export class DocumentService {
       .catch(error => this.api.handleError(error));
   }
 
-  publish(document: Document): Observable<Document> {
-    return this.api.publishDocument(document)
+  publish(docId: string): Observable<Document> {
+    return this.api.publishDocument(docId)
       .catch(error => this.api.handleError(error));
   }
 
-  unPublish(document: Document): Observable<Document> {
-    return this.api.unPublishDocument(document)
+  unPublish(docId: string): Observable<Document> {
+    return this.api.unPublishDocument(docId)
       .catch(error => this.api.handleError(error));
   }
 
