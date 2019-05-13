@@ -45,7 +45,7 @@
 
     <form [formGroup]="commentPeriodForm" (ngSubmit)="register()">
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label for="inputStartDate">Start Date*</label>
                 <div class="input-group">
                     <input required id="inputStartDate" container='body' type="text" class="form-control"
@@ -56,8 +56,10 @@
                             type="button"></button>
                     </div>
                 </div>
+                <ngb-timepicker formControlName="startTime" [meridian]="startMeridian"></ngb-timepicker>
             </div>
-            <div class="form-group col-md-4">
+
+            <div class="form-group col-md-6">
                 <label for="inputEndDate">End Date*</label>
                 <div class="input-group">
                     <input required id="inputEndDate" container='body' type="text" class="form-control"
@@ -68,7 +70,11 @@
                             type="button"></button>
                     </div>
                 </div>
+                <ngb-timepicker formControlName="endTime" [meridian]="startMeridian"></ngb-timepicker>
             </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="publishedState">Published State*</label>
                 <select required id="publishedState" class="form-control" name="publishedStateSel"

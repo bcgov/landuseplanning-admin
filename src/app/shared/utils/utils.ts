@@ -12,11 +12,22 @@ export class Utils {
     };
   }
 
-  public convertFormGroupNGBDateToJSDate(nGBDate) {
-    return new Date(
-      nGBDate.year,
-      nGBDate.month - 1,
-      nGBDate.day
-    );
+  public convertFormGroupNGBDateToJSDate(nGBDate, nGBTime = null) {
+    if (nGBTime === null) {
+      return new Date(
+        nGBDate.year,
+        nGBDate.month - 1,
+        nGBDate.day
+      );
+    } else {
+      return new Date(
+        nGBDate.year,
+        nGBDate.month - 1,
+        nGBDate.day,
+        nGBTime.hour,
+        nGBTime.minute,
+      );
+    }
+
   }
 }
