@@ -51,7 +51,7 @@ export class CommentService {
       return forkJoin(observables)
         .pipe(
           mergeMap(payload => {
-            payload.map(document => {
+            payload.map((document: any) => {
               comment.documents.push(document._id);
             });
             return this.api.addComment(comment);
