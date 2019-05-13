@@ -34,6 +34,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
   public publishedState = 'unpublished';
   public commentPeriodForm: FormGroup;
 
+  public startMeridian = true;
+
   public loading = true;
 
   constructor(
@@ -96,7 +98,9 @@ export class AddEditCommentPeriodComponent implements OnInit {
       // Prep comment period form.
       this.commentPeriodForm = new FormGroup({
         'startDate': new FormControl(),
+        'startTime': new FormControl(),
         'endDate': new FormControl(),
+        'endTime': new FormControl(),
         'publishedStateSel': new FormControl(),
         'infoForCommentText': new FormControl(),
         'descriptionText': new FormControl(),
@@ -106,6 +110,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
       if (this.isEditing) {
         this.initForEditing();
       } else {
+        this.commentPeriodForm.controls.startTime.setValue({ hour: 9, minute: 0 });
+        this.commentPeriodForm.controls.endTime.setValue({ hour: 23, minute: 59 });
         this.addOpenHouseRow();
         if (this.storageService.state.selectedDocumentsForCP == null) {
           this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [] };
@@ -121,7 +127,9 @@ export class AddEditCommentPeriodComponent implements OnInit {
   private initForEditing() {
     // Date started and completed
     this.commentPeriodForm.controls.startDate.setValue(this.utils.convertJSDateToNGBDate(this.commentPeriod.dateStarted));
+    this.commentPeriodForm.controls.startTime.setValue({ hour: this.commentPeriod.dateStarted.getHours(), minute: this.commentPeriod.dateStarted.getMinutes() });
     this.commentPeriodForm.controls.endDate.setValue(this.utils.convertJSDateToNGBDate(this.commentPeriod.dateCompleted));
+    this.commentPeriodForm.controls.endTime.setValue({ hour: this.commentPeriod.dateCompleted.getHours(), minute: this.commentPeriod.dateCompleted.getMinutes() });
 
     // Publish state
     this.commentPeriodForm.controls.publishedStateSel.setValue(this.commentPeriod.isPublished ? 'published' : 'unpublished');
@@ -149,7 +157,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
   private initSelectedDocs() {
     if (this.storageService.state.selectedDocumentsForCP == null) {
-      if (this.commentPeriod.relatedDocuments) {
+      if (this.commentPeriod.relatedDocuments && this.commentPeriod.relatedDocuments.length > 0) {
         this.documentService.getByMultiId(this.commentPeriod.relatedDocuments)
           .takeUntil(this.ngUnsubscribe)
           .subscribe(
@@ -169,8 +177,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
     // TODO: Custom validation for start and end date.
 
     // Check start and end date
-    this.commentPeriod.dateStarted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('startDate').value);
-    this.commentPeriod.dateCompleted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('endDate').value);
+    this.commentPeriod.dateStarted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('startDate').value, this.commentPeriodForm.get('startTime').value);
+    this.commentPeriod.dateCompleted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('endDate').value, this.commentPeriodForm.get('endTime').value);
 
     // Check published state
     if (this.commentPeriodForm.get('publishedStateSel').value === 'published') {

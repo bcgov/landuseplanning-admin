@@ -11,12 +11,14 @@
         </div>
         <div class="col-md-2 text-right">
             <div ngbDropdown placement="bottom-right" class="d-inline-block">
-                <button class="btn btn-primary" id="actionDropdown" (click)="checkIfCanDelete()" ngbDropdownToggle>Actions</button>
+                <button class="btn btn-primary" id="actionDropdown" (click)="checkIfCanDelete()"
+                    ngbDropdownToggle>Actions</button>
                 <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
                     <button class="dropdown-item" (click)="editCommentPeriod()">Edit</button>
                     <button class="dropdown-item" (click)="addComment()">Add a comment</button>
                     <button class="dropdown-item" (click)="togglePublishState()">{{publishAction}}</button>
-                    <button *ngIf="canDeleteCommentPeriod" class="dropdown-item" (click)="deleteCommentPeriod()">Delete</button>
+                    <button *ngIf="canDeleteCommentPeriod" class="dropdown-item"
+                        (click)="deleteCommentPeriod()">Delete</button>
                 </div>
             </div>
         </div>
@@ -27,8 +29,9 @@
                 DATE RANGE:&nbsp;
             </h3>
             <p>
-                {{commentPeriod.dateStarted | date: 'MMMM d'}} -
-                {{commentPeriod.dateCompleted | date}}
+                {{commentPeriod.dateStarted | date: 'MMM d, y, h:mm:ss a'}} -
+                {{commentPeriod.dateCompleted | date: 'MMM d, y, h:mm:ss a'}}
+                <br>
                 ({{commentPeriod.daysRemaining}})
             </p>
         </div>
@@ -106,7 +109,8 @@
         <div class="col-md-6">
             <h3>
                 <strong>
-                    TOTAL:&nbsp; {{commentPeriod.summary.Pending + commentPeriod.summary.Deferred + commentPeriod.summary.Published + commentPeriod.summary.Rejected}}
+                    TOTAL:&nbsp;
+                    {{commentPeriod.summary.Pending + commentPeriod.summary.Deferred + commentPeriod.summary.Published + commentPeriod.summary.Rejected}}
                 </strong>
             </h3>
             <div>
