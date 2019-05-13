@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, of, forkJoin } from 'rxjs';
 
 import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
@@ -17,6 +17,8 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+import { andObservables } from '@angular/router/src/utils/collection';
+import { flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-documents',
@@ -42,6 +44,11 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       width: 'col-6'
     },
     {
+      name: 'Status',
+      value: 'status',
+      width: 'col-2'
+    },
+    {
       name: 'Date',
       value: 'datePosted',
       width: 'col-2'
@@ -49,7 +56,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     {
       name: 'Type',
       value: 'type',
-      width: 'col-2'
+      width: 'col-1'
     },
     {
       name: 'Milestone',
@@ -62,6 +69,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public keywords = '';
 
   public currentProject;
+  public canPublish;
+  public canUnpublish;
 
   public tableParams: TableParamsObject = new TableParamsObject();
 
@@ -114,6 +123,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   }
 
   public selectAction(action) {
+    let promises = [];
+
     // select all documents
     switch (action) {
       case 'copyLink':
@@ -145,6 +156,9 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         });
 
         this.selectedCount = someSelected ? 0 : this.documentTableData.data.length;
+
+        this.setPublishUnpublish();
+
         this._changeDetectionRef.detectChanges();
         break;
       case 'edit':
@@ -166,7 +180,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         this.deleteDocument();
         break;
       case 'download':
-        let promises = [];
         this.documentTableData.data.map((item) => {
           if (item.checkbox === true) {
             promises.push(this.api.downloadDocument(this.documents.filter(d => d._id === item._id)[0]));
@@ -176,9 +189,93 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
           console.log('Download initiated for file(s)');
         });
         break;
+      case 'publish':
+        this.publishDocument();
+        break;
+      case 'unpublish':
+        this.unpublishDocument();
+        break;
       case 'copyLink':
         break;
     }
+  }
+
+  publishDocument() {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Publish Document(s)',
+        message: 'Click <strong>OK</strong> to publish the selected Documents or <strong>Cancel</strong> to return to the list.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            this.loading = true;
+            let observables = [];
+            this.documentTableData.data.map(item => {
+              if (item.checkbox && !item.read.includes('public')) {
+                observables.push(this.documentService.publish(item._id));
+              }
+            });
+            forkJoin(observables)
+              .subscribe(
+                res => { },
+                err => {
+                  console.log('Error:', err);
+                },
+                () => {
+                  this.loading = false;
+                  this.canUnpublish = false;
+                  this.canPublish = false;
+                  this.onSubmit();
+                }
+              );
+          } else {
+            this.loading = false;
+          }
+        }
+      );
+  }
+
+  unpublishDocument() {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Unpublish Document(s)',
+        message: 'Click <strong>OK</strong> to unpublish the selected Documents or <strong>Cancel</strong> to return to the list.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            this.loading = true;
+            let observables = [];
+            this.documentTableData.data.map(item => {
+              if (item.checkbox && item.read.includes('public')) {
+                observables.push(this.documentService.unPublish(item._id));
+              }
+            });
+            forkJoin(observables)
+              .subscribe(
+                res => { },
+                err => {
+                  console.log('Error:', err);
+                },
+                () => {
+                  this.loading = false;
+                  this.canUnpublish = false;
+                  this.canPublish = false;
+                  this.onSubmit();
+                }
+              );
+          } else {
+            this.loading = false;
+          }
+        }
+      );
   }
 
   deleteDocument() {
@@ -248,10 +345,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             // date: document.dateUploaded || document.datePosted,
             displayName: document.displayName,
             datePosted: document.datePosted,
+            status: document.read.includes('public') ? 'Published' : 'Not Published',
             type: document.type,
             milestone: document.milestone,
             _id: document._id,
-            project: document.project
+            project: document.project,
+            read: document.read
           }
         );
       });
@@ -274,6 +373,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       case 'copyLink':
         return this.selectedCount === 1;
         break;
+      case 'publish':
+        return this.selectedCount > 0 && this.canPublish;
+        break;
+      case 'unpublish':
+        return this.selectedCount > 0 && this.canUnpublish;
+        break;
       default:
         return this.selectedCount > 0;
         break;
@@ -282,6 +387,25 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
   updateSelectedRow(count) {
     this.selectedCount = count;
+    this.setPublishUnpublish();
+  }
+
+  setPublishUnpublish() {
+    this.canPublish = false;
+    this.canUnpublish = false;
+    for (let document of this.documentTableData.data) {
+      if (document.checkbox) {
+        if (document.read.includes('public')) {
+          this.canUnpublish = true;
+        } else {
+          this.canPublish = true;
+        }
+      }
+
+      if (this.canPublish && this.canUnpublish) {
+        return;
+      }
+    }
   }
 
   getPaginatedDocs(pageNumber, newSortBy, newSortDirection) {

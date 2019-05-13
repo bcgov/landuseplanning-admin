@@ -12,13 +12,8 @@
   </nav>
   <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
     <div class="input-group main-search-field">
-      <input class="form-control"
-              type="text"
-              name="keywordInput"
-              placeholder="Enter keywords to search..."
-              id="keywordInput"
-              [(ngModel)]="terms.keywords"
-              autofocus />
+      <input class="form-control" type="text" name="keywordInput" placeholder="Enter keywords to search..."
+        id="keywordInput" [(ngModel)]="terms.keywords" autofocus />
       <div class="input-group-append">
         <!-- prevent searching if input is empty or we're already searching -->
         <button class="btn btn-primary" type="submit">
@@ -41,43 +36,32 @@
   </div>
 
   <div class="input-group-prepend">
-    <button (click)="selectAction('selectAll')"
-            class="btn btn-outline-secondary mr-1"
-            type="button"
-            id="button-sa">Select All</button>
-    <button (click)="selectAction('edit')"
-            class="btn btn-outline-secondary mr-1"
-            [disabled]="!isEnabled('edit') || selectedCount > 1"
-            type="button"
-            id="button-e"><i class="material-icons">edit</i>Edit</button>
-    <button (click)="selectAction('copyLink')"
-            class="btn btn-outline-secondary mr-1"
-            [disabled]="!isEnabled('copyLink')"
-            type="button"
-            id="button-cl"><i class="material-icons">link</i>Link</button>
-    <button (click)="selectAction('download')"
-            class="btn btn-outline-secondary mr-1"
-            [disabled]="!isEnabled('download')"
-            type="button"
-            id="button-dl"><i class="material-icons">cloud_download</i>Download</button>
-    <button (click)="selectAction('delete')"
-            class="btn btn-outline-secondary mr-1"
-            [disabled]="!isEnabled('delete')"
-            type="button"
-            id="button-d"><i class="material-icons">delete</i>Delete</button>
-    <a [ngClass]="{'active': currentProject._id === 'activity'}" [routerLink]="['/p', currentProject._id, 'project-documents', 'upload']">
-      <button class="btn btn-outline-secondary mr-1"
-            type="button"
-            id="button-d">
-      <i class="material-icons">file_upload</i>Upload Document(s)</button></a>
+    <button (click)="selectAction('selectAll')" class="btn btn-outline-secondary mr-1" type="button"
+      id="button-sa">Select All</button>
+    <button (click)="selectAction('edit')" class="btn btn-outline-secondary mr-1"
+      [disabled]="!isEnabled('edit') || selectedCount > 1" type="button" id="button-e"><i
+        class="material-icons">edit</i>Edit</button>
+    <button (click)="selectAction('publish')" class="btn btn-outline-secondary mr-1"
+      [disabled]="!isEnabled('publish')" type="button" id="button-p"><i
+        class="material-icons">check</i>Publish</button>
+    <button (click)="selectAction('unpublish')" class="btn btn-outline-secondary mr-1"
+      [disabled]="!isEnabled('unpublish')" type="button" id="button-u"><i
+        class="material-icons">close</i>Unpublish</button>
+    <button (click)="selectAction('copyLink')" class="btn btn-outline-secondary mr-1"
+      [disabled]="!isEnabled('copyLink')" type="button" id="button-cl"><i class="material-icons">link</i>Link</button>
+    <button (click)="selectAction('download')" class="btn btn-outline-secondary mr-1"
+      [disabled]="!isEnabled('download')" type="button" id="button-dl"><i
+        class="material-icons">cloud_download</i>Download</button>
+    <button (click)="selectAction('delete')" class="btn btn-outline-secondary mr-1" [disabled]="!isEnabled('delete')"
+      type="button" id="button-d"><i class="material-icons">delete</i>Delete</button>
+    <a [ngClass]="{'active': currentProject._id === 'activity'}"
+      [routerLink]="['/p', currentProject._id, 'project-documents', 'upload']">
+      <button class="btn btn-outline-secondary mr-1" type="button" id="button-d">
+        <i class="material-icons">file_upload</i>Upload Document(s)</button></a>
   </div>
 
-  <app-table-template *ngIf="!loading && tableParams.totalListItems != 0"
-                    (checkboxChange)='checkChange($event)'
-                    [columns]="documentTableColumns"
-                    [data]="documentTableData"
-                    (onColumnSort)='setColumnSort($event)'
-                    (onSelectedRow)='updateSelectedRow($event)'
-                    (onPageNumUpdate)='getPaginatedDocs($event, null, null)'>
-    </app-table-template>
+  <app-table-template *ngIf="!loading && tableParams.totalListItems != 0" (checkboxChange)='checkChange($event)'
+    [columns]="documentTableColumns" [data]="documentTableData" (onColumnSort)='setColumnSort($event)'
+    (onSelectedRow)='updateSelectedRow($event)' (onPageNumUpdate)='getPaginatedDocs($event, null, null)'>
+  </app-table-template>
 </div>

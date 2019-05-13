@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { of } from 'rxjs';
+import { of, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
+import { MatSnackBar } from '@angular/material';
 
 import { ConfigService } from 'app/services/config.service';
 import { DocumentService } from 'app/services/document.service';
@@ -27,11 +28,13 @@ export class DocumentEditComponent implements OnInit {
   public labels: any[] = [];
   public datePosted: NgbDateStruct = null;
   public dateUploaded: NgbDateStruct = null;
+  public isPublished = false;
   public loading = true;
 
   constructor(
     private config: ConfigService,
     private documentService: DocumentService,
+    private snackBar: MatSnackBar,
     private router: Router,
     private storageService: StorageService,
     private utils: Utils
@@ -63,6 +66,7 @@ export class DocumentEditComponent implements OnInit {
         this.myForm = this.storageService.state.form;
       } else {
         if (this.documents.length === 1) {
+          this.isPublished = this.documents[0].read.includes('public');
           // Set the old data in there if it exists.
           this.myForm = new FormGroup({
             'doctypesel': new FormControl(this.documents[0].type),
@@ -107,7 +111,7 @@ export class DocumentEditComponent implements OnInit {
     // Save all the elements to all the documents.
     console.log('this.myForm:', this.myForm);
     // go through and upload one at a time.
-    let observables = of(null);
+    let observables = [];
 
     let theLabels = this.labels.filter(label => {
       return label.selected === true;
@@ -130,14 +134,14 @@ export class DocumentEditComponent implements OnInit {
 
       // TODO
       formData.append('labels', JSON.stringify(theLabels));
-      observables = observables.concat(this.documentService.update(formData, doc._id));
+      observables.push(this.documentService.update(formData, doc._id));
     });
 
     this.storageService.state = { type: 'form', data: null };
     this.storageService.state = { type: 'documents', data: null };
     this.storageService.state = { type: 'labels', data: null };
 
-    observables
+    forkJoin(observables)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         () => { // onNext
@@ -161,13 +165,49 @@ export class DocumentEditComponent implements OnInit {
     console.log('Adding labels');
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'labels', data: this.labels };
-    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-documents', 'edit'], label: 'Edit Document(s)'};
+    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-documents', 'edit'], label: 'Edit Document(s)' };
     this.router.navigate(['/p', this.currentProject._id, 'project-documents', 'edit', 'add-label']);
   }
 
-  register (myForm: FormGroup) {
+  public togglePublish() {
+    this.isPublished = !this.isPublished;
+    let observables = [];
+    this.documents.map(doc => {
+      if (this.isPublished) {
+        observables.push(this.documentService.publish(doc._id));
+      } else {
+        observables.push(this.documentService.unPublish(doc._id));
+      }
+      forkJoin(observables)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          () => { // onNext
+            // do nothing here - see onCompleted() function below
+          },
+          error => {
+            console.log('error =', error);
+            alert('Uh-oh, couldn\'t update document\'s publish status');
+            // TODO: should fully reload project here so we have latest non-deleted objects
+          },
+          () => { // onCompleted
+            if (this.isPublished) {
+              this.openSnackBar('This document has been published.', 'Close');
+            } else {
+              this.openSnackBar('This document has been unpublished.', 'Close');
+            }
+          }
+        );
+    });
+  }
+
+  register(myForm: FormGroup) {
     console.log('Successful registration');
     console.log(myForm);
   }
 
+  public openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
 }

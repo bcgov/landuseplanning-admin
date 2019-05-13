@@ -44,9 +44,9 @@ export class CommentService {
 
   add(comment: Comment, documentForms: Array<FormData> = []): Observable<Comment> {
     if (documentForms.length > 0) {
-      let observables = of(null);
+      let observables = [];
       documentForms.map(documentForm => {
-        observables = observables.concat(this.documentService.add(documentForm));
+        observables.push(this.documentService.add(documentForm));
       });
       return forkJoin(observables)
         .pipe(
@@ -66,21 +66,20 @@ export class CommentService {
   save(comment: Comment): Observable<Comment> {
     if (comment.documentsList && comment.documentsList.length > 0) {
       // Update documents publish status.
-      let observables = of(null);
+      let observables = [];
       comment.documentsList.map(document => {
         if (document.eaoStatus === 'Published') {
-          observables = observables.concat(this.documentService.publish(document));
+          observables.push(this.documentService.publish(document._id));
         } else if (document.eaoStatus === 'Rejected') {
-          observables = observables.concat(this.documentService.unPublish(document));
+          observables.push(this.documentService.unPublish(document._id));
         }
       });
       comment.documentsList = null;
       const newComment = _.cloneDeep(comment);
-      observables = observables.concat(this.api.saveComment(newComment));
+      observables.push(this.api.saveComment(newComment));
       return forkJoin(observables)
         .pipe(
           flatMap(payloads => {
-            console.log(payloads);
             return of(payloads.pop());
           })
         );
