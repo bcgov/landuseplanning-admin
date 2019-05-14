@@ -89,10 +89,6 @@
       <h3 for="ea">EA Readiness Status: </h3>
       <p id="ea">{{project.eaDecision.label || '-'}} | {{project.eaDecision.date | date: 'longDate' || '-'}}</p>
     </div>
-    <div class="label-pair" *ngIf="project.status">
-      <h3 for="project-status">Project Status: </h3>
-      <p id="project-status">{{project.status || '-'}}</p>
-    </div>
     <div class="label-pair" *ngIf="project.operational">
       <h3 for="active-status">Active Status: </h3>
       <p id="active-status">{{project.operational.label || '-'}} | {{project.operational.date | date: 'longDate' || '-'}}</p>
