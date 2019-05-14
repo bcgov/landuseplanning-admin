@@ -3,33 +3,14 @@
 </div>
 
 <section id="comment-period-details">
-  <div class="row">
-    <div class="col-md-5">
+  <div class="row top-row">
+    <div class="col-md-10">
       <h3>DATE RANGE:&nbsp;</h3>
       <p>
-        {{commentPeriod.dateStarted | date: 'MMM d, y, h:mm:ss a'}} -
-        {{commentPeriod.dateCompleted | date: 'MMM d, y, h:mm:ss a'}}
-        <br>
-        ({{commentPeriod.daysRemaining}})
-      </p>
-    </div>
-    <div class="col-md-2">
-      <h3>
-        PUBLISHED STATE:&nbsp;
-      </h3>
-      <p>
-        {{commentPeriodPublishedStatus}}
-      </p>
-    </div>
-    <div class="col-md-3">
-      <h3>
-          STATUS:&nbsp;
-      </h3>
-      <p>
-        <i class="material-icons align-middle">
-          question_answer
-        </i>
-        Commenting {{commentPeriod.commentPeriodStatus}}
+        <span class="date-range">
+          {{commentPeriod.dateStarted | date: 'MMM d, y, h:mm:ss a'}} -
+          {{commentPeriod.dateCompleted | date: 'MMM d, y, h:mm:ss a'}}
+        </span> ({{commentPeriod.daysRemaining}})
       </p>
     </div>
     <div class="col-md-2">
@@ -44,19 +25,37 @@
       </div>
     </div>
   </div>
-
-  <br>
-
+  <div class="row">
+    <div class="col-md-4">
+      <h3>
+        PUBLISHED STATE:&nbsp;
+      </h3>
+      <p>
+        {{commentPeriodPublishedStatus}}
+      </p>
+    </div>
+    <div class="col-md-4">
+      <h3>
+          STATUS:&nbsp;
+      </h3>
+      <p>
+        <i class="material-icons align-middle">
+          question_answer
+        </i>
+        Commenting {{commentPeriod.commentPeriodStatus}}
+      </p>
+    </div>
+    <div class="col-md-4">
+      <h3>MILESTONE(S):</h3>
+      <p>{{commentPeriod.milestone | listConverter}}</p>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-8">
       <h3>DESCRIPTION</h3>
       <p>{{commentPeriod.instructions}}</p>
       <p>{{commentPeriod.additionalText}}</p>
       <p>{{commentPeriod.informationLabel}}</p>
-    </div>
-    <div class="col-md-4">
-      <h3>MILESTONE(S):</h3>
-      <p>{{commentPeriod.milestone | listConverter}}</p>
     </div>
   </div>
   <div class="row">

@@ -33,6 +33,17 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+	.btn-group-toggle {
+    display: block;
+  }
+
+	.btn-group.btn-group-toggle > div {
+	  display: inline-block;
+	  margin-top: 6px;
+	}
+}
+
 .filter-title {
 	margin: 12px 12px 0 0;
 }
