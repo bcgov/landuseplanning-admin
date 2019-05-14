@@ -13,7 +13,7 @@
         ({{commentPeriod.daysRemaining}})
       </p>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <h3>
         PUBLISHED STATE:&nbsp;
       </h3>
@@ -31,6 +31,17 @@
         </i>
         Commenting {{commentPeriod.commentPeriodStatus}}
       </p>
+    </div>
+    <div class="col-md-2">
+      <div ngbDropdown placement="bottom-right">
+        <button class="btn btn-primary" id="actionDropdown" (click)="checkIfCanDelete()" ngbDropdownToggle>Actions</button>
+        <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+          <button class="dropdown-item" (click)="editCommentPeriod()">Edit</button>
+          <button class="dropdown-item" (click)="addComment()">Add a comment</button>
+          <button class="dropdown-item" (click)="togglePublishState()">{{publishAction}}</button>
+          <button *ngIf="canDeleteCommentPeriod" class="dropdown-item" (click)="deleteCommentPeriod()">Delete</button>
+        </div>
+      </div>
     </div>
   </div>
 
