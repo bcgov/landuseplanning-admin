@@ -1,6 +1,5 @@
 html, body {
   min-height: 100%;
-  font-family: 'Noto Sans', sans-serif;
 }
 
 app-root {
@@ -15,16 +14,40 @@ div.content {
 
 .container-fluid-padding {
   padding: 98px 1.5rem 14px;
+
+  @media screen and (max-width: 768px) {
+    padding: 70px 1rem 14px;
+  }
+}
+
+.project-container h1 {
+  background: #00274e;
+  color: #fff;
+  font-size: 2.1rem;
+  margin: -19px -24px 30px;
+  padding: 9px 26px 14px;
+
+  @media screen and (max-width: 768px) {
+    margin: 0;
+    font-size: 1.5rem;
+    width: 100%;
+  }
 }
 
 @media screen and (min-width: 768px) {
   div.content {
     margin-left: 250px;
   }
+
   .sidebarcontrol div.content {
     margin-left: 0px;
   }
+
   .sidebarcontrol {
+    .action-container {
+      left: 0;
+    }
+
     .slidebtn {
       transform: rotate(180deg);
       -webkit-transform: rotate(180deg);
@@ -45,11 +68,17 @@ div.content {
     -webkit-transform: rotate(180deg);
   }
   .sidebarcontrol {
+    .action-container {
+      left: 250px;
+      right: auto;
+    }
+
     .slidebtn {
       transform: rotate(0deg);
       -webkit-transform: rotate(0deg);
       border-radius: 0 6px 6px 0;
     }
+
   }
 }
 
@@ -96,6 +125,10 @@ main {
   section {
     + section {
       margin-top: 2rem;
+
+      @media screen and (max-width: 768px) {
+        margin-top: 1rem;
+      }
     }
 
     &.last {
@@ -156,21 +189,13 @@ main {
 }
 
 .action-container {
-  position: absolute;
-  width: 100%;
   left: 0;
+  right: 0;
   background: #e9ecef;
-  top: 7px;
   padding: 10px 10px 12px 38px;
-
-  @media screen and (min-width: 768px) {
-    display: flex;
-
-    ol {
-      flex: 100%;
-      margin-bottom: 0;
-    }
-  }
+  position: fixed;
+  transition: .25s all;
+  z-index: 4;
 
   button[type="cancel"] {
     background: none;
@@ -187,7 +212,34 @@ main {
       margin-top: -7px;
     }
   }
+
+  @media screen and (min-width: 768px) {
+    display: flex;
+    left: 250px;
+    top: 75px;
+    right: 0;
+
+    ol {
+      flex: 100%;
+      margin-bottom: 0;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    top: 53px;
+    padding-left: 45px;
+
+    .btn {
+      width: 100%;
+    }
+
+    .dropdown {
+      width: 100%;
+    }
+  }
 }
+
+
 
 .btn-container {
   display: flex;
@@ -205,6 +257,13 @@ main {
     flex-wrap: wrap;
   }
 }
+
+button.btn-outline-secondary:hover {
+  background-color: #fcb118;
+  color: #036;
+  border-color: #036;
+}
+
 
 @media (min-width: 760px) {
   main {
@@ -304,12 +363,17 @@ hr {
   background: white;
 }
 
-.breadcrumb {
-  font-size: 1rem;
-  padding: 0;
-  letter-spacing: -0.025em;
-  font-weight: 500;
-  padding-top: 2px;
+ol.breadcrumb {
+  @media screen and (max-width: 768px) {
+    display: none;
+    margin-bottom: 0;
+    font-size: .85rem;
+    padding: .85rem .65rem;
+
+    li, a {
+      font-size: .85rem;
+    }
+  }
 }
 
 .breadcrumb-item a {

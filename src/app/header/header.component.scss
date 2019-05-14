@@ -86,6 +86,11 @@
 
   .navbar-nav {
     margin-top: 0.5rem;
+    span {
+      font-size: 1rem;
+      text-transform: none;
+      font-weight: normal;
+    }
     @media screen and (max-width: 600px) {
       .btn-group {
         display: block;

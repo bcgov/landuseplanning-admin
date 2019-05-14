@@ -20,6 +20,7 @@
   }
 
   tr {
+    align-items: center;
     display: flex;
   }
 
@@ -57,7 +58,7 @@
 
   tbody {
     td {
-      padding: 0.6rem 0.5rem;
+      padding: 0.6rem 0.15rem;
       vertical-align: top;
       border-top: none;
     }
@@ -69,7 +70,7 @@
 }
 
 .table tr:nth-child(even) {
-  background: #f4f8fb;
+  background: #f5f9fd;
 }
 
 th {

@@ -47,12 +47,12 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     {
       name: 'Published',
       value: 'isPublished',
-      width: 'col-1'
+      width: 'col-2 text-center'
     },
     {
       name: 'Comment Data',
       value: 'commentData',
-      width: 'col-4'
+      width: 'col-3 text-center'
     }
   ];
   public commentPeriodTableData: TableObject;

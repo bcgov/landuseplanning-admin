@@ -3,8 +3,13 @@
 
 	thead th{
     background-color: #e8eff5;
-    padding: .7rem 0.5rem .85rem;
+    padding: .7rem 0.15rem .85rem;
     border: none;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+      border-bottom: 2px solid #007bff;
+    }
   }
 
   td {
@@ -13,10 +18,6 @@
 
   tr {
     border: none;
-  }
-
-  tbody td {
-    padding: 0.25rem 0.5rem;
   }
 
 	tr td:first-child,

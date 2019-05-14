@@ -39,7 +39,7 @@ $nav-tab-bg-active: #fff;
       border-width: $nav-tab-border-width;
       border-bottom-width: 0;
       background: $nav-tab-bg-active;
-  
+
       &:focus,
       &:hover {
         border-bottom-color: transparent;
@@ -55,6 +55,10 @@ $nav-tab-bg-active: #fff;
       vertical-align: middle;
     }
   }
+}
+
+.mat-tab-group {
+  font-family: 'Noto Sans', sans-serif;
 }
 
 .tab-pane {

@@ -1,9 +1,6 @@
 <nav class="action-container" aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item">
-      <a [routerLink]="['/projects']">All Projects</a>
-    </li>
-    <li class="breadcrumb-item">
       <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
     </li>
     <li class="breadcrumb-item" aria-current="page">
@@ -13,6 +10,15 @@
       {{commentPeriod.dateStarted | date: 'MMMM d'}} - {{commentPeriod.dateCompleted | date}}
     </li>
   </ol>
+  <div ngbDropdown placement="bottom-right" class="d-inline-block">
+    <button class="btn btn-primary" id="actionDropdown" (click)="checkIfCanDelete()" ngbDropdownToggle>Actions</button>
+    <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+      <button class="dropdown-item" (click)="editCommentPeriod()">Edit</button>
+      <button class="dropdown-item" (click)="addComment()">Add a comment</button>
+      <button class="dropdown-item" (click)="togglePublishState()">{{publishAction}}</button>
+      <button *ngIf="canDeleteCommentPeriod" class="dropdown-item" (click)="deleteCommentPeriod()">Delete</button>
+    </div>
+  </div>
 </nav>
 
 <main class="container-fluid-padding">
@@ -20,7 +26,9 @@
     <div class="spinner-new rotating"></div>
   </div>
 
-  <div class="mx-3">
+  <h1 id="name">{{currentProject.name}} <span class="date">| Comment Period</span></h1>
+
+  <div>
     <mat-tab-group>
       <mat-tab label="DETAILS">
         <br>

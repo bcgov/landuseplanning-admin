@@ -58,24 +58,17 @@
     </div>
     <div class="row">
       <div class="col-md-8">
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <b>
-              # {{comment.commentId}}
-            </b>
-          </div>
-          <div class="col-md-6 text-right">
-            {{comment.dateAdded | date: 'medium'}}
-          </div>
+        <div>
+          <h3>Comment #</h3> {{comment.commentId}}
         </div>
-        <div class="row mb-3">
-          <div class="col-md-12">
-            <b>
-              {{comment.author}}
-            </b>
-            <br>
-            {{comment.location}}
-          </div>
+        <div>
+          <h3>Date: </h3> {{comment.dateAdded | date: 'medium'}}
+        </div>
+        <div>
+          <h3>Author: </h3> {{comment.author}}
+        </div>
+        <div>
+          <h3>Location: </h3> {{comment.location}}
         </div>
         <div class="row">
           <div class="col-md-12">

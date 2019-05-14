@@ -11,14 +11,13 @@
     </li>
   </ol>
   <div>
-    <button type="button" class="btn btn-primary" (click)="addCommentPeriod()">Add New Comment Period</button>
+    <button type="button" class="btn btn-primary" (click)="addCommentPeriod()">
+      <i class="material-icons">add</i>Add New Comment Period</button>
   </div>
 </nav>
 
 <main class="container-fluid-padding">
-  <div class="row mb-2">
-      <h1>Comment Periods</h1>
-    </div>
+  <h1>{{currentProject.name}}</h1>
 
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
