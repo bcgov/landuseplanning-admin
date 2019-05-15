@@ -14,7 +14,10 @@ export class ProjectResolver implements Resolve<Project> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<Project> {
     const projId = route.paramMap.get('projId');
-    return this.projectService.getById(projId);
+    let start = new Date();
+    let end = new Date();
+    start.setDate(start.getDate() + 7);
+    end.setDate(end.getDate() - 7);
+    return this.projectService.getById(projId, start, end);
   }
-
 }

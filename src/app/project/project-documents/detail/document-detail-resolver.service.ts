@@ -8,7 +8,6 @@ import { DocumentService } from 'app/services/document.service';
 @Injectable()
 export class DocumentDetailResolver implements Resolve<Observable<object>> {
   constructor(
-    private searchService: SearchService,
     private documentService: DocumentService
   ) { }
 
