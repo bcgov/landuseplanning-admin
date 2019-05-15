@@ -14,7 +14,7 @@
     </div>
     <form>
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-6">
           <div class="form-group">
             <label>Start Date</label>
             <div class="input-group">
@@ -31,7 +31,8 @@
           </div>
         </div>
 
-        <div class="col-sm-4">
+
+        <div class="col-sm-6">
           <div class="form-group">
             <label>End Date</label>
             <div class="input-group">
@@ -47,26 +48,10 @@
             <p class="text-danger help-block">{{ endDateAlert }}</p>
           </div>
         </div>
-
-        <div class="col-sm-4">
-          <label>Number of Days</label>
-          <div class="form-group">
-            <input class="form-control" type="number" name="numDaysField" [(ngModel)]="numDays" />
-          </div>
-        </div>
       </div>
 
       <div class="row">
-        <div class="col-sm-4">
-          <label>Calculation Type</label>
-          <div class="form-group">
-            <select class="form-control" name="calcType" [(ngModel)]="type">
-              <option *ngFor="let t of types" [ngValue]="t">{{t.displayName}}</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="col-sm-4" *ngIf="type.value === 'suspended'">
+        <div class="col-sm-6" *ngIf="type.value === 'suspended'">
           <div class="form-group">
             <label>Suspension Date</label>
             <div class="input-group">
@@ -84,7 +69,7 @@
           </div>
         </div>
 
-        <div class="col-sm-4" *ngIf="type.value === 'suspended'">
+        <div class="col-sm-6" *ngIf="type.value === 'suspended'">
           <div class="form-group">
             <label>Resumption Date</label>
             <div class="input-group">
@@ -98,6 +83,24 @@
           </div>
           <div *ngIf="resumeDateAlert" role="alert">
             <p class="text-danger help-block">{{ resumeDateAlert }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <label>Calculation Type</label>
+          <div class="form-group">
+            <select class="form-control" name="calcType" [(ngModel)]="type">
+              <option *ngFor="let t of types" [ngValue]="t">{{t.displayName}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <label>Number of Days</label>
+          <div class="form-group">
+            <input class="form-control" type="number" name="numDaysField" [(ngModel)]="numDays" />
           </div>
         </div>
       </div>
@@ -211,7 +214,7 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" type="button" (click)="reset()">Reset</button>
+    <button class="btn btn-secondary" type="button" (click)="reset()">Reset</button>
     <button class="btn btn-primary" type="button" (click)="dismiss()">Close</button>
     <button class="btn btn-success" type="button" (click)="go()">Calculate</button>
   </div>
