@@ -243,22 +243,20 @@
 // Navbar Brand
 .navbar-brand {
   height: 3.4375rem;
-  background-image: url(/assets/images/bcgov-eao-horiz-lg-305x60.png);
+  background-image: url("/assets/images/bcgov-header-vert-SM.png");
   background-position: 8px center;
   background-repeat: no-repeat;
   white-space: normal;
-  width: 100%;
-  max-width: 300px;
 }
 
 .navbar-brand__title {
-  margin-top: 0.35rem;
+  margin-top: 0.78rem;
   margin-left: 75px;
   display: inline-block;
   color: #fff;
   line-height: 1.1rem;
-  font-size: 0.875rem;
-
+  font-weight: 800;
+  font-size: 2rem;
   .wb {
     display: block;
   }
@@ -276,16 +274,16 @@
 @media (min-width: 1200px) {
   .navbar-brand {
     height: 4.2rem;
-    background-image: url(/assets/images/bcgov-eao-horiz-lg-305x60.png);
+    background-image: url("/assets/images/bcgov-header-vert-MD.png");
     background-position: 10px center;
   }
 
   .navbar-brand__title {
     margin-left: 88px;
-    margin-top: 0.65rem;
     line-height: 1.2rem;
-    font-size: 1rem;
-    font-weight: 400;
+    font-weight: 800;
+    font-size: 3rem;
+    margin-top: 17px;
   }
 
   .navbar-brand__version {
