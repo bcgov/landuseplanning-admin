@@ -73,12 +73,11 @@ export class AddEditActivityComponent implements OnInit {
         this.loading = false;
       });
 
-      this.projectService.getAll(1, 1000)
+      this.projectService.getAll(1, 1000, '+name')
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
           if (res) {
             this.projects = res.data;
-
             // TODO: Later
             // Types
             // this.types = this.configService.lists.filter(item => {
