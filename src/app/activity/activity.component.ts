@@ -32,7 +32,7 @@ export class ActivityComponent implements OnInit {
     {
       name: 'Headline',
       value: 'headline',
-      width: 'col-4'
+      width: 'col-3'
     },
     {
       name: 'Project',
@@ -57,6 +57,10 @@ export class ActivityComponent implements OnInit {
     {
       name: 'Status',
       value: 'active',
+      width: 'col-1'
+    },
+    {
+      name: 'Action',
       width: 'col-1'
     }
   ];
