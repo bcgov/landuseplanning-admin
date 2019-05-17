@@ -45,44 +45,36 @@ export class ProjectService {
   // get all projects
   getAll(pageNum: number = 1, pageSize: number = 20, sortBy: string = null): Observable<Object> {
     return this.api.getProjects(pageNum, pageSize, sortBy)
-    .map((res: any) => {
-      if (res) {
-        // let projects: Array<Project> = [];
-        this.projectList = [];
-        res[0].results.forEach(project => {
-          this.projectList.push(new Project(project));
-        });
-        return { totalCount: res[0].total_items, data: this.projectList };
-      }
-      return {};
-    })
-    .catch(error => this.api.handleError(error));
+      .map((res: any) => {
+        if (res) {
+          // let projects: Array<Project> = [];
+          this.projectList = [];
+          res[0].results.forEach(project => {
+            this.projectList.push(new Project(project));
+          });
+          return { totalCount: res[0].total_items, data: this.projectList };
+        }
+        return {};
+      })
+      .catch(error => this.api.handleError(error));
   }
 
-  getById(projId: string): Observable<Project> {
-    return this.api.getProject(projId)
+  getById(projId: string, cpStart: Date = null, cpEnd: Date = null): Observable<Project> {
+    return this.api.getProject(projId, cpStart, cpEnd)
       .map(projects => {
+
+        // get upcoming comment period if there is one and convert it into a comment period object.
+        if (projects[0].upcomingCommentPeriod.length > 0) {
+          projects[0].upcomingCommentPeriod = new CommentPeriod(projects[0].upcomingCommentPeriod[0]);
+        } else {
+          projects[0].upcomingCommentPeriod = null;
+        }
+
         // return the first (only) project
         return projects.length > 0 ? new Project(projects[0]) : null;
       })
       .catch(error => this.api.handleError(error));
   }
-
-  // get a specific project by its object id
-  // getById(projId: string, params: GetParameters = null): Observable<Project> {
-  //   // first get just the project
-  //   return this.api.getProject(projId)
-  //     .pipe(
-  //       flatMap(projs => {
-  //         if (!projs || projs.length === 0) {
-  //           return of(null as Project);
-  //         }
-  //         // now get the rest of the data for this project
-  //         return this._getExtraAppData(new Project(projs[0]), params || {});
-  //       })
-  //     )
-  //     .catch(error => this.api.handleError(error));
-  // }
 
   private _getExtraAppData(project: Project, { getFeatures = false, getDocuments = false, getCurrentPeriod = false, getDecision = false }: GetParameters): Observable<Project> {
     return forkJoin(
@@ -158,7 +150,7 @@ export class ProjectService {
     }
 
     return this.api.addProject(item)
-    .catch(error => this.api.handleError(error));
+      .catch(error => this.api.handleError(error));
   }
 
   // update existing project
