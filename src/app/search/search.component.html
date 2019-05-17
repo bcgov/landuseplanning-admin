@@ -8,16 +8,12 @@
     <h1>Search Environmental Assessment Projects</h1>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
       <label class="form-check-inline">
-        <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'All'"
-          (click)='handleRadioChange("All")'>All
+        <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'Document'"
+          (click)='handleRadioChange("Document")'>Documents
       </label>
       <label class="form-check-inline">
         <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'Project'"
           (click)='handleRadioChange("Project")'>Projects
-      </label>
-      <label class="form-check-inline">
-        <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'Document'"
-          (click)='handleRadioChange("Document")'>Documents
       </label>
       <label class="form-check-inline">
         <input class="form-check-input" type="radio" [checked]="this.terms.dataset === 'Vc'"

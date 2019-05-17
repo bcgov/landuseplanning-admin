@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, OnDestroy, ViewChild, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -6,8 +6,7 @@ import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
 
 import { SearchService } from 'app/services/search.service';
-import { SearchTerms, SearchResults } from 'app/models/search';
-import { Project } from 'app/models/project';
+import { SearchTerms } from 'app/models/search';
 import { ApiService } from 'app/services/api';
 
 @Component({
@@ -55,7 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.terms.dataset = params.dataset;
         } else {
           // default all
-          this.terms.dataset = 'All';
+          this.terms.dataset = 'Document';
         }
 
         if (!_.isEmpty(this.terms.getParams())) {
