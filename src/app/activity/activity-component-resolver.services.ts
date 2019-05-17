@@ -21,7 +21,7 @@ export class ActivityComponentResolver implements Resolve<Observable<object>> {
     } else {
       const pageNum = Number(route.queryParams['pageNum'] ? route.queryParams['pageNum'] : 1);
       const pageSize = Number(route.queryParams['pageSize'] ? route.queryParams['pageSize'] : 10);
-      const sortBy = route.queryParams['sortBy'] ? route.queryParams['sortBy'] : null;
+      const sortBy = route.queryParams['sortBy'] ? route.queryParams['sortBy'] : '-dateAdded';
       const keywords = route.params.keywords;
       return this.searchService.getSearchResults(keywords,
                                                 'RecentActivity',
