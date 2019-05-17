@@ -91,7 +91,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             this.totalListItems = res.totalCount;
             if (this.totalListItems > 0) {
               this.projects = res.data;
-              console.log('projects:', this.projects);
               this.setProjectRowData();
               this._changeDetectionRef.detectChanges();
             }
