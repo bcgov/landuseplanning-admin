@@ -44,7 +44,7 @@
           </select>
         </div>
         <div class="form-group col-md-4">
-          <label for="labelsel">Milestone</label>
+          <label for="labelsel">Milestone*</label>
           <select required class="form-control" formControlName="labelsel">
             <option *ngFor="let label of labels" [ngValue]="label._id">{{label.name}}</option>
           </select>
