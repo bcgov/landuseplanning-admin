@@ -186,10 +186,10 @@
             <header class="card-header">
               <span class="project-name">
                 <span class="tag">
-                  <i class="material-icons">switch_camera</i> Valued Component
+                  <i class="material-icons">switch_camera</i> Valued Component | {{result.project.name}}
                 </span>
               </span>
-              <a [routerLink]="['/p', result.project]" class="btn btn-primary view-btn">View VC<i class="material-icons">chevron_right</i></a>
+              <a [routerLink]="['/p', result.project._id]" class="btn btn-primary view-btn">View VC<i class="material-icons">chevron_right</i></a>
             </header>
             <div class="card-body">
               <h2 class="card-title">{{result.name}}</h2>
