@@ -7,6 +7,7 @@ export class RecentActivity {
     active: string;
     headline: string;
     content: string;
+    pinned: boolean;
 
     constructor(obj?: any) {
         this._id             = obj && obj._id             || null;
@@ -17,5 +18,6 @@ export class RecentActivity {
         this.priority           = obj && obj.priority           || null;
         this.headline           = obj && obj.headline           || null;
         this.active           = obj && obj.active           || null;
+        this.pinned           = obj && obj.pinned           || null;
     }
 }
