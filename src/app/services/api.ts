@@ -142,7 +142,7 @@ export class ApiService {
   }
 
   // NB: returns array with 1 element
-  getProject(id: string): Observable<Project[]> {
+  getProject(id: string, cpStart: Date, cpEnd: Date): Observable<Project[]> {
     const fields = [
       'CEAAInvolvement',
       'CELead',
@@ -197,7 +197,10 @@ export class ApiService {
       'write',
       'delete'
     ];
-    const queryString = `project/${id}?fields=${this.buildValues(fields)}` + '&populate=true';
+    let queryString = `project/${id}?populate=true`;
+    if (cpStart !== null) { queryString += `&cpStart[until]=${cpStart.getFullYear()}-${cpStart.getMonth()}-${cpStart.getDate()}`; }
+    if (cpEnd !== null) { queryString += `&cpEnd[since]=${cpEnd.getFullYear()}-${cpEnd.getMonth()}-${cpEnd.getDate()}`; }
+    queryString += `&fields=${this.buildValues(fields)}`;
     return this.http.get<Project[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -831,7 +834,6 @@ export class ApiService {
       queryString += `&query` + queryModifier;
     }
     queryString += `&fields=${this.buildValues(fields)}`;
-    console.log('here is the query', queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 

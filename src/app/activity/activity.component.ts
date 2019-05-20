@@ -30,9 +30,14 @@ export class ActivityComponent implements OnInit {
   public entries: RecentActivity[] = null;
   public tableColumns: any[] = [
     {
+      name: 'Pin',
+      value: 'pinned',
+      width: 'col-1'
+    },
+    {
       name: 'Headline',
       value: 'headline',
-      width: 'col-4'
+      width: 'col-3'
     },
     {
       name: 'Project',
@@ -45,12 +50,12 @@ export class ActivityComponent implements OnInit {
       width: 'col-2'
     },
     {
-      name: 'Date Added',
+      name: 'Date',
       value: 'dateAdded',
       width: 'col-2'
     },
     {
-      name: 'Priority',
+      name: 'P',
       value: 'priority',
       width: 'col-1'
     },
@@ -58,6 +63,11 @@ export class ActivityComponent implements OnInit {
       name: 'Status',
       value: 'active',
       width: 'col-1'
+    },
+    {
+      name: 'Delete',
+      width: 'col-1',
+      nosort: true
     }
   ];
   constructor(
@@ -120,7 +130,8 @@ export class ActivityComponent implements OnInit {
             type: item.type,
             dateAdded: item.dateAdded,
             priority: item.priority,
-            active: item.active
+            active: item.active,
+            pinned: item.pinned
           }
         );
       });
@@ -162,7 +173,8 @@ export class ActivityComponent implements OnInit {
       pageNumber,
       this.tableParams.pageSize,
       sorting,
-      null)
+      null,
+      true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res[0].data.meta && res[0].data.meta.length > 0) {

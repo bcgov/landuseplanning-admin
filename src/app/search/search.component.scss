@@ -113,7 +113,7 @@ $sr-table-row-bg: #f7f8fa;
 }
 
 .card-body .label-pair {
-  margin: 10px 0 0;
+  margin: 20px 0 0;
 
   > div {
     display: inline-block;
@@ -173,8 +173,9 @@ $sr-table-row-bg: #f7f8fa;
 
 .card-title {
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.5;
+  margin-bottom: 10px;
 }
 
 .card-text {
@@ -187,11 +188,18 @@ $sr-table-row-bg: #f7f8fa;
 }
 
 .card-body {
+
   .btn-primary{
     border: 1px solid #003367;
     background: none;
     color: #003367;
     font-weight: 600;
+    margin-top: 20px;
+  }
+
+  .flex-container {
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
 }
 

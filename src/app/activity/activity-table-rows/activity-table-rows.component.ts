@@ -12,6 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProjectService } from 'app/services/project.service';
 import { Project } from 'app/models/project';
 import { Observable } from 'rxjs/Observable';
+import { RecentActivityService } from 'app/services/recent-activity';
 
 @Component({
   selector: 'tbody[app-activity-table-rows]',
@@ -34,6 +35,7 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
     private router: Router,
     private dialogService: DialogService,
     private modalService: NgbModal,
+    private recentActivityService: RecentActivityService,
     private projectService: ProjectService
     // private activityService: SearchService,
   ) { }
@@ -76,6 +78,19 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
     //       }
     //     }
     //   );
+  }
+
+  togglePin(activity) {
+    activity.pinned === true ? activity.pinned = false : activity.pinned = true;
+    this.recentActivityService.save(activity)
+    .subscribe(
+      () => {
+        this._changeDetectionRef.detectChanges();
+      },
+      error => {
+        console.log('error =', error);
+      }
+    );
   }
 
   goToItem(activity) {

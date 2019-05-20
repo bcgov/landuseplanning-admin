@@ -44,7 +44,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private cp: CurrencyPipe,
     public decisionService: DecisionService,
     private storageService: StorageService,
-    private orgService: OrgService,
     public documentService: DocumentService,
     private projectComponent: ProjectComponent
   ) { }

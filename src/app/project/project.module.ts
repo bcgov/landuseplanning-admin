@@ -44,6 +44,7 @@ import { GetValuedComponentTableRowsComponent } from './comment-period/review-co
 import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
 import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
 import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
+import { CommentPeriodBannerComponent } from './comment-period-banner/comment-period-banner.component';
 
 @NgModule({
   imports: [
@@ -64,6 +65,7 @@ import { AddCommentComponent } from './comment-period/add-comment/add-comment.co
     AddEditCommentPeriodComponent,
     AddLabelComponent,
     AddVcComponent,
+    CommentPeriodBannerComponent,
     CommentPeriodComponent,
     CommentPeriodDetailsTabComponent,
     CommentPeriodsComponent,

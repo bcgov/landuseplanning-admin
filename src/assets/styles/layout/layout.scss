@@ -16,7 +16,7 @@ div.content {
   padding: 98px 1.5rem 14px;
 
   @media screen and (max-width: 768px) {
-    padding: 0px 1rem 14px;
+    padding: 1.2rem 1rem 14px;
   }
 }
 
@@ -29,9 +29,7 @@ div.content {
   box-sizing: content-box;
 
   @media screen and (max-width: 768px) {
-    margin: 0 -24px 30px;
     font-size: 1.5rem;
-    width: 100%;
   }
 }
 
@@ -69,10 +67,6 @@ div.content {
     -webkit-transform: rotate(180deg);
   }
   .sidebarcontrol {
-    .action-container {
-      left: 250px;
-      right: auto;
-    }
 
     .slidebtn {
       transform: rotate(0deg);

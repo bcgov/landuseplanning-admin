@@ -6,6 +6,10 @@
     text-align: left;
     flex: 1;
 
+    @media screen and (max-width: 600px) {
+      text-align: left!important;
+    }
+
     &:first-child {
       @media screen and (min-width: 600px) {
         padding-left: 1rem;
@@ -161,8 +165,9 @@ th {
 
   .table tr {
     display: block;
-    margin-bottom: .625em;
     margin-bottom: 20px;
+    border-bottom: 2px solid #003367;
+    padding-bottom: 12px;
   }
 
   .table tbody td {
@@ -191,9 +196,9 @@ th {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    flex: 33%;
+    flex: 50%;
     user-select: none;
-    max-width: 33%;
+    max-width: 50%;
     border-color: #fff;
   }
 

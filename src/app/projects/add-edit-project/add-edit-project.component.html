@@ -196,13 +196,13 @@
         </fieldset>
         <fieldset class="form-group">
           <div class="label-pair">
-            <label for="eacDecision">Ea Decision </label>
+            <label for="eacDecision">EA Decision </label>
             <select required class="form-control" name="eacDecision" id="eacDecision" formControlName="eacDecision">
               <option *ngFor="let eacDecision of EAC_DECISIONS" [ngValue]="eacDecision">{{eacDecision}}</option>
             </select>
           </div>
           <div class="label-pair">
-            <label for="decisionDate">Ea Decision Date </label>
+            <label for="decisionDate">EA Decision Date </label>
             <div class="input-group">
               <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="decisionDate"
                 formControlName="decisionDate" ngbDatepicker #decisionDatePicker="ngbDatepicker" />

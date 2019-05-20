@@ -69,7 +69,7 @@ describe('SearchService', () => {
         }));
       });
 
-      describe('when project results from within EAGLE are returned', () => {
+      describe('when project results from within EPIC are returned', () => {
         let result: Array<Project[]>;
         beforeEach(async(() => {
           result = [];
@@ -94,7 +94,7 @@ describe('SearchService', () => {
           expect(result[1].length).toEqual(0);
         }));
 
-        describe('the array of projects returned from EAGLE', () => {
+        describe('the array of projects returned from EPIC', () => {
           // let result: Project[];
           // beforeEach(() => {
           //   result = result[0];
@@ -310,7 +310,7 @@ describe('SearchService', () => {
         }));
       });
 
-      describe('when project results from within EAGLE are returned', () => {
+      describe('when project results from within EPIC are returned', () => {
         let result: Array<Project[]>;
         beforeEach(async(() => {
           result = [];
@@ -335,7 +335,7 @@ describe('SearchService', () => {
           expect(result[1].length).toEqual(1);
         }));
 
-        describe('the projects returned from EAGLE', () => {
+        describe('the projects returned from EPIC', () => {
           // let result: Project[];
           // beforeEach(() => {
           //   result = result[1];
@@ -427,7 +427,7 @@ describe('SearchService', () => {
           expect(result[1].length).toEqual(1);
         }));
 
-        describe('the array of projects returned from EAGLE', () => {
+        describe('the array of projects returned from EPIC', () => {
           let tantalisResult: Project[];
           beforeEach(() => {
             tantalisResult = result[1];

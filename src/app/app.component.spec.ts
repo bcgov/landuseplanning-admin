@@ -47,6 +47,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('span.navbar-brand__title').textContent).toContain('EAGLE');
+    expect(compiled.querySelector('span.navbar-brand__title').textContent).toContain('EPIC');
   }));
 });
