@@ -183,6 +183,9 @@ export class AddCommentComponent implements OnInit {
         this.addCommentForm.controls.isPublished.setValue(false);
         this.addCommentForm.controls.isDeferred.setValue(false);
         this.addCommentForm.controls.isRejected.setValue(false);
+        this.documents.map(document => {
+          document.eaoStatus = 'Pending';
+        });
         break;
       }
     }
