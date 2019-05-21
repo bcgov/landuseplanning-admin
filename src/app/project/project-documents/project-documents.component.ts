@@ -317,17 +317,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
     // WORKAROUND: add timestamp to force URL to be different than last time
 
-    // Reset page.
-    this.tableParams.currentPage = 1;
-    this.tableParams.sortBy = '';
-    this.tableParams.sortDirection = 0;
-
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
     params['dataset'] = this.terms.dataset;
-    params['currentPage'] = this.terms.currentPage;
-    params['sortBy'] = this.terms.sortBy;
-    params['sortDirection'] = this.terms.sortDirection;
+    params['currentPage'] = this.tableParams.currentPage = 1;
+    params['sortBy'] = this.tableParams.sortBy = '';
+    params['sortDirection'] = this.tableParams.sortDirection = 0;
 
 
     console.log('params =', params);
