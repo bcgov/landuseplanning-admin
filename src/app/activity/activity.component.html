@@ -1,15 +1,15 @@
-<section class="container-fluid-padding">
-	<div class="action-container">
-    <ol aria-label="breadcrumb" class="breadcrumb">
-      <li class="breadcrumb-item active" aria-current="page">Activity Posts</li>
-    </ol>
-	  <div class="dropdown">
-      <button (click)="selectAction('add')"
-              class="btn btn-primary"
-              type="button"
-              id="button-d"><i class="material-icons">add</i>Add Activity</button>
-	  </div>
+<div class="action-container">
+  <ol aria-label="breadcrumb" class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">Activity Posts</li>
+  </ol>
+  <div class="dropdown">
+    <button (click)="selectAction('add')"
+            class="btn btn-primary"
+            type="button"
+            id="button-d"><i class="material-icons">add</i>Add Activity</button>
   </div>
+</div>
+<section class="container-fluid-padding">
   <!-- STARRED ITEMS -->
   <!-- <p>Starred Activity Posts</p>
   <table class="table">
@@ -86,7 +86,7 @@
 
   <br>
   <p>Other Activity Posts</p> -->
- 
+
     <!-- EVERYTHING ELSE -->
   <app-table-template
       [columns]="tableColumns"

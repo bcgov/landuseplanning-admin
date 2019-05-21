@@ -1,10 +1,10 @@
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">Global Search</li>
+  </ol>
+</nav>
 <div class="search-container">
   <div class="container-fluid-padding">
-    <nav class="action-container" aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Global Search</li>
-      </ol>
-    </nav>
     <h1>Search Environmental Assessment Projects</h1>
     <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
       <label class="form-check-inline">
@@ -138,19 +138,18 @@
                 </button>
               </div>
               <button class="btn btn-primary view-btn" (click)="api.openDocument(result._id)">
-                View Document<i class="material-icons">chevron_right</i>
+                View Document <i class="material-icons">open_in_new</i>
               </button>
             </header>
             <div class="card-body">
-
+              <div class="flex-container">
+                <p *ngIf="result.project" class="card-text"><label>Project:</label> {{result.project.name}}</p>
+                <p class="card-text"><label>Date:</label> {{result.datePosted | date:'medium'}}</p>
+              </div>
               <h2 class="card-title">{{result.displayName}}</h2>
-              <p class="card-text"><label>Date:</label> {{result.datePosted | date:'medium'}}</p>
               <p *ngIf="result.milestone" class="card-text">Milestone: {{result.milestone | listConverter}}</p>
               <p *ngIf="result.description" class="card-text">Description: {{result.description}}</p>
-              <div *ngIf="result.project">
-                <p class="card-text"><label>Project:</label> {{result.project.name}}</p>
-                <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary"><i class="material-icons">open_in_new</i> View {{result.project.name}} Project</a>
-              </div>
+              <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary"> View {{result.project.name}} Project <i class="material-icons">chevron_right</i></a>
               <div class="label-pair badge-container">
                 <div *ngFor="let label of result.labels">
                   <button class="mr-2 badge badge-pill badge-info">{{label}}</button>
@@ -173,8 +172,8 @@
             </header>
             <div class="card-body">
               <h2 class="card-title">{{result.name}}</h2>
-              <p class="card-text">{{result.type}} / {{result.sector}}</p>
-              <p class="card-text">{{result.location}}</p>
+              <p class="card-text"><label>Type: </label> {{result.type}} / {{result.sector}}</p>
+              <p class="card-text"><label>Location: </label> {{result.location}}</p>
               <a [routerLink]="['/p', result._id]" class="btn btn-primary"><i class="material-icons">open_in_new</i> View {{result.name}}</a>
             </div>
           </div>

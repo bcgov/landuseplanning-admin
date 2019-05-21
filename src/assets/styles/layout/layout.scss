@@ -16,7 +16,7 @@ div.content {
   padding: 98px 1.5rem 14px;
 
   @media screen and (max-width: 768px) {
-    padding: 70px 1rem 14px;
+    padding: 1.2rem 1rem 14px;
   }
 }
 
@@ -26,11 +26,10 @@ div.content {
   font-size: 2.1rem;
   margin: -19px -24px 30px;
   padding: 9px 26px 14px;
+  box-sizing: content-box;
 
   @media screen and (max-width: 768px) {
-    margin: 0;
     font-size: 1.5rem;
-    width: 100%;
   }
 }
 
@@ -68,10 +67,6 @@ div.content {
     -webkit-transform: rotate(180deg);
   }
   .sidebarcontrol {
-    .action-container {
-      left: 250px;
-      right: auto;
-    }
 
     .slidebtn {
       transform: rotate(0deg);
@@ -81,7 +76,6 @@ div.content {
 
   }
 }
-
 
 // Container
 .container {
@@ -226,7 +220,8 @@ main {
   }
 
   @media screen and (max-width: 768px) {
-    top: 53px;
+    position: relative;
+    top: 0;
     padding-left: 45px;
 
     .btn {
@@ -238,8 +233,6 @@ main {
     }
   }
 }
-
-
 
 .btn-container {
   display: flex;
@@ -365,7 +358,6 @@ hr {
 
 ol.breadcrumb {
   @media screen and (max-width: 768px) {
-    display: none;
     margin-bottom: 0;
     font-size: .85rem;
     padding: .85rem .65rem;
@@ -383,4 +375,19 @@ ol.breadcrumb {
 
 .breadcrumb-item.active {
   color: #036;
+}
+
+#comments-received-details {
+  .status-container {
+    text-align: left;
+
+    > div {
+      margin-bottom: 10px;
+
+      span {
+        vertical-align: top;
+        margin-top: 3px;
+      }
+    }
+  }
 }

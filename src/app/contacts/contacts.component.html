@@ -1,19 +1,18 @@
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">All Contacts</li>
+  </ol>
+  <button class="btn btn-primary create-contact" [routerLink]="['contacts/edit']">
+    <i class="material-icons">add</i>
+    <span>Create New Contact</span>
+  </button>
+</nav>
 <div class="search-container">
   <div class="fb-container bg-faded">
     <section class="container-fluid-padding" id="anchor-point">
       <div class="spinner-container" *ngIf="loading">
         <div class="spinner-new rotating"></div>
       </div>
-      <nav class="action-container" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item active" aria-current="page">All Contacts</li>
-        </ol>
-        <button class="btn btn-primary create-contact" [routerLink]="['contacts/edit']">
-          <i class="material-icons">add</i>
-          <span>Create New Contact</span>
-        </button>
-      </nav>
-
       <main *ngIf="!loading">
         <section>
           <app-table-template *ngIf="!loading && totalCount != 0"

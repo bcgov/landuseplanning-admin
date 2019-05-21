@@ -1,13 +1,11 @@
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/administration">Settings</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Topics</li>
+  </ol>
+  <button type="button" class="btn btn-primary" (click)="addTopic()">Add new Topic</button>
+</nav>
 <main class="container-fluid-padding">
-
-  <nav class="action-container" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a routerLink="/administration">Settings</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Topics</li>
-    </ol>
-    <button type="button" class="btn btn-primary" (click)="addTopic()">Add new Topic</button>
-  </nav>
-
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>

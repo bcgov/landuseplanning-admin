@@ -112,18 +112,24 @@ $sr-table-row-bg: #f7f8fa;
   border: none;
 }
 
-.badge-container {
-  margin-bottom: 20px;
+.card-body .label-pair {
+  margin: 20px 0 0;
 
   > div {
     display: inline-block;
+    margin-bottom: 5px;
+  }
 
-    button {
-      background: #fcba18;
-      box-shadow: none;
-      border: none;
-      color: #003368;
-    }
+  .badge {
+    background: #fcba18;
+    box-shadow: none;
+    border: none;
+    color: #003368;
+    text-align: left;
+    white-space: normal;
+    font-weight: 600;
+    padding: 6px 10px;
+    letter-spacing: -0.025em;
   }
 }
 
@@ -167,8 +173,9 @@ $sr-table-row-bg: #f7f8fa;
 
 .card-title {
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.5;
+  margin-bottom: 10px;
 }
 
 .card-text {
@@ -181,11 +188,18 @@ $sr-table-row-bg: #f7f8fa;
 }
 
 .card-body {
+
   .btn-primary{
     border: 1px solid #003367;
     background: none;
     color: #003367;
     font-weight: 600;
+    margin-top: 20px;
+  }
+
+  .flex-container {
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
 }
 

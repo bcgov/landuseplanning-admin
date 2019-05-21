@@ -1,19 +1,19 @@
+<div class="action-container">
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">All Projects</li>
+  </ol>
+  <div>
+    <button class="btn btn-primary" (click)="addProject()">
+      <i class="material-icons">add</i>
+      Create New project
+    </button>
+  </div>
+</div>
 <div class="search-container">
   <div class="fb-container bg-faded">
     <section class="container-fluid-padding" id="anchor-point">
       <div class="spinner-container" *ngIf="loading">
         <div class="spinner-new rotating"></div>
-      </div>
-      <div class="action-container">
-        <ol class="breadcrumb" aria-label="breadcrumb">
-          <li class="breadcrumb-item active" aria-current="page">All Projects</li>
-        </ol>
-        <div>
-          <button class="btn btn-primary" (click)="addProject()">
-            <i class="material-icons">add</i>
-            Create New project
-          </button>
-        </div>
       </div>
       <main *ngIf="!loading">
         <section>

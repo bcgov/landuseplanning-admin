@@ -2,7 +2,6 @@
 
 .day-calculator-modal {
   position: relative;
-  padding: 1.5rem;
   border-radius: 0.3rem;
   background: #ffffff; /* Old browsers */
   width: 100%;
@@ -10,7 +9,7 @@
 
 @media (min-width: 768px) {
   .day-calculator-modal {
-    padding: 3.5rem 4.5rem;
+    padding: 1rem;
     background: #ffffff; /* Old browsers */
   }
 }

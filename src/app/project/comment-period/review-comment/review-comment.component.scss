@@ -38,6 +38,18 @@ input[type="text"] {
   }
 }
 
+@media screen and (max-width: 768px) {
+  .btn-group-toggle {
+    display: block;
+    margin-top: 10px;
+  }
+
+  .btn-group.btn-group-toggle > div {
+    display: inline-block;
+    margin-top: 6px;
+  }
+}
+
 h3 {
   letter-spacing: -0.02rem;
   font-size: 1rem;
