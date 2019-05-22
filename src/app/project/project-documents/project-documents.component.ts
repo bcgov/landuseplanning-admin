@@ -93,7 +93,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         this.keywords = params.keywords;
-        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+        // REMOVE THIS
+        // this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
       });
 
     this.currentProject = this.storageService.state.currentProject.data;
@@ -321,9 +322,9 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     params['ms'] = new Date().getMilliseconds();
     params['dataset'] = this.terms.dataset;
     params['currentPage'] = this.tableParams.currentPage = 1;
-    params['sortBy'] = this.tableParams.sortBy = '';
-    params['sortDirection'] = this.tableParams.sortDirection = 0;
-
+    params['sortBy'] = this.tableParams.sortBy = '-datePosted';
+    params['keywords'] = this.tableParams.keywords = this.keywords;
+    params['pageSize'] = this.tableParams.pageSize = 10;
 
     console.log('params =', params);
     console.log('nav:', ['p', this.currentProject._id, 'project-documents', params]);
@@ -358,9 +359,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   }
 
   setColumnSort(column) {
-    this.tableParams.sortBy = column;
-    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedDocs(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginatedDocs(this.tableParams.currentPage);
   }
 
   isEnabled(button) {
@@ -403,12 +407,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getPaginatedDocs(pageNumber, newSortBy, newSortDirection) {
+  getPaginatedDocs(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
     this.searchService.getSearchResults(
       this.keywords,
@@ -416,14 +420,14 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       [{ 'name': 'project', 'value': this.currentProject._id }],
       pageNumber,
       this.tableParams.pageSize,
-      this.tableParams.sortString,
+      this.tableParams.sortBy,
       '[documentSource]=PROJECT',
       true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
         this.documents = res[0].data.searchResults;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.keywords);
         this.setDocumentRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();

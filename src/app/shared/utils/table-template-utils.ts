@@ -11,11 +11,11 @@ export class TableTemplateUtils {
     private router: Router
   ) { }
 
-  public updateUrl(sortString, currentPage, pageSize, filter = null) {
+  public updateUrl(sortString, currentPage, pageSize, filter = null, keywords = '') {
     let currentUrl = this.router.url;
     currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
     currentUrl = currentUrl.split(';')[0];
-    currentUrl += `;currentPage=${currentPage};pageSize=${pageSize}`;
+    currentUrl += `;currentPage=${currentPage};pageSize=${pageSize};keywords=${keywords}`;
     if (sortString !== null) {
       currentUrl += `;sortBy=${sortString}`;
     }
@@ -31,34 +31,20 @@ export class TableTemplateUtils {
   public getParamsFromUrl(params, filter = null) {
     let pageSize = params.pageSize || Constants.tableDefaults.DEFAULT_PAGE_SIZE;
     let currentPage = params.currentPage ? params.currentPage : Constants.tableDefaults.DEFAULT_CURRENT_PAGE;
+    let sortBy = params.sortBy ? params.sortBy : Constants.tableDefaults.DEFAULT_SORT_BY;
 
-    let sortBy = '';
-    let sortDirection = null;
-    let sortString = params.sortBy === 'null' || !params.sortBy ? null : params.sortBy;
-
-    if (sortString !== '' && sortString !== null) {
-      sortDirection = sortString.charAt(0) === '+' ? 1 : -1;
-      sortBy = sortString.substring(1);
-    }
-
-    this.updateUrl(sortString, currentPage, pageSize, filter);
+    this.updateUrl(sortBy, currentPage, pageSize, filter);
 
     return new TableParamsObject(
       pageSize,
       currentPage,
       0,
-      sortBy,
-      sortDirection,
-      sortString
+      sortBy
     );
   }
 
-  public updateTableParams(tableParams: TableParamsObject, pageNumber: number, newSortBy: string, newSortDirection: number) {
-    if (newSortBy) {
-      tableParams.sortString = (newSortDirection > 0 ? '+' : '-') + newSortBy;
-      tableParams.sortBy = newSortBy;
-      tableParams.sortDirection = newSortDirection;
-    }
+  public updateTableParams(tableParams: TableParamsObject, pageNumber: number, sortBy: string) {
+    tableParams.sortBy = sortBy;
     tableParams.currentPage = pageNumber;
     return tableParams;
   }

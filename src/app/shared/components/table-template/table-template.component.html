@@ -8,7 +8,7 @@
         >
         {{entry.name}}
         <i *ngIf="entry.nosort !== true" class="sort"
-           [ngClass]="{'sort-asc': (column == entry.value && direction < 0), 'sort-desc': (column == entry.value && direction > 0) }"
+           [ngClass]="{'sort-asc': (column.slice(1) == entry.value && column.charAt(0) === '+'), 'sort-desc': (column.slice(1) == entry.value && column.charAt(0) === '-') }"
            aria-hidden="true"></i>
       </th>
     </tr>
