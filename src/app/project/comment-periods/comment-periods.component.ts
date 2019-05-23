@@ -52,7 +52,8 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     {
       name: 'Comment Data',
       value: 'commentData',
-      width: 'col-3 text-center'
+      width: 'col-3 text-center',
+      nosort: true
     }
   ];
   public commentPeriodTableData: TableObject;
@@ -77,10 +78,6 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
 
     this.currentProject = this.storageService.state.currentProject.data;
 
-    this.route.params.subscribe(params => {
-      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-    });
-
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -90,8 +87,11 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
             this.tableParams.totalListItems = res.commentPeriods.totalCount;
             if (this.tableParams.totalListItems > 0) {
               this.commentPeriods = res.commentPeriods.data;
-              this.setCPRowData();
+            } else {
+              this.tableParams.totalListItems = 0;
+              this.commentPeriods = [];
             }
+            this.setCPRowData();
           } else {
             alert('Uh-oh, couldn\'t load comment periods');
             // project not found --> navigate back to search
@@ -104,9 +104,12 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   setColumnSort(column) {
-    this.tableParams.sortBy = column;
-    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedComments(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginatedComments(this.tableParams.currentPage);
   }
 
   setCPRowData() {
@@ -141,19 +144,19 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     );
   }
 
-  public getPaginatedComments(pageNumber, newSortBy, newSortDirection) {
+  public getPaginatedComments(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    this.commentPeriodService.getAllByProjectId(this.currentProject._id, pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
+    this.commentPeriodService.getAllByProjectId(this.currentProject._id, pageNumber, this.tableParams.pageSize, this.tableParams.sortBy)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;
         this.commentPeriods = res.data;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize);
         this.setCPRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();

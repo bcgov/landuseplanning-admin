@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, of, forkJoin } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 
 import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
@@ -17,8 +17,6 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
-import { andObservables } from '@angular/router/src/utils/collection';
-import { flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-documents',
@@ -36,7 +34,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     {
       name: '',
       value: 'check',
-      width: 'col-1'
+      width: 'col-1',
+      nosort: true
     },
     {
       name: 'Name',
@@ -87,13 +86,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // get data from route resolver
-
     this.route.params
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         this.keywords = params.keywords;
-        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
       });
 
     this.currentProject = this.storageService.state.currentProject.data;
@@ -109,17 +105,15 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             this.tableParams.totalListItems = 0;
             this.documents = [];
           }
-          this.loading = false;
-          this.setDocumentRowData();
-          this._changeDetectionRef.detectChanges();
+          this.setRowData();
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
-          this.loading = false;
         }
-      }
-      );
+        this.loading = false;
+        this._changeDetectionRef.detectChanges();
+      });
   }
 
   public selectAction(action) {
@@ -321,16 +315,16 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     params['ms'] = new Date().getMilliseconds();
     params['dataset'] = this.terms.dataset;
     params['currentPage'] = this.tableParams.currentPage = 1;
-    params['sortBy'] = this.tableParams.sortBy = '';
-    params['sortDirection'] = this.tableParams.sortDirection = 0;
-
+    params['sortBy'] = this.tableParams.sortBy = '-datePosted';
+    params['keywords'] = this.tableParams.keywords = this.keywords;
+    params['pageSize'] = this.tableParams.pageSize = 10;
 
     console.log('params =', params);
     console.log('nav:', ['p', this.currentProject._id, 'project-documents', params]);
     this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
   }
 
-  setDocumentRowData() {
+  setRowData() {
     let documentList = [];
     if (this.documents && this.documents.length > 0) {
       this.documents.forEach(document => {
@@ -358,9 +352,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   }
 
   setColumnSort(column) {
-    this.tableParams.sortBy = column;
-    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedDocs(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginatedDocs(this.tableParams.currentPage);
   }
 
   isEnabled(button) {
@@ -403,12 +400,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getPaginatedDocs(pageNumber, newSortBy, newSortDirection) {
+  getPaginatedDocs(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
     this.searchService.getSearchResults(
       this.keywords,
@@ -416,15 +413,15 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       [{ 'name': 'project', 'value': this.currentProject._id }],
       pageNumber,
       this.tableParams.pageSize,
-      this.tableParams.sortString,
+      this.tableParams.sortBy,
       '[documentSource]=PROJECT',
       true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
         this.documents = res[0].data.searchResults;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
-        this.setDocumentRowData();
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.keywords);
+        this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });

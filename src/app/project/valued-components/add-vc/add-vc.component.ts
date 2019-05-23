@@ -6,15 +6,16 @@ import { TableObject } from 'app/shared/components/table-template/table-object';
 
 import { TopicService } from 'app/services/topic.service';
 import { ValuedComponentService } from 'app/services/valued-component.service';
+import { StorageService } from 'app/services/storage.service';
 
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 import { Topic } from 'app/models/topic';
-import { ValuedComponent } from 'app/models/valuedComponent';
 
+import { ValuedComponent } from 'app/models/valuedComponent';
 import { TopicTableRowsComponent } from './topic-table-rows/topic-table-rows.component';
-import { StorageService } from 'app/services/storage.service';
+
 
 @Component({
   selector: 'app-add-vc',
@@ -35,7 +36,8 @@ export class AddVcComponent implements OnInit {
     {
       name: '',
       value: 'check',
-      width: 'col-1'
+      width: 'col-1',
+      nosort: true
     },
     {
       name: 'Name',
@@ -60,7 +62,8 @@ export class AddVcComponent implements OnInit {
     {
       name: 'Parent',
       value: 'parent',
-      width: 'col-2'
+      width: 'col-2',
+      nosort: true
     }
   ];
 
@@ -75,9 +78,6 @@ export class AddVcComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-    });
     // This page always renders full list.
     this.tableParams.pageSize = 1000;
 
@@ -90,8 +90,11 @@ export class AddVcComponent implements OnInit {
           this.tableParams.totalListItems = res.topics.totalCount;
           if (this.tableParams.totalListItems > 0) {
             this.topics = res.topics.data;
-            this.setRowData();
+          } else {
+            this.tableParams.totalListItems = 0;
+            this.topics = [];
           }
+          this.setRowData();
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
@@ -99,8 +102,7 @@ export class AddVcComponent implements OnInit {
         }
         this.loading = false;
         this._changeDetectionRef.detectChanges();
-      }
-      );
+      });
   }
 
   updateSelectedRow(count) {
@@ -138,44 +140,49 @@ export class AddVcComponent implements OnInit {
 
   setRowData() {
     let topicList = [];
-    this.topics.forEach(topic => {
-      topicList.push(
-        {
-          _id: topic._id,
-          name: topic.name,
-          description: topic.description,
-          type: topic.type,
-          pillar: topic.pillar,
-          parent: topic.parent === 0 ? 'None' : topic.parent
-        }
+    if (this.topics && this.topics.length > 0) {
+      this.topics.forEach(topic => {
+        topicList.push(
+          {
+            _id: topic._id,
+            name: topic.name,
+            description: topic.description,
+            type: topic.type,
+            pillar: topic.pillar,
+            parent: topic.parent === 0 ? 'None' : topic.parent
+          }
+        );
+      });
+      this.tableData = new TableObject(
+        TopicTableRowsComponent,
+        topicList,
+        this.tableParams
       );
-    });
-    this.tableData = new TableObject(
-      TopicTableRowsComponent,
-      topicList,
-      this.tableParams
-    );
+    }
   }
 
   setColumnSort(column) {
-    this.tableParams.sortBy = column;
-    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
-    this.getPaginated(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginated(this.tableParams.currentPage);
   }
 
-  getPaginated(pageNumber, newSortBy, newSortDirection) {
+  getPaginated(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    this.topicService.getAllTopics(pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
+    this.topicService.getAllTopics(pageNumber, this.tableParams.pageSize, this.tableParams.sortBy)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;
         this.topics = res.data;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize);
         this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();

@@ -18,7 +18,6 @@ export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
   @Output() onSelectedRow: EventEmitter<any> = new EventEmitter();
   @Output() onColumnSort: EventEmitter<any> = new EventEmitter();
   public column: string = null;
-  public direction = 0;
 
   interval: any;
 
@@ -34,7 +33,6 @@ export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
       this.data.component = changes['data'].currentValue.component;
       this.data.data = changes['data'].currentValue.data;
       this.data.paginationData = changes['data'].currentValue.paginationData;
-      this.direction = changes['data'].currentValue.paginationData.sortDirection;
       this.column = changes['data'].currentValue.paginationData.sortBy;
       this.loadComponent();
     }

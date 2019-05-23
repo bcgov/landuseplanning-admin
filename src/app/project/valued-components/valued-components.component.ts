@@ -36,7 +36,8 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     {
       name: '',
       value: 'check',
-      width: 'col-1'
+      width: 'col-1',
+      nosort: true
     },
     {
       name: 'Type',
@@ -56,7 +57,8 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
     {
       name: 'Parent',
       value: 'parent',
-      width: 'col-2'
+      width: 'col-2',
+      nosort: true
     }
   ];
 
@@ -76,10 +78,6 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-    });
-
     this.currentProject = this.storageService.state.currentProject.data;
 
     // get data from route resolver
@@ -90,8 +88,11 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
           this.tableParams.totalListItems = res.valuedComponents.totalCount;
           if (this.tableParams.totalListItems > 0) {
             this.valuedComponents = res.valuedComponents.data;
-            this.setRowData();
+          } else {
+            this.tableParams.totalListItems = 0;
+            this.valuedComponents = [];
           }
+          this.setRowData();
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
@@ -99,49 +100,53 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
         }
         this.loading = false;
         this._changeDetectionRef.detectChanges();
-      }
-      );
+      });
   }
 
   setRowData() {
     let vcList = [];
-    this.valuedComponents.forEach(valuedComponent => {
-      vcList.push(
-        {
-          type: valuedComponent.type,
-          _id: valuedComponent._id,
-          title: valuedComponent.title,
-          pillar: valuedComponent.pillar,
-          parent: valuedComponent.parent === null ? 'None' : valuedComponent.parent
-        }
+    if (this.valuedComponents && this.valuedComponents.length > 0) {
+      this.valuedComponents.forEach(valuedComponent => {
+        vcList.push(
+          {
+            type: valuedComponent.type,
+            _id: valuedComponent._id,
+            title: valuedComponent.title,
+            pillar: valuedComponent.pillar,
+            parent: valuedComponent.parent === null ? 'None' : valuedComponent.parent
+          }
+        );
+      });
+      this.tableData = new TableObject(
+        ValuedComponentTableRowsComponent,
+        vcList,
+        this.tableParams
       );
-    });
-    this.tableData = new TableObject(
-      ValuedComponentTableRowsComponent,
-      vcList,
-      this.tableParams
-    );
+    }
   }
 
   setColumnSort(column) {
-    this.tableParams.sortBy = column;
-    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedVCs(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginatedVCs(this.tableParams.currentPage);
   }
 
-  getPaginatedVCs(pageNumber, newSortBy, newSortDirection) {
+  getPaginatedVCs(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    this.valuedComponentService.getAllByProjectId(this.currentProject._id, pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
+    this.valuedComponentService.getAllByProjectId(this.currentProject._id, pageNumber, this.tableParams.pageSize, this.tableParams.sortBy)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;
         this.valuedComponents = res.data;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize);
         this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();

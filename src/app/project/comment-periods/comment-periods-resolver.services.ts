@@ -4,8 +4,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 
-import { Constants } from 'app/shared/utils/constants';
-
 @Injectable()
 export class CommentPeriodsResolver implements Resolve<Object> {
 
@@ -15,10 +13,9 @@ export class CommentPeriodsResolver implements Resolve<Object> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const projectId = route.parent.paramMap.get('projId');
-    const pageNum = Number(route.queryParams['pageNum'] ? route.queryParams['pageNum'] : Constants.tableDefaults.DEFAULT_CURRENT_PAGE);
-    const pageSize = Number(route.queryParams['pageSize'] ? route.queryParams['pageSize'] : Constants.tableDefaults.DEFAULT_PAGE_SIZE);
-
-    const sortBy = '-dateStarted';
+    const pageNum = route.params.pageNum ? route.params.pageNum : 1;
+    const pageSize = route.params.pageSize ? route.params.pageSize : 10;
+    const sortBy = route.params.sortBy ? route.params.sortBy : '-datePosted';
 
     // force-reload so we always have latest data
     return this.commentPeriodService.getAllByProjectId(projectId, pageNum, pageSize, sortBy);

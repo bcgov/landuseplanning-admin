@@ -92,9 +92,9 @@
       [columns]="tableColumns"
       [data]="tableData"
       (onColumnSort)='setColumnSort($event)'
-      (onPageNumUpdate)='getPaginated($event, null, null)'>
+      (onPageNumUpdate)='getPaginated($event)'>
   </app-table-template>
-  <div *ngIf="totalCount == 0">
+  <div *ngIf="tableParams.totalListItems == 0">
     No Activities/Updates.
   </div>
 </section>
