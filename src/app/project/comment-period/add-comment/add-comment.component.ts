@@ -82,7 +82,7 @@ export class AddCommentComponent implements OnInit {
       'rejectionNotesText': new FormControl(),
       'publishedNotesText': new FormControl()
     });
-    this.addCommentForm.controls.isAnonymous.setValue(false);
+    this.addCommentForm.controls.isAnonymous.setValue(true);
     this.addCommentForm.controls.dateAdded.setValue(this.utils.convertJSDateToNGBDate(new Date()));
     this.addCommentForm.controls.datePosted.setValue(this.utils.convertJSDateToNGBDate(new Date()));
   }
