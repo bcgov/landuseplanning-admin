@@ -45,7 +45,8 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
     {
       name: 'Attachments',
       value: 'null',
-      width: 'col-2'
+      width: 'col-2',
+      nosort: true
     },
     {
       name: 'Location',
@@ -83,7 +84,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, this.filter);
     });
 
-    this.commentService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortString, true, this.filter)
+    this.commentService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy, true, this.filter)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res) {
@@ -116,19 +117,19 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   public togglePending() {
     this.filter.pending = !this.filter.pending;
-    this.getPaginatedComments(1, this.tableParams.sortBy, this.tableParams.sortDirection);
+    this.getPaginatedComments(1);
   }
   public togglePublished() {
     this.filter.published = !this.filter.published;
-    this.getPaginatedComments(1, this.tableParams.sortBy, this.tableParams.sortDirection);
+    this.getPaginatedComments(1);
   }
   public toggleDeferred() {
     this.filter.deferred = !this.filter.deferred;
-    this.getPaginatedComments(1, this.tableParams.sortBy, this.tableParams.sortDirection);
+    this.getPaginatedComments(1);
   }
   public toggleRejected() {
     this.filter.rejected = !this.filter.rejected;
-    this.getPaginatedComments(1, this.tableParams.sortBy, this.tableParams.sortDirection);
+    this.getPaginatedComments(1);
   }
 
   setCommentRowData() {
@@ -155,24 +156,27 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
   }
 
   setColumnSort(column) {
-    this.tableParams.sortBy = column;
-    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedComments(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginatedComments(this.tableParams.currentPage);
   }
 
-  getPaginatedComments(pageNumber, newSortBy, newSortDirection) {
+  getPaginatedComments(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    this.commentService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortString, true, this.filter)
+    this.commentService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy, true, this.filter)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;
         this.comments = res.data;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize, this.filter);
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.filter);
         this.setCommentRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();

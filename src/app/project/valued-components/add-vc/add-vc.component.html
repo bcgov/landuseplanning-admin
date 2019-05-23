@@ -22,7 +22,7 @@
   </div>
   <app-table-template *ngIf="tableParams.totalListItems > 0" [columns]="tableColumns" [data]="tableData"
     (onColumnSort)='setColumnSort($event)' (onSelectedRow)='updateSelectedRow($event)'
-    (onPageNumUpdate)='getPaginated($event, null, null)'>
+    (onPageNumUpdate)='getPaginated($event)'>
   </app-table-template>
 
   <div *ngIf="tableParams.totalListItems == 0">

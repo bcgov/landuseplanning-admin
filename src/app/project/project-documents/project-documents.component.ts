@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, of, forkJoin } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 
 import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
@@ -17,8 +17,6 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
-import { andObservables } from '@angular/router/src/utils/collection';
-import { flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-documents',
@@ -36,7 +34,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     {
       name: '',
       value: 'check',
-      width: 'col-1'
+      width: 'col-1',
+      nosort: true
     },
     {
       name: 'Name',
@@ -87,14 +86,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // get data from route resolver
-
     this.route.params
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         this.keywords = params.keywords;
-        // REMOVE THIS
-        // this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
       });
 
     this.currentProject = this.storageService.state.currentProject.data;
@@ -110,17 +105,15 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             this.tableParams.totalListItems = 0;
             this.documents = [];
           }
-          this.loading = false;
-          this.setDocumentRowData();
-          this._changeDetectionRef.detectChanges();
+          this.setRowData();
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
-          this.loading = false;
         }
-      }
-      );
+        this.loading = false;
+        this._changeDetectionRef.detectChanges();
+      });
   }
 
   public selectAction(action) {
@@ -331,7 +324,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
   }
 
-  setDocumentRowData() {
+  setRowData() {
     let documentList = [];
     if (this.documents && this.documents.length > 0) {
       this.documents.forEach(document => {
@@ -428,7 +421,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
         this.documents = res[0].data.searchResults;
         this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.keywords);
-        this.setDocumentRowData();
+        this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });

@@ -12,9 +12,9 @@ import { AddEditTopicComponent } from './add-edit-topic/add-edit-topic.component
 
 import { Topic } from 'app/models/topic';
 import { TableObject } from 'app/shared/components/table-template/table-object';
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
-import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 
 @Component({
   selector: 'app-users',
@@ -73,11 +73,10 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
 
-      this.topicService.getAllTopics(this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortString)
+      this.topicService.getAllTopics(this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy)
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
           if (res) {
-            console.log(res);
             this.tableParams.totalListItems = res.totalCount;
             if (this.tableParams.totalListItems > 0) {
               this.topics = res.data;
@@ -115,24 +114,27 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   setColumnSort(column) {
-    this.tableParams.sortBy = column;
-    this.tableParams.sortDirection = this.tableParams.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedTopics(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginatedTopics(this.tableParams.currentPage);
   }
 
-  getPaginatedTopics(pageNumber, newSortBy, newSortDirection) {
+  getPaginatedTopics(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
 
-    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, newSortBy, newSortDirection);
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    this.topicService.getAllTopics(pageNumber, this.tableParams.pageSize, this.tableParams.sortString)
+    this.topicService.getAllTopics(pageNumber, this.tableParams.pageSize, this.tableParams.sortBy)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;
         this.topics = res.data;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortString, this.tableParams.currentPage, this.tableParams.pageSize);
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize);
         this.setTopicRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
@@ -148,7 +150,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     let dlg = this.modalService.open(AddEditTopicComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
     dlg.result.then(result => {
       if (result.isSaved) {
-        this.getPaginatedTopics(this.tableParams.currentPage, this.tableParams.sortBy, this.tableParams.sortDirection);
+        this.getPaginatedTopics(this.tableParams.currentPage);
       }
     });
   }

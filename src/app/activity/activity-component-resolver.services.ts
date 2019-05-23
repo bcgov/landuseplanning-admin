@@ -4,8 +4,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { SearchService } from 'app/services/search.service';
 import { ApiService } from 'app/services/api';
-import { SearchResults } from 'app/models/search';
-import { of } from 'rxjs';
 
 @Injectable()
 export class ActivityComponentResolver implements Resolve<Observable<object>> {
@@ -24,13 +22,13 @@ export class ActivityComponentResolver implements Resolve<Observable<object>> {
       const sortBy = route.queryParams['sortBy'] ? route.queryParams['sortBy'] : '-dateAdded';
       const keywords = route.params.keywords;
       return this.searchService.getSearchResults(keywords,
-                                                'RecentActivity',
-                                                null,
-                                                pageNum,
-                                                pageSize,
-                                                sortBy,
-                                                null,
-                                                true);
+        'RecentActivity',
+        null,
+        pageNum,
+        pageSize,
+        sortBy,
+        null,
+        true);
     }
   }
 }
