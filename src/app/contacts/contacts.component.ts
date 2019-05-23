@@ -34,7 +34,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     {
       name: 'Organization',
       value: 'org',
-      width: 'col-3'
+      width: 'col-4'
     },
     {
       name: 'Phone',
