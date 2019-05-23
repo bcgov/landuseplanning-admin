@@ -1,18 +1,20 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
-import { Location } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
 
 import { Project } from 'app/models/project';
-import { ProjectService } from 'app/services/project.service';
-import { CommentPeriodService } from 'app/services/commentperiod.service';
-import { ProjectListTableRowsComponent } from './project-list-table-rows/project-list-table-rows.component';
+import { SearchTerms } from 'app/models/search';
+
 import { TableObject } from 'app/shared/components/table-template/table-object';
+import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+
+import { ProjectListTableRowsComponent } from './project-list-table-rows/project-list-table-rows.component';
+
+import { SearchService } from 'app/services/search.service';
 import { StorageService } from 'app/services/storage.service';
-import { OrgService } from 'app/services/org.service';
 
 @Component({
   selector: 'app-project-list',
@@ -25,6 +27,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   public loading = true;
 
   public showOnlyOpenApps: boolean;
+  public tableParams: TableParamsObject = new TableParamsObject();
+  public terms = new SearchTerms();
 
   public projectTableData: TableObject;
   public projectTableColumns: any[] = [
@@ -36,7 +40,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     {
       name: 'Proponent',
       value: 'proponent',
-      width: 'col-2'
+      width: 'col-2',
+      nosort: true
     },
     {
       name: 'Type',
@@ -60,120 +65,144 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
   ];
 
-  public pageNum = 1;
-  public pageSize = 15;
-  public currentPage = 1;
-  public totalListItems = 0;
-  public sortBy = '';
-  public sortDirection = 0;
-
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private projectService: ProjectService,
-    private orgService: OrgService,
-    public commentPeriodService: CommentPeriodService,
     private tableTemplateUtils: TableTemplateUtils,
     private storageService: StorageService,
+    private searchService: SearchService,
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.currentPage = params.currentPage ? params.currentPage : 1;
-      this.pageSize = params.pageSize || 20;
-      this.projectService.getAll(params.currentPage, params.pageSize)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe((res: any) => {
-          if (res) {
-            this.totalListItems = res.totalCount;
-            if (this.totalListItems > 0) {
-              this.projects = res.data;
-              this.setProjectRowData();
-              this._changeDetectionRef.detectChanges();
+    this.route.params
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(params => {
+        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+
+        this.searchService.getSearchResults(
+          this.tableParams.keywords,
+          'Project',
+          [],
+          this.tableParams.currentPage,
+          this.tableParams.pageSize,
+          this.tableParams.sortBy,
+          '',
+          true)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe((res: any) => {
+            if (res[0].data) {
+              if (res[0].data.searchResults.length > 0) {
+                this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
+                this.projects = res[0].data.searchResults;
+              } else {
+                this.tableParams.totalListItems = 0;
+                this.projects = [];
+              }
+              this.setRowData();
+            } else {
+              alert('Uh-oh, couldn\'t load topics');
+              // project not found --> navigate back to search
+              this.router.navigate(['/']);
             }
-          } else {
-            alert('Uh-oh, couldn\'t load topics');
-            // project not found --> navigate back to search
-            this.router.navigate(['/search']);
-          }
-          this.loading = false;
-          this._changeDetectionRef.detectChanges();
-        });
-    });
+            this.loading = false;
+            this._changeDetectionRef.detectChanges();
+          });
+      });
   }
 
   addProject() {
-    this.storageService.state.back = { url: ['/projects'], label: 'All Projects(s)'};
+    this.storageService.state.back = { url: ['/projects'], label: 'All Projects(s)' };
     this.router.navigate(['/projects', 'add']);
   }
 
-  setProjectRowData() {
+  setRowData() {
     let projectList = [];
-    this.projects.forEach(project => {
-      projectList.push(
-        {
-          _id: project._id,
-          name: project.name,
-          proponent: project.proponent,
-          type: project.type,
-          region: project.region,
-          currentPhaseName: project.currentPhaseName,
-          eacDecision: project.eacDecision
-        }
+    if (this.projects && this.projects.length > 0) {
+      this.projects.forEach(project => {
+        projectList.push(
+          {
+            _id: project._id,
+            name: project.name,
+            proponent: project.proponent,
+            type: project.type,
+            region: project.region,
+            currentPhaseName: project.currentPhaseName,
+            eacDecision: project.eacDecision
+          }
+        );
+      });
+      this.projectTableData = new TableObject(
+        ProjectListTableRowsComponent,
+        projectList,
+        this.tableParams
       );
-    });
-    this.projectTableData = new TableObject(
-      ProjectListTableRowsComponent,
-      projectList,
-      {
-        pageSize: this.pageSize,
-        currentPage: this.currentPage,
-        totalListItems: this.totalListItems,
-        sortBy: this.sortBy,
-        sortDirection: this.sortDirection
-      }
-    );
+    }
   }
+
 
   setColumnSort(column) {
-    this.sortBy = column;
-    this.sortDirection = this.sortDirection > 0 ? -1 : 1;
-    this.getPaginatedProjects(this.currentPage, this.sortBy, this.sortDirection);
+    if (this.tableParams.sortBy.charAt(0) === '+') {
+      this.tableParams.sortBy = '-' + column;
+    } else {
+      this.tableParams.sortBy = '+' + column;
+    }
+    this.getPaginatedProjects(this.tableParams.currentPage);
   }
 
-  getPaginatedProjects(pageNumber, sortBy, sortDirection) {
+  getPaginatedProjects(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
-
     this.loading = true;
 
-    if (sortBy == null) {
-      sortBy = this.sortBy;
-      sortDirection = this.sortDirection;
-    }
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    // This accounts for when there is no defined column sort and the user clicks a pagination button.
-    // API needs sorting to be null for it to not blow up.
-    let sorting = null;
-    if (sortBy !== '') {
-      sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
-    }
-    this.projectService.getAll(pageNumber, this.pageSize, sorting)
+    this.searchService.getSearchResults(
+      this.tableParams.keywords,
+      'Project',
+      null,
+      pageNumber,
+      this.tableParams.pageSize,
+      this.tableParams.sortBy,
+    )
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
-        this.currentPage = pageNumber;
-        this.sortBy = sortBy;
-        this.sortDirection = this.sortDirection;
-        this.tableTemplateUtils.updateUrl(sorting, this.currentPage, this.pageSize);
-        this.totalListItems = res.totalCount;
-        this.projects = res.data;
-        this.setProjectRowData();
-        this.loading = false;
-        this._changeDetectionRef.detectChanges();
+        if (res[0].data) {
+          this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
+          this.projects = res[0].data.searchResults;
+          this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
+          this.setRowData();
+          this.loading = false;
+          this._changeDetectionRef.detectChanges();
+        } else {
+          alert('Uh-oh, couldn\'t load topics');
+          // project not found --> navigate back to search
+          this.router.navigate(['/']);
+        }
       });
+  }
+
+  public onSubmit() {
+    // dismiss any open snackbar
+    // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+
+    // NOTE: Angular Router doesn't reload page on same URL
+    // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
+    // WORKAROUND: add timestamp to force URL to be different than last time
+
+    const params = this.terms.getParams();
+    params['ms'] = new Date().getMilliseconds();
+    params['dataset'] = this.terms.dataset;
+    params['currentPage'] = this.tableParams.currentPage = 1;
+    params['sortBy'] = this.tableParams.sortBy = '';
+    params['keywords'] = this.tableParams.keywords = this.tableParams.keywords;
+    params['pageSize'] = this.tableParams.pageSize = 10;
+
+    console.log('params =', params);
+    console.log('nav:', ['projects', params]);
+    this.router.navigate(['projects', params]);
   }
 
   ngOnDestroy() {

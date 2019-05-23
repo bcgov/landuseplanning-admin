@@ -15,10 +15,9 @@ export class TableTemplateUtils {
     let currentUrl = this.router.url;
     currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
     currentUrl = currentUrl.split(';')[0];
-    currentUrl += `;currentPage=${currentPage};pageSize=${pageSize};keywords=${keywords}`;
-    if (sortString !== null) {
-      currentUrl += `;sortBy=${sortString}`;
-    }
+    currentUrl += `;currentPage=${currentPage};pageSize=${pageSize}`;
+    if (keywords !== '') { currentUrl += `;keywords=${keywords}`; }
+    if (sortString !== null) { currentUrl += `;sortBy=${sortString}`; }
     if (filter !== null) {
       Object.keys(filter).forEach(key => {
         currentUrl += `;${key}=${filter[key]}`;
@@ -32,14 +31,16 @@ export class TableTemplateUtils {
     let pageSize = params.pageSize || Constants.tableDefaults.DEFAULT_PAGE_SIZE;
     let currentPage = params.currentPage ? params.currentPage : Constants.tableDefaults.DEFAULT_CURRENT_PAGE;
     let sortBy = params.sortBy ? params.sortBy : Constants.tableDefaults.DEFAULT_SORT_BY;
+    let keywords = params.keywords ? params.keywords : Constants.tableDefaults.DEFAULT_KEYWORDS;
 
-    this.updateUrl(sortBy, currentPage, pageSize, filter);
+    this.updateUrl(sortBy, currentPage, pageSize, filter, keywords);
 
     return new TableParamsObject(
       pageSize,
       currentPage,
       0,
-      sortBy
+      sortBy,
+      keywords
     );
   }
 
