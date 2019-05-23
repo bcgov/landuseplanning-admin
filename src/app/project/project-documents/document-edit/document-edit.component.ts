@@ -127,8 +127,8 @@ export class DocumentEditComponent implements OnInit {
       this.myForm.value.displayName !== null ? formData.append('displayName', this.myForm.value.displayName) : Function.prototype;
 
       formData.append('milestone', this.myForm.value.labelsel);
-      formData.append('dateUploaded', moment(this.myForm.value.dateUploaded));
-      formData.append('datePosted', moment(this.myForm.value.datePosted));
+      formData.append('dateUploaded', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUploaded').value))).toISOString());
+      formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
       formData.append('type', this.myForm.value.doctypesel);
       formData.append('documentAuthor', this.myForm.value.authorsel);
 
