@@ -62,6 +62,7 @@ export class AddEditActivityComponent implements OnInit {
             'project': '',
             'active': '',
             'priority': '',
+            'pinned': false,
             'type': '',
             'contentUrl': '',
             'documentUrl': ''
@@ -114,8 +115,9 @@ export class AddEditActivityComponent implements OnInit {
         contentUrl: this.myForm.controls.contentUrl.value,
         documentUrl: this.myForm.controls.documentUrl.value,
         active: this.myForm.controls.active.value === 'yes' ? true : false,
+        pinned: this.activity.pinned
       });
-      console.log('saving:', this.myForm.controls.content.value);
+      console.log('saving:', activity);
       this.recentActivityService.save(activity)
       .subscribe(item => {
         // console.log('item', item);
@@ -131,8 +133,10 @@ export class AddEditActivityComponent implements OnInit {
         type: this.myForm.get('type').value,
         contentUrl: this.myForm.controls.contentUrl.value,
         documentUrl: this.myForm.controls.documentUrl.value,
-        active: this.myForm.controls.active.value === 'yes' ? true : false,
+        pinned: false,
+        active: this.myForm.controls.active.value === 'yes' ? true : false
       });
+      console.log('adding:', activity);
       this.recentActivityService.add(activity)
       .subscribe(item => {
         // console.log('saved:', item);
