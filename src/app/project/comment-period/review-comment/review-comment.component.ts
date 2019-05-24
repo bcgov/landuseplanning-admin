@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Subject } from 'rxjs';
@@ -28,12 +28,14 @@ export class ReviewCommentComponent implements OnInit {
   public comment: Comment;
   public commentPeriod: CommentPeriod;
   public loading = true;
+  public isRejectedRequired = false;
 
   public commentReviewForm: FormGroup;
 
   constructor(
     private api: ApiService,
     private commentService: CommentService,
+    private _changeDetectionRef: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
@@ -189,6 +191,7 @@ export class ReviewCommentComponent implements OnInit {
         break;
       }
     }
+    this._changeDetectionRef.detectChanges();
   }
 
   public downloadDocument(document: Document) {

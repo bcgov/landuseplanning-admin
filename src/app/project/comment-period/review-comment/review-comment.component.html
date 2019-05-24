@@ -127,17 +127,17 @@
               formControlName="publishedNotesText"></textarea>
           </div>
         </div>
-        <div class="form-row" *ngIf="commentReviewForm.get('isDeferred').value">
+        <div class="form-row" [style.display]="commentReviewForm.get('isDeferred').value ? '' : 'none'">
           <div class="form-group col-md-12">
             <label for="deferralNotes"><b>Deferral Note*</b></label>
-            <textarea id="deferralNotes" class="form-control" rows="3" name="deferralNotesText"
+            <textarea [required]="commentReviewForm.get('isDeferred').value" id="deferralNotes" class="form-control" rows="3" name="deferralNotesText"
               formControlName="deferralNotesText"></textarea>
           </div>
         </div>
-        <div class="form-row" *ngIf="commentReviewForm.get('isRejected').value">
+        <div class="form-row" [style.display]="commentReviewForm.get('isRejected').value ? '' : 'none'">
           <div class="form-group col-md-12">
             <label for="rejectionNotes"><b>Rejection Note*</b></label>
-            <textarea id="rejectionNotes" class="form-control" rows="3" name="rejectionNotesText"
+            <textarea [required]="commentReviewForm.get('isRejected').value" id="rejectionNotes" class="form-control" rows="3" name="rejectionNotesText"
               formControlName="rejectionNotesText"></textarea>
           </div>
         </div>
