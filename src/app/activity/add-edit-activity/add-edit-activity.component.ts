@@ -28,7 +28,7 @@ export class AddEditActivityComponent implements OnInit {
   public tinyMceSettings = {
     skin: false,
     browser_spellcheck: true,
-    height: 320
+    height: 240
   };
 
   constructor(

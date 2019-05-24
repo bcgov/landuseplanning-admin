@@ -23,23 +23,18 @@
       <button class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
     </div>
     <h2>Activity Post</h2>
-    <section>
       <div class="flex-container">
         <div class="label-pair lrg">
           <label for="headline">Headline* </label>
           <input name="headline" id="headline" formControlName="headline" type="text" class="form-control" />
         </div>
       </div>
-    </section>
-    <section>
       <div class="flex-container">
         <div class="label-pair lrg">
           <label for="content">Content* </label>
           <editor [init]="tinyMceSettings" name="content" id="content" formControlName="content"></editor>
         </div>
       </div>
-    </section>
-    <section>
       <div class="flex-container">
         <div class="label-pair med">
           <label for="project">Project* </label>
@@ -55,8 +50,6 @@
           </select>
         </div>
       </div>
-    </section>
-    <section>
       <div class="flex-container">
         <div class="label-pair">
           <label for="dateAdded">Date Added</label>
@@ -70,8 +63,6 @@
           </div>
         </div>
       </div>
-    </section>
-    <section>
       <div class="flex-container">
         <div class="label-pair lrg">
           <label for="documentUrl">Document URL* </label>
@@ -79,10 +70,7 @@
             class="form-control" />
         </div>
       </div>
-    </section>
-    <section>
       <div class="flex-container">
-        <fieldset class="form-group">
           <div class="label-pair">
             <label for="priority">Priority* </label>
             <select required class="form-control" formControlName="priority">
@@ -105,8 +93,6 @@
               </div>
             </div>
           </div>
-        </fieldset>
       </div>
-    </section>
   </form>
 </main>
