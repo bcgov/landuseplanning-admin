@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
@@ -34,6 +34,7 @@ export class UploadComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private _changeDetectionRef: ChangeDetectorRef,
     private storageService: StorageService,
     private documentService: DocumentService,
     private config: ConfigService
@@ -108,6 +109,8 @@ export class UploadComponent implements OnInit {
     // go through and upload one at a time.
     let observables = [];
 
+    // NB: If multi upload, then switch to use documentFileName as displayName
+
     this.documents.map(doc => {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
@@ -117,7 +120,7 @@ export class UploadComponent implements OnInit {
 
       formData.append('documentSource', 'PROJECT');
 
-      formData.append('displayName', this.myForm.value.displayName);
+      formData.append('displayName', this.documents.length > 1 ? doc.documentFileName : this.myForm.value.displayName);
       formData.append('milestone', this.myForm.value.labelsel);
       formData.append('dateUploaded', moment(this.myForm.value.dateUploaded));
       formData.append('datePosted', moment(this.myForm.value.datePosted));
@@ -173,6 +176,7 @@ export class UploadComponent implements OnInit {
         }
       }
     }
+    this._changeDetectionRef.detectChanges();
   }
 
   public deleteDocument(doc: Document) {
