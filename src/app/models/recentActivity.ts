@@ -7,6 +7,8 @@ export class RecentActivity {
     active: string;
     headline: string;
     content: string;
+    documentUrl: string;
+    contentUrl: string;
     pinned: boolean;
 
     constructor(obj?: any) {
@@ -15,6 +17,8 @@ export class RecentActivity {
         this.project           = obj && obj.project           || null;
         this.dateAdded           = obj && obj.dateAdded           || null;
         this.content           = obj && obj.content           || null;
+        this.documentUrl           = obj && obj.documentUrl           || null;
+        this.contentUrl           = obj && obj.contentUrl           || null;
         this.priority           = obj && obj.priority           || null;
         this.headline           = obj && obj.headline           || null;
         this.active           = obj && obj.active           || null;
