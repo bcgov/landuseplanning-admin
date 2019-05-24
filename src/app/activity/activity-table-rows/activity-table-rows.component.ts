@@ -54,30 +54,30 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
   }
 
   deleteActivity(activity) {
-    // this.dialogService.addDialog(ConfirmComponent,
-    //   {
-    //     title: 'Delete Valued Component',
-    //     message: 'Click <strong>OK</strong> to delete this Activity or <strong>Cancel</strong> to return to the list.'
-    //   }, {
-    //     backdropColor: 'rgba(0, 0, 0, 0.5)'
-    //   })
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe(
-    //     isConfirmed => {
-    //       if (isConfirmed) {
-    //         // Delete the VC
-    //         this.activityService.delete(activity)
-    //           .subscribe(
-    //             () => {
-    //               this.activities.splice(this.activities.indexOf(activity), 1);
-    //               this.changeDetectorRef.detectChanges();
-    //             },
-    //             error => {
-    //               console.log('error =', error);
-    //             });
-    //       }
-    //     }
-    //   );
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Delete Activity',
+        message: 'Click <strong>OK</strong> to delete this Activity or <strong>Cancel</strong> to return to the list.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            // Delete the Activity
+            this.recentActivityService.delete(activity)
+              .subscribe(
+                () => {
+                  this.entries.splice(this.entries.indexOf(activity), 1);
+                  this._changeDetectionRef.detectChanges();
+                },
+                error => {
+                  console.log('error =', error);
+                });
+          }
+        }
+      );
   }
 
   togglePin(activity) {

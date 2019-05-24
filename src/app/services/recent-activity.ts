@@ -69,6 +69,14 @@ export class RecentActivityService {
     .catch(error => this.api.handleError(error));
   }
 
-  // TODO: publish/unpublish functionality
-
+  delete(activity: RecentActivity) {
+    return this.api.deleteRecentActivity(activity)
+    .map(res => {
+      if (res) {
+        return new RecentActivity(res);
+      }
+      return [];
+    })
+    .catch(error => this.api.handleError(error));
+  }
 }

@@ -10,6 +10,6 @@
         <span [ngClass]="entry.active === true ? 'active-flag': 'inactive-flag'" class="">{{entry.active === true ? 'ACTIVE' : 'INACTIVE'}}</span>
     </td>
     <td class="delete col-1">
-      <button type="button" (click)="deleteItem(entry)" class="btn"><i class="material-icons">delete</i></button>
+      <button type="button" (click)="deleteActivity(entry)" class="btn"><i class="material-icons">delete</i></button>
     </td>
 </tr>
