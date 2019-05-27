@@ -13,9 +13,9 @@ export class CommentPeriod {
   commenterRoles: String;
   dateAdded: Date;
   dateCompleted: Date;
-  dateCompletedEst: String;
+  dateCompletedEst: Date;
   dateStarted: Date;
-  dateStartedEst: String;
+  dateStartedEst: Date;
   dateUpdated: Date;
   downloadRoles: String;
   informationLabel: String;
