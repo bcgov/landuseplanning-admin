@@ -75,7 +75,7 @@ export class ApiService {
 
       default:
         // Prod
-        this.pathAPI = 'https://eagle-dev.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://eagle-prod.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
     }
   }
