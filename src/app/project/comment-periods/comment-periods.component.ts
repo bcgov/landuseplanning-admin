@@ -78,6 +78,13 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
 
     this.currentProject = this.storageService.state.currentProject.data;
 
+    this.route.params.subscribe(params => {
+      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+      if (this.tableParams.sortBy === '') {
+        this.tableParams.sortBy = '-dateStarted';
+      }
+    });
+
     // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)

@@ -190,8 +190,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
     // Check info for comment
     // Check description
     this.commentPeriod.instructions = `Comment Period on the ${this.commentPeriodForm.get('infoForCommentText').value}`;
-    this.commentPeriod.instructions += ` for ${this.currentProject.name} Project. `;
-    this.commentPeriod.instructions += this.commentPeriodForm.get('descriptionText').value;
+    this.commentPeriod.instructions += ` for ${this.currentProject.name} Project.`;
+    this.commentPeriod.instructions += ` ${this.commentPeriodForm.get('descriptionText').value === null ? '' : this.commentPeriodForm.get('descriptionText').value}`;
 
     if (this.storageService.state.selectedDocumentsForCP) {
       let docIdArray = [];
