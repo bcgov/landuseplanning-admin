@@ -81,15 +81,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-
         this.searchService.getSearchResults(
           this.tableParams.keywords,
           'Project',
-          [],
+          null,
           this.tableParams.currentPage,
           this.tableParams.pageSize,
           this.tableParams.sortBy,
-          '',
+          null,
           true)
           .takeUntil(this.ngUnsubscribe)
           .subscribe((res: any) => {
