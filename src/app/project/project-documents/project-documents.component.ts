@@ -90,6 +90,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         this.keywords = params.keywords;
+        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+        if (this.tableParams.sortBy === '') {
+            this.tableParams.sortBy = '-datePosted';
+          }
       });
 
     this.currentProject = this.storageService.state.currentProject.data;
