@@ -82,9 +82,18 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       this.filter.deferred = params.deferred == null || params.deferred === 'false' ? false : true;
       this.filter.rejected = params.rejected == null || params.rejected === 'false' ? false : true;
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, this.filter);
+      if (this.tableParams.sortBy === '') {
+        this.tableParams.sortBy = '-dateAdded';
+      }
     });
 
-    this.commentService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy, true, this.filter)
+    this.commentService.getByPeriodId(
+      this.commentPeriodId,
+      this.tableParams.currentPage,
+      this.tableParams.pageSize,
+      this.tableParams.sortBy,
+      true,
+      this.filter)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res) {

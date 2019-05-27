@@ -17,7 +17,7 @@ export class TableTemplateUtils {
     currentUrl = currentUrl.split(';')[0];
     currentUrl += `;currentPage=${currentPage};pageSize=${pageSize}`;
     if (keywords !== '') { currentUrl += `;keywords=${keywords}`; }
-    if (sortString !== null) { currentUrl += `;sortBy=${sortString}`; }
+    if (sortString !== '' && sortString !== null) { currentUrl += `;sortBy=${sortString}`; }
     if (filter !== null) {
       Object.keys(filter).forEach(key => {
         currentUrl += `;${key}=${filter[key]}`;
