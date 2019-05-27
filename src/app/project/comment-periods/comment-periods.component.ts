@@ -81,7 +81,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
       if (this.tableParams.sortBy === '') {
-        this.tableParams.sortBy = '-dateAdded';
+        this.tableParams.sortBy = '-dateStarted';
       }
     });
 
