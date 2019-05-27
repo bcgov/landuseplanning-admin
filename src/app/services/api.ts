@@ -130,7 +130,7 @@ export class ApiService {
     let queryString = `project?`;
     if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
     if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
     if (populate !== null) { queryString += `populate=${populate}&`; }
     queryString += `fields=${this.buildValues(fields)}`;
 
@@ -342,7 +342,7 @@ export class ApiService {
     let queryString = `commentperiod?&project=${projId}&`;
     if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
     if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
     queryString += `count=true&`;
     queryString += `fields=${this.buildValues(fields)}`;
 
@@ -484,7 +484,7 @@ export class ApiService {
     let queryString = `topic?`;
     if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
     if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
     queryString += `fields=${this.buildValues(fields)}`;
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
@@ -551,7 +551,7 @@ export class ApiService {
     let queryString = `comment?&period=${periodId}`;
     if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
-    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (count !== null) { queryString += `&count=${count}`; }
     if (filter !== {}) {
       Object.keys(filter).forEach(key => {
@@ -791,7 +791,7 @@ export class ApiService {
     let queryString = `vc?projectId=${projectId}`;
     if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
-    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     queryString += `&fields=${this.buildValues(fields)}`;
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
@@ -828,7 +828,7 @@ export class ApiService {
     }
     if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
-    if (sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (populate !== null) { queryString += `&populate=${populate}`; }
     if (queryModifier !== null) {
       queryString += `&query` + queryModifier;
@@ -856,7 +856,7 @@ export class ApiService {
 
     if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
     if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
     queryString += `fields=${this.buildValues(fields)}`;
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }

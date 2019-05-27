@@ -117,7 +117,7 @@ export class CommentService {
   }
 
   // get all comments for the specified comment period id
-  getByPeriodId(periodId: string, pageNum: number = null, pageSize: number = null, sortBy: string = null, count: boolean = true, filter: Object = {}): Observable<Object> {
+  getByPeriodId(periodId: string, pageNum: number = null, pageSize: number = null, sortBy: string = '', count: boolean = true, filter: Object = {}): Observable<Object> {
     return this.api.getCommentsByPeriodId(periodId, pageNum, pageSize, sortBy, count, filter)
       .map((res: any) => {
         if (res) {
