@@ -39,7 +39,7 @@ export class ActivityComponent implements OnInit {
     },
     {
       name: 'Project',
-      value: 'project',
+      value: 'project.name',
       width: 'col-2'
     },
     {
