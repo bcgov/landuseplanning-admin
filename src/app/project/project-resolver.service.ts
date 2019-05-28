@@ -16,8 +16,8 @@ export class ProjectResolver implements Resolve<Project> {
     const projId = route.paramMap.get('projId');
     let start = new Date();
     let end = new Date();
-    start.setDate(start.getDate() + 7);
-    end.setDate(end.getDate() - 7);
+    start.setDate(start.getDate() - 7);
+    end.setDate(end.getDate() + 7);
     return this.projectService.getById(projId, start, end);
   }
 }

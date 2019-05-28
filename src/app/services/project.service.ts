@@ -64,10 +64,10 @@ export class ProjectService {
       .map(projects => {
 
         // get upcoming comment period if there is one and convert it into a comment period object.
-        if (projects[0].upcomingCommentPeriod.length > 0) {
-          projects[0].upcomingCommentPeriod = new CommentPeriod(projects[0].upcomingCommentPeriod[0]);
+        if (projects[0].commentPeriodForBanner && projects[0].commentPeriodForBanner.length > 0) {
+          projects[0].commentPeriodForBanner = new CommentPeriod(projects[0].commentPeriodForBanner[0]);
         } else {
-          projects[0].upcomingCommentPeriod = null;
+          projects[0].commentPeriodForBanner = null;
         }
 
         // return the first (only) project
