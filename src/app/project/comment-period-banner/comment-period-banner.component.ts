@@ -20,8 +20,8 @@ export class CommentPeriodBannerComponent implements OnInit {
 
   ngOnInit() {
     this.projectId = this.storageService.state.currentProject.data._id;
-    if (this.storageService.state.currentProject.data.upcomingCommentPeriod) {
-      this.commentPeriod = this.storageService.state.currentProject.data.upcomingCommentPeriod;
+    if (this.storageService.state.currentProject.data.commentPeriodForBanner) {
+      this.commentPeriod = this.storageService.state.currentProject.data.commentPeriodForBanner;
     } else {
       this.commentPeriod = null;
     }
