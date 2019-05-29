@@ -76,7 +76,7 @@ export class CommentService {
       });
       comment.documentsList = null;
       const newComment = _.cloneDeep(comment);
-      observables.push(new Comment(this.api.saveComment(newComment)));
+      observables.push(this.api.saveComment(newComment));
       return forkJoin(observables)
         .pipe(
           flatMap( (payloads: any) => {
