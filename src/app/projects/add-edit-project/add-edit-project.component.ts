@@ -254,7 +254,7 @@ export class AddEditProjectComponent implements OnInit {
 
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
-      'proponent': new FormControl(formData.proponent),
+      'proponent': new FormControl(formData.proponent.name),
       'nature': new FormControl(formData.nature),
       'type': new FormControl(formData.type),
       'sector': new FormControl(formData.sector),
