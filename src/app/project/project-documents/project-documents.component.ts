@@ -320,7 +320,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     params['dataset'] = this.terms.dataset;
     params['currentPage'] = this.tableParams.currentPage = 1;
     params['sortBy'] = this.tableParams.sortBy = '-datePosted';
-    params['keywords'] = this.tableParams.keywords = this.keywords;
+    params['keywords'] = this.tableParams.keywords = this.keywords || '';
     params['pageSize'] = this.tableParams.pageSize = 10;
 
     console.log('params =', params);
