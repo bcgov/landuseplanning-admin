@@ -90,11 +90,12 @@ export class GetValuedComponentsComponent implements OnInit, OnDestroy {
 
           if (this.tableParams.totalListItems > 0) {
             this.valuedComponents = res.data;
+            this.setRowData();
+            this.initCheckBoxes();
           } else {
             this.valuedComponents = [];
           }
-          this.setRowData();
-          this.initCheckBoxes();
+
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
