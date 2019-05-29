@@ -37,6 +37,12 @@
           </button>
         </div>
       </div>
+      <div class="input-group-append">
+        <button _ngcontent-c7 class="btn btn-primary btn-search-help" type="submit" (click)="navSearchHelp()">
+            <i class="material-icons md-18">info</i>
+            <span> Search Help</span>
+        </button>
+      </div>
       <div>
         <p class="search-result" *ngIf="ranSearch && !searching && count == 0">
           No result<span *ngIf="count != 1">s</span> found for "{{keywords}}"

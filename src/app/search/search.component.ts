@@ -124,6 +124,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.onSubmit();
   }
 
+  navSearchHelp() {
+    this.router.navigate(['/search-help']);
+  }
+
   // reload page with current search terms
   public onSubmit() {
     // dismiss any open snackbar
