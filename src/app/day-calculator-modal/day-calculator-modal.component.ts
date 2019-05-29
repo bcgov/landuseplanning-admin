@@ -247,7 +247,7 @@ export class DayCalculatorModalComponent implements OnInit {
           // If we've made it this far, count the day
           calcRes.numDays++;
         }
-      } else if (startDate && numDays) {
+      } else if (startDate && calcRes.numDays) {
         // Find the end date from the start date and number of days
         endDateMoment = moment(startDate);
 
@@ -255,7 +255,7 @@ export class DayCalculatorModalComponent implements OnInit {
         numDays = regular ? 1 : 0;
 
         // Start counting the days
-        while (numDays < numDays) {
+        while (numDays < calcRes.numDays) {
           endDateMoment.add(1, 'd');
 
           // Factor in a suspension
@@ -271,12 +271,12 @@ export class DayCalculatorModalComponent implements OnInit {
           }
 
           // If we've made it this far, count the day
-          calcRes.numDays++;
+          numDays++;
         }
         // convert moment date back to Date() object so it displays in datepicker
         calcRes.endDate = new Date (endDateMoment.year(), endDateMoment.month(), endDateMoment.day());
 
-      } else if (endDate && numDays) {
+      } else if (endDate && calcRes.numDays) {
         // Find the start date from the end date and number of days
         startDateMoment = moment(endDate);
 
@@ -284,7 +284,7 @@ export class DayCalculatorModalComponent implements OnInit {
         numDays = regular ? 1 : 0;
 
         // Start counting back the days
-        while (numDays < numDays) {
+        while (numDays < calcRes.numDays) {
           startDateMoment.subtract(1, 'd');
 
           // Factor in a suspension
@@ -300,7 +300,7 @@ export class DayCalculatorModalComponent implements OnInit {
           }
 
           // If we've made it this far, count the day
-          calcRes.numDays++;
+          numDays++;
         }
         // convert moment date back to Date() object so it displays in datepicker
         calcRes.startDate = new Date(startDateMoment.year(), startDateMoment.month(), startDateMoment.day());
