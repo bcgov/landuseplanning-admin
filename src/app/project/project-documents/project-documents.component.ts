@@ -198,6 +198,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     }
   }
 
+  navSearchHelp() {
+    this.router.navigate(['/search-help']);
+  }
+
   publishDocument() {
     this.dialogService.addDialog(ConfirmComponent,
       {
