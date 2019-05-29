@@ -149,13 +149,12 @@
                 <p *ngIf="result.project" class="card-text"><label>Project:</label> {{result.project.name}}</p>
                 <p class="card-text"><label>Date:</label> {{result.datePosted | date:'medium'}}</p>
               </div>
-
               <p class="card-text publish-state">
                 <i class="material-icons">
-                  {{isPublished === 'Publish' ?   'cloud_off' : 'cloud_done' || '-'}}
+                  {{result.read.includes('public') !== true ?   'cloud_off' : 'cloud_done' || '-'}}
                 </i>
 
-                {{isPublished === 'Publish' ?  'Not Published' : 'Published' || '-'}}
+                {{result.read.includes('public') !== true ?  'Not Published' : 'Published' || '-'}}
               </p>
 
               <h2 class="card-title">{{result.displayName}}</h2>
