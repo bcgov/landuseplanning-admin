@@ -10,6 +10,7 @@ import { DocumentService } from 'app/services/document.service';
 import { StorageService } from 'app/services/storage.service';
 
 import { Document } from 'app/models/document';
+import { Utils } from 'app/shared/utils/utils';
 
 @Component({
   selector: 'app-upload',
@@ -37,6 +38,7 @@ export class UploadComponent implements OnInit {
     private _changeDetectionRef: ChangeDetectorRef,
     private storageService: StorageService,
     private documentService: DocumentService,
+    private utils: Utils,
     private config: ConfigService
   ) { }
 
@@ -122,8 +124,8 @@ export class UploadComponent implements OnInit {
 
       formData.append('displayName', this.documents.length > 1 ? doc.documentFileName : this.myForm.value.displayName);
       formData.append('milestone', this.myForm.value.labelsel);
-      formData.append('dateUploaded', moment(this.myForm.value.dateUploaded));
-      formData.append('datePosted', moment(this.myForm.value.datePosted));
+      formData.append('dateUploaded', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUploaded').value))).toISOString());
+      formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
       formData.append('type', this.myForm.value.doctypesel);
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);
