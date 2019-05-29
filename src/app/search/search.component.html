@@ -99,7 +99,7 @@
                 </div>
                 <div class="label-pair">
                   <div *ngFor="let label of result.labels">
-                      <button class="mr-2 badge badge-pill badge-info">{{label}}</button>
+                      <div class="mr-2 badge badge-pill badge-info">{{label}}</div>
                   </div>
                 </div>
               </div>
@@ -163,7 +163,7 @@
               <a *ngIf="result.project" [routerLink]="['/p', result.project._id]" class="btn btn-primary"> View {{result.project.name}} Project <i class="material-icons">chevron_right</i></a>
               <div class="label-pair badge-container">
                 <div *ngFor="let label of result.labels">
-                  <button class="mr-2 badge badge-pill badge-info">{{label}}</button>
+                  <div class="mr-2 badge badge-pill badge-info">{{label}}</div>
                 </div>
               </div>
             </div>
