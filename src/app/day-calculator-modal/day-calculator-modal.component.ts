@@ -314,7 +314,7 @@ export class DayCalculatorModalComponent implements OnInit {
       calcRes = this.calculateStartDate(
       this.type.value === 'regular',
       this.type.value === 'suspended',
-      null,
+      0,
       this.startDate,
       this.endDate,
       this.suspendDate,
