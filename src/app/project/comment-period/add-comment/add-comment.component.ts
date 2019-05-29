@@ -58,7 +58,7 @@ export class AddCommentComponent implements OnInit {
           this.commentPeriod = data.commentPeriod;
           this.initForm();
         } else {
-          alert('Uh-oh, couldn\'t load valued components');
+          alert('Uh-oh, couldn\'t load comment period');
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
         }
