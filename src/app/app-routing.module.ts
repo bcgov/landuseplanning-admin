@@ -10,6 +10,7 @@ import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { ActivityComponent } from './activity/activity.component';
+import { SearchHelpComponent } from './search-help/search-help.component';
 
 import { ContactsResolverService } from './contacts/contacts-resolver.service';
 import { ActivityComponentResolver } from './activity/activity-component-resolver.services';
@@ -70,6 +71,10 @@ const routes: Routes = [
   {
     path: 'activity/add',
     component: AddEditActivityComponent
+  },
+  {
+    path: 'search-help',
+    component: SearchHelpComponent
   },
   {
     // default route

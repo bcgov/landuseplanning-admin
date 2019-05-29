@@ -61,6 +61,7 @@ import { ActivityTableRowsComponent } from 'app/activity/activity-table-rows/act
 import { CurrencyPipe } from '@angular/common';
 import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
 import { RecentActivityService } from './services/recent-activity';
+import { SearchHelpComponent } from './search-help/search-help.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -90,7 +91,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     ContactsComponent,
     UserTableRowsComponent,
     ActivityTableRowsComponent,
-    AddEditActivityComponent
+    AddEditActivityComponent,
+    SearchHelpComponent
   ],
   imports: [
     BrowserAnimationsModule,
