@@ -49,8 +49,8 @@
           <input name="name" id="name" formControlName="name" type="text" class="form-control" />
         </div>
         <div class="label-pair add-row">
-          <label for="proponent">Proponent* </label>
-          <input name="proponent" id="proponent" formControlName="proponent" type="text" class="form-control" />
+          <label for="proponent">Proponent</label>
+          <input [readonly]='true' name="proponent" id="proponent" formControlName="proponent" type="text" class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair">
