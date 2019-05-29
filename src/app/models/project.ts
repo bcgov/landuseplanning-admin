@@ -73,7 +73,7 @@ export class Project {
 
   // Not from API directly
   currentPeriods: CommentPeriod[];
-  upcomingCommentPeriod: any;
+  commentPeriodForBanner: any;
 
   isMatches = true;
   isVisible = true;
@@ -85,7 +85,7 @@ export class Project {
     this.CELead              = obj && obj.CELead              || undefined;
     this.CELeadEmail         = obj && obj.CELeadEmail         || undefined;
     this.CELeadPhone         = obj && obj.CELeadPhone         || undefined;
-    this.upcomingCommentPeriod         = obj && obj.upcomingCommentPeriod         || undefined;
+    this.commentPeriodForBanner         = obj && obj.commentPeriodForBanner         || undefined;
     this.description         = obj && obj.description         || undefined;
     this.eacDecision         = obj && obj.eacDecision         || undefined;
     this.location            = obj && obj.location            || undefined;

@@ -198,8 +198,8 @@ export class ApiService {
       'delete'
     ];
     let queryString = `project/${id}?populate=true`;
-    if (cpStart !== null) { queryString += `&cpStart[until]=${cpStart.getFullYear()}-${cpStart.getMonth()}-${cpStart.getDate()}`; }
-    if (cpEnd !== null) { queryString += `&cpEnd[since]=${cpEnd.getFullYear()}-${cpEnd.getMonth()}-${cpEnd.getDate()}`; }
+    if (cpStart !== null) { queryString += `&cpStart[since]=${cpStart.getFullYear()}-${cpStart.getMonth() + 1}-${cpStart.getDate()}`; }
+    if (cpEnd !== null) { queryString += `&cpEnd[until]=${cpEnd.getFullYear()}-${cpEnd.getMonth() + 1}-${cpEnd.getDate()}`; }
     queryString += `&fields=${this.buildValues(fields)}`;
     return this.http.get<Project[]>(`${this.pathAPI}/${queryString}`, {});
   }

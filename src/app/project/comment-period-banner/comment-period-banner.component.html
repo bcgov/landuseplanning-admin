@@ -19,8 +19,11 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <p class="mb-0">
+                <p *ngIf="commentPeriod.informationLabel" class="mb-0">
                     This Public Comment Period is regarding the <b>{{commentPeriod.informationLabel}}</b>
+                </p>
+                <p *ngIf="commentPeriod.informationLabel == null" class="mb-0">
+                    {{commentPeriod.instructions}}
                 </p>
             </div>
         </div>
