@@ -131,10 +131,10 @@ export class ReviewCommentComponent implements OnInit {
         },
         error => {
           console.log('error =', error);
-          alert('Uh-oh, couldn\'t edit comment period');
+          alert('Uh-oh, couldn\'t edit comment');
         },
         () => { // onCompleted
-          this.openSnackBar('This comment period was created successfuly.', 'Close');
+          this.openSnackBar('Comment Updated.', 'Close');
           this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
           this.loading = false;
         }
