@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -36,8 +36,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     public snackBar: MatSnackBar,
     public api: ApiService, // also used in template
+    private _changeDetectorRef: ChangeDetectorRef,
     private dialogService: DialogService,
     public projectService: ProjectService, // also used in template
     public commentPeriodService: CommentPeriodService,
@@ -46,20 +48,43 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     public documentService: DocumentService,
     private projectComponent: ProjectComponent
-  ) { }
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+  }
 
   ngOnInit() {
-    this.project = this.projectComponent.project;
+    this.route.parent.data
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (data: { project: Project }) => {
+        if (data.project) {
+            this.project = data.project;
+            this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
+            // this.loading = false;
+            this._changeDetectorRef.detectChanges();
+          } else {
+            alert('Uh-oh, couldn\'t load project');
+            // project not found --> navigate back to search
+            this.router.navigate(['/search']);
+            // this.loading = false;
+          }
+        }
+      );
+
+    // this.project = this.projectComponent.project;
     // Handles when we come back to this page.
 
-    // TODO fix
-    if (this.project && this.project.intake === null) {
-      this.project.intake = { investment: '', investmentNotes: '' };
-    }
+    // // TODO fix
+    // if (this.project && this.project.intake === null) {
+    //   this.project.intake = { investment: '', investmentNotes: '' };
+    // }
 
-    if (this.project && this.project.intake.investment !== '' && this.project.intake.investment[0] !== '$') {
-      this.project.intake.investment = this.cp.transform(this.project.intake.investment, '', true, '1.0-0');
-    }
+    // if (this.project && this.project.intake.investment !== '' && this.project.intake.investment[0] !== '$') {
+    //   this.project.intake.investment = this.cp.transform(this.project.intake.investment, '', true, '1.0-0');
+    // }
   }
 
   editProject() {

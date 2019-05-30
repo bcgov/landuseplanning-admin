@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import * as moment from 'moment-timezone';
 import { Subject } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
+import { MatSnackBar } from '@angular/material';
 
 import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
@@ -142,6 +143,7 @@ export class AddEditProjectComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
     private router: Router,
     private config: ConfigService,
     private _changeDetectorRef: ChangeDetectorRef,
@@ -149,7 +151,12 @@ export class AddEditProjectComponent implements OnInit {
     private documentService: DocumentService,
     private projectService: ProjectService,
     private storageService: StorageService
-  ) { }
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+  }
 
   ngOnInit() {
     // Check if we're editing
@@ -168,6 +175,7 @@ export class AddEditProjectComponent implements OnInit {
         this.project = data.project;
         this.buildForm(data);
         this.loading = false;
+        this._changeDetectorRef.detectChanges();
       });
 
     this.back = this.storageService.state.back;
@@ -364,18 +372,24 @@ export class AddEditProjectComponent implements OnInit {
       this.projectService.save(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          () => { },
+          () => { // onCompleted
+            this.loading = false;
+            this.router.navigated = false;
+            this.openSnackBar('This project was created successfuly.', 'Close');
+            this.router.navigate(['/p', this.projectId, 'project-details']);
+          },
           error => {
             console.log('error =', error);
             alert('Uh-oh, couldn\'t edit project');
           },
-          () => { // onCompleted
-            this.loading = false;
-            // this.openSnackBar('This project was created successfuly.', 'Close');
-            this.router.navigate(['/p', this.projectId, 'project-details']);
-          }
         );
     }
+  }
+
+  public openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   register (myForm: FormGroup) {

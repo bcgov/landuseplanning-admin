@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Project } from 'app/models/project';
 import { Subject } from 'rxjs';
@@ -20,9 +20,15 @@ export class ProjectComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private _changeDetectorRef: ChangeDetectorRef,
     private sidebarService: SideBarService,
     private storageService: StorageService
-  ) { }
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+  }
 
   toggleSideNav() {
     this.sidebarService.toggle();
@@ -35,10 +41,11 @@ export class ProjectComponent implements OnInit {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         (data: { project: Project }) => {
-          if (data.project) {
+        if (data.project) {
             this.project = data.project;
             this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
             this.loading = false;
+            this._changeDetectorRef.detectChanges();
           } else {
             alert('Uh-oh, couldn\'t load project');
             // project not found --> navigate back to search

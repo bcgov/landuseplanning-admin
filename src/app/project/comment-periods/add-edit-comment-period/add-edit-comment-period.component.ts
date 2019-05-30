@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
@@ -40,6 +40,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private _changeDetectionRef: ChangeDetectorRef,
     private commentPeriodService: CommentPeriodService,
     private config: ConfigService,
     private documentService: DocumentService,
@@ -68,6 +69,7 @@ export class AddEditCommentPeriodComponent implements OnInit {
                   this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
 
                   this.initSelectedDocs();
+                  this._changeDetectionRef.detectChanges();
                 } else {
                   alert('Uh-oh, couldn\'t load comment periods');
                   // project not found --> navigate back to search

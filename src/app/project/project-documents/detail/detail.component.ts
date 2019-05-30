@@ -27,7 +27,12 @@ export class DocumentDetailComponent implements OnInit {
     private storageService: StorageService,
     private snackBar: MatSnackBar,
     private documentService: DocumentService
-  ) { }
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+  }
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
