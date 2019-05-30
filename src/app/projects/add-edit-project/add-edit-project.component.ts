@@ -253,16 +253,16 @@ export class AddEditProjectComponent implements OnInit {
       formData.substantially = 'yes';
     }
 
-    let decisionDate = null;
-    let decisionDateObj = null;
-    if (formData.decisionDate) {
-      decisionDate = new Date(formData.decisionDate);
-      decisionDateObj = {
-        year: decisionDate.getFullYear(),
-        month: decisionDate.getMonth(),
-        day: decisionDate.getDate()
-      };
-    }
+    // let decisionDate = null;
+    // let decisionDateObj = null;
+    // if (formData.decisionDate) {
+    //   decisionDate = new Date(formData.decisionDate);
+    //   decisionDateObj = {
+    //     year: decisionDate.getFullYear(),
+    //     month: decisionDate.getMonth(),
+    //     day: decisionDate.getDate()
+    //   };
+    // }
 
     if (!formData.centroid) {
       formData.centroid = [-123.3656, 48.4284];
@@ -290,7 +290,7 @@ export class AddEditProjectComponent implements OnInit {
       'status': new FormControl(formData.status),
       'projectStatusDate': new FormControl(formData.projectStatusDate),
       'eacDecision': new FormControl(formData.eacDecision),
-      'decisionDate': new FormControl(decisionDateObj),
+      'decisionDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.decisionDate))),
       'substantially': new FormControl(formData.substantially),
       'substantiallyDate': new FormControl(formData.substantiallyDate),
       'activeStatus': new FormControl(formData.activeStatus),
@@ -352,7 +352,7 @@ export class AddEditProjectComponent implements OnInit {
               'status': form.controls.status.value,
               'projectStatusDate': form.get('projectStatusDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value) : null,
               'eacDecision': form.controls.eacDecision.value,
-              'decisionDate': form.get('decisionDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value) : null,
+              'decisionDate': form.get('decisionDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
               'substantially': form.controls.substantially.value === 'yes' ? true : false,
               'substantiallyDate': form.get('substantiallyDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value) : null,
               'activeStatus': form.controls.activeStatus.value,
