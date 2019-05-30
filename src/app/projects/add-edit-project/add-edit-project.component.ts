@@ -217,15 +217,15 @@ export class AddEditProjectComponent implements OnInit {
         'capital': new FormControl(),
         'notes': new FormControl(),
         'eaStatus': new FormControl(),
-        'eaStatusDate': new FormControl(),
+        // 'eaStatusDate': new FormControl(),
         'status': new FormControl(),
-        'projectStatusDate': new FormControl(),
+        // 'projectStatusDate': new FormControl(),
         'eacDecision': new FormControl(),
         'decisionDate': new FormControl(),
         'substantially': new FormControl(),
-        'substantiallyDate': new FormControl(),
+        // 'substantiallyDate': new FormControl(),
         'activeStatus': new FormControl(),
-        'activeDate': new FormControl(),
+        // 'activeDate': new FormControl(),
         'responsibleEPD': new FormControl(),
         'projectLead': new FormControl(),
         'projectAdmin': new FormControl()
@@ -253,17 +253,6 @@ export class AddEditProjectComponent implements OnInit {
       formData.substantially = 'yes';
     }
 
-    // let decisionDate = null;
-    // let decisionDateObj = null;
-    // if (formData.decisionDate) {
-    //   decisionDate = new Date(formData.decisionDate);
-    //   decisionDateObj = {
-    //     year: decisionDate.getFullYear(),
-    //     month: decisionDate.getMonth(),
-    //     day: decisionDate.getDate()
-    //   };
-    // }
-
     if (!formData.centroid) {
       formData.centroid = [-123.3656, 48.4284];
     }
@@ -286,15 +275,15 @@ export class AddEditProjectComponent implements OnInit {
       'capital': new FormControl(formData.intake.investment),
       'notes': new FormControl(formData.intake.investmentNotes),
       'eaStatus': new FormControl(formData.eaStatus),
-      'eaStatusDate': new FormControl(formData.eaStatusDate),
+      // 'eaStatusDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.eaStatusDate))),
       'status': new FormControl(formData.status),
-      'projectStatusDate': new FormControl(formData.projectStatusDate),
+      // 'projectStatusDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.projectStatusDate))),
       'eacDecision': new FormControl(formData.eacDecision),
       'decisionDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.decisionDate))),
       'substantially': new FormControl(formData.substantially),
-      'substantiallyDate': new FormControl(formData.substantiallyDate),
+      // 'substantiallyDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.substantiallyDate))),
       'activeStatus': new FormControl(formData.activeStatus),
-      'activeDate': new FormControl(formData.activeDate),
+      // 'activeDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.activeDate))),
       'responsibleEPD': new FormControl(formData.responsibleEPD),
       'projectLead': new FormControl(formData.projectLead),
       'projectAdmin': new FormControl(formData.projectAdmin)
@@ -348,15 +337,15 @@ export class AddEditProjectComponent implements OnInit {
               'ea': form.controls.ea.value,
               'intake': { investment: form.controls.capital.value, notes: form.controls.notes.value },
               'eaStatus': form.controls.eaStatus.value,
-              'eaStatusDate': form.get('eaStatusDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value) : null,
+              // 'eaStatusDate': form.get('eaStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value))).toISOString() : null,
               'status': form.controls.status.value,
-              'projectStatusDate': form.get('projectStatusDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value) : null,
+              // 'projectStatusDate': form.get('projectStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value))).toISOString() : null,
               'eacDecision': form.controls.eacDecision.value,
               'decisionDate': form.get('decisionDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
               'substantially': form.controls.substantially.value === 'yes' ? true : false,
-              'substantiallyDate': form.get('substantiallyDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value) : null,
+              // 'substantiallyDate': form.get('substantiallyDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value))).toISOString() : null,
               'activeStatus': form.controls.activeStatus.value,
-              'activeDate': form.get('activeDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value) : null,
+              // 'activeDate': form.get('activeDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value))).toISOString() : null,
               'responsibleEPD': form.controls.responsibleEPD.value,
               'projectLead': form.controls.projectLead.value,
               'projectAdmin': form.controls.projectAdmin.value
