@@ -37,7 +37,7 @@ export class ValuedComponentService {
       .catch(error => this.api.handleError(error));
     }
 
-    delete(item: string) {
+    delete(item: any) {
       return this.api.deleteVC(item)
       .map(() => {
         return {};
