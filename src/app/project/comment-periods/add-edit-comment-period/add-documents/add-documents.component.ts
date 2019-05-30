@@ -233,7 +233,11 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
 
     console.log('params =', params);
     console.log('nav:', ['p', this.currentProject._id, 'comment-periods', 'add', 'add-documents', params]);
-    this.router.navigate(['p', this.currentProject._id, 'comment-periods', 'add', 'add-documents', params]);
+    if (this.isEditing) {
+      this.router.navigate(['p', this.currentProject._id, 'cp', this.currentCommentPeriod._id, 'edit', 'add-documents', params]);
+    } else {
+      this.router.navigate(['p', this.currentProject._id, 'comment-periods', 'add', 'add-documents', params]);
+    }
   }
 
   setDocumentRowData() {
