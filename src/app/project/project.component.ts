@@ -24,10 +24,6 @@ export class ProjectComponent implements OnInit {
     private sidebarService: SideBarService,
     private storageService: StorageService
   ) {
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
-      return false;
-    };
-    this.router.onSameUrlNavigation = 'reload';
   }
 
   toggleSideNav() {

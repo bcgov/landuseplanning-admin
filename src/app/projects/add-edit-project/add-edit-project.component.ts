@@ -158,10 +158,6 @@ export class AddEditProjectComponent implements OnInit {
     private projectService: ProjectService,
     private storageService: StorageService
   ) {
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
-      return false;
-    };
-    this.router.onSameUrlNavigation = 'reload';
   }
 
   ngOnInit() {
@@ -181,7 +177,11 @@ export class AddEditProjectComponent implements OnInit {
         this.project = data.project;
         this.buildForm(data);
         this.loading = false;
-        this._changeDetectorRef.detectChanges();
+        try {
+          this._changeDetectorRef.detectChanges();
+        } catch (e) {
+          // console.log('e:', e);
+        }
       });
 
     this.back = this.storageService.state.back;
@@ -217,15 +217,15 @@ export class AddEditProjectComponent implements OnInit {
         'capital': new FormControl(),
         'notes': new FormControl(),
         'eaStatus': new FormControl(),
-        // 'eaStatusDate': new FormControl(),
+        'eaStatusDate': new FormControl(),
         'status': new FormControl(),
-        // 'projectStatusDate': new FormControl(),
+        'projectStatusDate': new FormControl(),
         'eacDecision': new FormControl(),
         'decisionDate': new FormControl(),
         'substantially': new FormControl(),
-        // 'substantiallyDate': new FormControl(),
+        'substantiallyDate': new FormControl(),
         'activeStatus': new FormControl(),
-        // 'activeDate': new FormControl(),
+        'activeDate': new FormControl(),
         'responsibleEPD': new FormControl(),
         'projectLead': new FormControl(),
         'projectAdmin': new FormControl()
@@ -275,15 +275,15 @@ export class AddEditProjectComponent implements OnInit {
       'capital': new FormControl(formData.intake.investment),
       'notes': new FormControl(formData.intake.investmentNotes),
       'eaStatus': new FormControl(formData.eaStatus),
-      // 'eaStatusDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.eaStatusDate))),
+      'eaStatusDate': new FormControl(),
       'status': new FormControl(formData.status),
-      // 'projectStatusDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.projectStatusDate))),
+      'projectStatusDate': new FormControl(),
       'eacDecision': new FormControl(formData.eacDecision),
       'decisionDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.decisionDate))),
       'substantially': new FormControl(formData.substantially),
-      // 'substantiallyDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.substantiallyDate))),
+      'substantiallyDate': new FormControl(),
       'activeStatus': new FormControl(formData.activeStatus),
-      // 'activeDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.activeDate))),
+      'activeDate': new FormControl(),
       'responsibleEPD': new FormControl(formData.responsibleEPD),
       'projectLead': new FormControl(formData.projectLead),
       'projectAdmin': new FormControl(formData.projectAdmin)

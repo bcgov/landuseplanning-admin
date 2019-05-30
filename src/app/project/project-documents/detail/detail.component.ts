@@ -28,10 +28,6 @@ export class DocumentDetailComponent implements OnInit {
     private snackBar: MatSnackBar,
     private documentService: DocumentService
   ) {
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
-      return false;
-    };
-    this.router.onSameUrlNavigation = 'reload';
   }
 
   ngOnInit() {

@@ -49,10 +49,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public documentService: DocumentService,
     private projectComponent: ProjectComponent
   ) {
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
-      return false;
-    };
-    this.router.onSameUrlNavigation = 'reload';
   }
 
   ngOnInit() {
