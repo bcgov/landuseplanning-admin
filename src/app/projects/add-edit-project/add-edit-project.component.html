@@ -54,11 +54,11 @@
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair">
-          <label for="nature">Project Nature </label>
-          <select name="nature" id="nature" formControlName="nature" class="form-control">
-            <option value="New Construction">New Construction</option>
-            <option value="Modification of Existing">Modification of Existing</option>
-            <option value="Dismantling or Abandonment">Dismantling or Abandonment</option>
+          <label for="build">Project Nature </label>
+          <select name="build" id="build" formControlName="build" class="form-control">
+            <option [selected]='isSelected("new")' value="new">New Construction</option>
+            <option [selected]='isSelected("modification")' value="modification">Modification of Existing</option>
+            <option [selected]='isSelected("dismantling")' value="dismantling">Dismantling or Abandonment</option>
           </select>
         </div>
         <div class="label-pair">
@@ -159,8 +159,8 @@
           <div class="label-pair">
             <label for="eaStatus">EA Readiness Determination </label>
             <select name="eaStatus" id="eaStatus" formControlName="eaStatus" class="form-control">
-              <option>Does not require EAC</option>
-              <option>Requires EAC</option>
+              <option [selected]="isEACSelected('Does not require EAC')" value='Does not require EAC'>Does not require EAC</option>
+              <option [selected]="isEACSelected('Requires EAC')" value='Requires EAC'>Requires EAC</option>
             </select>
           </div>
           <div class="label-pair">

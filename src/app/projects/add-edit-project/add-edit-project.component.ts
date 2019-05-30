@@ -120,6 +120,12 @@ export class AddEditProjectComponent implements OnInit {
     'Decommissioned'
   ];
 
+  public PROJECT_NATURE: Array<Object> = [
+    'New Construction',
+    'Modification of Existing',
+    'Dismantling or Abandonment'
+  ];
+
   public EAC_DECISIONS: Array<Object> = [
     'In Progress',
     'Certificate Issued',
@@ -196,7 +202,7 @@ export class AddEditProjectComponent implements OnInit {
       this.myForm = new FormGroup({
         'name': new FormControl(),
         'proponent': new FormControl(),
-        'nature': new FormControl(),
+        'build': new FormControl(),
         'type': new FormControl(),
         'sector': new FormControl(),
         'description': new FormControl(),
@@ -243,6 +249,8 @@ export class AddEditProjectComponent implements OnInit {
 
     if (!formData.substantially) {
       formData.substantially = 'no';
+    } else {
+      formData.substantially = 'yes';
     }
 
     let decisionDate = null;
@@ -263,7 +271,7 @@ export class AddEditProjectComponent implements OnInit {
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'proponent': new FormControl(formData.proponent.name),
-      'nature': new FormControl(formData.nature),
+      'build': new FormControl(formData.build),
       'type': new FormControl(formData.type),
       'sector': new FormControl(formData.sector),
       'description': new FormControl(formData.description),
@@ -276,7 +284,7 @@ export class AddEditProjectComponent implements OnInit {
       'CEAALink': new FormControl(formData.CEAALink),
       'ea': new FormControl(formData.ea),
       'capital': new FormControl(formData.intake.investment),
-      'notes': new FormControl(formData.notes),
+      'notes': new FormControl(formData.intake.investmentNotes),
       'eaStatus': new FormControl(formData.eaStatus),
       'eaStatusDate': new FormControl(formData.eaStatusDate),
       'status': new FormControl(formData.status),
@@ -308,10 +316,26 @@ export class AddEditProjectComponent implements OnInit {
     }
   }
 
+  isSelected(val) {
+    if (this.myForm.controls.build.value === val) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isEACSelected(val) {
+    if (this.myForm.controls.eaStatus.value === val) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   convertFormToProject(form) {
     return { 'name': form.controls.name.value,
               'proponent': form.controls.proponent.value,
-              'nature': form.controls.nature.value,
+              'build': form.controls.build.value,
               'type': form.controls.type.value,
               'sector': form.controls.sector.value,
               'description': form.controls.description.value,
@@ -322,15 +346,14 @@ export class AddEditProjectComponent implements OnInit {
               'CEAAInvolvement': form.controls.CEAAInvolvement.value,
               'CEAALink': form.controls.CEAALink.value,
               'ea': form.controls.ea.value,
-              'intake': { investment: form.controls.capital.value },
-              'notes': form.controls.notes.value,
+              'intake': { investment: form.controls.capital.value, notes: form.controls.notes.value },
               'eaStatus': form.controls.eaStatus.value,
               'eaStatusDate': form.get('eaStatusDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value) : null,
               'status': form.controls.status.value,
               'projectStatusDate': form.get('projectStatusDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value) : null,
               'eacDecision': form.controls.eacDecision.value,
               'decisionDate': form.get('decisionDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value) : null,
-              'substantially': form.controls.substantially.value,
+              'substantially': form.controls.substantially.value === 'yes' ? true : false,
               'substantiallyDate': form.get('substantiallyDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value) : null,
               'activeStatus': form.controls.activeStatus.value,
               'activeDate': form.get('activeDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value) : null,
