@@ -133,12 +133,14 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             selBox.style.left = '0';
             selBox.style.top = '0';
             selBox.style.opacity = '0';
-            selBox.value = window.location.href.split(';')[0] + `/detail/${item._id}`;
+            selBox.value = window.location.origin + `/api/document/${item._id}/fetch/${item.documentFileName}`;
+            // selBox.value = window.location.origin + `/api/public/document/${item._id}/download`;
             document.body.appendChild(selBox);
             selBox.focus();
             selBox.select();
             document.execCommand('copy');
             document.body.removeChild(selBox);
+            // alert('Item has been copied to the clipboard');
           }
         });
         break;
@@ -341,6 +343,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             // displayName: document.displayName || document.internalOriginalName,
             // date: document.dateUploaded || document.datePosted,
             displayName: document.displayName,
+            documentFileName: document.documentFileName,
             datePosted: document.datePosted,
             status: document.read.includes('public') ? 'Published' : 'Not Published',
             type: document.type,

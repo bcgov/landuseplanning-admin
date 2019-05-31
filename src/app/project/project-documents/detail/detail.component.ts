@@ -27,7 +27,8 @@ export class DocumentDetailComponent implements OnInit {
     private storageService: StorageService,
     private snackBar: MatSnackBar,
     private documentService: DocumentService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;

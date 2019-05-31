@@ -73,7 +73,7 @@ export class AddCommentComponent implements OnInit {
       'dateAdded': new FormControl(),
       'datePosted': new FormControl(),
       'deferralNotesText': new FormControl(),
-      'isAnonymous': new FormControl(),
+      'isNamePublic': new FormControl(),
       'isDeferred': new FormControl(),
       'isPublished': new FormControl(),
       'isRejected': new FormControl(),
@@ -82,7 +82,7 @@ export class AddCommentComponent implements OnInit {
       'rejectionNotesText': new FormControl(),
       'publishedNotesText': new FormControl()
     });
-    this.addCommentForm.controls.isAnonymous.setValue(true);
+    this.addCommentForm.controls.isNamePublic.setValue(false);
     this.addCommentForm.controls.dateAdded.setValue(this.utils.convertJSDateToNGBDate(new Date()));
     this.addCommentForm.controls.datePosted.setValue(this.utils.convertJSDateToNGBDate(new Date()));
   }
@@ -94,7 +94,7 @@ export class AddCommentComponent implements OnInit {
     this.comment.comment = this.addCommentForm.get('commentText').value;
     this.comment.dateAdded = this.utils.convertFormGroupNGBDateToJSDate(this.addCommentForm.get('dateAdded').value);
     this.comment.datePosted = this.utils.convertFormGroupNGBDateToJSDate(this.addCommentForm.get('datePosted').value);
-    this.comment.isAnonymous = this.addCommentForm.get('isAnonymous').value;
+    this.comment.isAnonymous = !this.addCommentForm.get('isNamePublic').value;
     this.comment.location = this.addCommentForm.get('locationText').value;
 
     // TODO: Validation

@@ -55,16 +55,17 @@ export class Project {
   substitution: Boolean;
   updatedBy: String;
 
-  nature: any;
   eaDecision: any;
   operational: any;
-  substantiallyStarted: any;
 
   // TODO: New Stuff?
-  eaStatusDate: any;
-  projectStatusDate: any;
-  substantiallyDate: any;
-  activeDate: any;
+  eaStatus: any;
+  eaStatusDate: String;
+  projectStatusDate: String;
+  substantiallyDate: String;
+  substantially: any;
+  activeDate: String;
+  activeStatus: any;
 
   // Permissions
   read: Array<String> = [];
@@ -102,15 +103,16 @@ export class Project {
     this.addedBy             = obj && obj.addedBy             || undefined;
     this.intake              = obj && obj.intake              || undefined;
     this.build               = obj && obj.build               || undefined;
+    this.activeStatus = obj && obj.activeStatus || undefined;
 
-    this.nature               = obj && obj.nature               || undefined;
     this.eaDecision           = obj && obj.eaDecision               || undefined;
     this.operational          = obj && obj.operational               || undefined;
-    this.substantiallyStarted = obj && obj.substantiallyStarted               || undefined;
 
     this.eaStatusDate               = obj && obj.eaStatusDate               || undefined;
+    this.eaStatus               = obj && obj.eaStatus               || undefined;
     this.projectStatusDate               = obj && obj.projectStatusDate               || undefined;
     this.substantiallyDate               = obj && obj.substantiallyDate               || undefined;
+    this.substantially               = obj && obj.substantially               || undefined;
     this.activeDate               = obj && obj.activeDate               || undefined;
 
 

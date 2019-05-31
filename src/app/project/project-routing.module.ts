@@ -36,6 +36,7 @@ const routes: Routes = [
   {
     path: 'p/:projId',
     component: ProjectComponent,
+    runGuardsAndResolvers: 'always',
     resolve: {
       project: ProjectResolver
     },

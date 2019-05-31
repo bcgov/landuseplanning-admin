@@ -54,11 +54,11 @@
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair">
-          <label for="nature">Project Nature </label>
-          <select name="nature" id="nature" formControlName="nature" class="form-control">
-            <option>New Construction</option>
-            <option>Modification of Existing</option>
-            <option>Dismantling or Abandonment</option>
+          <label for="build">Project Nature </label>
+          <select name="build" id="build" formControlName="build" class="form-control">
+            <option [selected]='isSelected("new")' value="new">New Construction</option>
+            <option [selected]='isSelected("modification")' value="modification">Modification of Existing</option>
+            <option [selected]='isSelected("dismantling")' value="dismantling">Dismantling or Abandonment</option>
           </select>
         </div>
         <div class="label-pair">
@@ -159,17 +159,17 @@
           <div class="label-pair">
             <label for="eaStatus">EA Readiness Determination </label>
             <select name="eaStatus" id="eaStatus" formControlName="eaStatus" class="form-control">
-              <option>Does not require EAC</option>
-              <option>Requires EAC</option>
+              <option [selected]="isEACSelected('Does not require EAC')" value='Does not require EAC'>Does not require EAC</option>
+              <option [selected]="isEACSelected('Requires EAC')" value='Requires EAC'>Requires EAC</option>
             </select>
           </div>
           <div class="label-pair">
             <label for="eaStatusDate">Determination Date </label>
-            <div class="input-group">
-              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="eaStatusDate"
+            <div disabled class="input-group">
+              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="eaStatusDate"
               formControlName="eaStatusDate" ngbDatepicker #eaStatusDatePicker="ngbDatepicker" />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary calendar" (click)="eaStatusDatePicker.toggle()"
+              <button disabled class="btn btn-outline-secondary calendar" (click)="eaStatusDatePicker.toggle()"
                 type="button"></button>
             </div>
             </div>
@@ -184,11 +184,11 @@
           </div>
           <div class="label-pair">
             <label for="projectStatusDate">Project Effective Date </label>
-            <div class="input-group">
-              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="projectStatusDate"
+            <div disabled class="input-group">
+              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="projectStatusDate"
               formControlName="projectStatusDate" ngbDatepicker #projectStatusDatePicker="ngbDatepicker" />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary calendar" (click)="projectStatusDatePicker.toggle()"
+              <button disabled class="btn btn-outline-secondary calendar" (click)="projectStatusDatePicker.toggle()"
                 type="button"></button>
             </div>
             </div>
@@ -197,14 +197,14 @@
         <fieldset class="form-group">
           <div class="label-pair">
             <label for="eacDecision">EA Decision </label>
-            <select required class="form-control" name="eacDecision" id="eacDecision" formControlName="eacDecision">
+            <select class="form-control" name="eacDecision" id="eacDecision" formControlName="eacDecision">
               <option *ngFor="let eacDecision of EAC_DECISIONS" [ngValue]="eacDecision">{{eacDecision}}</option>
             </select>
           </div>
           <div class="label-pair">
             <label for="decisionDate">EA Decision Date </label>
             <div class="input-group">
-              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="decisionDate"
+              <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="decisionDate"
                 formControlName="decisionDate" ngbDatepicker #decisionDatePicker="ngbDatepicker" />
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary calendar" (click)="decisionDatePicker.toggle()"
@@ -229,11 +229,11 @@
           </div>
           <div class="label-pair">
             <label for="substantiallyDate">Substantially Started Date </label>
-            <div class="input-group">
-              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="substantiallyDate"
+            <div disabled class="input-group">
+              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="substantiallyDate"
               formControlName="substantiallyDate" ngbDatepicker #substantiallyDatePicker="ngbDatepicker" />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary calendar" (click)="substantiallyDatePicker.toggle()"
+              <button disabled class="btn btn-outline-secondary calendar" (click)="substantiallyDatePicker.toggle()"
                 type="button"></button>
             </div>
             </div>
@@ -242,7 +242,7 @@
         <fieldset class="form-group">
           <div class="label-pair">
             <label for="activeStatus">Active Phase </label>
-            <select name="activeStatus" id="activeStatus" formControlName="activeStatus" type="text" class="form-control">
+            <select disabled name="activeStatus" id="activeStatus" formControlName="activeStatus" type="text" class="form-control">
               <option>Pre-Construction</option>
               <option>Construction</option>
               <option>Operations</option>
@@ -251,11 +251,11 @@
           </div>
           <div class="label-pair">
             <label for="activeDate">Phase Effective Date </label>
-            <div class="input-group">
-              <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="activeDate"
+            <div disabled class="input-group">
+              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="activeDate"
               formControlName="activeDate" ngbDatepicker #activeDatePicker="ngbDatepicker" />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary calendar" (click)="activeDatePicker.toggle()"
+              <button disabled class="btn btn-outline-secondary calendar" (click)="activeDatePicker.toggle()"
                 type="button"></button>
             </div>
             </div>

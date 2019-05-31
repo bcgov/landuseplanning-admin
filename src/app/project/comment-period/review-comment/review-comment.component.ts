@@ -79,7 +79,7 @@ export class ReviewCommentComponent implements OnInit {
       'dateAdded': new FormControl(),
       'datePosted': new FormControl(),
       'deferralNotesText': new FormControl(),
-      'isAnonymous': new FormControl(),
+      'isNamePublic': new FormControl(),
       'isDeferred': new FormControl(),
       'isPublished': new FormControl(),
       'isRejected': new FormControl(),
@@ -93,7 +93,7 @@ export class ReviewCommentComponent implements OnInit {
     this.commentReviewForm.controls.dateAdded.setValue(this.utils.convertJSDateToNGBDate(new Date(this.comment.dateAdded)));
     this.commentReviewForm.controls.datePosted.setValue(this.utils.convertJSDateToNGBDate(new Date(this.comment.datePosted)));
     this.commentReviewForm.controls.deferralNotesText.setValue(this.comment.eaoNotes);
-    this.commentReviewForm.controls.isAnonymous.setValue(this.comment.isAnonymous);
+    this.commentReviewForm.controls.isNamePublic.setValue(!this.comment.isAnonymous);
     this.commentReviewForm.controls.proponentResponseText.setValue(this.comment.proponentNotes);
     this.commentReviewForm.controls.publishedNotesText.setValue(this.comment.publishedNotes);
     this.commentReviewForm.controls.rejectionNotesText.setValue(this.comment.rejectedNotes);
@@ -102,7 +102,7 @@ export class ReviewCommentComponent implements OnInit {
   public onSubmit() {
     this.loading = true;
 
-    this.comment.isAnonymous = this.commentReviewForm.get('isAnonymous').value;
+    this.comment.isAnonymous = this.commentReviewForm.get('isNamePublic').value;
 
     this.comment.dateAdded = this.utils.convertFormGroupNGBDateToJSDate(this.commentReviewForm.get('dateAdded').value);
     this.comment.datePosted = this.utils.convertFormGroupNGBDateToJSDate(this.commentReviewForm.get('datePosted').value);

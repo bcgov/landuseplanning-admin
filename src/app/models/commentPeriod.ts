@@ -128,7 +128,7 @@ export class CommentPeriod {
 
       if (moment(now).isBetween(dateStarted, dateCompleted)) {
         this.commentPeriodStatus = 'Open';
-        let days = dateCompleted.diff(moment(now), 'days') + 1;
+        let days = dateCompleted.diff(moment(now), 'days');
         this.daysRemaining = days + (days === 1 ? ' Day ' : ' Days ') + 'Remaining';
       } else if (moment(now).isAfter(dateCompleted)) {
         this.commentPeriodStatus = 'Closed';

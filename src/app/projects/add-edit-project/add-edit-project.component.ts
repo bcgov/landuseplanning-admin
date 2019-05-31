@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import * as moment from 'moment-timezone';
 import { Subject } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
+import { MatSnackBar } from '@angular/material';
 
 import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
@@ -119,6 +120,12 @@ export class AddEditProjectComponent implements OnInit {
     'Decommissioned'
   ];
 
+  public PROJECT_NATURE: Array<Object> = [
+    'New Construction',
+    'Modification of Existing',
+    'Dismantling or Abandonment'
+  ];
+
   public EAC_DECISIONS: Array<Object> = [
     'In Progress',
     'Certificate Issued',
@@ -142,6 +149,7 @@ export class AddEditProjectComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
     private router: Router,
     private config: ConfigService,
     private _changeDetectorRef: ChangeDetectorRef,
@@ -149,7 +157,8 @@ export class AddEditProjectComponent implements OnInit {
     private documentService: DocumentService,
     private projectService: ProjectService,
     private storageService: StorageService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     // Check if we're editing
@@ -168,6 +177,11 @@ export class AddEditProjectComponent implements OnInit {
         this.project = data.project;
         this.buildForm(data);
         this.loading = false;
+        try {
+          this._changeDetectorRef.detectChanges();
+        } catch (e) {
+          // console.log('e:', e);
+        }
       });
 
     this.back = this.storageService.state.back;
@@ -188,7 +202,7 @@ export class AddEditProjectComponent implements OnInit {
       this.myForm = new FormGroup({
         'name': new FormControl(),
         'proponent': new FormControl(),
-        'nature': new FormControl(),
+        'build': new FormControl(),
         'type': new FormControl(),
         'sector': new FormControl(),
         'description': new FormControl(),
@@ -235,17 +249,8 @@ export class AddEditProjectComponent implements OnInit {
 
     if (!formData.substantially) {
       formData.substantially = 'no';
-    }
-
-    let decisionDate = null;
-    let decisionDateObj = null;
-    if (formData.decisionDate) {
-      decisionDate = new Date(formData.decisionDate);
-      decisionDateObj = {
-        year: decisionDate.getFullYear(),
-        month: decisionDate.getMonth(),
-        day: decisionDate.getDate()
-      };
+    } else {
+      formData.substantially = 'yes';
     }
 
     if (!formData.centroid) {
@@ -255,7 +260,7 @@ export class AddEditProjectComponent implements OnInit {
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'proponent': new FormControl(formData.proponent.name),
-      'nature': new FormControl(formData.nature),
+      'build': new FormControl(formData.build),
       'type': new FormControl(formData.type),
       'sector': new FormControl(formData.sector),
       'description': new FormControl(formData.description),
@@ -268,17 +273,17 @@ export class AddEditProjectComponent implements OnInit {
       'CEAALink': new FormControl(formData.CEAALink),
       'ea': new FormControl(formData.ea),
       'capital': new FormControl(formData.intake.investment),
-      'notes': new FormControl(formData.notes),
+      'notes': new FormControl(formData.intake.investmentNotes),
       'eaStatus': new FormControl(formData.eaStatus),
-      'eaStatusDate': new FormControl(formData.eaStatusDate),
+      'eaStatusDate': new FormControl(),
       'status': new FormControl(formData.status),
-      'projectStatusDate': new FormControl(formData.projectStatusDate),
+      'projectStatusDate': new FormControl(),
       'eacDecision': new FormControl(formData.eacDecision),
-      'decisionDate': new FormControl(decisionDateObj),
+      'decisionDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.decisionDate))),
       'substantially': new FormControl(formData.substantially),
-      'substantiallyDate': new FormControl(formData.substantiallyDate),
+      'substantiallyDate': new FormControl(),
       'activeStatus': new FormControl(formData.activeStatus),
-      'activeDate': new FormControl(formData.activeDate),
+      'activeDate': new FormControl(),
       'responsibleEPD': new FormControl(formData.responsibleEPD),
       'projectLead': new FormControl(formData.projectLead),
       'projectAdmin': new FormControl(formData.projectAdmin)
@@ -300,10 +305,26 @@ export class AddEditProjectComponent implements OnInit {
     }
   }
 
+  isSelected(val) {
+    if (this.myForm.controls.build.value === val) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isEACSelected(val) {
+    if (this.myForm.controls.eaStatus.value === val) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   convertFormToProject(form) {
     return { 'name': form.controls.name.value,
               'proponent': form.controls.proponent.value,
-              'nature': form.controls.nature.value,
+              'build': form.controls.build.value,
               'type': form.controls.type.value,
               'sector': form.controls.sector.value,
               'description': form.controls.description.value,
@@ -314,18 +335,17 @@ export class AddEditProjectComponent implements OnInit {
               'CEAAInvolvement': form.controls.CEAAInvolvement.value,
               'CEAALink': form.controls.CEAALink.value,
               'ea': form.controls.ea.value,
-              'intake': { investment: form.controls.capital.value },
-              'notes': form.controls.notes.value,
+              'intake': { investment: form.controls.capital.value, notes: form.controls.notes.value },
               'eaStatus': form.controls.eaStatus.value,
-              'eaStatusDate': form.get('eaStatusDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value) : null,
+              // 'eaStatusDate': form.get('eaStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value))).toISOString() : null,
               'status': form.controls.status.value,
-              'projectStatusDate': form.get('projectStatusDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value) : null,
+              // 'projectStatusDate': form.get('projectStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value))).toISOString() : null,
               'eacDecision': form.controls.eacDecision.value,
-              'decisionDate': form.get('decisionDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value) : null,
-              'substantially': form.controls.substantially.value,
-              'substantiallyDate': form.get('substantiallyDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value) : null,
+              'decisionDate': !isNaN(form.get('decisionDate').value.day) ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
+              'substantially': form.controls.substantially.value === 'yes' ? true : false,
+              // 'substantiallyDate': form.get('substantiallyDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value))).toISOString() : null,
               'activeStatus': form.controls.activeStatus.value,
-              'activeDate': form.get('activeDate').value ? this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value) : null,
+              // 'activeDate': form.get('activeDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value))).toISOString() : null,
               'responsibleEPD': form.controls.responsibleEPD.value,
               'projectLead': form.controls.projectLead.value,
               'projectAdmin': form.controls.projectAdmin.value
@@ -364,18 +384,24 @@ export class AddEditProjectComponent implements OnInit {
       this.projectService.save(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          () => { },
+          () => { // onCompleted
+            this.loading = false;
+            this.router.navigated = false;
+            this.openSnackBar('This project was created successfuly.', 'Close');
+            this.router.navigate(['/p', this.projectId, 'project-details']);
+          },
           error => {
             console.log('error =', error);
             alert('Uh-oh, couldn\'t edit project');
           },
-          () => { // onCompleted
-            this.loading = false;
-            // this.openSnackBar('This project was created successfuly.', 'Close');
-            this.router.navigate(['/p', this.projectId, 'project-details']);
-          }
         );
     }
+  }
+
+  public openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   register (myForm: FormGroup) {
