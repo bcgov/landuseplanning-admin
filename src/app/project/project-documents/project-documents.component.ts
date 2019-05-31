@@ -133,7 +133,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             selBox.style.left = '0';
             selBox.style.top = '0';
             selBox.style.opacity = '0';
-            selBox.value = window.location.origin + `/api/document/${item._id}/fetch/${item.documentFileName}`;
+            const safeName = item.documentFileName.replace(/ /g, '_');
+            selBox.value = window.location.origin + `/api/document/${item._id}/fetch/${safeName}`;
             // selBox.value = window.location.origin + `/api/public/document/${item._id}/download`;
             document.body.appendChild(selBox);
             selBox.focus();
