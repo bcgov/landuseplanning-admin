@@ -749,16 +749,13 @@ export class ApiService {
   }
 
   public async openDocument(document: Document): Promise<void> {
-    const blob = await this.downloadResource(document._id);
-    const filename = document.documentFileName;
-
-    if (this.isMS) {
-      window.navigator.msSaveBlob(blob, filename);
+    let filename;
+    if (document.documentSource === 'COMMENT') {
+      filename = document.internalOriginalName;
     } else {
-      const tab = window.open();
-      const fileURL = URL.createObjectURL(blob);
-      tab.location.href = fileURL;
+      filename = document.documentFileName;
     }
+    window.open('/api/document/' + document._id + '/fetch/' + filename, '_blank');
   }
 
   //
