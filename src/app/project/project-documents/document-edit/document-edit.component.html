@@ -76,14 +76,14 @@
       <div *ngIf="documents && documents.length === 1" class="form-row">
         <div class="form-group col-md-12">
           <label for="displayName">Document Name</label>
-          <input type="text" class="form-control" id="displayName" name="displayName" formControlName="displayName">
+          <textarea class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName"></textarea>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group col-md-12">
           <label for="inputDescription">Description</label>
-          <input type="text" class="form-control" id="inputDescription" name="description"
-            formControlName="description">
+          <textarea class="form-control" id="inputDescription" name="description" rows="1"
+            formControlName="description"></textarea>
         </div>
       </div>
     </form>
