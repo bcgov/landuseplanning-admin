@@ -147,7 +147,8 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       commentList.push(
         {
           _id: comment._id,
-          attachments: comment.documents.length,
+          // Safetey check if documents are null or are present with an emtpy array
+          attachments: comment.documents !== null ? comment.documents.length : 0,
           author: comment.author,
           comment: comment.comment,
           dateAdded: comment.dateAdded,

@@ -5,7 +5,7 @@
   <td (click)="goToItem(comment)" data-label="Date" scope="row" class="col-3">{{comment.dateAdded | date:'longDate'}}
   </td>
   <td (click)="goToItem(comment)" data-label="Attachments" scope="row" class="col-2">
-    <i class="material-icons">
+    <i *ngIf="comment.attachments" class="material-icons">
       attach_file
     </i>
     {{comment.attachments}}

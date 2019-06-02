@@ -32,7 +32,8 @@ export class CommentService {
           if (!comments || comments.length === 0) {
             return of(null as Comment);
           }
-          if (comments[0].documents.length === 0) {
+          // Safety check for null documents or an empty array of documents.
+          if (comments[0].documents === null || comments[0].documents && comments[0].documents.length === 0) {
             return of(new Comment(comments[0]));
           }
           // now get the rest of the data for this project
