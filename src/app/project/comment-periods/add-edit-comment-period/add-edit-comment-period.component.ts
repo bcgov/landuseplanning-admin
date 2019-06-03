@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
+import * as moment from 'moment';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
 
@@ -37,6 +38,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
   public startMeridian = true;
 
   public loading = true;
+
+  public areDatesInvalid = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -181,6 +184,13 @@ export class AddEditCommentPeriodComponent implements OnInit {
     // Check start and end date
     this.commentPeriod.dateStarted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('startDate').value, this.commentPeriodForm.get('startTime').value);
     this.commentPeriod.dateCompleted = this.utils.convertFormGroupNGBDateToJSDate(this.commentPeriodForm.get('endDate').value, this.commentPeriodForm.get('endTime').value);
+    if (moment(this.commentPeriod.dateStarted) > moment(this.commentPeriod.dateCompleted)) {
+      this.areDatesInvalid = true;
+      this.loading = false;
+      return;
+    } else {
+      this.areDatesInvalid = false;
+    }
 
     // Check published state
     if (this.commentPeriodForm.get('publishedStateSel').value === 'published') {
