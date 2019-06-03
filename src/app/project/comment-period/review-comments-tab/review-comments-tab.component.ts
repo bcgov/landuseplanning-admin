@@ -33,9 +33,14 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
   public commentTableData: TableObject;
   public commentTableColumns: any[] = [
     {
+      name: 'ID',
+      value: 'commentId',
+      width: 'col-1'
+    },
+    {
       name: 'Name',
       value: 'author',
-      width: 'col-3'
+      width: 'col-2'
     },
     {
       name: 'Date',
@@ -83,7 +88,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       this.filter.rejected = params.rejected == null || params.rejected === 'false' ? false : true;
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, this.filter);
       if (this.tableParams.sortBy === '') {
-        this.tableParams.sortBy = '-dateAdded';
+        this.tableParams.sortBy = '-commentId';
       }
     });
 
@@ -149,6 +154,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
           _id: comment._id,
           // Safetey check if documents are null or are present with an emtpy array
           attachments: comment.documents !== null ? comment.documents.length : 0,
+          commentId: comment.commentId,
           author: comment.author,
           comment: comment.comment,
           dateAdded: comment.dateAdded,

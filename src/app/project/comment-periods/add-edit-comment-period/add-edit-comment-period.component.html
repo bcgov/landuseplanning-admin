@@ -72,6 +72,9 @@
                 </div>
                 <ngb-timepicker formControlName="endTime" [meridian]="startMeridian"></ngb-timepicker>
             </div>
+            <p *ngIf="areDatesInvalid" class="text-danger">
+                Start date must be before the end date.
+            </p>
         </div>
 
         <div class="form-row">
