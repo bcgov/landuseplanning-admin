@@ -1,4 +1,8 @@
-<nav class="action-container" aria-label="breadcrumb">
+<div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+</div>
+
+<nav *ngIf="!loading" class="action-container" aria-label="breadcrumb">
     <div *ngIf="!isEditing">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -38,12 +42,8 @@
     </div>
 </nav>
 
-<section class="container-fluid-padding">
-    <div class="spinner-container" *ngIf="loading">
-        <div class="spinner-new rotating"></div>
-    </div>
-
-    <form [formGroup]="commentPeriodForm" (ngSubmit)="register()">
+<section *ngIf="!loading" class="container-fluid-padding">
+    <form [formGroup]="commentPeriodForm" (ngSubmit)="register(commentPeriodForm)">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputStartDate">Start Date*</label>
@@ -151,41 +151,41 @@
             <div class="card" *ngFor="let item of commentPeriodForm.get('openHouses')['controls']; let $index=index"
                 [formGroupName]="$index">
                 <div class="card-header">Open House #{{$index+1}}
-                  <button *ngIf="$index > 0"class="btn btn-danger float-right" (click)="removeOpenHouseRow($index)">
-                    Remove
-                  </button>
+                    <button *ngIf="$index > 0" class="btn btn-danger float-right" (click)="removeOpenHouseRow($index)">
+                        Remove
+                    </button>
                 </div>
                 <div class="card-body">
-                  <div class="col-md-4">
-                      <label for="inputOpenHouseDate">Open House Date</label>
-                      <div class="input-group">
-                          <input type="text" id="inputOpenHouseDate" container='body' class="form-control"
-                              placeholder="Select an open house date" name="eventDate" formControlName="eventDate"
-                              ngbDatepicker #openHouseDatePicker="ngbDatepicker">
-                          <div class="input-group-append">
-                              <button class="btn btn-outline-secondary calendar" (click)="openHouseDatePicker.toggle()"
-                                  type="button"></button>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-md-12">
-                      <label for="openHouseDescription">Description</label>
-                      <textarea id="openHouseDescription" class="form-control" rows="6" name="description"
-                          formControlName="description"></textarea>
-                  </div>
-                  <div class="col-md-4">
-                    &nbsp;
-                  </div>
+                    <div class="col-md-4">
+                        <label for="inputOpenHouseDate">Open House Date</label>
+                        <div class="input-group">
+                            <input type="text" id="inputOpenHouseDate" container='body' class="form-control"
+                                placeholder="Select an open house date" name="eventDate" formControlName="eventDate"
+                                ngbDatepicker #openHouseDatePicker="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary calendar"
+                                    (click)="openHouseDatePicker.toggle()" type="button"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="openHouseDescription">Description</label>
+                        <textarea id="openHouseDescription" class="form-control" rows="6" name="description"
+                            formControlName="description"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        &nbsp;
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
-          &nbsp;
+            &nbsp;
         </div>
 
         <button class="btn btn-primary" (click)="addOpenHouseRow()">
-          Add Another Open House
+            Add Another Open House
         </button>
 
         <div class="text-right">
