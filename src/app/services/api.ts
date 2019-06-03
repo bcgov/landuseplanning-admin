@@ -61,10 +61,10 @@ export class ApiService {
         this.env = 'local';
         break;
 
-      case 'projects.eao.gov.bc.ca':
+      case 'eagle-dev.pathfinder.gov.bc.ca':
         // Prod
-        this.pathAPI = 'https://projects.eao.gov.bc.ca/api';
-        this.env = 'prod';
+        this.pathAPI = 'https://eagle-dev.pathfinder.gov.bc.ca/api';
+        this.env = 'dev';
         break;
 
       case 'test.projects.eao.gov.bc.ca':
@@ -73,10 +73,22 @@ export class ApiService {
         this.env = 'test';
         break;
 
+      case 'www.test.projects.eao.gov.bc.ca':
+        // Test
+        this.pathAPI = 'https://test.projects.eao.gov.bc.ca/api';
+        this.env = 'test';
+        break;
+
+      case 'www.projects.eao.gov.bc.ca':
+        // Test
+        this.pathAPI = 'https://projects.eao.gov.bc.ca/api';
+        this.env = 'prod';
+        break;
+
       default:
         // Dev
-        this.pathAPI = 'https://eagle-dev.pathfinder.gov.bc.ca/api';
-        this.env = 'dev';
+        this.pathAPI = 'https://projects.eao.gov.bc.ca/api';
+        this.env = 'prod';
     }
   }
 
