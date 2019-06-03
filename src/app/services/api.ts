@@ -68,18 +68,15 @@ export class ApiService {
         break;
 
       case 'test.projects.eao.gov.bc.ca':
-        // Test
-        this.pathAPI = 'https://test.projects.eao.gov.bc.ca/api';
-        this.env = 'test';
-        break;
-
       case 'www.test.projects.eao.gov.bc.ca':
+      case 'eagle-test.projects.eao.gov.bc.ca':
         // Test
         this.pathAPI = 'https://test.projects.eao.gov.bc.ca/api';
         this.env = 'test';
         break;
 
       case 'www.projects.eao.gov.bc.ca':
+      case 'projects.eao.gov.bc.ca':
         // Test
         this.pathAPI = 'https://projects.eao.gov.bc.ca/api';
         this.env = 'prod';
