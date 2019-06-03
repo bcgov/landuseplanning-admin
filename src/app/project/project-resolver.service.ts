@@ -18,6 +18,6 @@ export class ProjectResolver implements Resolve<Project> {
     let end = new Date();
     start.setDate(start.getDate() - 7);
     end.setDate(end.getDate() + 7);
-    return this.projectService.getById(projId, start, end);
+    return this.projectService.getById(projId, start.toISOString(), end.toISOString());
   }
 }

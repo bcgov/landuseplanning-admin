@@ -59,7 +59,7 @@ export class ProjectService {
       .catch(error => this.api.handleError(error));
   }
 
-  getById(projId: string, cpStart: Date = null, cpEnd: Date = null): Observable<Project> {
+  getById(projId: string, cpStart: string = null, cpEnd: string = null): Observable<Project> {
     return this.api.getProject(projId, cpStart, cpEnd)
       .map(projects => {
 
