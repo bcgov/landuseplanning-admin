@@ -71,15 +71,16 @@ export class ReviewCommentComponent implements OnInit {
           this.router.navigate(['/search']);
         }
         this.loading = false;
+        this._changeDetectionRef.detectChanges();
       });
   }
 
   private initForm() {
     this.commentReviewForm = new FormGroup({
-      'dateAdded': new FormControl(),
-      'datePosted': new FormControl(),
+      'dateAdded': new FormControl({ value: '', disabled: true }),
+      'datePosted': new FormControl({ value: '', disabled: true }),
       'deferralNotesText': new FormControl(),
-      'isNamePublic': new FormControl(),
+      'isNamePublic': new FormControl({ value: false, disabled: true }),
       'isDeferred': new FormControl(),
       'isPublished': new FormControl(),
       'isRejected': new FormControl(),
@@ -102,7 +103,7 @@ export class ReviewCommentComponent implements OnInit {
   public onSubmit() {
     this.loading = true;
 
-    this.comment.isAnonymous = this.commentReviewForm.get('isNamePublic').value;
+    this.comment.isAnonymous = !this.commentReviewForm.get('isNamePublic').value;
 
     this.comment.dateAdded = this.utils.convertFormGroupNGBDateToJSDate(this.commentReviewForm.get('dateAdded').value);
     this.comment.datePosted = this.utils.convertFormGroupNGBDateToJSDate(this.commentReviewForm.get('datePosted').value);

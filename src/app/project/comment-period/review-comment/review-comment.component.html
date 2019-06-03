@@ -1,4 +1,4 @@
-<nav class="action-container">
+<nav *ngIf="!loading" class="action-container">
   <ol class="breadcrumb" *ngIf="commentPeriod">
     <li class="breadcrumb-item">
       <a [routerLink]="['/projects']">All Projects</a>
@@ -25,10 +25,12 @@
       (click)="onSubmit()">Save</button>
   </div>
 </nav>
-<main class="container-fluid-padding">
-  <div class="spinner-container" *ngIf="loading">
-    <div class="spinner-new rotating"></div>
-  </div>
+
+<div class="spinner-container" *ngIf="loading">
+  <div class="spinner-new rotating"></div>
+</div>
+
+<main *ngIf="!loading" class="container-fluid-padding">
   <form *ngIf="commentReviewForm" [formGroup]="commentReviewForm" (ngSubmit)="register()">
     <div class="form-row">
       <div class="form-group col-md-8">
@@ -80,7 +82,7 @@
         <div class="form-row">
           <div class="form-group col-md-12">
             <label for="isAnonymousCheckBox"><b>Make author's name visible to the public</b></label>&nbsp;
-            <input disabled id="isAnonymousCheckBox" type="checkbox" name="isAnonymous" formControlName="isNamePublic">
+            <input id="isAnonymousCheckBox" type="checkbox" name="isAnonymous" formControlName="isNamePublic">
           </div>
         </div>
         <div class="form-row">
@@ -92,7 +94,8 @@
                   <span class="cell icon">
                     <i class="material-icons">insert_drive_file</i>
                   </span>
-                  <span class="cell name clickable-row" [title]="document.internalOriginalName || ''" (click)='downloadDocument(document)'>
+                  <span class="cell name clickable-row" [title]="document.internalOriginalName || ''"
+                    (click)='downloadDocument(document)'>
                     <span class="cell__txt-content">{{document.internalOriginalName}}</span>
                   </span>
                   <span class="cell actions">
@@ -130,15 +133,15 @@
         <div class="form-row" [style.display]="commentReviewForm.get('isDeferred').value ? '' : 'none'">
           <div class="form-group col-md-12">
             <label for="deferralNotes"><b>Deferral Note*</b></label>
-            <textarea [required]="commentReviewForm.get('isDeferred').value" id="deferralNotes" class="form-control" rows="3" name="deferralNotesText"
-              formControlName="deferralNotesText"></textarea>
+            <textarea [required]="commentReviewForm.get('isDeferred').value" id="deferralNotes" class="form-control"
+              rows="3" name="deferralNotesText" formControlName="deferralNotesText"></textarea>
           </div>
         </div>
         <div class="form-row" [style.display]="commentReviewForm.get('isRejected').value ? '' : 'none'">
           <div class="form-group col-md-12">
             <label for="rejectionNotes"><b>Rejection Note*</b></label>
-            <textarea [required]="commentReviewForm.get('isRejected').value" id="rejectionNotes" class="form-control" rows="3" name="rejectionNotesText"
-              formControlName="rejectionNotesText"></textarea>
+            <textarea [required]="commentReviewForm.get('isRejected').value" id="rejectionNotes" class="form-control"
+              rows="3" name="rejectionNotesText" formControlName="rejectionNotesText"></textarea>
           </div>
         </div>
       </div>
@@ -147,22 +150,24 @@
       <div class="form-group col-md-6">
         <label for="inputAddDate"><b>Date Added</b></label>
         <div class="input-group">
-          <input disabled id="inputAddDate" container='body' type="text" class="form-control"
+          <input id="inputAddDate" container='body' type="text" class="form-control"
             placeholder="Select an add date" name="dateAdded" formControlName="dateAdded" ngbDatepicker
             #addDatePicker="ngbDatepicker">
           <div class="input-group-append">
-            <button disabled class="btn btn-outline-secondary calendar" (click)="addDatePicker.toggle()" type="button"></button>
+            <button disabled class="btn btn-outline-secondary calendar" (click)="addDatePicker.toggle()"
+              type="button"></button>
           </div>
         </div>
       </div>
       <div class="form-group col-md-6">
         <label for="inputPostDate"><b>Date Posted</b></label>
         <div class="input-group">
-          <input disabled id="inputPostDate" container='body' type="text" class="form-control"
+          <input id="inputPostDate" container='body' type="text" class="form-control"
             placeholder="Select a post date" name="datePosted" formControlName="datePosted" ngbDatepicker
             #postDatePicker="ngbDatepicker">
           <div class="input-group-append">
-            <button disabled class="btn btn-outline-secondary calendar" (click)="postDatePicker.toggle()" type="button"></button>
+            <button disabled class="btn btn-outline-secondary calendar" (click)="postDatePicker.toggle()"
+              type="button"></button>
           </div>
         </div>
       </div>
