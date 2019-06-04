@@ -77,6 +77,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     this.storageService.state.currentCommentPeriod = null;
 
     this.currentProject = this.storageService.state.currentProject.data;
+    this.storageService.state.commentReviewTabParams = null;
 
     this.route.params.subscribe(params => {
       this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
@@ -84,6 +85,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
         this.tableParams.sortBy = '-dateStarted';
       }
     });
+    this.storageService.state.selectedTab = 0;
 
     // get data from route resolver
     this.route.data

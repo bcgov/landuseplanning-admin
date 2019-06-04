@@ -4,7 +4,6 @@
 
 <section id="header-section">
   <div>
-
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
       <h3 class="filter-title">FILTER RESULTS:</h3>
       <div class="btn-group-toggle" data-toggle="buttons">
@@ -38,9 +37,9 @@
 </section>
 
 <section id="table-section">
-  <div *ngIf="tableParams.totalListItems > 0">
-    <app-table-template [columns]="commentTableColumns" [data]="commentTableData"
-        (onColumnSort)='setColumnSort($event)' (onPageNumUpdate)='getPaginatedComments($event)'>
+  <div *ngIf="tableParams.totalListItems > 0 && !loading">
+    <app-table-template [columns]="commentTableColumns" [data]="commentTableData" (onColumnSort)='setColumnSort($event)'
+      (onPageNumUpdate)='getPaginatedComments($event)'>
     </app-table-template>
   </div>
   <div *ngIf="tableParams.totalListItems == 0">
