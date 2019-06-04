@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormArray, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { ContentObserver } from '@angular/cdk/observers';
 import { ProjectService } from 'app/services/project.service';
 import { ConfigService } from 'app/services/config.service';
 import { RecentActivityService } from 'app/services/recent-activity';
-import { ActivityComponent } from '../activity.component';
 import { RecentActivity } from 'app/models/recentActivity';
 import { Utils } from 'app/shared/utils/utils';
 
@@ -22,7 +20,6 @@ export class AddEditActivityComponent implements OnInit {
   public loading = true;
   public projects = [];
   public types = [];
-  public priorities = [];
   public activity: any;
 
   public tinyMceSettings = {
@@ -38,9 +35,7 @@ export class AddEditActivityComponent implements OnInit {
     private configService: ConfigService,
     private recentActivityService: RecentActivityService,
     private projectService: ProjectService
-  ) {
-    // console.log(this.configService.lists);
-  }
+  ) { }
 
   ngOnInit() {
     this.route.url.subscribe(segments => {
@@ -61,7 +56,6 @@ export class AddEditActivityComponent implements OnInit {
             'dateAdded': new Date(),
             'project': '',
             'active': '',
-            'priority': '',
             'pinned': false,
             'type': '',
             'contentUrl': '',
@@ -74,24 +68,18 @@ export class AddEditActivityComponent implements OnInit {
         this.loading = false;
       });
 
-      this.projectService.getAll(1, 1000, '+name')
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe((res: any) => {
-          if (res) {
-            this.projects = res.data;
-            // TODO: Later
-            // Types
-            // this.types = this.configService.lists.filter(item => {
-            //   return item.type === 'headlineType';
-            // });
-
-            // TODO: Later
-            // // Priorities
-            // this.priorities = this.configService.lists.filter(item => {
-            //   return item.type === 'headlinePriority';
-            // });
-          }
-        });
+    this.projectService.getAll(1, 1000, '+name')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res: any) => {
+        if (res) {
+          this.projects = res.data;
+          // TODO: Later
+          // Types
+          // this.types = this.configService.lists.filter(item => {
+          //   return item.type === 'headlineType';
+          // });
+        }
+      });
   }
 
   onCancel() {
@@ -99,8 +87,6 @@ export class AddEditActivityComponent implements OnInit {
   }
 
   onSubmit() {
-    // console.log('submitting', this.myForm);
-    // console.log('this.activity', this.activity);
     if (this.isEditing) {
       let activity = new RecentActivity({
         _id: this.activity._id,
@@ -108,7 +94,6 @@ export class AddEditActivityComponent implements OnInit {
         content: this.myForm.controls.content.value,
         dateAdded: this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateAdded').value),
         project: this.myForm.get('project').value,
-        priority: this.myForm.get('priority').value,
         type: this.myForm.get('type').value,
 
         // TODO: ETL this to merge.
@@ -119,17 +104,16 @@ export class AddEditActivityComponent implements OnInit {
       });
       console.log('saving:', activity);
       this.recentActivityService.save(activity)
-      .subscribe(item => {
-        // console.log('item', item);
-        this.router.navigate(['/activity']);
-      });
+        .subscribe(item => {
+          // console.log('item', item);
+          this.router.navigate(['/activity']);
+        });
     } else {
       let activity = new RecentActivity({
         headline: this.myForm.controls.headline.value,
         content: this.myForm.controls.content.value,
         dateAdded: new Date(),
         project: this.myForm.get('project').value,
-        priority: this.myForm.get('priority').value,
         type: this.myForm.get('type').value,
         contentUrl: this.myForm.controls.contentUrl.value,
         documentUrl: this.myForm.controls.documentUrl.value,
@@ -138,14 +122,14 @@ export class AddEditActivityComponent implements OnInit {
       });
       console.log('adding:', activity);
       this.recentActivityService.add(activity)
-      .subscribe(item => {
-        // console.log('saved:', item);
-        this.router.navigate(['/activity']);
-      });
+        .subscribe(item => {
+          // console.log('saved:', item);
+          this.router.navigate(['/activity']);
+        });
     }
   }
 
-  register (myForm: FormGroup) {
+  register(myForm: FormGroup) {
     console.log('Successful registration');
     console.log(myForm);
   }
@@ -158,7 +142,6 @@ export class AddEditActivityComponent implements OnInit {
       'dateAdded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(data.dateAdded))),
       'project': new FormControl(data.project),
       'active': new FormControl(data.active ? 'yes' : 'no'),
-      'priority': new FormControl(data.priority),
       'type': new FormControl(data.type),
       'contentUrl': new FormControl(data.contentUrl),
       'documentUrl': new FormControl(data.documentUrl)

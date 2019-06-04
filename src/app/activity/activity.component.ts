@@ -53,11 +53,6 @@ export class ActivityComponent implements OnInit {
       width: 'col-2'
     },
     {
-      name: 'P',
-      value: 'priority',
-      width: 'col-1'
-    },
-    {
       name: 'Status',
       value: 'active',
       width: 'col-1'
@@ -121,7 +116,6 @@ export class ActivityComponent implements OnInit {
             headline: item.headline,
             type: item.type,
             dateAdded: item.dateAdded,
-            priority: item.priority,
             active: item.active,
             pinned: item.pinned
           }
