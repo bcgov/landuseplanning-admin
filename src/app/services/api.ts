@@ -34,6 +34,14 @@ interface LocalLoginResponse {
   accessToken: string;
 }
 
+const encode = encodeURIComponent;
+window['encodeURIComponent'] = (component: string) => {
+  return encode(component).replace(/[!'()*]/g, (c) => {
+    // Also encode !, ', (, ), and *
+    return '%' + c.charCodeAt(0).toString(16);
+  });
+};
+
 @Injectable()
 export class ApiService {
 
@@ -741,7 +749,7 @@ export class ApiService {
     } else {
       filename = document.documentFileName;
     }
-
+    filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29');
     if (this.isMS) {
       window.navigator.msSaveBlob(blob, filename);
     } else {
@@ -764,6 +772,7 @@ export class ApiService {
     } else {
       filename = document.documentFileName;
     }
+    filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29');
     window.open('/api/document/' + document._id + '/fetch/' + filename, '_blank');
   }
 
