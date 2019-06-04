@@ -19,6 +19,7 @@ export class CommentPeriodComponent implements OnInit {
   public commentPeriod: CommentPeriod;
   public loading: Boolean = true;
   public currentProject;
+  public selectedTab = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,6 +32,10 @@ export class CommentPeriodComponent implements OnInit {
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
     this.storageService.state.currentVCs = null;
+
+    if (this.storageService.state.selectedTab !== null) {
+      this.selectedTab = this.storageService.state.selectedTab;
+    }
 
     // get data from route resolver
     if (this.storageService.state.currentCommentPeriod == null) {

@@ -80,17 +80,25 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.commentPeriodId = params.commentPeriodId;
-      this.filter.pending = params.pending == null || params.pending === 'false' ? false : true;
-      this.filter.published = params.published == null || params.published === 'false' ? false : true;
-      this.filter.deferred = params.deferred == null || params.deferred === 'false' ? false : true;
-      this.filter.rejected = params.rejected == null || params.rejected === 'false' ? false : true;
-      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, this.filter);
-      if (this.tableParams.sortBy === '') {
-        this.tableParams.sortBy = '-commentId';
-      }
-    });
+    if (this.storageService.state.commentReviewTabParams == null) {
+      this.route.params.subscribe(params => {
+        this.commentPeriodId = params.commentPeriodId;
+        this.filter.pending = params.pending == null || params.pending === 'false' ? false : true;
+        this.filter.published = params.published == null || params.published === 'false' ? false : true;
+        this.filter.deferred = params.deferred == null || params.deferred === 'false' ? false : true;
+        this.filter.rejected = params.rejected == null || params.rejected === 'false' ? false : true;
+        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, this.filter);
+        if (this.tableParams.sortBy === '') {
+          this.tableParams.sortBy = '-commentId';
+        }
+      });
+    } else {
+      this.commentPeriodId = this.storageService.state.commentReviewTabParams.commentPeriodId;
+      this.filter = this.storageService.state.commentReviewTabParams.filter;
+      this.tableParams = this.storageService.state.commentReviewTabParams.tableParams;
+      this.storageService.state.commentReviewTabParams = null;
+    }
+    this.storageService.state.selectedTab = 0;
 
     this.commentService.getByPeriodId(
       this.commentPeriodId,
@@ -124,6 +132,8 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
         }
+
+        this.storageService.state.commentReviewTabParams = { tableParams: this.tableParams, filter: this.filter, commentPeriodId: this.commentPeriodId };
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
@@ -194,6 +204,8 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
         this.comments = res.data;
         this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.filter);
         this.setCommentRowData();
+
+        this.storageService.state.commentReviewTabParams = { tableParams: this.tableParams, filter: this.filter, commentPeriodId: this.commentPeriodId };
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });

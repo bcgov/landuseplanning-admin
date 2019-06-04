@@ -20,7 +20,7 @@
   <h1 id="name">{{currentProject.name}} <span class="date">| Comment Period</span></h1>
 
   <div>
-    <mat-tab-group>
+    <mat-tab-group [selectedIndex]="selectedTab">
       <mat-tab label="DETAILS">
         <br>
         <app-comment-period-details-tab [commentPeriod]="commentPeriod"></app-comment-period-details-tab>

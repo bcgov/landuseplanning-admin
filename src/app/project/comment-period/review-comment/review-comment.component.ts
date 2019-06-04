@@ -45,6 +45,7 @@ export class ReviewCommentComponent implements OnInit {
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
+    this.storageService.state.selectedTab = 1;
 
     this.route.data
       .takeUntil(this.ngUnsubscribe)
