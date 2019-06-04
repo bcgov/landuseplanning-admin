@@ -322,12 +322,20 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
     // WORKAROUND: add timestamp to force URL to be different than last time
 
+    const encode = encodeURIComponent;
+    window['encodeURIComponent'] = (component: string) => {
+      return encode(component).replace(/[!'()*]/g, (c) => {
+        // Also encode !, ', (, ), and *
+        return '%' + c.charCodeAt(0).toString(16);
+      });
+    };
+
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
     params['dataset'] = this.terms.dataset;
     params['currentPage'] = this.tableParams.currentPage = 1;
     params['sortBy'] = this.tableParams.sortBy = '-datePosted';
-    params['keywords'] = this.tableParams.keywords = this.keywords || '';
+    params['keywords'] = encode(this.tableParams.keywords = this.keywords || '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     params['pageSize'] = this.tableParams.pageSize = 10;
 
     console.log('params =', params);
