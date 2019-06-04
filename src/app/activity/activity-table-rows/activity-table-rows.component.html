@@ -5,7 +5,6 @@
     <td (click)="goToItem(entry)" data-label="Project" scope="row" class="col-2">{{entry.project.name}}</td>
     <td (click)="goToItem(entry)" data-label="Type" scope="row" class="col-2">{{entry.type}}</td>
     <td (click)="goToItem(entry)" data-label="Date Added" scope="row" class="col-2">{{entry.dateAdded | date: 'longDate'}}</td>
-    <td (click)="goToItem(entry)" data-label="Priority" scope="row" class="col-1">{{entry.priority}}</td>
     <td (click)="goToItem(entry)" data-label="Status" scope="row" class="col-1">
         <span [ngClass]="entry.active === true ? 'active-flag': 'inactive-flag'" class="">{{entry.active === true ? 'ACTIVE' : 'INACTIVE'}}</span>
     </td>

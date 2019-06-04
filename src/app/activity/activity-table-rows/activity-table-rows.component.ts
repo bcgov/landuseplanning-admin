@@ -2,16 +2,10 @@ import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 
 import { TableComponent } from 'app/shared/components/table-template/table.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
-// import { AddEditActivityComponent } from '../add-edit-activity/add-edit-activity.component';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs';
-import { SearchService } from 'app/services/search.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProjectService } from 'app/services/project.service';
-import { Project } from 'app/models/project';
-import { Observable } from 'rxjs/Observable';
 import { RecentActivityService } from 'app/services/recent-activity';
 
 @Component({
@@ -26,7 +20,6 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
   public entries: any;
   public paginationData: any;
   public dropdownItems = ['Edit', 'Delete'];
-  private projectList: Project[] = [];
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
@@ -34,23 +27,12 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
     private _changeDetectionRef: ChangeDetectorRef,
     private router: Router,
     private dialogService: DialogService,
-    private modalService: NgbModal,
     private recentActivityService: RecentActivityService,
-    private projectService: ProjectService
-    // private activityService: SearchService,
   ) { }
 
   async ngOnInit() {
     this.entries = this.data.data;
     this.paginationData = this.data.paginationData;
-
-    // Promise.all(this.data.data.map(async item => {
-    //   if (item.project) {
-    //     let res = await this.projectService.getById(item.project._id).toPromise();
-    //     item.projectName = res.name;
-    //     this._changeDetectionRef.detectChanges();
-    //   }
-    // }));
   }
 
   deleteActivity(activity) {
@@ -83,14 +65,14 @@ export class ActivityTableRowsComponent implements OnInit, TableComponent {
   togglePin(activity) {
     activity.pinned === true ? activity.pinned = false : activity.pinned = true;
     this.recentActivityService.save(activity)
-    .subscribe(
-      () => {
-        this._changeDetectionRef.detectChanges();
-      },
-      error => {
-        console.log('error =', error);
-      }
-    );
+      .subscribe(
+        () => {
+          this._changeDetectionRef.detectChanges();
+        },
+        error => {
+          console.log('error =', error);
+        }
+      );
   }
 
   goToItem(activity) {
