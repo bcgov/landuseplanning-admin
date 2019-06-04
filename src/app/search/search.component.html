@@ -54,83 +54,6 @@
     </form>
 
     <div *ngIf="count > 0">
-      <!-- ALL -->
-      <div *ngIf="this.terms.dataset === 'All'">
-        <div *ngFor="let result of results | paginate: { id: 'table-template-pagination', itemsPerPage: pageSize, currentPage: currentPage, totalItems: count }">
-          <div class="app-details" *ngIf="result._schemaName === 'Project'">
-            <div class="card">
-              <header class="card-header">
-                <span class="project-name">
-                  <span class="tag">
-                    <i class="material-icons">assignment</i>Project
-                  </span>
-                </span>
-                <a [routerLink]="['/p', result._id]" class="btn btn-primary view-btn">View Project</a>
-              </header>
-              <div class="card-body">
-                <h2 class="card-title">{{result.name}}</h2>
-                <p class="card-text">{{result.type}} / {{result.sector}}</p>
-                <p class="card-text">{{result.location}}</p>
-              </div>
-            </div>
-          </div>
-          <div class="app-details" *ngIf="result._schemaName === 'Document'">
-            <div class="card">
-              <header *ngIf="result.project" class="card-header">
-                <span class="project-name">
-                  <span class="tag">
-                    <i class="material-icons">picture_as_pdf</i> Document
-                  </span>
-                </span>
-                <div class="document-actions">
-                  <button class="btn btn-primary btn-sm" (click)="api.downloadDocument(result._id)">
-                    <i class="material-icons">get_app</i>Download
-                  </button>
-                </div>
-                <button (click)="api.openDocument(result._id)" class="btn btn-primary view-btn">View Document<i class="material-icons">chevron_right</i></button>
-              </header>
-              <div class="card-body">
-                <h2 class="card-title">{{result.displayName}}</h2>
-                <p class="card-text"><label>Date:</label> {{result.datePosted | date:'medium'}}</p>
-
-                <p class="card-text">{{result.status}}</p>
-
-                <p *ngIf="result.milestone" class="card-text">Milestone: {{result.milestone | listConverter}}</p>
-                <p *ngIf="result.description" class="card-text">Description: {{result.description}}</p>
-                <div *ngIf="result.project">
-                  <p class="card-text"><label>Project:</label> {{result.project.name}}</p>
-                  <a [routerLink]="['/p', result.project._id]" class="btn btn-primary btn-sm" (click)="api.openDocument(result._id)">
-                    <i class="material-icons">open_in_new</i> View {{result.project.name}}
-                  </a>
-                </div>
-                <div class="label-pair">
-                  <div *ngFor="let label of result.labels">
-                      <div class="mr-2 badge badge-pill badge-info">{{label}}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="app-details" *ngIf="result._schemaName === 'Vc'">
-            <div class="card">
-              <header class="card-header">
-                <span class="project-name">
-                  <span class="tag">
-                    <i class="material-icons">switch_camera</i> Valued Component
-                  </span>
-                </span>
-                <a [routerLink]="['/p', result._id]" class="btn btn-primary view-btn">View VC<i class="material-icons">chevron_right</i></a>
-              </header>
-              <div class="card-body">
-                <h5 class="card-title">{{result.name}}</h5>
-                <p class="card-text">{{result.description}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- END ALL -->
-
       <!-- NOT ALL -->
       <div *ngIf="this.terms.dataset === 'Document'">
         <div class="app-details" *ngFor="let result of results | paginate: { id: 'table-template-pagination', itemsPerPage: pageSize, currentPage: currentPage, totalItems: count }">
@@ -142,11 +65,11 @@
                 </span>
               </span>
               <div class="document-actions">
-                <button class="btn btn-primary btn-sm" (click)="api.downloadDocument(result._id)">
+                <button class="btn btn-primary btn-sm" (click)="api.downloadDocument(result)">
                   <i class="material-icons">get_app</i>Download
                 </button>
               </div>
-              <button class="btn btn-primary view-btn" (click)="api.openDocument(result._id)">
+              <button class="btn btn-primary view-btn" (click)="api.openDocument(result)">
                 View Document <i class="material-icons">open_in_new</i>
               </button>
             </header>
@@ -205,7 +128,7 @@
                   <i class="material-icons">switch_camera</i> Valued Component | {{result.project.name}}
                 </span>
               </span>
-              <a [routerLink]="['/p', result.project._id]" class="btn btn-primary view-btn">View VC<i class="material-icons">chevron_right</i></a>
+              <a [routerLink]="['/p', result.project._id]" class="btn btn-primary view-btn">View Project<i class="material-icons">chevron_right</i></a>
             </header>
             <div class="card-body">
               <h2 class="card-title">{{result.name}}</h2>

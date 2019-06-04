@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
+import { Document } from 'app/models/document';
 
 import { SearchService } from 'app/services/search.service';
 import { SearchTerms } from 'app/models/search';
@@ -53,7 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         if (params.dataset) {
           this.terms.dataset = params.dataset;
         } else {
-          // default all
+          // default documents
           this.terms.dataset = 'Document';
         }
 
@@ -93,7 +94,14 @@ export class SearchComponent implements OnInit, OnDestroy {
         results => {
           if (results[0].data.meta.length > 0) {
             this.count = results[0].data.meta[0].searchResultsTotal;
-            this.results = results[0].data.searchResults;
+            let items = results[0].data.searchResults;
+            items.map(item => {
+              if (this.terms.dataset === 'Document') {
+                this.results.push(new Document(item));
+              } else {
+                this.results.push(item);
+              }
+            });
           } else {
             this.count = 0;
             this.results = [];
