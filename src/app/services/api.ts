@@ -749,7 +749,7 @@ export class ApiService {
     } else {
       filename = document.documentFileName;
     }
-    filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29');
+    filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\\/g, '_');
     if (this.isMS) {
       window.navigator.msSaveBlob(blob, filename);
     } else {
@@ -772,7 +772,7 @@ export class ApiService {
     } else {
       filename = document.documentFileName;
     }
-    filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29');
+    filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\\/g, '_');
     window.open('/api/document/' + document._id + '/fetch/' + filename, '_blank');
   }
 
