@@ -89,7 +89,11 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.route.params
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
-        this.keywords = decodeURIComponent(params.keywords) || '';
+        if (params.keywords !== undefined) {
+          this.keywords = decodeURIComponent(params.keywords) || '';
+        } else {
+          this.keywords = '';
+        }
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
         if (this.tableParams.sortBy === '') {
           this.tableParams.sortBy = '-datePosted';

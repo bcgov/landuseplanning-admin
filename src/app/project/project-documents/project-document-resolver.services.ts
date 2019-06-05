@@ -15,7 +15,7 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
     const pageNum = route.params.pageNum ? route.params.pageNum : 1;
     const pageSize = route.params.pageSize ? route.params.pageSize : 10;
     const sortBy = route.params.sortBy ? route.params.sortBy : '-datePosted';
-    const keywords = route.params.keywords;
+    const keywords = route.params.keywords || '';
     return this.searchService.getSearchResults(
       keywords,
       'Document',
