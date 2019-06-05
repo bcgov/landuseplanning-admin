@@ -89,11 +89,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.route.params
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
-        this.keywords = decodeURIComponent(params.keywords);
+        this.keywords = decodeURIComponent(params.keywords) || '';
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
         if (this.tableParams.sortBy === '') {
           this.tableParams.sortBy = '-datePosted';
         }
+        this._changeDetectionRef.detectChanges();
       });
 
     this.currentProject = this.storageService.state.currentProject.data;
@@ -428,7 +429,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
     this.searchService.getSearchResults(
-      this.keywords,
+      this.keywords || '',
       'Document',
       [{ 'name': 'project', 'value': this.currentProject._id }],
       pageNumber,
