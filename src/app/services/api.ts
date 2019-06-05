@@ -749,7 +749,7 @@ export class ApiService {
     } else {
       filename = document.documentFileName;
     }
-    filename = encode(filename).replace(/\\/g, '_').replace(/\//g, '_');
+    filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
     if (this.isMS) {
       window.navigator.msSaveBlob(blob, filename);
     } else {
