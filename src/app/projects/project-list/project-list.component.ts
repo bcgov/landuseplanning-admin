@@ -81,6 +81,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+        if (!this.tableParams.sortBy) {
+          this.tableParams.sortBy = '+name';
+          this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
+        }
         this.searchService.getSearchResults(
           this.tableParams.keywords,
           'Project',
@@ -166,21 +170,21 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       this.tableParams.pageSize,
       this.tableParams.sortBy,
     )
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((res: any) => {
-        if (res[0].data) {
-          this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
-          this.projects = res[0].data.searchResults;
-          this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
-          this.setRowData();
-          this.loading = false;
-          this._changeDetectionRef.detectChanges();
-        } else {
-          alert('Uh-oh, couldn\'t load topics');
-          // project not found --> navigate back to search
-          this.router.navigate(['/']);
-        }
-      });
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe((res: any) => {
+      if (res[0].data) {
+        this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
+        this.projects = res[0].data.searchResults;
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
+        this.setRowData();
+        this.loading = false;
+        this._changeDetectionRef.detectChanges();
+      } else {
+        alert('Uh-oh, couldn\'t load topics');
+        // project not found --> navigate back to search
+        this.router.navigate(['/']);
+      }
+    });
   }
 
   public onSubmit() {
