@@ -43,7 +43,7 @@
       <h3 for="description">Description: </h3>
       <p id="description">{{document.description || '-'}}</p>
     </div>
-    <div class="label-pair">
+    <div *ngIf="document.labels" class="label-pair">
       <h3 for="tags">Labels: </h3>
       <div *ngFor="let label of document.labels">
         <div class="mr-2 badge badge-pill badge-info">{{label}}</div>
