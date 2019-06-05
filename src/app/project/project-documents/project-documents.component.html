@@ -4,7 +4,7 @@
       <a [routerLink]="['/projects']">All Projects</a>
     </li>
     <li class="breadcrumb-item">
-      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+      <a *ngIf='currentProject' [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">Documents</li>
   </ol>
@@ -60,7 +60,7 @@
         class="material-icons">cloud_download</i>Download</button>
     <button (click)="selectAction('delete')" class="btn btn-outline-secondary mr-1" [disabled]="!isEnabled('delete')"
       type="button" id="button-d"><i class="material-icons">delete</i>Delete</button>
-    <a class="upload-docs"[ngClass]="{'active': currentProject._id === 'activity'}"
+    <a *ngIf='currentProject' class="upload-docs"[ngClass]="{'active': currentProject._id === 'activity'}"
       [routerLink]="['/p', currentProject._id, 'project-documents', 'upload']">
       <button class="btn btn-outline-secondary mr-1" type="button" id="button-d">
         <i class="material-icons">file_upload</i>Upload Document(s)

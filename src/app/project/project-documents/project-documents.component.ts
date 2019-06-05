@@ -441,7 +441,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
         this.documents = res[0].data.searchResults;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.keywords);
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.keywords || '');
         this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
