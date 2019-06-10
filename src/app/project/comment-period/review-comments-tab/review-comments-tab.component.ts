@@ -162,7 +162,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       commentList.push(
         {
           _id: comment._id,
-          // Safetey check if documents are null or are present with an emtpy array
+          // Safety check if documents are null or are present with an emtpy array
           attachments: comment.documents !== null ? comment.documents.length : 0,
           commentId: comment.commentId,
           author: comment.author,
