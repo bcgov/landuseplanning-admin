@@ -82,13 +82,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
               this.topics = res.data;
               this.setTopicRowData();
             }
+            this.loading = false;
+            this._changeDetectionRef.detectChanges();
           } else {
             alert('Uh-oh, couldn\'t load topics');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
           }
-          this.loading = false;
-          this._changeDetectionRef.detectChanges();
         });
     });
   }

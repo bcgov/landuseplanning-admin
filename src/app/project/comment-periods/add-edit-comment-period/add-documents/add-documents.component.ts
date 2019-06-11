@@ -132,19 +132,16 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
               this.totalCount = 0;
               this.documents = [];
             }
-            this.loading = false;
             this.setDocumentRowData();
+            this.loading = false;
             this._changeDetectionRef.detectChanges();
           } else {
             alert('Uh-oh, couldn\'t load valued components');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
-            this.loading = false;
           }
-        }
-        );
+        });
     }
-
   }
 
   public selectAction(action) {

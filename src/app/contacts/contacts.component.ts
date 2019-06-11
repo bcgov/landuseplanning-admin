@@ -1,17 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { User } from 'app/models/user';
-import { DocumentService } from 'app/services/document.service';
-import { StorageService } from 'app/services/storage.service';
-import { ApiService } from 'app/services/api';
 import { SearchService } from 'app/services/search.service';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { PlatformLocation } from '@angular/common';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { UserTableRowsComponent } from './user-table-rows/user-table-rows.component';
-import { SearchTerms, SearchResults } from 'app/models/search';
-import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { SearchTerms } from 'app/models/search';
 
 @Component({
   selector: 'app-contacts',
@@ -60,27 +55,22 @@ export class ContactsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private platformLocation: PlatformLocation,
-    private dialogService: DialogService,
     private router: Router,
-    private api: ApiService,
-    private documentService: DocumentService,
     private searchService: SearchService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private storageService: StorageService
   ) { }
 
   ngOnInit() {
     // get data from route resolver
     this.route.params
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(params => {
-      this.keywords = params.keywords;
-    });
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(params => {
+        this.keywords = params.keywords;
+      });
 
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
-        this.loading = false;
         if (res && res.users && res.users[0].data.meta && res.users[0].data.meta.length > 0) {
           this.totalCount = res.users[0].data.meta[0].searchResultsTotal;
           this.users = res.users[0].data.searchResults;
@@ -89,9 +79,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
           this.users = [];
         }
         this.setDocumentRowData();
+        this.loading = false;
         this._changeDetectionRef.detectChanges();
       }
-    );
+      );
   }
 
   public checkChange(event) {
@@ -117,8 +108,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
     params['sortBy'] = this.terms.sortBy;
     params['sortDirection'] = this.terms.sortDirection;
 
-    console.log('params =', params);
-    console.log('nav:', ['u', params]);
     this.router.navigate(['u', params]);
   }
 
@@ -134,7 +123,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
           totalListItems: this.totalCount,
           sortBy: this.sortBy,
           sortDirection: this.sortDirection
-          }
+        }
       );
     }
   }
@@ -150,11 +139,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
 
   getPaginatedDocs(pageNumber, sortBy, sortDirection) {
+    this.loading = true;
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
-
-    console.log(pageNumber, sortBy, sortDirection);
-
 
     if (sortBy === undefined || sortBy === null) {
       sortBy = this.sortBy;
@@ -166,17 +153,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
       sorting = (sortDirection > 0 ? '+' : '-') + sortBy;
     }
 
-    console.log('sorting', sorting);
-    console.log('pageNumber', pageNumber);
-
-    this.loading = true;
     this.searchService.getSearchResults(this.keywords,
-                                        'User',
-                                        null,
-                                        pageNumber,
-                                        this.pageSize,
-                                        sorting,
-                                        null)
+      'User',
+      null,
+      pageNumber,
+      this.pageSize,
+      sorting,
+      null)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.currentPage = pageNumber;
@@ -185,8 +168,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
         this.updateUrl(sorting);
         this.totalCount = res[0].data.meta[0].searchResultsTotal;
         this.users = res[0].data.searchResults;
-        this.loading = false;
         this.setDocumentRowData();
+        this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
   }

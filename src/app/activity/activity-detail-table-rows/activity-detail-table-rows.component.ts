@@ -1,12 +1,14 @@
 import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { DialogService } from 'ng2-bootstrap-modal';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 import { TableComponent } from 'app/shared/components/table-template/table.component';
-import { TableObject } from 'app/shared/components/table-template/table-object';
-import { Router } from '@angular/router';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
-import { DialogService } from 'ng2-bootstrap-modal';
-import { Subject } from 'rxjs';
+
 import { RecentActivityService } from 'app/services/recent-activity';
+
+import { TableObject } from 'app/shared/components/table-template/table-object';
 
 @Component({
   selector: 'tbody[app-activity-detail-table-rows]',
