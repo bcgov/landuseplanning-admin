@@ -163,7 +163,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
     this.searchService.getSearchResults(
-      this.tableParams.keywords,
+      this.tableParams.keywords || '',
       'Project',
       null,
       pageNumber,
