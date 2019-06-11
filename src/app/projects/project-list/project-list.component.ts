@@ -81,25 +81,17 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-        if (!this.tableParams.sortBy) {
+        if (this.tableParams.sortBy === '') {
           this.tableParams.sortBy = '+name';
           this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
         }
-        this.searchService.getSearchResults(
-          this.tableParams.keywords,
-          'Project',
-          null,
-          this.tableParams.currentPage,
-          this.tableParams.pageSize,
-          this.tableParams.sortBy,
-          null,
-          true)
+        this.route.data
           .takeUntil(this.ngUnsubscribe)
           .subscribe((res: any) => {
-            if (res[0].data) {
-              if (res[0].data.searchResults.length > 0) {
-                this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
-                this.projects = res[0].data.searchResults;
+            if (res.projects[0].data) {
+              if (res.projects[0].data.searchResults.length > 0) {
+                this.tableParams.totalListItems = res.projects[0].data.meta[0].searchResultsTotal;
+                this.projects = res.projects[0].data.searchResults;
               } else {
                 this.tableParams.totalListItems = 0;
                 this.projects = [];
@@ -202,9 +194,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     params['sortBy'] = this.tableParams.sortBy = '';
     params['keywords'] = this.tableParams.keywords = this.tableParams.keywords;
     params['pageSize'] = this.tableParams.pageSize = 10;
-
-    console.log('params =', params);
-    console.log('nav:', ['projects', params]);
     this.router.navigate(['projects', params]);
   }
 
