@@ -65,7 +65,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   ];
 
   public selectedCount = 0;
-  public keywords = '';
 
   public currentProject;
   public canPublish;
@@ -90,9 +89,9 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
         if (params.keywords !== undefined) {
-          this.keywords = decodeURIComponent(params.keywords) || '';
+          this.tableParams.keywords = decodeURIComponent(params.keywords) || '';
         } else {
-          this.keywords = '';
+          this.tableParams.keywords = '';
         }
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
         if (this.tableParams.sortBy === '') {
@@ -115,13 +114,13 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             this.documents = [];
           }
           this.setRowData();
+          this.loading = false;
+          this._changeDetectionRef.detectChanges();
         } else {
           alert('Uh-oh, couldn\'t load valued components');
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
         }
-        this.loading = false;
-        this._changeDetectionRef.detectChanges();
       });
   }
 
@@ -340,11 +339,9 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     params['dataset'] = this.terms.dataset;
     params['currentPage'] = this.tableParams.currentPage = 1;
     params['sortBy'] = this.tableParams.sortBy = '-datePosted';
-    params['keywords'] = encode(this.tableParams.keywords = this.keywords || '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    params['keywords'] = encode(this.tableParams.keywords = this.tableParams.keywords || '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     params['pageSize'] = this.tableParams.pageSize = 10;
 
-    console.log('params =', params);
-    console.log('nav:', ['p', this.currentProject._id, 'project-documents', params]);
     this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
   }
 
@@ -354,8 +351,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       this.documents.forEach(document => {
         documentList.push(
           {
-            // displayName: document.displayName || document.internalOriginalName,
-            // date: document.dateUploaded || document.datePosted,
             displayName: document.displayName,
             documentFileName: document.documentFileName,
             datePosted: document.datePosted,
@@ -433,7 +428,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
     this.searchService.getSearchResults(
-      this.keywords || '',
+      this.tableParams.keywords || '',
       'Document',
       [{ 'name': 'project', 'value': this.currentProject._id }],
       pageNumber,
@@ -445,7 +440,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
         this.documents = res[0].data.searchResults;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.keywords || '');
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords || '');
         this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
