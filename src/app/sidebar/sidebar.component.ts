@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { container } from '@angular/core/src/render3/instructions';
 
 import { SideBarService } from 'app/services/sidebar.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar',
@@ -24,8 +25,10 @@ export class SidebarComponent implements OnInit {
 
   constructor(router: Router,
               private sideBarService: SideBarService) {
-    router.events.filter((event: any) => event instanceof NavigationEnd)
-    .subscribe(event => {
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(event => {
         this.routerSnapshot = event;
         this.SetActiveSidebarItem();
     });

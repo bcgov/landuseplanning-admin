@@ -3,15 +3,15 @@ import { FormsModule } from '@angular/forms';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { UserService } from 'app/services/user.service';
 
-import { AddEditUserComponent } from './add-edit-topic.component';
+import { AddEditTopicComponent } from './add-edit-topic.component';
 
-describe('AddEditUserComponent', () => {
-  let component: AddEditUserComponent;
-  let fixture: ComponentFixture<AddEditUserComponent>;
+describe('AddEditTopicComponent', () => {
+  let component: AddEditTopicComponent;
+  let fixture: ComponentFixture<AddEditTopicComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AddEditUserComponent],
+      declarations: [AddEditTopicComponent],
       imports: [FormsModule],
       providers: [
         { provide: DialogService },
@@ -22,7 +22,7 @@ describe('AddEditUserComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddEditUserComponent);
+    fixture = TestBed.createComponent(AddEditTopicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
