@@ -84,7 +84,10 @@
       <div *ngIf="!multiEdit" class="form-row">
         <div class="form-group col-md-12">
           <label for="displayName">Document Name</label>
-          <textarea class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName"></textarea>
+          <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
+            \ / | : * ? " < > are not accepted file name characters
+          </div>
+          <textarea class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName" (ngModelChange)="validateChars()"></textarea>
         </div>
       </div>
       <div *ngIf="!multiEdit" class="form-row">
@@ -103,7 +106,7 @@
           class="material-icons">arrow_back</i>Back</button>
     </div>
     <div class="input-group-prepend">
-      <button [disabled]="!myForm.valid" (click)="save()" class="btn btn-outline-primary mr-1" type="submit"
+      <button [disabled]="!myForm.valid || docNameInvalid" (click)="save()" class="btn btn-outline-primary mr-1" type="submit"
         id="button-cl"><i class="material-icons">save</i>Save</button>
     </div>
   </div>

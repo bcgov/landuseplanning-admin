@@ -31,6 +31,7 @@ export class DocumentEditComponent implements OnInit {
   public isPublished = false;
   public loading = true;
   public multiEdit = false;
+  public docNameInvalid = false;
 
   constructor(
     private config: ConfigService,
@@ -104,6 +105,14 @@ export class DocumentEditComponent implements OnInit {
       this.router.navigate(this.storageService.state.back.url);
     } else {
       this.router.navigate(['/p', this.currentProject._id, 'project-documents']);
+    }
+  }
+
+  public validateChars() {
+    if ( this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g) ) {
+      this.docNameInvalid = true;
+    } else {
+      this.docNameInvalid = false;
     }
   }
 

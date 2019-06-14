@@ -32,6 +32,7 @@ export class UploadComponent implements OnInit {
   public milestones: any[] = [];  // Get this from the project's data.
   public myForm: FormGroup;
   public loading = true;
+  public docNameInvalid = false;
 
   constructor(
     private router: Router,
@@ -154,6 +155,14 @@ export class UploadComponent implements OnInit {
           this.loading = false;
         }
       );
+  }
+
+  public validateChars() {
+    if ( this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g) ) {
+      this.docNameInvalid = true;
+    } else {
+      this.docNameInvalid = false;
+    }
   }
 
   public addDocuments(files: FileList) {

@@ -66,9 +66,12 @@
       <div class="form-row">
         <div class="form-group col-md-12">
           <label for="displayName">Document Name</label>
+          <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
+            \ / | : * ? " < > are not accepted file name characters
+          </div>
           <div>
               <textarea *ngIf="documents && documents.length > 1" disabled class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName"></textarea>
-              <textarea *ngIf="!documents || documents.length < 2" class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName"></textarea>
+              <textarea *ngIf="!documents || documents.length < 2" class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName" (ngModelChange)="validateChars()"></textarea>
           </div>
         </div>
       </div>
@@ -103,7 +106,7 @@
     </ul>
   </div>
   <div class="input-group-prepend">
-    <button [disabled]="!myForm.valid || documents?.length === 0" (click)="uploadDocuments()" class="btn btn-outline-primary mr-1" type="submit"
+    <button [disabled]="!myForm.valid || documents?.length === 0 || docNameInvalid" (click)="uploadDocuments()" class="btn btn-outline-primary mr-1" type="submit"
       id="button-cl"><i class="material-icons">arrow_upward</i>Upload</button>
   </div>
 </div>
