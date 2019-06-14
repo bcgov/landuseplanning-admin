@@ -29,6 +29,13 @@
           <input type="checkbox" [checked]="isPublished" (click)="togglePublish()">
         </div>
       </div>
+      <div *ngIf="multiEdit" class="form-row">
+        <div class="col-md-12">
+          <div class="alert alert-warning" role="alert">
+            Leave the Document Date field <strong>BLANK</strong> unless you want to <strong>change the Document Date of ALL the selected documents.</strong> The same applies for the rest of the fields.
+          </div>
+        </div>
+      </div>
       <div class="form-row">
         <div class="form-group col-md-4">
           <label *ngIf="!multiEdit" for="doctypesel">Document Type*</label>
