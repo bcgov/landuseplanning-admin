@@ -766,6 +766,26 @@ export class ApiService {
     }
   }
 
+  public async exportComments(period: String) {
+    const queryString = `comment/export/${period}`;
+    const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
+    let filename = 'export.csv';
+    filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
+    if (this.isMS) {
+      window.navigator.msSaveBlob(blob, filename);
+    } else {
+      const url = window.URL.createObjectURL(blob);
+      const a = window.document.createElement('a');
+      window.document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    }
+  }
+
   public async openDocument(document: Document): Promise<void> {
     let filename;
     if (document.documentSource === 'COMMENT') {

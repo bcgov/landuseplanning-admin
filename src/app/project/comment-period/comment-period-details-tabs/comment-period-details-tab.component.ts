@@ -125,6 +125,12 @@ export class CommentPeriodDetailsTabComponent implements OnInit {
     this.router.navigate(['/p', this.commentPeriod.project, 'cp', this.commentPeriod._id, 'add-comment']);
   }
 
+  public exportComments() {
+    // Export all comments to CSV
+    this.openSnackBar('Download Initiated', 'Close');
+    this.api.exportComments(this.commentPeriod._id);
+  }
+
   public downloadDocument(document) {
     return this.api.downloadDocument(document).then(() => {
       console.log('Download initiated for file');
