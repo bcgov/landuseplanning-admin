@@ -89,20 +89,21 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       this.route.params
         .takeUntil(this.ngUnsubscribe)
         .subscribe(params => {
+          this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+          if (this.tableParams.sortBy === '') {
+            this.tableParams.sortBy = '-datePosted';
+          }
           if (params.keywords !== undefined) {
             this.tableParams.keywords = decodeURIComponent(params.keywords) || '';
           } else {
             this.tableParams.keywords = '';
           }
-          this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-          if (this.tableParams.sortBy === '') {
-            this.tableParams.sortBy = '-datePosted';
-          }
+          this.storageService.state.projectDocumentTableParams = this.tableParams;
           this._changeDetectionRef.detectChanges();
         });
     } else {
       this.tableParams = this.storageService.state.projectDocumentTableParams;
-      this.storageService.state.projectDocumentTableParams = null;
+      this.tableParams.keywords = decodeURIComponent(this.tableParams.keywords);
     }
     this.currentProject = this.storageService.state.currentProject.data;
     this._changeDetectionRef.detectChanges();
@@ -172,8 +173,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         this._changeDetectionRef.detectChanges();
         break;
       case 'edit':
-        this.storageService.state.projectDocumentTableParams = this.tableParams;
-
         let selectedDocs = [];
         this.documentTableData.data.map((item) => {
           if (item.checkbox === true) {
