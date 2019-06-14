@@ -56,6 +56,19 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
   ngOnInit() {
     // BUG: Go to add docs. refresh. it will redirect and have errors.
+    this.currentProject = this.storageService.state.currentProject.data;
+
+    this.config.lists.map(item => {
+      switch (item.type) {
+        case 'doctype':
+          break;
+        case 'author':
+          break;
+        case 'label':
+          this.milestones.push(Object.assign({}, item));
+          break;
+      }
+    });
 
     // Check if we're editing
     this.route.url.subscribe(segments => {
@@ -75,18 +88,6 @@ export class AddEditCommentPeriodComponent implements OnInit {
 
                   // Get data related to current project
                   this.currentProject = this.storageService.state.currentProject.data;
-
-                  this.config.lists.map(item => {
-                    switch (item.type) {
-                      case 'doctype':
-                        break;
-                      case 'author':
-                        break;
-                      case 'label':
-                        this.milestones.push(Object.assign({}, item));
-                        break;
-                    }
-                  });
 
                   if (this.storageService.state.addEditCPForm == null) {
                     // Prep comment period form.
@@ -122,8 +123,32 @@ export class AddEditCommentPeriodComponent implements OnInit {
                   // project not found --> navigate back to search
                   this.router.navigate(['/search']);
                 }
+                this.loading = false;
+                this._changeDetectionRef.detectChanges();
               }
             );
+        } else {
+          // Prep comment period form.
+          this.commentPeriodForm = new FormGroup({
+            'startDate': new FormControl(),
+            'startTime': new FormControl(),
+            'endDate': new FormControl(),
+            'endTime': new FormControl(),
+            'publishedStateSel': new FormControl(),
+            'infoForCommentText': new FormControl(),
+            'descriptionText': new FormControl(),
+            'milestoneSel': new FormControl(),
+            openHouses: this.formBuilder.array([])
+          });
+          this.commentPeriodForm.controls.startTime.setValue({ hour: 9, minute: 0 });
+          this.commentPeriodForm.controls.endTime.setValue({ hour: 23, minute: 59 });
+          this.addOpenHouseRow();
+          if (this.storageService.state.selectedDocumentsForCP == null) {
+            this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [] };
+          }
+
+          this.loading = false;
+          this._changeDetectionRef.detectChanges();
         }
       });
     });

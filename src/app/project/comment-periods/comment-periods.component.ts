@@ -173,6 +173,7 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
   }
 
   public addCommentPeriod() {
+    this.storageService.state.currentProject = this.currentProject;
     this.router.navigate(['p', this.currentProject._id, 'comment-periods', 'add']);
   }
 
