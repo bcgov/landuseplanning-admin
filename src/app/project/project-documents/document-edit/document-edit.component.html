@@ -74,19 +74,6 @@
             </div>
           </div>
         </div>
-        <div class="form-group col-md-4">
-          <label *ngIf="!multiEdit" for="inputAddress">Date Uploaded*</label>
-          <label *ngIf="multiEdit" for="labelsel">Date Uploaded</label>
-
-          <div class="input-group">
-            <input [required]="!multiEdit"  type="text" class="form-control" placeholder="yyyy-mm-dd" name="dateUploaded"
-              formControlName="dateUploaded" ngbDatepicker #dateUploadedPicker="ngbDatepicker" />
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary calendar" (click)="dateUploadedPicker.toggle()"
-                type="button"></button>
-            </div>
-          </div>
-        </div>
       </div>
       <div *ngIf="!multiEdit" class="form-row">
         <div class="form-group col-md-12">
