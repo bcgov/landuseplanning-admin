@@ -27,7 +27,6 @@ export class DocumentEditComponent implements OnInit {
   public authors: any[] = [];
   public labels: any[] = [];
   public datePosted: NgbDateStruct = null;
-  public dateUploaded: NgbDateStruct = null;
   public isPublished = false;
   public loading = true;
   public multiEdit = false;
@@ -74,7 +73,6 @@ export class DocumentEditComponent implements OnInit {
             'authorsel': new FormControl(this.documents[0].documentAuthor),
             'labelsel': new FormControl(this.documents[0].milestone),
             'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].datePosted))),
-            'dateUploaded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].dateUploaded))),
             'displayName': new FormControl(this.documents[0].displayName),
             'description': new FormControl(this.documents[0].description)
           });
@@ -85,7 +83,6 @@ export class DocumentEditComponent implements OnInit {
             'authorsel': new FormControl(),
             'labelsel': new FormControl(),
             'datePosted': new FormControl(),
-            'dateUploaded': new FormControl(),
             'displayName': new FormControl(),
             'description': new FormControl()
           });
@@ -142,7 +139,6 @@ export class DocumentEditComponent implements OnInit {
         this.myForm.value.description !== null ? formData.append('description', this.myForm.value.description) : Function.prototype;
         this.myForm.value.displayName !== null ? formData.append('displayName', this.myForm.value.displayName) : Function.prototype;
         formData.append('milestone', this.myForm.value.labelsel);
-        formData.append('dateUploaded', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUploaded').value))).toISOString());
         formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
         formData.append('type', this.myForm.value.doctypesel);
         formData.append('documentAuthor', this.myForm.value.authorsel);
@@ -154,10 +150,6 @@ export class DocumentEditComponent implements OnInit {
         // apply changes to milestone if any
         let milestone = this.multiEditGetUpdatedValue(this.myForm.value.labelsel, doc.milestone);
         milestone !== undefined && milestone !== null ? formData.append('milestone', milestone) : Function.prototype;
-
-        // apply changes to dateUploaded if any
-        let dateUploaded = this.multiEditGetUpdatedValue(this.myForm.value.dateUploaded, doc.dateUploaded, true);
-        dateUploaded !== undefined && dateUploaded !== null ? formData.append('dateUploaded', dateUploaded) : Function.prototype;
 
         // apply changes to datePosted if any
         let datePosted = this.multiEditGetUpdatedValue(this.myForm.value.datePosted, doc.datePosted, true);
