@@ -74,7 +74,12 @@ export class SidebarComponent implements OnInit {
         }
       }
       this.currentProjectId = urlArray[1];
-      this.currentMenu = urlArray[2].split(';')[0];
+      try {
+        this.currentMenu = urlArray[2];
+        this.currentMenu = urlArray[2].split(';')[0];
+      } catch (e) {
+        // When coming from search, it's blank.
+      }
       this.showProjectDetails = true;
     } else {
       this.currentProjectId = urlArray[0];
