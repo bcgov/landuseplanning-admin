@@ -70,6 +70,21 @@ export class AddEditCommentPeriodComponent implements OnInit {
       }
     });
 
+    // Get data related to current project
+    this.currentProject = this.storageService.state.currentProject.data;
+
+    this.config.lists.map(item => {
+      switch (item.type) {
+        case 'doctype':
+          break;
+        case 'author':
+          break;
+        case 'label':
+          this.milestones.push(Object.assign({}, item));
+          break;
+      }
+    });
+
     // Check if we're editing
     this.route.url.subscribe(segments => {
       segments.map(segment => {
@@ -83,38 +98,8 @@ export class AddEditCommentPeriodComponent implements OnInit {
                 if (data.commentPeriod) {
                   this.commentPeriod = data.commentPeriod;
                   this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
-
                   this.initSelectedDocs();
-
-                  // Get data related to current project
-                  this.currentProject = this.storageService.state.currentProject.data;
-
-                  if (this.storageService.state.addEditCPForm == null) {
-                    // Prep comment period form.
-                    this.commentPeriodForm = new FormGroup({
-                      'startDate': new FormControl(),
-                      'startTime': new FormControl(),
-                      'endDate': new FormControl(),
-                      'endTime': new FormControl(),
-                      'publishedStateSel': new FormControl(),
-                      'infoForCommentText': new FormControl(),
-                      'descriptionText': new FormControl(),
-                      'milestoneSel': new FormControl(),
-                      openHouses: this.formBuilder.array([])
-                    });
-                    if (this.isEditing) {
-                      this.initForEditing();
-                    } else {
-                      this.commentPeriodForm.controls.startTime.setValue({ hour: 9, minute: 0 });
-                      this.commentPeriodForm.controls.endTime.setValue({ hour: 23, minute: 59 });
-                      this.addOpenHouseRow();
-                      if (this.storageService.state.selectedDocumentsForCP == null) {
-                        this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [] };
-                      }
-                    }
-                  } else {
-                    this.commentPeriodForm = this.storageService.state.addEditCPForm.data;
-                  }
+                  this.initForm();
 
                   this.loading = false;
                   this._changeDetectionRef.detectChanges();
@@ -128,30 +113,41 @@ export class AddEditCommentPeriodComponent implements OnInit {
               }
             );
         } else {
-          // Prep comment period form.
-          this.commentPeriodForm = new FormGroup({
-            'startDate': new FormControl(),
-            'startTime': new FormControl(),
-            'endDate': new FormControl(),
-            'endTime': new FormControl(),
-            'publishedStateSel': new FormControl(),
-            'infoForCommentText': new FormControl(),
-            'descriptionText': new FormControl(),
-            'milestoneSel': new FormControl(),
-            openHouses: this.formBuilder.array([])
-          });
-          this.commentPeriodForm.controls.startTime.setValue({ hour: 9, minute: 0 });
-          this.commentPeriodForm.controls.endTime.setValue({ hour: 23, minute: 59 });
-          this.addOpenHouseRow();
-          if (this.storageService.state.selectedDocumentsForCP == null) {
-            this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [] };
-          }
-
+          this.initForm();
           this.loading = false;
           this._changeDetectionRef.detectChanges();
         }
       });
     });
+  }
+
+  private initForm() {
+    if (this.storageService.state.addEditCPForm == null) {
+      // Prep comment period form.
+      this.commentPeriodForm = new FormGroup({
+        'startDate': new FormControl(),
+        'startTime': new FormControl(),
+        'endDate': new FormControl(),
+        'endTime': new FormControl(),
+        'publishedStateSel': new FormControl(),
+        'infoForCommentText': new FormControl(),
+        'descriptionText': new FormControl(),
+        'milestoneSel': new FormControl(),
+        openHouses: this.formBuilder.array([])
+      });
+      if (this.isEditing) {
+        this.initForEditing();
+      } else {
+        this.commentPeriodForm.controls.startTime.setValue({ hour: 9, minute: 0 });
+        this.commentPeriodForm.controls.endTime.setValue({ hour: 23, minute: 59 });
+        this.addOpenHouseRow();
+        if (this.storageService.state.selectedDocumentsForCP == null) {
+          this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [] };
+        }
+      }
+    } else {
+      this.commentPeriodForm = this.storageService.state.addEditCPForm.data;
+    }
   }
 
   private initForEditing() {
@@ -321,7 +317,6 @@ export class AddEditCommentPeriodComponent implements OnInit {
   private extractVarsFromInstructions(instructionString: String, form: FormGroup) {
     let firstSentance = instructionString.split('.')[0] + '. ';
     form.controls.infoForCommentText.setValue(firstSentance.split(' for')[0].replace('Comment Period on the ', ''));
-    this.updateInfoForCommentPreview();
     form.controls.descriptionText.setValue(instructionString.replace(firstSentance, ''));
     this.updateDescriptionPreview();
   }
@@ -352,12 +347,10 @@ export class AddEditCommentPeriodComponent implements OnInit {
     }
   }
 
-  public updateInfoForCommentPreview() {
-    this.infoForCommentPreview = this.commentPeriodForm.get('infoForCommentText').value;
-  }
-
   public updateDescriptionPreview() {
+    this.infoForCommentPreview = this.commentPeriodForm.get('infoForCommentText').value;
     this.descriptionPreview = this.commentPeriodForm.get('descriptionText').value;
+    this._changeDetectionRef.detectChanges();
   }
 
   public removeSelectedDoc(doc) {
