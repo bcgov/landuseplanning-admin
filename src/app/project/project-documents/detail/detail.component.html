@@ -10,18 +10,22 @@
         [routerLink]="['/p', currentProject._id, 'project-documents']">Documents</a></li>
     <li class="breadcrumb-item active" aria-current="page">Document Details</li>
   </ol>
-  <div ngbDropdown placement="bottom-right" class="d-inline-block">
-    <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
-    <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
-      <button class="dropdown-item" (click)="onEdit()">Edit</button>
-      <button class="dropdown-item" (click)="api.openDocument(document)">Open</button>
-      <button class="dropdown-item" (click)="api.downloadDocument(document)">Download</button>
-      <button class="dropdown-item" (click)="togglePublish()">{{publishText}}</button>
-    </div>
-  </div>
 </nav>
 <main class="container-fluid-padding" *ngIf="document">
-  <h1>Details</h1>
+  <h1>
+    <div class="row">
+      <div>Details</div>
+      <div class="ml-auto" ngbDropdown placement="bottom-right">
+        <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
+        <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+          <button class="dropdown-item" (click)="onEdit()">Edit</button>
+          <button class="dropdown-item" (click)="api.openDocument(document)">Open</button>
+          <button class="dropdown-item" (click)="api.downloadDocument(document)">Download</button>
+          <button class="dropdown-item" (click)="togglePublish()">{{publishText}}</button>
+        </div>
+      </div>
+    </div>
+  </h1>
   <section>
     <div class="label-pair">
       <h3 for="displayName">Display Name: </h3>
