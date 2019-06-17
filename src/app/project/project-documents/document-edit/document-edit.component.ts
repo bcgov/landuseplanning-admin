@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { of, forkJoin } from 'rxjs';
@@ -35,6 +35,7 @@ export class DocumentEditComponent implements OnInit {
   constructor(
     private config: ConfigService,
     private documentService: DocumentService,
+    private _changeDetectionRef: ChangeDetectorRef,
     private snackBar: MatSnackBar,
     private router: Router,
     private storageService: StorageService,
@@ -45,24 +46,23 @@ export class DocumentEditComponent implements OnInit {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
 
+    this.config.lists.map(item => {
+      switch (item.type) {
+        case 'doctype':
+          this.doctypes.push(Object.assign({}, item));
+          break;
+        case 'author':
+          this.authors.push(Object.assign({}, item));
+          break;
+        case 'label':
+          this.labels.push(Object.assign({}, item));
+          break;
+      }
+    });
     // Check if documents are null (nav straight to this page)
     if (!this.documents || this.documents.length === 0) {
       this.router.navigate(['p', this.currentProject._id, 'project-documents']);
     } else {
-      this.config.lists.map(item => {
-        switch (item.type) {
-          case 'doctype':
-            this.doctypes.push(Object.assign({}, item));
-            break;
-          case 'author':
-            this.authors.push(Object.assign({}, item));
-            break;
-          case 'label':
-            this.labels.push(Object.assign({}, item));
-            break;
-        }
-      });
-
       if (this.storageService.state.form) {
         this.myForm = this.storageService.state.form;
       } else {
@@ -89,6 +89,8 @@ export class DocumentEditComponent implements OnInit {
           });
         }
       }
+
+      this._changeDetectionRef.detectChanges();
 
       if (this.storageService.state.labels) {
         // this.labels = this.storageService.state.labels;
@@ -183,11 +185,13 @@ export class DocumentEditComponent implements OnInit {
     this.storageService.state = { type: 'documents', data: null };
     this.storageService.state = { type: 'labels', data: null };
 
+
     forkJoin(observables)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        () => { // onNext
-          // do nothing here - see onCompleted() function below
+        (d) => { // onNext
+          // Push the new version of documents into the selected list.
+          this.storageService.state.selectedDocs = d;
         },
         error => {
           console.log('error =', error);
@@ -195,7 +199,8 @@ export class DocumentEditComponent implements OnInit {
           // TODO: should fully reload project here so we have latest non-deleted objects
         },
         () => { // onCompleted
-          // delete succeeded --> navigate back to search
+          // Set new state for docs.
+          this.storageService.state = { type: 'documents', data: this.storageService.state.selectedDocs };
           // Clear out the document state that was stored previously.
           this.goBack();
           this.loading = false;
