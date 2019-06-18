@@ -39,9 +39,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Proponent',
-      value: 'proponent',
-      width: 'col-2',
-      nosort: true
+      value: 'proponent.name',
+      width: 'col-2'
     },
     {
       name: 'Type',
