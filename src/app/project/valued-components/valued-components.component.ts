@@ -177,11 +177,17 @@ export class ValuedComponentsComponent implements OnInit, OnDestroy {
   isEnabled(button) {
     switch (button) {
       default:
-        return this.selectedCount > 0;
+        return this.selectedCount > 0 && this.valuedComponents.length > 0;
         break;
     }
   }
-
+  selectAll(button) {
+      switch (button) {
+        default:
+          return this.valuedComponents.length > 0;
+          break;
+      }
+  }
   updateSelectedRow(count) {
     this.selectedCount = count;
   }

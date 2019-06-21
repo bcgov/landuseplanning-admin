@@ -15,8 +15,8 @@
   </div>
 
   <div class="input-group-prepend">
-    <button (click)="selectAction('selectAll')" class="btn btn-outline-secondary mr-1" type="button"
-      id="button-sa">Select All</button>
+    <button (click)="selectAction('selectAll')" class="btn btn-outline-secondary mr-1" [disabled]="!selectAll('Select All')"
+    type="button" id="button-sa">Select All</button>
     <button (click)="selectAction('addNew')" class="btn btn-outline-secondary mr-1" type="button" id="button-sa">Add
       VC</button>
     <button (click)="selectAction('delete')" class="btn btn-outline-secondary mr-1" [disabled]="!isEnabled('delete')"
