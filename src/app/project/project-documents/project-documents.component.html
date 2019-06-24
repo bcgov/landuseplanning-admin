@@ -26,6 +26,10 @@
             <i class="material-icons md-18">info</i>
             <span> Search Help</span>
         </a>
+        <button *ngIf="!loading && tableParams.totalListItems > tableParams.pageSize"
+            class="btn btn-primary btn-search-help" (click)="onShowAll()">
+        <span> Show All Results</span>
+        </button>
     </div>
     <div class="results">
       <p *ngIf="!loading && tableParams.totalListItems == 0">
