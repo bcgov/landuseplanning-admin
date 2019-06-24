@@ -7,6 +7,7 @@ import { ApiService } from 'app/services/api';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
 import { MatSnackBar } from '@angular/material';
+import { Utils } from 'app/shared/utils/utils';
 
 @Component({
   selector: 'app-detail',
@@ -26,7 +27,8 @@ export class DocumentDetailComponent implements OnInit {
     private _changeDetectionRef: ChangeDetectorRef,
     private storageService: StorageService,
     private snackBar: MatSnackBar,
-    private documentService: DocumentService
+    private documentService: DocumentService,
+    private utils: Utils
   ) {
   }
 

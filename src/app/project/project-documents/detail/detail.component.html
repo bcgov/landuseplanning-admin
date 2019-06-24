@@ -76,8 +76,8 @@
       <p id="milestone">{{document.milestone | listConverter}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="documentFileSize">Filesize: </h3>
-      <p id="documentFileSize">{{document.documentFileSize || '-'}}</p>
+      <h3 for="internalSize">Filesize: </h3>
+      <p id="internalSize">{{utils.formatBytes(document.internalSize)}}</p>
     </div>
   </section>
 </main>
