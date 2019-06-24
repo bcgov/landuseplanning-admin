@@ -8,7 +8,7 @@ export class Document {
   internalURL: string;
   passedAVCheck: boolean;
   internalMime: string;
-  internalSize: string;
+  internalSize: Number;
   documentSource: string;
   displayName: string;
   milestone: string;
