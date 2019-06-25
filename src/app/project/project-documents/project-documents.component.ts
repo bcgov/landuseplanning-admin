@@ -106,6 +106,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       this.tableParams.keywords = decodeURIComponent(this.tableParams.keywords);
     }
     this.currentProject = this.storageService.state.currentProject.data;
+    this.storageService.state.labels = null;
     this._changeDetectionRef.detectChanges();
 
     this.route.data
