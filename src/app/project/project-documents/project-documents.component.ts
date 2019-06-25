@@ -440,7 +440,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       pageNumber,
       this.tableParams.pageSize,
       this.tableParams.sortBy,
-      '[documentSource]=PROJECT',
+      { documentSource: 'PROJECT' },
       true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {

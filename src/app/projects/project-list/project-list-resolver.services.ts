@@ -26,7 +26,7 @@ export class ProjectListResolver implements Resolve<Object> {
       tableParams.currentPage,
       tableParams.pageSize,
       tableParams.sortBy,
-      null,
+      {},
       true);
   }
 }

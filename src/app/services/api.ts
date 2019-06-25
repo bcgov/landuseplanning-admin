@@ -859,7 +859,7 @@ export class ApiService {
   //
   // Searching
   //
-  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier = null, populate = false, filter = {}): Observable<SearchResults[]> {
+  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier: object = {}, populate = false, filter = {}): Observable<SearchResults[]> {
     let queryString = `search?dataset=${dataset}`;
     if (fields && fields.length > 0) {
       fields.map(item => {
@@ -873,8 +873,12 @@ export class ApiService {
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (populate !== null) { queryString += `&populate=${populate}`; }
-    if (queryModifier !== null) {
-      queryString += `&query` + queryModifier;
+    if (queryModifier !== {}) {
+      Object.keys(queryModifier).map(key => {
+        queryModifier[key].split(',').map(item => {
+          queryString += `&and[${key}]=${item}`;
+        });
+      });
     }
     if (filter !== {}) {
       Object.keys(filter).map(key => {
