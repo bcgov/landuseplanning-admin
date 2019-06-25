@@ -39,7 +39,7 @@ export class SearchService {
     return searchResults;
   }
 
-  getSearchResults(keys: string, dataset: string, fields: any[], pageNum: number = 1, pageSize: number = 10, sortBy: string = null, queryModifier: string = null, populate: boolean = false, filter: object = {}): Observable<any[]> {
+  getSearchResults(keys: string, dataset: string, fields: any[], pageNum: number = 1, pageSize: number = 10, sortBy: string = null, queryModifier: object = {}, populate: boolean = false, filter: object = {}): Observable<any[]> {
     if (sortBy === '') {
       sortBy = null;
     }

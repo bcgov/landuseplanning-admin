@@ -21,6 +21,6 @@ export class ContactsResolverService implements Resolve<object> {
                                               pageNum,
                                               pageSize,
                                               sortBy,
-                                              null);
+                                              {});
   }
 }

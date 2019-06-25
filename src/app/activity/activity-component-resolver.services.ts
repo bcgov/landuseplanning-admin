@@ -43,7 +43,7 @@ export class ActivityComponentResolver implements Resolve<Observable<object>> {
         tableParams.currentPage,
         tableParams.pageSize,
         tableParams.sortBy,
-        null,
+        {},
         true,
         filterForApi);
     }
