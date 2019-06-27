@@ -5,58 +5,64 @@ import { ApiService } from 'app/services/api';
 import { JwtUtil } from 'app/jwt-util';
 import { KeycloakService } from 'app/services/keycloak.service';
 
+import { DayCalculatorModalComponent } from 'app/day-calculator-modal/day-calculator-modal.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { DayCalculatorModalResult } from 'app/day-calculator-modal/day-calculator-modal.component';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   animations: [
     trigger('toggleNav', [
-      state(
-        'navClosed',
-        style({
-          height: '0'
-        })
-      ),
-      state(
-        'navOpen',
-        style({
-          height: '*'
-        })
-      ),
-      transition('navOpen => navClosed', [animate('0.2s')]),
-      transition('navClosed => navOpen', [animate('0.2s')])
-    ])
+      state('navClosed', style({
+        height: '0',
+      })),
+      state('navOpen', style({
+        height: '*',
+      })),
+      transition('navOpen => navClosed', [
+        animate('0.2s')
+      ]),
+      transition('navClosed => navOpen', [
+        animate('0.2s')
+      ]),
+    ]),
   ]
 })
+
 export class HeaderComponent implements OnInit {
   isNavMenuOpen = false;
-  welcomeMsg: string;
-  // private _api: ApiService;
+  welcomeMsg: String;
+  private _api: ApiService;
   public jwt: {
-    username: string;
+    username: String,
     realm_access: {
-      roles: string[];
-    };
-    scopes: string[];
+      roles: Array<String>
+    }
+    scopes: Array<String>
   };
+  private dayCalculatorModal: NgbModalRef = null;
+  private showDayCalculatorModal = false;
 
-  constructor(private api: ApiService, private keycloakService: KeycloakService, public router: Router) {
-    // this._api = api;
-    router.events.subscribe(() => {
+  constructor(
+    private api: ApiService,
+    private keycloakService: KeycloakService,
+    private modalService: NgbModal,
+    public router: Router
+  ) {
+    this._api = api;
+    router.events.subscribe(val => {
       const token = this.keycloakService.getToken();
       // TODO: Change this to observe the change in the _api.token
       if (token) {
-        // console.log("token:", token);
         const jwt = new JwtUtil().decodeToken(token);
-        // console.log('jwt:', jwt);
-        this.welcomeMsg = jwt ? 'Hello ' + jwt.displayName : 'Login';
-        // console.log("this:", this.welcomeMsg);
+        this.welcomeMsg = jwt ? ('Hello ' + jwt.preferred_username) : 'Login';
         this.jwt = jwt;
       } else {
         this.welcomeMsg = 'Login';
         this.jwt = null;
       }
-      // console.log('val:', val instanceof NavigationEnd);
     });
   }
 
@@ -67,15 +73,33 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  renderMenu(route: string) {
+  openCalculator() {
+    this.showDayCalculatorModal = true;
+    this.dayCalculatorModal = this.modalService.open(DayCalculatorModalComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
+    this.dayCalculatorModal.result.then(result => {
+      this.dayCalculatorModal = null;
+      this.showDayCalculatorModal = false;
+      // if user dismissed the modal or clicked Explore then load initial apps
+      // otherwise user clicked Find, which will load filtered apps
+      switch (result) {
+        case DayCalculatorModalResult.Dismissed:
+          // this.urlService.setFragment(null);
+          // this.getApps();
+          break;
+        case DayCalculatorModalResult.Exploring:
+          // this.getApps();
+          break;
+        case DayCalculatorModalResult.Finding:
+          break;
+      }
+    });
+    return;
+  }
+
+  renderMenu(route: String) {
     // Sysadmin's get administration.
     if (route === 'administration') {
-      return (
-        this.jwt &&
-        this.jwt.realm_access &&
-        this.jwt.realm_access.roles.find(x => x === 'sysadmin') &&
-        this.jwt.username === 'admin'
-      );
+      return (this.jwt && this.jwt.realm_access && this.jwt.realm_access.roles.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
     }
   }
 

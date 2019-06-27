@@ -1,48 +1,68 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
+import { Document } from 'app/models/document';
 
 import { SearchService } from 'app/services/search.service';
 import { SearchTerms } from 'app/models/search';
-import { Application } from 'app/models/application';
+import { ApiService } from 'app/services/api';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+  styleUrls: ['./search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent implements OnInit, OnDestroy {
   public terms = new SearchTerms();
   public searching = false;
   public ranSearch = false;
-  public keywords: string[] = [];
-  public applications: Application[] = [];
+  public keywords: string;
   public count = 0; // for template
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
+  public currentPage: 1;
+  public pageSize: 10;
+
+  public results: Array<any> = [];
 
   constructor(
     public snackBar: MatSnackBar,
+    private _changeDetectionRef: ChangeDetectorRef,
+    public api: ApiService,
     public searchService: SearchService, // also used in template
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
+  // TODO: when clicking on radio buttons, url must change to reflect dataset.
+
   ngOnInit() {
     // get search terms from route
-    this.route.params.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
-      if (params.keywords) {
-        // remove empty and duplicate items
-        this.terms.keywords = _.uniq(_.compact(params.keywords.split(','))).join(' ');
-      }
+    this.route.params
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(params => {
+        if (params.keywords) {
+          // remove empty and duplicate items
+          this.terms.keywords = params.keywords;
+        }
 
-      if (!_.isEmpty(this.terms.getParams())) {
-        this.doSearch();
-      }
-    });
+        if (params.dataset) {
+          this.terms.dataset = params.dataset;
+        } else {
+          // default documents
+          this.terms.dataset = 'Document';
+        }
+
+        if (!_.isEmpty(this.terms.getParams())) {
+          let cur = params.currentPage ? params.currentPage : 1;
+          let size = params.pageSize ? params.pageSize : 25;
+          this.doSearch(cur, size);
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -55,24 +75,41 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  private doSearch() {
+  handleRadioChange(value) {
+    this.terms.dataset = value;
+    this.onSubmit();
+  }
+
+  private doSearch(pageNumber, pageSize) {
+    this.results = [];
+
     this.searching = true;
     this.count = 0;
-    this.keywords = (this.terms.keywords && _.uniq(_.compact(this.terms.keywords.split(' ')))) || []; // safety checks
-    this.applications.length = 0; // empty the list
+    this.keywords = this.terms.keywords;
+    this.currentPage = pageNumber;
+    this.pageSize = pageSize;
 
-    this.searchService
-      .getAppsByClidDtid(this.keywords)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.searchService.getSearchResults(this.keywords, this.terms.dataset, null, pageNumber, pageSize, null, null, true)
+      .takeUntil(this.ngUnsubscribe)
       .subscribe(
-        applications => {
-          applications.forEach(application => {
-            // add if not already in list
-            if (!_.find(this.applications, app => app.tantalisID === application.tantalisID)) {
-              this.applications.push(application);
-            }
-          });
-          this.count = this.applications.length;
+        results => {
+          if (results[0].data.meta.length > 0) {
+            this.count = results[0].data.meta[0].searchResultsTotal;
+            let items = results[0].data.searchResults;
+            items.map(item => {
+              if (this.terms.dataset === 'Document') {
+                this.results.push(new Document(item));
+              } else {
+                this.results.push(item);
+              }
+            });
+          } else {
+            this.count = 0;
+            this.results = [];
+          }
+          this.searching = false;
+          this.ranSearch = true;
+          this._changeDetectionRef.detectChanges();
         },
         error => {
           console.log('error =', error);
@@ -81,16 +118,20 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.searching = false;
           this.ranSearch = true;
 
-          this.snackBarRef = this.snackBar.open('Error searching applications ...', 'RETRY');
+          this.snackBarRef = this.snackBar.open('Error searching projects ...', 'RETRY');
           this.snackBarRef.onAction().subscribe(() => this.onSubmit());
         },
         () => {
           // onCompleted
           // update variables on completion
-          this.searching = false;
-          this.ranSearch = true;
-        }
-      );
+        });
+  }
+
+  updatePageNumber(pageNumber) {
+    // Go to top of page after clicking to a different page.
+    window.scrollTo(0, 0);
+    this.currentPage = pageNumber;
+    this.onSubmit();
   }
 
   // reload page with current search terms
@@ -105,35 +146,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     // WORKAROUND: add timestamp to force URL to be different than last time
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
+    params['dataset'] = this.terms.dataset;
+    params['currentPage'] = this.currentPage ? this.currentPage : 1;
+    params['pageSize'] = this.pageSize ? this.pageSize : 10;
 
     // console.log('params =', params);
     this.router.navigate(['search', params]);
-  }
-
-  public onImport(application: Application) {
-    if (application) {
-      // save application data from search results
-      const params = {
-        // initial data
-        purpose: application.purpose,
-        subpurpose: application.subpurpose,
-        type: application.type,
-        subtype: application.subtype,
-        status: application.status,
-        tenureStage: application.tenureStage,
-        location: application.location,
-        businessUnit: application.businessUnit,
-        cl_file: application.cl_file,
-        tantalisID: application.tantalisID,
-        legalDescription: application.legalDescription,
-        client: application.client,
-        statusHistoryEffectiveDate: application.statusHistoryEffectiveDate
-      };
-      // go to add-edit page
-      this.router.navigate(['/a', 0, 'edit'], { queryParams: params });
-    } else {
-      console.log('error, invalid application =', application);
-      this.snackBarRef = this.snackBar.open('Error creating application ...', null, { duration: 3000 });
-    }
   }
 }

@@ -1,7 +1,5 @@
 // Move somewhere global
 h1 {
-  font-size: 2.5rem;
-  font-weight: 400;
   letter-spacing: -0.05rem;
 }
 
@@ -19,20 +17,45 @@ h2 {
   i {
     margin-top: -0.1rem;
   }
+  margin-right: .5rem;
+}
+
+.btn-search-help {
+    padding: 0.75rem 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all ease-out 0.2s;
+    cursor: pointer;
+    font-weight: 600;
+    .material-icons {
+        font-size: 20px;
+        margin-top: -3px;
+        margin-right: 2px;
+    }
 }
 
 // Search Container
 .search-container {
-  padding-top: 2.5rem;
-  padding-bottom: 3rem;
-  background: #f7f8fa;
+  padding-bottom: .5rem;
+}
+
+.search-result {
+  margin-top: 14px;
+  margin-bottom: 0;
 }
 
 form {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+
+  label {
+    margin-bottom: 1rem;
+  }
 }
 
 .main-search-field {
+  max-width: 830px;
+
   input {
     height: 3rem;
     color: #000;
@@ -46,6 +69,15 @@ form {
   button {
     min-width: 10rem;
     font-weight: 700;
+    background: #fcba18;
+    color: #003367;
+    border: none;
+
+    .material-icons {
+      font-size: 20px;
+      margin-top: -2px;
+      margin-right: 2px;
+    }
   }
 
   .input-group-addon {
@@ -63,7 +95,7 @@ $sr-table-row-bg: #f7f8fa;
 
 .search-results {
   table {
-    margin-top: 2rem;
+    margin-top: .5rem;
     table-layout: fixed;
   }
 
@@ -85,6 +117,119 @@ $sr-table-row-bg: #f7f8fa;
     background: $sr-table-row-bg;
     line-height: 1.15rem;
     font-size: 0.9375rem;
+  }
+}
+
+.card {
+  margin-bottom: 20px;
+  box-shadow: 0.1rem 0.1rem 0.5rem rgba(158, 158, 158, 0.24);
+  border: none;
+}
+
+.card-body .label-pair {
+  margin: 20px 0 0;
+
+  > div {
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+
+  .badge {
+    background: #fcba18;
+    box-shadow: none;
+    border: none;
+    color: #003368;
+    text-align: left;
+    white-space: normal;
+    font-weight: 600;
+    padding: 6px 10px;
+    letter-spacing: -0.025em;
+  }
+}
+
+.card-header {
+  display: flex;
+
+  .project-name {
+    padding-top: 4px;
+
+    .tag {
+      padding-top: 2px;
+      color: #fcba18;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    i {
+      vertical-align: middle;
+      margin-top: -4px;
+    }
+  }
+
+  .document-actions {
+    margin-left: 18px;
+    margin-top: 3px;
+
+    .btn {
+      background: none;
+      color: #fff;
+      border-color: #fff;
+    }
+  }
+
+  .view-btn {
+    margin: 0 0 0 auto;
+    background: none;
+    color: #fcba18;
+    border-color: #fcba18;
+  }
+}
+
+.card-title {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  margin-bottom: .5rem;
+
+  label {
+    font-weight: 600;
+    margin-bottom: 0;
+  }
+}
+
+.card-body {
+
+  .btn-primary{
+    border: 1px solid #003367;
+    background: none;
+    color: #003367;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+
+  .publish-state {
+
+    i {
+      vertical-align: top;
+    }
+
+    color: #fff;
+    background: #003368;
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 25px;
+    font-size: .85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .flex-container {
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
 }
 
@@ -144,8 +289,8 @@ $sr-table-row-bg: #f7f8fa;
 }
 
 // Crown Land File Number Arrow
-$cl-arrow-size: 2.3rem;
-$cl-arrow-color: #036;
+$cl-arrow-size: 3.0rem;
+$cl-arrow-color: #003366;
 $cl-arrow-font-color: #fff;
 
 .cl-arrow {
@@ -212,17 +357,4 @@ $cl-arrow-font-color: #fff;
 .dropdown-item:last-child {
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
-}
-
-.btn-container {
-  position: relative;
-  display: inline-block;
-
-  button:disabled + span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
 }

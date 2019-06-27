@@ -1,0 +1,22 @@
+<div class="action-container">
+  <ol aria-label="breadcrumb" class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">Activity Posts</li>
+  </ol>
+  <div class="dropdown">
+    <button (click)="selectAction('add')"
+            class="btn btn-primary"
+            type="button"
+            id="button-d"><i class="material-icons">add</i>Add Activity</button>
+  </div>
+</div>
+<section class="container-fluid-padding">
+  <app-table-template
+      [columns]="tableColumns"
+      [data]="tableData"
+      (onColumnSort)='setColumnSort($event)'
+      (onPageNumUpdate)='getPaginated($event)'>
+  </app-table-template>
+  <div *ngIf="tableParams.totalListItems == 0">
+    No Activities/Updates.
+  </div>
+</section>

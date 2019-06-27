@@ -5,9 +5,19 @@ import { LoginComponent } from './login/login.component';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { SearchComponent } from './search/search.component';
 import { AdministrationComponent } from './administration/administration.component';
-import { UsersComponent } from './administration/users/users.component';
+import { TopicsComponent } from './administration/topics/topics.component';
+import { MapComponent } from './map/map.component';
+import { MetricsComponent } from './metrics/metrics.component';
+import { ContactsComponent } from './contacts/contacts.component';
+import { ActivityComponent } from './activity/activity.component';
+import { SearchHelpComponent } from './search-help/search-help.component';
+
+import { ContactsResolverService } from './contacts/contacts-resolver.service';
+import { ActivityComponentResolver } from './activity/activity-component-resolver.services';
 
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
+import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
+import { TopicsResolver } from './administration/topics/topics-resolver.services';
 
 const routes: Routes = [
   {
@@ -19,8 +29,11 @@ const routes: Routes = [
     component: AdministrationComponent
   },
   {
-    path: 'administration/users',
-    component: UsersComponent
+    path: 'administration/topics',
+    component: TopicsComponent,
+    resolve: {
+      topics: TopicsResolver
+    }
   },
   {
     path: 'not-authorized',
@@ -29,6 +42,43 @@ const routes: Routes = [
   {
     path: 'search',
     component: SearchComponent
+  },
+  {
+    path: 'map',
+    component: MapComponent
+  },
+  {
+    path: 'metrics',
+    component: MetricsComponent
+  },
+  {
+    path: 'contacts',
+    component: ContactsComponent,
+    resolve: {
+      users: ContactsResolverService
+    }
+  },
+  {
+    path: 'activity',
+    component: ActivityComponent,
+    resolve: {
+      activities: ActivityComponentResolver
+    },
+  },
+  {
+    path: 'activity/:activityId/edit',
+    component: AddEditActivityComponent,
+    resolve: {
+      activity: ActivityComponentResolver
+    }
+  },
+  {
+    path: 'activity/add',
+    component: AddEditActivityComponent
+  },
+  {
+    path: 'search-help',
+    component: SearchHelpComponent
   },
   {
     // default route
@@ -44,8 +94,18 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-  providers: [CanDeactivateGuard]
+  imports: [
+    RouterModule.forRoot(routes)
+  ],
+  exports: [
+    RouterModule
+  ],
+  providers: [
+    CanDeactivateGuard,
+    ContactsResolverService,
+    ActivityComponentResolver,
+    TopicsResolver
+  ]
 })
+
 export class AppRoutingModule {}

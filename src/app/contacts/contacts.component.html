@@ -1,0 +1,26 @@
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">All Contacts</li>
+  </ol>
+</nav>
+<div class="search-container">
+  <div class="fb-container bg-faded">
+    <section class="container-fluid-padding" id="anchor-point">
+      <div class="spinner-container" *ngIf="loading">
+        <div class="spinner-new rotating"></div>
+      </div>
+      <main *ngIf="!loading">
+        <section>
+          <app-table-template *ngIf="!loading && tableParams.totalListItems != 0"
+                              (checkboxChange)='checkChange($event)'
+                              [columns]="documentTableColumns"
+                              [data]="documentTableData"
+                              (onColumnSort)='setColumnSort($event)'
+                              (onSelectedRow)='updateSelectedRow($event)'
+                              (onPageNumUpdate)='getPaginatedContacts($event, null, null)'>
+          </app-table-template>
+        </section>
+      </main>
+    </section>
+  </div>
+</div>

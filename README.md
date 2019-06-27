@@ -6,156 +6,56 @@ Administrative front-end for the Land Use Planning application. Based on the PRC
 * [Public](https://github.com/bcgov/gcpe-lup-public) - front-end for public users.
 * [Api](https://github.com/bcgov/gcpe-lup-api) - back-end that serves both admin and public requests.
 
-# Prerequisites
+# Pre-requisites
 
-| Technology | Version | Website                 | Description |
-|------------|---------|-------------------------|-------------------------------------------|
-| node       | 8.x.x   | https://nodejs.org/en/  | JavaScript Runtime                        |
-| npm        | 6.x.x   | https://www.npmjs.com/  | Node Package Manager                      |
-| ng         | 6.x.x   | https://cli.angular.io/ | Angular CLI                               |
-| yarn       | latest  | https://yarnpkg.com/en/ | Package Manager (more efficient than npm) |
+- Node.js 8.12.0 (run `node -v` to verify)
+- npm 6.4.1 (run `npm -v` to verify)
+- Angular CLI 6.2.1 (run `npm ls -g @angular/cli --depth=0` to verify)
+- Yarn 1.10.1 or greater (run `yarn -v` to verify)
+- TSLint 5.11.0 or greater  (run `tslint -v` to verify)
+- TypeScript 2.3.4 (for webpack) (run `npm ls -g typescript --depth=0` to verify)
 
-_Note: This app also requires [bcgov/gcpe-lup-api](https://github.com/bcgov/gcpe-lup-api) to handle its requests and authentication._
+## Uninstall Older Node (if needed)
 
-## Install [Node + NPM](https://nodejs.org/en/)
+1. Uninstall all global packages: `npm uninstall -g <package>`
+1. Uninstall Node.js
+1. Delete `C:\Users\{user}\AppData\Roaming\npm`
+1. Delete `C:\Users\{user}\AppData\Roaming\npm-cache`
+1. Delete `C:\Users\{user}\AppData\Local\Temp\npm-*`
+1. Reboot
 
-_Note: Windows users can use [NVM Windows](https://github.com/coreybutler/nvm-windows) to install and manage multiple versions of Node+Npm._
+## Install [Node.js](https://nodejs.org/)
 
-## Install [Angular CLI](https://cli.angular.io/)
+Includes npm... Just use default settings.
 
-_Note: Use `@angular/cli`. Do not use `@angular/angular-cli`._
+## Install Packages
 
-```
-npm install -g @angular/cli
-```
+1. Install [Angular CLI](https://angular.io/): `npm i -g @angular/cli@6.2.1`
+1. Install [Yarn](https://yarnpkg.com/): `npm i -g yarn`
+1. Install [TSLint](https://palantir.github.io/tslint/): `npm i -g tslint`
+1. Install [TypeScript](https://www.npmjs.com/package/typescript) (needed for Webpack): `npm i -g typescript@'>=2.1.0 <2.4.0'`
 
-## Install [Yarn](https://yarnpkg.com/lang/en/docs/install/#alternatives-tab)
 
-```
-npm install -g yarn
-```
-
-# Build and Run
-
-## Dev
-1. Download dependencies
-```
-yarn install
-```
-2. Run the app
-```
-npm start
-```
-3. Go to http://localhost:4200 to verify that the application is running.
-
-    _Note: To change the default port edit `angular.json`._
-
-## Prod
-1. Download dependencies
-```
-yarn install
-```
-2. Run the build
-
-   The build artifacts will be stored in the `./dist/` directory.
-```
-npm run build
-```
-3. (Optional) Use the `--prod` flag to run the app in prod mode
-```
-ng serve --prod
-```
-
-# Linting and Formatting
-
-## Info
-
-Linting and formatting is handled by a combiation of `TSlint` and `Prettier`.  The reason for this, is that you get the best of both worlds: TSlint's larger selection of linting rules with Prettier's robust formatting rules.
-
-These 2 linters (tslint, Prettier) do have overlapping rules.  To avoid weird rule interactions, TSlint has been configured to defer any overlapping rules to Prettier, via the use of `tslint-config-prettier` in `tslint.json`.
-
-Recommend installing the [VSCode Prettier extension](https://github.com/prettier/prettier-vscode), so Prettier's formatting can be applied on-the-fly.
-
-### Technolgies used
-
-[TSLint](https://palantir.github.io/tslint/), [Prettier](https://prettier.io/), [Stylelint](https://stylelint.io/), [husky](https://www.npmjs.com/package/husky), [lint-staged](https://github.com/okonet/lint-staged)
-
-### Configuration files
-
-* TSlint: tslint.json
-* Prettier: .prettierrc .prettierignore
-* Stylelint: .styleintrc
-* Husky: package.json
-* lint-staged: package.json
-
-### Pre-Commit Hooks
-
-Package.json has been configured to use `husky`/`lint-staged` to run the `lint-fix` (linting + formatting) commands, against the files staged to be committed, whenever you perform a commit.  This ensures that all committed code has been linted and formatted correctly.
-
-If the linters or formatters find issues that cannot be automatically fixed, it will throw an error and provide output as to what is wrong.  Fix the issues and commit again.
-
-## Run Linters
-
-* Lint the `*.ts` files using `TSLint`.
-```
-npm run lint:ts
-```
-* Lint the `*.scss` files using `Stylelint`.
-```
-npm run lint:scss
-```
-* Run all linters in series
-```
-npm run lint
-```
-
-## Run Linters + Formatters
-
-_Note: In the worst case scenario, where linting/formatting has been neglected, then these `lint-fix` commands have the potential to create 100's of file changes.  In this case, it is recommended to only run these commands as part of a separate commit._
-
-_Note: Not all linting/formatting errors can be automatically fixed, and will require human intervention._
-
-* Lint and fix the `*.ts` files using `TSLint` + `Prettier`.
+## Verify the Installation
 
 ```
-npm run lint-fix:ts
-```
-* Lint and fix the `*.scss` files using `Stylelint`.
-```
-npm run lint-fix:scss
-```
-* Run all linters and fix all problems, in series
-```
-npm run lint-fix
+npm ls -g --depth=0
 ```
 
-# Testing
+# Fork, Build and Run
 
-## Info
+1. After installing Node and Yarn, you can fork or straight download a copy of this application to start your own app.
+1. First download all the dependencies with `yarn install`.
+1. Run `npm start` to start the webpack server to run the application on port 4200.
 
-### Technolgies used
+    Go to http://localhost:4200 to verify that the application is running.
 
-[Jasmine](https://jasmine.github.io/), [Karma](https://karma-runner.github.io/latest/index.html), [Protractor](http://www.protractortest.org/)
+    :bulb: To change the default port, open `.angular-cli.json`, change the value on `defaults.serve.port`.
+    
+1. Run `npm run build` to just build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build, like so: `ng serve --prod` to run in production mode.
+1. Run `npm run lint` to just lint your app code using TSLint.
 
-## Run Tests
-
-* Run the unit tests with `watch=true`
-
-```
-npm run tests
-```
-* Run the unit tests with `watch=false`
-```
-npm run tests-ci
-```
-* Run the end-to-end tests
-
-  Before running the tests make sure you are serving the app via `ng serve`.
-```
-npm run e2e
-```
-
-# Code Scaffolding Using Angular CLI
+## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
 
@@ -224,6 +124,19 @@ Generate a module called admin and add routing feature to it.
 ng g module admin --routing
 ```
 
+## Running Tests
+
+### Unit tests
+  
+Set up via Karma, Jasmine:
+1. Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+### End-to-end tests
+
+Set up with Protractor:
+1. Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+1. Before running the tests make sure you are serving the app via `ng serve`.
+
 ## Change aspects of the application
 
 ### Change style dialect
@@ -237,11 +150,16 @@ ng set default.styleExt css
 ```
 ng new my-app --routing --style scss
 ```
+## Getting Help
+
+1. To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+1. `ng doc component` to look up documentation for features.
+1. `ng serve --help` to look up doc for `ng serve` command.
 
 # OpenShift Build and Deployment
 
-For dev, test, and prod builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/gcpe-lup-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using nginx.
+For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/gcpe-lup-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using [nginx](https://www.nginx.com/).
 
 # How to Contribute
 
-Create pull requests against the `master` branch.
+Feel free to create pull requests from the default "master" branch, click here to create one automatically: <https://github.com/bcgov/gcpe-lup-admin/pull/new/master>

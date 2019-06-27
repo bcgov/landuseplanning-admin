@@ -4,7 +4,6 @@
   @include clearfix;
 
   padding: 0;
-  border-bottom: 4px solid $gold;
   background: $header-bg;
   color: $header-font-color;
   z-index: 1001;
@@ -16,10 +15,6 @@
     top: 0;
     left: 0;
     right: 0;
-    border-bottom-style: solid;
-    border-bottom-width: 0;
-    border-bottom-color: rgba(#5475a7, 0.4);
-    background-color: transparent;
     transition: all linear 0.2s;
   }
 
@@ -27,16 +22,14 @@
     @include flex(0 0 auto);
 
     position: relative;
-    border-bottom-width: 4px;
-    border-bottom-color: $gold;
     background: $header-bg;
     color: $header-font-color;
   }
 
   .app-header--solid {
-    border-bottom: 4px solid $gold;
     background: $header-bg;
     color: $header-font-color;
+    padding: 2px 0 6px;
   }
 }
 
@@ -93,6 +86,16 @@
 
   .navbar-nav {
     margin-top: 0.5rem;
+    span {
+      font-size: 1rem;
+      text-transform: none;
+      font-weight: normal;
+    }
+    @media screen and (max-width: 600px) {
+      .btn-group {
+        display: block;
+      }
+    }
 
     .nav-link {
       position: relative;
@@ -104,6 +107,11 @@
       font-size: $mn-font-size;
       font-weight: 700;
       cursor: pointer;
+      i {
+        margin-right: 4px;
+        margin-top: 3px;
+        font-size: 20px;
+      }
     }
 
     .dropdown {
@@ -240,20 +248,20 @@
 // Navbar Brand
 .navbar-brand {
   height: 3.4375rem;
-  background-image: url(/assets/images/bcgov-header-vert-SM.png);
+  background-image: url("/assets/images/bcgov-header-vert-SM.png");
   background-position: 8px center;
   background-repeat: no-repeat;
   white-space: normal;
 }
 
 .navbar-brand__title {
-  margin-top: 0.35rem;
+  margin-top: 0.78rem;
   margin-left: 75px;
   display: inline-block;
   color: #fff;
-  line-height: 1.2rem;
-  font-size: 1rem;
-
+  line-height: 1.1rem;
+  font-weight: 800;
+  font-size: 2rem;
   .wb {
     display: block;
   }
@@ -271,16 +279,16 @@
 @media (min-width: 1200px) {
   .navbar-brand {
     height: 4.2rem;
-    background-image: url(/assets/images/bcgov-header-vert-MD.png);
+    background-image: url("/assets/images/bcgov-header-vert-MD.png");
     background-position: 10px center;
   }
 
   .navbar-brand__title {
     margin-left: 88px;
-    margin-top: 0.65rem;
-    line-height: 1.4rem;
-    font-size: 1.2rem;
-    font-weight: 400;
+    line-height: 1.2rem;
+    font-weight: 800;
+    font-size: 3rem;
+    margin-top: 17px;
   }
 
   .navbar-brand__version {

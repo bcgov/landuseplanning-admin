@@ -1,0 +1,107 @@
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/projects']">All Projects</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><a
+        [routerLink]="['/p', currentProject._id, 'project-documents']">Documents</a></li>
+    <li class="breadcrumb-item">Edit Document(s)</li>
+  </ol>
+</nav>
+<main class="container-fluid-padding">
+  <label *ngIf="documents && documents.length > 1">You are editing the following files:</label>
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+
+  <ul class="list-group" *ngFor="let document of documents">
+    <li class="list-group-item">{{document.displayName || '-'}} ({{document.documentFileName}})</li>
+  </ul>
+
+  <div class="form-group mb-0 mt-4">
+    <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+      <div *ngIf="!multiEdit" class="form-row">
+        <div class="form-group col-md-12">
+          Publish?&nbsp;
+          <input type="checkbox" [checked]="isPublished" (click)="togglePublish()">
+        </div>
+      </div>
+      <div *ngIf="multiEdit" class="form-row">
+        <div class="col-md-12">
+          <div class="alert alert-warning" role="alert">
+            Leave the Document Date field <strong>BLANK</strong> unless you want to <strong>change the Document Date of ALL the selected documents.</strong> The same applies for the rest of the fields.
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label *ngIf="!multiEdit" for="doctypesel">Document Type*</label>
+          <label *ngIf="multiEdit" for="labelsel">Document Type</label>
+
+          <select [required]="!multiEdit"  class="form-control" formControlName="doctypesel">
+            <option *ngFor="let type of doctypes" [ngValue]="type._id">{{type.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label *ngIf="!multiEdit" for="authorsel">Author*</label>
+          <label *ngIf="multiEdit" for="labelsel">Author</label>
+
+          <select [required]="!multiEdit"  class="form-control" formControlName="authorsel">
+            <option *ngFor="let author of authors" [ngValue]="author._id">{{author.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+        <label *ngIf="!multiEdit" for="labelsel">Milestone*</label>
+        <label *ngIf="multiEdit" for="labelsel">Milestone</label>
+          <select [required]="!multiEdit"  class="form-control" formControlName="labelsel">
+            <option *ngFor="let label of labels" [ngValue]="label._id">{{label.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label *ngIf="!multiEdit" for="inputAddress">Document Date*</label>
+          <label *ngIf="multiEdit" for="labelsel">Document Date</label>
+          <div class="input-group">
+            <input [required]="!multiEdit" type="text" class="form-control" placeholder="yyyy-mm-dd" name="datePosted"
+              formControlName="datePosted" ngbDatepicker #datePostedPicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="datePostedPicker.toggle()"
+                type="button"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!multiEdit" class="form-row">
+        <div class="form-group col-md-12">
+          <label for="displayName">Document Name</label>
+          <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
+            \ / | : * ? " < > are not accepted file name characters
+          </div>
+          <textarea class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName" (ngModelChange)="validateChars()"></textarea>
+        </div>
+      </div>
+      <div *ngIf="!multiEdit" class="form-row">
+        <div class="form-group col-md-12">
+          <label for="inputDescription">Description</label>
+          <textarea class="form-control" id="inputDescription" name="description" rows="1" formControlName="description"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <div class="btn-group" role="group" aria-label="Action Buttons">
+    <div class="input-group-prepend">
+      <button class="btn btn-outline-primary mr-1" type="button" id="button-cl" (click)="goBack()"><i
+          class="material-icons">arrow_back</i>Back</button>
+    </div>
+    <div class="input-group-prepend">
+      <button [disabled]="!myForm.valid || docNameInvalid" (click)="save()" class="btn btn-outline-primary mr-1" type="submit"
+        id="button-cl"><i class="material-icons">save</i>Save</button>
+    </div>
+  </div>
+</main>

@@ -1,18 +1,19 @@
 @import "assets/styles/base/base.scss";
 
 .app-footer {
-  border-top: 4px solid $gold;
-  background: $footer-bg;
-  color: $footer-color;
+    background: $bg-dark;
+    border-top: none;
+    color: $footer-color;
+    position: relative;
+    .container {
+        padding: 0.5rem 1.5rem;
+    }
 
-  .container {
-    padding: 0.5rem 1.5rem;
-  }
-
-  ul {
-    padding: 0;
-    font-size: 0.875rem;
-    list-style-type: none;
+    ul {
+        padding: 0;
+        font-size: 0.875rem;
+        list-style-type: none;
+        text-align: center;
 
     li {
       margin-bottom: 0.25rem;
@@ -56,16 +57,6 @@
             display: none;
           }
         }
-      }
-    }
-  }
-}
-
-@media (min-width: 768px) {
-  .app-footer {
-    .footer-admin {
-      .gov-links {
-        text-align: left;
       }
     }
   }

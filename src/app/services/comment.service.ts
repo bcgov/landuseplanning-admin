@@ -1,204 +1,155 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, forkJoin } from 'rxjs';
-import { map, flatMap, mergeMap, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
 
 import { ApiService } from './api';
-import { CommentPeriodService } from './commentperiod.service';
-import { DocumentService } from './document.service';
 import { Comment } from 'app/models/comment';
-
-interface IGetParameters {
-  getDocuments?: boolean;
-}
+import { DocumentService } from './document.service';
+import { flatMap, mergeMap } from 'rxjs/operators';
+import { of, forkJoin } from 'rxjs';
 
 @Injectable()
 export class CommentService {
-  readonly accepted = 'Accepted';
-  readonly pending = 'Pending';
-  readonly rejected = 'Rejected';
+
+  public pendingCommentCount = 0;
+  public nextCommentId = null;
 
   constructor(
     private api: ApiService,
-    private commentPeriodService: CommentPeriodService,
     private documentService: DocumentService
-  ) {}
+  ) { }
+
 
   // get count of comments for the specified comment period id
   getCountByPeriodId(periodId: string): Observable<number> {
-    return this.api.getCountCommentsByPeriodId(periodId).pipe(catchError(error => this.api.handleError(error)));
+    return this.api.getCountCommentsByPeriodId(periodId)
+      .catch(error => this.api.handleError(error));
   }
 
-  // get all comments for the specified application id
-  // (including documents)
-  getAllByApplicationId(
-    appId: string,
-    pageNum: number = 0,
-    pageSize: number = 10,
-    sortBy: string = null,
-    params: IGetParameters = null
-  ): Observable<Comment[]> {
-    // first get the comment periods
-    return this.commentPeriodService.getAllByApplicationId(appId).pipe(
-      mergeMap(periods => {
-        if (periods && periods.length > 0) {
-          // get comments for first comment period only
-          // multiple comment periods are currently not supported
-          return this.getAllByPeriodId(periods[0]._id, pageNum, pageSize, sortBy, params);
-        }
-        return of([] as Comment[]);
-      }),
-      catchError(error => this.api.handleError(error))
-    );
-  }
+  getById(commentId: string, populateNextComment: boolean = false): Observable<Comment> {
+    return this.api.getComment(commentId, populateNextComment)
+      .pipe(
+        flatMap(res => {
+          this.pendingCommentCount = res.headers.get('x-pending-comment-count');
+          this.nextCommentId = res.headers.get('x-next-comment-id');
 
-  // get all comments for the specified comment period id
-  // (including documents)
-  getAllByPeriodId(
-    periodId: string,
-    pageNum: number = 0,
-    pageSize: number = 10,
-    sortBy: string = null,
-    params: IGetParameters = null
-  ): Observable<Comment[]> {
-    // first get just the comments
-    return this.api.getCommentsByPeriodId(periodId, pageNum, pageSize, sortBy).pipe(
-      map(res => {
-        if (res && res.length > 0) {
-          const comments: Comment[] = [];
-          res.forEach(comment => {
-            comments.push(new Comment(comment));
-          });
-          return comments;
-        }
-        return [];
-      }),
-      flatMap(comments => {
-        // now get the documents for each comment
-        if (params && params.getDocuments) {
-          const observables: Array<Observable<Comment>> = [];
-          comments.forEach(comment => {
-            observables.push(
-              this.documentService.getAllByCommentId(comment._id).pipe(
-                map(documents => {
-                  documents.forEach(doc => {
-                    comment.documents.push(doc);
-                  });
-                  return comment;
-                })
-              )
-            );
-          });
-          return forkJoin(observables);
-        }
-
-        return of(comments);
-      }),
-      catchError(error => this.api.handleError(error))
-    );
-  }
-
-  // get a specific comment by its id
-  // (including documents)
-  getById(commentId: string, params: IGetParameters = null): Observable<Comment> {
-    // first get the comment data
-    return this.api.getComment(commentId).pipe(
-      flatMap(comments => {
-        if (comments && comments.length > 0) {
-          // return the first (only) comment
-          const comment = new Comment(comments[0]);
-
-          // now get the documents for this comment
-          if (params && params.getDocuments) {
-            return this.documentService.getAllByCommentId(comment._id).pipe(
-              map(documents => {
-                documents.forEach(doc => {
-                  comment.documents.push(doc);
-                });
-                return comment;
-              })
-            );
+          let comments = res.body;
+          if (!comments || comments.length === 0) {
+            return of(null as Comment);
           }
+          // Safety check for null documents or an empty array of documents.
+          if (comments[0].documents === null || comments[0].documents && comments[0].documents.length === 0) {
+            return of(new Comment(comments[0]));
+          }
+          // now get the rest of the data for this project
+          return this._getExtraAppData(new Comment(comments[0]));
+        })
+      )
+      .catch(error => this.api.handleError(error));
+  }
 
-          return of(comment);
+  add(comment: Comment, documentForms: Array<FormData> = []): Observable<Comment> {
+    if (documentForms.length > 0) {
+      let observables = [];
+      documentForms.map(documentForm => {
+        observables.push(this.documentService.add(documentForm));
+      });
+      return forkJoin(observables)
+        .pipe(
+          mergeMap(payload => {
+            payload.map((document: any) => {
+              comment.documents.push(document._id);
+            });
+            return this.api.addComment(comment);
+          })
+        );
+    } else {
+      return this.api.addComment(comment)
+        .catch(error => this.api.handleError(error));
+    }
+  }
+
+  save(comment: Comment): Observable<Comment> {
+    if (comment.documentsList && comment.documentsList.length > 0) {
+      // Update documents publish status.
+      let observables = [];
+      comment.documentsList.map(document => {
+        if (document.eaoStatus === 'Published') {
+          observables.push(this.documentService.publish(document._id));
+        } else if (document.eaoStatus === 'Rejected') {
+          observables.push(this.documentService.unPublish(document._id));
         }
-        return of(null as Comment);
-      }),
-      catchError(error => this.api.handleError(error))
-    );
-  }
+      });
+      comment.documentsList = null;
+      const newComment = _.cloneDeep(comment);
+      observables.push(this.api.saveComment(newComment));
+      return forkJoin(observables)
+        .pipe(
+          flatMap((payloads: any) => {
+            return of(payloads.pop());
+          })
+        );
 
-  add(orig: Comment): Observable<Comment> {
-    // make a (deep) copy of the passed-in comment so we don't change it
-    const comment = _.cloneDeep(orig);
+    } else {
+      // So we don't send this to API.
+      comment.documentsList = null;
 
-    // ID must not exist on POST
-    delete comment._id;
+      // make a (deep) copy of the passed-in comment so we don't change it
+      const newComment = _.cloneDeep(comment);
 
-    // don't send documents
-    delete comment.documents;
-
-    // replace newlines with \\n (JSON format)
-    if (comment.comment) {
-      comment.comment = comment.comment.replace(/\n/g, '\\n');
+      return this.api.saveComment(newComment)
+        .catch(error => this.api.handleError(error));
     }
-    if (comment.review && comment.review.reviewerNotes) {
-      comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\n/g, '\\n');
-    }
-
-    return this.api.addComment(comment).pipe(catchError(error => this.api.handleError(error)));
-  }
-
-  save(orig: Comment): Observable<Comment> {
-    // make a (deep) copy of the passed-in comment so we don't change it
-    const comment = _.cloneDeep(orig);
-
-    // don't send documents
-    delete comment.documents;
-
-    // replace newlines with \\n (JSON format)
-    if (comment.comment) {
-      comment.comment = comment.comment.replace(/\n/g, '\\n');
-    }
-    if (comment.review && comment.review.reviewerNotes) {
-      comment.review.reviewerNotes = comment.review.reviewerNotes.replace(/\n/g, '\\n');
-    }
-
-    return this.api.saveComment(comment).pipe(catchError(error => this.api.handleError(error)));
   }
 
   publish(comment: Comment): Observable<Comment> {
-    return this.api.publishComment(comment).pipe(catchError(error => this.api.handleError(error)));
+    return this.api.updateCommentStatus(comment, 'Published')
+      .catch(error => this.api.handleError(error));
   }
 
-  unPublish(comment: Comment): Observable<Comment> {
-    return this.api.unPublishComment(comment).pipe(catchError(error => this.api.handleError(error)));
+  defer(comment: Comment): Observable<Comment> {
+    return this.api.updateCommentStatus(comment, 'Deferred')
+      .catch(error => this.api.handleError(error));
   }
 
-  isAccepted(comment: Comment): boolean {
-    return comment && comment.commentStatus && comment.commentStatus.toLowerCase() === this.accepted.toLowerCase();
+  reject(comment: Comment): Observable<Comment> {
+    return this.api.updateCommentStatus(comment, 'Rejected')
+      .catch(error => this.api.handleError(error));
   }
 
-  isPending(comment: Comment): boolean {
-    return comment && comment.commentStatus && comment.commentStatus.toLowerCase() === this.pending.toLowerCase();
+  removeStatus(comment: Comment): Observable<Comment> {
+    return this.api.updateCommentStatus(comment, 'Reset')
+      .catch(error => this.api.handleError(error));
   }
 
-  isRejected(comment: Comment): boolean {
-    return comment && comment.commentStatus && comment.commentStatus.toLowerCase() === this.rejected.toLowerCase();
+  // get all comments for the specified comment period id
+  getByPeriodId(periodId: string, pageNum: number = null, pageSize: number = null, sortBy: string = '', count: boolean = true, filter: Object = {}): Observable<Object> {
+    return this.api.getCommentsByPeriodId(periodId, pageNum, pageSize, sortBy, count, filter)
+      .map((res: any) => {
+        if (res) {
+          const comments: Array<Comment> = [];
+          if (!res || res.length === 0) {
+            return { totalCount: 0, data: [] };
+          }
+          res[0].results.forEach(c => {
+            comments.push(new Comment(c));
+          });
+          return { totalCount: res[0].total_items, data: comments };
+        }
+        return {};
+      })
+      .catch(error => this.api.handleError(error));
   }
 
-  doAccept(comment: Comment): Comment {
-    comment.commentStatus = this.accepted;
-    return comment;
-  }
-
-  doPending(comment: Comment): Comment {
-    comment.commentStatus = this.pending;
-    return comment;
-  }
-
-  doReject(comment: Comment): Comment {
-    comment.commentStatus = this.rejected;
-    return comment;
+  private _getExtraAppData(comment: Comment): Observable<Comment> {
+    return forkJoin(
+      this.documentService.getByMultiId(comment.documents)
+    ).map(payloads => {
+      comment.documentsList = payloads[0];
+      return comment;
+    });
   }
 }

@@ -7,57 +7,25 @@ import { Document } from 'app/models/document';
 
 @Injectable()
 export class DocumentService {
-  constructor(private api: ApiService) {}
+  // private currentState: any;
 
-  // get all documents for the specified application id
-  getAllByApplicationId(id: string): Observable<Document[]> {
-    return this.api.getDocumentsByAppId(id).pipe(
-      map(res => {
-        if (res && res.length > 0) {
-          const documents: Document[] = [];
-          res.forEach(doc => {
-            documents.push(new Document(doc));
-          });
-          return documents;
-        }
-        return [];
-      }),
-      catchError(error => this.api.handleError(error))
-    );
-  }
+  constructor(private api: ApiService) { }
 
-  // get all documents for the specified comment id
-  getAllByCommentId(commentId: string): Observable<Document[]> {
-    return this.api.getDocumentsByCommentId(commentId).pipe(
-      map(res => {
+  // get a specific document by its id
+  getByMultiId(ids: Array<String>): Observable<Array<Document>> {
+    return this.api.getDocumentsByMultiId(ids)
+      .map(res => {
         if (res && res.length > 0) {
-          const documents: Document[] = [];
+          // return the first (only) document
+          let docs = [];
           res.forEach(doc => {
-            documents.push(new Document(doc));
+            docs.push(new Document(doc));
           });
-          return documents;
+          return docs;
         }
-        return [];
-      }),
-      catchError(error => this.api.handleError(error))
-    );
-  }
-
-  // get all documents for the specified decision id
-  getAllByDecisionId(decisionId: string): Observable<Document[]> {
-    return this.api.getDocumentsByDecisionId(decisionId).pipe(
-      map(res => {
-        if (res && res.length > 0) {
-          const documents: Document[] = [];
-          res.forEach(doc => {
-            documents.push(new Document(doc));
-          });
-          return documents;
-        }
-        return [];
-      }),
-      catchError(error => this.api.handleError(error))
-    );
+        return null;
+      })
+      .catch(error => this.api.handleError(error));
   }
 
   // get a specific document by its id
@@ -78,15 +46,22 @@ export class DocumentService {
     return this.api.uploadDocument(formData).pipe(catchError(error => this.api.handleError(error)));
   }
 
+  update(formData: FormData, _id: any): Observable<Document> {
+    return this.api.updateDocument(formData, _id)
+      .catch(error => this.api.handleError(error));
+  }
+
   delete(document: Document): Observable<Document> {
     return this.api.deleteDocument(document).pipe(catchError(error => this.api.handleError(error)));
   }
 
-  publish(document: Document): Observable<Document> {
-    return this.api.publishDocument(document).pipe(catchError(error => this.api.handleError(error)));
+  publish(docId: string): Observable<Document> {
+    return this.api.publishDocument(docId)
+      .catch(error => this.api.handleError(error));
   }
 
-  unPublish(document: Document): Observable<Document> {
-    return this.api.unPublishDocument(document).pipe(catchError(error => this.api.handleError(error)));
+  unPublish(docId: string): Observable<Document> {
+    return this.api.unPublishDocument(docId)
+      .catch(error => this.api.handleError(error));
   }
 }

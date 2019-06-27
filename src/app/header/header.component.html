@@ -1,28 +1,39 @@
 <header class="app-header app-header--solid" id="header">
-  <nav class="navbar navbar-expand-md justify-content-between">
-    <a class="navbar-brand" title="Applications, Comments & Reasons for Decision" routerLink="/home">
-      <span class="navbar-brand__title">Land Use Planning <span class="wb"><span class="amp">&</span> Modernization</span></span>
-    </a>
-    <button class="navbar-toggler" type="button" title="Toggle Main Navigation"
-      aria-controls="navbarText" 
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-      (click)="toggleNav()">
-      <i class="material-icons">menu</i>
-      <span>MENU</span>
-    </button>
+    <nav class="navbar navbar-expand-md justify-content-between">
+        <a class="navbar-brand" title="Land Use Planning Modernization" routerLink="/home">
+          <span class="navbar-brand__title">Land Use Planning Modernization</span>
+        </a>
+        <button class="navbar-toggler" type="button" title="Toggle Main Navigation"
+          data-toggle="collapse"
+          data-target="#mainNav"
+          aria-controls="navbarText"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+          (click)="toggleNav()">
+          <i class="material-icons">menu</i>
+          <span>MENU</span>
+        </button>
     <div class="navbar-collapse" [@toggleNav]="isNavMenuOpen ? 'navOpen' : 'navClosed'" id="mainNav">
       <ul class="navbar-nav">
+          <li *ngIf="jwt" class="nav-item">
+            <div class="btn-group">
+              <a class="nav-link" routerLink="/search" title="Search" tabindex="0">
+                <span class="align-middle"><i class="material-icons">search</i></span>
+                <span class="align-middle">Search</span>
+              </a>
+            </div>
+          </li>
         <li *ngIf="jwt" class="nav-item">
-          <a class="nav-link" routerLink="/search" title="Search Tantalis for applications" tabindex="0">
-            <span>Find Applications</span>
-          </a>
+            <a class="nav-link" (click)="openCalculator()" title="Open Calculator" tabindex="0">
+                <span class="align-middle"><i class="material-icons">dialpad</i></span>
+                <span class="align-middle">Calculator</span>
+            </a>
         </li>
-
         <!-- LOGGED IN -->
         <li *ngIf="jwt; else loggedOut" class="nav-item" placement="bottom-right">
           <a class="nav-link" id="welcome" tabindex="0">
-            <span>{{welcomeMsg}}</span>
+            <span class="align-middle"><i class="material-icons">person</i></span>
+            <span class="align-middle">{{welcomeMsg}}</span>
           </a>
         </li>
 
