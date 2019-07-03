@@ -26,6 +26,7 @@ export class Project {
   // Everything else
   addedBy: String;
   build: String;
+  nature: String;
   CEAALink: String;
   code: String;
   commodity: String;
@@ -110,6 +111,7 @@ export class Project {
     this.addedBy             = obj && obj.addedBy             || undefined;
     this.intake              = obj && obj.intake              || undefined;
     this.build               = obj && obj.build               || undefined;
+    this.nature               = obj && obj.nature               || undefined;    // readonly view on build
     this.activeStatus = obj && obj.activeStatus || undefined;
 
     this.eaDecision           = obj && obj.eaDecision               || undefined;
