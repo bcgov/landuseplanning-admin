@@ -19,19 +19,13 @@ import { CommentStatsComponent } from './components/comment-stats/comment-stats.
 import { ListConverterPipe } from './pipes/list-converter.pipe';
 import { OrgNamePipe } from './pipes/org-name.pipe';
 import { Utils } from './utils/utils';
-import { ContactSelectComponent } from './components/contact-select/contact-select.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <== add the imports!
-import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
-    RouterModule,
     BrowserModule,
     MatSlideToggleModule,
     MatSnackBarModule,
     NgxPaginationModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatMenuModule
   ],
   declarations: [
@@ -46,8 +40,7 @@ import { RouterModule } from '@angular/router';
     TableTemplateComponent,
     TableDirective,
     ListConverterPipe,
-    OrgNamePipe,
-    ContactSelectComponent
+    OrgNamePipe
   ],
   exports: [
     MatSlideToggleModule,
@@ -59,7 +52,6 @@ import { RouterModule } from '@angular/router';
     CommentStatsComponent,
     DropdownTemplateComponent,
     FileUploadComponent,
-    ContactSelectComponent,
     TableTemplateComponent,
     NgxPaginationModule,
     ListConverterPipe,
