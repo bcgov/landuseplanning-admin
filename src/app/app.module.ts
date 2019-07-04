@@ -63,8 +63,6 @@ import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-
 import { RecentActivityService } from './services/recent-activity';
 import { SearchHelpComponent } from './search-help/search-help.component';
 import { ActivityDetailTableRowsComponent } from './activity/activity-detail-table-rows/activity-detail-table-rows.component';
-import { PinsTableRowsComponent } from './project/pins-list/pins-table-rows/pins-table-rows.component';
-import { GroupsTableRowsComponent } from './project/project-groups/project-groups-table-rows/project-groups-table-rows.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -93,7 +91,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     ActivityComponent,
     ContactsComponent,
     UserTableRowsComponent,
-    PinsTableRowsComponent,
     ActivityTableRowsComponent,
     ActivityDetailTableRowsComponent,
     AddEditActivityComponent,
@@ -151,9 +148,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AddEditTopicComponent,
     AddEditActivityComponent,
     TopicTableRowsComponent,
-    GroupsTableRowsComponent,
     UserTableRowsComponent,
-    PinsTableRowsComponent,
     ActivityTableRowsComponent,
     ActivityDetailTableRowsComponent
   ],
