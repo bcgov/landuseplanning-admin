@@ -59,6 +59,17 @@ export class DocumentEditComponent implements OnInit {
           break;
       }
     });
+
+    // This code reorders the document type list defined by EAO (See Jira Ticket EAGLE-88)
+    let copy_doctype = this.doctypes;
+    this.doctypes = [];
+    // This order was created by mapping the doctype items from the database with the EAO defined ordered list
+    let doclist_order = [0, 1, 2, 8, 7, 9, 3, 17, 18, 19, 4, 5, 20, 10, 6, 12, 11, 13, 14, 15, 16];
+    // We map the doctypes to put in the correct order as defined in doclist_order
+    doclist_order.map((item, i) => {
+          this.doctypes[i] = copy_doctype[item];
+    });
+
     // Check if documents are null (nav straight to this page)
     if (!this.documents || this.documents.length === 0) {
       this.router.navigate(['p', this.currentProject._id, 'project-documents']);

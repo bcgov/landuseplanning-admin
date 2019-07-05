@@ -213,6 +213,10 @@ export class ApiService {
       'projectStatusDate',
       'activeDate',
       'updatedBy',
+      'projLead',
+      'execProjectDirector',
+      'complianceLead',
+      'pins',
       'read',
       'write',
       'delete'
@@ -253,6 +257,24 @@ export class ApiService {
   deleteProject(proj: Project): Observable<Project> {
     const queryString = `project/${proj._id}`;
     return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  addPinsToProject(proj: Project, pins: any): Observable<Project> {
+    const queryString = `project/${proj._id}/pin`;
+    return this.http.post<Project>(`${this.pathAPI}/${queryString}`, pins, {});
+  }
+
+  deletePin(projId: string, pinId: string): Observable<Project> {
+    const queryString = `project/${projId}/pin/${pinId}`;
+    return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getProjectPins(id: string, pageNum: number, pageSize: number, sortBy: any): Observable<Org> {
+    let queryString = `project/${id}/pin`;
+    if (pageNum !== null) { queryString += `?pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    return this.http.get<any>(`${this.pathAPI}/${queryString}`, {});
   }
 
   saveProject(proj: Project): Observable<Project> {
@@ -651,12 +673,12 @@ export class ApiService {
       'documentFileName',
       'labels',
       'internalOriginalName',
+      'internalSize',
       'displayName',
       'documentType',
       'datePosted',
       'dateUploaded',
       'dateReceived',
-      'documentFileSize',
       'documentSource',
       'internalURL',
       'internalMime',
@@ -684,10 +706,10 @@ export class ApiService {
       'datePosted',
       'dateUploaded',
       'dateReceived',
-      'documentFileSize',
       'documentSource',
       'internalURL',
       'internalMime',
+      'internalSize',
       'checkbox',
       'project',
       'type',
@@ -854,7 +876,7 @@ export class ApiService {
   //
   // Searching
   //
-  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier = null, populate = false): Observable<SearchResults[]> {
+  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier: object = {}, populate = false, filter = {}): Observable<SearchResults[]> {
     let queryString = `search?dataset=${dataset}`;
     if (fields && fields.length > 0) {
       fields.map(item => {
@@ -868,8 +890,19 @@ export class ApiService {
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (populate !== null) { queryString += `&populate=${populate}`; }
-    if (queryModifier !== null) {
-      queryString += `&query` + queryModifier;
+    if (queryModifier !== {}) {
+      Object.keys(queryModifier).map(key => {
+        queryModifier[key].split(',').map(item => {
+          queryString += `&and[${key}]=${item}`;
+        });
+      });
+    }
+    if (filter !== {}) {
+      Object.keys(filter).map(key => {
+        filter[key].split(',').map(item => {
+          queryString += `&or[${key}]=${item}`;
+        });
+      });
     }
     queryString += `&fields=${this.buildValues(fields)}`;
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
@@ -923,6 +956,20 @@ export class ApiService {
     const fields = ['displayName', 'username', 'firstName', 'lastName'];
     const queryString = `user?fields=${this.buildValues(fields)}`;
     return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getUser(id: any): Observable<User> {
+    const fields = [
+      'displayName',
+      'username',
+      'firstName',
+      'lastName',
+      'org',
+      'phoneNumber',
+      'email',
+    ];
+    const queryString = `user/${id}?fields=${this.buildValues(fields)}`;
+    return this.http.get<User>(`${this.pathAPI}/${queryString}`, {});
   }
 
   saveUser(user: User): Observable<User> {

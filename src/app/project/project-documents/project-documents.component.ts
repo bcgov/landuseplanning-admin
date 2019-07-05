@@ -106,6 +106,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       this.tableParams.keywords = decodeURIComponent(this.tableParams.keywords);
     }
     this.currentProject = this.storageService.state.currentProject.data;
+    this.storageService.state.labels = null;
     this._changeDetectionRef.detectChanges();
 
     this.route.data
@@ -324,6 +325,32 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       );
   }
 
+  public onNumItems(numItems) {
+    // dismiss any open snackbar
+    // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
+
+    // NOTE: Angular Router doesn't reload page on same URL
+    // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
+    // WORKAROUND: add timestamp to force URL to be different than last time
+    const encode = encodeURIComponent;
+    window['encodeURIComponent'] = (component: string) => {
+      return encode(component).replace(/[!'()*]/g, (c) => {
+        // Also encode !, ', (, ), and *
+        return '%' + c.charCodeAt(0).toString(16);
+      });
+    };
+
+    const params = this.terms.getParams();
+    params['ms'] = new Date().getMilliseconds();
+    params['dataset'] = this.terms.dataset;
+    params['currentPage'] = this.tableParams.currentPage = 1;
+    params['sortBy'] = this.tableParams.sortBy;
+    params['keywords'] = this.tableParams.keywords;
+    numItems === 'max' ? params['pageSize'] = this.tableParams.pageSize = this.tableParams.totalListItems : params['pageSize'] = this.tableParams.pageSize = numItems;
+
+    this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
+  }
+
   public onSubmit() {
     // dismiss any open snackbar
     // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
@@ -440,7 +467,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       pageNumber,
       this.tableParams.pageSize,
       this.tableParams.sortBy,
-      '[documentSource]=PROJECT',
+      { documentSource: 'PROJECT' },
       true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {

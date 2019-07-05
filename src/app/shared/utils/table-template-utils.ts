@@ -18,17 +18,25 @@ export class TableTemplateUtils {
     currentUrl += `;currentPage=${currentPage};pageSize=${pageSize}`;
     if (keywords !== '') { currentUrl += `;keywords=${keywords}`; }
     if (sortString !== '' && sortString !== null) { currentUrl += `;sortBy=${sortString}`; }
-    if (filter !== null) {
+    if (filter !== null && filter !== {}) {
       Object.keys(filter).forEach(key => {
-        currentUrl += `;${key}=${filter[key]}`;
+        if (filter[key] === true || filter[key] === false) {
+          currentUrl += `;${key}=${filter[key]}`;
+        } else {
+          currentUrl += `;${key}=`;
+          filter[key].split(',').forEach(item => {
+            currentUrl += `${item},`;
+          });
+          currentUrl = currentUrl.slice(0, -1);
+        }
       });
     }
     currentUrl += ';ms=' + new Date().getTime();
     window.history.replaceState({}, '', currentUrl);
   }
 
-  public getParamsFromUrl(params, filter = null) {
-    let pageSize = params.pageSize || Constants.tableDefaults.DEFAULT_PAGE_SIZE;
+  public getParamsFromUrl(params, filter = null, defaultPageSize = null) {
+    let pageSize = params.pageSize || defaultPageSize ? defaultPageSize : Constants.tableDefaults.DEFAULT_PAGE_SIZE;
     let currentPage = params.currentPage ? params.currentPage : Constants.tableDefaults.DEFAULT_CURRENT_PAGE;
     let sortBy = params.sortBy ? params.sortBy : Constants.tableDefaults.DEFAULT_SORT_BY;
     let keywords = params.keywords ? params.keywords : Constants.tableDefaults.DEFAULT_KEYWORDS;

@@ -160,6 +160,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       pageNumber,
       this.tableParams.pageSize,
       this.tableParams.sortBy,
+      {}
     )
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
@@ -191,7 +192,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     params['dataset'] = this.terms.dataset;
     params['currentPage'] = this.tableParams.currentPage = 1;
     params['sortBy'] = this.tableParams.sortBy = '';
-    params['keywords'] = this.tableParams.keywords = this.tableParams.keywords;
+    params['keywords'] = this.tableParams.keywords;
     params['pageSize'] = this.tableParams.pageSize = 10;
     this.router.navigate(['projects', params]);
   }
