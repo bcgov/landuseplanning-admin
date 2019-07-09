@@ -11,11 +11,7 @@
 </nav>
 
 <div class="container-fluid-padding">
-  <div *ngIf="!loading && tableParams.totalListItems === 0">
-    No project groups found.
-  </div>
-
-  <div *ngIf="!loading && tableParams.totalListItems !== 0">
+  <div>
     <div class='input-group-prepend'>
       <button (click)="selectAction('selectAll')" class="btn btn-outline-secondary mr-1" type="button" id="button-sa"><i
           class="material-icons">select_all</i>Select
@@ -36,6 +32,10 @@
     </div>
   </div>
   <br>
+
+  <div *ngIf="!loading && tableParams.totalListItems === 0">
+    No project groups found.
+  </div>
 
   <app-table-template
     *ngIf="!loading && tableParams.totalListItems != 0"
