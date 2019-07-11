@@ -68,16 +68,16 @@
       </div>
       <div class="label-pair">
         <label for="organizations">Organization* </label>
-        <div *ngIf="!contactOrganization">
+        <div *ngIf="contactOrganizationName === '' || contactOrganizationName == null">
           <button class="btn btn-primary" type="button" (click)="addOrganization()">Add Organization</button>
         </div>
-        <div *ngIf="contactOrganization">
+        <div *ngIf="contactOrganizationName !== '' && contactOrganizationName">
           <span class="cell icon">
             <i class="material-icons">business</i>
           </span>
           &nbsp;
-          <span class="cell name" [title]="contactOrganization.name || ''">
-            <span class="cell__txt-content">{{contactOrganization.name}}</span>
+          <span class="cell name" [title]="contactOrganizationName || ''">
+            <span class="cell__txt-content">{{contactOrganizationName}}</span>
           </span>
           <span class="cell actions">
             <button class="btn btn-icon" type="button" title="Delete this organization" (click)="removeSelectedOrg()">

@@ -29,8 +29,9 @@ export class AddEditContactComponent implements OnInit {
   public isEditing = false;
   public loading = false;
   public phonePattern;
-  public contactOrganization = null;
+  public contactOrganizationName = '';
   public contactId = '';
+  public contact = null;
 
 
   public tinyMceSettings = {
@@ -45,7 +46,6 @@ export class AddEditContactComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private searchService: SearchService,
     private storageService: StorageService,
     private userService: UserService
   ) { }
@@ -56,8 +56,8 @@ export class AddEditContactComponent implements OnInit {
       .subscribe(res => {
         let org = '';
         if (this.storageService.state.selectedOrganization) {
-          this.contactOrganization = this.storageService.state.selectedOrganization;
-          org = this.contactOrganization._id;
+          this.contactOrganizationName = this.storageService.state.selectedOrganization.name;
+          org = this.storageService.state.selectedOrganization._id;
         }
 
         this.isEditing = Object.keys(res).length === 0 && res.constructor === Object ? false : true;
@@ -86,12 +86,11 @@ export class AddEditContactComponent implements OnInit {
               'notes': ''
             });
           } else {
-            this.contactId = res.contact.data._id;
-            this.searchService.getItem(res.contact.data.org, 'Organization').subscribe(res2 => {
-              this.contactOrganization = res2.data;
-            });
             if (org !== '') {
               res.contact.data.org = org;
+              res.contact.data.orgName = this.contactOrganizationName;
+            } else {
+              this.contactOrganizationName = res.contact.data.orgName;
             }
             this.buildForm(res.contact.data);
           }
@@ -154,6 +153,7 @@ export class AddEditContactComponent implements OnInit {
       displayName: `${this.contactForm.controls.firstName.value} ${this.contactForm.controls.middleName.value} ${this.contactForm.controls.lastName.value}`,
       email: this.contactForm.controls.email.value,
       org: this.contactForm.controls.org.value,
+      orgName: this.contactOrganizationName,
       title: this.contactForm.controls.title.value,
       phoneNumber: this.contactForm.controls.phoneNumber.value,
       salutation: this.contactForm.controls.salutation.value,
@@ -195,7 +195,7 @@ export class AddEditContactComponent implements OnInit {
   }
 
   public removeSelectedOrg() {
-    this.contactOrganization = null;
+    this.contactOrganizationName = '';
     this.contactForm.controls.org.setValue('');
   }
 
