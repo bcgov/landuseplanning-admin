@@ -9,30 +9,31 @@ import { Router } from '@angular/router';
   styleUrls: ['./group-table-rows.component.scss']
 })
 export class GroupTableRowsComponent implements OnInit {
-    @Input() data: TableObject;
-    @Output() selectedCount: EventEmitter<any> = new EventEmitter();
+  @Input() data: TableObject;
+  @Output() selectedCount: EventEmitter<any> = new EventEmitter();
 
-    public contacts: any;
-    public paginationData: any;
+  public contacts: any;
+  public paginationData: any;
 
-    constructor(
-        private router: Router
-    ) { }
+  constructor(
+    private router: Router
+  ) { }
 
-    ngOnInit() {
-        this.contacts = this.data.data;
-        this.paginationData = this.data.paginationData;
-    }
+  ngOnInit() {
+    this.contacts = this.data.data;
+    console.log(this.contacts);
+    this.paginationData = this.data.paginationData;
+  }
 
-    selectItem(item) {
-      item.checkbox = !item.checkbox;
+  selectItem(item) {
+    item.checkbox = !item.checkbox;
 
-      let count = 0;
-      this.contacts.map(row => {
-        if (row.checkbox === true) {
-          count++;
-        }
-      });
-      this.selectedCount.emit(count);
-    }
+    let count = 0;
+    this.contacts.map(row => {
+      if (row.checkbox === true) {
+        count++;
+      }
+    });
+    this.selectedCount.emit(count);
+  }
 }
