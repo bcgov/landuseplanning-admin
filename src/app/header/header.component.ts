@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Browser Incompatible',
-        message: '<strong>  Attention: </strong>This website is not supported by Internet Explorer and Microsoft Edge. Please use another browser.'
+        message: '<strong>  Attention: </strong>This website is not supported by Internet Explorer and Microsoft Edge, please use Google Chrome or Firefox.'
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       });
