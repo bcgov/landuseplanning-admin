@@ -38,12 +38,22 @@ export class GroupContactComponent implements OnInit, OnDestroy {
     {
       name: 'Name',
       value: 'displayName',
-      width: 'col-4'
+      width: 'col-3'
+    },
+    {
+      name: 'Organization',
+      value: 'orgName',
+      width: 'col-3'
     },
     {
       name: 'Email',
       value: 'email',
-      width: 'col-7'
+      width: 'col-3'
+    },
+    {
+      name: 'Phone Number',
+      value: 'phoneNumber',
+      width: 'col-2'
     }
   ];
 
@@ -179,19 +189,19 @@ export class GroupContactComponent implements OnInit, OnDestroy {
     });
     // Add all the filtered new items.
     component.projectService.addGroupMembers(component.currentProject, component.groupId, filteredMembers)
-    // .takeUntil(component.ngUnsubscribe)
-    .subscribe(
-      () => { // onCompleted
-        // this.loading = false;
-        // this.router.navigated = false;
-        // this.openSnackBar('This project was created successfuly.', 'Close');
-        component.router.navigate(['/p', component.currentProject._id, 'project-groups', 'g', component.groupId, 'members']);
-      },
-      error => {
-        console.log('error =', error);
-        alert('Uh-oh, couldn\'t edit project');
-      },
-    );
+      // .takeUntil(component.ngUnsubscribe)
+      .subscribe(
+        () => { // onCompleted
+          // this.loading = false;
+          // this.router.navigated = false;
+          // this.openSnackBar('This project was created successfuly.', 'Close');
+          component.router.navigate(['/p', component.currentProject._id, 'project-groups', 'g', component.groupId, 'members']);
+        },
+        error => {
+          console.log('error =', error);
+          alert('Uh-oh, couldn\'t edit project');
+        },
+      );
   }
 
   deleteItems() {
