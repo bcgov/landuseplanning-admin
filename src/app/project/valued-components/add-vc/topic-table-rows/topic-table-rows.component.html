@@ -1,0 +1,15 @@
+<tr
+  *ngFor="let topic of topics | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
+  class="clickable-row" (click)="selectItem(topic)" >
+  <td data-label="Select" scope="row" class="col-1">
+    <input type="checkbox" aria-label="Checkbox for row item" [(ngModel)]='topic.checkbox'>
+  </td>
+  <td data-label="Name" scope="row" class="col-3">{{topic.name}}</td>
+  <td data-label="Description" scope="row" class="col-5">{{topic.description}}</td>
+  <td data-label="Type" scope="row" class="col-2">{{topic.type}}</td>
+  <td data-label="Pillar" scope="row" class="col-2">{{topic.pillar}}</td>
+  <td data-label="Parent" scope="row" class="col-2">{{topic.parent}}</td>
+  <!-- <td>
+            <button type="button" (click)="deleteVC(topic)" class="btn btn-danger">Delete</button>
+        </td> -->
+</tr>

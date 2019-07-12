@@ -2,21 +2,27 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 // import { Params } from '@angular/router';
 // import { JwtHelperService } from '@auth0/angular-jwt';
-// import { Observable } from 'rxjs';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
+import { throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { KeycloakService } from 'app/services/keycloak.service';
 
-import { Application } from 'app/models/application';
+import { Project } from 'app/models/project';
 import { Comment } from 'app/models/comment';
-import { CommentPeriod } from 'app/models/commentperiod';
+import { CommentPeriod } from 'app/models/commentPeriod';
 import { Decision } from 'app/models/decision';
 import { Document } from 'app/models/document';
-import { Feature } from 'app/models/feature';
+// import { Feature } from 'app/models/recentActivity';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
+import { Topic } from 'app/models/topic';
+import { Org } from 'app/models/org';
+import { RecentActivity } from 'app/models/recentActivity';
+import { ValuedComponent } from 'app/models/valuedComponent';
+import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
 
 interface ILocalLoginResponse {
   _id: string;
@@ -27,6 +33,14 @@ interface ILocalLoginResponse {
   state: boolean;
   accessToken: string;
 }
+
+const encode = encodeURIComponent;
+window['encodeURIComponent'] = (component: string) => {
+  return encode(component).replace(/[!'()*]/g, (c) => {
+    // Also encode !, ', (, ), and *
+    return '%' + c.charCodeAt(0).toString(16);
+  });
+};
 
 @Injectable()
 export class ApiService {
@@ -51,57 +65,33 @@ export class ApiService {
         this.env = 'local';
         break;
 
-      case 'nrts-prc-dev.pathfinder.gov.bc.ca':
-        // Dev
-        this.pathAPI = 'https://nrts-prc-dev.pathfinder.gov.bc.ca/api';
+      case 'gcpe-lup-dev.pathfinder.gov.bc.ca':
+        // Prod
+        this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
         break;
 
-      case 'nrts-prc-test.pathfinder.gov.bc.ca':
+      case 'gcpe-lup-test.pathfinder.gov.bc.ca':
         // Test
-        this.pathAPI = 'https://nrts-prc-test.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://gcpe-lup-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
-      case 'nrts-prc-demo.pathfinder.gov.bc.ca':
-        // Demo
-        this.pathAPI = 'https://nrts-prc-demo.pathfinder.gov.bc.ca/api';
-        this.env = 'demo';
-        break;
-
-      case 'nrts-prc-scale.pathfinder.gov.bc.ca':
-        // Scale
-        this.pathAPI = 'https://nrts-prc-scale.pathfinder.gov.bc.ca/api';
-        this.env = 'scale';
-        break;
-
-      case 'nrts-prc-beta.pathfinder.gov.bc.ca':
-        // Beta
-        this.pathAPI = 'https://nrts-prc-beta.pathfinder.gov.bc.ca/api';
-        this.env = 'beta';
-        break;
-
-      case 'nrts-prc-master.pathfinder.gov.bc.ca':
-        // Master
-        this.pathAPI = 'https://nrts-prc-master.pathfinder.gov.bc.ca/api';
-        this.env = 'master';
+      case 'landuseplanning.gov.bc.ca':
+        // Prod
+        this.pathAPI = 'https://gcpe-lup-prod.pathfinder.gov.bc.ca/api';
+        this.env = 'prod';
         break;
 
       default:
-        // Prod
-        this.pathAPI = 'https://comment.nrs.gov.bc.ca/api';
+        // prod
+        this.pathAPI = 'https://gcpe-lup-prod.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
     }
   }
 
   handleError(error: any): Observable<never> {
-    const reason = error.message
-      ? error.error
-        ? `${error.message} - ${error.error.message}`
-        : error.message
-      : error.status
-      ? `${error.status} - ${error.statusText}`
-      : 'Server error';
+    const reason = error.message ? (error.error ? `${error.message} - ${error.error.message}` : error.message) : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
     console.log('API error =', reason);
     if (error && error.status === 403 && !this.keycloakService.isKeyCloakEnabled()) {
       window.location.href = '/admin/login';
@@ -135,190 +125,223 @@ export class ApiService {
   }
 
   //
-  // Applications
+  // Projects
   //
-  getApplications(pageNum: number, pageSize: number): Observable<Application[]> {
+  getProjects(pageNum: number, pageSize: number, sortBy: string, populate: Boolean = true): Observable<Object> {
     const fields = [
-      'agency',
-      'areaHectares',
-      'businessUnit',
-      'centroid',
-      'cl_file',
-      'client',
-      'description',
-      'legalDescription',
-      'location',
+      'eacDecision',
       'name',
-      'publishDate',
-      'purpose',
-      'status',
-      'statusHistoryEffectiveDate',
-      'subpurpose',
-      'subtype',
-      'tantalisID',
-      'tenureStage',
-      'type'
+      'proponent',
+      'region',
+      'type',
+      'code',
+      'currentPhaseName',
+      'epicProjectID',
+      'decisionDate'
     ];
-    let queryString = 'application?isDeleted=false&';
-    if (pageNum !== null) {
-      queryString += `pageNum=${pageNum}&`;
-    }
-    if (pageSize !== null) {
-      queryString += `pageSize=${pageSize}&`;
-    }
+
+    let queryString = `project?`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    if (populate !== null) { queryString += `populate=${populate}&`; }
     queryString += `fields=${this.buildValues(fields)}`;
-    return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getFullDataSet(dataSet: string): Observable<any> {
+    return this.http.get<any>(`${this.pathAPI}/search?pageSize=1000&dataset=${dataSet}`, {});
   }
 
   // NB: returns array with 1 element
-  getApplication(id: string): Observable<Application[]> {
+  getProject(id: string, cpStart: string, cpEnd: string): Observable<Project[]> {
     const fields = [
-      'agency',
-      'areaHectares',
-      'businessUnit',
+      'CEAAInvolvement',
+      'CELead',
+      'CELeadEmail',
+      'CELeadPhone',
       'centroid',
-      'cl_file',
-      'client',
       'description',
-      'legalDescription',
+      'eacDecision',
+      'activeStatus',
       'location',
       'name',
-      'publishDate',
-      'purpose',
-      'status',
-      'statusHistoryEffectiveDate',
-      'subpurpose',
+      'projectLead',
+      'projectLeadEmail',
+      'projectLeadPhone',
+      'proponent',
+      'region',
+      'responsibleEPD',
+      'responsibleEPDEmail',
+      'responsibleEPDPhone',
       'subtype',
-      'tantalisID',
-      'tenureStage',
-      'type'
-    ];
-    const queryString = `application/${id}?isDeleted=false&fields=${this.buildValues(fields)}`;
-    return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  getCountApplications(): Observable<number> {
-    const queryString = 'application?isDeleted=false';
-    return this.http.head<HttpResponse<object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' }).pipe(
-      map(res => {
-        // retrieve the count from the response headers
-        return parseInt(res.headers.get('x-total-count'), 10);
-      })
-    );
-  }
-
-  // NB: returns array
-  getApplicationsByCrownLandID(clid: string): Observable<Application[]> {
-    const fields = [
-      'agency',
-      'areaHectares',
-      'businessUnit',
-      'centroid',
-      'cl_file',
-      'client',
-      'description',
-      'internal',
-      'legalDescription',
-      'location',
-      'name',
-      'publishDate',
-      'purpose',
+      'type',
+      'addedBy',
+      'build',
+      'intake',
+      'CEAALink',
+      'code',
+      'eaDecision',
+      'operational',
+      'substantiallyStarted',
+      'nature',
+      'commodity',
+      'currentPhaseName',
+      'dateAdded',
+      'dateCommentsClosed',
+      'dateCommentsOpen',
+      'dateUpdated',
+      'decisionDate',
+      'duration',
+      'eaoMember',
+      'epicProjectID',
+      'fedElecDist',
+      'isTermsAgreed',
+      'overallProgress',
+      'primaryContact',
+      'proMember',
+      'provElecDist',
+      'sector',
+      'shortName',
       'status',
-      'statusHistoryEffectiveDate',
-      'subpurpose',
-      'subtype',
-      'tantalisID',
-      'tenureStage',
-      'type'
+      'substantiallyDate',
+      'substantially',
+      'substitution',
+      'eaStatus',
+      'eaStatusDate',
+      'projectStatusDate',
+      'activeDate',
+      'updatedBy',
+      'projLead',
+      'execProjectDirector',
+      'complianceLead',
+      'pins',
+      'read',
+      'write',
+      'delete'
     ];
-    const queryString = `application?isDeleted=false&cl_file=${clid}&fields=${this.buildValues(fields)}`;
-    return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
+    let queryString = `project/${id}?populate=true`;
+    if (cpStart !== null) { queryString += `&cpStart[since]=${cpStart}`; }
+    if (cpEnd !== null) { queryString += `&cpEnd[until]=${cpEnd}`; }
+    queryString += `&fields=${this.buildValues(fields)}`;
+    return this.http.get<Project[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  // NB: returns array with 1 element
-  getApplicationByTantalisId(tantalisId: number): Observable<Application[]> {
-    const fields = [
-      'agency',
-      'areaHectares',
-      'businessUnit',
-      'centroid',
-      'cl_file',
-      'client',
-      'description',
-      'legalDescription',
-      'location',
-      'name',
-      'publishDate',
-      'purpose',
-      'status',
-      'statusHistoryEffectiveDate',
-      'subpurpose',
-      'subtype',
-      'tantalisID',
-      'tenureStage',
-      'type'
-    ];
-    const queryString = `application?isDeleted=false&tantalisId=${tantalisId}&fields=${this.buildValues(fields)}`;
-    return this.http.get<Application[]>(`${this.pathAPI}/${queryString}`, {});
+  getCountProjects(): Observable<number> {
+    const queryString = `project`;
+    return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' })
+      .pipe(
+        map(res => {
+          // retrieve the count from the response headers
+          return parseInt(res.headers.get('x-total-count'), 10);
+        })
+      );
   }
 
-  addApplication(app: Application): Observable<Application> {
-    const queryString = 'application/';
-    return this.http.post<Application>(`${this.pathAPI}/${queryString}`, app, {});
+  addProject(proj: Project): Observable<Project> {
+    const queryString = `project/`;
+    return this.http.post<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
 
-  publishApplication(app: Application): Observable<Application> {
-    const queryString = `application/${app._id}/publish`;
-    return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, {});
+  publishProject(proj: Project): Observable<Project> {
+    const queryString = `project/${proj._id}/publish`;
+    return this.http.put<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
 
-  unPublishApplication(app: Application): Observable<Application> {
-    const queryString = `application/${app._id}/unpublish`;
-    return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, {});
+  unPublishProject(proj: Project): Observable<Project> {
+    const queryString = `project/${proj._id}/unpublish`;
+    return this.http.put<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
 
-  deleteApplication(app: Application): Observable<Application> {
-    const queryString = `application/${app._id}`;
-    return this.http.delete<Application>(`${this.pathAPI}/${queryString}`, {});
+  deleteProject(proj: Project): Observable<Project> {
+    const queryString = `project/${proj._id}`;
+    return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  saveApplication(app: Application): Observable<Application> {
-    const queryString = `application/${app._id}`;
-    return this.http.put<Application>(`${this.pathAPI}/${queryString}`, app, {});
+  addPinsToProject(proj: Project, pins: any): Observable<Project> {
+    const queryString = `project/${proj._id}/pin`;
+    return this.http.post<Project>(`${this.pathAPI}/${queryString}`, pins, {});
   }
 
-  //
-  // Features
-  //
-  getFeaturesByTantalisId(tantalisId: number): Observable<Feature[]> {
-    const fields = ['type', 'tags', 'geometry', 'geometryName', 'properties', 'isDeleted', 'applicationID'];
-    const queryString = `feature?isDeleted=false&tantalisId=${tantalisId}&fields=${this.buildValues(fields)}`;
-    return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
+  deletePin(projId: string, pinId: string): Observable<Project> {
+    const queryString = `project/${projId}/pin/${pinId}`;
+    return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  getFeaturesByApplicationId(applicationId: string): Observable<Feature[]> {
-    const fields = ['type', 'tags', 'geometry', 'geometryName', 'properties', 'isDeleted', 'applicationID'];
-    const queryString = `feature?isDeleted=false&applicationId=${applicationId}&fields=${this.buildValues(fields)}`;
-    return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
+  getProjectPins(id: string, pageNum: number, pageSize: number, sortBy: any): Observable<Org> {
+    let queryString = `project/${id}/pin`;
+    if (pageNum !== null) { queryString += `?pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    return this.http.get<any>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  deleteFeaturesByApplicationId(applicationID: string): Observable<object> {
-    const queryString = `feature/?applicationID=${applicationID}`;
-    return this.http.delete(`${this.pathAPI}/${queryString}`, {});
+  saveProject(proj: Project): Observable<Project> {
+    const queryString = `project/${proj._id}`;
+    return this.http.put<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
+
+  // //
+  // // Features
+  // //
+  // getFeaturesByTantalisId(tantalisId: number): Observable<Feature[]> {
+  //   const fields = [
+  //     'type',
+  //     'tags',
+  //     'geometry',
+  //     'geometryName',
+  //     'properties',
+  //     'isDeleted',
+  //     'projectID'
+  //   ];
+  //   const queryString = `feature?isDeleted=false&tantalisId=${tantalisId}&fields=${this.buildValues(fields)}`;
+  //   return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
+  // }
+
+  // getFeaturesByProjectId(projectId: string): Observable<Feature[]> {
+  //   const fields = [
+  //     'type',
+  //     'tags',
+  //     'geometry',
+  //     'geometryName',
+  //     'properties',
+  //     'isDeleted',
+  //     'projectID'
+  //   ];
+  //   const queryString = `feature?isDeleted=false&projectId=${projectId}&fields=${this.buildValues(fields)}`;
+  //   return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
+  // }
+
+  // deleteFeaturesByProjectId(projectID: string): Observable<Object> {
+  //   const queryString = `feature/?projectID=${projectID}`;
+  //   return this.http.delete(`${this.pathAPI}/${queryString}`, {});
+  // }
 
   //
   // Decisions
   //
-  getDecisionsByAppId(appId: string): Observable<Decision[]> {
-    const fields = ['_addedBy', '_application', 'name', 'description'];
-    const queryString = `decision?_application=${appId}&fields=${this.buildValues(fields)}`;
+  getDecisionsByAppId(projId: string): Observable<Decision[]> {
+    const fields = [
+      '_addedBy',
+      '_project',
+      'code',
+      'name',
+      'description'
+    ];
+    const queryString = `decision?_project=${projId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Decision[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
   getDecision(id: string): Observable<Decision[]> {
-    const fields = ['_addedBy', '_application', 'name', 'description'];
+    const fields = [
+      '_addedBy',
+      '_project',
+      'code',
+      'name',
+      'description'
+    ];
     const queryString = `decision/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<Decision[]>(`${this.pathAPI}/${queryString}`, {});
   }
@@ -351,17 +374,116 @@ export class ApiService {
   //
   // Comment Periods
   //
-  getPeriodsByAppId(appId: string): Observable<CommentPeriod[]> {
-    const fields = ['_addedBy', '_application', 'startDate', 'endDate'];
-    const queryString = `commentperiod?isDeleted=false&_application=${appId}&fields=${this.buildValues(fields)}`;
-    return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
+  getPeriodsByProjId(projId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
+    const fields = [
+      'project',
+      'dateStarted',
+      'dateCompleted'
+    ];
+
+    let queryString = `commentperiod?&project=${projId}&`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `count=true&`;
+    queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
   getPeriod(id: string): Observable<CommentPeriod[]> {
-    const fields = ['_addedBy', '_application', 'startDate', 'endDate'];
+    const fields = [
+      '_id',
+      '__v',
+      '_schemaName',
+      'addedBy',
+      'additionalText',
+      'ceaaAdditionalText',
+      'ceaaInformationLabel',
+      'ceaaRelatedDocuments',
+      'classificationRoles',
+      'classifiedPercent',
+      'commenterRoles',
+      'dateAdded',
+      'dateCompleted',
+      'dateCompletedEst',
+      'dateStarted',
+      'dateStartedEst',
+      'dateUpdated',
+      'downloadRoles',
+      'informationLabel',
+      'instructions',
+      'isClassified',
+      'isPublished',
+      'isResolved',
+      'isVetted',
+      'milestone',
+      'openCommentPeriod',
+      'openHouses',
+      'periodType',
+      'phase',
+      'phaseName',
+      'project',
+      'publishedPercent',
+      'rangeOption',
+      'rangeType',
+      'relatedDocuments',
+      'resolvedPercent',
+      'updatedBy',
+      'userCan',
+      'vettedPercent',
+      'vettingRoles'
+    ];
     const queryString = `commentperiod/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getPeriodSummary(id: string): Observable<CommentPeriodSummary> {
+    const fields = [
+      '_id',
+      '__v',
+      '_schemaName',
+      'addedBy',
+      'additionalText',
+      'ceaaAdditionalText',
+      'ceaaInformationLabel',
+      'ceaaRelatedDocuments',
+      'classificationRoles',
+      'classifiedPercent',
+      'commenterRoles',
+      'dateAdded',
+      'dateCompleted',
+      'dateCompletedEst',
+      'dateStarted',
+      'dateStartedEst',
+      'dateUpdated',
+      'downloadRoles',
+      'informationLabel',
+      'instructions',
+      'isClassified',
+      'isPublished',
+      'isResolved',
+      'isVetted',
+      'milestone',
+      'openCommentPeriod',
+      'openHouses',
+      'periodType',
+      'phase',
+      'phaseName',
+      'project',
+      'publishedPercent',
+      'rangeOption',
+      'rangeType',
+      'relatedDocuments',
+      'resolvedPercent',
+      'updatedBy',
+      'userCan',
+      'vettedPercent',
+      'vettingRoles'
+    ];
+    const queryString = `commentperiod/${id}/summary?fields=${this.buildValues(fields)}`;
+    return this.http.get<CommentPeriodSummary>(`${this.pathAPI}/${queryString}`, {});
   }
 
   addCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
@@ -390,6 +512,54 @@ export class ApiService {
   }
 
   //
+  // Topics
+  //
+  getTopics(pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
+    const fields = [
+      'description',
+      'name',
+      'type',
+      'pillar',
+      'parent'
+    ];
+
+    let queryString = `topic?`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
+  }
+  getTopic(id: string): Observable<Topic[]> {
+    const fields = [
+      'description',
+      'name',
+      'type',
+      'pillar',
+      'parent'
+    ];
+    const queryString = `topic/${id}?fields=${this.buildValues(fields)}`;
+    return this.http.get<Topic[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  addTopic(topic: Topic): Observable<Topic> {
+    const queryString = `topic/`;
+    return this.http.post<Topic>(`${this.pathAPI}/${queryString}`, topic, {});
+  }
+
+  saveTopic(topic: Topic): Observable<Topic> {
+    const queryString = `topic/${topic._id}`;
+    return this.http.put<Topic>(`${this.pathAPI}/${queryString}`, topic, {});
+  }
+
+  deleteTopic(topic: Topic): Observable<Topic> {
+    const queryString = `topic/${topic._id}`;
+    return this.http.delete<Topic>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+
+  //
   // Comments
   //
   getCountCommentsByPeriodId(periodId: string): Observable<number> {
@@ -403,47 +573,66 @@ export class ApiService {
     );
   }
 
-  getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Comment[]> {
+  getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string, count: boolean, filter: object): Observable<Object> {
     const fields = [
-      '_addedBy',
-      '_commentPeriod',
-      'commentNumber',
+      '_id',
+      'author',
       'comment',
-      'commentAuthor',
-      'review',
+      'commentId',
       'dateAdded',
-      'commentStatus'
+      'dateUpdated',
+      'documents',
+      'isAnonymous',
+      'location',
+      'eaoStatus',
+      'period',
+      'read'
     ];
 
-    let queryString = `comment?isDeleted=false&_commentPeriod=${periodId}&`;
-    if (pageNum !== null) {
-      queryString += `pageNum=${pageNum}&`;
+    let queryString = `comment?&period=${periodId}`;
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (count !== null) { queryString += `&count=${count}`; }
+    if (filter !== {}) {
+      Object.keys(filter).forEach(key => {
+        queryString += `&${key}=${filter[key]}`;
+      });
     }
-    if (pageSize !== null) {
-      queryString += `pageSize=${pageSize}&`;
-    }
-    if (sortBy !== null) {
-      queryString += `sortBy=${sortBy}&`;
-    }
-    queryString += `fields=${this.buildValues(fields)}`;
+    queryString += `&fields=${this.buildValues(fields)}`;
 
-    return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, {});
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
-  getComment(id: string): Observable<Comment[]> {
+  getComment(id: string, populateNextComment: boolean): Observable<any> {
     const fields = [
-      '_addedBy',
-      '_commentPeriod',
-      'commentNumber',
+      '_id',
+      'author',
       'comment',
-      'commentAuthor',
-      'review',
+      'commentId',
       'dateAdded',
-      'commentStatus'
+      'datePosted',
+      'dateUpdated',
+      'documents',
+      'eaoNotes',
+      'eaoStatus',
+      'isAnonymous',
+      'location',
+      'period',
+      'proponentNotes',
+      'proponentStatus',
+      'publishedNotes',
+      'rejectedNotes',
+      'rejectedReason',
+      'valuedComponents',
+      'read',
+      'write',
+      'delete'
     ];
-    const queryString = `comment/${id}?fields=${this.buildValues(fields)}`;
-    return this.http.get<Comment[]>(`${this.pathAPI}/${queryString}`, {});
+    let queryString = `comment/${id}?fields=${this.buildValues(fields)}`;
+    if (populateNextComment) { queryString += '&populateNextComment=true'; }
+    return this.http.get<any>(`${this.pathAPI}/${queryString}`, { observe: 'response' });
   }
 
   addComment(comment: Comment): Observable<Comment> {
@@ -456,41 +645,86 @@ export class ApiService {
     return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, comment, {});
   }
 
-  publishComment(comment: Comment): Observable<Comment> {
-    const queryString = `comment/${comment._id}/publish`;
-    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, null, {});
-  }
-
-  unPublishComment(comment: Comment): Observable<Comment> {
-    const queryString = `comment/${comment._id}/unpublish`;
-    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, null, {});
+  updateCommentStatus(comment: Comment, status: string): Observable<Comment> {
+    const queryString = `comment/${comment._id}/status`;
+    return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, { 'status': status }, {});
   }
 
   //
   // Documents
   //
-  getDocumentsByAppId(appId: string): Observable<Document[]> {
-    const fields = ['_application', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
-    const queryString = `document?isDeleted=false&_application=${appId}&fields=${this.buildValues(fields)}`;
+  getDocumentsByAppId(projId: string): Observable<Document[]> {
+    const fields = [
+      '_project',
+      'documentFileName',
+      'displayName',
+      'internalURL',
+      'internalMime'
+    ];
+    const queryString = `document?isDeleted=false&_project=${projId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  getDocumentsByCommentId(commentId: string): Observable<Document[]> {
-    const fields = ['_comment', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
-    const queryString = `document?isDeleted=false&_comment=${commentId}&fields=${this.buildValues(fields)}`;
-    return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  getDocumentsByDecisionId(decisionId: string): Observable<Document[]> {
-    const fields = ['_decision', 'documentFileName', 'displayName', 'internalURL', 'internalMime'];
-    const queryString = `document?isDeleted=false&_decision=${decisionId}&fields=${this.buildValues(fields)}`;
+  getDocumentsByMultiId(ids: Array<String>): Observable<Document[]> {
+    const fields = [
+      '_id',
+      'eaoStatus',
+      'internalOriginalName',
+      'documentFileName',
+      'labels',
+      'internalOriginalName',
+      'internalSize',
+      'displayName',
+      'documentType',
+      'datePosted',
+      'dateUploaded',
+      'dateReceived',
+      'documentSource',
+      'internalURL',
+      'internalMime',
+      'checkbox',
+      'project',
+      'type',
+      'documentAuthor',
+      'milestone',
+      'description',
+      'isPublished'
+    ];
+    const queryString = `document?docIds=${this.buildValues(ids)}&fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   // NB: returns array with 1 element
   getDocument(id: string): Observable<Document[]> {
-    const queryString = `document/${id}`;
+    const fields = [
+      '_addedBy',
+      'documentFileName',
+      'labels',
+      'internalOriginalName',
+      'displayName',
+      'documentType',
+      'datePosted',
+      'dateUploaded',
+      'dateReceived',
+      'documentSource',
+      'internalURL',
+      'internalMime',
+      'internalSize',
+      'checkbox',
+      'project',
+      'type',
+      'documentAuthor',
+      'milestone',
+      'description',
+      'isPublished'
+    ];
+    const queryString = `document/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  updateDocument(formData: FormData, _id: any): Observable<Document> {
+    const queryString = `document/${_id}`;
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, formData, {});
   }
 
   deleteDocument(doc: Document): Observable<Document> {
@@ -498,19 +732,25 @@ export class ApiService {
     return this.http.delete<Document>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  publishDocument(doc: Document): Observable<Document> {
-    const queryString = `document/${doc._id}/publish`;
-    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, doc, {});
+  publishDocument(docId: String): Observable<Document> {
+    const queryString = `document/${docId}/publish`;
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, {}, {});
   }
 
-  unPublishDocument(doc: Document): Observable<Document> {
-    const queryString = `document/${doc._id}/unpublish`;
-    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, doc, {});
+  unPublishDocument(docId: String): Observable<Document> {
+    const queryString = `document/${docId}/unpublish`;
+    return this.http.put<Document>(`${this.pathAPI}/${queryString}`, {}, {});
   }
 
   uploadDocument(formData: FormData): Observable<Document> {
-    const fields = ['documentFileName', 'displayName', 'internalURL', 'internalMime'];
-    const queryString = `document/?fields=${this.buildValues(fields)}`;
+    const fields = [
+      'documentFileName',
+      'internalOriginalName',
+      'displayName',
+      'internalURL',
+      'internalMime'
+    ];
+    const queryString = `document?fields=${this.buildValues(fields)}`;
     return this.http.post<Document>(`${this.pathAPI}/${queryString}`, formData, {});
   }
 
@@ -521,8 +761,33 @@ export class ApiService {
 
   public async downloadDocument(document: Document): Promise<void> {
     const blob = await this.downloadResource(document._id);
-    const filename = document.documentFileName;
+    let filename;
+    if (document.documentSource === 'COMMENT') {
+      filename = document.internalOriginalName;
+    } else {
+      filename = document.documentFileName;
+    }
+    filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
+    if (this.isMS) {
+      window.navigator.msSaveBlob(blob, filename);
+    } else {
+      const url = window.URL.createObjectURL(blob);
+      const a = window.document.createElement('a');
+      window.document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    }
+  }
 
+  public async exportComments(period: String) {
+    const queryString = `comment/export/${period}`;
+    const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
+    let filename = 'export.csv';
+    filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
     if (this.isMS) {
       window.navigator.msSaveBlob(blob, filename);
     } else {
@@ -539,30 +804,150 @@ export class ApiService {
   }
 
   public async openDocument(document: Document): Promise<void> {
-    const blob = await this.downloadResource(document._id);
-    const filename = document.documentFileName;
-
-    if (this.isMS) {
-      window.navigator.msSaveBlob(blob, filename);
+    let filename;
+    if (document.documentSource === 'COMMENT') {
+      filename = document.internalOriginalName;
     } else {
-      const tab = window.open();
-      const fileURL = URL.createObjectURL(blob);
-      tab.location.href = fileURL;
+      filename = document.documentFileName;
     }
+    filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\\/g, '_').replace(/\//g, '_');
+    window.open('/api/document/' + document._id + '/fetch/' + filename, '_blank');
+  }
+
+  //
+  // Valued Component
+  //
+  getValuedComponents(): Observable<ValuedComponent[]> {
+    const fields = [
+      '_id',
+      '_schemaName',
+      'code',
+      'description',
+      'name',
+      'parent',
+      'pillar',
+      'project',
+      'stage',
+      'title',
+      'type'];
+    // NB: max 1000 records
+    const queryString = `vc?fields=${this.buildValues(fields)}`;
+    return this.http.get<ValuedComponent[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+  getValuedComponentsByProjectId(projectId: String, pageNum: number, pageSize: number, sortBy: string = null): Observable<Object> {
+    const fields = [
+      '_id',
+      '_schemaName',
+      'code',
+      'description',
+      'name',
+      'parent',
+      'pillar',
+      'project',
+      'stage',
+      'title',
+      'type'];
+
+    let queryString = `vc?projectId=${projectId}`;
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    queryString += `&fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
+  }
+  addVCToProject(vc: any, project: any): Observable<ValuedComponent> {
+    const queryString = `vc/`;
+    return this.http.post<ValuedComponent>(`${this.pathAPI}/${queryString}`, vc, {});
+  }
+  deleteVC(vc: any): Observable<ValuedComponent> {
+    const queryString = `vc/${vc._id}`;
+    return this.http.delete<ValuedComponent>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  //
+  // Get Item via search endpoint
+  //
+  getItem(_id: string, schema: string): Observable<SearchResults[]> {
+    let queryString = `search?dataset=Item&_id=${_id}&_schemaName=${schema}`;
+    return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //
   // Searching
   //
-  searchAppsByCLID(clid: string): Observable<SearchResults[]> {
-    const queryString = `ttlsapi/crownLandFileNumber/${clid}`;
+  searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier: object = {}, populate = false, filter = {}): Observable<SearchResults[]> {
+    let queryString = `search?dataset=${dataset}`;
+    if (fields && fields.length > 0) {
+      fields.map(item => {
+        queryString += `&${item.name}=${item.value}`;
+      });
+    }
+    if (keys) {
+      queryString += `&keywords=${keys}`;
+    }
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (populate !== null) { queryString += `&populate=${populate}`; }
+    if (queryModifier !== {}) {
+      Object.keys(queryModifier).map(key => {
+        queryModifier[key].split(',').map(item => {
+          queryString += `&and[${key}]=${item}`;
+        });
+      });
+    }
+    if (filter !== {}) {
+      Object.keys(filter).map(key => {
+        filter[key].split(',').map(item => {
+          queryString += `&or[${key}]=${item}`;
+        });
+      });
+    }
+    queryString += `&fields=${this.buildValues(fields)}`;
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  searchAppsByDTID(dtid: number): Observable<SearchResults> {
-    const queryString = `ttlsapi/dispositionTransactionId/${dtid}`;
-    return this.http.get<SearchResults>(`${this.pathAPI}/${queryString}`, {});
+  //
+  // Metrics
+  //
+  getMetrics(pageNum: number, pageSize: number, sortBy: string = null): Observable<SearchResults[]> {
+    let queryString = `audit?`;
+    let fields = ['fields',
+      'performedBy',
+      'deletedBy',
+      'updatedBy',
+      'addedBy',
+      'meta',
+      'action',
+      'objId',
+      'keywords',
+      'timestamp',
+      '_objectSchema'];
+
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `fields=${this.buildValues(fields)}`;
+    return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
+
+  // Activity
+  addRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
+    const queryString = `recentActivity/`;
+    return this.http.post<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});
+  }
+
+  saveRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
+    const queryString = `recentActivity/${recentActivity._id}`;
+    return this.http.put<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});
+  }
+
+  deleteRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
+    const queryString = `recentActivity/${recentActivity._id}`;
+    return this.http.delete<RecentActivity>(`${this.pathAPI}/${queryString}`, {});
+  }
+
 
   //
   // Users
@@ -573,6 +958,20 @@ export class ApiService {
     return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  getUser(id: any): Observable<User> {
+    const fields = [
+      'displayName',
+      'username',
+      'firstName',
+      'lastName',
+      'org',
+      'phoneNumber',
+      'email',
+    ];
+    const queryString = `user/${id}?fields=${this.buildValues(fields)}`;
+    return this.http.get<User>(`${this.pathAPI}/${queryString}`, {});
+  }
+
   saveUser(user: User): Observable<User> {
     const queryString = `user/${user._id}`;
     return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
@@ -581,6 +980,32 @@ export class ApiService {
   addUser(user: User): Observable<User> {
     const queryString = 'user/';
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
+  }
+
+  getOrgs(): Observable<Org[]> {
+    const fields = [
+      'displayName',
+      'username',
+      'firstName',
+      'lastName'
+    ];
+    const queryString = `organization?fields=${this.buildValues(fields)}`;
+    return this.http.get<Org[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getOrg(id: any): Observable<Org> {
+    const queryString = `organization/${id}`;
+    return this.http.get<Org>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  saveOrg(org: Org): Observable<Org> {
+    const queryString = `organization/${org._id}`;
+    return this.http.put<Org>(`${this.pathAPI}/${queryString}`, org, {});
+  }
+
+  addOrg(org: Org): Observable<Org> {
+    const queryString = `organization/`;
+    return this.http.post<Org>(`${this.pathAPI}/${queryString}`, org, {});
   }
 
   //

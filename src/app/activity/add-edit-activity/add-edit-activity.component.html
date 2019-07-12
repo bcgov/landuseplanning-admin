@@ -1,0 +1,89 @@
+<div class="action-container">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/activity']">Activity Posts</a>
+    </li>
+    <li *ngIf="isEditing" class="breadcrumb-item active" aria-current="page">
+      Edit
+    </li>
+    <li *ngIf="!isEditing" class="breadcrumb-item active" aria-current="page">
+      Add
+    </li>
+  </ol>
+</div>
+
+<main class="container-fluid-padding add-edit-form">
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+    <div class="text-right">
+      <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+      &nbsp;
+      <button class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
+    </div>
+    <h2>Activity Post</h2>
+    <div class="flex-container">
+      <div class="label-pair lrg">
+        <label for="headline">Headline* </label>
+        <input name="headline" id="headline" formControlName="headline" type="text" class="form-control" />
+      </div>
+    </div>
+    <div class="flex-container">
+      <div class="label-pair lrg">
+        <label for="content">Content* </label>
+        <editor [init]="tinyMceSettings" name="content" id="content" formControlName="content"></editor>
+      </div>
+    </div>
+    <div class="flex-container">
+      <div class="label-pair med">
+        <label for="project">Project* </label>
+        <select required class="form-control" formControlName="project">
+          <option *ngFor="let project of projects" [ngValue]="project._id">{{project.name}}</option>
+        </select>
+      </div>
+      <div class="label-pair">
+        <label for="type">Type* </label>
+        <select required class="form-control" formControlName="type">
+          <option>Public Comment Period</option>
+          <option>News</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex-container">
+      <div class="label-pair">
+        <label for="dateAdded">Date Added</label>
+        <div class="input-group">
+          <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="dateAdded"
+            formControlName="dateAdded" ngbDatepicker #dateAddedPicker="ngbDatepicker" />
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dateAddedPicker.toggle()"
+              type="button"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-container">
+      <div class="label-pair lrg">
+        <label for="documentUrl">Document URL* </label>
+        <input documentUrl="documentUrl" id="documentUrl" formControlName="documentUrl" type="text"
+          class="form-control" />
+      </div>
+    </div>
+    <div class="flex-container">
+      <div class="label-pair">
+        <label for="active">Published* </label>
+        <div name="active" class="radio-group">
+          <div class="radio">
+            <input type="radio" id="yes" value="yes" formControlName="active" name="active" />
+            <label for="yes">Yes</label>
+          </div>
+          <div class="radio">
+            <input type="radio" id="no" value="no" formControlName="active" name="active" />
+            <label for="no">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</main>

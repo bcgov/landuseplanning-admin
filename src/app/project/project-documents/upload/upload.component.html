@@ -1,0 +1,112 @@
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/projects']">All Projects</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <a [routerLink]="['/p', currentProject._id, 'project-documents']">Documents</a>
+    </li>
+    <li class="breadcrumb-item">Upload Document(s)</li>
+  </ol>
+</nav>
+<div class="container-fluid-padding">
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+
+  <div class="form-group mb-0">
+    <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="doctypesel">Document Type*</label>
+          <select required class="form-control" formControlName="doctypesel">
+            <option *ngFor="let type of doctypes" [ngValue]="type._id">{{type.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="authorsel">Author*</label>
+          <select required class="form-control" formControlName="authorsel">
+            <option *ngFor="let author of authors" [ngValue]="author._id">{{author.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="labelsel">Milestone</label>
+          <select required class="form-control" formControlName="labelsel">
+            <option *ngFor="let label of labels" [ngValue]="label._id">{{label.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="inputAddress">Document Date*</label>
+          <div class="input-group">
+            <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="docDate"
+              formControlName="datePosted" ngbDatepicker #datePostedPicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="datePostedPicker.toggle()"
+                type="button"></button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="inputAddress">Upload Date*</label>
+          <div class="input-group">
+            <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="dateUploaded"
+              formControlName="dateUploaded" ngbDatepicker #dateUploadedPicker="ngbDatepicker" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="dateUploadedPicker.toggle()"
+                type="button"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="displayName">Document Name</label>
+          <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
+            \ / | : * ? " < > are not accepted file name characters
+          </div>
+          <div>
+              <textarea *ngIf="documents && documents.length > 1" disabled class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName"></textarea>
+              <textarea *ngIf="!documents || documents.length < 2" class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName" (ngModelChange)="validateChars()"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="inputDescription">Description</label>
+          <textarea class="form-control" id="inputDescription" name="description" rows="1"
+            formControlName="description"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="form-group mb-0">
+    <app-file-upload [maxFiles]="50" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
+      (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
+    <br>
+    <ul class="doc-list mb-3" *ngIf="documents?.length > 0">
+      <li *ngFor="let doc of documents">
+        <span class="cell icon">
+          <i class="material-icons">insert_drive_file</i>
+        </span>
+        <span class="cell name" [title]="doc.displayName || ''">
+          <span class="cell__txt-content">{{doc.documentFileName}}</span>
+        </span>
+        <span class="cell actions">
+          <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc)">
+            <i class="material-icons">delete</i>
+          </button>
+        </span>
+      </li>
+    </ul>
+  </div>
+  <div class="input-group-prepend">
+    <button [disabled]="!myForm.valid || documents?.length === 0 || docNameInvalid" (click)="uploadDocuments()" class="btn btn-outline-primary mr-1" type="submit"
+      id="button-cl"><i class="material-icons">arrow_upward</i>Upload</button>
+  </div>
+</div>

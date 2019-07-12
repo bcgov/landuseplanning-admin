@@ -1,0 +1,25 @@
+export class RecentActivity {
+    _id: string;
+    project: any;
+    type: string;
+    dateAdded: string;
+    active: string;
+    headline: string;
+    content: string;
+    documentUrl: string;
+    contentUrl: string;
+    pinned: boolean;
+
+    constructor(obj?: any) {
+        this._id = obj && obj._id || null;
+        this.type = obj && obj.type || null;
+        this.project = obj && obj.project || null;
+        this.dateAdded = obj && obj.dateAdded || null;
+        this.content = obj && obj.content || null;
+        this.documentUrl = obj && obj.documentUrl || null;
+        this.contentUrl = obj && obj.contentUrl || null;
+        this.headline = obj && obj.headline || null;
+        this.active = obj && obj.active || null;
+        this.pinned = obj && obj.pinned || null;
+    }
+}

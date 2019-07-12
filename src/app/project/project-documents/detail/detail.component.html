@@ -1,0 +1,83 @@
+<nav class="action-container">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/projects']">All Projects</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><a
+        [routerLink]="['/p', currentProject._id, 'project-documents']">Documents</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Document Details</li>
+  </ol>
+</nav>
+<main class="container-fluid-padding" *ngIf="document">
+  <h1>
+    <div class="row">
+      <div>Details</div>
+      <div class="ml-auto" ngbDropdown placement="bottom-right">
+        <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
+        <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+          <button class="dropdown-item" (click)="onEdit()">Edit</button>
+          <button class="dropdown-item" (click)="api.openDocument(document)">Open</button>
+          <button class="dropdown-item" (click)="api.downloadDocument(document)">Download</button>
+          <button class="dropdown-item" (click)="togglePublish()">{{publishText}}</button>
+        </div>
+      </div>
+    </div>
+  </h1>
+  <section>
+    <div class="label-pair">
+      <h3 for="displayName">Display Name: </h3>
+      <p id="displayName">{{document.displayName || '-'}}</p>
+    </div>
+    <div class="label-pair">
+      <p id="status publish-state">
+        <i class="material-icons">
+          {{publishText === 'Publish' ?   'cloud_off' : 'cloud_done' || '-'}}
+        </i>
+        {{publishText === 'Publish' ?  'Not Published' : 'Published' || '-'}}
+      </p>
+    </div>
+    <div class="label-pair">
+      <h3 for="documentFileName">Filename: </h3>
+      <p id="documentFileName">{{document.documentFileName || '-'}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="description">Description: </h3>
+      <p id="description">{{document.description || '-'}}</p>
+    </div>
+    <div *ngIf="document.labels" class="label-pair">
+      <h3 for="tags">Labels: </h3>
+      <div *ngFor="let label of document.labels">
+        <div class="mr-2 badge badge-pill badge-info">{{label}}</div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="label-pair">
+      <h3 for="type">Type: </h3>
+      <p id="type">{{document.type | listConverter}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="dateUploaded">Upload Date: </h3>
+      <p id="dateUploaded">{{document.dateUploaded | date}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="datePosted">Document Date: </h3>
+      <p id="datePosted" *ngIf="document.datePosted !== '1900-01-01T08:00:00.000Z'">{{document.datePosted | date}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="documentAuthor">Author: </h3>
+      <p id="documentAuthor">{{document.documentAuthor | listConverter}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="milestone">Milestone: </h3>
+      <p id="milestone">{{document.milestone | listConverter}}</p>
+    </div>
+    <div class="label-pair">
+      <h3 for="internalSize">Filesize: </h3>
+      <p id="internalSize">{{utils.formatBytes(document.internalSize)}}</p>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,59 @@
+<div class="action-container">
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">All Projects</li>
+  </ol>
+  <!-- <div>
+    <button class="btn btn-primary" (click)="addProject()">
+      <i class="material-icons">add</i>
+      Create New project
+    </button>
+  </div> -->
+</div>
+<div class="search-container">
+  <div class="fb-container bg-faded">
+    <section class="container-fluid-padding" id="anchor-point">
+      <div class="spinner-container" *ngIf="loading">
+        <div class="spinner-new rotating"></div>
+      </div>
+      <main *ngIf="!loading">
+        <section>
+          <h2>Environmental Assessments in British Columbia</h2>
+          <p class="tab-intro">Use the list below to navigate to individual Projects. Click on any project to go
+            directly to its details page.</p>
+
+          <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
+            <div class="input-group main-search-field">
+              <input class="form-control" type="text" name="keywordInput" placeholder="Enter keywords to search..."
+                id="keywordInput" [(ngModel)]="tableParams.keywords" autofocus />
+              <div class="input-group-append">
+                <!-- prevent searching if input is empty or we're already searching -->
+                <button class="btn btn-primary" type="submit">
+                  <span>Search</span>
+                </button>
+              </div>
+            </div>
+            <div class="results mt-1">
+              <p *ngIf="!loading && tableParams.totalListItems == 0">
+                No result<span *ngIf="count !== 1">s</span> found for "{{tableParams.keywords}}"
+              </p>
+              <div *ngIf="!loading && tableParams.totalListItems > 0">
+                {{tableParams.totalListItems}} result<span *ngIf="tableParams.totalListItems != 1">s found</span>
+              </div>
+            </div>
+          </form>
+          <br>
+
+          <!-- <p>Total Projects: {{tableParams.totalListItems}}</p> -->
+          <div *ngIf="projects.length > 0">
+            <app-table-template
+              [columns]="projectTableColumns"
+              [data]="projectTableData"
+              (onColumnSort)='setColumnSort($event)'
+              (onPageNumUpdate)='getPaginatedProjects($event)'>
+            </app-table-template>
+          </div>
+        </section>
+      </main>
+    </section>
+  </div>
+</div>

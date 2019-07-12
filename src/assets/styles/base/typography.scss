@@ -4,13 +4,17 @@
 }
 
 body {
-  font-family: "myriad-pro", sans-serif;
+  font-family: 'Noto Sans', sans-serif;
   font-weight: 400;
 }
 
 h1 {
   font-weight: 400;
   letter-spacing: -0.03rem;
+
+  @media screen and (max-width: 600px) {
+    font-size: 1.8rem;
+  }
 
   sup {
     top: 0;
@@ -45,5 +49,5 @@ button,
 input,
 select,
 textarea {
-  font-family: "myriad-pro", sans-serif;
+  font-family: "myriad-pro";
 }

@@ -57,6 +57,10 @@ $nav-tab-bg-active: #fff;
   }
 }
 
+.mat-tab-group {
+  font-family: 'Noto Sans', sans-serif;
+}
+
 .tab-pane {
   padding: 2rem 1.5rem;
   background: $nav-tab-pane-bg;
