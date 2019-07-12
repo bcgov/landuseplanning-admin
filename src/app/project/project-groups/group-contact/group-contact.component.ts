@@ -12,6 +12,7 @@ import { StorageService } from 'app/services/storage.service';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { ProjectService } from 'app/services/project.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-group-contact',
@@ -26,6 +27,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
   public group: any = null;
   public loading = true;
   private groupId: any = null;
+  public tempGroupName = '';
 
   public tableData: TableObject;
   public tableColumns: any[] = [
@@ -68,6 +70,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private projectService: ProjectService,
     private _changeDetectionRef: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
@@ -93,6 +96,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
 
         if (res && res.group && res.group[0].data && res.group[0].data.meta && res.group[0].data.meta.length > 0) {
           this.group = res.group[0].data.searchResults[0];
+          this.tempGroupName = this.group.name;
         } else {
           // Something wrong
           this.router.navigate(['/p', this.currentProject._id, 'project-groups']);
@@ -260,6 +264,19 @@ export class GroupContactComponent implements OnInit, OnDestroy {
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
+  }
+
+  async saveName() {
+    let groupObj = { name: this.group.name };
+    await this.projectService.saveGroup(this.currentProject._id, this.group._id, groupObj).toPromise();
+    this.group.name = this.tempGroupName;
+    this.openSnackBar('Group name has been updated', 'Close');
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   ngOnDestroy() {

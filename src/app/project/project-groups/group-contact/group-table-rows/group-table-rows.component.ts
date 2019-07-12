@@ -21,7 +21,6 @@ export class GroupTableRowsComponent implements OnInit {
 
   ngOnInit() {
     this.contacts = this.data.data;
-    console.log(this.contacts);
     this.paginationData = this.data.paginationData;
   }
 
