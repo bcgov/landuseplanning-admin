@@ -304,6 +304,11 @@ export class ApiService {
     return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  saveGroup(projectId: Project, groupId: any, groupObj: any): Observable<Project> {
+    const queryString = `project/${projectId}/group/${groupId}`;
+    return this.http.put<Project>(`${this.pathAPI}/${queryString}`, groupObj, {});
+  }
+
   deleteGroup(proj: Project, groupId: string): Observable<Project> {
     const queryString = `project/${proj._id}/group/${groupId}`;
     return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
