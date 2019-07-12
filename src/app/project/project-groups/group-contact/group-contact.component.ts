@@ -267,7 +267,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
   }
 
   async saveName() {
-    let groupObj = { name: this.group.name };
+    let groupObj = { name: this.tempGroupName };
     await this.projectService.saveGroup(this.currentProject._id, this.group._id, groupObj).toPromise();
     this.group.name = this.tempGroupName;
     this.openSnackBar('Group name has been updated', 'Close');
