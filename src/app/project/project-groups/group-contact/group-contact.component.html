@@ -40,6 +40,8 @@
           <button (click)="selectAction('delete')" class="btn btn-outline-secondary mr-1"
             [disabled]="!isEnabled('delete')" type="button" id="button-d"><i
               class="material-icons">delete</i>Remove</button>
+          <button (click)="selectAction('export')" class="btn btn-outline-secondary mr-1" [disabled]="!isEnabled('export')"
+            type="button" id="button-d"><i class="material-icons">import_export</i>Export</button>
         </div>
       </div>
       <br>

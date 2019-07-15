@@ -13,6 +13,7 @@ import { DialogService } from 'ng2-bootstrap-modal';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { ProjectService } from 'app/services/project.service';
 import { MatSnackBar } from '@angular/material';
+import { ExcelService } from 'app/services/excel.service';
 
 @Component({
   selector: 'app-group-contact',
@@ -64,6 +65,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private excelService: ExcelService,
     private router: Router,
     private storageService: StorageService,
     private dialogService: DialogService,
@@ -150,6 +152,9 @@ export class GroupContactComponent implements OnInit, OnDestroy {
         // Add activity
         this.setBackURL();
         break;
+      case 'export':
+        this.exportItems();
+        break;
       case 'delete':
         // Add activity
         this.deleteItems();
@@ -167,6 +172,44 @@ export class GroupContactComponent implements OnInit, OnDestroy {
         this._changeDetectionRef.detectChanges();
         break;
     }
+  }
+
+  async exportItems() {
+    let itemsToExport = [];
+    this.tableData.data.map((item) => {
+      if (item.checkbox === true) {
+        itemsToExport.push(item);
+      }
+    });
+    let list = [];
+    itemsToExport.map(member => {
+      list.push(member);
+    });
+
+    let filteredArray = list.reduce((unique, item) => {
+      return unique.includes(item) ? unique : [...unique, item];
+    }, []);
+
+    // Get all the user emails
+    let csvData = [];
+    filteredArray.map((item) => {
+      csvData.push(
+        this.searchService.getItem(item._id, 'User').toPromise()
+      );
+    });
+    this.loading = false;
+    return Promise.all(csvData)
+      .then((data) => {
+        // Reload main page.
+        let userData = [];
+        data.map(p => {
+          userData.push({ email: p.data.email });
+        });
+        console.log(userData);
+
+        // Export to CSV
+        this.excelService.exportAsExcelFile(userData, 'contactList');
+      });
   }
 
   setBackURL() {

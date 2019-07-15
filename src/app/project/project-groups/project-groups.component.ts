@@ -184,16 +184,15 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
     let csvData = [];
     filteredArray.map((item) => {
       csvData.push(
-        this.searchService.getItem(item._id, 'User').toPromise()
+        this.searchService.getItem(item, 'User').toPromise()
       );
     });
     this.loading = false;
     return Promise.all(csvData)
       .then((data) => {
-        // Reload main page.
         let userData = [];
         data.map(p => {
-          userData.push({ email: p[0].email });
+          userData.push({ email: p.data.email });
         });
         console.log(userData);
 
