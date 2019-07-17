@@ -15,7 +15,6 @@
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "tsConfig": "src/tsconfig.app.json",
-                        "baseHref": "/admin/",
                         "polyfills": "src/polyfills.ts",
                         "assets": [
                             "src/assets",
