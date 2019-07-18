@@ -66,7 +66,7 @@ export class ApiService {
         break;
 
       case 'gcpe-lup-dev.pathfinder.gov.bc.ca':
-        // Prod
+        // Dev
         this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
         break;
@@ -77,15 +77,15 @@ export class ApiService {
         this.env = 'test';
         break;
 
-      case 'landuseplanning.gov.bc.ca':
+      case 'gcpe-lup-prod.gov.bc.ca':
         // Prod
         this.pathAPI = 'https://gcpe-lup-prod.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
         break;
 
       default:
-        // prod
-        this.pathAPI = 'http://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
+        // Dev
+        this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
     }
   }
