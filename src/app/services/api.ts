@@ -67,25 +67,25 @@ export class ApiService {
 
       case 'gcpe-lup-dev.pathfinder.gov.bc.ca':
         // Dev
-        this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
         break;
 
       case 'gcpe-lup-test.pathfinder.gov.bc.ca':
         // Test
-        this.pathAPI = 'https://gcpe-lup-test.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://lup-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
       case 'gcpe-lup-prod.gov.bc.ca':
         // Prod
-        this.pathAPI = 'https://gcpe-lup-prod.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://lup-prod.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
         break;
 
       default:
         // Dev
-        this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
     }
   }
