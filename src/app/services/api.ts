@@ -85,7 +85,7 @@ export class ApiService {
 
       default:
         // prod
-        this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'http://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
     }
   }
