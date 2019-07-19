@@ -7,17 +7,12 @@
       </li>
       <li *ngIf="project" class="breadcrumb-item active" >{{project.name}}</li>
     </ol>
-    <div class="btn-container">
-      <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
-      <button  class="btn btn-primary" type="submit"
-          (click)="onSubmit()">Save</button>
-    </div>
   </div>
   <main class="container-fluid-padding add-edit-form">
     <div class="spinner-container" *ngIf="loading">
       <div class="spinner-new rotating"></div>
     </div>
-
+    
     <div class="action-container" *ngIf="!isEditing">
       <ol class="breadcrumb">
         <li class="breadcrumb-item" aria-current="page">
@@ -41,6 +36,11 @@
         </li>
       </ol> -->
     </div>
+    <div class="text-right">
+      <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+      &nbsp;
+      <button  class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
+    </div>
     <section>
       <h2>Basic Information</h2>
       <div class="flex-container">
@@ -50,8 +50,9 @@
         </div>
         <div class="label-pair add-row">
           <label for="proponent">Proponent</label>
-          <input [readonly]='true' name="proponent" id="proponent" formControlName="proponent" type="text" class="form-control" />
-          <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
+          <div *ngIf="contactOrganizationName === '' || contactOrganizationName == null">
+            <button class="btn btn-primary" type="button" (click)="linkOrganization()">Link Organization</button>
+          </div>
         </div>
         <div class="label-pair">
           <label for="build">Project Nature </label>

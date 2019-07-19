@@ -340,7 +340,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       'status': form.controls.status.value,
       // 'projectStatusDate': form.get('projectStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value))).toISOString() : null,
       'eacDecision': form.controls.eacDecision.value,
-      'decisionDate': !isNaN(form.get('decisionDate').value.day) ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
+      'decisionDate': !isNaN(form.get('decisionDate').value === null ? undefined : form.get('decisionDate').value.day) ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
       'substantially': form.controls.substantially.value === 'yes' ? true : false,
       // 'substantiallyDate': form.get('substantiallyDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value))).toISOString() : null,
       'activeStatus': form.controls.activeStatus.value,
@@ -349,6 +349,11 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       'projectLead': form.controls.projectLead.value,
       'projectAdmin': form.controls.projectAdmin.value
     };
+  }
+
+  public linkOrganization() {
+    // TODO
+    alert('TBD');
   }
 
   onSubmit() {
