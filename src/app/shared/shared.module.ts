@@ -22,6 +22,8 @@ import { Utils } from './utils/utils';
 import { ContactSelectComponent } from './components/contact-select/contact-select.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <== add the imports!
 import { RouterModule } from '@angular/router';
+import { LinkOrganizationComponent } from './components/link-organization/link-organization.component';
+import { LinkOrganizationTableRowsComponent } from './components/link-organization/link-organization-table-rows/link-organization-table-rows.component';
 
 @NgModule({
   imports: [
@@ -47,7 +49,9 @@ import { RouterModule } from '@angular/router';
     TableDirective,
     ListConverterPipe,
     OrgNamePipe,
-    ContactSelectComponent
+    ContactSelectComponent,
+    LinkOrganizationComponent,
+    LinkOrganizationTableRowsComponent,
   ],
   exports: [
     MatSlideToggleModule,
@@ -63,7 +67,9 @@ import { RouterModule } from '@angular/router';
     TableTemplateComponent,
     NgxPaginationModule,
     ListConverterPipe,
-    OrgNamePipe
+    OrgNamePipe,
+    LinkOrganizationComponent,
+    LinkOrganizationTableRowsComponent,
   ],
   providers: [
     TableTemplateUtils,

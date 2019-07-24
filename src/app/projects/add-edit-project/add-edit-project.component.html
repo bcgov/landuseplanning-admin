@@ -1,45 +1,38 @@
-<form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
-
-  <div class="action-container">
+<nav *ngIf="!loading" class="action-container" aria-label="breadcrumb">
+  <div *ngIf="!isEditing">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item" >
+      <li class="breadcrumb-item" aria-current="page">
         <a [routerLink]="['/projects']">All Projects</a>
       </li>
-      <li *ngIf="project" class="breadcrumb-item active" >{{project.name}}</li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Add
+      </li>
     </ol>
-    <div class="btn-container">
-      <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
-      <button  class="btn btn-primary" type="submit"
-          (click)="onSubmit()">Save</button>
-    </div>
   </div>
-  <main class="container-fluid-padding add-edit-form">
-    <div class="spinner-container" *ngIf="loading">
-      <div class="spinner-new rotating"></div>
-    </div>
+  <div *ngIf="isEditing">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page">
+        <a [routerLink]="['/projects']">All Projects</a>
+      </li>
+      <li class="breadcrumb-item" aria-current="page">
+        <a [routerLink]="['/p', project._id]">{{project.name}}</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Edit
+      </li>
+    </ol>
+  </div>
+</nav>
 
-    <div class="action-container" *ngIf="!isEditing">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item" aria-current="page">
-          <a [routerLink]="['/projects']">All Projects</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-          Add
-        </li>
-      </ol>
-    </div>
-    <div *ngIf="isEditing">
-      <!-- <ol class="breadcrumb">
-        <li class="breadcrumb-item" aria-current="page">
-          <a [routerLink]="['/projects']">All Projects</a>
-        </li>
-        <li class="breadcrumb-item" aria-current="page">
-          <a [routerLink]="['/p', projectId]"></a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-          Edit
-        </li>
-      </ol> -->
+<main class="container-fluid-padding add-edit-form">
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+    <div class="text-right">
+      <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+      &nbsp;
+      <button class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
     </div>
     <section>
       <h2>Basic Information</h2>
@@ -49,12 +42,28 @@
           <input name="name" id="name" formControlName="name" type="text" class="form-control" />
         </div>
         <div class="label-pair add-row">
-          <label for="proponent">Proponent</label>
-          <input [readonly]='true' name="proponent" id="proponent" formControlName="proponent" type="text" class="form-control" />
-          <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
+          <label for="proponent">Proponent*</label>
+          <div *ngIf="proponentName === '' || proponentName == null">
+            <button class="btn btn-primary" type="button" (click)="linkOrganization()">Link Organization</button>
+          </div>
+          <div *ngIf="proponentName !== '' && proponentName">
+            <span class="cell icon">
+              <i class="material-icons">business</i>
+            </span>
+            &nbsp;
+            <span class="cell name" [title]="proponentName || ''">
+              <span class="cell__txt-content">{{proponentName}}</span>
+            </span>
+            <span class="cell actions">
+              <button class="btn btn-icon" type="button" title="Delete this organization"
+                (click)="removeSelectedOrganization()">
+                <i class="material-icons">delete</i>
+              </button>
+            </span>
+          </div>
         </div>
         <div class="label-pair">
-          <label for="build">Project Nature </label>
+          <label for="build">Project Nature*</label>
           <select name="build" id="build" formControlName="build" class="form-control">
             <option [selected]='isSelected("new")' value="new">New Construction</option>
             <option [selected]='isSelected("modification")' value="modification">Modification of Existing</option>
@@ -84,7 +93,7 @@
       <h2>Location</h2>
       <div class="flex-container">
         <div class="label-pair med">
-          <label for="location">Location </label>
+          <label for="location">Location* </label>
           <input name="location" id="location" formControlName="location" type="text" class="form-control" />
         </div>
         <div class="label-pair">
@@ -159,7 +168,8 @@
           <div class="label-pair">
             <label for="eaStatus">EA Readiness Determination </label>
             <select name="eaStatus" id="eaStatus" formControlName="eaStatus" class="form-control">
-              <option [selected]="isEACSelected('Does not require EAC')" value='Does not require EAC'>Does not require EAC</option>
+              <option [selected]="isEACSelected('Does not require EAC')" value='Does not require EAC'>Does not require
+                EAC</option>
               <option [selected]="isEACSelected('Requires EAC')" value='Requires EAC'>Requires EAC</option>
             </select>
           </div>
@@ -167,11 +177,11 @@
             <label for="eaStatusDate">Determination Date </label>
             <div disabled class="input-group">
               <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="eaStatusDate"
-              formControlName="eaStatusDate" ngbDatepicker #eaStatusDatePicker="ngbDatepicker" />
-            <div class="input-group-append">
-              <button disabled class="btn btn-outline-secondary calendar" (click)="eaStatusDatePicker.toggle()"
-                type="button"></button>
-            </div>
+                formControlName="eaStatusDate" ngbDatepicker #eaStatusDatePicker="ngbDatepicker" />
+              <div class="input-group-append">
+                <button disabled class="btn btn-outline-secondary calendar" (click)="eaStatusDatePicker.toggle()"
+                  type="button"></button>
+              </div>
             </div>
           </div>
         </fieldset>
@@ -185,12 +195,13 @@
           <div class="label-pair">
             <label for="projectStatusDate">Project Effective Date </label>
             <div disabled class="input-group">
-              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="projectStatusDate"
-              formControlName="projectStatusDate" ngbDatepicker #projectStatusDatePicker="ngbDatepicker" />
-            <div class="input-group-append">
-              <button disabled class="btn btn-outline-secondary calendar" (click)="projectStatusDatePicker.toggle()"
-                type="button"></button>
-            </div>
+              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd"
+                name="projectStatusDate" formControlName="projectStatusDate" ngbDatepicker
+                #projectStatusDatePicker="ngbDatepicker" />
+              <div class="input-group-append">
+                <button disabled class="btn btn-outline-secondary calendar" (click)="projectStatusDatePicker.toggle()"
+                  type="button"></button>
+              </div>
             </div>
           </div>
         </fieldset>
@@ -219,7 +230,7 @@
             <div name="substantially" class="radio-group">
               <div class="radio">
                 <input type="radio" id="yes" value="yes" formControlName="substantially" name="substantially" />
-                <label for="yes" >Yes</label>
+                <label for="yes">Yes</label>
               </div>
               <div class="radio">
                 <input type="radio" id="no" value="no" formControlName="substantially" name="substantially" />
@@ -230,19 +241,21 @@
           <div class="label-pair">
             <label for="substantiallyDate">Substantially Started Date </label>
             <div disabled class="input-group">
-              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="substantiallyDate"
-              formControlName="substantiallyDate" ngbDatepicker #substantiallyDatePicker="ngbDatepicker" />
-            <div class="input-group-append">
-              <button disabled class="btn btn-outline-secondary calendar" (click)="substantiallyDatePicker.toggle()"
-                type="button"></button>
-            </div>
+              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd"
+                name="substantiallyDate" formControlName="substantiallyDate" ngbDatepicker
+                #substantiallyDatePicker="ngbDatepicker" />
+              <div class="input-group-append">
+                <button disabled class="btn btn-outline-secondary calendar" (click)="substantiallyDatePicker.toggle()"
+                  type="button"></button>
+              </div>
             </div>
           </div>
         </fieldset>
         <fieldset class="form-group">
           <div class="label-pair">
             <label for="activeStatus">Active Phase </label>
-            <select disabled name="activeStatus" id="activeStatus" formControlName="activeStatus" type="text" class="form-control">
+            <select disabled name="activeStatus" id="activeStatus" formControlName="activeStatus" type="text"
+              class="form-control">
               <option>Pre-Construction</option>
               <option>Construction</option>
               <option>Operations</option>
@@ -253,11 +266,11 @@
             <label for="activeDate">Phase Effective Date </label>
             <div disabled class="input-group">
               <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="activeDate"
-              formControlName="activeDate" ngbDatepicker #activeDatePicker="ngbDatepicker" />
-            <div class="input-group-append">
-              <button disabled class="btn btn-outline-secondary calendar" (click)="activeDatePicker.toggle()"
-                type="button"></button>
-            </div>
+                formControlName="activeDate" ngbDatepicker #activeDatePicker="ngbDatepicker" />
+              <div class="input-group-append">
+                <button disabled class="btn btn-outline-secondary calendar" (click)="activeDatePicker.toggle()"
+                  type="button"></button>
+              </div>
             </div>
           </div>
         </fieldset>
@@ -268,20 +281,23 @@
       <div class="flex-container">
         <div class="label-pair add-row">
           <label for="responsibleEPD">Project EPD </label>
-          <input [readonly]='true' name="responsibleEPD" id="responsibleEPD" formControlName="responsibleEPD" type="text" class="form-control" />
+          <input [readonly]='true' name="responsibleEPD" id="responsibleEPD" formControlName="responsibleEPD"
+            type="text" class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair add-row">
           <label for="projectLead">Project Lead</label>
-          <input [readonly]='true' name="projectLead" id="projectLead" formControlName="projectLead" type="text" class="form-control" />
+          <input [readonly]='true' name="projectLead" id="projectLead" formControlName="projectLead" type="text"
+            class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
         <div class="label-pair add-row">
           <label for="projectAdmin">Project Admin</label>
-          <input [readonly]='true' name="projectAdmin" id="projectAdmin" formControlName="projectAdmin" type="text" class="form-control" />
+          <input [readonly]='true' name="projectAdmin" id="projectAdmin" formControlName="projectAdmin" type="text"
+            class="form-control" />
           <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
         </div>
       </div>
     </section>
-  </main>
-</form>
+  </form>
+</main>

@@ -63,12 +63,13 @@ export class ProjectService {
   getById(projId: string, cpStart: string = null, cpEnd: string = null): Observable<Project> {
     return this.api.getProject(projId, cpStart, cpEnd)
       .map(projects => {
-
         // get upcoming comment period if there is one and convert it into a comment period object.
-        if (projects[0].commentPeriodForBanner && projects[0].commentPeriodForBanner.length > 0) {
-          projects[0].commentPeriodForBanner = new CommentPeriod(projects[0].commentPeriodForBanner[0]);
-        } else {
-          projects[0].commentPeriodForBanner = null;
+        if (projects.length > 0) {
+          if (projects[0].commentPeriodForBanner && projects[0].commentPeriodForBanner.length > 0) {
+            projects[0].commentPeriodForBanner = new CommentPeriod(projects[0].commentPeriodForBanner[0]);
+          } else {
+            projects[0].commentPeriodForBanner = null;
+          }
         }
 
         // return the first (only) project
