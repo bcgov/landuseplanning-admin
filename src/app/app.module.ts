@@ -121,8 +121,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     ActivityDetailTableRowsComponent,
     AddEditActivityComponent,
     SearchHelpComponent,
-    LinkOrganizationComponent,
-    LinkOrganizationTableRowsComponent,
     UserTableRowsComponent
   ],
   imports: [

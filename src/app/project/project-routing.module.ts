@@ -42,7 +42,8 @@ import { ProjectGroupResolver } from './project-groups/project-group-resolver.se
 import { GroupContactComponent } from './project-groups/group-contact/group-contact.component';
 import { ProjectContactsGroupResolver } from './project-groups/project-contact-group-resolver.services';
 import { GroupContactSelectComponent } from './project-groups/group-contact/group-contact-select/group-contact-select.component';
-import { AddEditContactComponent } from 'app/contacts/add-edit-contact/add-edit-contact.component';
+import { LinkOrganizationResolver } from 'app/shared/components/link-organization/link-organization-resolver.services';
+import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,13 @@ const routes: Routes = [
         path: '',
         redirectTo: 'project-details',
         pathMatch: 'full'
+      },
+      {
+        path: 'edit/link-org',
+        component: LinkOrganizationComponent,
+        resolve: {
+          organizations: LinkOrganizationResolver
+        }
       },
       {
         path: 'edit',
@@ -252,7 +260,8 @@ const routes: Routes = [
     ReviewCommentResolver,
     ValuedComponentsResolver,
     PinsComponentResolver,
-    ProjectContactsResolver
+    ProjectContactsResolver,
+    LinkOrganizationResolver
   ]
 })
 

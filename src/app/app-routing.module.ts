@@ -47,7 +47,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'o/:orgId/edit/link-project',
+    path: 'o/:orgId/edit/link-org',
     component: LinkOrganizationComponent,
     resolve: {
       organizations: LinkOrganizationResolver
@@ -65,7 +65,7 @@ const routes: Routes = [
     component: AddEditOrganizationComponent
   },
   {
-    path: 'orgs/add/link-project',
+    path: 'orgs/add/link-org',
     component: LinkOrganizationComponent,
     resolve: {
       organizations: LinkOrganizationResolver

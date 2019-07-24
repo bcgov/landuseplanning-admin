@@ -212,9 +212,9 @@ export class AddEditOrganizationComponent implements OnInit, OnDestroy {
   public linkOrganization() {
     this.storageService.state.orgForm = this.orgForm;
     if (!this.isEditing) {
-      this.router.navigate(['orgs', 'add', 'link-project']);
+      this.router.navigate(['orgs', 'add', 'link-org']);
     } else {
-      this.router.navigate(['o', this.orgId, 'edit', 'link-project']);
+      this.router.navigate(['o', this.orgId, 'edit', 'link-org']);
     }
   }
 
