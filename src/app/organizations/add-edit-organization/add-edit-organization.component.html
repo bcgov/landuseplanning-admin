@@ -27,7 +27,7 @@
   </div>
   <form [formGroup]="orgForm" novalidate>
     <div class="text-right">
-      <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
       &nbsp;
       <button class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
     </div>
@@ -42,7 +42,8 @@
       <div class="label-pair">
         <label for="companyType">Organization Type*</label>
         <select required class="form-control" formControlName="companyType">
-          <option *ngFor="let companyType of companyTypeList" [ngValue]="companyType">{{companyType}}</option>
+          <option *ngFor="let companyType of companyTypeList" [ngValue]="companyType">
+            {{companyType}}</option>
         </select>
       </div>
       <div class="label-pair">

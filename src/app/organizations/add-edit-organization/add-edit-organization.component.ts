@@ -146,23 +146,31 @@ export class AddEditOrganizationComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onSubmit() {
-    // Validating form
+  private validateForm() {
     // TODO: cover all validation cases.
     if (this.orgForm.controls.name.value === '') {
-      alert('Name cannot be empty.');
-      return;
+      alert('Organization name cannot be empty.');
+      return false;
     } else if (this.orgForm.controls.companyType.value === '') {
       alert('Organization type cannot be empty.');
-      return;
+      return false;
     } else if (this.orgForm.controls.address1.value === '') {
       alert('Street address type cannot be empty.');
-      return;
+      return false;
     } else if (this.orgForm.controls.city.value === '') {
       alert('City type cannot be empty.');
-      return;
+      return false;
     } else if (this.orgForm.controls.country.value === '') {
       alert('Country type cannot be empty.');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  public onSubmit() {
+    // Validating form
+    if (!this.validateForm()) {
       return;
     }
 
@@ -175,7 +183,7 @@ export class AddEditOrganizationComponent implements OnInit, OnDestroy {
       city: this.orgForm.controls.city.value,
       address1: this.orgForm.controls.address1.value,
       address2: this.orgForm.controls.address2.value,
-      companyType: this.orgForm.controls.companyType.value ? this.orgForm.controls.companyType.value : this.orgForm.controls.name.value,
+      companyType: this.orgForm.controls.companyType.value,
       parentCompany: this.orgForm.controls.parentCompany.value,
       companyLegal: this.orgForm.controls.companyLegal.value,
       company: this.orgForm.controls.company.value
