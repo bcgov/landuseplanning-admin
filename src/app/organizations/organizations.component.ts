@@ -25,12 +25,17 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
     {
       name: 'Name',
       value: 'name',
-      width: 'col-6'
+      width: 'col-4'
     },
     {
-      name: 'Company Type',
+      name: 'Organization Type',
       value: 'companyType',
-      width: 'col-5'
+      width: 'col-3'
+    },
+    {
+      name: 'Company Legal',
+      value: 'companyLegal',
+      width: 'col-4'
     },
     {
       name: 'Action',
