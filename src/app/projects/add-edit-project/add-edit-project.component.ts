@@ -157,6 +157,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
           break;
       }
     });
+
     // Get data related to current project
     this.route.parent.data
       .takeUntil(this.ngUnsubscribe)
@@ -189,11 +190,13 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       console.log('form from ss');
       // TODO: Save the projectID if it was originally an edit.
       this.myForm = this.storageService.state.form;
+      this.onChangeType(null);
     } else if (!(Object.keys(resolverData).length === 0 && resolverData.constructor === Object)) {
       // First entry on resolver
       console.log('form from rs', resolverData);
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
+      this.onChangeType(null);
     } else {
       console.log('form from blank');
       this.myForm = new FormGroup({
@@ -205,8 +208,8 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         'description': new FormControl(),
         'location': new FormControl(),
         'region': new FormControl(),
-        'lat': new FormControl([1]),
-        'lon': new FormControl([0]),
+        'lat': new FormControl([]),
+        'lon': new FormControl([]),
         'addFile': new FormControl(),
         'CEAAInvolvement': new FormControl(),
         'CEAALink': new FormControl(),
@@ -399,7 +402,8 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   }
 
   private validateForm() {
-    if (this.myForm.controls.name.value === '') {
+    console.log(this.myForm.controls.name.value);
+    if (this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null) {
       alert('Name cannot be empty.');
       return false;
     } else if (this.proponentId === '') {
@@ -429,6 +433,12 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     } else if (this.myForm.controls.lat.value === '') {
       alert('Latitude cannot be empty.');
       return false;
+    } else if (this.myForm.controls.lat.value >= 60.01 || this.myForm.controls.lat.value <= 48.20) {
+      alert('Latitude must be between 48.20 and 60.01');
+      return false;
+    } else if (this.myForm.controls.lon.value >= -114.01 || this.myForm.controls.lon.value <= -139.06) {
+      alert('Longitude must be between -114.01 and -139.06');
+      return;
     } else {
       return true;
     }
