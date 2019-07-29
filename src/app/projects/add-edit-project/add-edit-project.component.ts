@@ -477,7 +477,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       console.log('PUT');
       let project = new Project(this.convertFormToProject(this.myForm));
       console.log('PUTing', project);
-      project._id = this.projectId;
+      project._id = this.project._id;
       this.projectService.save(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -486,7 +486,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
             this.loading = false;
             this.router.navigated = false;
             this.openSnackBar('This project was created successfully.', 'Close');
-            this.router.navigate(['/p', this.projectId, 'project-details']);
+            this.router.navigate(['/p', this.project._id, 'project-details']);
           },
           error => {
             console.log('error =', error);
