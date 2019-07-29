@@ -724,6 +724,7 @@ export class ApiService {
       'project',
       'type',
       'documentAuthor',
+      'projectPhase',
       'milestone',
       'description',
       'isPublished'
@@ -752,6 +753,7 @@ export class ApiService {
       'project',
       'type',
       'documentAuthor',
+      'projectPhase',
       'milestone',
       'description',
       'isPublished'

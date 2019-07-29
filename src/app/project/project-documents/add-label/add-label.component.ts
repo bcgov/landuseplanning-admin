@@ -38,7 +38,8 @@ export class AddLabelComponent implements OnInit, OnDestroy {
       'datePosted': new FormControl(),
       'dateUploaded': new FormControl(),
       'displayName': new FormControl(),
-      'description': new FormControl()
+      'description': new FormControl(),
+      'projectphasesel': new FormControl()
     });
 
     this.labels = this.storageService.state.labels;
