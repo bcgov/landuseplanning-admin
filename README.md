@@ -8,8 +8,27 @@ Administrative front-end for the Land Use Planning application. Based on the PRC
 
 # Pre-requisites
 
-- Node.js 8.12.0 (run `node -v` to verify)
-- npm 6.4.1 (run `npm -v` to verify)
+We use a version manager so as to allow concurrent versions of node and other software.  [asdf](https://github.com/asdf-vm/asdf) is recommended.  asdf uses a config file called .tool-versions that the reshim command picks up so that all collaborators are using the same versions.
+
+Run the following commands:
+```
+asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+```
+
+Next open .tool-versions and take the node version there and use it in the following command so that that specific version of node is present on your local machine for asdf to switch to.  Replace the "x" characters in the following command with what's in .tool-versions.
+
+```
+asdf install nodejs x.xx.x
+```
+
+Then run the following commands every time you need to switch npm versions in a project.
+
+```
+asdf reshim nodejs
+npm i -g yarn
+yarn install
+```
+
 - Angular CLI 6.2.1 (run `npm ls -g @angular/cli --depth=0` to verify)
 - Yarn 1.10.1 or greater (run `yarn -v` to verify)
 - TSLint 5.11.0 or greater  (run `tslint -v` to verify)

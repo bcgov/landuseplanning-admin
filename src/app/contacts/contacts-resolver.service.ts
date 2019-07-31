@@ -1,28 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { SearchService } from 'app/services/search.service';
+import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 @Injectable()
-export class ContactsResolverService implements Resolve<object> {
+export class ContactsResolver implements Resolve<object> {
   constructor(
-    private searchService: SearchService
+    private searchService: SearchService,
+    private tableTemplateUtils: TableTemplateUtils
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<object> {
-    const pageNum = route.params.currentPage ? route.params.currentPage : 1;
-    const pageSize = route.params.pageSize ? route.params.pageSize : 25;
-    const sortBy = route.params.sortBy ? route.params.sortBy : '+displayName';
-    const keywords = route.params.keywords;
-    let filter = {};
+  resolve(route: ActivatedRouteSnapshot): Observable<object> {
+    let tableParams = this.tableTemplateUtils.getParamsFromUrl(route.params);
 
-    return this.searchService.getSearchResults(keywords,
-                                              'User',
-                                              null,
-                                              pageNum,
-                                              pageSize,
-                                              sortBy,
-                                              filter);
+    return this.searchService.getSearchResults(
+      tableParams.keywords || '',
+      'User',
+      null,
+      tableParams.currentPage,
+      tableParams.pageSize,
+      tableParams.sortBy,
+      {});
   }
 }

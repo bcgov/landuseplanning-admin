@@ -1,8 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, FormArray, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, of } from 'rxjs';
+import { FormGroup, FormControl } from '@angular/forms';
 import * as moment from 'moment-timezone';
 import { Subject } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
@@ -11,7 +9,6 @@ import { MatSnackBar } from '@angular/material';
 import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
 import { ProjectService } from 'app/services/project.service';
-import { DocumentService } from 'app/services/document.service';
 import { Project } from 'app/models/project';
 
 @Component({
@@ -19,23 +16,25 @@ import { Project } from 'app/models/project';
   templateUrl: './add-edit-project.component.html',
   styleUrls: ['./add-edit-project.component.scss']
 })
-export class AddEditProjectComponent implements OnInit {
+export class AddEditProjectComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public myForm: FormGroup;
   public documents: any[] = [];
   public back: any = {};
   public regions: Array<Object> = [
-    {id: 'cariboo', name: 'Cariboo'},
-    {id: 'kootenay', name: 'Kootenay'},
-    {id: 'lower mainland', name: 'Lower Mainland'},
-    {id: 'okanagan', name: 'Okanagan'},
-    {id: 'omineca', name: 'Omineca'},
-    {id: 'peace', name: 'Peace'},
-    {id: 'skeena', name: 'Skeena'},
-    {id: 'thompson-nicola', name: 'Thompson-Nicola'},
-    {id: 'vancouver island', name: 'Vancouver Island'}
+    { id: 'cariboo', name: 'Cariboo' },
+    { id: 'kootenay', name: 'Kootenay' },
+    { id: 'lower mainland', name: 'Lower Mainland' },
+    { id: 'okanagan', name: 'Okanagan' },
+    { id: 'omineca', name: 'Omineca' },
+    { id: 'peace', name: 'Peace' },
+    { id: 'skeena', name: 'Skeena' },
+    { id: 'thompson-nicola', name: 'Thompson-Nicola' },
+    { id: 'vancouver island', name: 'Vancouver Island' }
   ];
   public sectorsSelected = [];
+  public proponentName = '';
+  public proponentId = '';
 
   public PROJECT_SUBTYPES: Object = {
     'Mines': [
@@ -154,27 +153,37 @@ export class AddEditProjectComponent implements OnInit {
     private config: ConfigService,
     private _changeDetectorRef: ChangeDetectorRef,
     private utils: Utils,
-    private documentService: DocumentService,
     private projectService: ProjectService,
     private storageService: StorageService
   ) {
   }
 
   ngOnInit() {
-    // Check if we're editing
-    this.route.url.subscribe(segments => {
-      segments.forEach(segment => {
-        if (segment.path === 'edit') {
-          this.isEditing = true;
-        }
-      });
-    });
+    // This is to get Region information from List (db) and put into a list(regions)
+    /*
+    this.config.lists.map(item => {
+      switch (item.type) {
+        case 'region':
+          this.regions.push(item.name);
+          break;
+      }
+    });*/
 
     // Get data related to current project
     this.route.parent.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(data => {
+        this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
+
+        if (this.storageService.state.selectedOrganization) {
+          this.proponentName = this.storageService.state.selectedOrganization.name;
+          this.proponentId = this.storageService.state.selectedOrganization._id;
+        } else if (this.isEditing && data.project.proponent._id && data.project.proponent._id !== '') {
+          this.proponentName = data.project.proponent.name;
+          this.proponentId = data.project.proponent._id;
+        }
         this.project = data.project;
+        this.setBreadCrumbs();
         this.buildForm(data);
         this.loading = false;
         try {
@@ -192,11 +201,13 @@ export class AddEditProjectComponent implements OnInit {
       console.log('form from ss');
       // TODO: Save the projectID if it was originally an edit.
       this.myForm = this.storageService.state.form;
+      this.onChangeType(null);
     } else if (!(Object.keys(resolverData).length === 0 && resolverData.constructor === Object)) {
       // First entry on resolver
       console.log('form from rs', resolverData);
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
+      this.onChangeType(null);
     } else {
       console.log('form from blank');
       this.myForm = new FormGroup({
@@ -208,8 +219,8 @@ export class AddEditProjectComponent implements OnInit {
         'description': new FormControl(),
         'location': new FormControl(),
         'region': new FormControl(),
-        'lat': new FormControl([1]),
-        'lon': new FormControl([0]),
+        'lat': new FormControl([]),
+        'lon': new FormControl([]),
         'addFile': new FormControl(),
         'CEAAInvolvement': new FormControl(),
         'CEAALink': new FormControl(),
@@ -233,8 +244,39 @@ export class AddEditProjectComponent implements OnInit {
     }
   }
 
-  buildFormFromData(formData) {
+  private setBreadCrumbs() {
+    if (!this.isEditing) {
+      this.storageService.state.backUrl = ['/projects', 'add'];
+      this.storageService.state.breadcrumbs = [
+        {
+          route: ['/projects'],
+          label: 'All Projects'
+        },
+        {
+          route: ['/projects', 'add'],
+          label: 'Add'
+        }
+      ];
+    } else {
+      this.storageService.state.backUrl = ['/p', this.project._id, 'edit'];
+      this.storageService.state.breadcrumbs = [
+        {
+          route: ['/projects'],
+          label: 'All Projects'
+        },
+        {
+          route: ['/p', this.project._id],
+          label: this.project.name
+        },
+        {
+          route: ['/p', this.project._id, 'edit'],
+          label: 'Edit'
+        }
+      ];
+    }
+  }
 
+  buildFormFromData(formData) {
     // Preselector for region.
     if (formData.region) {
       let theRegion = this.regions.filter((region: any) => {
@@ -259,7 +301,7 @@ export class AddEditProjectComponent implements OnInit {
 
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
-      'proponent': new FormControl(formData.proponent.name),
+      'proponent': new FormControl(formData.proponent),
       'build': new FormControl(formData.build),
       'type': new FormControl(formData.type),
       'sector': new FormControl(formData.sector),
@@ -298,6 +340,7 @@ export class AddEditProjectComponent implements OnInit {
   }
 
   onCancel() {
+    this.clearStorageService();
     if (this.back && this.back.url) {
       this.router.navigate(this.back.url);
     } else {
@@ -322,39 +365,102 @@ export class AddEditProjectComponent implements OnInit {
   }
 
   convertFormToProject(form) {
-    return { 'name': form.controls.name.value,
-              'proponent': form.controls.proponent.value,
-              'build': form.controls.build.value,
-              'type': form.controls.type.value,
-              'sector': form.controls.sector.value,
-              'description': form.controls.description.value,
-              'location': form.controls.location.value,
-              'region': form.controls.region.value.id,
-              'centroid': [form.get('lon').value, form.get('lat').value],
-              'addFile': form.controls.addFile.value,
-              'CEAAInvolvement': form.controls.CEAAInvolvement.value,
-              'CEAALink': form.controls.CEAALink.value,
-              'ea': form.controls.ea.value,
-              'intake': { investment: form.controls.capital.value, notes: form.controls.notes.value },
-              'eaStatus': form.controls.eaStatus.value,
-              // 'eaStatusDate': form.get('eaStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value))).toISOString() : null,
-              'status': form.controls.status.value,
-              // 'projectStatusDate': form.get('projectStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value))).toISOString() : null,
-              'eacDecision': form.controls.eacDecision.value,
-              'decisionDate': !isNaN(form.get('decisionDate').value.day) ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
-              'substantially': form.controls.substantially.value === 'yes' ? true : false,
-              // 'substantiallyDate': form.get('substantiallyDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value))).toISOString() : null,
-              'activeStatus': form.controls.activeStatus.value,
-              // 'activeDate': form.get('activeDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value))).toISOString() : null,
-              'responsibleEPD': form.controls.responsibleEPD.value,
-              'projectLead': form.controls.projectLead.value,
-              'projectAdmin': form.controls.projectAdmin.value
+    return {
+      'name': form.controls.name.value,
+      'proponent': this.proponentId,
+      'build': form.controls.build.value,
+      'type': form.controls.type.value,
+      'sector': form.controls.sector.value,
+      'description': form.controls.description.value,
+      'location': form.controls.location.value,
+      'region': form.controls.region.value.id,
+      'centroid': [form.get('lon').value, form.get('lat').value],
+      'addFile': form.controls.addFile.value,
+      'CEAAInvolvement': form.controls.CEAAInvolvement.value,
+      'CEAALink': form.controls.CEAALink.value,
+      'ea': form.controls.ea.value,
+      'intake': { investment: form.controls.capital.value, notes: form.controls.notes.value },
+      'eaStatus': form.controls.eaStatus.value,
+      // 'eaStatusDate': form.get('eaStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value))).toISOString() : null,
+      'status': form.controls.status.value,
+      // 'projectStatusDate': form.get('projectStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value))).toISOString() : null,
+      'eacDecision': form.controls.eacDecision.value,
+      'decisionDate': !isNaN(form.get('decisionDate').value === null ? undefined : form.get('decisionDate').value.day) ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
+      'substantially': form.controls.substantially.value === 'yes' ? true : false,
+      // 'substantiallyDate': form.get('substantiallyDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value))).toISOString() : null,
+      'activeStatus': form.controls.activeStatus.value,
+      // 'activeDate': form.get('activeDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value))).toISOString() : null,
+      'responsibleEPD': form.controls.responsibleEPD.value,
+      'projectLead': form.controls.projectLead.value,
+      'projectAdmin': form.controls.projectAdmin.value
     };
   }
 
-  onSubmit() {
+  private clearStorageService() {
+    this.storageService.state.form = null;
+    this.storageService.state.selectedOrganization = null;
+    this.storageService.state.backUrl = null;
+    this.storageService.state.breadcrumbs = null;
+  }
+
+  public linkOrganization() {
+    this.storageService.state.form = this.myForm;
     if (!this.isEditing) {
-      // PUT
+      this.router.navigate(['/projects', 'add', 'link-org']);
+    } else {
+      this.router.navigate(['/p', this.project._id, 'edit', 'link-org']);
+    }
+  }
+
+  private validateForm() {
+    console.log(this.myForm.controls.name.value);
+    if (this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null) {
+      alert('Name cannot be empty.');
+      return false;
+    } else if (this.proponentId === '') {
+      alert('Proponent cannot be empty.');
+      return false;
+    } else if (this.myForm.controls.build.value === '') {
+      alert('You must select a project nature.');
+      return false;
+    } else if (this.myForm.controls.type.value === '') {
+      alert('You must select a type.');
+      return false;
+    } else if (this.myForm.controls.sector.value === '') {
+      alert('You must select a sub-type.');
+      return false;
+    } else if (this.myForm.controls.description.value === '') {
+      alert('Description cannot be empty.');
+      return false;
+    } else if (this.myForm.controls.region.value === '') {
+      alert('You must select a region.');
+      return false;
+    } else if (this.myForm.controls.location.value === '') {
+      alert('Location cannot be empty.');
+      return false;
+    } else if (this.myForm.controls.lon.value === '') {
+      alert('Longitude cannot be empty.');
+      return false;
+    } else if (this.myForm.controls.lat.value === '') {
+      alert('Latitude cannot be empty.');
+      return false;
+    } else if (this.myForm.controls.lat.value >= 60.01 || this.myForm.controls.lat.value <= 48.20) {
+      alert('Latitude must be between 48.20 and 60.01');
+      return false;
+    } else if (this.myForm.controls.lon.value >= -114.01 || this.myForm.controls.lon.value <= -139.06) {
+      alert('Longitude must be between -114.01 and -139.06');
+      return;
+    } else {
+      return true;
+    }
+  }
+
+  onSubmit() {
+    if (!this.validateForm()) {
+      return;
+    }
+    if (!this.isEditing) {
+      // POST
       console.log('POST');
       let project = new Project(
         this.convertFormToProject(this.myForm)
@@ -363,32 +469,35 @@ export class AddEditProjectComponent implements OnInit {
       this.projectService.add(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          (data) => { this.projectId = data._id; },
+          (data) => {
+            this.projectId = data._id;
+          },
           error => {
             console.log('error =', error);
             alert('Uh-oh, couldn\'t create project');
           },
           () => { // onCompleted
+            this.clearStorageService();
             this.loading = false;
             // this.openSnackBar('This project was created successfuly.', 'Close');
             this.router.navigate(['/p', this.projectId, 'project-details']);
           }
         );
     } else {
-      // POST
+      // PUT
       console.log('PUT');
       let project = new Project(this.convertFormToProject(this.myForm));
       console.log('PUTing', project);
-      console.log('this.projectId', this.projectId);
-      project._id = this.projectId;
+      project._id = this.project._id;
       this.projectService.save(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           () => { // onCompleted
+            this.clearStorageService();
             this.loading = false;
             this.router.navigated = false;
-            this.openSnackBar('This project was created successfuly.', 'Close');
-            this.router.navigate(['/p', this.projectId, 'project-details']);
+            this.openSnackBar('This project was created successfully.', 'Close');
+            this.router.navigate(['/p', this.project._id, 'project-details']);
           },
           error => {
             console.log('error =', error);
@@ -398,14 +507,26 @@ export class AddEditProjectComponent implements OnInit {
     }
   }
 
+  public removeSelectedOrganization() {
+    this.storageService.state.selectedOrganization = null;
+    this.proponentName = '';
+    this.proponentId = '';
+    this.myForm.controls.proponent.setValue('');
+  }
+
   public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
   }
 
-  register (myForm: FormGroup) {
+  register(myForm: FormGroup) {
     console.log('Successful registration');
     console.log(myForm);
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

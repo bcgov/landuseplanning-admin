@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './not-authorized.component.html',
   styleUrls: ['./not-authorized.component.scss']
 })
-export class NotAuthorizedComponent implements OnInit {
+export class NotAuthorizedComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public loggedout = false;
 
@@ -22,5 +22,10 @@ export class NotAuthorizedComponent implements OnInit {
 
   login() {
     window.location.href = window.location.origin + '/admin/search';
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

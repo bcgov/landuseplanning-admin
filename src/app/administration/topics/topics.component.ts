@@ -52,7 +52,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
     {
       name: 'Action',
       value: 'null',
-      width: 'col-1'
+      width: 'col-1',
+      nosort: true
     }
   ];
 
@@ -144,11 +145,6 @@ export class TopicsComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
   addTopic() {
     let dlg = this.modalService.open(AddEditTopicComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
     dlg.result.then(result => {
@@ -156,5 +152,10 @@ export class TopicsComponent implements OnInit, OnDestroy {
         this.getPaginatedTopics(this.tableParams.currentPage);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

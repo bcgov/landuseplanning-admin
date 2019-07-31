@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ import { Utils } from 'app/shared/utils/utils';
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss']
 })
-export class UploadComponent implements OnInit {
+export class UploadComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   public authorsel: any;
@@ -33,6 +33,7 @@ export class UploadComponent implements OnInit {
   public myForm: FormGroup;
   public loading = true;
   public docNameInvalid = false;
+  public projectPhases: any[] = [];
 
   constructor(
     private router: Router,
@@ -57,6 +58,9 @@ export class UploadComponent implements OnInit {
         case 'label':
           this.labels.push(Object.assign({}, item));
           break;
+        case 'projectPhase':
+          this.projectPhases.push(Object.assign({}, item));
+          break;
       }
     });
 
@@ -70,7 +74,8 @@ export class UploadComponent implements OnInit {
         'datePosted': new FormControl(),
         'dateUploaded': new FormControl(),
         'displayName': new FormControl(),
-        'description': new FormControl()
+        'description': new FormControl(),
+        'projectphasesel': new FormControl()
       });
       let today = new Date();
       let todayObj = {
@@ -130,6 +135,7 @@ export class UploadComponent implements OnInit {
       formData.append('type', this.myForm.value.doctypesel);
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.authorsel);
+      formData.append('projectPhase', this.myForm.value.projectphasesel);
       observables.push(this.documentService.add(formData));
     });
 
@@ -158,7 +164,7 @@ export class UploadComponent implements OnInit {
   }
 
   public validateChars() {
-    if ( this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g) ) {
+    if (this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g)) {
       this.docNameInvalid = true;
     } else {
       this.docNameInvalid = false;
@@ -198,4 +204,8 @@ export class UploadComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

@@ -9,38 +9,6 @@ import { User } from 'app/models/user';
 export class UserService {
   constructor(private api: ApiService) {}
 
-  getAll(): Observable<User[]> {
-    return this.api.getUsers().pipe(
-      map(res => {
-        if (res && res.length > 0) {
-          const users: User[] = [];
-          res.forEach(user => {
-            users.push(new User(user));
-          });
-          return users;
-        }
-        return [];
-      }),
-      catchError(error => this.api.handleError(error))
-    );
-  }
-
-  getById(id: any): Observable<User> {
-    return this.api.getUser(id)
-      // .map(res => {
-      //   if (res && res.length > 0) {
-      //     const users: Array<User> = [];
-      //     res.forEach(user => {
-      //       users.push(new User(user));
-      //     });
-      //     return users;
-      //   }
-      //   return [];
-      // })
-      .catch(error => this.api.handleError(error));
-  }
-
-
   save(user: User): Observable<User> {
     return this.api.saveUser(user).pipe(catchError(error => this.api.handleError(error)));
   }

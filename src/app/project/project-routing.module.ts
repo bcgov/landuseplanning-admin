@@ -35,10 +35,15 @@ import { ProjectUpdatesResolver } from './project-updates/project-updates-resolv
 import { PinsComponentResolver } from './pins-list/pins-component-resolver.services';
 import { ProjectContactsResolver } from './project-groups/project-groups-resolver.services';
 import { PinsListComponent } from './pins-list/pins-list.component';
-import { ContactsResolverService } from 'app/contacts/contacts-resolver.service';
-import { ContactsComponent } from 'app/contacts/contacts.component';
+import { ContactsResolver } from 'app/contacts/contacts-resolver.service';
 import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
 import { PinsGlobalComponentResolver } from './pins-list/pins-global-resolver.service';
+import { ProjectGroupResolver } from './project-groups/project-group-resolver.services';
+import { GroupContactComponent } from './project-groups/group-contact/group-contact.component';
+import { ProjectContactsGroupResolver } from './project-groups/project-contact-group-resolver.services';
+import { GroupContactSelectComponent } from './project-groups/group-contact/group-contact-select/group-contact-select.component';
+import { LinkOrganizationResolver } from 'app/shared/components/link-organization/link-organization-resolver.services';
+import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
 
 const routes: Routes = [
   {
@@ -53,6 +58,13 @@ const routes: Routes = [
         path: '',
         redirectTo: 'project-details',
         pathMatch: 'full'
+      },
+      {
+        path: 'edit/link-org',
+        component: LinkOrganizationComponent,
+        resolve: {
+          organizations: LinkOrganizationResolver
+        }
       },
       {
         path: 'edit',
@@ -125,10 +137,18 @@ const routes: Routes = [
         }
       },
       {
-        path: 'project-groups/select',
-        component: ContactSelectComponent,
+        path: 'project-groups/g/:groupId/members',
+        component: GroupContactComponent,
         resolve: {
-          contacts: ContactsResolverService
+          group: ProjectGroupResolver,
+          users: ProjectContactsGroupResolver
+        }
+      },
+      {
+        path: 'project-groups/g/:groupId/members/select',
+        component: GroupContactSelectComponent,
+        resolve: {
+          contacts: ContactsResolver
         }
       },
       {
@@ -240,7 +260,8 @@ const routes: Routes = [
     ReviewCommentResolver,
     ValuedComponentsResolver,
     PinsComponentResolver,
-    ProjectContactsResolver
+    ProjectContactsResolver,
+    LinkOrganizationResolver
   ]
 })
 
