@@ -23,9 +23,9 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
     ReactiveFormsModule
   ],
   declarations: [
+    AddEditProjectComponent,
     ProjectListComponent,
-    ProjectListTableRowsComponent,
-    AddEditProjectComponent
+    ProjectListTableRowsComponent
   ],
   entryComponents: [
     ProjectListTableRowsComponent

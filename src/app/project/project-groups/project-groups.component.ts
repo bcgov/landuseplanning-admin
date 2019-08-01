@@ -9,6 +9,14 @@ import { StorageService } from 'app/services/storage.service';
 import { SearchTerms } from 'app/models/search';
 import { User } from 'app/models/user';
 import { GroupsTableRowsComponent } from './project-groups-table-rows/project-groups-table-rows.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { InputModalComponent } from 'app/input-modal/input-modal.component';
+import { ProjectService } from 'app/services/project.service';
+import { DialogService } from 'ng2-bootstrap-modal';
+import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { ExcelService } from 'app/services/excel.service';
+import { SearchService } from 'app/services/search.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-project-groups',
@@ -27,6 +35,7 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
   public terms = new SearchTerms();
   public typeFilters = [];
   public selectedCount = 0;
+  private inputModal: NgbModalRef = null;
 
   public tableParams: TableParamsObject = new TableParamsObject();
   public tableData: TableObject;
@@ -39,41 +48,37 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Name',
-      value: 'displayName',
-      width: 'col-3'
-    },
-    {
-      name: 'Organization',
-      value: 'org.name',
-      width: 'col-4'
-    },
-    {
-      name: 'Email',
-      width: 'col-5',
-      nosort: true
+      value: 'name',
+      width: 'col-11'
     }
   ];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private _changeDetectionRef: ChangeDetectorRef,
+    private dialogService: DialogService,
+    private excelService: ExcelService,
+    private modalService: NgbModal,
+    private snackBar: MatSnackBar,
     private tableTemplateUtils: TableTemplateUtils,
-    private storageService: StorageService
+    private projectService: ProjectService,
+    private storageService: StorageService,
+    private searchService: SearchService
   ) { }
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
 
     this.route.params
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(params => {
-      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, null, 25);
-      if (this.tableParams.sortBy === '') {
-        this.tableParams.sortBy = '-dateAdded';
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
-      }
-      this._changeDetectionRef.detectChanges();
-    });
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(params => {
+        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, null, 25);
+        if (this.tableParams.sortBy === '') {
+          this.tableParams.sortBy = '-dateAdded';
+          this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
+        }
+        this._changeDetectionRef.detectChanges();
+      });
 
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -112,7 +117,7 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
     let list = [];
     if (this.entries && this.entries.length > 0) {
       this.entries.forEach((item: any) => {
-        list.push(new User(item.contact));
+        list.push(item);
       });
       this.tableData = new TableObject(
         GroupsTableRowsComponent,
@@ -127,10 +132,10 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
   }
 
   public selectAction(action) {
-    let promises = [];
-
-    // select all documents
     switch (action) {
+      case 'copyEmail':
+        this.copyEmail();
+        break;
       case 'selectAll':
         let someSelected = false;
         this.tableData.data.map((item) => {
@@ -145,11 +150,169 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
         this.selectedCount = someSelected ? 0 : this.tableData.data.length;
         this._changeDetectionRef.detectChanges();
         break;
-      }
+      case 'edit':
+        let selected = this.tableData.data.filter(item => item.checkbox === true);
+        console.log('selected:', selected);
+        this.router.navigate(['/p', this.currentProject._id, 'project-groups', 'g', selected[0]._id, 'members']);
+        break;
+      case 'add':
+        this.addNewGroup();
+        break;
+      case 'delete':
+        this.deleteItems();
+        break;
+      case 'export':
+        this.exportItems();
+        break;
     }
+  }
+
+  async copyEmail() {
+    let itemsToExport = [];
+    this.tableData.data.map((item) => {
+      if (item.checkbox === true) {
+        itemsToExport.push(item);
+      }
+    });
+    let list = [];
+    itemsToExport.map(group => {
+      group.members.map(member => {
+        list.push(member);
+      });
+    });
+
+    let filteredArray = list.reduce((unique, item) => {
+      return unique.includes(item) ? unique : [...unique, item];
+    }, []);
+
+    // Get all the user emails
+    let csvData = [];
+    filteredArray.map((item) => {
+      csvData.push(
+        this.searchService.getItem(item, 'User').toPromise()
+      );
+    });
+    this.loading = false;
+    return Promise.all(csvData)
+      .then((data) => {
+        // Reload main page.
+        let userData = '';
+        data.map(p => {
+          userData += p.data.email + ';';
+        });
+        console.log(userData);
+        let selBox = document.createElement('textarea');
+        selBox.style.position = 'fixed';
+        selBox.style.left = '0';
+        selBox.style.top = '0';
+        selBox.style.opacity = '0';
+        selBox.value = userData;
+        document.body.appendChild(selBox);
+        selBox.focus();
+        selBox.select();
+        document.execCommand('copy');
+        document.body.removeChild(selBox);
+        this.openSnackBar('Emails have been copied to your clipboard.', 'Close');
+      });
+  }
+
+  async exportItems() {
+    let itemsToExport = [];
+    this.tableData.data.map((item) => {
+      if (item.checkbox === true) {
+        itemsToExport.push(item);
+      }
+    });
+    let list = [];
+    itemsToExport.map(group => {
+      group.members.map(member => {
+        list.push(member);
+      });
+    });
+
+    let filteredArray = list.reduce((unique, item) => {
+      return unique.includes(item) ? unique : [...unique, item];
+    }, []);
+
+    // Get all the user emails
+    let csvData = [];
+    filteredArray.map((item) => {
+      csvData.push(
+        this.searchService.getItem(item, 'User').toPromise()
+      );
+    });
+    this.loading = false;
+    return Promise.all(csvData)
+      .then((data) => {
+        let userData = [];
+        data.map(p => {
+          userData.push({
+            name: p.data.firstName + ' ' + p.data.lastName,
+            title: p.data.title,
+            organization: p.data.orgName,
+            phone: p.data.phoneNumber,
+            address: p.data.address1 + (p.data.address2 === '' ? '' : p.data.address2),
+            city: p.data.city,
+            province: p.data.province,
+            postal: p.data.postalCode,
+            email: p.data.email
+          });
+        });
+        console.log(userData);
+
+        // Export to CSV
+        this.excelService.exportAsExcelFile(userData, 'contactList');
+      });
+  }
+
+  async addNewGroup() {
+    this.inputModal = this.modalService.open(InputModalComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
+    this.inputModal.result.then(async result => {
+      if (result) {
+        // Add the group name
+        await this.projectService.addGroup(this.currentProject, result).toPromise();
+        this.onSubmit();
+      }
+    });
+    return;
+  }
+
+  async deleteItems() {
+    this.dialogService.addDialog(ConfirmComponent,
+      {
+        title: 'Delete Groups',
+        message: 'Click <strong>OK</strong> to delete selected Group or <strong>Cancel</strong> to return to the list.'
+      }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+      })
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        isConfirmed => {
+          if (isConfirmed) {
+            this.loading = true;
+            let itemsToDelete = [];
+            this.tableData.data.map((item) => {
+              if (item.checkbox === true) {
+                itemsToDelete.push({ promise: this.projectService.deleteGroup(this.currentProject, item._id).toPromise(), item: item });
+              }
+            });
+            this.loading = false;
+            return Promise.all(itemsToDelete).then(() => {
+              // Reload main page.
+              this.onSubmit();
+            });
+          }
+          this.loading = false;
+        }
+      );
+  }
 
   isEnabled(button) {
-    return this.selectedCount > 0;
+    if (button === 'edit') {
+      return this.selectedCount === 1;
+    } else {
+      return this.selectedCount > 0;
+    }
   }
 
   setColumnSort(column) {
@@ -223,6 +386,12 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
     } else {
       this.typeFilters.push(filterItem);
     }
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   ngOnDestroy() {

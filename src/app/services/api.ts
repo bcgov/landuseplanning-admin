@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-// import { Params } from '@angular/router';
+import { Params } from '@angular/router';
 // import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -24,7 +24,7 @@ import { RecentActivity } from 'app/models/recentActivity';
 import { ValuedComponent } from 'app/models/valuedComponent';
 import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
 
-interface ILocalLoginResponse {
+interface LocalLoginResponse {
   _id: string;
   title: string;
   created_at: string;
@@ -44,14 +44,18 @@ window['encodeURIComponent'] = (component: string) => {
 
 @Injectable()
 export class ApiService {
+
   public token: string;
   public isMS: boolean; // IE, Edge, etc
   // private jwtHelper: JwtHelperService;
   pathAPI: string;
-  // params: Params;
+  params: Params;
   env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
 
-  constructor(private http: HttpClient, private keycloakService: KeycloakService) {
+  constructor(
+    private http: HttpClient,
+    private keycloakService: KeycloakService
+  ) {
     // this.jwtHelper = new JwtHelperService();
     const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
@@ -66,27 +70,27 @@ export class ApiService {
         break;
 
       case 'gcpe-lup-dev.pathfinder.gov.bc.ca':
-        // Prod
-        this.pathAPI = 'https://gcpe-lup-dev.pathfinder.gov.bc.ca/api';
+        // Dev
+        this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
         break;
 
       case 'gcpe-lup-test.pathfinder.gov.bc.ca':
         // Test
-        this.pathAPI = 'https://gcpe-lup-test.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://lup-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
-      case 'landuseplanning.gov.bc.ca':
+      case 'gcpe-lup-prod.gov.bc.ca':
         // Prod
-        this.pathAPI = 'https://gcpe-lup-prod.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://lup-prod.pathfinder.gov.bc.ca/api';
         this.env = 'prod';
         break;
 
       default:
-        // prod
-        this.pathAPI = 'https://gcpe-lup-prod.pathfinder.gov.bc.ca/api';
-        this.env = 'prod';
+        // Dev
+        this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
+        this.env = 'dev';
     }
   }
 
@@ -100,22 +104,19 @@ export class ApiService {
   }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http
-      .post<ILocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
-      .pipe(
-        map(res => {
-          // login successful if there's a jwt token in the response
-          if (res && res.accessToken) {
-            this.token = res.accessToken;
+    return this.http.post<LocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
+      .map(res => {
+        // login successful if there's a jwt token in the response
+        if (res && res.accessToken) {
+          this.token = res.accessToken;
+          window.localStorage.clear();
+          // store username and jwt token in local storage to keep user logged in between page refreshes
+          window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: this.token }));
 
-            // store username and jwt token in local storage to keep user logged in between page refreshes
-            window.localStorage.setItem('currentUser', JSON.stringify({ username: username, token: this.token }));
-
-            return true; // successful login
-          }
-          return false; // failed login
-        })
-      );
+          return true; // successful login
+        }
+        return false; // failed login
+      });
   }
 
   logout() {
@@ -264,6 +265,11 @@ export class ApiService {
     return this.http.post<Project>(`${this.pathAPI}/${queryString}`, pins, {});
   }
 
+  addGroupToProject(proj: Project, group: any): Observable<Project> {
+    const queryString = `project/${proj._id}/group`;
+    return this.http.post<Project>(`${this.pathAPI}/${queryString}`, { group: group }, {});
+  }
+
   deletePin(projId: string, pinId: string): Observable<Project> {
     const queryString = `project/${projId}/pin/${pinId}`;
     return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
@@ -275,6 +281,34 @@ export class ApiService {
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     return this.http.get<any>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getProjectGroupMembers(id: string, groupId: string, pageNum: number, pageSize: number, sortBy: any): Observable<Org> {
+    let queryString = `project/${id}/group/${groupId}/members`;
+    if (pageNum !== null) { queryString += `?pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    return this.http.get<any>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  addMembersToGroup(proj: Project, groupId: string, members: any): Observable<Project> {
+    const queryString = `project/${proj._id}/group/${groupId}/members`;
+    return this.http.post<Project>(`${this.pathAPI}/${queryString}`, members, {});
+  }
+
+  deleteMembersFromGroup(projId: string, groupId: string, member: string): Observable<Project> {
+    const queryString = `project/${projId}/group/${groupId}/members/${member}`;
+    return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  saveGroup(projectId: Project, groupId: any, groupObj: any): Observable<Project> {
+    const queryString = `project/${projectId}/group/${groupId}`;
+    return this.http.put<Project>(`${this.pathAPI}/${queryString}`, groupObj, {});
+  }
+
+  deleteGroup(proj: Project, groupId: string): Observable<Project> {
+    const queryString = `project/${proj._id}/group/${groupId}`;
+    return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
   }
 
   saveProject(proj: Project): Observable<Project> {
@@ -347,7 +381,7 @@ export class ApiService {
   }
 
   addDecision(decision: Decision): Observable<Decision> {
-    const queryString = 'decision/';
+    const queryString = `decision/`;
     return this.http.post<Decision>(`${this.pathAPI}/${queryString}`, decision, {});
   }
 
@@ -487,7 +521,7 @@ export class ApiService {
   }
 
   addCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
-    const queryString = 'commentperiod/';
+    const queryString = `commentperiod/`;
     return this.http.post<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, {});
   }
 
@@ -565,12 +599,13 @@ export class ApiService {
   getCountCommentsByPeriodId(periodId: string): Observable<number> {
     // NB: count only pending comments
     const queryString = `comment?isDeleted=false&commentStatus='Pending'&_commentPeriod=${periodId}`;
-    return this.http.head<HttpResponse<object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' }).pipe(
-      map(res => {
-        // retrieve the count from the response headers
-        return parseInt(res.headers.get('x-total-count'), 10);
-      })
-    );
+    return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' })
+      .pipe(
+        map(res => {
+          // retrieve the count from the response headers
+          return parseInt(res.headers.get('x-total-count'), 10);
+        })
+      );
   }
 
   getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string, count: boolean, filter: object): Observable<Object> {
@@ -636,7 +671,7 @@ export class ApiService {
   }
 
   addComment(comment: Comment): Observable<Comment> {
-    const queryString = 'comment/';
+    const queryString = `comment/`;
     return this.http.post<Comment>(`${this.pathAPI}/${queryString}`, comment, {});
   }
 
@@ -686,6 +721,7 @@ export class ApiService {
       'project',
       'type',
       'documentAuthor',
+      'projectPhase',
       'milestone',
       'description',
       'isPublished'
@@ -714,6 +750,7 @@ export class ApiService {
       'project',
       'type',
       'documentAuthor',
+      'projectPhase',
       'milestone',
       'description',
       'isPublished'
@@ -952,33 +989,13 @@ export class ApiService {
   //
   // Users
   //
-  getUsers(): Observable<User[]> {
-    const fields = ['displayName', 'username', 'firstName', 'lastName'];
-    const queryString = `user?fields=${this.buildValues(fields)}`;
-    return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  getUser(id: any): Observable<User> {
-    const fields = [
-      'displayName',
-      'username',
-      'firstName',
-      'lastName',
-      'org',
-      'phoneNumber',
-      'email',
-    ];
-    const queryString = `user/${id}?fields=${this.buildValues(fields)}`;
-    return this.http.get<User>(`${this.pathAPI}/${queryString}`, {});
-  }
-
   saveUser(user: User): Observable<User> {
     const queryString = `user/${user._id}`;
     return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
   addUser(user: User): Observable<User> {
-    const queryString = 'user/';
+    const queryString = `user/`;
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
@@ -1013,7 +1030,7 @@ export class ApiService {
   //
   private buildValues(collection: any[]): string {
     let values = '';
-    _.each(collection, a => {
+    _.each(collection, function (a) {
       values += a + '|';
     });
     // trim the last |

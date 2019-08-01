@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { of, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
@@ -18,7 +18,7 @@ import { Utils } from 'app/shared/utils/utils';
   templateUrl: './document-edit.component.html',
   styleUrls: ['./document-edit.component.scss']
 })
-export class DocumentEditComponent implements OnInit {
+export class DocumentEditComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public documents: any[] = [];
   public currentProject;
@@ -31,6 +31,7 @@ export class DocumentEditComponent implements OnInit {
   public loading = true;
   public multiEdit = false;
   public docNameInvalid = false;
+  public projectPhases: any[] = [];
 
   constructor(
     private config: ConfigService,
@@ -57,6 +58,9 @@ export class DocumentEditComponent implements OnInit {
         case 'label':
           this.labels.push(Object.assign({}, item));
           break;
+        case 'projectPhase':
+          this.projectPhases.push(Object.assign({}, item));
+          break;
       }
     });
 
@@ -67,7 +71,7 @@ export class DocumentEditComponent implements OnInit {
     let doclist_order = [0, 1, 2, 8, 7, 9, 3, 17, 18, 19, 4, 5, 20, 10, 6, 12, 11, 13, 14, 15, 16];
     // We map the doctypes to put in the correct order as defined in doclist_order
     doclist_order.map((item, i) => {
-          this.doctypes[i] = copy_doctype[item];
+      this.doctypes[i] = copy_doctype[item];
     });
 
     // Check if documents are null (nav straight to this page)
@@ -86,7 +90,8 @@ export class DocumentEditComponent implements OnInit {
             'labelsel': new FormControl(this.documents[0].milestone),
             'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].datePosted))),
             'displayName': new FormControl(this.documents[0].displayName),
-            'description': new FormControl(this.documents[0].description)
+            'description': new FormControl(this.documents[0].description),
+            'projectphasesel': new FormControl(this.documents[0].projectPhase)
           });
         } else {
           this.multiEdit = true;
@@ -96,7 +101,8 @@ export class DocumentEditComponent implements OnInit {
             'labelsel': new FormControl(),
             'datePosted': new FormControl(),
             'displayName': new FormControl(),
-            'description': new FormControl()
+            'description': new FormControl(),
+            'projectphasesel': new FormControl()
           });
         }
       }
@@ -119,7 +125,7 @@ export class DocumentEditComponent implements OnInit {
   }
 
   public validateChars() {
-    if ( this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g) ) {
+    if (this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g)) {
       this.docNameInvalid = true;
     } else {
       this.docNameInvalid = false;
@@ -128,8 +134,8 @@ export class DocumentEditComponent implements OnInit {
 
   // on multi edit save, check if form fields have a value
   multiEditGetUpdatedValue(formValue, docValue, isDate = false) {
-    if ( formValue !== null ) {
-      if ( isDate ) {
+    if (formValue !== null) {
+      if (isDate) {
         return new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(formValue))).toISOString();
       } else {
         return formValue;
@@ -164,6 +170,7 @@ export class DocumentEditComponent implements OnInit {
         formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
         formData.append('type', this.myForm.value.doctypesel);
         formData.append('documentAuthor', this.myForm.value.authorsel);
+        formData.append('projectPhase', this.myForm.value.projectphasesel);
       } else {
         doc.documentFileName !== null ? formData.append('documentFileName', doc.documentFileName) : Function.prototype;
         doc.displayName !== null ? formData.append('displayName', doc.displayName) : Function.prototype;
@@ -184,6 +191,10 @@ export class DocumentEditComponent implements OnInit {
         // apply changes to documentAuthor if any
         let documentAuthor = this.multiEditGetUpdatedValue(this.myForm.value.authorsel, doc.documentAuthor);
         documentAuthor !== undefined && documentAuthor !== null ? formData.append('documentAuthor', documentAuthor) : Function.prototype;
+
+        // apply changes to projectPhase if any
+        let projectPhase = this.multiEditGetUpdatedValue(this.myForm.value.projectphasesel, doc.projectPhase);
+        projectPhase !== undefined && projectPhase !== null ? formData.append('projectPhase', projectPhase) : Function.prototype;
       }
 
       // TODO
@@ -267,5 +278,10 @@ export class DocumentEditComponent implements OnInit {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

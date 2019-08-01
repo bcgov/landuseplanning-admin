@@ -7,7 +7,6 @@
     {
       "root": "src",
       "outDir": "dist",
-      "baseHref": "/admin/",
       "assets": [
         "assets",
         "favicon.ico"
