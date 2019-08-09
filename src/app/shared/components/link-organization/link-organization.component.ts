@@ -59,7 +59,7 @@ export class LinkOrganizationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.navigationStackUtils.getNavigationStack()) {
       this.navigationObject = this.navigationStackUtils.getLastNavigationObject();
-      if (this.navigationObject.breadcrumbs[0].label === 'Organizations') {
+      if (this.navigationObject.breadcrumbs[0].label === 'Organizations' || this.navigationObject.breadcrumbs[this.navigationObject.breadcrumbs.length - 1].label === 'Add Organization') {
         this.isParentCompany = true;
       }
     } else {
