@@ -56,10 +56,6 @@
   </section>
   <section>
     <div class="label-pair">
-      <h3 for="type">Type: </h3>
-      <p id="type">{{document.type | listConverter}}</p>
-    </div>
-    <div class="label-pair">
       <h3 for="dateUploaded">Upload Date: </h3>
       <p id="dateUploaded">{{document.dateUploaded | date}}</p>
     </div>
@@ -69,15 +65,11 @@
     </div>
     <div class="label-pair">
       <h3 for="documentAuthor">Author: </h3>
-      <p id="documentAuthor">{{document.documentAuthor | listConverter}}</p>
-    </div>
-    <div class="label-pair">
-      <h3 for="milestone">Milestone: </h3>
-      <p id="milestone">{{document.milestone | listConverter}}</p>
+      <p id="documentAuthor">{{document.documentAuthor}}</p>
     </div>
     <div class="label-pair">
             <h3 for="projectPhase">Project Phase: </h3>
-            <p id="projectPhase">{{document.projectPhase | listConverter}}</p>
+            <p id="projectPhase">{{document.projectPhase}}</p>
           </div>
     <div class="label-pair">
       <h3 for="internalSize">Filesize: </h3>

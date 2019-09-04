@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule, APP_INITIALIZER, ApplicationRef } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 // modules
 import { AppRoutingModule } from 'app/app-routing.module';
@@ -72,6 +73,8 @@ import { OrganizationsTableRowsComponent } from './organizations/organizations-t
 import { AddEditOrganizationComponent } from './organizations/add-edit-organization/add-edit-organization.component';
 import { LinkOrganizationComponent } from './shared/components/link-organization/link-organization.component';
 import { LinkOrganizationTableRowsComponent } from './shared/components/link-organization/link-organization-table-rows/link-organization-table-rows.component';
+import { ContactSelectComponent } from './shared/components/contact-select/contact-select.component';
+import { ContactSelectTableRowsComponent } from './shared/components/contact-select/contact-select-table-rows/contact-select-table-rows.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -136,6 +139,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     NgbModule.forRoot(),
     NgxPaginationModule,
+    CKEditorModule,
     BootstrapModalModule.forRoot({ container: document.body })
   ],
   providers: [
@@ -177,6 +181,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AddEditTopicComponent,
     AddEditTopicComponent,
     LinkOrganizationComponent,
+    ContactSelectComponent,
     TopicTableRowsComponent,
     ConfirmComponent,
     DayCalculatorModalComponent,
@@ -188,6 +193,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     ActivityTableRowsComponent,
     ActivityDetailTableRowsComponent,
     LinkOrganizationTableRowsComponent,
+    ContactSelectTableRowsComponent,
     TopicTableRowsComponent,
     UserTableRowsComponent
   ],

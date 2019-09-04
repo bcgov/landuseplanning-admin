@@ -11,9 +11,7 @@ export class Document {
   internalSize: Number;
   documentSource: string;
   displayName: string;
-  milestone: string;
   dateUploaded: string;
-  type: string;
   description: string;
   documentAuthor: string;
   eaoStatus: string;
@@ -41,11 +39,9 @@ export class Document {
     this.documentSource = obj && obj.documentSource || null;
 
     this.displayName = obj && obj.displayName || null;
-    this.milestone = obj && obj.milestone || null;
     this.dateUploaded = obj && obj.dateUploaded || null;
     this.dateUpdated = obj && obj.dateUpdated || null;
     this.datePosted = obj && obj.datePosted || null;
-    this.type = obj && obj.type || null;
     this.description = obj && obj.description || null;
     this.documentAuthor = obj && obj.documentAuthor || null;
     this.eaoStatus = obj && obj.eaoStatus || null;

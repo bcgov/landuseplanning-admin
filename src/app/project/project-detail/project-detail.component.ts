@@ -53,10 +53,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         (data: { project: Project }) => {
           if (data.project) {
             this.project = data.project;
+            console.log(this.project);
             this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
             // this.loading = false;
             this._changeDetectorRef.detectChanges();
           } else {
+            console.log("DATA", data);
             alert('Uh-oh, couldn\'t load project');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);
@@ -67,14 +69,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     // this.project = this.projectComponent.project;
     // Handles when we come back to this page.
 
-    // // TODO fix
-    // if (this.project && this.project.intake === null) {
-    //   this.project.intake = { investment: '', investmentNotes: '' };
-    // }
-
-    // if (this.project && this.project.intake.investment !== '' && this.project.intake.investment[0] !== '$') {
-    //   this.project.intake.investment = this.cp.transform(this.project.intake.investment, '', true, '1.0-0');
-    // }
   }
 
   editProject() {

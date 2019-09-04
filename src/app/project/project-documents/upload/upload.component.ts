@@ -20,20 +20,22 @@ import { Utils } from 'app/shared/utils/utils';
 export class UploadComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  public authorsel: any;
   public currentProject;
   public projectFiles: Array<File> = [];
   public documents: Document[] = [];
   public datePosted: NgbDateStruct = null;
   public dateUploaded: NgbDateStruct = null;
-  public doctypes: any[] = [];
-  public authors: any[] = [];
   public labels: any[] = [];
-  public milestones: any[] = [];  // Get this from the project's data.
   public myForm: FormGroup;
   public loading = true;
   public docNameInvalid = false;
-  public projectPhases: any[] = [];
+  public PROJECT_PHASES: Array<Object> = [
+    'Pre-Planning',
+    'Plan Initiation',
+    'Plan Development',
+    'Plan Evaluation and Approval',
+    'Plan Implementation and Monitoring'
+  ];
 
   constructor(
     private router: Router,
@@ -49,17 +51,12 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     this.config.lists.map(item => {
       switch (item.type) {
-        case 'doctype':
-          this.doctypes.push(Object.assign({}, item));
-          break;
         case 'author':
-          this.authors.push(Object.assign({}, item));
           break;
         case 'label':
           this.labels.push(Object.assign({}, item));
           break;
         case 'projectPhase':
-          this.projectPhases.push(Object.assign({}, item));
           break;
       }
     });
@@ -68,14 +65,12 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.myForm = this.storageService.state.form;
     } else {
       this.myForm = new FormGroup({
-        'doctypesel': new FormControl(),
-        'authorsel': new FormControl(),
-        'labelsel': new FormControl(),
+        'documentAuthor': new FormControl(),
         'datePosted': new FormControl(),
         'dateUploaded': new FormControl(),
         'displayName': new FormControl(),
         'description': new FormControl(),
-        'projectphasesel': new FormControl()
+        'projectPhase': new FormControl()
       });
       let today = new Date();
       let todayObj = {
@@ -129,13 +124,11 @@ export class UploadComponent implements OnInit, OnDestroy {
       formData.append('documentSource', 'PROJECT');
 
       formData.append('displayName', this.documents.length > 1 ? doc.documentFileName : this.myForm.value.displayName);
-      formData.append('milestone', this.myForm.value.labelsel);
       formData.append('dateUploaded', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUploaded').value))).toISOString());
       formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
-      formData.append('type', this.myForm.value.doctypesel);
       formData.append('description', this.myForm.value.description);
-      formData.append('documentAuthor', this.myForm.value.authorsel);
-      formData.append('projectPhase', this.myForm.value.projectphasesel);
+      formData.append('documentAuthor', this.myForm.value.documentAuthor);
+      formData.append('projectPhase', this.myForm.value.projectPhase);
       observables.push(this.documentService.add(formData));
     });
 

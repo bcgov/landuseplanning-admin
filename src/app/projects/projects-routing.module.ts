@@ -6,6 +6,8 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
 import { ProjectListResolver } from './project-list/project-list-resolver.services';
 import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
 import { LinkOrganizationResolver } from 'app/shared/components/link-organization/link-organization-resolver.services';
+import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
+import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
 
 const routes: Routes = [
   {
@@ -13,6 +15,13 @@ const routes: Routes = [
     component: LinkOrganizationComponent,
     resolve: {
       organizations: LinkOrganizationResolver
+    }
+  },
+  {
+    path: 'projects/add/contact-select',
+    component: ContactSelectComponent,
+    resolve: {
+      users: ContactSelectResolver
     }
   },
   {
@@ -37,7 +46,8 @@ const routes: Routes = [
   ],
   providers: [
     ProjectListResolver,
-    LinkOrganizationResolver
+    LinkOrganizationResolver,
+    ContactSelectResolver
   ]
 })
 

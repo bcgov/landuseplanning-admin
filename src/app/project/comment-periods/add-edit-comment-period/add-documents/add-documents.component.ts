@@ -48,16 +48,6 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
       value: 'datePosted',
       width: 'col-2'
     },
-    {
-      name: 'Type',
-      value: 'type',
-      width: 'col-2'
-    },
-    {
-      name: 'Milestone',
-      value: 'milestone',
-      width: 'col-2'
-    }
   ];
 
   public currentProject;
@@ -235,8 +225,6 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
           {
             displayName: document.displayName,
             datePosted: document.datePosted,
-            type: document.type,
-            milestone: document.milestone,
             _id: document._id,
             project: document.project,
             documentFileName: document.documentFileName

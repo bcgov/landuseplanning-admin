@@ -4,74 +4,46 @@ import * as moment from 'moment';
 export class Project {
   // the following are retrieved from the API
   _id: string;
-  CEAAInvolvement: String;
-  CELead: String;
-  CELeadEmail: String;
-  CELeadPhone: String;
+  existingLandUsePlans: String;
   centroid: any[] = [];
   description: String;
-  eacDecision: String;
-  location: String;
+  engagementStatus: String;
+  backgroundInfo: String;
+  overlappingRegionalDistricts: String;
   name: String;
-  projectLead: String;
-  projectLeadEmail: String;
-  projectLeadPhone: String;
-  proponent: any;
+  partner: String;
   region: String;
-  responsibleEPD: String;
-  responsibleEPDEmail: String;
-  responsibleEPDPhone: String;
-  type: String;
+  agreements: String;
 
   // Everything else
   addedBy: String;
-  build: String;
-  nature: String;
-  CEAALink: String;
+  existingLandUsePlanURLs: String;
   code: String;
   commodity: String;
   commentPeriods: CommentPeriod[];
   currentPhaseName: string;
   dateAdded: String;
   dateUpdated: String;
-  decisionDate: String;
   duration: String;
   // TODO: directoryStructure
   eaoMember: String;
   epicProjectID: Number;
   fedElecDist: String;
-  // TODO: intake
-  intake: {
-    investment: any;
-    investmentNotes: any;
-  };
   isTermsAgreed: Boolean;
   overallProgress: Number;
   primaryContact: String;
   proMember: String;
   provElecDist: String;
-  sector: String;
   shortName: String;
-  status: String;
+  projectPhase: String;
   substitution: Boolean;
   updatedBy: String;
 
   eaDecision: any;
-  operational: any;
-
-  // TODO: New Stuff?
-  eaStatus: any;
-  eaStatusDate: String;
-  projectStatusDate: String;
-  substantiallyDate: String;
-  substantially: any;
-  activeDate: String;
-  activeStatus: any;
 
   // Project contacts
-  projLead: any;
-  execProjectDirector: any;
-  complianceLead: any;
+  projectLead: any;
+  projectDirector: any;
 
   // Permissions
   read: Array<String> = [];
@@ -90,48 +62,26 @@ export class Project {
 
   constructor(obj?: any) {
     this._id                 = obj && obj._id                 || null;
-    this.CEAAInvolvement     = obj && obj.CEAAInvolvement     || undefined;
-    this.CELead              = obj && obj.CELead              || undefined;
-    this.CELeadEmail         = obj && obj.CELeadEmail         || undefined;
-    this.CELeadPhone         = obj && obj.CELeadPhone         || undefined;
+    this.existingLandUsePlans = obj && obj.existingLandUsePlans     || undefined;
     this.commentPeriodForBanner         = obj && obj.commentPeriodForBanner         || undefined;
     this.description         = obj && obj.description         || undefined;
-    this.eacDecision         = obj && obj.eacDecision         || undefined;
-    this.location            = obj && obj.location            || undefined;
+    this.engagementStatus = obj && obj.engagementStatus || undefined;
+    this.backgroundInfo = obj && obj.backgroundInfo || undefined;
+    this.overlappingRegionalDistricts = obj && obj.overlappingRegionalDistricts            || undefined;
     this.name                = obj && obj.name                || undefined;
-    this.projectLead         = obj && obj.projectLead         || undefined;
-    this.projectLeadEmail    = obj && obj.projectLeadEmail    || undefined;
-    this.projectLeadPhone    = obj && obj.projectLeadPhone    || undefined;
-    this.proponent           = obj && obj.proponent           || undefined;
+    this.partner              = obj && obj.partner           || undefined;
     this.region              = obj && obj.region              || undefined;
-    this.responsibleEPD      = obj && obj.responsibleEPD      || undefined;
-    this.responsibleEPDEmail = obj && obj.responsibleEPDEmail || undefined;
-    this.responsibleEPDPhone = obj && obj.responsibleEPDPhone || undefined;
-    this.type                = obj && obj.type                || undefined;
+    this.agreements       = obj && obj.agreements                || undefined;
     this.addedBy             = obj && obj.addedBy             || undefined;
-    this.intake              = obj && obj.intake              || undefined;
-    this.build               = obj && obj.build               || undefined;
-    this.nature               = obj && obj.nature               || undefined;    // readonly view on build
-    this.activeStatus = obj && obj.activeStatus || undefined;
 
     this.eaDecision           = obj && obj.eaDecision               || undefined;
-    this.operational          = obj && obj.operational               || undefined;
 
-    this.eaStatusDate               = obj && obj.eaStatusDate               || undefined;
-    this.eaStatus               = obj && obj.eaStatus               || undefined;
-    this.projectStatusDate               = obj && obj.projectStatusDate               || undefined;
-    this.substantiallyDate               = obj && obj.substantiallyDate               || undefined;
-    this.substantially               = obj && obj.substantially               || undefined;
-    this.activeDate               = obj && obj.activeDate               || undefined;
-
-
-    this.CEAALink            = obj && obj.CEAALink            || undefined;
+    this.existingLandUsePlanURLs = obj && obj.existingLandUsePlanURLs            || undefined;
     this.code                = obj && obj.code                || undefined;
     this.commodity           = obj && obj.commodity           || undefined;
     this.currentPhaseName    = obj && obj.currentPhaseName    || undefined;
     this.dateAdded           = obj && obj.dateAdded           || undefined;
     this.dateUpdated         = obj && obj.dateUpdated         || undefined;
-    this.decisionDate        = obj && obj.decisionDate        || undefined;
     this.duration            = obj && obj.duration            || undefined;
     this.eaoMember           = obj && obj.eaoMember           || undefined;
     this.epicProjectID       = obj && obj.epicProjectID       || undefined;
@@ -141,18 +91,16 @@ export class Project {
     this.primaryContact      = obj && obj.primaryContact      || undefined;
     this.proMember           = obj && obj.proMember           || undefined;
     this.provElecDist        = obj && obj.provElecDist        || undefined;
-    this.sector              = obj && obj.sector              || undefined;
     this.shortName           = obj && obj.shortName           || undefined;
-    this.status              = obj && obj.status              || undefined;
+    this.projectPhase = obj && obj.projectPhase              || undefined;
     this.substitution        = obj && obj.substitution        || undefined;
     this.updatedBy           = obj && obj.updatedBy           || undefined;
     this.read                = obj && obj.read                || undefined;
     this.write               = obj && obj.write               || undefined;
     this.delete              = obj && obj.delete              || undefined;
 
-    this.projLead            = obj && obj.projLead              || undefined;
-    this.execProjectDirector = obj && obj.execProjectDirector   || undefined;
-    this.complianceLead      = obj && obj.complianceLead        || undefined;
+    this.projectLead            = obj && obj.projectLead      || undefined;
+    this.projectDirector = obj && obj.projectDirector   || undefined;
 
     // if (obj && obj.publishDate) {
     //   this.publishDate = new Date(obj.publishDate);

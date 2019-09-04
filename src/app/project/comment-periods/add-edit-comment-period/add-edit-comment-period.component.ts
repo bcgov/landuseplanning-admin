@@ -25,7 +25,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   public currentProject;
   public commentPeriod = new CommentPeriod;
-  public milestones: any[] = [];
 
   public isEditing = false;
 
@@ -65,7 +64,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         case 'author':
           break;
         case 'label':
-          this.milestones.push(Object.assign({}, item));
           break;
       }
     });
@@ -80,7 +78,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         case 'author':
           break;
         case 'label':
-          this.milestones.push(Object.assign({}, item));
           break;
       }
     });
@@ -132,7 +129,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         'publishedStateSel': new FormControl(),
         'infoForCommentText': new FormControl(),
         'descriptionText': new FormControl(),
-        'milestoneSel': new FormControl(),
         openHouses: this.formBuilder.array([])
       });
       if (this.isEditing) {
@@ -162,9 +158,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Instructions
     this.extractVarsFromInstructions(this.commentPeriod.instructions, this.commentPeriodForm);
-
-    // Milestone
-    this.commentPeriodForm.controls.milestoneSel.setValue(this.commentPeriod.milestone);
 
     // Open houses
     if (this.commentPeriod.openHouses.length > 0) {
@@ -233,9 +226,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
       });
       this.commentPeriod.relatedDocuments = docIdArray;
     }
-
-    // Check milestones
-    this.commentPeriod.milestone = this.commentPeriodForm.get('milestoneSel').value;
 
     // Check open house date
     this.commentPeriod.openHouses = [];

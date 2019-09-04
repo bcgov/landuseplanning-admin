@@ -14,7 +14,7 @@ import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 import { ProjectListTableRowsComponent } from './project-list-table-rows/project-list-table-rows.component';
 
 import { SearchService } from 'app/services/search.service';
-import { StorageService } from 'app/services/storage.service';
+import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 
 @Component({
   selector: 'app-project-list',
@@ -38,13 +38,13 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       width: 'col-2'
     },
     {
-      name: 'Proponent',
-      value: 'proponent.name',
+      name: 'Partner',
+      value: 'partner',
       width: 'col-2'
     },
     {
-      name: 'Type',
-      value: 'type',
+      name: 'Agreements',
+      value: 'agreements',
       width: 'col-2'
     },
     {
@@ -58,8 +58,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       width: 'col-2'
     },
     {
-      name: 'Decision',
-      value: 'eacDecision',
+      name: 'Engagement Status',
+      value: 'engagementStatus',
       width: 'col-2'
     }
   ];
@@ -70,7 +70,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private tableTemplateUtils: TableTemplateUtils,
-    private storageService: StorageService,
+    private navigationStackUtils: NavigationStackUtils,
     private searchService: SearchService,
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
@@ -108,7 +108,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   addProject() {
-    this.storageService.state.back = { url: ['/projects'], label: 'All Projects(s)' };
+    this.navigationStackUtils.clearNavigationStack();
     this.router.navigate(['/projects', 'add']);
   }
 
@@ -120,11 +120,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
           {
             _id: project._id,
             name: project.name,
-            proponent: project.proponent,
-            type: project.type,
+            partner: project.partner,
+            agreements: project.agreements,
             region: project.region,
             currentPhaseName: project.currentPhaseName,
-            eacDecision: project.eacDecision
+            engagementStatus: project.engagementStatus
           }
         );
       });

@@ -130,15 +130,14 @@ export class ApiService {
   //
   getProjects(pageNum: number, pageSize: number, sortBy: string, populate: Boolean = true): Observable<Object> {
     const fields = [
-      'eacDecision',
+      'engagementStatus',
       'name',
-      'proponent',
+      'partner',
       'region',
-      'type',
+      'agreements',
       'code',
       'currentPhaseName',
       'epicProjectID',
-      'decisionDate'
     ];
 
     let queryString = `project?`;
@@ -158,42 +157,26 @@ export class ApiService {
   // NB: returns array with 1 element
   getProject(id: string, cpStart: string, cpEnd: string): Observable<Project[]> {
     const fields = [
-      'CEAAInvolvement',
-      'CELead',
-      'CELeadEmail',
-      'CELeadPhone',
+      'existingLandUsePlans',
       'centroid',
       'description',
-      'eacDecision',
-      'activeStatus',
-      'location',
+      'engagementStatus',
+      'backgroundInfo',
+      'overlappingRegionalDistricts',
       'name',
-      'projectLead',
-      'projectLeadEmail',
-      'projectLeadPhone',
-      'proponent',
+      'partner',
       'region',
-      'responsibleEPD',
-      'responsibleEPDEmail',
-      'responsibleEPDPhone',
-      'subtype',
-      'type',
+      'agreements',
       'addedBy',
-      'build',
-      'intake',
-      'CEAALink',
+      'existingLandUsePlanURLs',
       'code',
       'eaDecision',
-      'operational',
-      'substantiallyStarted',
-      'nature',
       'commodity',
       'currentPhaseName',
       'dateAdded',
       'dateCommentsClosed',
       'dateCommentsOpen',
       'dateUpdated',
-      'decisionDate',
       'duration',
       'eaoMember',
       'epicProjectID',
@@ -203,20 +186,12 @@ export class ApiService {
       'primaryContact',
       'proMember',
       'provElecDist',
-      'sector',
       'shortName',
-      'status',
-      'substantiallyDate',
-      'substantially',
+      'projectPhase',
       'substitution',
-      'eaStatus',
-      'eaStatusDate',
-      'projectStatusDate',
-      'activeDate',
       'updatedBy',
-      'projLead',
-      'execProjectDirector',
-      'complianceLead',
+      'projectLead',
+      'projectDirector',
       'pins',
       'read',
       'write',
@@ -710,7 +685,6 @@ export class ApiService {
       'internalOriginalName',
       'internalSize',
       'displayName',
-      'documentType',
       'datePosted',
       'dateUploaded',
       'dateReceived',
@@ -719,10 +693,8 @@ export class ApiService {
       'internalMime',
       'checkbox',
       'project',
-      'type',
       'documentAuthor',
       'projectPhase',
-      'milestone',
       'description',
       'isPublished'
     ];
@@ -738,7 +710,6 @@ export class ApiService {
       'labels',
       'internalOriginalName',
       'displayName',
-      'documentType',
       'datePosted',
       'dateUploaded',
       'dateReceived',
@@ -748,10 +719,8 @@ export class ApiService {
       'internalSize',
       'checkbox',
       'project',
-      'type',
       'documentAuthor',
       'projectPhase',
-      'milestone',
       'description',
       'isPublished'
     ];
@@ -942,6 +911,7 @@ export class ApiService {
       });
     }
     queryString += `&fields=${this.buildValues(fields)}`;
+    console.log(queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 

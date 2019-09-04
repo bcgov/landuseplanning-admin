@@ -7,16 +7,16 @@ import { StorageService } from 'app/services/storage.service';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 
 @Component({
-  selector: 'tbody[app-link-organization-table-rows]',
-  templateUrl: './link-organization-table-rows.component.html',
-  styleUrls: ['./link-organization-table-rows.component.scss']
+  selector: 'tbody[app-contact-select-table-rows]',
+  templateUrl: './contact-select-table-rows.component.html',
+  styleUrls: ['./contact-select-table-rows.component.scss']
 })
 
-export class LinkOrganizationTableRowsComponent implements OnInit, TableComponent {
+export class ContactSelectTableRowsComponent implements OnInit, TableComponent {
   @Input() data: TableObject;
   @Output() selectedCount: EventEmitter<any> = new EventEmitter();
 
-  public organizations: any;
+  public users: any;
   public paginationData: any;
 
   constructor(
@@ -26,12 +26,17 @@ export class LinkOrganizationTableRowsComponent implements OnInit, TableComponen
   ) { }
 
   ngOnInit() {
-    this.organizations = this.data.data;
+    this.users = this.data.data;
     this.paginationData = this.data.paginationData;
   }
 
   selectItem(item) {
-    this.storageService.state.selectedOrganization = item;
+    if (this.storageService.state.contactType === 'projectLead') {
+      this.storageService.state.projectLead = item;
+    } else if (this.storageService.state.contactType === 'projectDirector') {
+      this.storageService.state.projectDirector = item;
+    }
+    
     let url = this.navigationStackUtils.getLastBackUrl();
     this.navigationStackUtils.popNavigationStack();
     this.router.navigate(url);

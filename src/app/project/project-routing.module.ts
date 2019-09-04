@@ -36,7 +36,7 @@ import { PinsComponentResolver } from './pins-list/pins-component-resolver.servi
 import { ProjectContactsResolver } from './project-groups/project-groups-resolver.services';
 import { PinsListComponent } from './pins-list/pins-list.component';
 import { ContactsResolver } from 'app/contacts/contacts-resolver.service';
-import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
+//import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
 import { PinsGlobalComponentResolver } from './pins-list/pins-global-resolver.service';
 import { ProjectGroupResolver } from './project-groups/project-group-resolver.services';
 import { GroupContactComponent } from './project-groups/group-contact/group-contact.component';
@@ -44,6 +44,8 @@ import { ProjectContactsGroupResolver } from './project-groups/project-contact-g
 import { GroupContactSelectComponent } from './project-groups/group-contact/group-contact-select/group-contact-select.component';
 import { LinkOrganizationResolver } from 'app/shared/components/link-organization/link-organization-resolver.services';
 import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
+import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
+import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
 
 const routes: Routes = [
   {
@@ -64,6 +66,13 @@ const routes: Routes = [
         component: LinkOrganizationComponent,
         resolve: {
           organizations: LinkOrganizationResolver
+        }
+      },
+      {
+        path: 'edit/contact-select',
+        component: ContactSelectComponent,
+        resolve: {
+          users: ContactSelectResolver
         }
       },
       {
@@ -261,7 +270,8 @@ const routes: Routes = [
     ValuedComponentsResolver,
     PinsComponentResolver,
     ProjectContactsResolver,
-    LinkOrganizationResolver
+    LinkOrganizationResolver,
+    ContactSelectResolver
   ]
 })
 

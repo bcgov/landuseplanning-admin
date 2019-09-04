@@ -52,16 +52,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       value: 'datePosted',
       width: 'col-2'
     },
-    {
-      name: 'Type',
-      value: 'type',
-      width: 'col-1'
-    },
-    {
-      name: 'Milestone',
-      value: 'milestone',
-      width: 'col-2'
-    }
   ];
 
   public selectedCount = 0;
@@ -392,8 +382,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             documentFileName: document.documentFileName,
             datePosted: document.datePosted,
             status: document.read.includes('public') ? 'Published' : 'Not Published',
-            type: document.type,
-            milestone: document.milestone,
             _id: document._id,
             project: document.project,
             read: document.read

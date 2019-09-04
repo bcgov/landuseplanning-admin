@@ -41,7 +41,11 @@
           <label for="name">Project Name* </label>
           <input name="name" id="name" formControlName="name" type="text" class="form-control" />
         </div>
-        <div class="label-pair add-row">
+        <div class="label-pair">
+          <label for="partner">Partner(s)* </label>
+          <input name="partner" id="partner" formControlName="partner" type="text" class="form-control" />
+        </div>
+        <!--<div class="label-pair add-row">
           <label for="proponent">Proponent*</label>
           <div *ngIf="proponentName === '' || proponentName == null">
             <button class="btn btn-primary" type="button" (click)="linkOrganization()">Link Organization</button>
@@ -61,27 +65,10 @@
               </button>
             </span>
           </div>
-        </div>
-        <div class="label-pair">
-          <label for="build">Project Nature*</label>
-          <select name="build" id="build" formControlName="build" class="form-control">
-            <option [selected]='isSelected("new")' value="new">New Construction</option>
-            <option [selected]='isSelected("modification")' value="modification">Modification of Existing</option>
-            <option [selected]='isSelected("dismantling")' value="dismantling">Dismantling or Abandonment</option>
-          </select>
-        </div>
-        <div class="label-pair">
-          <label for="type">Type* </label>
-          <select name="type" id="type" formControlName="type" class="form-control" (change)="onChangeType($event)">
-            <option *ngFor="let type of PROJECT_TYPES" [ngValue]="type">{{type}}</option>
-          </select>
-        </div>
-        <div class="label-pair">
-          <label for="sector">Sub-Type* </label>
-          <select name="sector" id="sector" formControlName="sector" class="form-control">
-            <option *ngFor="let sector of sectorsSelected" [ngValue]="sector">{{sector}}</option>
-
-          </select>
+        </div>-->
+        <div class="label-pair med">
+          <label for="agreements">Agreements </label>
+          <input name="agreements" id="agreements" formControlName="agreements" type="text" class="form-control" />
         </div>
         <div class="label-pair med">
           <label for="description">Description* </label>
@@ -92,15 +79,18 @@
     <section>
       <h2>Location</h2>
       <div class="flex-container">
-        <div class="label-pair med">
-          <label for="location">Location* </label>
-          <input name="location" id="location" formControlName="location" type="text" class="form-control" />
-        </div>
         <div class="label-pair">
           <label for="region">Region* </label>
           <select required class="form-control" formControlName="region">
-            <option *ngFor="let region of regions" [ngValue]="region">{{region.name}}</option>
+            <option *ngFor="let region of REGIONS" [ngValue]="region">{{region}}</option>
           </select>
+        </div><div class="label-pair med">
+          <label for="overlappingRegionalDistricts">Overlapping Regional Districts* </label>
+          <select name="overlappingRegionalDistricts" id="overlappingRegionalDistricts"
+            formControlName="overlappingRegionalDistricts" class="form-control">
+            <option *ngFor="let overlappingRegionalDistricts of OVERLAPPING_REGIONAL_DISTRICTS"
+              [ngValue]="overlappingRegionalDistricts">{{overlappingRegionalDistricts}}</option>
+            </select>
         </div>
         <div class="label-pair sm">
           <label for="lat">Lat* </label>
@@ -123,178 +113,93 @@
       <h2>Supplementary Information</h2>
       <div class="flex-container">
         <div class="label-pair">
-          <label for="CEAAInvolvement">CEAA Involvement </label>
-          <select name="CEAAInvolvement" id="CEAAInvolvement" formControlName="CEAAInvolvement" class="form-control">
-            <option>None</option>
-            <option>Panel</option>
-            <option>Panel (CEAA 2012)</option>
-            <option>Coordinated</option>
-            <option>Screening</option>
-            <option>Screening - Confirmed</option>
-            <option>Substituted</option>
-            <option>Substituted (Provincial Lead)</option>
-            <option>Comprehensive Study</option>
-            <option>Comprehensive Study - Unconfirmed</option>
-            <option>Comprehensive Study - Confirmed</option>
-            <option>Comprehensive Study (Pre CEAA 2012)</option>
-            <option>Comp Study</option>
-            <option>Comp Study - Unconfirmed</option>
-            <option>To be determined</option>
-            <option>Equivalent - NEB</option>
-          </select>
+          <label for="existingLandUsePlans">Existing Land Use Plans </label>
+          <input name="existingLandUsePlans" id="existingLandUsePlans" formControlName="existingLandUsePlans"
+            type="text" class="form-control" />
         </div>
         <div class="label-pair med">
-          <label for="CEAALink">CEAA URL </label>
-          <input name="CEAALink" id="CEAALink" formControlName="CEAALink" type="text" class="form-control" />
-        </div>
-        <div class="label-pair">
-          <label for="capital">Capital Investment </label>
-          <div class="money">
-            <i class="material-icons mr-3" role="add">attach_money</i>
-            <input name="capital" id="capital" formControlName="capital" type="text" class="form-control" />
-          </div>
-        </div>
-        <div class="label-pair med">
-          <label for="notes">Notes </label>
-          <textarea name="notes" id="notes" formControlName="notes" type="text" class="form-control"></textarea>
+          <label for="existingLandUsePlanURLs">Existing Land Use Plan URLs </label>
+          <input name="existingLandUsePlanURLs" id="existingLandUsePlanURLs" formControlName="existingLandUsePlanURLs" type="text" class="form-control" />
         </div>
       </div>
     </section>
     <section>
-      <h2>Overall Project Status'</h2>
+      <h2>Overall Project Status</h2>
       <div class="flex-container">
         <fieldset class="form-group">
           <div class="label-pair">
-            <label for="eaStatus">EA Readiness Determination </label>
-            <select name="eaStatus" id="eaStatus" formControlName="eaStatus" class="form-control">
-              <option [selected]="isEACSelected('Does not require EAC')" value='Does not require EAC'>Does not require
-                EAC</option>
-              <option [selected]="isEACSelected('Requires EAC')" value='Requires EAC'>Requires EAC</option>
+            <label for="projectPhase">Project Phase </label>
+            <select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
+              <option *ngFor="let projectPhase of PROJECT_PHASES" [ngValue]="projectPhase">{{projectPhase}}</option>
             </select>
-          </div>
-          <div class="label-pair">
-            <label for="eaStatusDate">Determination Date </label>
-            <div disabled class="input-group">
-              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="eaStatusDate"
-                formControlName="eaStatusDate" ngbDatepicker #eaStatusDatePicker="ngbDatepicker" />
-              <div class="input-group-append">
-                <button disabled class="btn btn-outline-secondary calendar" (click)="eaStatusDatePicker.toggle()"
-                  type="button"></button>
-              </div>
-            </div>
           </div>
         </fieldset>
         <fieldset class="form-group">
           <div class="label-pair">
-            <label for="status">Project Status </label>
-            <select name="status" id="status" formControlName="status" class="form-control">
-              <option *ngFor="let status of PROJECT_STATUS" [ngValue]="status">{{status}}</option>
+            <label for="engagementStatus">Engagement Status </label>
+            <select class="form-control" name="engagementStatus" id="engagementStatus" formControlName="engagementStatus">
+              <option *ngFor="let engagementStatus of ENGAGEMENT_STATUSES" [ngValue]="engagementStatus">{{engagementStatus}}</option>
             </select>
           </div>
-          <div class="label-pair">
-            <label for="projectStatusDate">Project Effective Date </label>
-            <div disabled class="input-group">
-              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd"
-                name="projectStatusDate" formControlName="projectStatusDate" ngbDatepicker
-                #projectStatusDatePicker="ngbDatepicker" />
-              <div class="input-group-append">
-                <button disabled class="btn btn-outline-secondary calendar" (click)="projectStatusDatePicker.toggle()"
-                  type="button"></button>
-              </div>
-            </div>
-          </div>
         </fieldset>
-        <fieldset class="form-group">
-          <div class="label-pair">
-            <label for="eacDecision">EA Decision </label>
-            <select class="form-control" name="eacDecision" id="eacDecision" formControlName="eacDecision">
-              <option *ngFor="let eacDecision of EAC_DECISIONS" [ngValue]="eacDecision">{{eacDecision}}</option>
-            </select>
-          </div>
-          <div class="label-pair">
-            <label for="decisionDate">EA Decision Date </label>
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="decisionDate"
-                formControlName="decisionDate" ngbDatepicker #decisionDatePicker="ngbDatepicker" />
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar" (click)="decisionDatePicker.toggle()"
-                  type="button"></button>
-              </div>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset class="form-group">
-          <div class="label-pair">
-            <label for="substantially">Substantially Started </label>
-            <div name="substantially" class="radio-group">
-              <div class="radio">
-                <input type="radio" id="yes" value="yes" formControlName="substantially" name="substantially" />
-                <label for="yes">Yes</label>
-              </div>
-              <div class="radio">
-                <input type="radio" id="no" value="no" formControlName="substantially" name="substantially" />
-                <label for="no">No</label>
-              </div>
-            </div>
-          </div>
-          <div class="label-pair">
-            <label for="substantiallyDate">Substantially Started Date </label>
-            <div disabled class="input-group">
-              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd"
-                name="substantiallyDate" formControlName="substantiallyDate" ngbDatepicker
-                #substantiallyDatePicker="ngbDatepicker" />
-              <div class="input-group-append">
-                <button disabled class="btn btn-outline-secondary calendar" (click)="substantiallyDatePicker.toggle()"
-                  type="button"></button>
-              </div>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset class="form-group">
-          <div class="label-pair">
-            <label for="activeStatus">Active Phase </label>
-            <select disabled name="activeStatus" id="activeStatus" formControlName="activeStatus" type="text"
-              class="form-control">
-              <option>Pre-Construction</option>
-              <option>Construction</option>
-              <option>Operations</option>
-              <option>Decommissioning</option>
-            </select>
-          </div>
-          <div class="label-pair">
-            <label for="activeDate">Phase Effective Date </label>
-            <div disabled class="input-group">
-              <input [readonly]='true' type="text" class="form-control" placeholder="yyyy-mm-dd" name="activeDate"
-                formControlName="activeDate" ngbDatepicker #activeDatePicker="ngbDatepicker" />
-              <div class="input-group-append">
-                <button disabled class="btn btn-outline-secondary calendar" (click)="activeDatePicker.toggle()"
-                  type="button"></button>
-              </div>
-            </div>
-          </div>
-        </fieldset>
+      </div>
+    </section>
+    <section>
+      <h2>Background Information</h2>
+      <div class="flex-container">
+        <div class="add-row med">
+          <ckeditor name="backgroundInfo" id="backgroundInfo" formControlName="backgroundInfo" [editor]="Editor" [data]="project.backgroundInfo"></ckeditor>
+        </div>
       </div>
     </section>
     <section class="people">
       <h2>People</h2>
       <div class="flex-container">
         <div class="label-pair add-row">
-          <label for="responsibleEPD">Project EPD </label>
-          <input [readonly]='true' name="responsibleEPD" id="responsibleEPD" formControlName="responsibleEPD"
-            type="text" class="form-control" />
-          <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
+          <label for="projectDirector">Project Director</label>
+          <!--<input name="projectLead" id="projectLead" formControlName="projectLead" type="text"
+                      class="form-control"/>-->
+          <div *ngIf="projectDirector === '' || projectDirector == null">
+            <button class="add-btn" type="button" (click)="contactSelect('projectDirector')"><i class="material-icons"
+                role="add">add_box</i></button>
+          </div>
+          <div *ngIf="projectDirector !== '' && projectDirector">
+            <span class="cell icon">
+              <i class="material-icons">person</i>
+            </span>
+            &nbsp;
+            <span class="cell name" [title]="projectDirector || ''">
+              <span class="cell__txt-content">{{projectDirector}}</span>
+            </span>
+            <span class="cell actions">
+              <button class="btn btn-icon" type="button" title="Delete this contact" (click)="removeSelectedContact('projectDirector')">
+                <i class="material-icons">delete</i>
+              </button>
+            </span>
+          </div>
         </div>
         <div class="label-pair add-row">
           <label for="projectLead">Project Lead</label>
-          <input [readonly]='true' name="projectLead" id="projectLead" formControlName="projectLead" type="text"
-            class="form-control" />
-          <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
-        </div>
-        <div class="label-pair add-row">
-          <label for="projectAdmin">Project Admin</label>
-          <input [readonly]='true' name="projectAdmin" id="projectAdmin" formControlName="projectAdmin" type="text"
-            class="form-control" />
-          <button class="add-btn" type="button"><i class="material-icons" role="add">add_box</i></button>
+          <!--<input name="projectLead" id="projectLead" formControlName="projectLead" type="text"
+            class="form-control"/>-->
+          <div *ngIf="projectLead === '' || projectLead == null">
+            <button class="add-btn" type="button" (click)="contactSelect('projectLead')"><i class="material-icons"
+                role="add">add_box</i></button>
+          </div>
+          <div *ngIf="projectLead !== '' && projectLead">
+            <span class="cell icon">
+              <i class="material-icons">person</i>
+            </span>
+            &nbsp;
+            <span class="cell name" [title]="projectLead || ''">
+              <span class="cell__txt-content">{{projectLead}}</span>
+            </span>
+            <span class="cell actions">
+              <button class="btn btn-icon" type="button" title="Delete this contact" (click)="removeSelectedContact('projectLead')">
+                <i class="material-icons">delete</i>
+              </button>
+            </span>
+          </div>
         </div>
       </div>
     </section>

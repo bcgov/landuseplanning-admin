@@ -24,7 +24,6 @@ export class CommentPeriod {
   isPublished: Boolean;
   isResolved: Boolean;
   isVetted: String;
-  milestone: String;
   openCommentPeriod: String;
   openHouses: Array<Object>;
   periodType: String;
@@ -77,7 +76,6 @@ export class CommentPeriod {
     this.isPublished = obj && obj.isPublished || null;
     this.isResolved = obj && obj.isResolved || null;
     this.isVetted = obj && obj.isVetted || null;
-    this.milestone = obj && obj.milestone || null;
     this.openHouses = obj && obj.openHouses || null;
     this.periodType = obj && obj.periodType || null;
     this.phase = obj && obj.phase || null;

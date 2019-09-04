@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { User } from 'app/models/user';
 import { SearchService } from 'app/services/search.service';
 import { TableObject } from 'app/shared/components/table-template/table-object';
@@ -14,6 +14,7 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { ProjectService } from 'app/services/project.service';
 import { MatSnackBar } from '@angular/material';
 import { ExcelService } from 'app/services/excel.service';
+import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 
 @Component({
   selector: 'app-group-contact',
@@ -64,20 +65,22 @@ export class GroupContactComponent implements OnInit, OnDestroy {
   public tableParams: TableParamsObject = new TableParamsObject();
 
   constructor(
-    private route: ActivatedRoute,
-    private excelService: ExcelService,
-    private router: Router,
-    private storageService: StorageService,
-    private dialogService: DialogService,
-    private searchService: SearchService,
-    private projectService: ProjectService,
     private _changeDetectionRef: ChangeDetectorRef,
+    private dialogService: DialogService,
+    private excelService: ExcelService,
+    private navigationStackUtils: NavigationStackUtils,
+    private projectService: ProjectService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private searchService: SearchService,
     private snackBar: MatSnackBar,
+    private storageService: StorageService,
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
+    this.storageService.state.selectedUsers = null;
 
     this.route.paramMap.subscribe(params => {
       this.groupId = params.get('groupId');
@@ -94,8 +97,8 @@ export class GroupContactComponent implements OnInit, OnDestroy {
           this.tableParams.totalListItems = 0;
           this.users = [];
         }
-        // Incoming group
 
+        // Incoming group
         if (res && res.group && res.group[0].data && res.group[0].data.meta && res.group[0].data.meta.length > 0) {
           this.group = res.group[0].data.searchResults[0];
           this.tempGroupName = this.group.name;
@@ -106,8 +109,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
         this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();
-      }
-      );
+      });
   }
 
   isEnabled(button) {
@@ -273,43 +275,86 @@ export class GroupContactComponent implements OnInit, OnDestroy {
   }
 
   setBackURL() {
-    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-groups', 'g', this.groupId, 'members'], label: this.group.name };
-    this.storageService.state.add = this.add;
+    this.storageService.state.update = this.update;
     this.storageService.state.component = this;
     this.storageService.state.componentModel = 'User';
-    this.storageService.state.existing = this.users;
     this.storageService.state.tableColumns = this.tableColumns;
     this.storageService.state.rowComponent = GroupTableRowsComponent;
     this.storageService.state.sortBy = this.tableParams.sortBy;
     this.storageService.state.groupId = this.groupId;
+    this.storageService.state.selectedUsers = [...this.users];
+
+    this.navigationStackUtils.pushNavigationStack(
+      ['/p', this.currentProject._id, 'project-groups', 'g', this.groupId, 'members'],
+      [
+        {
+          route: ['/projects'],
+          label: 'All Projects'
+        },
+        {
+          route: ['/p', this.currentProject._id],
+          label: this.currentProject.name
+        },
+        {
+          route: ['/p', this.currentProject._id, 'project-groups'],
+          label: 'Groups'
+        },
+        {
+          route: ['/p', this.currentProject._id, 'project-groups', 'g', this.storageService.state.groupId, 'members'],
+          label: this.group.name
+        }
+      ]
+    );
     this.router.navigate(['/p', this.currentProject._id, 'project-groups', 'g', this.groupId, 'members', 'select']);
   }
 
-  add(contacts, component) {
-    let filteredMembers = [];
+  update(contacts, component) {
+    // Determine the members to add.
+    let membersToAdd = [];
     contacts.filter((thing) => {
       let idx = component.users.findIndex((t) => {
         return (t._id === thing._id);
       });
       if (idx === -1) {
-        filteredMembers.push(thing._id);
+        membersToAdd.push(thing._id);
       }
     });
-    // Add all the filtered new items.
-    component.projectService.addGroupMembers(component.currentProject, component.groupId, filteredMembers)
-      // .takeUntil(component.ngUnsubscribe)
-      .subscribe(
-        () => { // onCompleted
-          // this.loading = false;
-          // this.router.navigated = false;
-          // this.openSnackBar('This project was created successfuly.', 'Close');
-          component.router.navigate(['/p', component.currentProject._id, 'project-groups', 'g', component.groupId, 'members']);
-        },
-        error => {
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t edit project');
-        },
-      );
+
+    // Determine the members to remove.
+    let membersToRemove = [];
+    component.users.filter((thing) => {
+      let idx = contacts.findIndex((t) => {
+        return (t._id === thing._id);
+      });
+      if (idx === -1) {
+        membersToRemove.push(thing._id);
+      }
+    });
+
+    let observables = [];
+    if (membersToAdd.length > 0) {
+      observables.push(component.projectService.addGroupMembers(component.currentProject, component.groupId, membersToAdd));
+    }
+    if (membersToRemove.length > 0) {
+      membersToRemove.map(item => {
+        observables.push(component.projectService.deleteGroupMembers(component.currentProject._id, component.groupId, item));
+      });
+    }
+
+    if (observables.length > 0) {
+      forkJoin(observables)
+        .subscribe(
+          () => { // onCompleted
+            component.router.navigate(['/p', component.currentProject._id, 'project-groups', 'g', component.groupId, 'members']);
+          },
+          error => {
+            console.log('error =', error);
+            alert('Uh-oh, couldn\'t edit project');
+          },
+        );
+    } else {
+      component.router.navigate(['/p', component.currentProject._id, 'project-groups', 'g', component.groupId, 'members']);
+    }
   }
 
   deleteItems() {

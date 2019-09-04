@@ -140,15 +140,6 @@
                 </div>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="milestoneSel">Content for Comment [Milestones]*</label>
-                <select required class="form-control" formControlName="milestoneSel">
-                    <option disabled selected value>-- select an option --</option>
-                    <option *ngFor="let milestone of milestones" [ngValue]="milestone._id">{{milestone.name}}</option>
-                </select>
-            </div>
-        </div>
 
         <div formArrayName="openHouses">
             <div class="card" *ngFor="let item of commentPeriodForm.get('openHouses')['controls']; let $index=index"

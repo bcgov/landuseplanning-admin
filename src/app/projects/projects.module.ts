@@ -6,6 +6,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 // components
 import { ProjectListComponent } from './project-list/project-list.component';
@@ -20,6 +21,7 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
     NgxPaginationModule,
     ProjectsRoutingModule,
     SharedModule,
+    CKEditorModule,
     ReactiveFormsModule
   ],
   declarations: [

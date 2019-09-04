@@ -5,11 +5,13 @@ import * as moment from 'moment-timezone';
 import { Subject } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
 import { MatSnackBar } from '@angular/material';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
 import { ProjectService } from 'app/services/project.service';
 import { Project } from 'app/models/project';
+import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 
 @Component({
   selector: 'app-add-edit-project',
@@ -18,6 +20,7 @@ import { Project } from 'app/models/project';
 })
 export class AddEditProjectComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  public Editor = ClassicEditor;
   public myForm: FormGroup;
   public documents: any[] = [];
   public back: any = {};
@@ -32,110 +35,64 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     { id: 'thompson-nicola', name: 'Thompson-Nicola' },
     { id: 'vancouver island', name: 'Vancouver Island' }
   ];
+  public REGIONS: Array<Object> = [
+    'Cariboo',
+    'Kootney Boundary',
+    'North Coast',
+    'Northeast',
+    'Omineca',
+    'Skeena',
+    'South Coast',
+    'Thompson - Okanagan'
+  ]
   public sectorsSelected = [];
-  public proponentName = '';
-  public proponentId = '';
+  public projectLead = '';
+  public projectLeadId = '';
+  public projectDirector = '';
+  public projectDirectorId = '';
 
-  public PROJECT_SUBTYPES: Object = {
-    'Mines': [
-      'Coal Mines',
-      'Construction Stone and Industrial Mineral Quarries',
-      'Mineral Mines',
-      'Off-shore Mines',
-      'Placer Mineral Mines',
-      'Sand and Gravel Pits'
-    ],
-    'Energy-Electricity': [
-      'Electric Transmission Lines',
-      'Power Plants'
-    ],
-    'Energy-Petroleum & Natural Gas': [
-      'Energy Storage Facilities',
-      'Natural Gas Processing Plants',
-      'Off-shore Oil or Gas Facilities',
-      'Transmission Pipelines'
-    ],
-    'Transportation': [
-      'Airports',
-      'Ferry Terminals',
-      'Marine Port Facilities',
-      'Public Highways',
-      'Railways'
-    ],
-    'Water Management': [
-      'Dams',
-      'Dykes',
-      'Groundwater Extraction',
-      'Shoreline Modification',
-      'Water Diversion'
-    ],
-    'Industrial': [
-      'Forest Products Industries',
-      'Non-metallic Mineral Products Industries',
-      'Organic and Inorganic Chemical Industry',
-      'Other Industries',
-      'Primary Metals Industry'
-    ],
-    'Waste Disposal': [
-      'Hazardous Waste Facilities',
-      'Local Government Liquid Waste Management Facilities',
-      'Local Government Solid Waste Management Facilities'
-    ],
-    'Food Processing': [
-      'Fish Products Industry',
-      'Meat and Meat Products Industry',
-      'Poultry Products Industry'
-    ],
-    'Tourist Destination Resorts': [
-      'Golf Resorts',
-      'Marina Resorts',
-      'Resort Developments',
-      'Ski Resorts'
-    ],
-    'Other': [
-      'Other'
-    ]
-  };
-
-  public PROJECT_TYPES: Array<Object> = [
-    'Energy-Electricity',
-    'Energy-Petroleum & Natural Gas',
-    'Food Processing',
-    'Industrial',
-    'Mines',
-    'Other',
-    'Tourist Destination Resorts',
-    'Transportation',
-    'Waste Disposal',
-    'Water Management'
+  public OVERLAPPING_REGIONAL_DISTRICTS: Array<Object> = [
+    'Alberni - Clayoquot',
+    'Bulkley - Nechako',
+    'Capital',
+    'Cariboo',
+    'Central Coast',
+    'Central Kootenay',
+    'Central Okanagan',
+    'Columbia Shuswap',
+    'Comox Valley',
+    'Cowichan Valley',
+    'East Kootenay',
+    'Fraser Valley',
+    'Fraser - Fort George',
+    'Islands Trust',
+    'Kitimat - Stikine',
+    'Kootenay - Boundary',
+    'Metro Vancouver',
+    'Mount Waddington',
+    'Nanaimo',
+    'North Okanagan',
+    'North Coast',
+    'Okanagan - Similkameen',
+    'Peace River',
+    'qathet',
+    'Squamish - Lillooet',
+    'Strathcona',
+    'Sunshine Coast',
+    'Thompson - Nicola'
   ];
 
-  public PROJECT_STATUS: Array<Object> = [
-    'Initiated',
-    'Submitted',
-    'In Progress',
-    'Certified',
-    'Not Certified',
-    'Decommissioned'
+  public PROJECT_PHASES: Array<Object> = [
+    'Pre-Planning',
+    'Plan Initiation',
+    'Plan Development',
+    'Plan Evaluation and Approval',
+    'Plan Implementation and Monitoring'
   ];
 
-  public PROJECT_NATURE: Array<Object> = [
-    'New Construction',
-    'Modification of Existing',
-    'Dismantling or Abandonment'
-  ];
-
-  public EAC_DECISIONS: Array<Object> = [
-    'In Progress',
-    'Certificate Issued',
-    'Certificate Refused',
-    'Further Assessment Required',
-    'Certificate Not Required',
-    'Certificate Expired',
-    'Withdrawn',
-    'Terminated',
-    'Pre-EA Act Approval',
-    'Not Designated Reviewable'
+  public ENGAGEMENT_STATUSES: Array<Object> = [
+    'Open',
+    'Closed'
   ];
 
   public projectName;
@@ -153,6 +110,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     private config: ConfigService,
     private _changeDetectorRef: ChangeDetectorRef,
     private utils: Utils,
+    private navigationStackUtils: NavigationStackUtils,
     private projectService: ProjectService,
     private storageService: StorageService
   ) {
@@ -175,15 +133,23 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
 
-        if (this.storageService.state.selectedOrganization) {
-          this.proponentName = this.storageService.state.selectedOrganization.name;
-          this.proponentId = this.storageService.state.selectedOrganization._id;
-        } else if (this.isEditing && data.project.proponent._id && data.project.proponent._id !== '') {
-          this.proponentName = data.project.proponent.name;
-          this.proponentId = data.project.proponent._id;
+        if (this.storageService.state.projectLead) {
+          this.projectLead = this.storageService.state.projectLead.name;
+          this.projectLeadId = this.storageService.state.projectLead._id;
+        } else if (this.isEditing && data.project.projectLead._id && data.project.projectLead._id !== '') {
+          this.projectLead = data.project.projectLead.displayName;
+          this.projectLeadId = data.project.projectLead._id;
         }
+
+        if (this.storageService.state.projectDirector) {
+          this.projectDirector = this.storageService.state.projectDirector.name;
+          this.projectDirectorId = this.storageService.state.projectDirector._id;
+        } else if (this.isEditing && data.project.projectDirector._id && data.project.projectDirector._id !== '') {
+          this.projectDirector = data.project.projectDirector.displayName;
+          this.projectDirectorId = data.project.projectDirector._id;
+        }
+
         this.project = data.project;
-        this.setBreadCrumbs();
         this.buildForm(data);
         this.loading = false;
         try {
@@ -201,83 +167,78 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       console.log('form from ss');
       // TODO: Save the projectID if it was originally an edit.
       this.myForm = this.storageService.state.form;
-      this.onChangeType(null);
     } else if (!(Object.keys(resolverData).length === 0 && resolverData.constructor === Object)) {
       // First entry on resolver
       console.log('form from rs', resolverData);
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
-      this.onChangeType(null);
     } else {
       console.log('form from blank');
       this.myForm = new FormGroup({
         'name': new FormControl(),
-        'proponent': new FormControl(),
-        'build': new FormControl(),
-        'type': new FormControl(),
-        'sector': new FormControl(),
+        'partner': new FormControl(),
+        'agreements': new FormControl(),
         'description': new FormControl(),
-        'location': new FormControl(),
+        'overlappingRegionalDistricts': new FormControl(),
         'region': new FormControl(),
         'lat': new FormControl([]),
         'lon': new FormControl([]),
         'addFile': new FormControl(),
-        'CEAAInvolvement': new FormControl(),
-        'CEAALink': new FormControl(),
+        'existingLandUsePlans': new FormControl(),
+        'existingLandUsePlanURLs': new FormControl(),
         'ea': new FormControl(),
         'capital': new FormControl(),
         'notes': new FormControl(),
-        'eaStatus': new FormControl(),
-        'eaStatusDate': new FormControl(),
         'status': new FormControl(),
-        'projectStatusDate': new FormControl(),
-        'eacDecision': new FormControl(),
-        'decisionDate': new FormControl(),
-        'substantially': new FormControl(),
-        'substantiallyDate': new FormControl(),
-        'activeStatus': new FormControl(),
-        'activeDate': new FormControl(),
-        'responsibleEPD': new FormControl(),
+        'engagementStatus': new FormControl(),
+        'backgroundInfo': new FormControl(),
+        'projectPhase': new FormControl(),
+        'projectDirector': new FormControl(),
         'projectLead': new FormControl(),
         'projectAdmin': new FormControl()
       });
     }
   }
 
-  private setBreadCrumbs() {
+  private setNavigation() {
     if (!this.isEditing) {
-      this.storageService.state.backUrl = ['/projects', 'add'];
-      this.storageService.state.breadcrumbs = [
-        {
-          route: ['/projects'],
-          label: 'All Projects'
-        },
-        {
-          route: ['/projects', 'add'],
-          label: 'Add'
-        }
-      ];
+      this.navigationStackUtils.pushNavigationStack(
+        ['/projects', 'add'],
+        [
+          {
+            route: ['/projects'],
+            label: 'All Projects'
+          },
+          {
+            route: ['/projects', 'add'],
+            label: 'Add'
+          }
+        ]
+      );
     } else {
-      this.storageService.state.backUrl = ['/p', this.project._id, 'edit'];
-      this.storageService.state.breadcrumbs = [
-        {
-          route: ['/projects'],
-          label: 'All Projects'
-        },
-        {
-          route: ['/p', this.project._id],
-          label: this.project.name
-        },
-        {
-          route: ['/p', this.project._id, 'edit'],
-          label: 'Edit'
-        }
-      ];
+      this.navigationStackUtils.pushNavigationStack(
+        ['/p', this.project._id, 'edit'],
+        [
+          {
+            route: ['/projects'],
+            label: 'All Projects'
+          },
+          {
+            route: ['/p', this.project._id],
+            label: this.project.name
+          },
+          {
+            route: ['/p', this.project._id, 'edit'],
+            label: 'Edit'
+          }
+        ]
+      );
     }
   }
 
   buildFormFromData(formData) {
     // Preselector for region.
+    /*
     if (formData.region) {
       let theRegion = this.regions.filter((region: any) => {
         if (region.id === formData.region) {
@@ -287,13 +248,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       if (theRegion && theRegion.length === 1) {
         formData.region = theRegion[0];
       }
-    }
-
-    if (!formData.substantially) {
-      formData.substantially = 'no';
-    } else {
-      formData.substantially = 'yes';
-    }
+    }*/
 
     if (!formData.centroid) {
       formData.centroid = [-123.3656, 48.4284];
@@ -301,42 +256,26 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
 
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
-      'proponent': new FormControl(formData.proponent),
-      'build': new FormControl(formData.build),
-      'type': new FormControl(formData.type),
-      'sector': new FormControl(formData.sector),
+      'partner': new FormControl(formData.partner),
+      'agreements': new FormControl(formData.agreements),
       'description': new FormControl(formData.description),
-      'location': new FormControl(formData.location),
+      'overlappingRegionalDistricts': new FormControl(formData.overlappingRegionalDistricts),
       'region': new FormControl(formData.region),
       'lat': new FormControl(formData.centroid[1]),
       'lon': new FormControl(formData.centroid[0]),
       'addFile': new FormControl(formData.addFile),
-      'CEAAInvolvement': new FormControl(formData.CEAAInvolvement),
-      'CEAALink': new FormControl(formData.CEAALink),
+      'existingLandUsePlans': new FormControl(formData.existingLandUsePlans),
+      'existingLandUsePlanURLs': new FormControl(formData.existingLandUsePlanURLs),
       'ea': new FormControl(formData.ea),
-      'capital': new FormControl(formData.intake.investment),
-      'notes': new FormControl(formData.intake.investmentNotes),
-      'eaStatus': new FormControl(formData.eaStatus),
-      'eaStatusDate': new FormControl(),
       'status': new FormControl(formData.status),
-      'projectStatusDate': new FormControl(),
-      'eacDecision': new FormControl(formData.eacDecision),
-      'decisionDate': new FormControl(this.utils.convertJSDateToNGBDate(new Date(formData.decisionDate))),
-      'substantially': new FormControl(formData.substantially),
-      'substantiallyDate': new FormControl(),
-      'activeStatus': new FormControl(formData.activeStatus),
-      'activeDate': new FormControl(),
-      'responsibleEPD': new FormControl(formData.responsibleEPD),
+      'engagementStatus': new FormControl(formData.engagementStatus),
+      'backgroundInfo': new FormControl(formData.backgroundInfo),
+      'projectPhase': new FormControl(formData.projectPhase),
+      'projectDirector': new FormControl(formData.projectDirector),
       'projectLead': new FormControl(formData.projectLead),
       'projectAdmin': new FormControl(formData.projectAdmin)
     });
-    this.sectorsSelected = this.PROJECT_SUBTYPES[formData.type];
     return theForm;
-  }
-
-  onChangeType(event) {
-    this.sectorsSelected = this.PROJECT_SUBTYPES[this.myForm.controls.type.value];
-    this._changeDetectorRef.detectChanges();
   }
 
   onCancel() {
@@ -348,50 +287,25 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     }
   }
 
-  isSelected(val) {
-    if (this.myForm.controls.build.value === val) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  isEACSelected(val) {
-    if (this.myForm.controls.eaStatus.value === val) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   convertFormToProject(form) {
     return {
       'name': form.controls.name.value,
-      'proponent': this.proponentId,
-      'build': form.controls.build.value,
-      'type': form.controls.type.value,
-      'sector': form.controls.sector.value,
+      'partner': form.controls.partner.value,
+      'agreements': form.controls.agreements.value,
       'description': form.controls.description.value,
-      'location': form.controls.location.value,
-      'region': form.controls.region.value.id,
+      'overlappingRegionalDistricts': form.controls.overlappingRegionalDistricts.value,
+      'region': form.controls.region.value,
       'centroid': [form.get('lon').value, form.get('lat').value],
       'addFile': form.controls.addFile.value,
-      'CEAAInvolvement': form.controls.CEAAInvolvement.value,
-      'CEAALink': form.controls.CEAALink.value,
+      'existingLandUsePlans': form.controls.existingLandUsePlans.value,
+      'existingLandUsePlanURLs': form.controls.existingLandUsePlanURLs.value,
       'ea': form.controls.ea.value,
-      'intake': { investment: form.controls.capital.value, notes: form.controls.notes.value },
-      'eaStatus': form.controls.eaStatus.value,
-      // 'eaStatusDate': form.get('eaStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('eaStatusDate').value))).toISOString() : null,
       'status': form.controls.status.value,
-      // 'projectStatusDate': form.get('projectStatusDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('projectStatusDate').value))).toISOString() : null,
-      'eacDecision': form.controls.eacDecision.value,
-      'decisionDate': !isNaN(form.get('decisionDate').value === null ? undefined : form.get('decisionDate').value.day) ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('decisionDate').value))).toISOString() : null,
-      'substantially': form.controls.substantially.value === 'yes' ? true : false,
-      // 'substantiallyDate': form.get('substantiallyDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('substantiallyDate').value))).toISOString() : null,
-      'activeStatus': form.controls.activeStatus.value,
-      // 'activeDate': form.get('activeDate').value ? new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(form.get('activeDate').value))).toISOString() : null,
-      'responsibleEPD': form.controls.responsibleEPD.value,
-      'projectLead': form.controls.projectLead.value,
+      'engagementStatus': form.controls.engagementStatus.value,
+      'backgroundInfo': form.controls.backgroundInfo.value,
+      'projectPhase': form.controls.projectPhase.value,
+      'projectDirector': this.projectDirectorId,
+      'projectLead': this.projectLeadId,
       'projectAdmin': form.controls.projectAdmin.value
     };
   }
@@ -399,12 +313,15 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   private clearStorageService() {
     this.storageService.state.form = null;
     this.storageService.state.selectedOrganization = null;
-    this.storageService.state.backUrl = null;
-    this.storageService.state.breadcrumbs = null;
+    this.storageService.state.projectLead = null;
+    this.storageService.state.projectDirector = null;
+    this.storageService.state.contactType = null;
+    this.navigationStackUtils.popNavigationStack();
   }
 
   public linkOrganization() {
     this.storageService.state.form = this.myForm;
+    this.setNavigation();
     if (!this.isEditing) {
       this.router.navigate(['/projects', 'add', 'link-org']);
     } else {
@@ -412,31 +329,32 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     }
   }
 
+  public contactSelect(contact: string) {
+    this.storageService.state.form = this.myForm;
+    this.storageService.state.contactType = contact;
+    this.setNavigation();
+    if (!this.isEditing) {
+      this.router.navigate(['/projects', 'add', 'contact-select']);
+    } else {
+      this.router.navigate(['/p', this.project._id, 'edit', 'contact-select']);
+    }
+  }
+
   private validateForm() {
-    console.log(this.myForm.controls.name.value);
     if (this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null) {
       alert('Name cannot be empty.');
       return false;
-    } else if (this.proponentId === '') {
-      alert('Proponent cannot be empty.');
+    } else if (this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null) {
+      alert('Partner(s) cannot be empty.');
       return false;
-    } else if (this.myForm.controls.build.value === '') {
-      alert('You must select a project nature.');
-      return false;
-    } else if (this.myForm.controls.type.value === '') {
-      alert('You must select a type.');
-      return false;
-    } else if (this.myForm.controls.sector.value === '') {
-      alert('You must select a sub-type.');
-      return false;
-    } else if (this.myForm.controls.description.value === '') {
+    } else if (this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null) {
       alert('Description cannot be empty.');
       return false;
-    } else if (this.myForm.controls.region.value === '') {
+    } else if (this.myForm.controls.region.value === '' || this.myForm.controls.region.value == null) {
       alert('You must select a region.');
       return false;
-    } else if (this.myForm.controls.location.value === '') {
-      alert('Location cannot be empty.');
+    } else if (this.myForm.controls.overlappingRegionalDistricts.value === '' || this.myForm.controls.overlappingRegionalDistricts.value == null) {
+      alert('Overlapping Regional Districts cannot be empty.');
       return false;
     } else if (this.myForm.controls.lon.value === '') {
       alert('Longitude cannot be empty.');
@@ -450,6 +368,12 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     } else if (this.myForm.controls.lon.value >= -114.01 || this.myForm.controls.lon.value <= -139.06) {
       alert('Longitude must be between -114.01 and -139.06');
       return;
+    } else if (this.projectLeadId === '') {
+      alert('Project Lead cannot be empty.');
+      return false;
+    } else if (this.projectDirectorId === '') {
+      alert('Project Director cannot be empty.');
+      return false;
     } else {
       return true;
     }
@@ -461,7 +385,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     }
     if (!this.isEditing) {
       // POST
-      console.log('POST');
       let project = new Project(
         this.convertFormToProject(this.myForm)
       );
@@ -485,7 +408,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         );
     } else {
       // PUT
-      console.log('PUT');
       let project = new Project(this.convertFormToProject(this.myForm));
       console.log('PUTing', project);
       project._id = this.project._id;
@@ -507,11 +429,18 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     }
   }
 
-  public removeSelectedOrganization() {
-    this.storageService.state.selectedOrganization = null;
-    this.proponentName = '';
-    this.proponentId = '';
-    this.myForm.controls.proponent.setValue('');
+  public removeSelectedContact(contact: string) {
+    if (contact === 'projectDirector') {
+      this.storageService.state.projectDirector = null;
+      this.projectDirector = '';
+      this.projectDirectorId = '';
+      this.myForm.controls.projectDirector.setValue('');
+    } else if (contact === 'projectLead') {
+      this.storageService.state.projectLead = null;
+      this.projectLead = '';
+      this.projectLeadId = '';
+      this.myForm.controls.projectLead.setValue('');
+    }
   }
 
   public openSnackBar(message: string, action: string) {
@@ -520,10 +449,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     });
   }
 
-  register(myForm: FormGroup) {
-    console.log('Successful registration');
-    console.log(myForm);
-  }
+  register(myForm: FormGroup) { }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

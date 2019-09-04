@@ -21,31 +21,17 @@
     <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
       <div class="form-row">
         <div class="form-group col-md-4">
-          <label for="doctypesel">Document Type*</label>
-          <select required class="form-control" formControlName="doctypesel">
-            <option *ngFor="let type of doctypes" [ngValue]="type._id">{{type.name}}</option>
-          </select>
+          <label for="documentAuthor">Author*</label>
+          <input name="documentAuthor" id="documentAuthor" formControlName="documentAuthor" type="text" class="form-control" />
         </div>
         <div class="form-group col-md-4">
-          <label for="authorsel">Author*</label>
-          <select required class="form-control" formControlName="authorsel">
-            <option *ngFor="let author of authors" [ngValue]="author._id">{{author.name}}</option>
-          </select>
-        </div>
-        <div class="form-group col-md-4">
-          <label for="labelsel">Milestone*</label>
-          <select required class="form-control" formControlName="labelsel">
-            <option *ngFor="let label of labels" [ngValue]="label._id">{{label.name}}</option>
+          <label for="projectPhase">Project Phase </label>
+          <select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
+            <option *ngFor="let projectPhase of PROJECT_PHASES" [ngValue]="projectPhase">{{projectPhase}}</option>
           </select>
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-4">
-            <label for="projectphasesel">Project Phase*</label>
-            <select required class="form-control" formControlName="projectphasesel">
-                <option *ngFor="let projectPhase of projectPhases" [ngValue]="projectPhase._id">{{projectPhase.name}}</option>
-            </select>
-        </div>
         <div class="form-group col-md-4">
           <label for="inputAddress">Document Date*</label>
           <div class="input-group">

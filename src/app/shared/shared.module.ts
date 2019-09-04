@@ -19,11 +19,14 @@ import { CommentStatsComponent } from './components/comment-stats/comment-stats.
 import { ListConverterPipe } from './pipes/list-converter.pipe';
 import { OrgNamePipe } from './pipes/org-name.pipe';
 import { Utils } from './utils/utils';
-import { ContactSelectComponent } from './components/contact-select/contact-select.component';
+//import { ContactSelectComponent } from './components/contact-select/contact-select.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <== add the imports!
 import { RouterModule } from '@angular/router';
 import { LinkOrganizationComponent } from './components/link-organization/link-organization.component';
 import { LinkOrganizationTableRowsComponent } from './components/link-organization/link-organization-table-rows/link-organization-table-rows.component';
+import { ContactSelectComponent } from './components/contact-select/contact-select.component';
+import { ContactSelectTableRowsComponent } from './components/contact-select/contact-select-table-rows/contact-select-table-rows.component';
+import { NavigationStackUtils } from './utils/navigation-stack-utils';
 
 @NgModule({
   imports: [
@@ -37,42 +40,47 @@ import { LinkOrganizationTableRowsComponent } from './components/link-organizati
     MatMenuModule
   ],
   declarations: [
-    OrderByPipe,
-    NewlinesPipe,
-    PublishedPipe,
-    ObjectFilterPipe,
-    VarDirective,
     CommentStatsComponent,
+    ContactSelectComponent,
     DropdownTemplateComponent,
     FileUploadComponent,
-    TableTemplateComponent,
-    TableDirective,
-    ListConverterPipe,
-    OrgNamePipe,
-    ContactSelectComponent,
     LinkOrganizationComponent,
     LinkOrganizationTableRowsComponent,
+    ContactSelectComponent,
+    ContactSelectTableRowsComponent,
+    ListConverterPipe,
+    NewlinesPipe,
+    ObjectFilterPipe,
+    OrderByPipe,
+    OrgNamePipe,
+    PublishedPipe,
+    TableDirective,
+    TableTemplateComponent,
+    VarDirective
   ],
   exports: [
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    OrderByPipe,
-    NewlinesPipe,
-    PublishedPipe,
-    VarDirective,
     CommentStatsComponent,
+    ContactSelectComponent,
     DropdownTemplateComponent,
     FileUploadComponent,
-    ContactSelectComponent,
-    TableTemplateComponent,
-    NgxPaginationModule,
-    ListConverterPipe,
-    OrgNamePipe,
     LinkOrganizationComponent,
     LinkOrganizationTableRowsComponent,
+    ContactSelectComponent,
+    ContactSelectTableRowsComponent,
+    ListConverterPipe,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    NewlinesPipe,
+    NgxPaginationModule,
+    OrderByPipe,
+    OrgNamePipe,
+    PublishedPipe,
+    TableTemplateComponent,
+    VarDirective
   ],
   providers: [
     TableTemplateUtils,
+    NavigationStackUtils,
     Utils
   ]
 })

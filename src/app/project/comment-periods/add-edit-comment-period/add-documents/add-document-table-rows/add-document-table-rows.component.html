@@ -7,7 +7,4 @@
   <td data-label="Name" (click)="selectItem(document)" scope="row" class="col-6">{{document.displayName}}</td>
   <td data-label="Date" (click)="selectItem(document)" scope="row" class="col-2">{{document.datePosted | date:'longDate'}}
   </td>
-  <td data-label="Type" (click)="selectItem(document)" scope="row" class="col-2">{{document.type | listConverter}}</td>
-  <td data-label="Milestone" (click)="selectItem(document)" scope="row" class="col-2">
-    {{document.milestone | listConverter}}</td>
 </tr>

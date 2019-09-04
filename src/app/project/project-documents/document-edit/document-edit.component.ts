@@ -23,7 +23,6 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   public documents: any[] = [];
   public currentProject;
   public myForm: FormGroup;
-  public doctypes: any[] = [];
   public authors: any[] = [];
   public labels: any[] = [];
   public datePosted: NgbDateStruct = null;
@@ -31,7 +30,13 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   public loading = true;
   public multiEdit = false;
   public docNameInvalid = false;
-  public projectPhases: any[] = [];
+  public PROJECT_PHASES: Array<Object> = [
+    'Pre-Planning',
+    'Plan Initiation',
+    'Plan Development',
+    'Plan Evaluation and Approval',
+    'Plan Implementation and Monitoring'
+  ];
 
   constructor(
     private config: ConfigService,
@@ -49,9 +54,6 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
 
     this.config.lists.map(item => {
       switch (item.type) {
-        case 'doctype':
-          this.doctypes.push(Object.assign({}, item));
-          break;
         case 'author':
           this.authors.push(Object.assign({}, item));
           break;
@@ -59,19 +61,8 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
           this.labels.push(Object.assign({}, item));
           break;
         case 'projectPhase':
-          this.projectPhases.push(Object.assign({}, item));
           break;
       }
-    });
-
-    // This code reorders the document type list defined by EAO (See Jira Ticket EAGLE-88)
-    let copy_doctype = this.doctypes;
-    this.doctypes = [];
-    // This order was created by mapping the doctype items from the database with the EAO defined ordered list
-    let doclist_order = [0, 1, 2, 8, 7, 9, 3, 17, 18, 19, 4, 5, 20, 10, 6, 12, 11, 13, 14, 15, 16];
-    // We map the doctypes to put in the correct order as defined in doclist_order
-    doclist_order.map((item, i) => {
-      this.doctypes[i] = copy_doctype[item];
     });
 
     // Check if documents are null (nav straight to this page)
@@ -85,24 +76,20 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
           this.isPublished = this.documents[0].read.includes('public');
           // Set the old data in there if it exists.
           this.myForm = new FormGroup({
-            'doctypesel': new FormControl(this.documents[0].type),
-            'authorsel': new FormControl(this.documents[0].documentAuthor),
-            'labelsel': new FormControl(this.documents[0].milestone),
+            'documentAuthor': new FormControl(this.documents[0].documentAuthor),
             'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].datePosted))),
             'displayName': new FormControl(this.documents[0].displayName),
             'description': new FormControl(this.documents[0].description),
-            'projectphasesel': new FormControl(this.documents[0].projectPhase)
+            'projectPhase': new FormControl(this.documents[0].projectPhase)
           });
         } else {
           this.multiEdit = true;
           this.myForm = new FormGroup({
-            'doctypesel': new FormControl(),
-            'authorsel': new FormControl(),
-            'labelsel': new FormControl(),
+            'documentAuthor': new FormControl(),
             'datePosted': new FormControl(),
             'displayName': new FormControl(),
             'description': new FormControl(),
-            'projectphasesel': new FormControl()
+            'projectPhase': new FormControl()
           });
         }
       }
@@ -164,37 +151,22 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
 
       if (!this.multiEdit) {
         doc.documentFileName !== null ? formData.append('documentFileName', doc.documentFileName) : Function.prototype;
+        this.myForm.value.documentAuthor !== null ? formData.append('documentAuthor', this.myForm.value.documentAuthor) : Function.prototype;
         this.myForm.value.description !== null ? formData.append('description', this.myForm.value.description) : Function.prototype;
         this.myForm.value.displayName !== null ? formData.append('displayName', this.myForm.value.displayName) : Function.prototype;
-        formData.append('milestone', this.myForm.value.labelsel);
         formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
-        formData.append('type', this.myForm.value.doctypesel);
-        formData.append('documentAuthor', this.myForm.value.authorsel);
-        formData.append('projectPhase', this.myForm.value.projectphasesel);
+        formData.append('documentAuthorType', this.myForm.value.authorsel);
+        formData.append('projectPhase', this.myForm.value.projectPhase);
       } else {
         doc.documentFileName !== null ? formData.append('documentFileName', doc.documentFileName) : Function.prototype;
+        doc.documentAuthor !== null ? formData.append('documentAuthor', doc.documentAuthor) : Function.prototype;
         doc.displayName !== null ? formData.append('displayName', doc.displayName) : Function.prototype;
         doc.description !== null ? formData.append('description', doc.description) : Function.prototype;
-
-        // apply changes to milestone if any
-        let milestone = this.multiEditGetUpdatedValue(this.myForm.value.labelsel, doc.milestone);
-        milestone !== undefined && milestone !== null ? formData.append('milestone', milestone) : Function.prototype;
+        doc.projectPhase !== null ? formData.append('projectPhase', doc.projectPhase) : Function.prototype;
 
         // apply changes to datePosted if any
         let datePosted = this.multiEditGetUpdatedValue(this.myForm.value.datePosted, doc.datePosted, true);
         datePosted !== undefined && datePosted !== null ? formData.append('datePosted', datePosted) : Function.prototype;
-
-        // apply changes to type if any
-        let type = this.multiEditGetUpdatedValue(this.myForm.value.doctypesel, doc.type);
-        type !== undefined && type !== null ? formData.append('type', type) : Function.prototype;
-
-        // apply changes to documentAuthor if any
-        let documentAuthor = this.multiEditGetUpdatedValue(this.myForm.value.authorsel, doc.documentAuthor);
-        documentAuthor !== undefined && documentAuthor !== null ? formData.append('documentAuthor', documentAuthor) : Function.prototype;
-
-        // apply changes to projectPhase if any
-        let projectPhase = this.multiEditGetUpdatedValue(this.myForm.value.projectphasesel, doc.projectPhase);
-        projectPhase !== undefined && projectPhase !== null ? formData.append('projectPhase', projectPhase) : Function.prototype;
       }
 
       // TODO
