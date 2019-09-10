@@ -54,67 +54,67 @@ http {
     client_max_body_size 100m;
 
     server {
-    listen       8080 default_server;
-    server_name  localhost;
+        listen       8080 default_server;
+        server_name  localhost;
 
-    # add in most common security headers
-    add_header Content-Security-Policy "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'";
-    add_header Strict-Transport-Security "max-age=86400; includeSubDomains";
-    add_header X-Content-Type-Options "nosniff";
-    add_header X-XSS-Protection 1;
-    add_header X-Frame-Options DENY;
-    add_header X-UA-Compatible "IE=Edge,chrome=1";
+        # add in most common security headers
+        add_header Content-Security-Policy "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'";
+        add_header Strict-Transport-Security "max-age=86400; includeSubDomains";
+        add_header X-Content-Type-Options "nosniff";
+        add_header X-XSS-Protection 1;
+        add_header X-Frame-Options DENY;
+        add_header X-UA-Compatible "IE=Edge,chrome=1";
 
-    # serve our angular app here
-    location / {
-	# important - the root folder must be where your index.htm file is.
-	        root   /tmp/app/dist;
-            index  index.html index.htm;
-            try_files $uri $uri/ /index.html;
-            gzip            on;
-            gzip_min_length 1000;
-            gzip_types      *;
+        # serve our angular app here
+        location /admin {
+        # important - the root folder must be where your index.htm file is.
+                root   /tmp/app/dist;
+                index  index.html index.htm;
+                try_files $uri $uri/ /index.html;
+                gzip            on;
+                gzip_min_length 1000;
+                gzip_types      *;
 
-            sendfile off;
-            expires -1;
+                sendfile off;
+                expires -1;
 
-            # propagate SMGOV_* headers
-            add_header  SMGOV_USERGUID $http_smgov_userguid;
-            add_header  SMGOV_USERDISPLAYNAME  $http_smgov_userdisplayname;
-            add_header  SMGOV_USERTYPE  $http_smgov_usertype;
-            add_header  SMGOV_USERIDENTIFIER  $http_smgov_useridentifier;			
-           }
-	
-	location /api/ {
-	
-        # proxy all traffic to this URL, 
-        # note the trailing slash strips out the /proxy path on 
-        # the request to the upstream server
-        proxy_pass %API_URL%;		
-                		
+                # propagate SMGOV_* headers
+                add_header  SMGOV_USERGUID $http_smgov_userguid;
+                add_header  SMGOV_USERDISPLAYNAME  $http_smgov_userdisplayname;
+                add_header  SMGOV_USERTYPE  $http_smgov_usertype;
+                add_header  SMGOV_USERIDENTIFIER  $http_smgov_useridentifier;			
+            }
+        
+        location /api/ {
+        
+            # proxy all traffic to this URL, 
+            # note the trailing slash strips out the /proxy path on 
+            # the request to the upstream server
+            proxy_pass %API_URL%;		
+                            
+        }
+        
+        # redirect server error pages to the static page /50x.html
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+        
+        # For status of ngnix service, OpenShift is configured to call this
+        location /nginx_status {
+            # Enable Nginx stats
+            stub_status on;
+
+            # Only allow access from localhost
+            allow all;
+
+            # Other request should be denied
+            # deny all;
+
+            # No need to log this request, its just noise
+            access_log off;
+        }
+
     }
-    
-    # redirect server error pages to the static page /50x.html
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-	
-	# For status of ngnix service, OpenShift is configured to call this
-	location /nginx_status {
-		# Enable Nginx stats
-		stub_status on;
-
-		# Only allow access from localhost
-		allow all;
-
-		# Other request should be denied
-		# deny all;
-
-		# No need to log this request, its just noise
-		access_log off;
-	}
-
-}
 
 }
