@@ -56,6 +56,7 @@ http {
     server {
         listen       8080 default_server;
         server_name  localhost;
+        root   /tmp/app/dist;
 
         # add in most common security headers
         add_header Content-Security-Policy "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'";
@@ -68,7 +69,7 @@ http {
         # serve our angular app here
         location /admin {
         # important - the root folder must be where your index.htm file is.
-                root   /tmp/app/dist;
+                alias   /tmp/app/dist;
                 index  index.html index.htm;
                 try_files $uri $uri/ /index.html;
                 gzip            on;
