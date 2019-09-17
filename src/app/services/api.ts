@@ -165,6 +165,7 @@ export class ApiService {
       'overlappingRegionalDistricts',
       'name',
       'partner',
+      'traditionalTerritory',
       'region',
       'agreements',
       'addedBy',

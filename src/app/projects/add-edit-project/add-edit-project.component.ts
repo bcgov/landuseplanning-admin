@@ -24,17 +24,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   public myForm: FormGroup;
   public documents: any[] = [];
   public back: any = {};
-  public regions: Array<Object> = [
-    { id: 'cariboo', name: 'Cariboo' },
-    { id: 'kootenay', name: 'Kootenay' },
-    { id: 'lower mainland', name: 'Lower Mainland' },
-    { id: 'okanagan', name: 'Okanagan' },
-    { id: 'omineca', name: 'Omineca' },
-    { id: 'peace', name: 'Peace' },
-    { id: 'skeena', name: 'Skeena' },
-    { id: 'thompson-nicola', name: 'Thompson-Nicola' },
-    { id: 'vancouver island', name: 'Vancouver Island' }
-  ];
   public REGIONS: Array<Object> = [
     'Cariboo',
     'Kootney Boundary',
@@ -177,6 +166,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       this.myForm = new FormGroup({
         'name': new FormControl(),
         'partner': new FormControl(),
+        'traditionalTerritory': new FormControl(),
         'agreements': new FormControl(),
         'description': new FormControl(),
         'overlappingRegionalDistricts': new FormControl(),
@@ -257,6 +247,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'partner': new FormControl(formData.partner),
+      'traditionalTerritory': new FormControl(formData.traditionalTerritory),
       'agreements': new FormControl(formData.agreements),
       'description': new FormControl(formData.description),
       'overlappingRegionalDistricts': new FormControl(formData.overlappingRegionalDistricts),
@@ -291,6 +282,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     return {
       'name': form.controls.name.value,
       'partner': form.controls.partner.value,
+      'traditionalTerritory': form.controls.traditionalTerritory.value,
       'agreements': form.controls.agreements.value,
       'description': form.controls.description.value,
       'overlappingRegionalDistricts': form.controls.overlappingRegionalDistricts.value,

@@ -35,7 +35,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     {
       name: 'Name',
       value: 'name',
-      width: 'col-2'
+      width: 'col-3'
     },
     {
       name: 'Partner',
@@ -43,23 +43,18 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       width: 'col-2'
     },
     {
-      name: 'Agreements',
-      value: 'agreements',
-      width: 'col-2'
-    },
-    {
-      name: 'Region',
-      value: 'region',
-      width: 'col-2'
-    },
-    {
-      name: 'Phase',
-      value: 'currentPhaseName',
-      width: 'col-2'
+      name: 'Regional Districts',
+      value: 'overlappingRegionalDistricts',
+      width: 'col-3'
     },
     {
       name: 'Engagement Status',
       value: 'engagementStatus',
+      width: 'col-2'
+    },
+    {
+      name: 'Phase',
+      value: 'projectPhase',
       width: 'col-2'
     }
   ];
@@ -121,10 +116,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             _id: project._id,
             name: project.name,
             partner: project.partner,
-            agreements: project.agreements,
-            region: project.region,
-            currentPhaseName: project.currentPhaseName,
-            engagementStatus: project.engagementStatus
+            overlappingRegionalDistricts: project.overlappingRegionalDistricts,
+            engagementStatus: project.engagementStatus,
+            projectPhase: project.projectPhase
           }
         );
       });

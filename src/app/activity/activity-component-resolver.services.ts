@@ -21,7 +21,7 @@ export class ActivityComponentResolver implements Resolve<Observable<object>> {
       // this.filterForUrl.dateAddedEnd = route.params.dateAddedEnd == null || route.params.dateAddedEnd === '' ? '' : route.params.dateAddedEnd;
 
       let filter = {};
-      let filterForApi = {};
+      let filterForApi = {};/*
       if (route.params.type != null) {
         filter['type'] = route.params.type;
         let typeFiltersFromRoute = route.params.type.split(',');
@@ -29,7 +29,7 @@ export class ActivityComponentResolver implements Resolve<Observable<object>> {
         if (typeFiltersFromRoute.includes('publicCommentPeriod')) { typeFiltersForApi.push('Public Comment Period'); }
         if (typeFiltersFromRoute.includes('news')) { typeFiltersForApi.push('News'); }
         if (typeFiltersForApi.length > 0) { filterForApi = { 'type': typeFiltersForApi.toString() }; }
-      }
+      }*/
 
       let tableParams = this.tableTemplateUtils.getParamsFromUrl(route.params, filter);
       if (tableParams.sortBy === '') {

@@ -27,7 +27,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
   public entries: RecentActivity[] = null;
   public terms = new SearchTerms();
   public searchForm = null;
-  public typeFilters = [];
   public filterPublicCommentPeriod = false;
   public filterNews = false;
 
@@ -45,11 +44,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
     {
       name: 'Project',
       value: 'project.name',
-      width: 'col-2'
-    },
-    {
-      name: 'Type',
-      value: 'type',
       width: 'col-2'
     },
     {
@@ -81,13 +75,8 @@ export class ActivityComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         // this.filter.dateAddedStart = params.dateAddedStart == null || params.dateAddedStart === '' ? null : this.utils.convertJSDateToNGBDate(new Date(params.dateAddedStart));
         // this.filter.dateAddedEnd = params.dateAddedEnd == null || params.dateAddedEnd === '' ? null : this.utils.convertJSDateToNGBDate(new Date(params.dateAddedEnd));
-        if (params.type != null) {
-          this.typeFilters = params.type.split(',');
-          if (this.typeFilters.includes('publicCommentPeriod')) { this.filterPublicCommentPeriod = true; }
-          if (this.typeFilters.includes('news')) { this.filterNews = true; }
-        }
 
-        let filterForUrl = params.type == null ? null : { 'type': params.type };
+        let filterForUrl = null;
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, filterForUrl);
         if (this.tableParams.sortBy === '') {
           this.tableParams.sortBy = '-dateAdded';
@@ -135,7 +124,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
             _id: item._id,
             project: item.project,
             headline: item.headline,
-            type: item.type,
             dateAdded: item.dateAdded,
             active: item.active,
             pinned: item.pinned
@@ -177,7 +165,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
       this.tableParams.keywords = '';
       // this.filter.dateAddedStart = '';
       // this.filter.dateAddedEnd = '';
-      this.typeFilters = [];
     } else {
       params['sortBy'] = this.tableParams.sortBy;
       params['pageSize'] = this.tableParams.pageSize;
@@ -186,16 +173,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
       // params['dateAddedEnd'] = this.utils.convertFormGroupNGBDateToJSDate(this.filter.dateAddedEnd).toISOString();
     }
 
-    if (this.typeFilters.length > 0) { params['type'] = this.typeFilters.toString(); }
     this.router.navigate(['activity', params]);
-  }
-
-  public toggleFilter(filterItem) {
-    if (this.typeFilters.includes(filterItem)) {
-      this.typeFilters = this.typeFilters.filter(item => item !== filterItem);
-    } else {
-      this.typeFilters.push(filterItem);
-    }
   }
 
   ngOnDestroy() {

@@ -12,6 +12,7 @@ export class Project {
   overlappingRegionalDistricts: String;
   name: String;
   partner: String;
+  traditionalTerritory: String;
   region: String;
   agreements: String;
 
@@ -69,7 +70,8 @@ export class Project {
     this.backgroundInfo = obj && obj.backgroundInfo || undefined;
     this.overlappingRegionalDistricts = obj && obj.overlappingRegionalDistricts            || undefined;
     this.name                = obj && obj.name                || undefined;
-    this.partner              = obj && obj.partner           || undefined;
+    this.partner = obj && obj.partner || undefined;
+    this.traditionalTerritory = obj && obj.traditionalTerritory || undefined;
     this.region              = obj && obj.region              || undefined;
     this.agreements       = obj && obj.agreements                || undefined;
     this.addedBy             = obj && obj.addedBy             || undefined;

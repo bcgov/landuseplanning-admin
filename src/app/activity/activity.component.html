@@ -45,28 +45,6 @@
         </div>
       </div>
     </div> -->
-    <p><b>Type Filters:</b></p>
-    <div class="form-row">
-      <div class="form-group col-md-8">
-        <div class="btn-group btn-group-toggle">
-          <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary" [class.active]="filterPublicCommentPeriod">
-              <input type="checkbox"
-                (click)="filterPublicCommentPeriod = !filterPublicCommentPeriod; toggleFilter('publicCommentPeriod');"
-                [(ngModel)]="filterPublicCommentPeriod" autocomplete="off" [ngModelOptions]="{standalone: true}">Public
-              Comment Period
-            </label>
-          </div>
-          &nbsp;
-          <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary" [class.active]="filterNews">
-              <input type="checkbox" (click)="filterNews = !filterNews; toggleFilter('news');" autocomplete="off"
-                [(ngModel)]="filterNews" [ngModelOptions]="{standalone: true}">News
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
     <button class="btn btn-primary" type="submit">
       <span>Search</span>
     </button>

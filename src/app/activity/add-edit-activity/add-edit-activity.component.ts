@@ -18,7 +18,6 @@ export class AddEditActivityComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public loading = true;
   public projects = [];
-  public types = [];
   public activity: any;
 
   public tinyMceSettings = {
@@ -47,7 +46,6 @@ export class AddEditActivityComponent implements OnInit, OnDestroy {
             'project': '',
             'active': '',
             'pinned': false,
-            'type': '',
             'contentUrl': '',
             'documentUrl': ''
           });
@@ -85,7 +83,6 @@ export class AddEditActivityComponent implements OnInit, OnDestroy {
         content: this.myForm.controls.content.value,
         dateAdded: this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateAdded').value),
         project: this.myForm.get('project').value,
-        type: this.myForm.get('type').value,
 
         // TODO: ETL this to merge.
         contentUrl: this.myForm.controls.contentUrl.value,
@@ -105,7 +102,6 @@ export class AddEditActivityComponent implements OnInit, OnDestroy {
         content: this.myForm.controls.content.value,
         dateAdded: new Date(),
         project: this.myForm.get('project').value,
-        type: this.myForm.get('type').value,
         contentUrl: this.myForm.controls.contentUrl.value,
         documentUrl: this.myForm.controls.documentUrl.value,
         pinned: false,
@@ -133,7 +129,6 @@ export class AddEditActivityComponent implements OnInit, OnDestroy {
       'dateAdded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(data.dateAdded))),
       'project': new FormControl(data.project),
       'active': new FormControl(data.active ? 'yes' : 'no'),
-      'type': new FormControl(data.type),
       'contentUrl': new FormControl(data.contentUrl),
       'documentUrl': new FormControl(data.documentUrl)
     });
