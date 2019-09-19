@@ -22,10 +22,17 @@ export class KeycloakService {
       //   this.keycloakEnabled = false;
       //   break;
 
-      case 'https://gcpe-lup-dev.pathfinder.gov.bc.ca':
+      case 'https://lup-dev.pathfinder.gov.bc.ca':
         // Dev etc
         this.keycloakEnabled = true;
         this.keycloakUrl = 'https://sso.pathfinder.gov.bc.ca/auth';
+        this.keycloakRealm = 'aaoozhcp';
+        break;
+
+      case 'https://lup-test.pathfinder.gov.bc.ca':
+        // Test
+        this.keycloakEnabled = true;
+        this.keycloakUrl = 'https://sso-test.pathfinder.gov.bc.ca/auth';
         this.keycloakRealm = 'aaoozhcp';
         break;
 

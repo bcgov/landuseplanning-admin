@@ -69,21 +69,21 @@ export class ApiService {
         this.env = 'local';
         break;
 
-      case 'gcpe-lup-dev.pathfinder.gov.bc.ca':
+      case 'lup-dev.pathfinder.gov.bc.ca':
         // Dev
         this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
         break;
 
-      case 'gcpe-lup-test.pathfinder.gov.bc.ca':
+      case 'lup-test.pathfinder.gov.bc.ca':
         // Test
         this.pathAPI = 'https://lup-test.pathfinder.gov.bc.ca/api';
         this.env = 'test';
         break;
 
-      case 'gcpe-lup-prod.gov.bc.ca':
+      case 'landuseplanning.gov.bc.ca':
         // Prod
-        this.pathAPI = 'https://lup-prod.pathfinder.gov.bc.ca/api';
+        this.pathAPI = 'https://landuseplanning.gov.bc.ca/api';
         this.env = 'prod';
         break;
 
@@ -92,6 +92,7 @@ export class ApiService {
         this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
         this.env = 'dev';
     }
+    console.log(hostname);
   }
 
   handleError(error: any): Observable<never> {
