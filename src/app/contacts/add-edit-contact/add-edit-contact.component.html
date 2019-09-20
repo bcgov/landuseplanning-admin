@@ -57,7 +57,7 @@
         <input required name="lastName" id="lastName" formControlName="lastName" type="text" class="form-control" />
       </div>
       <div class="label-pair">
-        <label for="content">Salutation* </label>
+        <label for="content">Salutation </label>
         <select required class="form-control" formControlName="salutation">
           <option *ngFor="let salutation of salutationList" [ngValue]="salutation">{{salutation}}</option>
         </select>

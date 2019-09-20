@@ -166,7 +166,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       this.myForm = new FormGroup({
         'name': new FormControl(),
         'partner': new FormControl(),
-        'traditionalTerritory': new FormControl(),
         'agreements': new FormControl(),
         'description': new FormControl(),
         'overlappingRegionalDistricts': new FormControl(),
@@ -247,7 +246,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'partner': new FormControl(formData.partner),
-      'traditionalTerritory': new FormControl(formData.traditionalTerritory),
       'agreements': new FormControl(formData.agreements),
       'description': new FormControl(formData.description),
       'overlappingRegionalDistricts': new FormControl(formData.overlappingRegionalDistricts),
@@ -282,7 +280,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     return {
       'name': form.controls.name.value,
       'partner': form.controls.partner.value,
-      'traditionalTerritory': form.controls.traditionalTerritory.value,
       'agreements': form.controls.agreements.value,
       'description': form.controls.description.value,
       'overlappingRegionalDistricts': form.controls.overlappingRegionalDistricts.value,
