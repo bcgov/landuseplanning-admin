@@ -107,7 +107,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Confirm Deletion',
-        message: 'Do you really want to delete this project?'
+        message: 'Do you really want to delete this project?',
+        okOnly: false
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
@@ -181,7 +182,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Confirm Publish',
-        message: 'Publishing this project will make it visible to the public. Are you sure you want to proceed?'
+        message: 'Publishing this project will make it visible to the public. <br><br> Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content? <br><br> Are you sure you want to proceed?',
+        okOnly: false
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
