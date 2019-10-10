@@ -91,28 +91,9 @@
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="infoForComment">Information for Comment*</label>
-                <textarea required id="infoForComment" class="form-control" placeholder="%information for comment%"
-                    (keyup)="updateDescriptionPreview()" rows="3" name="infoForCommentText"
+                <label for="infoForCommentText">Comment Period Description*</label>
+                <textarea required id="infoForCommentText" class="form-control" rows="3" name="infoForCommentText"
                     formControlName="infoForCommentText"></textarea>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="description">Description</label>
-                <textarea id="description" class="form-control" placeholder="%description%"
-                    (keyup)="updateDescriptionPreview()" rows="3" name="descriptionText"
-                    formControlName="descriptionText"></textarea>
-            </div>
-            <div>
-                <h6>
-                    <i>
-                        Preview for description:
-                    </i>
-                </h6>
-                <p class="text-secondary">
-                    Comment Period on the {{infoForCommentPreview}} for {{currentProject.name}} Project.
-                    <br>
-                    {{descriptionPreview}}
-                </p>
             </div>
         </div>
 

@@ -7,6 +7,8 @@ import { ApiService } from 'app/services/api';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
 import { MatSnackBar } from '@angular/material';
+import { DialogService } from 'ng2-bootstrap-modal'; 
+import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 @Component({
   selector: 'app-detail',
@@ -27,11 +29,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private snackBar: MatSnackBar,
     private documentService: DocumentService,
+    private dialogService: DialogService,
   ) {
   }
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
+    console.log('DOC: ', this.document);
 
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -54,19 +58,35 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', this.document.project, 'project-documents', 'edit']);
   }
 
-  togglePublish() {
+  public togglePublish() {
     if (this.publishText === 'Publish') {
-      this.documentService.publish(this.document._id).subscribe(
-        res => { },
-        error => {
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t update document');
-        },
-        () => {
-          this.openSnackBar('This document has been published.', 'Close');
-        }
-      );
-      this.publishText = 'Unpublish';
+      this.dialogService.addDialog(ConfirmComponent,
+        {
+          title: 'Confirm Publish',
+          message: 'Publishing this document will make it visible to the public. <br><br> Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content? <br><br> Are you sure you want to proceed?',
+          okOnly: false
+        }, {
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
+        })
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          isConfirmed => {
+            if (isConfirmed) {
+              this.documentService.publish(this.document._id).subscribe(
+                res => { },
+                error => {
+                  console.log('error =', error);
+                  alert('Uh-oh, couldn\'t update document');
+                },
+                () => {
+                  this.openSnackBar('This document has been published.', 'Close');
+                }
+              );
+              this.publishText = 'Unpublish';
+            }
+          }
+        );
+      
     } else {
       this.documentService.unPublish(this.document._id).subscribe(
         res => { },

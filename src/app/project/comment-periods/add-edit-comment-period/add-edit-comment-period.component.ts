@@ -28,9 +28,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   public isEditing = false;
 
-  public infoForCommentPreview = '%information for comment%';
-  public descriptionPreview = '%description%';
-
   public publishedState = 'unpublished';
   public commentPeriodForm: FormGroup;
 
@@ -128,7 +125,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         'endTime': new FormControl(),
         'publishedStateSel': new FormControl(),
         'infoForCommentText': new FormControl(),
-        'descriptionText': new FormControl(),
         openHouses: this.formBuilder.array([])
       });
       if (this.isEditing) {
@@ -156,8 +152,8 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     // Publish state
     this.commentPeriodForm.controls.publishedStateSel.setValue(this.commentPeriod.isPublished ? 'published' : 'unpublished');
 
-    // Instructions
-    this.extractVarsFromInstructions(this.commentPeriod.instructions, this.commentPeriodForm);
+    // Description
+    this.commentPeriodForm.controls.infoForCommentText.setValue(this.commentPeriod.instructions);
 
     // Open houses
     if (this.commentPeriod.openHouses.length > 0) {
@@ -215,9 +211,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Check info for comment
     // Check description
-    this.commentPeriod.instructions = `Comment Period on the ${this.commentPeriodForm.get('infoForCommentText').value}`;
-    this.commentPeriod.instructions += ` for ${this.currentProject.name} Project.`;
-    this.commentPeriod.instructions += ` ${this.commentPeriodForm.get('descriptionText').value === null ? '' : this.commentPeriodForm.get('descriptionText').value}`;
+    this.commentPeriod.instructions = this.commentPeriodForm.get('infoForCommentText').value;
 
     if (this.storageService.state.selectedDocumentsForCP) {
       let docIdArray = [];
@@ -304,13 +298,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     console.log(this.commentPeriodForm);
   }
 
-  private extractVarsFromInstructions(instructionString: String, form: FormGroup) {
-    let firstSentance = instructionString.split('.')[0] + '. ';
-    form.controls.infoForCommentText.setValue(firstSentance.split(' for')[0].replace('Comment Period on the ', ''));
-    form.controls.descriptionText.setValue(instructionString.replace(firstSentance, ''));
-    this.updateDescriptionPreview();
-  }
-
   private initOpenHouseRow(): FormGroup {
     return this.formBuilder.group({
       eventDate: null,
@@ -335,12 +322,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     } else {
       alert('You cannot delete the last row.');
     }
-  }
-
-  public updateDescriptionPreview() {
-    this.infoForCommentPreview = this.commentPeriodForm.get('infoForCommentText').value;
-    this.descriptionPreview = this.commentPeriodForm.get('descriptionText').value;
-    this._changeDetectionRef.detectChanges();
   }
 
   public removeSelectedDoc(doc) {
