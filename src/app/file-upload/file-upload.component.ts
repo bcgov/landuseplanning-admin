@@ -11,7 +11,7 @@ import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewC
 
 export class FileUploadComponent {
   public dragDropClass = 'dragarea';
-  @Input() fileExt = 'jpg, jpeg, gif, png, bmp, doc, docx, xls, xlsx, ppt, pptx, pdf, txt';
+  @Input() fileExt = 'jpg, jpeg, gif, png, bmp, doc, docx, xls, xlsx, ppt, pptx, pdf, txt, json';
   @Input() maxFiles = 50;
   @Input() maxSize = 300; // in MB
   @Input() files: Array<File> = [];

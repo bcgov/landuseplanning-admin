@@ -100,6 +100,32 @@
           <label for="lon">Long* </label>
           <input name="lon" id="lon" formControlName="lon" type="text" class="form-control" />
         </div>
+        <div class="form-group mb-0">
+          <label for="shapeFile">Upload Shape File </label>
+          <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
+            (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
+          <br>
+          <ul class="doc-list mb-3" *ngIf="documents?.length > 0">
+            <li *ngFor="let doc of documents">
+              <span class="cell icon">
+                <i class="material-icons">insert_drive_file</i>
+              </span>
+              <span class="cell name" [title]="doc.displayName || ''">
+                <span class="cell__txt-content">{{doc.documentFileName}}</span>
+              </span>
+              <span class="cell actions">
+                <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc)">
+                  <i class="material-icons">delete</i>
+                </button>
+              </span>
+            </li>
+          </ul>
+        </div>
+        <!--<div class="input-group-prepend">
+          <button [disabled]="!myForm.valid || documents?.length === 0 || docNameInvalid" (click)="uploadDocuments()"
+            class="btn btn-outline-primary mr-1" type="submit" id="button-cl"><i
+              class="material-icons">arrow_upward</i>Upload</button>
+        </div>-->
         <!-- <div class="label-pair file">
           <label for="addFile">Add Shape File </label>
           <div class="input-group">

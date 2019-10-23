@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import * as moment from 'moment-timezone';
-import { Subject } from 'rxjs';
+import { Subject, of, forkJoin } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
 import { MatSnackBar } from '@angular/material';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -10,8 +10,11 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
 import { ProjectService } from 'app/services/project.service';
+import { DocumentService } from 'app/services/document.service';
 import { Project } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
+
+import { Document } from 'app/models/document';
 
 @Component({
   selector: 'app-add-edit-project',
@@ -22,7 +25,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public Editor = ClassicEditor;
   public myForm: FormGroup;
-  public documents: any[] = [];
   public back: any = {};
   public REGIONS: Array<Object> = [
     'Cariboo',
@@ -92,6 +94,11 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
 
   public loading = true;
 
+  // Shape file upload
+  public projectFiles: Array<File> = [];
+  public documents: Document[] = [];
+  public documents2: any[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
@@ -101,7 +108,8 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     private utils: Utils,
     private navigationStackUtils: NavigationStackUtils,
     private projectService: ProjectService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private documentService: DocumentService
   ) {
   }
 
@@ -141,6 +149,11 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         this.project = data.project;
         this.buildForm(data);
         this.loading = false;
+
+        if (this.storageService.state.documents) {
+          this.documents = this.storageService.state.documents;
+        }
+        console.log('This documents', this.documents);
         try {
           this._changeDetectorRef.detectChanges();
         } catch (e) {
@@ -400,6 +413,32 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       let project = new Project(this.convertFormToProject(this.myForm));
       console.log('PUTing', project);
       project._id = this.project._id;
+      let observables = [];
+      this.documents.map(doc => {
+        const formData = new FormData();
+        formData.append('upfile', doc.upfile);
+        formData.append('project', this.project._id);
+        formData.append('documentFileName', doc.documentFileName);
+        formData.append('documentSource', 'PROJECT');
+        observables.push(this.documentService.add(formData));
+      });
+      forkJoin(observables)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          () => { // onNext
+            // do nothing here - see onCompleted() function below
+          },
+          error => {
+            console.log('error =', error);
+            alert('Uh-oh, couldn\'t delete project');
+            // TODO: should fully reload project here so we have latest non-deleted objects
+          },
+          () => { // onCompleted
+            // delete succeeded --> navigate back to search
+            // Clear out the document state that was stored previously.
+            console.log('Shapefile uploaded');
+          }
+        );
       this.projectService.save(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -429,6 +468,40 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       this.projectLead = '';
       this.projectLeadId = '';
       this.myForm.controls.projectLead.setValue('');
+    }
+  }
+
+  public addDocuments(files: FileList) {
+    if (files) { // safety check
+      for (let i = 0; i < files.length; i++) {
+        if (files[i]) {
+          // ensure file is not already in the list
+
+          if (this.documents.find(x => x.documentFileName === files[i].name)) {
+            // this.snackBarRef = this.snackBar.open('Can\'t add duplicate file', null, { duration: 2000 });
+            continue;
+          }
+
+          this.projectFiles.push(files[i]);
+
+          const document = new Document();
+          document.upfile = files[i];
+          document.documentFileName = files[i].name;
+
+          // save document for upload to db when project is added or saved
+          this.documents.push(document);
+        }
+      }
+      console.log('Documents', this.documents);
+    }
+    this._changeDetectorRef.detectChanges();
+  }
+
+  public deleteDocument(doc: Document) {
+    if (doc && this.documents) { // safety check
+      // remove doc from current list
+      this.projectFiles = this.projectFiles.filter(item => (item.name !== doc.documentFileName));
+      this.documents = this.documents.filter(item => (item.documentFileName !== doc.documentFileName));
     }
   }
 
