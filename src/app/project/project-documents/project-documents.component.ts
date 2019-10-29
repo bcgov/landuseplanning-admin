@@ -214,7 +214,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Publish Document(s)',
-        message: 'Click <strong>OK</strong> to publish the selected Documents or <strong>Cancel</strong> to return to the list.'
+        message: 'Click <strong>OK</strong> to publish the selected Documents or <strong>Cancel</strong> to return to the list.',
+        okOnly: false
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
@@ -253,7 +254,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Unpublish Document(s)',
-        message: 'Click <strong>OK</strong> to unpublish the selected Documents or <strong>Cancel</strong> to return to the list.'
+        message: 'Click <strong>OK</strong> to unpublish the selected Documents or <strong>Cancel</strong> to return to the list.',
+        okOnly: false
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })
@@ -292,7 +294,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Delete Document',
-        message: 'Click <strong>OK</strong> to delete this Document or <strong>Cancel</strong> to return to the list.'
+        message: 'Click <strong>OK</strong> to delete this Document or <strong>Cancel</strong> to return to the list.',
+        okOnly: false
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })

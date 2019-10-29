@@ -426,6 +426,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         formData.append('displayName',  doc.documentFileName);
         formData.append('documentSource', 'SHAPEFILE');
         observables.push(this.documentService.add(formData));
+        observables.push(this.documentService.publish(doc._id));
       });
       forkJoin(observables)
         .takeUntil(this.ngUnsubscribe)

@@ -26,8 +26,9 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
         pageNum,
         pageSize,
         sortBy,
-        { documentSource: 'SHAPEFILE' },
-        true);
+        {},
+        true,
+        { documentSource: 'PROJECT,SHAPEFILE' } );
     } else {
       return this.searchService.getSearchResults(
         this.storageService.state.projectDocumentTableParams.keywords,
@@ -36,8 +37,9 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
         this.storageService.state.projectDocumentTableParams.pageNum,
         this.storageService.state.projectDocumentTableParams.pageSize,
         this.storageService.state.projectDocumentTableParams.sortBy,
-        { documentSource: 'SHAPEFILE' },
-        true);
+        {},
+        true,
+        { documentSource: 'PROJECT,SHAPEFILE' });
     }
   }
 }
