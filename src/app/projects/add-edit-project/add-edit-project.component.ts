@@ -97,7 +97,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   // Shape file upload
   public projectFiles: Array<File> = [];
   public documents: Document[] = [];
-  public documents2: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -123,6 +122,15 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
           break;
       }
     });*/
+    this.route.data.subscribe((res: any) => {
+      if (res) {
+        if (res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
+          this.documents = res.documents[0].data.searchResults;
+        } else {
+          this.documents = [];
+        }
+      }
+    });
 
     // Get data related to current project
     this.route.parent.data
@@ -150,10 +158,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         this.buildForm(data);
         this.loading = false;
 
-        if (this.storageService.state.documents) {
-          this.documents = this.storageService.state.documents;
-        }
-        console.log('This documents', this.documents);
         try {
           this._changeDetectorRef.detectChanges();
         } catch (e) {
@@ -419,7 +423,8 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         formData.append('upfile', doc.upfile);
         formData.append('project', this.project._id);
         formData.append('documentFileName', doc.documentFileName);
-        formData.append('documentSource', 'PROJECT');
+        formData.append('displayName',  doc.documentFileName);
+        formData.append('documentSource', 'SHAPEFILE');
         observables.push(this.documentService.add(formData));
       });
       forkJoin(observables)

@@ -27,6 +27,7 @@ import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 import { DocumentDetailResolver } from './project-documents/detail/document-detail-resolver.service';
 import { DocumentsResolver } from './project-documents/project-document-resolver.services';
+import { ShapeFileResolver } from 'app/projects/add-edit-project/project-shapefile-resolver.services';
 import { ProjectResolver } from './project-resolver.service';
 import { ReviewCommentResolver } from './comment-period/review-comment/review-comment-resolver.service';
 import { TopicResolver } from './valued-components/add-vc/topic-resolver.services';
@@ -77,7 +78,10 @@ const routes: Routes = [
       },
       {
         path: 'edit',
-        component: AddEditProjectComponent
+        component: AddEditProjectComponent,
+        resolve: {
+          documents: ShapeFileResolver
+        }
       },
       {
         path: 'project-details',
@@ -271,7 +275,8 @@ const routes: Routes = [
     PinsComponentResolver,
     ProjectContactsResolver,
     LinkOrganizationResolver,
-    ContactSelectResolver
+    ContactSelectResolver,
+    ShapeFileResolver
   ]
 })
 
