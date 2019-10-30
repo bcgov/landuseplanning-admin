@@ -18,6 +18,7 @@ import { ProjectComponent } from './project.component';
 import { ProjectGroupsComponent } from './project-groups/project-groups.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
+import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
@@ -47,6 +48,7 @@ import { LinkOrganizationResolver } from 'app/shared/components/link-organizatio
 import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
 import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
 import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
+import { ShapefilesResolver } from './project-shapefiles/project-shapefile-resolver.services';
 
 const routes: Routes = [
   {
@@ -116,6 +118,13 @@ const routes: Routes = [
       {
         path: 'project-documents/upload/add-label',
         component: AddLabelComponent,
+      },
+      {
+        path: 'project-shapefiles',
+        component: ProjectShapefilesComponent,
+        resolve: {
+          documents: ShapefilesResolver
+        }
       },
       {
         path: 'compliance',
@@ -276,7 +285,8 @@ const routes: Routes = [
     ProjectContactsResolver,
     LinkOrganizationResolver,
     ContactSelectResolver,
-    ShapeFileResolver
+    ShapeFileResolver,
+    ShapefilesResolver
   ]
 })
 

@@ -6,7 +6,7 @@ import { SearchService } from 'app/services/search.service';
 import { StorageService } from 'app/services/storage.service';
 
 @Injectable()
-export class DocumentsResolver implements Resolve<Observable<object>> {
+export class ShapefilesResolver implements Resolve<Observable<object>> {
   constructor(
     private searchService: SearchService,
     private storageService: StorageService
@@ -26,8 +26,8 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
         pageNum,
         pageSize,
         sortBy,
-        { documentSource: 'PROJECT' },
-        true);
+        { documentSource: 'SHAPEFILE' },
+        true );
     } else {
       return this.searchService.getSearchResults(
         this.storageService.state.projectDocumentTableParams.keywords,
@@ -36,8 +36,8 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
         this.storageService.state.projectDocumentTableParams.pageNum,
         this.storageService.state.projectDocumentTableParams.pageSize,
         this.storageService.state.projectDocumentTableParams.sortBy,
-        { documentSource: 'PROJECT' },
-        true);
+        { documentSource: 'SHAPEFILE' },
+        true );
     }
   }
 }

@@ -67,7 +67,7 @@ http {
         add_header X-UA-Compatible "IE=Edge,chrome=1";
 
         # serve our angular app here
-        location /admin {
+        location /admin/ {
         # important - the root folder must be where your index.htm file is.
                 alias   /tmp/app/dist;
                 index  index.html index.htm;

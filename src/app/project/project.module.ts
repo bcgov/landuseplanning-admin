@@ -23,9 +23,11 @@ import { MilestonesComponent } from './milestones/milestones.component';
 import { ProjectGroupsComponent } from './project-groups/project-groups.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
+import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
+import { ShapefileTableRowsComponent } from './project-shapefiles/project-shapefile-table-rows/project-shapefile-table-rows.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
@@ -90,10 +92,12 @@ import { GroupContactSelectComponent } from './project-groups/group-contact/grou
     ProjectDetailComponent,
     ProjectDocumentsComponent,
     ProjectGroupsComponent,
+    ProjectShapefilesComponent,
     ProjectUpdatesComponent,
     ReviewCommentComponent,
     ReviewCommentsTabComponent,
     ReviewCommentsTabTableRowsComponent,
+    ShapefileTableRowsComponent,
     TopicTableRowsComponent,
     UploadComponent,
     ValuedComponentsComponent,
@@ -109,6 +113,7 @@ import { GroupContactSelectComponent } from './project-groups/group-contact/grou
     GroupContactSelectComponent,
     GroupsTableRowsComponent,
     ReviewCommentsTabTableRowsComponent,
+    ShapefileTableRowsComponent,
     TopicTableRowsComponent,
     UploadComponent,
     ValuedComponentTableRowsComponent
