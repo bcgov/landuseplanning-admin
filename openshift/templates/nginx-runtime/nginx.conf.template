@@ -67,24 +67,25 @@ http {
         add_header X-UA-Compatible "IE=Edge,chrome=1";
 
         # serve our angular app here
-        location /admin/ {
-        # important - the root folder must be where your index.htm file is.
-                alias   /tmp/app/dist;
-                index  index.html index.htm;
-                try_files $uri $uri/ /index.html;
-                gzip            on;
-                gzip_min_length 1000;
-                gzip_types      *;
+        location /admin {
+            # important - the root folder must be where your index.htm file is.
+            alias   /tmp/app/dist;
+            port_in_redirect off;
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html;
+            gzip            on;
+            gzip_min_length 1000;
+            gzip_types      *;
 
-                sendfile off;
-                expires -1;
+            sendfile off;
+            expires -1;
 
-                # propagate SMGOV_* headers
-                add_header  SMGOV_USERGUID $http_smgov_userguid;
-                add_header  SMGOV_USERDISPLAYNAME  $http_smgov_userdisplayname;
-                add_header  SMGOV_USERTYPE  $http_smgov_usertype;
-                add_header  SMGOV_USERIDENTIFIER  $http_smgov_useridentifier;			
-            }
+            # propagate SMGOV_* headers
+            add_header  SMGOV_USERGUID $http_smgov_userguid;
+            add_header  SMGOV_USERDISPLAYNAME  $http_smgov_userdisplayname;
+            add_header  SMGOV_USERTYPE  $http_smgov_usertype;
+            add_header  SMGOV_USERIDENTIFIER  $http_smgov_useridentifier;			
+        }
         
         location /api/ {
         
