@@ -178,6 +178,26 @@
         </div>
       </div>
     </section>
+    <section>
+      <h2>Engagement Information</h2>
+      <div class="flex-container">
+        <div class="add-row med">
+          <p>Additional information for the Engagement tab</p>
+          <ckeditor name="engagementInfo" id="engagementInfo" formControlName="engagementInfo" [editor]="Editor"
+            [data]="project?.engagementInfo"></ckeditor>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Document Information</h2>
+      <div class="flex-container">
+        <div class="add-row med">
+          <p>Additional information for the Documents tab</p>
+          <ckeditor name="documentInfo" id="documentInfo" formControlName="documentInfo" [editor]="Editor"
+            [data]="project?.documentInfo"></ckeditor>
+        </div>
+      </div>
+    </section>
     <section class="people">
       <h2>People</h2>
       <div class="flex-container">

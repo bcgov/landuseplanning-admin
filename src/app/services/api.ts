@@ -163,6 +163,8 @@ export class ApiService {
       'description',
       'engagementStatus',
       'backgroundInfo',
+      'engagementInfo',
+      'documentInfo',
       'overlappingRegionalDistricts',
       'name',
       'partner',

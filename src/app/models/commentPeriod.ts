@@ -39,6 +39,7 @@ export class CommentPeriod {
   userCan: String;
   vettedPercent: Number;
   vettingRoles: String;
+  commentPeriodInfo: String;
 
   // Attached
   summary: any;
@@ -91,6 +92,7 @@ export class CommentPeriod {
     this.vettedPercent = obj && obj.vettedPercent || null;
     this.vettingRoles = obj && obj.vettingRoles || null;
     this.summary = obj && obj.summary || null;
+    this.commentPeriodInfo = obj && obj.commentPeriodInfo || undefined;
 
     this.read = obj && obj.read || null;
     this.write = obj && obj.write || null;

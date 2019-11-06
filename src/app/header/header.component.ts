@@ -7,9 +7,7 @@ import { KeycloakService } from 'app/services/keycloak.service';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 
-import { DayCalculatorModalComponent } from 'app/day-calculator-modal/day-calculator-modal.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { DayCalculatorModalResult } from 'app/day-calculator-modal/day-calculator-modal.component';
 import { Subject } from 'rxjs/Subject';
 
 @Component({
@@ -45,8 +43,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     scopes: Array<String>
   };
-  private dayCalculatorModal: NgbModalRef = null;
-  private showDayCalculatorModal = false;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -84,34 +80,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.dialogService.addDialog(ConfirmComponent,
         {
           title: 'Browser Incompatible',
-          message: '<strong>  Attention: </strong>This website is not supported by Internet Explorer and Microsoft Edge, please use Google Chrome or Firefox.'
+          message: '<strong>  Attention: </strong>This website is not supported by Internet Explorer and Microsoft Edge, please use Google Chrome or Firefox.',
+          okOnly: false
         }, {
           backdropColor: 'rgba(0, 0, 0, 0.5)'
         });
     }
-  }
-
-  openCalculator() {
-    this.showDayCalculatorModal = true;
-    this.dayCalculatorModal = this.modalService.open(DayCalculatorModalComponent, { backdrop: 'static', windowClass: 'day-calculator-modal' });
-    this.dayCalculatorModal.result.then(result => {
-      this.dayCalculatorModal = null;
-      this.showDayCalculatorModal = false;
-      // if user dismissed the modal or clicked Explore then load initial apps
-      // otherwise user clicked Find, which will load filtered apps
-      switch (result) {
-        case DayCalculatorModalResult.Dismissed:
-          // this.urlService.setFragment(null);
-          // this.getApps();
-          break;
-        case DayCalculatorModalResult.Exploring:
-          // this.getApps();
-          break;
-        case DayCalculatorModalResult.Finding:
-          break;
-      }
-    });
-    return;
   }
 
   renderMenu(route: String) {

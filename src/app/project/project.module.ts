@@ -6,6 +6,7 @@ import { NgModule } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ProjectRoutingModule } from './project-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 // components
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
@@ -62,6 +63,7 @@ import { GroupContactSelectComponent } from './project-groups/group-contact/grou
     NgxPaginationModule,
     ProjectRoutingModule,
     ReactiveFormsModule,
+    CKEditorModule,
     SharedModule
   ],
   declarations: [

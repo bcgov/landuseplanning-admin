@@ -91,9 +91,17 @@
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="infoForCommentText">Comment Period Description*</label>
+                <label for="infoForCommentText">Comment Period Short Description*</label>
                 <textarea required id="infoForCommentText" class="form-control" rows="3" name="infoForCommentText"
                     formControlName="infoForCommentText"></textarea>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="commentPeriodInfo">Comment Period Long Description*</label>
+                <ckeditor name="commentPeriodInfo" id="commentPeriodInfo" formControlName="commentPeriodInfo" [editor]="Editor"
+                    [data]="project?.commentPeriodInfo"></ckeditor>
             </div>
         </div>
 

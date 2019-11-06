@@ -23,12 +23,6 @@
               </a>
             </div>
           </li>
-        <li *ngIf="jwt" class="nav-item">
-            <a class="nav-link" (click)="openCalculator()" title="Open Calculator" tabindex="0">
-                <span class="align-middle"><i class="material-icons">dialpad</i></span>
-                <span class="align-middle">Calculator</span>
-            </a>
-        </li>
         <!-- LOGGED IN -->
         <li *ngIf="jwt; else loggedOut" class="nav-item" placement="bottom-right">
           <a class="nav-link" id="welcome" tabindex="0">

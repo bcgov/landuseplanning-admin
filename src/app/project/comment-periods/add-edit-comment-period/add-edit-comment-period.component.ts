@@ -4,6 +4,7 @@ import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import * as moment from 'moment';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
 
@@ -36,6 +37,8 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   public loading = true;
 
   public areDatesInvalid = false;
+
+  public Editor = ClassicEditor;
 
   constructor(
     private route: ActivatedRoute,
@@ -125,6 +128,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         'endTime': new FormControl(),
         'publishedStateSel': new FormControl(),
         'infoForCommentText': new FormControl(),
+        'commentPeriodInfo': new FormControl(),
         openHouses: this.formBuilder.array([])
       });
       if (this.isEditing) {
@@ -154,6 +158,9 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Description
     this.commentPeriodForm.controls.infoForCommentText.setValue(this.commentPeriod.instructions);
+
+    // Long Description
+    this.commentPeriodForm.controls.commentPeriodInfo.setValue(this.commentPeriod.commentPeriodInfo);
 
     // Open houses
     if (this.commentPeriod.openHouses.length > 0) {
@@ -212,6 +219,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     // Check info for comment
     // Check description
     this.commentPeriod.instructions = this.commentPeriodForm.get('infoForCommentText').value;
+    this.commentPeriod.commentPeriodInfo = this.commentPeriodForm.get('commentPeriodInfo').value;
 
     if (this.storageService.state.selectedDocumentsForCP) {
       let docIdArray = [];

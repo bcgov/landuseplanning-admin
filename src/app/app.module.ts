@@ -49,7 +49,6 @@ import { ValuedComponentService } from './services/valued-component.service';
 
 // feature modules
 import { TokenInterceptor } from 'app/shared/utils/token-interceptor';
-import { DayCalculatorModalComponent } from './day-calculator-modal/day-calculator-modal.component';
 import { AddEditTopicComponent } from 'app/administration/topics/add-edit-topic/add-edit-topic.component';
 import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
@@ -93,7 +92,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     AppComponent,
     ConfirmComponent,
     ContactsComponent,
-    DayCalculatorModalComponent,
     FooterComponent,
     GroupTableRowsComponent,
     HeaderComponent,
@@ -184,7 +182,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     ContactSelectComponent,
     TopicTableRowsComponent,
     ConfirmComponent,
-    DayCalculatorModalComponent,
     GroupsTableRowsComponent,
     GroupTableRowsComponent,
     InputModalComponent,
