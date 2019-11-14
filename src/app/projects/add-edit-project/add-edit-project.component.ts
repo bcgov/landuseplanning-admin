@@ -81,11 +81,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     'Plan Implementation and Monitoring'
   ];
 
-  public ENGAGEMENT_STATUSES: Array<Object> = [
-    'Open',
-    'Closed'
-  ];
-
   public projectName;
   public projectId;
   public project;
@@ -196,7 +191,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         'capital': new FormControl(),
         'notes': new FormControl(),
         'status': new FormControl(),
-        'engagementStatus': new FormControl(),
         'backgroundInfo': new FormControl(),
         'engagementInfo': new FormControl(),
         'documentInfo': new FormControl(),
@@ -276,7 +270,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       'existingLandUsePlanURLs': new FormControl(formData.existingLandUsePlanURLs),
       'ea': new FormControl(formData.ea),
       'status': new FormControl(formData.status),
-      'engagementStatus': new FormControl(formData.engagementStatus),
       'backgroundInfo': new FormControl(formData.backgroundInfo),
       'engagementInfo': new FormControl(formData.engagementInfo),
       'documentInfo': new FormControl(formData.documentInfo),
@@ -311,7 +304,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       'existingLandUsePlanURLs': form.controls.existingLandUsePlanURLs.value,
       'ea': form.controls.ea.value,
       'status': form.controls.status.value,
-      'engagementStatus': form.controls.engagementStatus.value,
       'backgroundInfo': form.controls.backgroundInfo.value,
       'engagementInfo': form.controls.engagementInfo.value,
       'documentInfo': form.controls.documentInfo.value,
@@ -383,10 +375,10 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     } else if (this.projectLeadId === '') {
       alert('Project Lead cannot be empty.');
       return false;
-    } else if (this.projectDirectorId === '') {
+    } /*else if (this.projectDirectorId === '') {
       alert('Project Director cannot be empty.');
       return false;
-    } else {
+    } */else {
       return true;
     }
   }

@@ -73,15 +73,11 @@
       <h3 for="projectPhase">Project Phase: </h3>
       <p id="projectPhase">{{project.projectPhase || '-'}}</p>
     </div>
-    <div class="label-pair">
-      <h3 for="ea">Engagement Status: </h3>
-      <p id="ea">{{project.engagementStatus || '-'}}</p>
-    </div>
   </section>
   <section class="people">
     <h2>People</h2>
     <div class="col">
-      <h3 for="project-lead">Project Lead</h3>
+      <h3 for="project-lead">Engagement Lead</h3>
       <p id="project-lead">
         <i class="material-icons mr-3" role="presentation">person</i>{{project.projectLead.displayName || '-'}}<br />
         <i class="material-icons mr-3" role="presentation">phone</i>
@@ -89,7 +85,7 @@
         <i class="material-icons mr-3" role="presentation">email</i>
         <a href="mailTo:{{project.projectLead.email}}">{{project.projectLead.email || '-'}}</a>
       </p>
-    </div>
+    </div><!--
     <div class="col">
       <h3 for="epd">Project Director</h3>
       <p id="epd">
@@ -99,6 +95,6 @@
         <i class="material-icons mr-3" role="presentation">email</i>
         <a href="mailTo:{{project.projectDirector.email}}">{{project.projectDirector.email || '-'}}</a>
       </p>
-    </div>
+    </div>-->
   </section>
 </main>

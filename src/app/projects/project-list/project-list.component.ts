@@ -40,7 +40,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     {
       name: 'Partner',
       value: 'partner',
-      width: 'col-2'
+      width: 'col-3'
     },
     {
       name: 'Regional Districts',
@@ -48,14 +48,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       width: 'col-3'
     },
     {
-      name: 'Engagement Status',
-      value: 'engagementStatus',
-      width: 'col-2'
-    },
-    {
       name: 'Phase',
       value: 'projectPhase',
-      width: 'col-2'
+      width: 'col-3'
     }
   ];
 

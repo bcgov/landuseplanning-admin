@@ -39,6 +39,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   public areDatesInvalid = false;
 
   public Editor = ClassicEditor;
+  public commentPeriodInfo;
 
   constructor(
     private route: ActivatedRoute,
@@ -161,6 +162,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Long Description
     this.commentPeriodForm.controls.commentPeriodInfo.setValue(this.commentPeriod.commentPeriodInfo);
+    //this.commentPeriodInfo = this.commentPeriod.commentPeriodInfo;
 
     // Open houses
     if (this.commentPeriod.openHouses.length > 0) {

@@ -417,6 +417,7 @@ export class ApiService {
       'classificationRoles',
       'classifiedPercent',
       'commenterRoles',
+      'commentPeriodInfo',
       'dateAdded',
       'dateCompleted',
       'dateCompletedEst',

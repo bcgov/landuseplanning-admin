@@ -160,14 +160,6 @@
             </select>
           </div>
         </fieldset>
-        <fieldset class="form-group">
-          <div class="label-pair">
-            <label for="engagementStatus">Engagement Status </label>
-            <select class="form-control" name="engagementStatus" id="engagementStatus" formControlName="engagementStatus">
-              <option *ngFor="let engagementStatus of ENGAGEMENT_STATUSES" [ngValue]="engagementStatus">{{engagementStatus}}</option>
-            </select>
-          </div>
-        </fieldset>
       </div>
     </section>
     <section>
@@ -200,11 +192,9 @@
     </section>
     <section class="people">
       <h2>People</h2>
-      <div class="flex-container">
+      <div class="flex-container"><!--
         <div class="label-pair add-row">
           <label for="projectDirector">Project Director</label>
-          <!--<input name="projectLead" id="projectLead" formControlName="projectLead" type="text"
-                      class="form-control"/>-->
           <div *ngIf="projectDirector === '' || projectDirector == null">
             <button class="add-btn" type="button" (click)="contactSelect('projectDirector')"><i class="material-icons"
                 role="add">add_box</i></button>
@@ -223,9 +213,9 @@
               </button>
             </span>
           </div>
-        </div>
+        </div>-->
         <div class="label-pair add-row">
-          <label for="projectLead">Project Lead</label>
+          <label for="projectLead">Engagement Lead</label>
           <!--<input name="projectLead" id="projectLead" formControlName="projectLead" type="text"
             class="form-control"/>-->
           <div *ngIf="projectLead === '' || projectLead == null">
