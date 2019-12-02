@@ -37,6 +37,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
         (data: { project: Project }) => {
+          console.dir('suuup', data.project)
           if (data.project) {
             this.project = data.project;
             this.storageService.state.currentProject = { type: 'currentProject', data: this.project };

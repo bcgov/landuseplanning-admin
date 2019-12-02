@@ -40,7 +40,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     {
       name: 'Partner',
       value: 'partner',
-      width: 'col-3'
+      width: 'col-2'
     },
     {
       name: 'Regional Districts',
@@ -50,7 +50,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     {
       name: 'Phase',
       value: 'projectPhase',
-      width: 'col-3'
+      width: 'col-2'
+    },
+    {
+      name: 'Visibility',
+      value: 'visibility',
+      width: 'col-2'
     }
   ];
 
@@ -66,6 +71,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    console.log("This is the current ActivatedRoute:", this.route);
+
+    this.route.data.subscribe(
+      x => console.log("Hello hi hi", x)
+    );
+
     this.route.params
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
@@ -81,6 +92,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
               if (res.projects[0].data.searchResults.length > 0) {
                 this.tableParams.totalListItems = res.projects[0].data.meta[0].searchResultsTotal;
                 this.projects = res.projects[0].data.searchResults;
+                console.dir(res);
               } else {
                 this.tableParams.totalListItems = 0;
                 this.projects = [];
@@ -104,6 +116,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
   setRowData() {
     let projectList = [];
+    let visibility = '';
     if (this.projects && this.projects.length > 0) {
       this.projects.forEach(project => {
         projectList.push(
@@ -113,8 +126,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             partner: project.partner,
             overlappingRegionalDistricts: project.overlappingRegionalDistricts,
             engagementStatus: project.engagementStatus,
-            projectPhase: project.projectPhase
+            projectPhase: project.projectPhase,
+            visibility: project.visibility
           }
+
         );
       });
       this.projectTableData = new TableObject(
