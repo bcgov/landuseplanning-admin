@@ -29,6 +29,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   public showOnlyOpenApps: boolean;
   public tableParams: TableParamsObject = new TableParamsObject();
   public terms = new SearchTerms();
+  public visibility: string = '';
 
   public projectTableData: TableObject;
   public projectTableColumns: any[] = [
@@ -71,12 +72,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    console.log("This is the current ActivatedRoute:", this.route);
-
-    this.route.data.subscribe(
-      x => console.log("Hello hi hi", x)
-    );
-
     this.route.params
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
@@ -92,7 +87,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
               if (res.projects[0].data.searchResults.length > 0) {
                 this.tableParams.totalListItems = res.projects[0].data.meta[0].searchResultsTotal;
                 this.projects = res.projects[0].data.searchResults;
-                console.dir(res);
               } else {
                 this.tableParams.totalListItems = 0;
                 this.projects = [];
@@ -116,9 +110,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
   setRowData() {
     let projectList = [];
-    let visibility = '';
     if (this.projects && this.projects.length > 0) {
       this.projects.forEach(project => {
+        console.log(project.isPublished);
+        project.read.includes('public') ? this.visibility = "Published" : this.visibility = "Not Published";
         projectList.push(
           {
             _id: project._id,
@@ -127,7 +122,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             overlappingRegionalDistricts: project.overlappingRegionalDistricts,
             engagementStatus: project.engagementStatus,
             projectPhase: project.projectPhase,
-            visibility: project.visibility
+            visibility: this.visibility
           }
 
         );

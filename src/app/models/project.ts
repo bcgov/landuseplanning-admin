@@ -40,7 +40,7 @@ export class Project {
   projectPhase: String;
   substitution: Boolean;
   updatedBy: String;
-  visibility: string;
+  isPublished: boolean;
 
   eaDecision: any;
 
@@ -125,10 +125,8 @@ export class Project {
       });
     }
 
-    if (obj.read.includes('public')) {
-      this.visibility = 'Published';
-    } else {
-      this.visibility = 'Not Published';
+    if (obj && obj.read) {
+      this.isPublished = obj.read.includes('public');
     }
 
     // copy centroid
