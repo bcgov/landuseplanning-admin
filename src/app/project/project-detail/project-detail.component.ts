@@ -28,6 +28,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   public isUnpublishing = false;
   public isDeleting = false;
   public project: Project = null;
+  public visibility: string;
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
@@ -55,6 +56,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.project = data.project;
             console.log(this.project);
             this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
+            this.project.read.includes('public') ? this.visibility = "Published" : this.visibility = "Not Published";
+
             // this.loading = false;
             this._changeDetectorRef.detectChanges();
           } else {
@@ -72,9 +75,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   editProject() {
+    console.log('editing');
     this.storageService.state.project = this.project;
     this.storageService.state.back = { url: ['/p', this.project._id, 'project-details'], label: 'Edit Project' };
     this.router.navigate(['p', this.project._id, 'edit']);
+    console.log('finished routing and setting state');
   }
 
   public deleteProject() {
@@ -221,6 +226,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
               project => {
                 this.isPublishing = false;
                 this.project = project;
+                this.visibility = 'Published';
               },
               error => {
                 this.isPublishing = false;
@@ -256,6 +262,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
               project => {
                 this.isPublishing = false;
                 this.project = project;
+                this.visibility = 'Not Published';
               },
               error => {
                 this.isPublishing = false;

@@ -141,13 +141,19 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
           this.projectLeadId = data.project.projectLead._id;
         }
 
-        if (this.storageService.state.projectDirector) {
-          this.projectDirector = this.storageService.state.projectDirector.name;
-          this.projectDirectorId = this.storageService.state.projectDirector._id;
-        } else if (this.isEditing && data.project.projectDirector._id && data.project.projectDirector._id !== '') {
-          this.projectDirector = data.project.projectDirector.displayName;
-          this.projectDirectorId = data.project.projectDirector._id;
-        }
+
+        /**
+         * Since Land Use Planning project no longer uses "project directors"
+         */
+        // if (this.storageService.state.projectDirector) {
+        //   this.projectDirector = this.storageService.state.projectDirector.name;
+        //   this.projectDirectorId = this.storageService.state.projectDirector._id;
+        // } else if (this.isEditing && data.project.projectDirector._id && data.project.projectDirector._id !== '') {
+        //   this.projectDirector = data.project.projectDirector.displayName;
+        //   this.projectDirectorId = data.project.projectDirector._id;
+        // }
+
+
 
         this.project = data.project;
         this.buildForm(data);

@@ -40,6 +40,7 @@ export class Project {
   projectPhase: String;
   substitution: Boolean;
   updatedBy: String;
+  isPublished: boolean;
 
   eaDecision: any;
 
@@ -96,15 +97,15 @@ export class Project {
     this.proMember           = obj && obj.proMember           || undefined;
     this.provElecDist        = obj && obj.provElecDist        || undefined;
     this.shortName           = obj && obj.shortName           || undefined;
-    this.projectPhase = obj && obj.projectPhase              || undefined;
+    this.projectPhase        = obj && obj.projectPhase        || undefined;
     this.substitution        = obj && obj.substitution        || undefined;
     this.updatedBy           = obj && obj.updatedBy           || undefined;
     this.read                = obj && obj.read                || undefined;
     this.write               = obj && obj.write               || undefined;
     this.delete              = obj && obj.delete              || undefined;
 
-    this.projectLead            = obj && obj.projectLead      || undefined;
-    this.projectDirector = obj && obj.projectDirector   || undefined;
+    this.projectLead         = obj && obj.projectLead         || undefined;
+    this.projectDirector     = obj && obj.projectDirector     || undefined;
 
     // if (obj && obj.publishDate) {
     //   this.publishDate = new Date(obj.publishDate);
@@ -122,6 +123,10 @@ export class Project {
       obj.pins.forEach(pin => {
         this.pins.push(pin);
       });
+    }
+
+    if (obj && obj.read) {
+      this.isPublished = obj.read.includes('public');
     }
 
     // copy centroid

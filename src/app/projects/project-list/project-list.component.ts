@@ -29,6 +29,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   public showOnlyOpenApps: boolean;
   public tableParams: TableParamsObject = new TableParamsObject();
   public terms = new SearchTerms();
+  public visibility: string = '';
 
   public projectTableData: TableObject;
   public projectTableColumns: any[] = [
@@ -40,7 +41,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     {
       name: 'Partner',
       value: 'partner',
-      width: 'col-3'
+      width: 'col-2'
     },
     {
       name: 'Regional Districts',
@@ -50,7 +51,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     {
       name: 'Phase',
       value: 'projectPhase',
-      width: 'col-3'
+      width: 'col-2'
+    },
+    {
+      name: 'Visibility',
+      value: 'visibility',
+      width: 'col-2'
     }
   ];
 
@@ -106,6 +112,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     let projectList = [];
     if (this.projects && this.projects.length > 0) {
       this.projects.forEach(project => {
+        console.log(project.isPublished);
+        project.read.includes('public') ? this.visibility = "Published" : this.visibility = "Not Published";
         projectList.push(
           {
             _id: project._id,
@@ -113,8 +121,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             partner: project.partner,
             overlappingRegionalDistricts: project.overlappingRegionalDistricts,
             engagementStatus: project.engagementStatus,
-            projectPhase: project.projectPhase
+            projectPhase: project.projectPhase,
+            visibility: this.visibility
           }
+
         );
       });
       this.projectTableData = new TableObject(
