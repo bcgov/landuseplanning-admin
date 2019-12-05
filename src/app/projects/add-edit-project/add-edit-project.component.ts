@@ -357,6 +357,9 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     } else if (this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null) {
       alert('Partner(s) cannot be empty.');
       return false;
+    } else if (this.myForm.controls.agreements.value === '' || this.myForm.controls.agreements.value == null) {
+      alert('Agreements cannot be empty.');
+      return false;
     } else if (this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null) {
       alert('Description cannot be empty.');
       return false;
