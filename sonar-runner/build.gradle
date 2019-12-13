@@ -48,7 +48,7 @@ if ( project.hasProperty('project_key_extension') ) {
 
 sonarqube {
     properties {
-        property "sonar.host.url", "https://sonarqube-gcpe-lup-tools.pathfinder.gov.bc.ca"        
+        //property "sonar.host.url", "https://sonarqube-gcpe-lup-tools.pathfinder.gov.bc.ca"        
         property "sonar.projectName", "gcpe-lup-admin$pne"
         property "sonar.projectKey", "org.sonarqube:gcpe-lup-admin$pke"
         property "sonar.projectBaseDir", "../"

@@ -6,7 +6,7 @@
       "description": "Deployment template for a angular on nginx",
       "tags": "angular,nginx"
     },
-    "name": "admin-angular-on-nginx"
+    "name": "landuseplanning-admin"
   },
   "objects": [
     {
