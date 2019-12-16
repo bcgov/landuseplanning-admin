@@ -53,8 +53,8 @@ def sonarGetDate (jsonPayload) {
 }
 
 boolean imageTaggingComplete ( String sourceTag, String destinationTag, String action, def iterations = 6 ) {
-  def sourceImageName = sh returnStdout: true, script: "oc describe istag/landuseplanning-admin:${sourceTag} | head -n 1".trim()
-  def destinationImageName = sh returnStdout: true, script: "oc describe istag/landuseplanning-admin:${destinationTag} | head -n 1".trim()
+  def sourceImageName = sh returnStdout: true, script: "oc describe istag/lup-admin-static:${sourceTag} | head -n 1".trim()
+  def destinationImageName = sh returnStdout: true, script: "oc describe istag/lup-admin-static:${destinationTag} | head -n 1".trim()
   int delay = 0
 
   for (int i=0; i<iterations; i++){
@@ -66,7 +66,7 @@ boolean imageTaggingComplete ( String sourceTag, String destinationTag, String a
     } else {
       delay = (1<<i) // exponential backoff
       sleep(delay)
-      destinationImageName = sh returnStdout: true, script: "oc describe istag/landuseplanning-admin:${destinationTag} | head -n 1".trim()
+      destinationImageName = sh returnStdout: true, script: "oc describe istag/lup-admin-static:${destinationTag} | head -n 1".trim()
     }
   }
   return false
@@ -212,7 +212,7 @@ def nodejsSonarqube () {
               echo "${SONARQUBE_URL}"
 
               // sonarqube report link
-              def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:landuseplanning-admin"
+              def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin-static"
 
               boolean firstScan = false;
 
@@ -236,7 +236,7 @@ def nodejsSonarqube () {
                   echo "sonarqube report failed to complete, or timed out"
 
                   notifyRocketChat(
-                    "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
+                    "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
                     ROCKET_DEPLOY_WEBHOOK
                   )
 
@@ -257,7 +257,7 @@ def nodejsSonarqube () {
                 echo "Scan Failed"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
+                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -270,7 +270,7 @@ def nodejsSonarqube () {
 
             } catch (error) {
               notifyRocketChat(
-                "@all The latest build of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n ${error.message}",
+                "@all The latest build of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n ${error.message}",
                 ROCKET_DEPLOY_WEBHOOK
               )
               throw error
@@ -319,7 +319,7 @@ def zapScanner () {
           def ZAP_REPORT_STASH = "zap-report"
 
           // Dynamicaly determine the target URL for the ZAP scan ...
-          def TARGET_URL = getUrlFromRoute('landuseplanning-admin', 'lup-dev').trim()
+          def TARGET_URL = getUrlFromRoute('lup-admin-static', 'lup-dev').trim()
 
           echo "Target URL: ${TARGET_URL}"
 
@@ -343,14 +343,14 @@ def zapScanner () {
             } catch (error) {
               // revert dev from backup
               echo "Reverting dev image form backup..."
-              openshiftTag destStream: 'landuseplanning-admin', verbose: 'false', destTag: 'dev', srcStream: 'landuseplanning-admin', srcTag: 'dev-backup'
+              openshiftTag destStream: 'lup-admin-static', verbose: 'false', destTag: 'dev', srcStream: 'lup-admin-static', srcTag: 'dev-backup'
 
               // wait for revert to complete
               if(!imageTaggingComplete ('dev-backup', 'dev', 'revert')) {
                 echo "Failed to revert dev image after Zap scan failed, please revert the dev image manually from dev-backup"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
+                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -359,7 +359,7 @@ def zapScanner () {
               }
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev mage was reverted",
+                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev mage was reverted",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -413,7 +413,7 @@ def postZapToSonar () {
           def SONARQUBE_URL = getUrlFromRoute('sonarqube').trim()
 
           // url for the sonarqube report
-          def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:landuseplanning-admin-zap-scan"
+          def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin-static-zap-scan"
 
           boolean firstScan = false
 
@@ -442,8 +442,8 @@ def postZapToSonar () {
               script: "./gradlew sonarqube --stacktrace --info \
                 -Dsonar.verbose=true \
                 -Dsonar.host.url=${SONARQUBE_URL} \
-                -Dsonar.projectName='landuseplanning-admin-zap-scan'\
-                -Dsonar.projectKey='org.sonarqube:landuseplanning-admin-zap-scan' \
+                -Dsonar.projectName='lup-admin-static-zap-scan'\
+                -Dsonar.projectKey='org.sonarqube:lup-admin-static-zap-scan' \
                 -Dsonar.projectBaseDir='../' \
                 -Dsonar.sources='./src/app' \
                 -Dsonar.zaproxy.reportPath=${WORKSPACE}${ZAP_REPORT_PATH} \
@@ -456,7 +456,7 @@ def postZapToSonar () {
                 echo "Zap report failed to complete, or timed out"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
+                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -476,14 +476,14 @@ def postZapToSonar () {
 
               // revert dev from backup
               echo "Reverting dev image form backup..."
-              openshiftTag destStream: 'landuseplanning-admin', verbose: 'false', destTag: 'dev', srcStream: 'landuseplanning-admin', srcTag: 'dev-backup'
+              openshiftTag destStream: 'lup-admin-static', verbose: 'false', destTag: 'dev', srcStream: 'lup-admin-static', srcTag: 'dev-backup'
 
               // wait for revert to complete
               if(!imageTaggingComplete ('dev-backup', 'dev', 'revert')) {
                 echo "Failed to revert dev image after Zap scan failed, please revert the dev image manually from dev-backup"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
+                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -492,7 +492,7 @@ def postZapToSonar () {
               }
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev image has been reverted",
+                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev image has been reverted",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -538,20 +538,21 @@ pipeline {
                 //ROCKET_QA_WEBHOOK = sh(returnStdout: true, script: 'cat rocket-qa-webhook')
 
                 echo "Building landuseplanning-admin develop branch"
-                openshiftBuild bldCfg: 'landuseplanning-admin-angular', showBuildLogs: 'true'
-                openshiftBuild bldCfg: 'landuseplanning-admin-build', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'admin-angular-builder', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'lup-admin', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'lup-admin-static', showBuildLogs: 'true'
                 echo "Build done"
 
                 echo ">>> Get Image Hash"
                 // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
                 // Tag the images for deployment based on the image's hash
                 IMAGE_HASH = sh (
-                  script: """oc get istag landuseplanning-admin:latest -o template --template=\"{{.image.dockerImageReference}}\"|awk -F \":\" \'{print \$3}\'""",
+                  script: """oc get istag lup-admin-static:latest -o template --template=\"{{.image.dockerImageReference}}\"|awk -F \":\" \'{print \$3}\'""",
                   returnStdout: true).trim()
                 echo ">> IMAGE_HASH: ${IMAGE_HASH}"
               } catch (error) {
                 notifyRocketChat(
-                  "@all The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: \n ${error.message}",
+                  "@all The build ${env.BUILD_DISPLAY_NAME} of lup-admin-static, seems to be broken.\n ${env.BUILD_URL}\n Error: \n ${error.message}",
                   ROCKET_QA_WEBHOOK
                 )
                 throw error
@@ -595,14 +596,14 @@ pipeline {
           try {
             // backup
             echo "Backing up dev image..."
-            openshiftTag destStream: 'landuseplanning-admin', verbose: 'false', destTag: 'dev-backup', srcStream: 'landuseplanning-admin', srcTag: 'dev'
+            openshiftTag destStream: 'lup-admin-static', verbose: 'false', destTag: 'dev-backup', srcStream: 'lup-admin-static', srcTag: 'dev'
 
             // wait for backup to complete
             if( !imageTaggingComplete ('dev', 'dev-backup', 'backup')) {
               echo "Dev image backup failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image backup failed",
+                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image backup failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -612,14 +613,14 @@ pipeline {
 
             // deploy
             echo "Deploying to dev..."
-            openshiftTag destStream: 'landuseplanning-admin', verbose: 'false', destTag: 'dev', srcStream: 'landuseplanning-admin', srcTag: "${IMAGE_HASH}"
+            openshiftTag destStream: 'lup-admin-static', verbose: 'false', destTag: 'dev', srcStream: 'lup-admin-static', srcTag: "${IMAGE_HASH}"
 
             // wait for deployment to complete
             if ( CHANGELOG && CHANGELOG != "No new changes" && !imageTaggingComplete ('latest', 'dev', 'deploy')) {
               echo "Dev image deployment failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image deployment failed",
+                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image deployment failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -629,12 +630,12 @@ pipeline {
               sleep (5)
             }
 
-            openshiftVerifyDeployment depCfg: 'landuseplanning-admin', namespace: 'lup-dev', replicaCount: 1, verbose: 'false', verifyReplicaCount: 'false', waitTime: 600000
+            openshiftVerifyDeployment depCfg: 'lup-admin-static', namespace: 'lup-dev', replicaCount: 1, verbose: 'false', verifyReplicaCount: 'false', waitTime: 600000
             echo ">>>> Deployment Complete"
 
           } catch (error) {
             notifyRocketChat(
-              "@all The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
+              "@all The build ${env.BUILD_DISPLAY_NAME} of lup-admin-static, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
               ROCKET_DEPLOY_WEBHOOK
             )
             currentBuild.result = "FAILURE"
@@ -678,12 +679,12 @@ pipeline {
       steps {
         script {
           notifyRocketChat(
-            "A new version of landuseplanning-admin is now in Dev, build ${env.BUILD_DISPLAY_NAME} \n Changes: \n ${CHANGELOG}",
+            "A new version of lup-admin-static is now in Dev, build ${env.BUILD_DISPLAY_NAME} \n Changes: \n ${CHANGELOG}",
             ROCKET_DEPLOY_WEBHOOK
           )
 
           notifyRocketChat(
-            "@all A new version of landuseplanning-admin is now in Dev and ready for QA. \n Changes to Dev: \n ${CHANGELOG}",
+            "@all A new version of lup-admin-static is now in Dev and ready for QA. \n Changes to Dev: \n ${CHANGELOG}",
             ROCKET_QA_WEBHOOK
           )
         }
