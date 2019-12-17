@@ -682,11 +682,11 @@ pipeline {
             "A new version of lup-admin-static is now in Dev, build ${env.BUILD_DISPLAY_NAME} \n Changes: \n ${CHANGELOG}",
             ROCKET_DEPLOY_WEBHOOK
           )
-
+/*
           notifyRocketChat(
             "@all A new version of lup-admin-static is now in Dev and ready for QA. \n Changes to Dev: \n ${CHANGELOG}",
             ROCKET_QA_WEBHOOK
-          )
+          )*/
         }
       }
     }
