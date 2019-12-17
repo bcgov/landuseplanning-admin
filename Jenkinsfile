@@ -569,7 +569,7 @@ pipeline {
         //     }
         //   }
         // }
-
+        /*
         stage('Linting') {
           steps {
             script {
@@ -586,7 +586,7 @@ pipeline {
               def result = nodejsSonarqube()
             }
           }
-        }
+        }*/
       }
     }
 
