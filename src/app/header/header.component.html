@@ -15,26 +15,24 @@
         </button>
     <div class="navbar-collapse" [@toggleNav]="isNavMenuOpen ? 'navOpen' : 'navClosed'" id="mainNav">
       <ul class="navbar-nav">
-          <li *ngIf="jwt" class="nav-item">
-            <div class="btn-group">
-              <a class="nav-link" routerLink="/search" title="Search" tabindex="0">
-                <span class="align-middle"><i class="material-icons">search</i></span>
-                <span class="align-middle">Search</span>
-              </a>
-            </div>
-          </li>
-        <!-- LOGGED IN -->
-        <li *ngIf="jwt; else loggedOut" class="nav-item" placement="bottom-right">
-          <a class="nav-link" id="welcome" tabindex="0">
-            <span class="align-middle"><i class="material-icons">person</i></span>
-            <span class="align-middle">{{welcomeMsg}}</span>
-          </a>
+        <li *ngIf="jwt" class="nav-item">
+            <a class="nav-link" routerLink="/search" title="Search" tabindex="0">
+              <span class="icon align-middle"><i class="material-icons">search</i></span>
+              <span>Search</span>
+            </a>
         </li>
+          <!-- LOGGED IN -->
+          <li *ngIf="jwt; else loggedOut" class="nav-item" placement="bottom-right">
+            <a class="nav-link nav-link-welcome-msg" id="welcome" tabindex="0">
+              <span class="icon align-middle"><i class="material-icons">person</i></span>
+              <span>{{welcomeMsg}}</span>
+            </a>
+          </li>
 
-        <!-- LOGGED OUT -->
-        <ng-template #loggedOut>
-          <!-- Placeholder? -->
-        </ng-template>
+          <!-- LOGGED OUT -->
+          <ng-template #loggedOut>
+            <!-- Placeholder? -->
+          </ng-template>
       </ul>
     </div>
   </nav>
