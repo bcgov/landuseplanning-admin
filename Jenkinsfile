@@ -212,7 +212,7 @@ def nodejsSonarqube () {
               echo "${SONARQUBE_URL}"
 
               // sonarqube report link
-              def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin-static"
+              def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin"
 
               boolean firstScan = false;
 
@@ -319,7 +319,7 @@ def zapScanner () {
           def ZAP_REPORT_STASH = "zap-report"
 
           // Dynamicaly determine the target URL for the ZAP scan ...
-          def TARGET_URL = getUrlFromRoute('lup-admin-static', 'lup-dev').trim()
+          def TARGET_URL = getUrlFromRoute('lup-admin-dev', 'xti26n-dev').trim()
 
           echo "Target URL: ${TARGET_URL}"
 
@@ -413,7 +413,7 @@ def postZapToSonar () {
           def SONARQUBE_URL = getUrlFromRoute('sonarqube').trim()
 
           // url for the sonarqube report
-          def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin-static-zap-scan"
+          def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin-zap-scan"
 
           boolean firstScan = false
 
@@ -442,8 +442,8 @@ def postZapToSonar () {
               script: "./gradlew sonarqube --stacktrace --info \
                 -Dsonar.verbose=true \
                 -Dsonar.host.url=${SONARQUBE_URL} \
-                -Dsonar.projectName='lup-admin-static-zap-scan'\
-                -Dsonar.projectKey='org.sonarqube:lup-admin-static-zap-scan' \
+                -Dsonar.projectName='lup-admin-zap-scan'\
+                -Dsonar.projectKey='org.sonarqube:lup-admin-zap-scan' \
                 -Dsonar.projectBaseDir='../' \
                 -Dsonar.sources='./src/app' \
                 -Dsonar.zaproxy.reportPath=${WORKSPACE}${ZAP_REPORT_PATH} \
@@ -578,7 +578,7 @@ pipeline {
             }
           }
         }
-/*
+
         stage('Sonarqube') {
           steps {
             script {
@@ -586,7 +586,7 @@ pipeline {
               def result = nodejsSonarqube()
             }
           }
-        }*/
+        }
       }
     }
 
