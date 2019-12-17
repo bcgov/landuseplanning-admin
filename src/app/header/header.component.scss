@@ -129,7 +129,6 @@
         &:hover {
           cursor: initial;
           border-bottom: none;
-          background-color: transparent;
         }
       }
 
@@ -205,13 +204,14 @@
         border-top: none;
 
         span {
-          margin-top: 0.9rem;
+          margin-top: 1.1rem;
           display: inline-block;
         }
 
         &:hover {
-          background-color: #002663;
+          background-color: transparent;
         }
+
       }
 
       > li {
@@ -281,7 +281,7 @@
 }
 
 .navbar-brand__title {
-  margin-top: 0.78rem;
+  margin-top: 1rem;
   margin-left: 85px;
   display: inline-block;
   color: #fff;
