@@ -538,9 +538,9 @@ pipeline {
                 //ROCKET_QA_WEBHOOK = sh(returnStdout: true, script: 'cat rocket-qa-webhook')
 
                 echo "Building landuseplanning-admin develop branch"
-                //openshiftBuild bldCfg: 'admin-angular-builder', showBuildLogs: 'true'
-                //openshiftBuild bldCfg: 'lup-admin', showBuildLogs: 'true'
-                //openshiftBuild bldCfg: 'lup-admin-static', showBuildLogs: 'true'
+                /penshiftBuild bldCfg: 'admin-angular-builder', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'lup-admin', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'lup-admin-static', showBuildLogs: 'true'
                 echo "Build done"
 
                 echo ">>> Get Image Hash"
@@ -569,7 +569,7 @@ pipeline {
         //     }
         //   }
         // }
-        /*
+        
         stage('Linting') {
           steps {
             script {
@@ -578,7 +578,7 @@ pipeline {
             }
           }
         }
-
+/*
         stage('Sonarqube') {
           steps {
             script {
@@ -630,7 +630,7 @@ pipeline {
               sleep (5)
             }
 
-            openshiftVerifyDeployment depCfg: 'lup-admin-static', namespace: 'xti26n-dev', replicaCount: 1, verbose: 'false', verifyReplicaCount: 'false', waitTime: 600000
+            openshiftVerifyDeployment depCfg: 'admin-angular-on-nginx-dev', namespace: 'xti26n-dev', replicaCount: 1, verbose: 'false', verifyReplicaCount: 'false', waitTime: 600000
             echo ">>>> Deployment Complete"
 
           } catch (error) {
