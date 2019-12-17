@@ -644,7 +644,7 @@ pipeline {
         }
       }
     }
-
+/*
     stage('Zap') {
       steps {
         script {
@@ -662,7 +662,7 @@ pipeline {
           def result = postZapToSonar()
         }
       }
-    }
+    }*/
 
 
     // stage('BDD Tests') {
