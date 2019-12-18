@@ -49,7 +49,7 @@ if ( project.hasProperty('project_key_extension') ) {
 sonarqube {
     properties {      
         property "sonar.projectName", "lup-admin"
-        property "sonar.projectKey", "org.sonarqube:lup-admin"
+        property "sonar.projectKey", "lup-admin"
         property "sonar.projectBaseDir", "../"
         property "sonar.sources", "./src/app"
         //property "sonar.tests", "test"
