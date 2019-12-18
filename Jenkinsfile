@@ -260,7 +260,7 @@ def nodejsSonarqube () {
                 echo "Scan Failed"
 
                 notifyRocketChat(
-                  "The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
+                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -524,7 +524,7 @@ pipeline {
   stages {
     stage('Parallel Build Steps') {
       failFast true
-      parallel {/*
+      parallel {
         stage('Build') {
           agent any
           steps {
@@ -541,9 +541,9 @@ pipeline {
                 //ROCKET_QA_WEBHOOK = sh(returnStdout: true, script: 'cat rocket-qa-webhook')
 
                 echo "Building landuseplanning-admin develop branch"
-                openshiftBuild bldCfg: 'admin-angular-builder', showBuildLogs: 'true'
-                openshiftBuild bldCfg: 'lup-admin', showBuildLogs: 'true'
-                openshiftBuild bldCfg: 'lup-admin-static', showBuildLogs: 'true'
+                //openshiftBuild bldCfg: 'admin-angular-builder', showBuildLogs: 'true'
+                //openshiftBuild bldCfg: 'lup-admin', showBuildLogs: 'true'
+                //openshiftBuild bldCfg: 'lup-admin-static', showBuildLogs: 'true'
                 echo "Build done"
 
                 echo ">>> Get Image Hash"
@@ -562,7 +562,7 @@ pipeline {
               }
             }
           }
-        }*/
+        }
 
         //  stage('Unit Tests') {
         //   steps {
