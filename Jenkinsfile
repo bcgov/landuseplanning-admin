@@ -591,7 +591,7 @@ pipeline {
         //     }
         //   }
         // }
-        
+
         stage('Linting') {
           steps {
             script {
@@ -666,7 +666,7 @@ pipeline {
         }
       }
     }*/
-/*
+
     stage('Zap') {
       steps {
         script {
@@ -676,7 +676,7 @@ pipeline {
       }
     }
 
-
+/*
     stage('Zap to Sonarqube') {
       steps {
         script {
