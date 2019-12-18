@@ -212,7 +212,7 @@ def nodejsSonarqube () {
               echo "${SONARQUBE_URL}"
 
               // sonarqube report link
-              def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin"
+              def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=lup-admin"
 
               boolean firstScan = false;
 
@@ -239,7 +239,7 @@ def nodejsSonarqube () {
                   echo "sonarqube report failed to complete, or timed out"
 
                   notifyRocketChat(
-                    "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
+                    "The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
                     ROCKET_DEPLOY_WEBHOOK
                   )
 
