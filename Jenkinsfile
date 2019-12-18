@@ -555,7 +555,7 @@ pipeline {
                 echo ">> IMAGE_HASH: ${IMAGE_HASH}"
               } catch (error) {
                 notifyRocketChat(
-                  "@all The build ${env.BUILD_DISPLAY_NAME} of lup-admin-static, seems to be broken.\n ${env.BUILD_URL}\n Error: \n ${error.message}",
+                  "The build ${env.BUILD_DISPLAY_NAME} of lup-admin-static, seems to be broken.\n ${env.BUILD_URL}\n Error: \n ${error.message}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
                 throw error
@@ -572,7 +572,7 @@ pipeline {
         //     }
         //   }
         // }
-        
+        /*
         stage('Linting') {
           steps {
             script {
@@ -580,7 +580,7 @@ pipeline {
               def results = nodejsLinter()
             }
           }
-        }
+        }*/
 
         stage('Sonarqube') {
           steps {
@@ -606,7 +606,7 @@ pipeline {
               echo "Dev image backup failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image backup failed",
+                "The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image backup failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -623,7 +623,7 @@ pipeline {
               echo "Dev image deployment failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image deployment failed",
+                "The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image deployment failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -638,7 +638,7 @@ pipeline {
 
           } catch (error) {
             notifyRocketChat(
-              "@all The build ${env.BUILD_DISPLAY_NAME} of lup-admin-static, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
+              "The build ${env.BUILD_DISPLAY_NAME} of lup-admin-static, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
               ROCKET_DEPLOY_WEBHOOK
             )
             currentBuild.result = "FAILURE"
