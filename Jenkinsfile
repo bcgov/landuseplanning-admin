@@ -260,7 +260,7 @@ def nodejsSonarqube () {
                 echo "Scan Failed"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
+                  "The latest build, ${env.BUILD_DISPLAY_NAME} of lup-admin-static seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -416,7 +416,7 @@ def postZapToSonar () {
           def SONARQUBE_URL = getUrlFromRoute('sonarqube').trim()
 
           // url for the sonarqube report
-          def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=org.sonarqube:lup-admin-zap-scan"
+          def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=lup-admin-zap-scan"
 
           boolean firstScan = false
 
@@ -446,7 +446,7 @@ def postZapToSonar () {
                 -Dsonar.verbose=true \
                 -Dsonar.host.url=${SONARQUBE_URL} \
                 -Dsonar.projectName='lup-admin-zap-scan'\
-                -Dsonar.projectKey='org.sonarqube:lup-admin-zap-scan' \
+                -Dsonar.projectKey='lup-admin-zap-scan' \
                 -Dsonar.projectBaseDir='../' \
                 -Dsonar.sources='./src/app' \
                 -Dsonar.zaproxy.reportPath=${WORKSPACE}${ZAP_REPORT_PATH} \
