@@ -557,12 +557,11 @@ pipeline {
               try {
                 sh("oc extract secret/rocket-chat-secrets --to=${env.WORKSPACE} --confirm")
                 ROCKET_DEPLOY_WEBHOOK = sh(returnStdout: true, script: 'cat rocket-deploy-webhook')
-                //ROCKET_QA_WEBHOOK = sh(returnStdout: true, script: 'cat rocket-qa-webhook')
 
                 echo "Building landuseplanning-admin develop branch"
-                //openshiftBuild bldCfg: 'admin-angular-builder', showBuildLogs: 'true'
-                //openshiftBuild bldCfg: 'lup-admin', showBuildLogs: 'true'
-                //openshiftBuild bldCfg: 'lup-admin-static', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'admin-angular-builder', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'lup-admin', showBuildLogs: 'true'
+                openshiftBuild bldCfg: 'lup-admin-static', showBuildLogs: 'true'
                 echo "Build done"
 
                 echo ">>> Get Image Hash"
@@ -611,7 +610,7 @@ pipeline {
         }
       }
     }
-/*
+
     stage('Deploy to dev'){
       steps {
         script {
@@ -665,8 +664,8 @@ pipeline {
           }
         }
       }
-    }*/
-
+    }
+/* commenting out zap for now in admin
     stage('Zap') {
       steps {
         script {
@@ -676,7 +675,7 @@ pipeline {
       }
     }
 
-/*
+
     stage('Zap to Sonarqube') {
       steps {
         script {
@@ -704,11 +703,6 @@ pipeline {
             "A new version of lup-admin-static is now in Dev, build ${env.BUILD_DISPLAY_NAME} \n Changes: \n ${CHANGELOG}",
             ROCKET_DEPLOY_WEBHOOK
           )
-/*
-          notifyRocketChat(
-            "@all A new version of lup-admin-static is now in Dev and ready for QA. \n Changes to Dev: \n ${CHANGELOG}",
-            ROCKET_QA_WEBHOOK
-          )*/
         }
       }
     }
