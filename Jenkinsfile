@@ -214,6 +214,21 @@ def nodejsSonarqube () {
               // sonarqube report link
               def SONARQUBE_STATUS_URL = "${SONARQUBE_URL}/api/qualitygates/project_status?projectKey=lup-admin"
 
+              // The name of your SonarQube project
+              def SONAR_PROJECT_NAME = 'lup-admin'
+
+              // The project key of your SonarQube project
+              def SONAR_PROJECT_KEY = 'lup-admin'
+
+              // The base directory of your project.
+              // This is relative to the location of the `sonar-runner` directory within your project.
+              // More accurately this is relative to the Gradle build script(s) that manage the SonarQube Scanning
+              def SONAR_PROJECT_BASE_DIR = '../'
+
+              // The source code directory you want to scan.
+              // This is relative to the project base directory.
+              def SONAR_SOURCES = './src/app'
+
               boolean firstScan = false;
 
               def OLD_SONAR_DATE
@@ -231,7 +246,11 @@ def nodejsSonarqube () {
               sh returnStdout: true, script: "./gradlew sonarqube --stacktrace --info --debug \
                 -Dsonar.host.url=${SONARQUBE_URL} \
                 -Dsonar. \
-                -Dsonar.verbose=true"
+                -Dsonar.verbose=true \
+                -Dsonar.projectName='${SONAR_PROJECT_NAME}' \
+                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                -Dsonar.projectBaseDir=${SONAR_PROJECT_BASE_DIR} \
+                -Dsonar.sources=${SONAR_SOURCES}"
 
               if ( !firstScan ) {
                 // wiat for report to be updated
