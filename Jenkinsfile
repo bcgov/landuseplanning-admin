@@ -524,7 +524,7 @@ pipeline {
   stages {
     stage('Parallel Build Steps') {
       failFast true
-      parallel {
+      parallel {/*
         stage('Build') {
           agent any
           steps {
@@ -562,7 +562,7 @@ pipeline {
               }
             }
           }
-        }
+        }*/
 
         //  stage('Unit Tests') {
         //   steps {
@@ -592,7 +592,7 @@ pipeline {
         }
       }
     }
-
+/*
     stage('Deploy to dev'){
       steps {
         script {
@@ -646,7 +646,7 @@ pipeline {
           }
         }
       }
-    }
+    }*/
 /*
     stage('Zap') {
       steps {
