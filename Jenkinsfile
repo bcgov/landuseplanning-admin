@@ -696,6 +696,62 @@ pipeline {
     //   }
     // }
 
+    stage('Deploy to test'){
+      steps {
+        script {
+          try {
+            input "Deploy to test?"
+            // backup
+            echo "Backing up test image..."
+            openshiftTag destStream: 'lup-admin-static', verbose: 'false', destTag: 'test-backup', srcStream: 'lup-admin-static', srcTag: 'test'
+
+            // wait for backup to complete
+            if( !imageTaggingComplete ('test', 'test-backup', 'backup')) {
+              echo "Test image backup failed"
+
+              notifyRocketChat(
+                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Test image backup failed",
+                ROCKET_DEPLOY_WEBHOOK
+              )
+
+              currentBuild.result = "FAILURE"
+              exit 1
+            }
+
+            // deploy
+            echo "Deploying to test..."
+            openshiftTag destStream: 'lup-admin-static', verbose: 'false', destTag: 'test', srcStream: 'lup-admin-static', srcTag: "${IMAGE_HASH}"
+
+            // wait for deployment to complete
+            if ( !imageTaggingComplete ('latest', 'test', 'deploy')) {
+              echo "Test image deployment failed"
+
+              notifyRocketChat(
+                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Test image deployment failed",
+                ROCKET_DEPLOY_WEBHOOK
+              )
+
+              currentBuild.result = "FAILURE"
+              exit 1
+            } else {
+              sleep (5)
+            }
+
+            openshiftVerifyDeployment depCfg: 'admin-angular-on-nginx-test', namespace: 'xti26n-test', replicaCount: 1, verbose: 'false', verifyReplicaCount: 'false', waitTime: 600000
+            echo ">>>> Deployment Complete"
+
+          } catch (error) {
+            notifyRocketChat(
+              "@all The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
+              ROCKET_DEPLOY_WEBHOOK
+            )
+            currentBuild.result = "FAILURE"
+            throw new Exception("Deploy failed")
+          }
+        }
+      }
+    }
+
     stage('Success Notifications') {
       steps {
         script {
