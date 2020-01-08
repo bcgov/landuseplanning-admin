@@ -125,27 +125,33 @@ def getChangeLog(pastBuilds) {
 def nodejsTester () {
   openshift.withCluster() {
     openshift.withProject() {
-      podTemplate(label: 'node-tester', name: 'node-tester', serviceAccount: 'jenkins', cloud: 'openshift', containers: [
-        containerTemplate(
-          name: 'jnlp',
-          image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7',
-          resourceRequestCpu: '500m',
-          resourceLimitCpu: '800m',
-          resourceRequestMemory: '2Gi',
-          resourceLimitMemory: '4Gi',
-          workingDir: '/tmp',
-          command: '',
-        )
-      ]) {
-        node("node-tester") {
-          checkout scm
-          try {
-            sh 'npm run tests'
-          } finally {
-            echo "Unit Tests Passed"
+      podTemplate(
+        label: 'node-tester', 
+        name: 'node-tester', 
+        serviceAccount: 'jenkins', 
+        cloud: 'openshift',
+        slaveConnectTimeout: 300,
+        containers: [
+          containerTemplate(
+            name: 'jnlp',
+            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7',
+            resourceRequestCpu: '500m',
+            resourceLimitCpu: '800m',
+            resourceRequestMemory: '2Gi',
+            resourceLimitMemory: '4Gi',
+            workingDir: '/tmp',
+            command: '',
+          )
+        ]) {
+          node("node-tester") {
+            checkout scm
+            try {
+              sh 'npm run tests'
+            } finally {
+              echo "Unit Tests Passed"
+            }
           }
         }
-      }
       return true
     }
   }
@@ -154,33 +160,39 @@ def nodejsTester () {
 def nodejsLinter () {
   openshift.withCluster() {
     openshift.withProject() {
-      podTemplate(label: 'node-linter', name: 'node-linter', serviceAccount: 'jenkins', cloud: 'openshift', containers: [
-        containerTemplate(
-          name: 'jnlp',
-          image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7',
-          resourceRequestCpu: '500m',
-          resourceLimitCpu: '800m',
-          resourceRequestMemory: '2Gi',
-          resourceLimitMemory: '4Gi',
-          activeDeadlineSeconds: '1200',
-          workingDir: '/tmp',
-          command: '',
-          args: '${computer.jnlpmac} ${computer.name}',
-        )
-      ]) {
-        node("node-linter") {
-          checkout scm
-          try {
-            // install deps to get angular-cli
-            sh '''
-              npm install @angular/compiler @angular/core @angular/cli @angular-devkit/build-angular codelyzer rxjs tslint
-              npm run lint
-            '''
-          } finally {
-            echo "Linting Done"
+      podTemplate(
+        label: 'node-linter', 
+        name: 'node-linter', 
+        serviceAccount: 'jenkins', 
+        cloud: 'openshift',
+        slaveConnectTimeout: 300,
+        containers: [
+          containerTemplate(
+            name: 'jnlp',
+            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7',
+            resourceRequestCpu: '500m',
+            resourceLimitCpu: '800m',
+            resourceRequestMemory: '2Gi',
+            resourceLimitMemory: '4Gi',
+            activeDeadlineSeconds: '1200',
+            workingDir: '/tmp',
+            command: '',
+            args: '${computer.jnlpmac} ${computer.name}',
+          )
+        ]) {
+          node("node-linter") {
+            checkout scm
+            try {
+              // install deps to get angular-cli
+              sh '''
+                npm install @angular/compiler @angular/core @angular/cli @angular-devkit/build-angular codelyzer rxjs tslint
+                npm run lint
+              '''
+            } finally {
+              echo "Linting Done"
+            }
           }
         }
-      }
       return true
     }
   }
@@ -316,6 +328,7 @@ def zapScanner () {
         name: 'owasp-zap',
         serviceAccount: 'jenkins',
         cloud: 'openshift',
+        slaveConnectTimeout: 300,
         containers: [
           containerTemplate(
             name: 'jnlp',
@@ -407,6 +420,7 @@ def postZapToSonar () {
         name: 'jenkins-python3nodejs',
         serviceAccount: 'jenkins',
         cloud: 'openshift',
+        slaveConnectTimeout: 300,
         containers: [
           containerTemplate(
             name: 'jnlp',
