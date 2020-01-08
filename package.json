@@ -12,7 +12,8 @@
     "tests": "ng test",
     "tests-ci": "ng test --watch=false",
     "lint": "ng lint --format=stylish",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ng build --prod --deploy-url /admin/ --base-href /admin/"
   },
   "private": true,
   "dependencies": {
