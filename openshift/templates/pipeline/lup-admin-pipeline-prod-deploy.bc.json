@@ -65,7 +65,7 @@
         "displayName": "Git Repo Branch",
         "description": "The branch with your GIT repo.",
         "required": true,
-        "value": "develop"
+        "value": "dev"
       },
       {
         "name": "JENKINSFILE_PATH",
