@@ -135,19 +135,24 @@
         </div> -->
       </div>
     </section>
-    <section>
+    <section formArrayName="existingLandUsePlans">
       <h2>Supplementary Information</h2>
-      <div class="flex-container">
-        <div class="label-pair">
-          <label for="existingLandUsePlans">Existing Land Use Plans </label>
-          <input name="existingLandUsePlans" id="existingLandUsePlans" formControlName="existingLandUsePlans"
+      <div *ngFor="let existingPlan of existingLandUsePlans.controls; let i=index">
+        <div class="flex-container" [formGroupName]="i">
+        <div class="label-pair existing-land-use-plan">
+          <label for="existingLandUsePlan">Existing Land Use Plan </label>
+          <input name="existingLandUsePlan" class="existingLandUsePlan" formControlName="existingLandUsePlan"
             type="text" class="form-control" />
         </div>
-        <div class="label-pair med">
-          <label for="existingLandUsePlanURLs">Existing Land Use Plan URLs </label>
-          <input name="existingLandUsePlanURLs" id="existingLandUsePlanURLs" formControlName="existingLandUsePlanURLs" type="text" class="form-control" />
+        <div class="label-pair existing-land-use-plan-url">
+          <label for="existingLandUsePlanURL">Existing Land Use Plan URL</label>
+          <input name="existingLandUsePlanURL" class="existingLandUsePlanURL" formControlName="existingLandUsePlanURL" type="text" class="form-control" />
         </div>
+        <button type="button" class="btn existing-land-use-plan-delete" (click)="removeExistingLandUsePlan(i)"><span class="existing-land-use-plan-delete-text">Remove</span><i class="material-icons">delete</i></button>
+        </div>
+        <div class="divider"></div>
       </div>
+      <button class="btn btn-primary" type="button" (click)="addExistingLandUsePlan()">Add existing land use plan</button>
     </section>
     <section>
       <h2>Overall Project Status</h2>

@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import * as moment from 'moment-timezone';
 import { Subject, of, forkJoin } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
@@ -191,8 +191,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         'lat': new FormControl([]),
         'lon': new FormControl([]),
         'addFile': new FormControl(),
-        'existingLandUsePlans': new FormControl(),
-        'existingLandUsePlanURLs': new FormControl(),
+        'existingLandUsePlans': new FormArray([]),
         'ea': new FormControl(),
         'capital': new FormControl(),
         'notes': new FormControl(),
@@ -206,6 +205,21 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         'projectAdmin': new FormControl()
       });
     }
+  }
+
+  get existingLandUsePlans() {
+    return this.myForm.get('existingLandUsePlans') as FormArray;
+  }
+
+  addExistingLandUsePlan() {
+    this.existingLandUsePlans.push(new FormGroup({
+        'existingLandUsePlan': new FormControl(),
+        'existingLandUsePlanURL': new FormControl()
+      }));
+  }
+
+  removeExistingLandUsePlan(index) {
+    this.existingLandUsePlans.removeAt(index);
   }
 
   private setNavigation() {
@@ -262,6 +276,25 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       formData.centroid = [-123.3656, 48.4284];
     }
 
+    let existingPlansFormArray = (formData) => {
+      let formArray = [];
+      if (Array.isArray(formData.existingLandUsePlans)) {
+        for (let i = 0; i < formData.existingLandUsePlans.length; i++ ) {
+          formArray[i] = new FormGroup({
+            'existingLandUsePlan': new FormControl(formData.existingLandUsePlans[i].existingLandUsePlan),
+            'existingLandUsePlanURL': new FormControl(formData.existingLandUsePlans[i].existingLandUsePlanURL)
+          })
+        }
+      } else {
+        formArray.push(new FormGroup({
+          'existingLandUsePlan': new FormControl(formData.existingLandUsePlans),
+          'existingLandUsePlanURL': new FormControl(formData.existingLandUsePlanURLs)
+        }))
+      }
+      return formArray;
+    }
+
+
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'partner': new FormControl(formData.partner),
@@ -272,8 +305,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       'lat': new FormControl(formData.centroid[1]),
       'lon': new FormControl(formData.centroid[0]),
       'addFile': new FormControl(formData.addFile),
-      'existingLandUsePlans': new FormControl(formData.existingLandUsePlans),
-      'existingLandUsePlanURLs': new FormControl(formData.existingLandUsePlanURLs),
       'ea': new FormControl(formData.ea),
       'status': new FormControl(formData.status),
       'backgroundInfo': new FormControl(formData.backgroundInfo),
@@ -284,6 +315,9 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       'projectLead': new FormControl(formData.projectLead),
       'projectAdmin': new FormControl(formData.projectAdmin)
     });
+
+    theForm.addControl('existingLandUsePlans', new FormArray(existingPlansFormArray(formData)));
+
     return theForm;
   }
 
@@ -306,8 +340,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       'region': form.controls.region.value,
       'centroid': [form.get('lon').value, form.get('lat').value],
       'addFile': form.controls.addFile.value,
-      'existingLandUsePlans': form.controls.existingLandUsePlans.value,
-      'existingLandUsePlanURLs': form.controls.existingLandUsePlanURLs.value,
+      'existingLandUsePlans': this.existingPlanFullFields(),
       'ea': form.controls.ea.value,
       'status': form.controls.status.value,
       'backgroundInfo': form.controls.backgroundInfo.value,
@@ -381,7 +414,10 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     } else if (this.myForm.controls.lon.value >= -114.01 || this.myForm.controls.lon.value <= -139.06) {
       alert('Longitude must be between -114.01 and -139.06');
       return;
-    } else if (this.projectLeadId === '') {
+    } /* else if (this.existingPlanFieldsError()) {
+      alert('Existing Plan Name or URL field cannot be empty.');
+      return false;
+    } */else if (this.projectLeadId === '') {
       alert('Project Lead cannot be empty.');
       return false;
     } /*else if (this.projectDirectorId === '') {
@@ -392,10 +428,36 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Available for disallowing the user to fill only one of the existing land use plan fields
+  // private existingPlanFieldsError() {
+  //   let existingPlans = this.myForm.controls.existingLandUsePlans;
+  //   for (let i = 0; existingPlans.value.length > i; i++) {
+  //     if (existingPlans.value[i].existingLandUsePlan === null ||
+  //         existingPlans.value[i].existingLandUsePlanURL === null ||
+  //         existingPlans.value[i].existingLandUsePlanURL === '' ||
+  //         existingPlans.value[i].existingLandUsePlan === '')
+  //     {
+  //       return true;
+  //     }
+  //   }
+  // }
+
+  private existingPlanFullFields() {
+    let completedFields = [];
+    let existingPlans = this.myForm.controls.existingLandUsePlans;
+    for (let i = 0; existingPlans.value.length > i; i++) {
+      if (existingPlans.value[i].existingLandUsePlan !== null || existingPlans.value[i].existingLandUsePlanURL !== null) {
+        completedFields.push(existingPlans.value[i]);
+      }
+    }
+    return completedFields;
+  }
+
   onSubmit() {
     if (!this.validateForm()) {
       return;
     }
+    // this.existingPlanFullFields();
     if (!this.isEditing) {
       // POST
       let project = new Project(

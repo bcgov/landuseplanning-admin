@@ -29,6 +29,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   public isDeleting = false;
   public project: Project = null;
   public visibility: string;
+  public multipleExistingPlans: boolean;
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
@@ -54,7 +55,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         (data: { project: Project }) => {
           if (data.project) {
             this.project = data.project;
-            console.log(this.project);
+            this.multipleExistingPlans = Array.isArray(this.project.existingLandUsePlans);
             this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
             this.project.read.includes('public') ? this.visibility = "Published" : this.visibility = "Not Published";
 
