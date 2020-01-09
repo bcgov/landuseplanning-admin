@@ -4,7 +4,7 @@ import * as moment from 'moment';
 export class Project {
   // the following are retrieved from the API
   _id: string;
-  existingLandUsePlans: String;
+  existingLandUsePlans: Object[];
   centroid: any[] = [];
   description: String;
   engagementStatus: String;
