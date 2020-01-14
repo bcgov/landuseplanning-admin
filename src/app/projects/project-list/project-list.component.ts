@@ -126,7 +126,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
           }
 
         );
-      });g
+      });
       this.projectTableData = new TableObject(
         ProjectListTableRowsComponent,
         projectList,
