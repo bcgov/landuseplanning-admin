@@ -119,7 +119,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             _id: project._id,
             name: project.name,
             partner: project.partner,
-            overlappingRegionalDistricts: project.overlappingRegionalDistricts,
+            overlappingRegionalDistricts: this.stringifyOverlappingDistricts(project.overlappingRegionalDistricts as string | string[]),
             engagementStatus: project.engagementStatus,
             projectPhase: project.projectPhase,
             visibility: this.visibility
@@ -135,6 +135,15 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
   }
 
+  stringifyOverlappingDistricts(districts: string | string[]): string {
+    let overlappingDistrictsListString: string;
+    if (Array.isArray(districts) === true ) {
+      overlappingDistrictsListString = (<string[]>districts).join(', ');
+    } else {
+      overlappingDistrictsListString = districts as string;
+    }
+    return overlappingDistrictsListString;
+  }
 
   setColumnSort(column) {
     if (this.tableParams.sortBy.charAt(0) === '+') {
