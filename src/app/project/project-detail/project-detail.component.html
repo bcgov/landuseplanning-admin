@@ -49,7 +49,7 @@
     </div>
     <div class="label-pair">
       <h3 for="overlappingRegionalDistricts">Overlapping Regional Districts: </h3>
-      <p id="overlappingRegionalDistricts">{{project.overlappingRegionalDistricts || '-'}}</p>
+      <p id="overlappingRegionalDistricts">{{ overlappingDistrictsListString || '-'}}</p>
     </div>
     <div class="label-pair">
       <h3 for="lat">Lat: </h3>
@@ -68,11 +68,11 @@
         <p id="ceaa">Name: {{existingPlan.existingLandUsePlan || '-'}}</p>
         <p id="ceaa-url">URL: <a href="{{existingPlan.existingLandUsePlanURLs}}">{{ existingPlan.existingLandUsePlanURL || '-'}}</a></p>
       </div>
+      <div class="label-pair" *ngIf="project.existingLandUsePlans.length === 0">
+        <p class="no-existing-plans">No existing land use plan(s).</p>
+      </div>
     </div>
 
-    <div class="label-pair" *ngIf="project.existingLandUsePlans.length === 0">
-      <p class="no-existing-plans">No existing land use plan(s).</p>
-    </div>
     <ng-template #singlePlan>
       <h3 for="ceaa">Existing Land Use Plan</h3>
       <p id="ceaa">Name: {{project.existingLandUsePlans || '-'}}</p>

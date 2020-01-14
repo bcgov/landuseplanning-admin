@@ -294,13 +294,23 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       return formArray;
     }
 
+    let overlappingDistrictsArray = (formData) => {
+      let formArray = [];
+      if (Array.isArray(formData.overlappingRegionalDistricts)) {
+        formArray = formData.overlappingRegionalDistricts;
+      } else {
+        formArray.push(formData.overlappingRegionalDistricts);
+      }
+      return formArray;
+    }
+
 
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'partner': new FormControl(formData.partner),
       'agreements': new FormControl(formData.agreements),
       'description': new FormControl(formData.description),
-      'overlappingRegionalDistricts': new FormControl(formData.overlappingRegionalDistricts),
+      'overlappingRegionalDistricts': new FormControl(overlappingDistrictsArray(formData)),
       'region': new FormControl(formData.region),
       'lat': new FormControl(formData.centroid[1]),
       'lon': new FormControl(formData.centroid[0]),
@@ -399,7 +409,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     } else if (this.myForm.controls.region.value === '' || this.myForm.controls.region.value == null) {
       alert('You must select a region.');
       return false;
-    } else if (this.myForm.controls.overlappingRegionalDistricts.value === '' || this.myForm.controls.overlappingRegionalDistricts.value == null) {
+    } else if (this.myForm.controls.overlappingRegionalDistricts.value.length === 0) {
       alert('Overlapping Regional Districts cannot be empty.');
       return false;
     } else if (this.myForm.controls.lon.value === '') {
