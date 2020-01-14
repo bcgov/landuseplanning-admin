@@ -30,7 +30,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   public project: Project = null;
   public visibility: string;
   public multipleExistingPlans: boolean;
-  public overlappingDistrictsListString: string;
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
@@ -57,7 +56,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
           if (data.project) {
             this.project = data.project;
             this.multipleExistingPlans = Array.isArray(this.project.existingLandUsePlans);
-            this.overlappingDistrictsListString = this.stringifyOverlappingDistricts(this.project.overlappingRegionalDistricts as string | string[]);
             this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
             this.project.read.includes('public') ? this.visibility = "Published" : this.visibility = "Not Published";
 
@@ -275,16 +273,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             );
         }
       );
-  }
-
-  stringifyOverlappingDistricts(districts: string | string[]): string {
-    let overlappingDistrictsListString: string;
-    if (Array.isArray(districts) === true ) {
-      overlappingDistrictsListString = (<string[]>districts).join(', ');
-    } else {
-      overlappingDistrictsListString = districts as string;
-    }
-    return overlappingDistrictsListString;
   }
 
   ngOnDestroy() {
