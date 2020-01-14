@@ -11,7 +11,7 @@ export class Project {
   backgroundInfo: String;
   engagementInfo: String;
   documentInfo: String;
-  overlappingRegionalDistricts: String[];
+  overlappingRegionalDistricts: String;
   name: String;
   partner: String;
   region: String;

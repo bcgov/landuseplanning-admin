@@ -119,14 +119,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             _id: project._id,
             name: project.name,
             partner: project.partner,
-            overlappingRegionalDistricts: this.stringifyOverlappingDistricts(project.overlappingRegionalDistricts as string | string[]),
+            overlappingRegionalDistricts: project.overlappingRegionalDistricts,
             engagementStatus: project.engagementStatus,
             projectPhase: project.projectPhase,
             visibility: this.visibility
           }
 
         );
-      });g
+      });
       this.projectTableData = new TableObject(
         ProjectListTableRowsComponent,
         projectList,
@@ -135,15 +135,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
   }
 
-  stringifyOverlappingDistricts(districts: string | string[]): string {
-    let overlappingDistrictsListString: string;
-    if (Array.isArray(districts) === true ) {
-      overlappingDistrictsListString = (<string[]>districts).join(', ');
-    } else {
-      overlappingDistrictsListString = districts as string;
-    }
-    return overlappingDistrictsListString;
-  }
 
   setColumnSort(column) {
     if (this.tableParams.sortBy.charAt(0) === '+') {
