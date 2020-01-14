@@ -78,28 +78,45 @@
     </section>
     <section>
       <h2>Location</h2>
-      <div class="flex-container">
-        <div class="label-pair">
-          <label for="region">Region* </label>
-          <select required class="form-control" formControlName="region">
-            <option *ngFor="let region of REGIONS" [ngValue]="region">{{region}}</option>
-          </select>
-        </div><div class="label-pair med">
-          <label for="overlappingRegionalDistricts">Overlapping Regional Districts* </label>
-          <select name="overlappingRegionalDistricts" id="overlappingRegionalDistricts"
-            formControlName="overlappingRegionalDistricts" class="form-control">
-            <option *ngFor="let overlappingRegionalDistricts of OVERLAPPING_REGIONAL_DISTRICTS"
-              [ngValue]="overlappingRegionalDistricts">{{overlappingRegionalDistricts}}</option>
+      <div class="flex-container-no-wrap">
+        <div class="flex-container">
+          <div class="label-pair almost-full">
+            <label for="region">Region* </label>
+            <select required class="form-control" formControlName="region">
+              <option *ngFor="let region of REGIONS" [ngValue]="region">{{region}}</option>
             </select>
-        </div>
-        <div class="label-pair sm">
+          </div>
+        <div class="label-pair sm-med">
           <label for="lat">Lat* </label>
           <input name="lat" id="lat" formControlName="lat" type="text" class="form-control" />
         </div>
-        <div class="label-pair sm">
+        <div class="label-pair sm-med">
           <label for="lon">Long* </label>
           <input name="lon" id="lon" formControlName="lon" type="text" class="form-control" />
         </div>
+        <!--<div class="input-group-prepend">
+          <button [disabled]="!myForm.valid || documents?.length === 0 || docNameInvalid" (click)="uploadDocuments()"
+            class="btn btn-outline-primary mr-1" type="submit" id="button-cl"><i
+              class="material-icons">arrow_upward</i>Upload</button>
+        </div>-->
+        <!-- <div class="label-pair file">
+          <label for="addFile">Add Shape File </label>
+          <div class="input-group">
+            <i class="material-icons" role="presentation">attach_file</i>
+            <input name="addFile" id="addFile" formControlName="addFile" type="file" class="form-control" />
+          </div>
+        </div> -->
+      </div>
+      <div class="label-pair med">
+        <label for="overlappingRegionalDistricts">Overlapping Regional Districts* </label>
+        <select multiple name="overlappingRegionalDistricts" id="overlappingRegionalDistricts"
+          formControlName="overlappingRegionalDistricts" class="form-control">
+          <option *ngFor="let overlappingRegionalDistricts of OVERLAPPING_REGIONAL_DISTRICTS"
+            [ngValue]="overlappingRegionalDistricts">{{overlappingRegionalDistricts}}</option>
+          </select>
+      </div>
+    </div>
+      <div class="flex-container">
         <div class="form-group mb-0">
           <label for="shapeFile">Upload Shape File </label>
           <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
@@ -121,18 +138,6 @@
             </li>
           </ul>
         </div>
-        <!--<div class="input-group-prepend">
-          <button [disabled]="!myForm.valid || documents?.length === 0 || docNameInvalid" (click)="uploadDocuments()"
-            class="btn btn-outline-primary mr-1" type="submit" id="button-cl"><i
-              class="material-icons">arrow_upward</i>Upload</button>
-        </div>-->
-        <!-- <div class="label-pair file">
-          <label for="addFile">Add Shape File </label>
-          <div class="input-group">
-            <i class="material-icons" role="presentation">attach_file</i>
-            <input name="addFile" id="addFile" formControlName="addFile" type="file" class="form-control" />
-          </div>
-        </div> -->
       </div>
     </section>
     <section formArrayName="existingLandUsePlans">
