@@ -135,6 +135,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* Check if field is array or string and return string */
   stringifyOverlappingDistricts(districts: string | string[]): string {
     let overlappingDistrictsListString: string;
     if (Array.isArray(districts) === true ) {
