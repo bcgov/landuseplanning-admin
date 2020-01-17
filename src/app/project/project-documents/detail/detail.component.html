@@ -28,10 +28,6 @@
   </h1>
   <section>
     <div class="label-pair">
-      <h3 for="displayName">Display Name: </h3>
-      <p id="displayName">{{document.displayName || '-'}}</p>
-    </div>
-    <div class="label-pair">
       <p id="status publish-state">
         <i class="material-icons">
           {{publishText === 'Publish' ?   'cloud_off' : 'cloud_done' || '-'}}
@@ -40,41 +36,44 @@
       </p>
     </div>
     <div class="label-pair">
-      <h3 for="documentFileName">Filename: </h3>
-      <p id="documentFileName">{{document.documentFileName || '-'}}</p>
-    </div>
-    <div class="label-pair">
-      <h3 for="description">Description: </h3>
-      <p id="description">{{document.description || '-'}}</p>
-    </div>
-    <div *ngIf="document.labels" class="label-pair">
-      <h3 for="tags">Labels: </h3>
-      <div *ngFor="let label of document.labels">
-        <div class="mr-2 badge badge-pill badge-info">{{label}}</div>
-      </div>
-    </div>
-  </section>
-  <section>
-    <div class="label-pair">
-      <h3 for="dateUploaded">Upload Date: </h3>
-      <p id="dateUploaded">{{document.dateUploaded | date}}</p>
+      <h3 for="projectPhase">Project Phase: </h3>
+      <p id="projectPhase">{{document.projectPhase}}</p>
     </div>
     <div class="label-pair">
       <h3 for="datePosted">Document Date: </h3>
       <p id="datePosted" *ngIf="document.datePosted !== '1900-01-01T08:00:00.000Z'">{{document.datePosted | date}}</p>
     </div>
     <div class="label-pair">
-      <h3 for="documentAuthor">Author: </h3>
-      <p id="documentAuthor">{{document.documentAuthor}}</p>
+      <h3 for="displayName">Display Name: </h3>
+      <p id="displayName">{{document.displayName || '-'}}</p>
     </div>
     <div class="label-pair">
-            <h3 for="projectPhase">Project Phase: </h3>
-            <p id="projectPhase">{{document.projectPhase}}</p>
-          </div>
+      <h3 for="description">Description: </h3>
+      <p id="description">{{document.description || '-'}}</p>
+    </div>
+    <!-- <div *ngIf="document.labels" class="label-pair">
+      <h3 for="tags">Labels: </h3>
+      <div *ngFor="let label of document.labels">
+        <div class="mr-2 badge badge-pill badge-info">{{label}}</div>
+      </div>
+    </div> -->
+  </section>
+  <section>
+    <!-- <div class="label-pair">
+      <h3 for="dateUploaded">Upload Date: </h3>
+      <p id="dateUploaded">{{document.dateUploaded | date}}</p>
+    </div> -->
+    <!-- <div class="label-pair">
+      <h3 for="documentAuthor">Author: </h3>
+      <p id="documentAuthor">{{document.documentAuthor}}</p>
+    </div> -->
+    <div class="label-pair">
+      <h3 for="documentFileName">Filename: </h3>
+      <p id="documentFileName">{{document.documentFileName || '-'}}</p>
+    </div>
     <div class="label-pair">
       <h3 for="internalSize">Filesize: </h3>
-      <!--<p id="internalSize">{{utils.formatBytes(document.internalSize || 0 )}}</p>-->
-      <p id="internalSize">{{ (document && document.internalSize) ? document.internalSize : '0' }}</p>
+      <p id="internalSize">{{ (document && document.internalSize) ? humanReadableSize : '0' }}</p>
     </div>
   </section>
 </main>
