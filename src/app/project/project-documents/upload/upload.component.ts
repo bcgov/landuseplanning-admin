@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { Subject, of, forkJoin } from 'rxjs';
@@ -65,12 +65,11 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.myForm = this.storageService.state.form;
     } else {
       this.myForm = new FormGroup({
-        'documentAuthor': new FormControl(),
-        'datePosted': new FormControl(),
-        'dateUploaded': new FormControl(),
-        'displayName': new FormControl(),
-        'description': new FormControl(),
-        'projectPhase': new FormControl()
+        'datePosted': new FormControl('', [Validators.required]),
+        'dateUploaded': new FormControl('', [Validators.required]),
+        'displayName': new FormControl('', [Validators.required]),
+        'description': new FormControl('', [Validators.required]),
+        'projectPhase': new FormControl('', [Validators.required])
       });
       let today = new Date();
       let todayObj = {

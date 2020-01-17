@@ -20,15 +20,16 @@
   <div class="form-group mb-0">
     <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
       <div class="form-row">
-        <div class="form-group col-md-4">
+        <!-- <div class="form-group col-md-4">
           <label for="documentAuthor">Author*</label>
           <input name="documentAuthor" id="documentAuthor" formControlName="documentAuthor" type="text" class="form-control" />
-        </div>
+        </div> -->
         <div class="form-group col-md-4">
-          <label for="projectPhase">Project Phase </label>
+          <label for="projectPhase">Project Phase*</label>
           <select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
             <option *ngFor="let projectPhase of PROJECT_PHASES" [ngValue]="projectPhase">{{projectPhase}}</option>
           </select>
+          <div class="invalid-notice" *ngIf="myForm.get('projectPhase').invalid && myForm.get('projectPhase').touched">Project Phase is required</div>
         </div>
       </div>
       <div class="form-row">
@@ -42,6 +43,7 @@
                 type="button"></button>
             </div>
           </div>
+          <div class="invalid-notice" *ngIf="myForm.get('datePosted').invalid && myForm.get('datePosted').touched">Document upload date is required</div>
         </div>
         <!--<div class="form-group col-md-4">
           <label for="inputAddress">Upload Date*</label>
@@ -57,21 +59,23 @@
       </div>
       <div class="form-row">
         <div class="form-group col-md-12">
-          <label for="displayName">Document Name</label>
+          <label for="displayName">Document Name*</label>
           <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
             \ / | : * ? " < > are not accepted file name characters
           </div>
           <div>
-              <textarea *ngIf="documents && documents.length > 1" disabled class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName"></textarea>
-              <textarea *ngIf="!documents || documents.length < 2" class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName" (ngModelChange)="validateChars()"></textarea>
+              <input *ngIf="documents && documents.length > 1" disabled class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName">
+              <input *ngIf="!documents || documents.length < 2" class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName" (ngModelChange)="validateChars()">
           </div>
+          <div class="invalid-notice" *ngIf="myForm.get('displayName').invalid && myForm.get('displayName').touched">Document name is required</div>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group col-md-12">
-          <label for="inputDescription">Description</label>
+          <label for="inputDescription">Description*</label>
           <textarea class="form-control" id="inputDescription" name="description" rows="1"
             formControlName="description"></textarea>
+            <div class="invalid-notice" *ngIf="myForm.get('description').invalid && myForm.get('description').touched">Document description is required</div>
         </div>
       </div>
     </form>
@@ -84,7 +88,7 @@
     <ul class="doc-list mb-3" *ngIf="documents?.length > 0">
       <li *ngFor="let doc of documents">
         <span class="cell icon">
-          <i class="material-icons">insert_drive_file</i>
+          <i class="material-icons" alt="">insert_drive_file</i>
         </span>
         <span class="cell name" [title]="doc.displayName || ''">
           <span class="cell__txt-content">{{doc.documentFileName}}</span>

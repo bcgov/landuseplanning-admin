@@ -1,1 +1,17 @@
 @import "assets/styles/components/add-edit.scss";
+
+
+.ng-touched.ng-invalid {
+  border-color: red;
+}
+
+.ng-touched.ng-invalid:focus {
+  border-color: red;
+  box-shadow: 0 0 0 0.2rem rgba(255, 17, 0, 0.25);
+}
+
+.invalid-notice {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: red;
+}

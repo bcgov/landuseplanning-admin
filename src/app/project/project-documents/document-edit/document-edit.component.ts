@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
@@ -76,20 +76,20 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
           this.isPublished = this.documents[0].read.includes('public');
           // Set the old data in there if it exists.
           this.myForm = new FormGroup({
-            'documentAuthor': new FormControl(this.documents[0].documentAuthor),
-            'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].datePosted))),
-            'displayName': new FormControl(this.documents[0].displayName),
-            'description': new FormControl(this.documents[0].description),
-            'projectPhase': new FormControl(this.documents[0].projectPhase)
+            'documentAuthor': new FormControl(this.documents[0].documentAuthor, Validators.required),
+            'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].datePosted)), Validators.required),
+            'displayName': new FormControl(this.documents[0].displayName, Validators.required),
+            'description': new FormControl(this.documents[0].description, Validators.required),
+            'projectPhase': new FormControl(this.documents[0].projectPhase, Validators.required)
           });
         } else {
           this.multiEdit = true;
           this.myForm = new FormGroup({
-            'documentAuthor': new FormControl(),
-            'datePosted': new FormControl(),
-            'displayName': new FormControl(),
-            'description': new FormControl(),
-            'projectPhase': new FormControl()
+            'documentAuthor': new FormControl('', Validators.required),
+            'datePosted': new FormControl('', Validators.required),
+            'displayName': new FormControl('', Validators.required),
+            'description': new FormControl('', Validators.required),
+            'projectPhase': new FormControl('', Validators.required)
           });
         }
       }

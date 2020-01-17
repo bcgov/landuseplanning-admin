@@ -7,7 +7,7 @@ import { ApiService } from 'app/services/api';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
 import { MatSnackBar } from '@angular/material';
-import { DialogService } from 'ng2-bootstrap-modal'; 
+import { DialogService } from 'ng2-bootstrap-modal';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 @Component({
@@ -20,6 +20,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   public document: Document = null;
   public currentProject: Project = null;
   public publishText: string;
+  public humanReadableSize: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,12 +31,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private documentService: DocumentService,
     private dialogService: DialogService,
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
-    console.log('DOC: ', this.document);
 
     this.route.data
       .takeUntil(this.ngUnsubscribe)
@@ -49,6 +48,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         }
         this._changeDetectionRef.detectChanges();
       });
+      this.humanReadableSize = this.formatBytes(this.document.internalSize);
   }
 
   onEdit() {
@@ -86,7 +86,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             }
           }
         );
-      
+
     } else {
       this.documentService.unPublish(this.document._id).subscribe(
         res => { },
@@ -101,6 +101,17 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this.publishText = 'Publish';
     }
   }
+
+  private formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
 
   public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
