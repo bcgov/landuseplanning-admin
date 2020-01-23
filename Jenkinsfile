@@ -276,7 +276,7 @@ def nodejsSonarqube () {
                   echo "sonarqube report failed to complete, or timed out"
 
                   notifyRocketChat(
-                    "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
+                    "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
                     ROCKET_DEPLOY_WEBHOOK
                   )
 
@@ -297,7 +297,7 @@ def nodejsSonarqube () {
                 echo "Scan Failed"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
+                  "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Sonarqube scan failed: : ${SONARQUBE_URL}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -310,7 +310,7 @@ def nodejsSonarqube () {
 
             } catch (error) {
               notifyRocketChat(
-                "@all The latest build of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n ${error.message}",
+                "@all *[ADMIN][ERROR]* \n The latest build of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n ${error.message}",
                 ROCKET_DEPLOY_WEBHOOK
               )
               throw error
@@ -391,7 +391,7 @@ def zapScanner () {
                 echo "Failed to revert dev image after Zap scan failed, please revert the dev image manually from dev-backup"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
+                  "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -400,7 +400,7 @@ def zapScanner () {
               }
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev mage was reverted",
+                "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev mage was reverted",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -498,7 +498,7 @@ def postZapToSonar () {
                 echo "Zap report failed to complete, or timed out"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
+                  "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n sonarqube report failed to complete, or timed out : ${SONARQUBE_URL}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -525,7 +525,7 @@ def postZapToSonar () {
                 echo "Failed to revert dev image after Zap scan failed, please revert the dev image manually from dev-backup"
 
                 notifyRocketChat(
-                  "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
+                  "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n Automatic revert of the deployment also failed, please revert the dev image manually from dev-backup",
                   ROCKET_DEPLOY_WEBHOOK
                 )
 
@@ -534,7 +534,7 @@ def postZapToSonar () {
               }
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev image has been reverted",
+                "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Zap scan failed: ${SONARQUBE_URL} \n dev image has been reverted",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -593,7 +593,7 @@ pipeline {
                 echo ">> IMAGE_HASH: ${IMAGE_HASH}"
               } catch (error) {
                 notifyRocketChat(
-                  "@all The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: \n ${error.message}",
+                  "@all *[ADMIN][ERROR]* \n The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: \n ${error.message}",
                   ROCKET_DEPLOY_WEBHOOK
                 )
                 throw error
@@ -644,7 +644,7 @@ pipeline {
               echo "Dev image backup failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image backup failed",
+                "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image backup failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -661,7 +661,7 @@ pipeline {
               echo "Dev image deployment failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image deployment failed",
+                "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Dev image deployment failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -676,7 +676,7 @@ pipeline {
 
           } catch (error) {
             notifyRocketChat(
-              "@all The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
+              "@all *[ADMIN][ERROR]* \n The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
               ROCKET_DEPLOY_WEBHOOK
             )
             currentBuild.result = "FAILURE"
@@ -720,7 +720,18 @@ pipeline {
       steps {
         script {
           try {
+            notifyRocketChat(
+              "@all *[ADMIN][DEV][INPUT]* \n A new version of landuseplanning-admin is now in Dev, build: *${env.BUILD_DISPLAY_NAME}* \n Changes: \n ${CHANGELOG} \n\n _*Input is required to move this build to TEST*_\n${env.BUILD_URL}input",
+              ROCKET_DEPLOY_WEBHOOK
+            )
             input "Deploy to test?"
+          } catch (error) {
+            echo "User has chosen to not deploy to test"
+            echo ">>>> Pipeline Complete"
+            currentBuild.result = 'SUCCESS'
+            return
+          }
+          try {
             // backup
             echo "Backing up test image..."
             openshiftTag destStream: 'lup-admin-static', verbose: 'false', destTag: 'test-backup', srcStream: 'lup-admin-static', srcTag: 'test'
@@ -730,7 +741,7 @@ pipeline {
               echo "Test image backup failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Test image backup failed",
+                "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Test image backup failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -747,7 +758,7 @@ pipeline {
               echo "Test image deployment failed"
 
               notifyRocketChat(
-                "@all The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Test image deployment failed",
+                "@all *[ADMIN][ERROR]* \n The latest build, ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin seems to be broken. \n ${env.BUILD_URL}\n Error: \n Test image deployment failed",
                 ROCKET_DEPLOY_WEBHOOK
               )
 
@@ -760,25 +771,19 @@ pipeline {
             openshiftVerifyDeployment depCfg: 'admin-angular-on-nginx-test', namespace: 'xti26n-test', replicaCount: 1, verbose: 'false', verifyReplicaCount: 'false', waitTime: 600000
             echo ">>>> Deployment Complete"
 
+            notifyRocketChat(
+              "*[ADMIN][TEST]* \n A new version of landuseplanning-admin is now in test, build: *${env.BUILD_DISPLAY_NAME}* \n Changes: \n ${CHANGELOG}",
+              ROCKET_DEPLOY_WEBHOOK
+            )
+
           } catch (error) {
             notifyRocketChat(
-              "@all The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
+              "@all *[ADMIN][ERROR]* \n The build ${env.BUILD_DISPLAY_NAME} of landuseplanning-admin, seems to be broken.\n ${env.BUILD_URL}\n Error: ${error.message}",
               ROCKET_DEPLOY_WEBHOOK
             )
             currentBuild.result = "FAILURE"
             throw new Exception("Deploy failed")
           }
-        }
-      }
-    }
-
-    stage('Success Notifications') {
-      steps {
-        script {
-          notifyRocketChat(
-            "A new version of landuseplanning-admin is now in Dev, build ${env.BUILD_DISPLAY_NAME} \n Changes: \n ${CHANGELOG}",
-            ROCKET_DEPLOY_WEBHOOK
-          )
         }
       }
     }

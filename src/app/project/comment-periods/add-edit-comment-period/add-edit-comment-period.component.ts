@@ -58,7 +58,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     // BUG: Go to add docs. refresh. it will redirect and have errors.
     this.currentProject = this.storageService.state.currentProject.data;
 
-    this.config.lists.map(item => {
+    this.config.lists.forEach(item => {
       switch (item.type) {
         case 'doctype':
           break;
@@ -72,7 +72,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     // Get data related to current project
     this.currentProject = this.storageService.state.currentProject.data;
 
-    this.config.lists.map(item => {
+    this.config.lists.forEach(item => {
       switch (item.type) {
         case 'doctype':
           break;
@@ -166,7 +166,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Open houses
     if (this.commentPeriod.openHouses.length > 0) {
-      this.commentPeriod.openHouses.map(openHouse => {
+      this.commentPeriod.openHouses.forEach(openHouse => {
         this.addOpenHouseRowWithFields(
           this.formBuilder.group({
             eventDate: this.utils.convertJSDateToNGBDate(new Date(openHouse['eventDate'])),

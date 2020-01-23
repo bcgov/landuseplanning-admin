@@ -48,7 +48,7 @@ export class User {
     this.notes = obj && obj.notes || undefined;
     this.checkbox = obj && obj.checkbox || undefined;
 
-    Object.keys(obj).map(e => {
+    Object.keys(obj).forEach(e => {
       this[`${e}`] = `${obj[e]}`;
     });
   }

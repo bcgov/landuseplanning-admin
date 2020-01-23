@@ -170,7 +170,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
           this.addCommentForm.controls.isDeferred.setValue(false);
           this.addCommentForm.controls.isRejected.setValue(true);
 
-          this.documents.map(document => {
+          this.documents.forEach(document => {
             document.eaoStatus = 'Rejected';
           });
         } else {
@@ -183,7 +183,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
         this.addCommentForm.controls.isPublished.setValue(false);
         this.addCommentForm.controls.isDeferred.setValue(false);
         this.addCommentForm.controls.isRejected.setValue(false);
-        this.documents.map(document => {
+        this.documents.forEach(document => {
           document.eaoStatus = 'Pending';
         });
         break;
@@ -207,7 +207,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
 
   private setDocumentForm() {
     let docForms = [];
-    this.documents.map(doc => {
+    this.documents.forEach(doc => {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
       formData.append('project', this.currentProject._id);

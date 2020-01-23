@@ -195,7 +195,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
           this.commentReviewForm.controls.isDeferred.setValue(false);
           this.commentReviewForm.controls.isRejected.setValue(true);
 
-          this.comment.documentsList.map(document => {
+          this.comment.documentsList.forEach(document => {
             document.eaoStatus = 'Rejected';
           });
         } else {

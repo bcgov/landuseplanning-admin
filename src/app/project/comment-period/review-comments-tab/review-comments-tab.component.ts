@@ -157,7 +157,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   setCommentRowData() {
     let commentList = [];
-    this.comments.map(comment => {
+    this.comments.forEach(comment => {
       commentList.push(
         {
           _id: comment._id,

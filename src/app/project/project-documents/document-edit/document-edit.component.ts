@@ -52,7 +52,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
 
-    this.config.lists.map(item => {
+    this.config.lists.forEach(item => {
       switch (item.type) {
         case 'author':
           this.authors.push(Object.assign({}, item));
@@ -144,7 +144,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
       return label.selected === true;
     });
 
-    this.documents.map(doc => {
+    this.documents.forEach(doc => {
       const formData = new FormData();
       formData.append('project', this.currentProject._id);
       formData.append('documentSource', 'PROJECT');
@@ -213,7 +213,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   public togglePublish() {
     this.isPublished = !this.isPublished;
     let observables = [];
-    this.documents.map(doc => {
+    this.documents.forEach(doc => {
       if (this.isPublished) {
         observables.push(this.documentService.publish(doc._id));
       } else {
