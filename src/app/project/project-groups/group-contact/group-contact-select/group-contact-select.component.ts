@@ -86,7 +86,7 @@ export class GroupContactSelectComponent implements OnInit, OnDestroy {
   setRowData() {
     let list = [];
     if (this.entries && this.entries.length > 0) {
-      this.entries.map((item: any) => {
+      this.entries.forEach((item: any) => {
         item.checkbox = this.storageService.state.selectedUsers.some(element => {
           return item._id === element._id;
         });

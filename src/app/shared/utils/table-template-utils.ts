@@ -48,7 +48,7 @@ export class TableTemplateUtils {
     if (filter == null) {
       filter = {};
     }
-    filterFieldList.map(field => {
+    filterFieldList.forEach(field => {
       if (params[field]) {
         filter[field] = params[field];
       }

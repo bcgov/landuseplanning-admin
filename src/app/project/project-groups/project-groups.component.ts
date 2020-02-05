@@ -166,7 +166,7 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
       }
     });
     let list = [];
-    itemsToExport.map(group => {
+    itemsToExport.forEach(group => {
       group.members.map(member => {
         list.push(member);
       });
@@ -188,7 +188,7 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
       .then((data) => {
         // Reload main page.
         let userData = '';
-        data.map(p => {
+        data.forEach(p => {
           userData += p.data.email + ';';
         });
         console.log(userData);
@@ -215,7 +215,7 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
       }
     });
     let list = [];
-    itemsToExport.map(group => {
+    itemsToExport.forEach(group => {
       group.members.map(member => {
         list.push(member);
       });
@@ -236,7 +236,7 @@ export class ProjectGroupsComponent implements OnInit, OnDestroy {
     return Promise.all(csvData)
       .then((data) => {
         let userData = [];
-        data.map(p => {
+        data.forEach(p => {
           userData.push({
             name: p.data.firstName + ' ' + p.data.lastName,
             title: p.data.title,

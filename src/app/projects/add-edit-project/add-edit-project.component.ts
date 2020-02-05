@@ -497,7 +497,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       console.log('PUTing', project);
       project._id = this.project._id;
       let observables = [];
-      this.documents.map(doc => {
+      this.documents.forEach(doc => {
         const formData = new FormData();
         formData.append('upfile', doc.upfile);
         formData.append('project', this.project._id);

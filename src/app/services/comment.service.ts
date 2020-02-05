@@ -54,7 +54,7 @@ export class CommentService {
   add(comment: Comment, documentForms: Array<FormData> = []): Observable<Comment> {
     if (documentForms.length > 0) {
       let observables = [];
-      documentForms.map(documentForm => {
+      documentForms.forEach(documentForm => {
         observables.push(this.documentService.add(documentForm));
       });
       return forkJoin(observables)
@@ -76,7 +76,7 @@ export class CommentService {
     if (comment.documentsList && comment.documentsList.length > 0) {
       // Update documents publish status.
       let observables = [];
-      comment.documentsList.map(document => {
+      comment.documentsList.forEach(document => {
         if (document.eaoStatus === 'Published') {
           observables.push(this.documentService.publish(document._id));
         } else if (document.eaoStatus === 'Rejected') {

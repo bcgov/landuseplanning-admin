@@ -187,7 +187,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
       }
     });
     let list = [];
-    itemsToExport.map(member => {
+    itemsToExport.forEach(member => {
       list.push(member);
     });
 
@@ -207,7 +207,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
       .then((data) => {
         // Reload main page.
         let userData = '';
-        data.map(p => {
+        data.forEach(p => {
           userData += p.data.email + ';';
         });
         console.log(userData);
@@ -234,7 +234,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
       }
     });
     let list = [];
-    itemsToExport.map(member => {
+    itemsToExport.forEach(member => {
       list.push(member);
     });
 
@@ -254,7 +254,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
       .then((data) => {
         // Reload main page.
         let userData = [];
-        data.map(p => {
+        data.forEach(p => {
           userData.push({
             name: p.data.firstName + ' ' + p.data.lastName,
             title: p.data.title,
@@ -336,7 +336,7 @@ export class GroupContactComponent implements OnInit, OnDestroy {
       observables.push(component.projectService.addGroupMembers(component.currentProject, component.groupId, membersToAdd));
     }
     if (membersToRemove.length > 0) {
-      membersToRemove.map(item => {
+      membersToRemove.forEach(item => {
         observables.push(component.projectService.deleteGroupMembers(component.currentProject._id, component.groupId, item));
       });
     }
@@ -361,7 +361,8 @@ export class GroupContactComponent implements OnInit, OnDestroy {
     this.dialogService.addDialog(ConfirmComponent,
       {
         title: 'Remove Contact',
-        message: 'Click <strong>OK</strong> to remove or <strong>Cancel</strong> to return to the list.'
+        message: 'Click <strong>OK</strong> to remove or <strong>Cancel</strong> to return to the list.',
+        okOnly: true
       }, {
         backdropColor: 'rgba(0, 0, 0, 0.5)'
       })

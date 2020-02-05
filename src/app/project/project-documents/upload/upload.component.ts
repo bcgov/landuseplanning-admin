@@ -49,7 +49,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
 
-    this.config.lists.map(item => {
+    this.config.lists.forEach(item => {
       switch (item.type) {
         case 'author':
           break;
@@ -113,7 +113,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     // NB: If multi upload, then switch to use documentFileName as displayName
 
-    this.documents.map(doc => {
+    this.documents.forEach(doc => {
       const formData = new FormData();
       formData.append('upfile', doc.upfile);
       formData.append('project', this.currentProject._id);

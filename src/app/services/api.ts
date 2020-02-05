@@ -865,7 +865,7 @@ export class ApiService {
   searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier: object = {}, populate = false, filter = {}): Observable<SearchResults[]> {
     let queryString = `search?dataset=${dataset}`;
     if (fields && fields.length > 0) {
-      fields.map(item => {
+      fields.forEach(item => {
         queryString += `&${item.name}=${item.value}`;
       });
     }
@@ -877,14 +877,14 @@ export class ApiService {
     if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (populate !== null) { queryString += `&populate=${populate}`; }
     if (queryModifier !== {}) {
-      Object.keys(queryModifier).map(key => {
+      Object.keys(queryModifier).forEach(key => {
         queryModifier[key].split(',').map(item => {
           queryString += `&and[${key}]=${item}`;
         });
       });
     }
     if (filter !== {}) {
-      Object.keys(filter).map(key => {
+      Object.keys(filter).forEach(key => {
         filter[key].split(',').map(item => {
           queryString += `&or[${key}]=${item}`;
         });

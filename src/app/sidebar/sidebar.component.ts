@@ -51,6 +51,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     // urlArray[0] will be empty so we use shift to get rid of it.
     urlArray.shift();
     if (urlArray[0] === 'p') {
+      /* Useless switch
       switch (urlArray[2]) {
         case 'compliance': {
           break;
@@ -79,7 +80,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         default: {
           break;
         }
-      }
+      }*/
       this.currentProjectId = urlArray[1];
       try {
         this.currentMenu = urlArray[2];
