@@ -16,6 +16,9 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/libexec/s2i
 # Copy config from source to container
 COPY nginx.conf.template /tmp/
 
+# create empty Environment Settings JS file
+RUN echo "" > /etc/nginx/adminServerEnvironmentSettings.js
+
 USER root
 
 # Fix up permissions

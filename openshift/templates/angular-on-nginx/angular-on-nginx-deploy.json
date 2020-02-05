@@ -67,6 +67,18 @@
                   {
                     "name": "IpFilterRules",
                     "value": "${IpFilterRules}"
+                  },
+                  {
+                    "name": "DEPLOYMENT_ENVIRONMENT",
+                    "value": "${TAG_NAME}"
+                  },
+                  {
+                    "name": "REMOTE_API_PATH",
+                    "value": "${REMOTE_API_PATH}"
+                  },
+                  {
+                    "name": "REMOTE_PUBLIC_PATH",
+                    "value": "${REMOTE_PUBLIC_PATH}"
                   }
                 ],
                 "resources": {
@@ -248,7 +260,19 @@
       "description": "The TAG name for this environment, e.g., dev, test, prod",
       "displayName": "Env TAG name",
       "name": "TAG_NAME",
-      "value": "dev"
+      "value": "your-openshift-tag"
+    },
+    {
+      "name": "REMOTE_API_PATH",
+      "displayName": "URL path to API",
+      "description": "The 'https://' prefixed URL path to the API the public Angular app will make calls to.",
+      "value": "https://lup-your-openshift-namespace.pathfinder.gov.bc.ca/api"
+    },
+    {
+      "name": "REMOTE_PUBLIC_PATH",
+      "displayName": "URL path to Public",
+      "description": "[Currently Unused] The 'https://' prefixed URL path to the Public app that the admin Angular app will link back to.",
+      "value": "https://lup-your-openshift-namespace.pathfinder.gov.bc.ca/"
     }
   ]
 }

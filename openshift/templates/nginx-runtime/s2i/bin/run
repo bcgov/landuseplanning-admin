@@ -74,6 +74,10 @@ getReplacementPattern() {
 export RealIpFrom="${RealIpFrom:-172.51.0.0/16}"
 export API_URL=$(getApiUrl)
 
+echo "window.localStorage.setItem('from_admin_server--remote_api_path', '${REMOTE_API_PATH:-set-in-project-nginx-runtime}');" > /etc/nginx/adminServerEnvironmentSettings.js;
+echo "window.localStorage.setItem('from_admin_server--remote_public_path', '${REMOTE_PUBLIC_PATH:-set-in-project-nginx-runtime}');" >> /etc/nginx/adminServerEnvironmentSettings.js;
+echo "window.localStorage.setItem('from_admin_server--deployment_env', '${DEPLOYMENT_ENVIRONMENT:-set-in-project-nginx-runtime}');" >> /etc/nginx/adminServerEnvironmentSettings.js;
+
 if [ -z "$API_URL" ]; then
   echo "Could not find API Service to proxy to, exiting."
   exit 1

@@ -50,7 +50,7 @@ export class ApiService {
   // private jwtHelper: JwtHelperService;
   pathAPI: string;
   params: Params;
-  env: 'local' | 'dev' | 'test' | 'demo' | 'scale' | 'beta' | 'master' | 'prod';
+  public env: string;  // Could be anything per Openshift settings but generally is one of 'local' | 'dev' | 'test' | 'prod' | 'demo'
 
   constructor(
     private http: HttpClient,
@@ -61,38 +61,14 @@ export class ApiService {
     this.token = currentUser && currentUser.token;
     this.isMS = window.navigator.msSaveOrOpenBlob ? true : false;
 
-    const { hostname } = window.location;
-    switch (hostname) {
-      case 'localhost':
-        // Local
-        this.pathAPI = 'http://localhost:3000/api';
-        this.env = 'local';
-        break;
+    // The following items are loaded by a file that is only present on cluster builds.
+    // Locally, this will be empty and local defaults will be used.
+    const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+    const remote_public_path = window.localStorage.getItem('from_admin_server--remote_public_path');  // available in case its ever needed
+    const deployment_env = window.localStorage.getItem('from_admin_server--deployment_env');
 
-      case 'lup-dev.pathfinder.gov.bc.ca':
-        // Dev
-        this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
-        this.env = 'dev';
-        break;
-
-      case 'lup-test.pathfinder.gov.bc.ca':
-        // Test
-        this.pathAPI = 'https://lup-test.pathfinder.gov.bc.ca/api';
-        this.env = 'test';
-        break;
-
-      case 'landuseplanning.gov.bc.ca':
-        // Prod
-        this.pathAPI = 'https://landuseplanning.gov.bc.ca/api';
-        this.env = 'prod';
-        break;
-
-      default:
-        // Dev
-        this.pathAPI = 'https://lup-dev.pathfinder.gov.bc.ca/api';
-        this.env = 'dev';
-    }
-    console.log(hostname);
+    this.pathAPI = (_.isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+    this.env = (_.isEmpty(deployment_env)) ? 'local' : deployment_env;
   }
 
   handleError(error: any): Observable<never> {
