@@ -128,6 +128,8 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         'endDate': new FormControl(),
         'endTime': new FormControl(),
         'publishedStateSel': new FormControl(),
+        'externalEngagementTool' : new FormControl(),
+        'externalToolPopupText' : new FormControl(),
         'infoForCommentText': new FormControl(),
         'commentPeriodInfo': new FormControl(),
         openHouses: this.formBuilder.array([])
@@ -156,6 +158,10 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Publish state
     this.commentPeriodForm.controls.publishedStateSel.setValue(this.commentPeriod.isPublished ? 'published' : 'unpublished');
+
+    // External Comments form
+    this.commentPeriodForm.controls.externalEngagementTool.setValue(this.commentPeriod.externalEngagementTool);
+    this.commentPeriodForm.controls.externalToolPopupText.setValue(this.commentPeriod.externalToolPopupText);
 
     // Description
     this.commentPeriodForm.controls.infoForCommentText.setValue(this.commentPeriod.instructions);
@@ -218,6 +224,15 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
       this.commentPeriod.isPublished = false;
     }
 
+    this.commentPeriod.externalEngagementTool = this.commentPeriodForm.get('externalEngagementTool').value;
+
+    // Check for external comments form and only save externalToolPopupText if externalEngagementTool is true
+    if (this.commentPeriodForm.get('externalEngagementTool').value !== true) {
+      this.commentPeriod.externalToolPopupText = null;
+    } else {
+      this.commentPeriod.externalToolPopupText = this.commentPeriodForm.get('externalToolPopupText').value;
+    }
+
     // Check info for comment
     // Check description
     this.commentPeriod.instructions = this.commentPeriodForm.get('infoForCommentText').value;
@@ -264,7 +279,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         );
     } else {
       this.commentPeriod.project = this.currentProject._id;
-      console.log('Attenpting to add comment period:', this.commentPeriod);
+      console.log('Attempting to add comment period:', this.commentPeriod);
       this.commentPeriodService.add(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(

@@ -18,9 +18,9 @@
     </li>
   </ol>
   <div class="btn-container">
-    <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
+    <button class="btn btn-primary" type="cancel" (click)="onCancel()">{{this.externalEngagementTool ? "Back" : "Cancel"}}</button>
     &nbsp;
-    <button [disabled]="!addCommentForm.valid" class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
+    <button *ngIf="!externalEngagementTool" [attr.disabled]="!addCommentForm.valid" class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
   </div>
 </nav>
 
@@ -29,7 +29,8 @@
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>
-  <form *ngIf="addCommentForm" [formGroup]="addCommentForm" (ngSubmit)="register()">
+  <div *ngIf="!externalEngagementTool else externalToolText">
+  <form [formGroup]="addCommentForm" (ngSubmit)="register()">
     <div class="form-row">
       <div class="form-group col-md-8">
         <div class="btn-group btn-group-toggle">
@@ -183,4 +184,9 @@
       </div>
     </div>
   </form>
+</div>
+<ng-template #externalToolText>
+  <div class="col-md-8" [innerHTML]="commentPeriod.externalToolPopupText"></div>
+</ng-template>
+
 </main>

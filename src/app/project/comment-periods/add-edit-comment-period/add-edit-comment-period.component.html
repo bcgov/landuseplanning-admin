@@ -90,6 +90,23 @@
         </div>
 
         <div class="form-row">
+          <div class="form-group form-check form-check-inline col-md-4">
+            <input id="externalEngagementTool" name="externalEngagementTool" formControlName="externalEngagementTool" class="form-check-input" type="checkbox">
+            <label for="externalEngagementTool" class="external-comments-label">External Engagement Tool</label>
+          </div>
+        </div>
+
+        <div [hidden]="!commentPeriodForm.value.externalEngagementTool" class="form-row">
+          <div class="form-group col-md-6">
+            <label for="externalToolPopupText">External Tool Popup Text*</label>
+                <ckeditor name="externalToolPopupText" id="externalToolPopupText"
+                  formControlName="externalToolPopupText" [editor]="Editor"
+                  [required]="commentPeriodForm.value.externalEngagementTool"
+                  [data]="commentPeriod.externalToolPopupText"></ckeditor>
+          </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="infoForCommentText">Comment Period Short Description*</label>
                 <textarea required id="infoForCommentText" class="form-control" rows="3" name="infoForCommentText"
