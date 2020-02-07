@@ -390,7 +390,9 @@ export class ApiService {
     const fields = [
       'project',
       'dateStarted',
-      'dateCompleted'
+      'dateCompleted',
+      'externalEngagementTool',
+      'externalToolPopupText'
     ];
 
     let queryString = `commentperiod?&project=${projId}&`;
@@ -431,6 +433,8 @@ export class ApiService {
       'isPublished',
       'isResolved',
       'isVetted',
+      'externalEngagementTool',
+      'externalToolPopupText',
       'milestone',
       'openCommentPeriod',
       'openHouses',
@@ -478,6 +482,8 @@ export class ApiService {
       'isPublished',
       'isResolved',
       'isVetted',
+      'externalEngagementTool',
+      'externalToolPopupText',
       'milestone',
       'openCommentPeriod',
       'openHouses',
