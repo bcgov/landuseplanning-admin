@@ -30,6 +30,7 @@ import { ProjectComponent } from './project/project.component';
 import { SearchComponent } from 'app/search/search.component';
 import { SidebarComponent } from 'app/sidebar/sidebar.component';
 import { TopicsComponent } from 'app/administration/topics/topics.component';
+import { EnvBannerComponent } from './header/env-banner/env-banner.component';
 
 // services
 import { AuthenticationService } from 'app/services/authentication.service';
@@ -122,7 +123,8 @@ export function kcFactory(keycloakService: KeycloakService) {
     ActivityDetailTableRowsComponent,
     AddEditActivityComponent,
     SearchHelpComponent,
-    UserTableRowsComponent
+    UserTableRowsComponent,
+    EnvBannerComponent
   ],
   imports: [
     BrowserAnimationsModule,
