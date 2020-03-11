@@ -32,22 +32,17 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
     {
       name: 'Name',
       value: 'displayName',
-      width: 'col-3'
-    },
-    {
-      name: 'Organization',
-      value: 'org',
-      width: 'col-3'
+      width: 'col-4'
     },
     {
       name: 'Phone',
       value: 'phoneNumber',
-      width: 'col-3'
+      width: 'col-4'
     },
     {
       name: 'Email',
       value: 'email',
-      width: 'col-3'
+      width: 'col-4'
     }
   ];
 

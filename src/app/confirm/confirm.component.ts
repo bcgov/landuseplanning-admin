@@ -1,29 +1,39 @@
-import { Component } from '@angular/core';
-import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
+import { Component, AfterViewInit } from '@angular/core';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
-export interface IDataModel {
-  title: string;
-  message: string;
-  okOnly: boolean;
+interface SmartModalData {
+  type?: string;
+  title?: string;
+  message?: string;
 }
 
 @Component({
   templateUrl: './confirm.component.html',
   styleUrls: ['./confirm.component.scss']
 })
-export class ConfirmComponent extends DialogComponent<IDataModel, boolean> implements IDataModel {
-  title = 'Confirm';
-  message = 'Are you sure?';
-  okOnly = false;
+export class ConfirmComponent implements AfterViewInit {
+  modalData: SmartModalData;
 
-  constructor(public dialogService: DialogService) {
-    super(dialogService);
+  constructor(
+    public ngxSmartModalService: NgxSmartModalService,
+    ) {}
+
+  ngAfterViewInit() {
+    this.modalData = this.ngxSmartModalService.getModalData('confirmation-modal');
+  }
+
+  close() {
+    this.ngxSmartModalService.close('confirmation-modal');
   }
 
   confirm() {
-    // we set dialog result as true on click of confirm button
-    // then we can get dialog result from caller code
-    this.result = true;
-    this.close();
+    if (this.modalData.type === 'publish') {
+      this.ngxSmartModalService.setModalData({publishConfirm: true}, 'confirmation-modal', true);
+    } else if (this.modalData.type === 'delete') {
+      this.ngxSmartModalService.setModalData({deleteConfirm: true}, 'confirmation-modal', true);
+    } else if (this.modalData.type === 'unpublish') {
+      this.ngxSmartModalService.setModalData({unpublishConfirm: true}, 'confirmation-modal', true);
+    }
+    this.ngxSmartModalService.close('confirmation-modal');
   }
 }

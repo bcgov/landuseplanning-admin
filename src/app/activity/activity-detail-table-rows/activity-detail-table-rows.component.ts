@@ -9,6 +9,7 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { RecentActivityService } from 'app/services/recent-activity';
 
 import { TableObject } from 'app/shared/components/table-template/table-object';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 @Component({
   selector: 'tbody[app-activity-detail-table-rows]',
@@ -22,46 +23,53 @@ export class ActivityDetailTableRowsComponent implements OnInit, OnDestroy, Tabl
   public entries: any;
   public paginationData: any;
   public dropdownItems = ['Edit', 'Delete'];
+  public targetActivity: any;
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private _changeDetectionRef: ChangeDetectorRef,
     private router: Router,
-    private dialogService: DialogService,
+    private ngxSmartModalService: NgxSmartModalService,
     private recentActivityService: RecentActivityService,
   ) { }
 
   async ngOnInit() {
     this.entries = this.data.data;
     this.paginationData = this.data.paginationData;
+
+    this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+        if (data.confirmDelete) {
+          this.internalDeleteActivity();
+        }
+      })
   }
 
   deleteActivity(activity) {
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Delete Activity',
-        message: 'Click <strong>OK</strong> to delete this Activity or <strong>Cancel</strong> to return to the list.'
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            // Delete the Activity
-            this.recentActivityService.delete(activity)
-              .subscribe(
-                () => {
-                  this.entries.splice(this.entries.indexOf(activity), 1);
-                  this._changeDetectionRef.detectChanges();
-                },
-                error => {
-                  console.log('error =', error);
-                });
-          }
-        }
-      );
+    this.ngxSmartModalService.setModalData({
+      type: 'delete',
+      title: 'Delete Activity',
+      message: 'Click <strong>OK</strong> to delete this Activity or <strong>Cancel</strong> to return to the list.'
+    }, 'confirmation-modal', true);
+
+    this.ngxSmartModalService.open('confirmation-modal');
+    this.targetActivity = activity;
+  }
+
+  internalDeleteActivity() {
+    // Delete the Activity
+    this.recentActivityService.delete(this.targetActivity)
+    .subscribe(
+      () => {
+        this.entries.splice(this.entries.indexOf(this.targetActivity), 1);
+        this._changeDetectionRef.detectChanges();
+      },
+      error => {
+        console.log('error =', error);
+      });
   }
 
   togglePin(activity) {

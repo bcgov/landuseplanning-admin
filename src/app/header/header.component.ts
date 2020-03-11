@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { ApiService } from 'app/services/api';
 import { JwtUtil } from 'app/jwt-util';
 import { KeycloakService } from 'app/services/keycloak.service';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 @Component({
   selector: 'app-header',
@@ -47,7 +47,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private api: ApiService,
-    private dialogService: DialogService,
+    private ngxSmartModalService: NgxSmartModalService,
     private keycloakService: KeycloakService,
     private modalService: NgbModal,
     public router: Router
@@ -77,15 +77,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     let isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
     if (isIEOrEdge) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
+        this.ngxSmartModalService.setModalData({
+          type: null,
           title: 'Browser Incompatible',
           message: '<strong>  Attention: </strong>This website is not supported by Internet Explorer and Microsoft Edge, please use Google Chrome or Firefox.',
-          okOnly: false
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        });
+        }, 'confirmation-modal');
+        this.ngxSmartModalService.open('confirmation-modal');
     }
+
   }
 
   renderMenu(route: String) {

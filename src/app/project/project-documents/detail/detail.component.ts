@@ -6,9 +6,9 @@ import { Project } from 'app/models/project';
 import { ApiService } from 'app/services/api';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
-import { MatSnackBar } from '@angular/material';
-import { DialogService } from 'ng2-bootstrap-modal';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 @Component({
   selector: 'app-detail',
@@ -30,7 +30,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private snackBar: MatSnackBar,
     private documentService: DocumentService,
-    private dialogService: DialogService,
+    private ngxSmartModalService: NgxSmartModalService,
   ) {}
 
   ngOnInit() {
@@ -49,6 +49,39 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         this._changeDetectionRef.detectChanges();
       });
       this.humanReadableSize = this.formatBytes(this.document.internalSize);
+
+    this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((modal) => {
+      const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+        if (this.publishText === 'Publish') {
+          if (data.publishConfirm) {
+            this.documentService.publish(this.document._id).subscribe(
+              res => { },
+              error => {
+                console.log('error =', error);
+                alert('Uh-oh, couldn\'t update document');
+              },
+              () => {
+                this.openSnackBar('This document has been published.', 'Close');
+              }
+            );
+            this.publishText = 'Unpublish';
+          }
+        } else {
+          this.documentService.unPublish(this.document._id).subscribe(
+            res => { },
+            error => {
+              console.log('error =', error);
+              alert('Uh-oh, couldn\'t update document');
+            },
+            () => {
+              this.openSnackBar('This document has been unpublished.', 'Close');
+            }
+          );
+          this.publishText = 'Publish';
+        }
+      });
   }
 
   onEdit() {
@@ -59,47 +92,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   public togglePublish() {
-    if (this.publishText === 'Publish') {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Confirm Publish',
-          message: 'Publishing this document will make it visible to the public. <br><br> Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content? <br><br> Are you sure you want to proceed?',
-          okOnly: false
-        }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          isConfirmed => {
-            if (isConfirmed) {
-              this.documentService.publish(this.document._id).subscribe(
-                res => { },
-                error => {
-                  console.log('error =', error);
-                  alert('Uh-oh, couldn\'t update document');
-                },
-                () => {
-                  this.openSnackBar('This document has been published.', 'Close');
-                }
-              );
-              this.publishText = 'Unpublish';
-            }
-          }
-        );
+      this.ngxSmartModalService.setModalData({
+        type: 'publish',
+        title: 'Confirm Publish',
+        message: 'Publishing this document will make it visible to the public. <br><br> Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content? <br><br> Are you sure you want to proceed?'
+      }, 'confirmation-modal', true);
 
-    } else {
-      this.documentService.unPublish(this.document._id).subscribe(
-        res => { },
-        error => {
-          console.log('error =', error);
-          alert('Uh-oh, couldn\'t update document');
-        },
-        () => {
-          this.openSnackBar('This document has been unpublished.', 'Close');
-        }
-      );
-      this.publishText = 'Publish';
-    }
+      this.ngxSmartModalService.open('confirmation-modal');
   }
 
   private formatBytes(bytes, decimals = 2) {

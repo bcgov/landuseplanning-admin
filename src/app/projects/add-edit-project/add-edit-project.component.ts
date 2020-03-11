@@ -4,7 +4,7 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import * as moment from 'moment-timezone';
 import { Subject, of, forkJoin } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { StorageService } from 'app/services/storage.service';

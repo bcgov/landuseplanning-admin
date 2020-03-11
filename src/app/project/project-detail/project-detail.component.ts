@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';
+import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/concat';
 import { of } from 'rxjs';
+
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Project } from 'app/models/project';
@@ -40,12 +41,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     public api: ApiService, // also used in template
     private _changeDetectorRef: ChangeDetectorRef,
-    private dialogService: DialogService,
     public projectService: ProjectService, // also used in template
     public commentPeriodService: CommentPeriodService,
     public decisionService: DecisionService,
     private storageService: StorageService,
     public documentService: DocumentService,
+    private ngxSmartModalService: NgxSmartModalService
   ) {
   }
 
@@ -72,9 +73,23 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         }
       );
 
+    this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+      const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+      this.projectActions(data);
+      })
     // this.project = this.projectComponent.project;
     // Handles when we come back to this page.
 
+  }
+
+  projectActions(modalResponse) {
+    if (modalResponse.publishConfirm === true) {
+      this.internalPublishProject();
+    } else if (modalResponse.deleteConfirm === true) {
+      this.internalDeleteProject();
+    }
   }
 
   editProject() {
@@ -87,47 +102,17 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   public deleteProject() {
     if (this.project['numComments'] > 0) {
-      this.dialogService.addDialog(ConfirmComponent,
-        {
-          title: 'Cannot Delete Project',
-          message: 'An project with submitted comments cannot be deleted.',
-          okOnly: true
-        }, {
-          backdropColor: 'rgba(0, 0, 0, 0.5)'
-        })
-        .takeUntil(this.ngUnsubscribe);
+      alert('A project with submitted comments cannot be deleted.');
       return;
     }
 
-    // if (this.project.isPublished) {
-    //   this.dialogService.addDialog(ConfirmComponent,
-    //     {
-    //       title: 'Cannot Delete Project',
-    //       message: 'Please unpublish project first.',
-    //       okOnly: true
-    //     }, {
-    //       backdropColor: 'rgba(0, 0, 0, 0.5)'
-    //     })
-    //     .takeUntil(this.ngUnsubscribe);
-    //   return;
-    // }
+    this.ngxSmartModalService.setModalData({
+      type: 'delete',
+      title: 'Confirm Deletion',
+      message: 'Do you really want to delete this project?'
+    }, 'confirmation-modal', true);
 
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Confirm Deletion',
-        message: 'Do you really want to delete this project?',
-        okOnly: false
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            this.internalDeleteProject();
-          }
-        }
-      );
+    this.ngxSmartModalService.open('confirmation-modal');
   }
 
   private internalDeleteProject() {
@@ -187,22 +172,15 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   public publishProject() {
-    this.dialogService.addDialog(ConfirmComponent,
-      {
+
+    this.ngxSmartModalService.setModalData({
+        type: 'publish',
         title: 'Confirm Publish',
-        message: 'Publishing this project will make it visible to the public. <br><br> Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content? <br><br> Are you sure you want to proceed?',
-        okOnly: false
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            this.internalPublishProject();
-          }
-        }
-      );
+        message: 'Publishing this project will make it visible to the public. <br><br> Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content? <br><br> Are you sure you want to proceed?'
+      }, 'confirmation-modal', true);
+
+    this.ngxSmartModalService.open('confirmation-modal');
+
   }
 
   private internalPublishProject() {
@@ -259,6 +237,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Project un-published...', null, { duration: 2000 });
           // reload all data
+          console.log(this.project)
           this.projectService.getById(this.project._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(

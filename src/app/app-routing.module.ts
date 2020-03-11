@@ -5,8 +5,6 @@ import { AddEditContactComponent } from './contacts/add-edit-contact/add-edit-co
 import { LoginComponent } from './login/login.component';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { SearchComponent } from './search/search.component';
-import { AdministrationComponent } from './administration/administration.component';
-import { TopicsComponent } from './administration/topics/topics.component';
 import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
 import { ContactsComponent } from './contacts/contacts.component';
@@ -18,10 +16,6 @@ import { ActivityComponentResolver } from './activity/activity-component-resolve
 
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
 import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
-import { TopicsResolver } from './administration/topics/topics-resolver.services';
-import { PinsGlobalComponentResolver } from './project/pins-list/pins-global-resolver.service';
-import { ProjectGroupResolver } from './project/project-groups/project-group-resolver.services';
-import { ProjectContactsGroupResolver } from './project/project-groups/project-contact-group-resolver.services';
 import { EditContactResolver } from './contacts/add-edit-contact/edit-contact-resolver.services';
 import { OrganizationsComponent } from './organizations/organizations.component';
 import { OrganizationsResolver } from './organizations/organizations-resolver.service';
@@ -34,10 +28,6 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
-  },
-  {
-    path: 'administration',
-    component: AdministrationComponent
   },
   {
     path: 'o/:orgId/edit',
@@ -69,13 +59,6 @@ const routes: Routes = [
     component: LinkOrganizationComponent,
     resolve: {
       organizations: LinkOrganizationResolver
-    }
-  },
-  {
-    path: 'administration/topics',
-    component: TopicsComponent,
-    resolve: {
-      topics: TopicsResolver
     }
   },
   {
@@ -176,10 +159,6 @@ const routes: Routes = [
     EditOrganizationResolver,
     LinkOrganizationResolver,
     OrganizationsResolver,
-    PinsGlobalComponentResolver,
-    ProjectContactsGroupResolver,
-    ProjectGroupResolver,
-    TopicsResolver
   ]
 })
 

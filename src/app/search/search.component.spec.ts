@@ -4,12 +4,12 @@ import { SearchComponent } from './search.component';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchService } from 'app/services/search.service';
 import { of, throwError } from 'rxjs';
 import { ActivatedRouteStub } from 'app/spec/helpers';
 import { By } from '@angular/platform-browser';
-import { tick } from '@angular/core/src/render3';
+// import { tick } from '@angular/core/src/render3';
 import { CommentPeriod } from 'app/models/commentPeriod';
 
 describe('SearchComponent', () => {

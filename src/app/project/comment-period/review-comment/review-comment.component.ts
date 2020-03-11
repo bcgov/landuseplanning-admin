@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 
 import { ApiService } from 'app/services/api';
@@ -52,7 +52,6 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         if (data.comment) {
           this.comment = data.comment;
-          this.storageService.state.currentVCs = { type: 'currentVCs', data: this.comment.valuedComponents };
 
           if (this.storageService.state.currentCommentPeriod) {
             this.commentPeriod = this.storageService.state.currentCommentPeriod.data;
@@ -128,7 +127,6 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       this.comment.eaoStatus = 'Reset';
     }
     this.comment.proponentNotes = this.commentReviewForm.get('proponentResponseText').value;
-    this.comment.valuedComponents = this.storageService.state.currentVCs.data;
 
     let previousCommentId = this.comment.commentId;
     this.commentService.save(this.comment)

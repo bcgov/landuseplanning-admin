@@ -43,6 +43,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
             this.loading = false;
             this._changeDetectorRef.detectChanges();
           } else {
+            console.log(data)
             alert('Uh-oh, couldn\'t load project');
             // project not found --> navigate back to search
             this.router.navigate(['/search']);

@@ -19,9 +19,9 @@ import { ComplianceComponent } from './compliance/compliance.component';
 import { DocumentDetailComponent } from './project-documents/detail/detail.component';
 import { DocumentTableRowsComponent } from './project-documents/project-document-table-rows/project-document-table-rows.component';
 import { IndigenousNationsComponent } from './indigenous-nations/indigenous-nations.component';
-import { MatTabsModule, MatMenuModule } from '@angular/material';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
 import { MilestonesComponent } from './milestones/milestones.component';
-import { ProjectGroupsComponent } from './project-groups/project-groups.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
@@ -30,9 +30,6 @@ import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 import { ShapefileTableRowsComponent } from './project-shapefiles/project-shapefile-table-rows/project-shapefile-table-rows.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
-import { ValuedComponentsComponent } from './valued-components/valued-components.component';
-import { ValuedComponentTableRowsComponent } from './valued-components/valued-component-table-rows/valued-component-table-rows.component';
-import { TopicTableRowsComponent } from './valued-components/add-vc/topic-table-rows/topic-table-rows.component';
 
 // services
 import { ApiService } from 'app/services/api';
@@ -40,24 +37,17 @@ import { ExcelService } from 'app/services/excel.service';
 import { ProjectService } from 'app/services/project.service';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
-import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
-import { GetValuedComponentsComponent } from './comment-period/review-comment/get-valued-components/get-valued-components.component';
-import { GetValuedComponentTableRowsComponent } from './comment-period/review-comment/get-valued-components/get-valued-component-table-rows/get-valued-component-table-rows.component';
 import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
 import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
 import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
 import { CommentPeriodBannerComponent } from './comment-period-banner/comment-period-banner.component';
-import { PinsListComponent } from './pins-list/pins-list.component';
-import { GroupsTableRowsComponent } from './project-groups/project-groups-table-rows/project-groups-table-rows.component';
-import { GroupContactComponent } from './project-groups/group-contact/group-contact.component';
-import { GroupContactSelectComponent } from './project-groups/group-contact/group-contact-select/group-contact-select.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    NgbModule.forRoot(),
+    NgbModule,
     MatMenuModule,
     MatTabsModule,
     NgxPaginationModule,
@@ -72,7 +62,6 @@ import { GroupContactSelectComponent } from './project-groups/group-contact/grou
     AddDocumentTableRowsComponent,
     AddEditCommentPeriodComponent,
     AddLabelComponent,
-    AddVcComponent,
     CommentPeriodBannerComponent,
     CommentPeriodComponent,
     CommentPeriodDetailsTabComponent,
@@ -83,27 +72,17 @@ import { GroupContactSelectComponent } from './project-groups/group-contact/grou
     DocumentDetailComponent,
     DocumentEditComponent,
     DocumentTableRowsComponent,
-    GetValuedComponentsComponent,
-    GetValuedComponentTableRowsComponent,
-    GroupContactComponent,
-    GroupContactSelectComponent,
-    GroupsTableRowsComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
-    PinsListComponent,
     ProjectDetailComponent,
     ProjectDocumentsComponent,
-    ProjectGroupsComponent,
     ProjectShapefilesComponent,
     ProjectUpdatesComponent,
     ReviewCommentComponent,
     ReviewCommentsTabComponent,
     ReviewCommentsTabTableRowsComponent,
     ShapefileTableRowsComponent,
-    TopicTableRowsComponent,
     UploadComponent,
-    ValuedComponentsComponent,
-    ValuedComponentTableRowsComponent
   ],
   entryComponents: [
     AddDocumentTableRowsComponent,
@@ -111,24 +90,16 @@ import { GroupContactSelectComponent } from './project-groups/group-contact/grou
     CommentPeriodsComponent,
     CommentPeriodsTableRowsComponent,
     DocumentTableRowsComponent,
-    GetValuedComponentTableRowsComponent,
-    GroupContactSelectComponent,
-    GroupsTableRowsComponent,
     ReviewCommentsTabTableRowsComponent,
     ShapefileTableRowsComponent,
-    TopicTableRowsComponent,
     UploadComponent,
-    ValuedComponentTableRowsComponent
   ],
   exports: [
     ComplianceComponent,
     IndigenousNationsComponent,
     MilestonesComponent,
-    ProjectGroupsComponent,
     ProjectDetailComponent,
     ProjectUpdatesComponent,
-    ValuedComponentsComponent,
-    PinsListComponent
   ],
   providers: [
     ApiService,
