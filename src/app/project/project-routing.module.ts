@@ -6,7 +6,6 @@ import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 import { AddEditProjectComponent } from 'app/projects/add-edit-project/add-edit-project.component';
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
-import { AddVcComponent } from './valued-components/add-vc/add-vc.component';
 import { CommentPeriodComponent } from './comment-period/comment-period.component';
 import { CommentPeriodsComponent } from './comment-periods/comment-periods.component';
 import { CommentPeriodsResolver } from './comment-periods/comment-periods-resolver.services';
@@ -15,14 +14,12 @@ import { DocumentDetailComponent } from './project-documents/detail/detail.compo
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
 import { MilestonesComponent } from './milestones/milestones.component';
 import { ProjectComponent } from './project.component';
-import { ProjectGroupsComponent } from './project-groups/project-groups.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
-import { ValuedComponentsComponent } from './valued-components/valued-components.component';
 
 import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
@@ -31,19 +28,9 @@ import { DocumentsResolver } from './project-documents/project-document-resolver
 import { ShapeFileResolver } from 'app/projects/add-edit-project/project-shapefile-resolver.services';
 import { ProjectResolver } from './project-resolver.service';
 import { ReviewCommentResolver } from './comment-period/review-comment/review-comment-resolver.service';
-import { TopicResolver } from './valued-components/add-vc/topic-resolver.services';
-import { ValuedComponentsResolver } from './valued-components/valued-components-resolver.services';
 import { ProjectUpdatesResolver } from './project-updates/project-updates-resolver.services';
-import { PinsComponentResolver } from './pins-list/pins-component-resolver.services';
-import { ProjectContactsResolver } from './project-groups/project-groups-resolver.services';
-import { PinsListComponent } from './pins-list/pins-list.component';
 import { ContactsResolver } from 'app/contacts/contacts-resolver.service';
 //import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
-import { PinsGlobalComponentResolver } from './pins-list/pins-global-resolver.service';
-import { ProjectGroupResolver } from './project-groups/project-group-resolver.services';
-import { GroupContactComponent } from './project-groups/group-contact/group-contact.component';
-import { ProjectContactsGroupResolver } from './project-groups/project-contact-group-resolver.services';
-import { GroupContactSelectComponent } from './project-groups/group-contact/group-contact-select/group-contact-select.component';
 import { LinkOrganizationResolver } from 'app/shared/components/link-organization/link-organization-resolver.services';
 import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
 import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
@@ -131,60 +118,10 @@ const routes: Routes = [
         component: ComplianceComponent,
       },
       {
-        path: 'valued-components',
-        component: ValuedComponentsComponent,
-        resolve: {
-          valuedComponents: ValuedComponentsResolver
-        }
-      },
-      {
-        path: 'valued-components/add',
-        component: AddVcComponent,
-        resolve: {
-          topics: TopicResolver
-        }
-      },
-      {
         path: 'project-updates',
         component: ProjectUpdatesComponent,
         resolve: {
           documents: ProjectUpdatesResolver
-        }
-      },
-      {
-        path: 'project-groups',
-        component: ProjectGroupsComponent,
-        resolve: {
-          contacts: ProjectContactsResolver
-        }
-      },
-      {
-        path: 'project-groups/g/:groupId/members',
-        component: GroupContactComponent,
-        resolve: {
-          group: ProjectGroupResolver,
-          users: ProjectContactsGroupResolver
-        }
-      },
-      {
-        path: 'project-groups/g/:groupId/members/select',
-        component: GroupContactSelectComponent,
-        resolve: {
-          contacts: ContactsResolver
-        }
-      },
-      {
-        path: 'project-pins',
-        component: PinsListComponent,
-        resolve: {
-          contacts: PinsComponentResolver
-        }
-      },
-      {
-        path: 'project-pins/select',
-        component: ContactSelectComponent,
-        resolve: {
-          contacts: PinsGlobalComponentResolver
         }
       },
       {
@@ -277,12 +214,9 @@ const routes: Routes = [
     DocumentsResolver,
     ProjectUpdatesResolver,
     DocumentDetailResolver,
-    TopicResolver,
     ProjectResolver,
     ReviewCommentResolver,
-    ValuedComponentsResolver,
-    PinsComponentResolver,
-    ProjectContactsResolver,
+    // ProjectContactsResolver,
     LinkOrganizationResolver,
     ContactSelectResolver,
     ShapeFileResolver,

@@ -1,6 +1,7 @@
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -15,9 +16,11 @@ import { ProjectModule } from 'app/project/project.module';
 import { ProjectsModule } from 'app/projects/projects.module';
 import { SharedModule } from './shared/shared.module';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import {MatIconModule} from '@angular/material/icon';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
+
 
 // components
-import { AdministrationComponent } from 'app/administration/administration.component';
 import { AppComponent } from 'app/app.component';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { FooterComponent } from 'app/footer/footer.component';
@@ -29,7 +32,6 @@ import { NotAuthorizedComponent } from './not-authorized/not-authorized.componen
 import { ProjectComponent } from './project/project.component';
 import { SearchComponent } from 'app/search/search.component';
 import { SidebarComponent } from 'app/sidebar/sidebar.component';
-import { TopicsComponent } from 'app/administration/topics/topics.component';
 import { EnvBannerComponent } from './header/env-banner/env-banner.component';
 
 // services
@@ -44,17 +46,13 @@ import { KeycloakService } from 'app/services/keycloak.service';
 import { ProjectService } from 'app/services/project.service';
 import { SearchService } from 'app/services/search.service';
 import { UserService } from 'app/services/user.service';
-import { TopicService } from 'app/services/topic.service';
 import { SideBarService } from 'app/services/sidebar.service';
-import { ValuedComponentService } from './services/valued-component.service';
 
 // feature modules
 import { TokenInterceptor } from 'app/shared/utils/token-interceptor';
-import { AddEditTopicComponent } from 'app/administration/topics/add-edit-topic/add-edit-topic.component';
 import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
 import { ActivityComponent } from './activity/activity.component';
-import { TopicTableRowsComponent } from './administration/topics/topic-table-rows/topic-table-rows.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { UserTableRowsComponent } from './contacts/user-table-rows/user-table-rows.component';
 import { ActivityTableRowsComponent } from 'app/activity/activity-table-rows/activity-table-rows.component';
@@ -63,10 +61,7 @@ import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-
 import { RecentActivityService } from './services/recent-activity';
 import { SearchHelpComponent } from './search-help/search-help.component';
 import { ActivityDetailTableRowsComponent } from './activity/activity-detail-table-rows/activity-detail-table-rows.component';
-import { PinsTableRowsComponent } from './project/pins-list/pins-table-rows/pins-table-rows.component';
-import { GroupsTableRowsComponent } from './project/project-groups/project-groups-table-rows/project-groups-table-rows.component';
 import { InputModalComponent } from './input-modal/input-modal.component';
-import { GroupTableRowsComponent } from './project/project-groups/group-contact/group-table-rows/group-table-rows.component';
 import { AddEditContactComponent } from './contacts/add-edit-contact/add-edit-contact.component';
 import { OrganizationsComponent } from './organizations/organizations.component';
 import { OrganizationsTableRowsComponent } from './organizations/organizations-table-rows/organizations-table-rows.component';
@@ -88,13 +83,10 @@ export function kcFactory(keycloakService: KeycloakService) {
     AddEditActivityComponent,
     AddEditContactComponent,
     AddEditOrganizationComponent,
-    AddEditTopicComponent,
-    AdministrationComponent,
     AppComponent,
     ConfirmComponent,
     ContactsComponent,
     FooterComponent,
-    GroupTableRowsComponent,
     HeaderComponent,
     HomeComponent,
     InputModalComponent,
@@ -104,43 +96,41 @@ export function kcFactory(keycloakService: KeycloakService) {
     NotAuthorizedComponent,
     OrganizationsComponent,
     OrganizationsTableRowsComponent,
-    PinsTableRowsComponent,
     ProjectComponent,
     SearchComponent,
     SearchHelpComponent,
     SidebarComponent,
     ToggleButtonComponent,
-    TopicsComponent,
-    TopicTableRowsComponent,
     MapComponent,
     MetricsComponent,
     ActivityComponent,
     ContactsComponent,
-    GroupTableRowsComponent,
     UserTableRowsComponent,
-    PinsTableRowsComponent,
     ActivityTableRowsComponent,
     ActivityDetailTableRowsComponent,
     AddEditActivityComponent,
     SearchHelpComponent,
     UserTableRowsComponent,
-    EnvBannerComponent
+    EnvBannerComponent,
   ],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     ProjectModule,
     ProjectsModule,
     SharedModule,
+    MatIconModule,
     EditorModule,
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
-    NgbModule.forRoot(),
+    NgbModule,
     NgxPaginationModule,
     CKEditorModule,
-    BootstrapModalModule.forRoot({ container: document.body })
+    BootstrapModalModule.forRoot({ container: document.body }),
+    NgxSmartModalModule.forRoot()
   ],
   providers: [
     KeycloakService,
@@ -168,9 +158,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     RecentActivityService,
     SearchService,
     SideBarService,
-    TopicService,
     UserService,
-    ValuedComponentService
   ],
   entryComponents: [
     ActivityDetailTableRowsComponent,
@@ -178,22 +166,15 @@ export function kcFactory(keycloakService: KeycloakService) {
     AddEditActivityComponent,
     AddEditContactComponent,
     AddEditOrganizationComponent,
-    AddEditTopicComponent,
-    AddEditTopicComponent,
     LinkOrganizationComponent,
     ContactSelectComponent,
-    TopicTableRowsComponent,
     ConfirmComponent,
-    GroupsTableRowsComponent,
-    GroupTableRowsComponent,
     InputModalComponent,
     OrganizationsTableRowsComponent,
-    PinsTableRowsComponent,
     ActivityTableRowsComponent,
     ActivityDetailTableRowsComponent,
     LinkOrganizationTableRowsComponent,
     ContactSelectTableRowsComponent,
-    TopicTableRowsComponent,
     UserTableRowsComponent
   ],
   bootstrap: [AppComponent]

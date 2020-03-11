@@ -9,7 +9,7 @@
     <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
     <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
       <!-- Replace click events -->
-      <button class="dropdown-item" [routerLink]="['/p', project._id, 'project-documents', 'upload']">Upload
+      <button class="dropdown-item" [routerLink]="['/p', 'project._id', 'project-documents', 'upload']">Upload
         Document</button>
       <button class="dropdown-item" (click)="editProject()">Edit</button>
       <button class="dropdown-item" (click)="publishProject()">Publish</button>
@@ -18,7 +18,7 @@
   </div>
 </nav>
 <main class="container-fluid-padding">
-  <h1 id="name">{{project.name}}</h1>
+  <h1 id="name">{{project?.name}}</h1>
   <section>
     <app-comment-period-banner></app-comment-period-banner>
   </section>
@@ -30,22 +30,22 @@
     </div>
     <div class="label-pair">
       <h3 for="partner">Partner First Nation(s): </h3>
-      <p id="partner">{{project.partner || '-'}}</p>
+      <p id="partner">{{project?.partner || '-'}}</p>
     </div>
     <div class="label-pair">
       <h3 for="agreements">Agreements: </h3>
-      <p class="agreements">{{project.agreements || '-'}}</p>
+      <p class="agreements">{{project?.agreements || '-'}}</p>
     </div>
     <div class="label-pair full">
       <h3 for="description">Description: </h3>
-      <p id="description">{{project.description || 'No project description available'}}</p>
+      <p id="description">{{project?.description || 'No project description available'}}</p>
     </div>
   </section>
   <section>
     <h2>Location</h2>
     <div class="label-pair">
       <h3 for="region">Region: </h3>
-      <p id="region">{{project.region || '-'}}</p>
+      <p id="region">{{project?.region || '-'}}</p>
     </div>
     <div class="label-pair">
       <h3 for="overlappingRegionalDistricts">Overlapping Regional Districts: </h3>
@@ -53,29 +53,29 @@
     </div>
     <div class="label-pair">
       <h3 for="lat">Lat: </h3>
-      <p id="lat">{{project.centroid[1]}}</p>
+      <p id="lat">{{project?.centroid[1]}}</p>
     </div>
     <div class="label-pair">
       <h3 for="lat">Long: </h3>
-      <p id="lat">{{project.centroid[0]}}</p>
+      <p id="lat">{{project?.centroid[0]}}</p>
     </div>
   </section>
   <section>
     <h2>Supplementary Information</h2>
     <div *ngIf="multipleExistingPlans else singlePlan">
-      <div *ngFor="let existingPlan of project.existingLandUsePlans; let i=index">
+      <div *ngFor="let existingPlan of project?.existingLandUsePlans; let i=index">
         <h3 for="ceaa">Existing Land Use Plan</h3>
-        <p id="ceaa">Name: {{existingPlan.existingLandUsePlan || '-'}}</p>
-        <p id="ceaa-url">URL: <a href="{{existingPlan.existingLandUsePlanURLs}}">{{ existingPlan.existingLandUsePlanURL || '-'}}</a></p>
+        <p id="ceaa">Name: {{existingPlan?.existingLandUsePlan || '-'}}</p>
+        <p id="ceaa-url">URL: <a href="{{existingPlan.existingLandUsePlanURLs}}">{{ existingPlan?.existingLandUsePlanURL || '-'}}</a></p>
       </div>
-      <div class="label-pair" *ngIf="project.existingLandUsePlans.length === 0">
+      <div class="label-pair" *ngIf="project?.existingLandUsePlans.length === 0">
         <p class="no-existing-plans">No existing land use plan(s).</p>
       </div>
     </div>
 
     <ng-template #singlePlan>
       <h3 for="ceaa">Existing Land Use Plan</h3>
-      <p id="ceaa">Name: {{project.existingLandUsePlans || '-'}}</p>
+      <p id="ceaa">Name: {{project?.existingLandUsePlans || '-'}}</p>
       <p id="ceaa-url">URL: <a href="{{project.existingLandUsePlanURLs}}">{{ project.existingLandUsePlanURLs || '-'}}</a></p>
     </ng-template>
   </section>
@@ -83,7 +83,7 @@
     <h2>Project Status</h2>
     <div class="label-pair">
       <h3 for="projectPhase">Project Phase: </h3>
-      <p id="projectPhase">{{project.projectPhase || '-'}}</p>
+      <p id="projectPhase">{{project?.projectPhase || '-'}}</p>
     </div>
   </section>
   <section class="people">
@@ -93,20 +93,10 @@
       <p id="project-lead">
         <i class="material-icons mr-3" role="presentation">person</i>{{project?.projectLead.displayName || '-'}}<br />
         <i class="material-icons mr-3" role="presentation">phone</i>
-        {{project.projectLead.phoneNumber || '-'}}<br />
+        {{project?.projectLead.phoneNumber || '-'}}<br />
         <i class="material-icons mr-3" role="presentation">email</i>
-        <a href="mailTo:{{project.projectLead.email}}">{{project.projectLead.email || '-'}}</a>
+        <a href="mailTo:{{project?.projectLead.email}}">{{project?.projectLead.email || '-'}}</a>
       </p>
-    </div><!--
-    <div class="col">
-      <h3 for="epd">Project Director</h3>
-      <p id="epd">
-        <i class="material-icons mr-3" role="presentation">person</i>{{project.projectDirector.displayName || '-'}}<br />
-        <i class="material-icons mr-3" role="presentation">phone</i>
-        {{project.projectDirector.phoneNumber || '-'}}<br />
-        <i class="material-icons mr-3" role="presentation">email</i>
-        <a href="mailTo:{{project.projectDirector.email}}">{{project.projectDirector.email || '-'}}</a>
-      </p>
-    </div>-->
+    </div>
   </section>
 </main>

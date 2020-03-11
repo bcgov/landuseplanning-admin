@@ -18,10 +18,8 @@ import { Document } from 'app/models/document';
 // import { Feature } from 'app/models/recentActivity';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
-import { Topic } from 'app/models/topic';
 import { Org } from 'app/models/org';
 import { RecentActivity } from 'app/models/recentActivity';
-import { ValuedComponent } from 'app/models/valuedComponent';
 import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
 
 interface LocalLoginResponse {
@@ -507,54 +505,6 @@ export class ApiService {
   }
 
   //
-  // Topics
-  //
-  getTopics(pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
-    const fields = [
-      'description',
-      'name',
-      'type',
-      'pillar',
-      'parent'
-    ];
-
-    let queryString = `topic?`;
-    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
-    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
-    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
-    queryString += `fields=${this.buildValues(fields)}`;
-
-    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
-  }
-  getTopic(id: string): Observable<Topic[]> {
-    const fields = [
-      'description',
-      'name',
-      'type',
-      'pillar',
-      'parent'
-    ];
-    const queryString = `topic/${id}?fields=${this.buildValues(fields)}`;
-    return this.http.get<Topic[]>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-  addTopic(topic: Topic): Observable<Topic> {
-    const queryString = `topic/`;
-    return this.http.post<Topic>(`${this.pathAPI}/${queryString}`, topic, {});
-  }
-
-  saveTopic(topic: Topic): Observable<Topic> {
-    const queryString = `topic/${topic._id}`;
-    return this.http.put<Topic>(`${this.pathAPI}/${queryString}`, topic, {});
-  }
-
-  deleteTopic(topic: Topic): Observable<Topic> {
-    const queryString = `topic/${topic._id}`;
-    return this.http.delete<Topic>(`${this.pathAPI}/${queryString}`, {});
-  }
-
-
-  //
   // Comments
   //
   getCountCommentsByPeriodId(periodId: string): Observable<number> {
@@ -621,7 +571,6 @@ export class ApiService {
       'publishedNotes',
       'rejectedNotes',
       'rejectedReason',
-      'valuedComponents',
       'read',
       'write',
       'delete'
@@ -804,57 +753,6 @@ export class ApiService {
     }
     filename = encode(filename).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\\/g, '_').replace(/\//g, '_');
     window.open('/api/document/' + document._id + '/fetch/' + filename, '_blank');
-  }
-
-  //
-  // Valued Component
-  //
-  getValuedComponents(): Observable<ValuedComponent[]> {
-    const fields = [
-      '_id',
-      '_schemaName',
-      'code',
-      'description',
-      'name',
-      'parent',
-      'pillar',
-      'project',
-      'stage',
-      'title',
-      'type'];
-    // NB: max 1000 records
-    const queryString = `vc?fields=${this.buildValues(fields)}`;
-    return this.http.get<ValuedComponent[]>(`${this.pathAPI}/${queryString}`, {});
-  }
-  getValuedComponentsByProjectId(projectId: String, pageNum: number, pageSize: number, sortBy: string = null): Observable<Object> {
-    const fields = [
-      '_id',
-      '_schemaName',
-      'code',
-      'description',
-      'name',
-      'parent',
-      'pillar',
-      'project',
-      'stage',
-      'title',
-      'type'];
-
-    let queryString = `vc?projectId=${projectId}`;
-    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
-    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
-    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
-    queryString += `&fields=${this.buildValues(fields)}`;
-
-    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
-  }
-  addVCToProject(vc: any, project: any): Observable<ValuedComponent> {
-    const queryString = `vc/`;
-    return this.http.post<ValuedComponent>(`${this.pathAPI}/${queryString}`, vc, {});
-  }
-  deleteVC(vc: any): Observable<ValuedComponent> {
-    const queryString = `vc/${vc._id}`;
-    return this.http.delete<ValuedComponent>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //

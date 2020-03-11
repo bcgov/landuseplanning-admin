@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
 
@@ -46,9 +46,6 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if (this.storageService.state.currentVCs == null) {
-      this.storageService.state.currentVCs = { type: 'currentVCs', data: [] };
-    }
 
     this.currentProject = this.storageService.state.currentProject.data;
 
@@ -116,7 +113,6 @@ export class AddCommentComponent implements OnInit, OnDestroy {
       this.comment.eaoStatus = 'Reset';
     }
     this.comment.proponentNotes = this.addCommentForm.get('proponentResponseText').value;
-    this.comment.valuedComponents = this.storageService.state.currentVCs.data;
 
     this.comment.period = this.commentPeriod._id;
 

@@ -17,7 +17,7 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
   imports: [
     CommonModule,
     FormsModule,
-    NgbModule.forRoot(),
+    NgbModule,
     NgxPaginationModule,
     ProjectsRoutingModule,
     SharedModule,

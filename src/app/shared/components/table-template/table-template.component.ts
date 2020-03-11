@@ -12,7 +12,7 @@ import { TableComponent } from './table.component';
 export class TableTemplateComponent implements OnInit, OnChanges, OnDestroy {
   @Input() data: TableObject;
   @Input() columns: any[];
-  @ViewChild(TableDirective) tableHost: TableDirective;
+  @ViewChild(TableDirective, {static: true}) tableHost: TableDirective;
 
   @Output() onPageNumUpdate: EventEmitter<any> = new EventEmitter();
   @Output() onSelectedRow: EventEmitter<any> = new EventEmitter();

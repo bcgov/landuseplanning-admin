@@ -3,8 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectDetailComponent } from './project-detail.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MatSnackBar } from '@angular/material';
-import { DialogService } from 'ng2-bootstrap-modal';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiService } from 'app/services/api';
 import { ProjectService } from 'app/services/project.service';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
@@ -43,7 +42,6 @@ describe('ProjectDetailComponent', () => {
       providers: [
         { provide: MatSnackBar },
         { provide: ApiService },
-        { provide: DialogService },
         { provide: ProjectService, useValue: projectServiceStub },
         { provide: CommentPeriodService },
         { provide: DecisionService },

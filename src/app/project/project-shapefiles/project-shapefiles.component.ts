@@ -1,8 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
 
@@ -17,6 +16,7 @@ import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 @Component({
   selector: 'app-project-shapefiles',
@@ -63,9 +63,9 @@ export class ProjectShapefilesComponent implements OnInit, OnDestroy {
   public tableParams: TableParamsObject = new TableParamsObject();
 
   constructor(
+    public ngxSmartModalService: NgxSmartModalService,
     private _changeDetectionRef: ChangeDetectorRef,
     private api: ApiService,
-    private dialogService: DialogService,
     private documentService: DocumentService,
     private route: ActivatedRoute,
     private router: Router,
@@ -120,6 +120,25 @@ export class ProjectShapefilesComponent implements OnInit, OnDestroy {
           this.router.navigate(['/search']);
         }
       });
+
+    this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((modal) => {
+      const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+      this.documentActions(data);
+      });
+  }
+
+  documentActions(modalData) {
+    if (modalData.publishConfirm) {
+      this.internalPublishDocument();
+    } else if (modalData.deleteConfirm) {
+      this.internalDeleteDocument();
+    } else if (modalData.unpublishConfirm) {
+      this.internalUnpublishDocument();
+    } else {
+      this.loading = false;
+    }
   }
 
   public openSnackBar(message: string, action: string) {
@@ -211,115 +230,95 @@ export class ProjectShapefilesComponent implements OnInit, OnDestroy {
   }
 
   publishDocument() {
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Publish Document(s)',
-        message: 'Click <strong>OK</strong> to publish the selected Documents or <strong>Cancel</strong> to return to the list.',
-        okOnly: false
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
+    this.ngxSmartModalService.setModalData({
+      type: 'publish',
+      title: 'Publish Document(s)',
+      message: 'Click <strong>OK</strong> to publish the selected Documents or <strong>Cancel</strong> to return to the list.'
+    }, 'confirmation-modal', true);
+
+    this.ngxSmartModalService.open('confirmation-modal');
+  }
+
+  internalPublishDocument() {
+    this.loading = true;
+    let observables = [];
+    this.documentTableData.data.map(item => {
+      if (item.checkbox && !item.read.includes('public')) {
+        observables.push(this.documentService.publish(item._id));
+      }
+    });
+    forkJoin(observables)
       .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            this.loading = true;
-            let observables = [];
-            this.documentTableData.data.map(item => {
-              if (item.checkbox && !item.read.includes('public')) {
-                observables.push(this.documentService.publish(item._id));
-              }
-            });
-            forkJoin(observables)
-              .subscribe(
-                res => { },
-                err => {
-                  console.log('Error:', err);
-                },
-                () => {
-                  this.loading = false;
-                  this.canUnpublish = false;
-                  this.canPublish = false;
-                  this.onSubmit();
-                }
-              );
-          } else {
-            this.loading = false;
-          }
+        res => { },
+        err => {
+          console.log('Error:', err);
+        },
+        () => {
+          this.loading = false;
+          this.canUnpublish = false;
+          this.canPublish = false;
+          this.onSubmit();
         }
       );
   }
 
   unpublishDocument() {
-    this.dialogService.addDialog(ConfirmComponent,
-      {
-        title: 'Unpublish Document(s)',
-        message: 'Click <strong>OK</strong> to unpublish the selected Documents or <strong>Cancel</strong> to return to the list.',
-        okOnly: false
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
+    this.ngxSmartModalService.setModalData({
+      type: 'unpublish',
+      title: 'Unpublish Document(s)',
+      message: 'Click <strong>OK</strong> to unpublish the selected Documents or <strong>Cancel</strong> to return to the list.'
+    }, 'confirmation-modal', true);
+
+    this.ngxSmartModalService.open('confirmation-modal');
+  }
+
+  internalUnpublishDocument() {
+    this.loading = true;
+    let observables = [];
+    this.documentTableData.data.map(item => {
+      if (item.checkbox && item.read.includes('public')) {
+        observables.push(this.documentService.unPublish(item._id));
+      }
+    });
+    forkJoin(observables)
       .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            this.loading = true;
-            let observables = [];
-            this.documentTableData.data.map(item => {
-              if (item.checkbox && item.read.includes('public')) {
-                observables.push(this.documentService.unPublish(item._id));
-              }
-            });
-            forkJoin(observables)
-              .subscribe(
-                res => { },
-                err => {
-                  console.log('Error:', err);
-                },
-                () => {
-                  this.loading = false;
-                  this.canUnpublish = false;
-                  this.canPublish = false;
-                  this.onSubmit();
-                }
-              );
-          } else {
-            this.loading = false;
-          }
+        res => { },
+        err => {
+          console.log('Error:', err);
+        },
+        () => {
+          this.loading = false;
+          this.canUnpublish = false;
+          this.canPublish = false;
+          this.onSubmit();
         }
       );
   }
 
   deleteDocument() {
-    this.dialogService.addDialog(ConfirmComponent,
-      {
+      this.ngxSmartModalService.setModalData({
+        type: 'delete',
         title: 'Delete Document',
-        message: 'Click <strong>OK</strong> to delete this Document or <strong>Cancel</strong> to return to the list.',
-        okOnly: false
-      }, {
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
-      })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        isConfirmed => {
-          if (isConfirmed) {
-            this.loading = true;
-            // Delete the Document(s)
-            let itemsToDelete = [];
-            this.documentTableData.data.map((item) => {
-              if (item.checkbox === true) {
-                itemsToDelete.push({ promise: this.documentService.delete(item).toPromise(), item: item });
-              }
-            });
-            this.loading = false;
-            return Promise.all(itemsToDelete).then(() => {
-              // Reload main page.
-              this.onSubmit();
-            });
-          }
-          this.loading = false;
-        }
-      );
+        message: 'Click <strong>OK</strong> to delete this Document or <strong>Cancel</strong> to return to the list.'
+      }, 'confirmation-modal', true);
+
+      this.ngxSmartModalService.open('confirmation-modal');
+  }
+
+  internalDeleteDocument() {
+    this.loading = true;
+    // Delete the Document(s)
+    let itemsToDelete = [];
+    this.documentTableData.data.map((item) => {
+      if (item.checkbox === true) {
+        itemsToDelete.push({ promise: this.documentService.delete(item).toPromise(), item: item });
+      }
+    });
+    this.loading = false;
+    return Promise.all(itemsToDelete).then(() => {
+      // Reload main page.
+      this.onSubmit();
+    });
   }
 
   public onNumItems(numItems) {

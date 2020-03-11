@@ -20,6 +20,39 @@
   }
 }
 
-.modal-footer {
+.smart-modal-footer {
   background-color: $white;
+}
+
+.smart-modal-header {
+  background-color: $white;
+  margin: 1rem 0;
+
+  .smart-modal-title {
+    font-weight: bold;
+  }
+}
+
+.smart-modal-dialog {
+  max-width: 800px;
+}
+
+.smart-modal-body {
+  background-color: $modal-bg;
+  margin: 2rem 0;
+
+  textarea {
+    width: 100%;
+    height: 80px;
+    resize: none;
+  }
+}
+
+.smart-modal-footer {
+  background-color: $white;
+  float: right;
+
+  button {
+    margin-left: 0.5rem;
+  }
 }

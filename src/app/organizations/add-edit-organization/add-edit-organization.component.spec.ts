@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { UserService } from 'app/services/user.service';
 
 import { AddEditOrganizationComponent } from './add-edit-organization.component';
@@ -14,7 +13,6 @@ describe('AddEditOrganizationComponent', () => {
       declarations: [AddEditOrganizationComponent],
       imports: [FormsModule],
       providers: [
-        { provide: DialogService },
         { provide: UserService },
       ]
     })
