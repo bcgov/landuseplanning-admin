@@ -1,7 +1,7 @@
-# Get community edition of nodejs v8.x (LTS)
+# Get community edition of nodejs v10.x (LTS)
 FROM centos/nodejs-10-centos7
 
-ENV PATH="/opt/rh/rh-nodejs8/root/usr/bin/:$PATH"
+ENV PATH="/opt/rh/rh-nodejs10/root/usr/bin/:$PATH"
 
 # Switch to root for package installs
 USER 0
@@ -34,7 +34,7 @@ USER 0
 
 # update npm, and install some dependencies that are slow to install.
 RUN npm i npm@6.4.1 -g	&& \
-  rm -R /opt/rh/rh-nodejs8/root/usr/lib/node_modules/npm
+  rm -R /opt/rh/rh-nodejs10/root/usr/lib/node_modules/npm
 
 
 # Required in order to mount .npm as a volume to cache downloaded files
