@@ -134,7 +134,7 @@ def nodejsTester () {
         containers: [
           containerTemplate(
             name: 'jnlp',
-            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7',
+            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-10-rhel7',
             resourceRequestCpu: '500m',
             resourceLimitCpu: '800m',
             resourceRequestMemory: '2Gi',
@@ -169,7 +169,7 @@ def nodejsLinter () {
         containers: [
           containerTemplate(
             name: 'jnlp',
-            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7',
+            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-10-rhel7',
             resourceRequestCpu: '500m',
             resourceLimitCpu: '800m',
             resourceRequestMemory: '2Gi',
@@ -211,7 +211,7 @@ def nodejsSonarqube () {
         containers: [
           containerTemplate(
             name: 'jnlp',
-            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7',
+            image: 'registry.access.redhat.com/openshift3/jenkins-agent-nodejs-10-rhel7',
             resourceRequestCpu: '500m',
             resourceLimitCpu: '1000m',
             resourceRequestMemory: '2Gi',
