@@ -1,4 +1,3 @@
-import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
@@ -129,7 +128,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     NgbModule,
     NgxPaginationModule,
     CKEditorModule,
-    BootstrapModalModule.forRoot({ container: document.body }),
     NgxSmartModalModule.forRoot()
   ],
   providers: [
