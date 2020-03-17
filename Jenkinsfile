@@ -126,9 +126,9 @@ def nodejsTester () {
   openshift.withCluster() {
     openshift.withProject() {
       podTemplate(
-        label: 'node-tester', 
-        name: 'node-tester', 
-        serviceAccount: 'jenkins', 
+        label: 'node-tester',
+        name: 'node-tester',
+        serviceAccount: 'jenkins',
         cloud: 'openshift',
         slaveConnectTimeout: 300,
         containers: [
@@ -161,9 +161,9 @@ def nodejsLinter () {
   openshift.withCluster() {
     openshift.withProject() {
       podTemplate(
-        label: 'node-linter', 
-        name: 'node-linter', 
-        serviceAccount: 'jenkins', 
+        label: 'node-linter',
+        name: 'node-linter',
+        serviceAccount: 'jenkins',
         cloud: 'openshift',
         slaveConnectTimeout: 300,
         containers: [
@@ -174,7 +174,7 @@ def nodejsLinter () {
             resourceLimitCpu: '800m',
             resourceRequestMemory: '2Gi',
             resourceLimitMemory: '4Gi',
-            activeDeadlineSeconds: '1200',
+            // activeDeadlineSeconds: '1200',
             workingDir: '/tmp',
             command: '',
             args: '${computer.jnlpmac} ${computer.name}',
@@ -203,10 +203,10 @@ def nodejsSonarqube () {
   openshift.withCluster() {
     openshift.withProject() {
       podTemplate(
-        label: 'node-sonarqube', 
-        name: 'node-sonarqube', 
-        serviceAccount: 'jenkins', 
-        cloud: 'openshift', 
+        label: 'node-sonarqube',
+        name: 'node-sonarqube',
+        serviceAccount: 'jenkins',
+        cloud: 'openshift',
         slaveConnectTimeout: 300,
         containers: [
           containerTemplate(
@@ -610,7 +610,7 @@ pipeline {
         //     }
         //   }
         // }
-/*
+
         stage('Linting') {
           steps {
             script {
@@ -619,7 +619,7 @@ pipeline {
             }
           }
         }
-
+/*
         stage('Sonarqube') {
           steps {
             script {
