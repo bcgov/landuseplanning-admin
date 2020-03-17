@@ -46,7 +46,6 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.14",
     "mygovbc-bootstrap-theme": "^0.4.1",
-    "ng2-bootstrap-modal": "^1.0.1",
     "ngx-cookie-service": "^2.4.0",
     "ngx-pagination": "^3.2.0",
     "ngx-smart-modal": "^7.4.0",

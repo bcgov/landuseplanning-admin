@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { DialogService } from 'ng2-bootstrap-modal';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
