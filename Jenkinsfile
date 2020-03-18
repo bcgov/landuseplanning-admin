@@ -611,6 +611,7 @@ pipeline {
         //   }
         // }
 
+/*
         stage('Linting') {
           steps {
             script {
@@ -619,7 +620,6 @@ pipeline {
             }
           }
         }
-/*
         stage('Sonarqube') {
           steps {
             script {
