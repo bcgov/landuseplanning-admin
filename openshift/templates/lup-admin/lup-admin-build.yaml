@@ -157,7 +157,7 @@ parameters:
     displayName: Git Repository URL
     description: The URL of the repository with your application source code.
     required: true
-    value: "https://github.com/bcgov/gcpe-lup-admin.git"
+    value: "https://github.com/bcgov/landuseplanning-admin"
   - name: GIT_REF
     displayName: Git Reference
     description: >-
