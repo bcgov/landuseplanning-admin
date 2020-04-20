@@ -10,6 +10,7 @@
       <a [ngClass]="{'active': currentMenu === 'project-documents'}" class="project-menu" (click)="goToDocuments(currentProjectId)" [routerLink]="['p', currentProjectId, 'project-documents']"><i class="material-icons">event_note</i>Documents</a>
       <a [ngClass]="{'active': currentMenu === 'project-updates'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-updates']"><i class="material-icons">fiber_new</i>Project Updates</a>
       <a [ngClass]="{'active': currentMenu === 'project-shapefiles'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-shapefiles']"><i class="material-icons">event_note</i>Shapefiles</a>
+      <a [ngClass]="{'active': currentMenu === 'project-email-subscribe'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-email-subscribe']"><i class="material-icons">email</i>Email Subscribers</a>
     </section>
     <a [ngClass]="{'active': currentProjectId === 'activity'}" [routerLink]="['/activity']"><i class="material-icons mr-3 ">notifications_active</i>Activity Posts</a>
     <a [ngClass]="{'active': currentProjectId === 'contacts' || currentProjectId === 'c'}" [routerLink]="['/contacts']"><i class="material-icons mr-3 ">contacts</i>Contacts</a>

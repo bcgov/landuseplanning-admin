@@ -17,6 +17,7 @@ import { ProjectComponent } from './project.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
+import { ProjectEmailSubscribeComponent } from './project-email-subscribe/project-email-subscribe.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
@@ -112,6 +113,10 @@ const routes: Routes = [
         resolve: {
           documents: ShapefilesResolver
         }
+      },
+      {
+        path: 'project-email-subscribe',
+        component: ProjectEmailSubscribeComponent,
       },
       {
         path: 'compliance',

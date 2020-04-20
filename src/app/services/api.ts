@@ -21,6 +21,7 @@ import { User } from 'app/models/user';
 import { Org } from 'app/models/org';
 import { RecentActivity } from 'app/models/recentActivity';
 import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
+import { EmailSubscribe } from 'app/models/emailSubscribe';
 
 interface LocalLoginResponse {
   _id: string;
@@ -837,6 +838,22 @@ export class ApiService {
   deleteRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
     const queryString = `recentActivity/${recentActivity._id}`;
     return this.http.delete<RecentActivity>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  //
+  // Email subscribe
+  //
+  getEmails(projectId: string): Observable<Object> {
+    const fields = [
+      'email',
+      'project',
+      'confirmed',
+      'dateSubscribed',
+      'dateConfirmed',
+    ];
+    //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
+    const queryString = `emailSubscribe?project=${projectId}&fields=${this.buildValues(fields)}`;
+    return this.http.get<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 
 
