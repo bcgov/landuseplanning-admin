@@ -4,5 +4,5 @@
     <td data-label="Date Subscribed" scope="row" class="col-3">
         {{entry.dateSubscribed | date: 'longDate'}}</td>
     <td data-label="Email Confirmed" scope="row" class="col-3">{{entry.confirmed ? "True" : "False"}}</td>
-    <td data-label="Delete" scope="row" class="col-1 deleteEmail"><i class="material-icons mr-3 ">remove_circle</i></td>
+    <td data-label="Delete" scope="row" class="col-1 deleteEmail"><a (click)="deleteEmail(entry.emailAddress)"><i class="material-icons mr-3 ">remove_circle</i></a></td>
 </tr>

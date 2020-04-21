@@ -856,6 +856,17 @@ export class ApiService {
     return this.http.get<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  deleteEmail(emailAddress: string): Observable<EmailSubscribe> {
+    console.log('Delete email API', emailAddress);
+    const fields = [
+      'email',
+    ];
+    //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
+    const queryString = `emailSubscribe/${emailAddress}`;
+    console.log(this.pathAPI, '/', queryString);
+    return this.http.delete<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
+  }
+
 
   //
   // Users
