@@ -7,6 +7,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ProjectRoutingModule } from './project-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+
 
 // components
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
@@ -42,6 +47,15 @@ import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/
 import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
 import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
 import { CommentPeriodBannerComponent } from './comment-period-banner/comment-period-banner.component';
+import { ProjectSurveyComponent } from './project-survey/project-survey.component';
+import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
+import { ProjectSurveyTableRowsComponent } from './project-survey/project-survey-table-rows/project-survey-table-rows.component';
+// import { SurveyFormBuilderComponent } from './project-survey/add-edit-project-survey/survey-form-builder/survey-form-builder.component';
+// import { SurveyFormQuestionComponent } from './project-survey/add-edit-project-survey/survey-form-question/survey-form-question.component';
+import { ProjectSurveyDetailComponent } from './project-survey/project-survey-detail/project-survey-detail.component';
+import { ReviewSurveyResponsesTabComponent } from './comment-period/review-survey-responses-tab/review-survey-responses-tab.component';
+import { ReviewSurveyResponsesTabTableRowsComponent } from './comment-period/review-survey-responses-tab/review-survey-responses-tab-table-rows/review-survey-responses-tab-table-rows.component';
+import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 
 @NgModule({
   imports: [
@@ -54,7 +68,11 @@ import { CommentPeriodBannerComponent } from './comment-period-banner/comment-pe
     ProjectRoutingModule,
     ReactiveFormsModule,
     CKEditorModule,
-    SharedModule
+    SharedModule,
+    DragDropModule,
+    MatGridListModule,
+    MatInputModule,
+    MatButtonModule
   ],
   declarations: [
     AddCommentComponent,
@@ -83,6 +101,15 @@ import { CommentPeriodBannerComponent } from './comment-period-banner/comment-pe
     ReviewCommentsTabTableRowsComponent,
     ShapefileTableRowsComponent,
     UploadComponent,
+    ProjectSurveyComponent,
+    AddEditProjectSurveyComponent,
+    ProjectSurveyTableRowsComponent,
+    // SurveyFormBuilderComponent,
+    // SurveyFormQuestionComponent,
+    ProjectSurveyDetailComponent,
+    ReviewSurveyResponsesTabComponent,
+    ReviewSurveyResponsesTabTableRowsComponent,
+    ReviewSurveyResponseComponent,
   ],
   entryComponents: [
     AddDocumentTableRowsComponent,

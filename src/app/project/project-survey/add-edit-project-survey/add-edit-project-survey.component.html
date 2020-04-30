@@ -1,0 +1,184 @@
+<div class="spinner-container" *ngIf="loading">
+  <div class="spinner-new rotating"></div>
+</div>
+
+<nav *ngIf="!loading" class="action-container" aria-label="breadcrumb">
+  <div>
+      <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+              <a [routerLink]="['/projects']">All Projects</a>
+          </li>
+          <li class="breadcrumb-item">
+              <a [routerLink]="['/p', survey.project]">{{currentProject.name}}</a>
+          </li>
+          <li class="breadcrumb-item" aria-current="page">
+              <a [routerLink]="['/p', survey.project, 'project-surveys']">Surveys</a>
+          </li>
+          <li *ngIf="isEditing" class="breadcrumb-item active" aria-current="page">
+            <a [routerLink]="['/p', survey.project, 'project-surveys', survey._id]">{{survey.name}}</a>
+          </li>
+          <li *ngIf="isEditing" class="breadcrumb-item active" aria-current="page">
+            Edit
+          </li>
+          <li *ngIf="!isEditing" class="breadcrumb-item active" aria-current="page">
+              Add
+          </li>
+      </ol>
+  </div>
+</nav>
+
+<section *ngIf="!loading" class="container-fluid-padding">
+  <form [formGroup]="surveyForm">
+  <div class="survey-builder-header">
+      <mat-form-field class="survey-name" >
+        <input matInput placeholder="{{addEditPlaceholder}}" formControlName="name">
+      </mat-form-field>
+    <div class="edit-buttons">
+      <em>Last Save: Apr 8, 2020</em>
+      <button class="btn btn-outline-primary">Cancel</button>
+      <button class="btn btn-primary" (click)="onSubmit()">Save</button>
+    </div>
+  </div>
+
+  <div cdkDropListGroup class="new-survey-view">
+    <div class="survey-components-view survey-view-section">
+      <h4>Components</h4>
+        <div
+        cdkDropList
+        [cdkDropListData]="components"
+        class="survey-components-list"
+        cdkDropListSortingDisabled
+        [cdkDropListEnterPredicate]="noDrop"
+        (cdkDropListDropped)="dropComponent($event)">
+
+          <div class="available-component" *ngFor="let component of components" cdkDrag><i class="material-icons available-component-control" cdkDragHandle>crop_free</i><span>{{component.name}}</span></div>
+      </div>
+    </div>
+    <div class="survey-components-padder">
+    </div>
+
+    <!-- <div>
+      <form (ngSubmit)="onSubmit()"
+      [formGroup]="form"
+      cdkDropList
+      [cdkDropListData]="questions"
+      class="survey-canvas-list"
+      (cdkDropListDropped)="drop($event)">
+
+        <div *ngFor="let question of questions" class="form-row" cdkDrag>
+          <app-survey-form-question [question]="question" [form]="form"></app-survey-form-question>
+        </div>
+
+        <div class="form-row">
+          <button type="submit" [disabled]="!form.valid">Save</button>
+        </div>
+      </form>
+
+      <div *ngIf="payLoad" class="form-row">
+        <strong>Saved the following values</strong><br>{{payLoad}}
+      </div>
+    </div> -->
+
+    <!-- <app-survey-form-builder [questions]="questions$ | async"></app-survey-form-builder> -->
+
+
+    <div class="survey-canvas-view survey-view-section">
+      {{surveyForm.value | json}}
+      <h4>Survey Canvas</h4>
+      <form class="survey-canvas">
+        <div
+        cdkDropList
+        [cdkDropListData]="questions"
+        class="survey-canvas-list"
+        (cdkDropListDropped)="dropComponent($event)">
+        <div
+        class="new-component"
+        *ngFor="let question of surveyQuestionsForm.controls; let i = index"
+        cdkDrag>
+        <div class="new-component-controls">
+          <button mat-icon-button color="primary" class="control-button control-handle">
+            <i class="material-icons control-button-icon" cdkDragHandle>crop_free</i>
+          </button>
+          <button mat-icon-button color="primary" class="control-button delete-icon" (click)="deleteQuestion(i)">
+            <i class="material-icons control-button-icon">close</i>
+          </button>
+        </div>
+        <div [formGroup]="question" class="new-component-contents">
+
+
+          <!-- <app-survey-form-question [question]="question" [index]="i"></app-survey-form-question> -->
+          <div *ngIf="question.value.questionText" class="new-component-text">
+            <strong>{{i + 1}}. </strong>
+            <mat-form-field class="new-component-text-form">
+              <mat-label>{{question.value.type | camelToString}}</mat-label>
+              <textarea matInput mat-autosize="true" formControlName="questionText" name="commentPeriodInfo" class="component-text-box" placeholder="Placeholder text"></textarea>
+             </mat-form-field>
+         </div>
+         <div *ngIf="question.value.infoText" class="new-component-text">
+          <strong>{{i + 1}}. </strong>
+          <mat-form-field class="new-component-text-form">
+            <mat-label>{{question.value.type | camelToString}}</mat-label>
+            <textarea matInput mat-autosize="true" formControlName="infoText" name="commentPeriodInfo" class="component-text-box" placeholder="Placeholder text"></textarea>
+           </mat-form-field>
+         </div>
+         <div *ngIf="question.value.docPickerText" class="new-component-text">
+            <strong>{{i + 1}}. </strong>
+            <mat-form-field class="new-component-text-form">
+              <mat-label>{{question.value.type | camelToString}}</mat-label>
+              <textarea matInput mat-autosize="true" formControlName="docPickerText" name="commentPeriodInfo" class="component-text-box" placeholder="Placeholder text"></textarea>
+            </mat-form-field>
+         </div>
+              <div class="new-component-config">
+                <div class="new-component-setup">
+
+                <div *ngIf="question.value.type === 'singleChoice' || question.value.type === 'multiChoice'">
+                  <mat-form-field *ngFor="let choice of question.controls.choices.controls; let ci = index" class="new-component-choice-form">
+                      <i class="material-icons">check_box_outline_blank</i>
+                      <input matInput value="{{choice.value}}">
+                      <mat-hint>Choice text</mat-hint>
+                      <button mat-icon-button color="primary" class="control-button delete-icon" (click)="deleteChoice(i, ci)">
+                        <i class="material-icons control-button-icon">close</i>
+                      </button>
+                  </mat-form-field>
+                  <div *ngIf="question.value.other === true" class="new-component-choice-form">
+                    <i class="material-icons">check_box_outline_blank</i>
+                    <p>Other: __________________</p>
+                  </div>
+                </div>
+              </div>
+              <div class="new-component-options">
+                <div *ngIf="question.value.type === 'smallText' || component === 'largeText'">
+                  <mat-form-field class="new-component-text-response-form">
+                    <input matInput>
+                    <mat-hint>Response character limit</mat-hint>
+                  </mat-form-field>
+                </div>
+                <div *ngIf="question.value.type === 'multiChoice'">
+                  <mat-form-field class="new-component-text-response-form">
+                    <input type="number" matInput>
+                    <mat-hint>Choices allowed(leave blank for unlimited)</mat-hint>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="question.value.type === 'singleChoice' || question.value.type === 'multiChoice'" class="new-component-buttons">
+              <button class="add-button" mat-button color="primary" (click)=addChoice(i)><i class="material-icons">add</i>Add choice</button>
+              <button class="add-button" mat-button color="primary" (click)=addOther(i)><i class="material-icons">add</i>Add "Other"</button>
+            </div>
+        </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- <div class="component-options-view survey-view-section">
+    <h4>Component Options</h4>
+    <div class="component-options">
+      <p>{{availOptions}}</p>
+    </div>
+  </div> -->
+</form>
+
+</section>

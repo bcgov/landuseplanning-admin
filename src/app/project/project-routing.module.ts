@@ -36,6 +36,11 @@ import { LinkOrganizationComponent } from 'app/shared/components/link-organizati
 import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
 import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
 import { ShapefilesResolver } from './project-shapefiles/project-shapefile-resolver.services';
+import { ProjectSurveyComponent } from './project-survey/project-survey.component';
+import { ProjectSurveyDetailComponent } from './project-survey/project-survey-detail/project-survey-detail.component';
+import { ProjectSurveyResolver } from './project-survey/project-survey-resolver.services';
+import { ProjectSurveyDetailResolver } from './project-survey/project-survey-detail/project-survey-detail-resolver.services';
+import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
 
 const routes: Routes = [
   {
@@ -112,6 +117,59 @@ const routes: Routes = [
         resolve: {
           documents: ShapefilesResolver
         }
+      },
+      {
+        path: 'project-surveys',
+        component: ProjectSurveyComponent,
+        resolve: {
+          surveys: ProjectSurveyResolver
+        }
+      },
+      {
+        path: 'project-surveys/add',
+        component: AddEditProjectSurveyComponent
+      },
+      {
+        path: 's/:surveyId',
+        resolve: {
+          survey: ProjectSurveyDetailResolver,
+        },
+        children: [
+          {
+            path: '',
+            redirectTo: 'project-survey-details',
+            pathMatch: 'full'
+          },
+          // {
+          //   path: 'add-survey-response',
+          //   component: AddSurveyResponse
+          // },
+          {
+            path: 'project-survey-details',
+            component: ProjectSurveyDetailComponent
+          },
+          {
+            path: 'edit',
+            component: AddEditProjectSurveyComponent
+          },
+          // {
+          //   path: 'project/:surveyResponseId',
+          //   resolve: {
+          //     comment: ReviewSurveyResponseResolver
+          //   },
+          //   children: [
+          //     {
+          //       path: '',
+          //       redirectTo: 'survey-response-details',
+          //       pathMatch: 'full'
+          //     },
+          //     {
+          //       path: 'survey-response-details',
+          //       component: ReviewSurveyResponseResolver
+          //     }
+          //   ]
+          // }
+        ]
       },
       {
         path: 'compliance',
@@ -215,6 +273,8 @@ const routes: Routes = [
     ProjectUpdatesResolver,
     DocumentDetailResolver,
     ProjectResolver,
+    ProjectSurveyResolver,
+    ProjectSurveyDetailResolver,
     ReviewCommentResolver,
     // ProjectContactsResolver,
     LinkOrganizationResolver,

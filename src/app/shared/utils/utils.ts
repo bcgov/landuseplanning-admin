@@ -42,4 +42,9 @@ export class Utils {
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
+
+  // Returns ID made up of UNIX timestamp + random number converted to alphanumeric string
+  public getRandomID() {
+    return new Date().getTime() + '-' + Math.random().toString(32).substr(2,9);
+  }
 }

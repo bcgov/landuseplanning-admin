@@ -13,6 +13,7 @@ import { KeycloakService } from 'app/services/keycloak.service';
 import { Project } from 'app/models/project';
 import { Comment } from 'app/models/comment';
 import { CommentPeriod } from 'app/models/commentPeriod';
+import { Survey } from 'app/models/survey';
 import { Decision } from 'app/models/decision';
 import { Document } from 'app/models/document';
 // import { Feature } from 'app/models/recentActivity';
@@ -358,6 +359,69 @@ export class ApiService {
   }
 
   //
+  // Surveys
+  //
+  addSurvey(survey): Observable<any> {
+    const queryString = `survey/`;
+    return this.http.post<any>(`${this.pathAPI}/${queryString}`, survey, {});
+  }
+
+  // NB: returns array with 1 element
+  getSurvey(id: string): Observable<Survey[]> {
+    const fields = [
+      '_id',
+      '_schemaName',
+      'name',
+      'lastSaved',
+      'project',
+      'commentPeriod',
+      'questions',
+      'read',
+      'write',
+      'delete'
+    ];
+    const queryString = `survey/${id}?fields=${this.buildValues(fields)}`;
+    return this.http.get<Survey[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getSurveysByProjId(projId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
+    const fields = [
+      'project',
+      'commentPeriod',
+      'lastSaved',
+      'name'
+    ];
+
+    let queryString = `survey?&project=${projId}&`;
+    if (pageNum !== null) { queryString += `pageNum=${pageNum - 1}&`; }
+    if (pageSize !== null) { queryString += `pageSize=${pageSize}&`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `sortBy=${sortBy}&`; }
+    queryString += `count=true&`;
+    queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getPeriodSelectedSurvey(periodId: string): Observable<Survey[]> {
+    const fields = [
+      '_id',
+      'name',
+      'lastSaved',
+      'commentPeriod',
+      'project',
+      'questions',
+    ];
+
+    const queryString = `survey?commentPeriod=${periodId}&fields=` + this.buildValues(fields);
+    return this.http.get<Survey[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  saveSurvey(survey: Survey): Observable<Survey> {
+    const queryString = `commentperiod/${survey._id}`;
+    return this.http.put<Survey>(`${this.pathAPI}/${queryString}`, survey, {});
+  }
+
+  //
   // Comment Periods
   //
   getPeriodsByProjId(projId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
@@ -407,8 +471,9 @@ export class ApiService {
       'isPublished',
       'isResolved',
       'isVetted',
-      'externalEngagementTool',
+      'commentingMethod',
       'externalToolPopupText',
+      'surveySelected',
       'milestone',
       'openCommentPeriod',
       'openHouses',
@@ -456,8 +521,9 @@ export class ApiService {
       'isPublished',
       'isResolved',
       'isVetted',
-      'externalEngagementTool',
+      'commentingMethod',
       'externalToolPopupText',
+      'surveySelected',
       'milestone',
       'openCommentPeriod',
       'openHouses',

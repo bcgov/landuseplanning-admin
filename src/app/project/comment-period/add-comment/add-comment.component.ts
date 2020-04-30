@@ -33,7 +33,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   public loading = true;
 
   public addCommentForm: FormGroup;
-  public externalEngagementTool: Boolean;
+  public commentingMethod: String;
 
   constructor(
     private api: ApiService,
@@ -54,8 +54,8 @@ export class AddCommentComponent implements OnInit, OnDestroy {
       .subscribe((data: any) => {
         if (data) {
           this.commentPeriod = data.commentPeriod;
-          if (this.commentPeriod.externalEngagementTool) {
-            this.externalEngagementTool = this.commentPeriod.externalEngagementTool;
+          if (this.commentPeriod.commentingMethod) {
+            this.commentingMethod = this.commentPeriod.commentingMethod;
           } else {
             this.initForm();
           }
@@ -138,7 +138,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   }
 
   public onCancel() {
-    if (this.externalEngagementTool) {
+    if (this.commentingMethod === 'externalEngagementTool') {
       this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
     } else if (confirm(`Are you sure you want to discard all changes?`)) {
       this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);

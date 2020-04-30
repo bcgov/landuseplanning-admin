@@ -1,0 +1,261 @@
+.app-body {
+  overflow-y: hidden;
+}
+
+h1 {
+  background: white;
+  color: black;
+  font-size: 2.1rem;
+  margin: -19px -24px 30px;
+  padding: 9px 26px 14px;
+  box-sizing: content-box;
+  display: inline;
+}
+
+.survey-name {
+  margin: -19px -24px 30px;
+  padding: 9px 26px 14px;
+  flex-grow: 1;
+  margin-left: 0px;
+  margin-right: 10px;
+  font-size: 1.75rem;
+}
+
+.survey-builder-header {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.edit-buttons {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 20px;
+    align-items: flex-end;
+    margin: 11px;
+
+    em {
+      padding: .375rem .75rem;
+    }
+}
+
+.edit-buttons > button {
+  margin-left: 1rem;
+}
+
+.material-icons {
+  height: 32px !important;
+  width: 32px !important;
+  font-size: 32px !important;
+}
+
+.example-container {
+  width: 25%;
+  max-width: 100%;
+  margin: 0 25px 25px 0;
+  display: block;
+  /* vertical-align: top; */
+}
+
+.new-survey-view {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: stretch;
+}
+
+.survey-canvas {
+  margin: 0 25px 25px 0;
+  margin: 0 25px 25px 0;
+  border: solid 3px #38598a;
+  border-radius: 6px;
+  /* vertical-align: top; */
+}
+
+.survey-components-list {
+  border: solid 3px #38598a;
+  border-radius: 6px;
+}
+
+.control-handle {
+  cursor: move;
+
+}
+
+textarea {
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+
+
+.survey-components-list, .survey-canvas-list {
+  min-height: 60px;
+  background: white;
+  display: block;
+}
+
+.survey-items {
+  margin: 0 25px 25px 0;
+  /* display: inline-block; */
+  vertical-align: top;
+
+}
+
+.survey-components-view {
+  position: fixed;
+  width: 17%;
+}
+
+.survey-components-padder {
+  width: 20%;
+  margin: 1rem;
+}
+
+.component-options-view {
+  width: 25%;
+}
+
+.new-component-choice-form {
+  width: 100%;
+  display: block;
+}
+
+.new-component-config {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 2rem 1rem 2rem;
+
+}
+
+.survey-view-section {
+  margin: 1rem;
+}
+
+.survey-canvas-view {
+  flex-grow: 1;
+  max-width: 75%;
+  /* border: 3 solid black; */
+}
+
+.survey-canvas-list {
+  /* overflow-y: scroll; */
+}
+
+.add-icon {
+  visibility: hidden;
+}
+
+.component-options {
+  /* width: 25%; */
+  /* max-width: 100%; */
+  overflow-y: auto;
+  margin: 0 25px 25px 0;
+  margin: 0 25px 25px 0;
+  display: block;
+  /* vertical-align: top; */
+}
+
+
+/* Styles for drag and drop */
+
+.available-component {
+  padding: 20px 10px;
+  /* margin: 3px; */
+  border-bottom: solid 1px #ccc;
+  border-top: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  box-sizing: border-box;
+  /* cursor: move; */
+  background: white;
+  font-size: 18px;
+  display: flex;
+}
+
+.new-component {
+  /* padding: 0 1rem 2rem 1rem; */
+  /* margin: 3px; */
+  border-bottom: solid 1px #ccc;
+  border-top: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  box-sizing: border-box;
+  /* cursor: move; */
+  background: white;
+  font-size: 18px;
+
+}
+
+.new-component-contents {
+  padding: 0 1.5rem 1rem 1.5rem;
+}
+
+.new-component-type {
+  font-size: 0.75rem;
+  color: grey;
+}
+
+.new-component-text {
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.new-component-text-form {
+  flex-grow: 1;
+  margin: 0 1rem;
+}
+
+.component-text-box {
+  overflow: hidden;
+}
+
+.available-component-control {
+  margin-right: 1rem;
+  font-weight: bold;
+  color: blue;
+  cursor: move;
+}
+
+.control-button-icon {
+  font-weight: bold;
+}
+
+.new-component-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.5rem 0 0.5rem
+}
+
+.add-button {
+  margin-right: 0.5rem;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

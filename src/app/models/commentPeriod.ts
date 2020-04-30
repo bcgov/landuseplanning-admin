@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { Survey } from './survey';
 
 export class CommentPeriod {
   _id: string;
@@ -24,8 +25,9 @@ export class CommentPeriod {
   isPublished: Boolean;
   isResolved: Boolean;
   isVetted: String;
-  externalEngagementTool: Boolean;
-  externalToolPopupText: String;
+  commentingMethod: string;
+  surveySelected: string | Survey;
+  externalToolPopupText: string;
   openCommentPeriod: String;
   openHouses: Array<Object>;
   periodType: String;
@@ -79,7 +81,8 @@ export class CommentPeriod {
     this.isPublished = obj && obj.isPublished || null;
     this.isResolved = obj && obj.isResolved || null;
     this.isVetted = obj && obj.isVetted || null;
-    this.externalEngagementTool = obj && obj.externalEngagementTool || null;
+    this.commentingMethod = obj && obj.commentingMethod || null;
+    this.surveySelected = obj && obj.surveySelected || null;
     this.externalToolPopupText = obj && obj.externalToolPopupText || null;
     this.openHouses = obj && obj.openHouses || null;
     this.periodType = obj && obj.periodType || null;

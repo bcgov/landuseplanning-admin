@@ -18,6 +18,7 @@ import { DropdownTemplateComponent } from './components/dropdown-template/dropdo
 import { TableTemplateUtils } from './utils/table-template-utils';
 import { CommentStatsComponent } from './components/comment-stats/comment-stats.component';
 import { ListConverterPipe } from './pipes/list-converter.pipe';
+import { CamelToStringPipe } from './pipes/camel-to-string.pipe';
 import { OrgNamePipe } from './pipes/org-name.pipe';
 import { Utils } from './utils/utils';
 //import { ContactSelectComponent } from './components/contact-select/contact-select.component';
@@ -55,6 +56,7 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     OrderByPipe,
     OrgNamePipe,
     PublishedPipe,
+    CamelToStringPipe,
     TableDirective,
     TableTemplateComponent,
     VarDirective
@@ -75,6 +77,7 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     NgxPaginationModule,
     OrderByPipe,
     OrgNamePipe,
+    CamelToStringPipe,
     PublishedPipe,
     TableTemplateComponent,
     VarDirective

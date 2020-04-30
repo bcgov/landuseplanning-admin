@@ -1,0 +1,129 @@
+<nav class="action-container">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" >
+      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <a [routerLink]="['/p', currentProject._id, 'project-surveys']">Surveys</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{survey.name}}
+    </li>
+  </ol>
+  <div>
+    <div ngbDropdown placement="bottom-right">
+      <button class="btn btn-primary" id="actionDropdown" (click)="checkIfCanDelete()" ngbDropdownToggle>Actions</button>
+      <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+        <button class="dropdown-item" (click)="editSurvey()">Edit</button>
+        <!-- <button class="dropdown-item" (click)="addComment()">Add a comment</button> -->
+        <!-- <button class="dropdown-item" (click)="exportComments()">Export All Responses</button> -->
+        <button *ngIf="canDeleteCommentPeriod" class="dropdown-item" (click)="deleteCommentPeriod()">Delete</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="spinner-container" *ngIf="loading">
+  <div class="spinner-new rotating"></div>
+</div>
+
+  <form *ngIf="commentReviewForm" [formGroup]="commentReviewForm" (ngSubmit)="register()">
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <label for="proponentResponse"><b>Attachments</b></label>
+        <div *ngIf="comment.documentsList?.length > 0">
+          <ul class="doc-list mb-3">
+            <li *ngFor="let document of comment.documentsList">
+              <span class="cell icon">
+                <i class="material-icons">insert_drive_file</i>
+              </span>
+              <span class="cell name clickable-row" [title]="document.internalOriginalName || ''"
+                (click)='downloadDocument(document)'>
+                <span class="cell__txt-content">{{document.internalOriginalName}}</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="comment.documentsList?.length === 0">
+          <p>This survey response has no associated documents.</p>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="inputAddDate"><b>Date Added</b></label>
+        <div class="input-group">
+          <input id="inputAddDate" container='body' type="text" class="form-control" placeholder="Select an add date"
+            name="dateAdded" formControlName="dateAdded" ngbDatepicker #addDatePicker="ngbDatepicker">
+          <div class="input-group-append">
+            <button disabled class="btn btn-outline-secondary calendar" (click)="addDatePicker.toggle()"
+              type="button"></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="inputPostDate"><b>Date Posted</b></label>
+        <div class="input-group">
+          <input id="inputPostDate" container='body' type="text" class="form-control" placeholder="Select a post date"
+            name="datePosted" formControlName="datePosted" ngbDatepicker #postDatePicker="ngbDatepicker">
+          <div class="input-group-append">
+            <button disabled class="btn btn-outline-secondary calendar" (click)="postDatePicker.toggle()"
+              type="button"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <main class="container-fluid-padding">
+    <h1>{{currentProject.name}} <span class="date">| Survey</span></h1>
+
+    <div class="spinner-container" *ngIf="loading">
+      <div class="spinner-new rotating"></div>
+    </div>
+
+    <section id="">
+      <div class="row survey-meta-info">
+        <div class="col-md-9">
+          <h3>{{survey.name}}</h3>
+        </div>
+        <div class="col-md-3 last-saved">
+          <p class="last-saved-text">Last Saved: <span>{{survey.lastSaved | date:'longDate'}}</span></p>
+        </div>
+      </div>
+      <div class="row survey-main">
+        <div *ngFor="let question of survey.questions; let i = index" class="col-md-8">
+          <div *ngIf="question.type === 'smallText'">
+            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+            <input class="text-box" disabled>
+          </div>
+          <div *ngIf="question.type === 'largeText'">
+            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+            <textarea class="text-box" disabled></textarea>
+          </div>
+          <div *ngIf="question.type === 'singleChoice'">
+            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+            <p class="choice-limit">(Choose One)</p>
+            <ul class="question-choice-list">
+              <li *ngFor="let choice of question.choices" class="list-item"><i class="material-icons">radio_button_unchecked</i>{{choice}}</li>
+            </ul>
+          </div>
+          <div *ngIf="question.type === 'multiChoice'">
+            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+            <p *ngIf="question.choose > 0" class="choice-limit">(Choose {{question.choose}})</p>
+            <ul class="question-choice-list">
+              <li *ngFor="let choice of question.choices" class="list-item"><i class="material-icons">check_box_outline_blank</i>{{choice}}</li>
+            </ul>
+          </div>
+          <div *ngIf="question.type === 'docPicker'">
+            <p class="question-text">{{i + 1}}. {{question.docPickerText}}</p>
+            <div class="doc-picker">Upload a document</div>
+          </div>
+          <div *ngIf="question.type === 'info'" [ngClass]="{'info-entry' : question.type === 'info'}">
+            <span class="info-number">{{i + 1}}.</span><p class="info-text">{{question.infoText}}</p>
+          </div>
+        </div>
+      </div>
+   </section>
+
+</main>

@@ -23,6 +23,7 @@ export class CommentPeriodsTableRowsComponent implements OnInit, TableComponent 
     ngOnInit() {
         this.commentPeriods = this.data.data;
         this.paginationData = this.data.paginationData;
+
     }
 
     goToItem(commentPeriod) {

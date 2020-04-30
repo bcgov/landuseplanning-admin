@@ -5,6 +5,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
 
+import { Survey } from 'app/models/survey';
+import { SurveyService } from 'app/services/survey.service';
+
 import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { StorageService } from 'app/services/storage.service';
@@ -28,9 +31,12 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
   public loading = true;
   public commentPeriodDocs = [];
   public canDeleteCommentPeriod = false;
+  public prettyCommentingMethod: string;
+  public surveySelected: string | Survey;
 
   constructor(
     private api: ApiService,
+    private surveyService: SurveyService,
     private commentPeriodService: CommentPeriodService,
     private documentService: DocumentService,
     private router: Router,
@@ -52,6 +58,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
         );
     }
 
+    this.surveySelected = this.commentPeriod.surveySelected;
     this.loading = false;
   }
 
@@ -59,6 +66,18 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
     this.commentPeriodPublishedStatus = this.commentPeriod.isPublished ? 'Published' : 'Not Published';
     this.publishAction = this.commentPeriod.isPublished ? 'Un-Publish' : 'Publish';
   }
+
+  // humanReadableCommentingMethod() {
+  //   let method = 'Basic Form';
+  //   if (this.commentPeriod.commentingMethod) {
+  //     if (this.commentPeriod.commentingMethod === 'surveyTool') {
+  //       method = 'Survey Tool';
+  //     } else if (this.commentPeriod.commentingMethod === 'externalEngagementTool') {
+  //       method = 'External Engagement Tool';
+  //     }
+  //   }
+  //   return method;
+  // }
 
   public togglePublishState() {
     if (confirm(`Are you sure you want to ${this.publishAction} this comment period?`)) {
