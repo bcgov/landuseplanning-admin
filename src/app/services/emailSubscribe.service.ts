@@ -50,10 +50,13 @@ export class EmailSubscribeService {
     return this.api.getEmails(currentProjectId)
       .map((res: any) => {
         if (res) {
+          if (!res || res.length === 0) {
+            return { totalCount: 0, data: [] };
+          }
           res.forEach(email => {
             emailSubscribe.push(new EmailSubscribe(email));
           });
-          return { totalCount: res[0].total_items, data: emailSubscribe };
+          return { totalCount: res.length, data: emailSubscribe };
         }
         return {};
       })
@@ -61,15 +64,11 @@ export class EmailSubscribeService {
   }
 
   public deleteEmail(emailAddress: string): Observable<Object> {
-    console.log('Delete Email service', emailAddress);
     return this.api.deleteEmail(emailAddress)
       .map((res: any) => {
-        console.log('Why this show up? 1');
         if (res) {
-          console.log('Email delete', res);
           return { res };
         }
-        console.log('Why this show up? 2');
         return {};
       })
       .catch(error => this.api.handleError(error));

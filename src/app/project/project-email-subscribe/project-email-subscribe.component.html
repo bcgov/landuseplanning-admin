@@ -24,7 +24,12 @@
         (onPageNumUpdate)='getPaginatedDocs($event, null, null)'>
     </app-table-template>-->
     <app-table-template 
+        *ngIf="tableParams.totalListItems > 0"
         [columns]="tableColumns"
-        [data]="tableData">
+        [data]="tableData"
+        >
     </app-table-template>
+    <div *ngIf="tableParams.totalListItems == 0">
+        This project has no email subscribers.
+    </div>
 </div>

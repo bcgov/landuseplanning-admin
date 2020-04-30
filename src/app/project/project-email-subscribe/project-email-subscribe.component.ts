@@ -29,25 +29,19 @@ export class ProjectEmailSubscribeComponent implements OnInit {
     {
       name: 'Email Address',
       value: 'emailAddress',
-      width: 'col-5',
+      width: 'col-6',
       nosort: true
     },
     {
       name: 'Date Subscribed',
       value: 'dateSubscribed',
-      width: 'col-3',
-      nosort: true
-    },
-    {
-      name: 'Email Confirmed',
-      value: 'emailConfirmed',
-      width: 'col-3',
+      width: 'col-4',
       nosort: true
     },
     {
       name: 'Delete',
       //value: 'emailConfirmed',
-      width: 'col-1',
+      width: 'col-2',
       nosort: true
     }
   ];
@@ -73,6 +67,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
       .toPromise()
       .then((emailSubscribe: EmailSubscribe) => {
         this.emailSubscribe = get(emailSubscribe, 'data');
+        this.tableParams.totalListItems = get(emailSubscribe, 'totalCount');
         //return emailSubscribe;
         this.setRowData();
         this.loading = false;
