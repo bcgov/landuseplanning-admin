@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableComponent } from 'app/shared/components/table-template/table.component';
+import { StorageService } from 'app/services/storage.service';
 import { EmailSubscribeService } from 'app/services/emailSubscribe.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 
@@ -17,15 +18,18 @@ export class EmailSubscribeTableRowsComponent implements OnInit, TableComponent 
   public entries: any;
   public targetEmail: any;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  private currentProject;
 
   constructor(
     private _changeDetectionRef: ChangeDetectorRef,
     private emailSubscribeService: EmailSubscribeService,
     private ngxSmartModalService: NgxSmartModalService,
+    private storageService: StorageService,
   ) { }
 
   async ngOnInit() {
     //console.log('This.data', this.data);
+    this.currentProject = this.storageService.state.currentProject.data;
     this.entries = this.data.data;
     this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
       .takeUntil(this.ngUnsubscribe)
@@ -53,11 +57,14 @@ export class EmailSubscribeTableRowsComponent implements OnInit, TableComponent 
 
   internalDeleteActivity() {
     // Delete the Activity
+    console.log('This.entries before before: ', this.entries);
 
-    this.emailSubscribeService.deleteEmail(this.targetEmail)
+    this.emailSubscribeService.deleteEmail(this.targetEmail, this.currentProject._id)
       .subscribe(
         () => {
+          console.log('This.entries before: ', this.entries);
           this.entries.splice(this.entries.indexOf(this.targetEmail), 1);
+          console.log('This.entries after: ', this.entries);
           this._changeDetectionRef.detectChanges();
         },
         error => {

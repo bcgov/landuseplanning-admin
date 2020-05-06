@@ -63,8 +63,8 @@ export class EmailSubscribeService {
       .catch(error => this.api.handleError(error));
   }
 
-  public deleteEmail(emailAddress: string): Observable<Object> {
-    return this.api.deleteEmail(emailAddress)
+  public deleteEmail(emailAddress: string, projectId: string): Observable<Object> {
+    return this.api.deleteEmail(emailAddress, projectId)
       .map((res: any) => {
         if (res) {
           return { res };
