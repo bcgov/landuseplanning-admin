@@ -93,9 +93,9 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       .subscribe(
         (res: any) => {
           if (res) {
-            this.tableParams.totalListItems = res.commentPeriods.totalCount;
+            this.tableParams.totalListItems = res.periodsAndSurveys.commentPeriods.totalCount;
             if (this.tableParams.totalListItems > 0) {
-              this.commentPeriods = res.commentPeriods.data;
+              this.commentPeriods = res.periodsAndSurveys.commentPeriods.data;
             } else {
               this.tableParams.totalListItems = 0;
               this.commentPeriods = [];

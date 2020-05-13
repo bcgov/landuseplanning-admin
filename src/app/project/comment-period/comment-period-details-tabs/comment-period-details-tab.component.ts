@@ -24,6 +24,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   @Input() public commentPeriod: CommentPeriod;
+  @Input() public surveys: Array<Survey>;
 
   public commentPeriodPublishedStatus: string;
   public publishAction: string;
@@ -32,13 +33,15 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
   public commentPeriodDocs = [];
   public canDeleteCommentPeriod = false;
   public prettyCommentingMethod: string;
-  public surveySelected: string | Survey;
+  public surveySelected: string;
+  public surveyNames = {};
 
   constructor(
     private api: ApiService,
     private surveyService: SurveyService,
     private commentPeriodService: CommentPeriodService,
     private documentService: DocumentService,
+    private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
     private storageService: StorageService
@@ -58,6 +61,14 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
         );
     }
 
+    if (!this.surveys) {
+      this.route.data.subscribe(res => {this.surveys = res.cpAndSurveys.surveys.data})
+    }
+
+    if (this.surveys) {
+      this.surveys.forEach(survey => this.surveyNames[survey._id] = survey.name)
+    }
+
     this.surveySelected = this.commentPeriod.surveySelected;
     this.loading = false;
   }
@@ -66,18 +77,6 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
     this.commentPeriodPublishedStatus = this.commentPeriod.isPublished ? 'Published' : 'Not Published';
     this.publishAction = this.commentPeriod.isPublished ? 'Un-Publish' : 'Publish';
   }
-
-  // humanReadableCommentingMethod() {
-  //   let method = 'Basic Form';
-  //   if (this.commentPeriod.commentingMethod) {
-  //     if (this.commentPeriod.commentingMethod === 'surveyTool') {
-  //       method = 'Survey Tool';
-  //     } else if (this.commentPeriod.commentingMethod === 'externalEngagementTool') {
-  //       method = 'External Engagement Tool';
-  //     }
-  //   }
-  //   return method;
-  // }
 
   public togglePublishState() {
     if (confirm(`Are you sure you want to ${this.publishAction} this comment period?`)) {

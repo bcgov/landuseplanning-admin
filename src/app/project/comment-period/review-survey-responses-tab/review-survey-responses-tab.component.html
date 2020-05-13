@@ -39,7 +39,7 @@
 
 <section id="table-section">
   <div *ngIf="tableParams.totalListItems > 0 && !loading">
-    <app-table-template [columns]="commentTableColumns" [data]="commentTableData" (onColumnSort)='setColumnSort($event)'
+    <app-table-template [columns]="surveyResponseTableColumns" [data]="surveyResponseTableData" (onColumnSort)='setColumnSort($event)'
       (onPageNumUpdate)='getPaginatedComments($event)'>
     </app-table-template>
   </div>

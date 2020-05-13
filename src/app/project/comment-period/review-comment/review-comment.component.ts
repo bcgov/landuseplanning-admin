@@ -51,13 +51,14 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(data => {
         if (data.comment) {
+          console.log('the data', data)
           this.comment = data.comment;
 
           if (this.storageService.state.currentCommentPeriod) {
             this.commentPeriod = this.storageService.state.currentCommentPeriod.data;
-          } else if (data.commentPeriod) {
+          } else if (data.cpAndSurveys.commentPeriod) {
             // On a hard reload we need to get the comment period.
-            this.commentPeriod = data.commentPeriod;
+            this.commentPeriod = data.cpAndSurveys.commentPeriod;
             this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
           } else {
             alert('Uh-oh, couldn\'t load comment period');

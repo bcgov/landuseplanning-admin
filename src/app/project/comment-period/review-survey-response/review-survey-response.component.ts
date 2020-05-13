@@ -11,17 +11,20 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
 import { SurveyQuestion }    from 'app/models/surveyQuestion';
 import { Survey }    from 'app/models/survey';
+import { Project }    from 'app/models/project';
 
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
 import { SurveyService } from 'app/services/survey.service';
 import { ApiService } from 'app/services/api';
 import { first } from 'rxjs/operators';
+import { SurveyResponse } from 'app/models/surveyResponse';
+import { CommentPeriod } from 'app/models/commentPeriod';
 
 @Component({
   selector: 'app-review-survey-response',
   templateUrl: './review-survey-response.component.html',
-  styleUrls: ['./review-survey-response.component.css']
+  styleUrls: ['./review-survey-response.component.scss']
 })
 export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
 
@@ -30,10 +33,14 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
   public commentPeriodPublishedStatus: string;
   public publishAction: string;
   public projectId: any;
-  public currentProject: any;
+  public currentProject: Project;
   public surveyLastSaved: any;
   public loading;
   public survey: any;
+  public surveyResponse: SurveyResponse;
+  public surveyQuestions: any;
+  public commentPeriod: CommentPeriod;
+  public countArray = [];
   public commentPeriodDocs = [];
   public canDeleteCommentPeriod = false;
   public prettyCommentingMethod: string;
@@ -50,34 +57,40 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
 
     ) {}
 
-  ngOnInit(): void {
-    this.projectId = this.storageService.state.currentProject.data._id;
+  ngOnInit() {
+    this.currentProject = this.storageService.state.currentProject.data;
+    this.storageService.state.selectedTab = 1;
+
 
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe(
       (data) => {
-        this.survey = data.survey;
+        this.surveyResponse = data.surveyResponse;
+        this.commentPeriod = data.cpAndSurveys.commentPeriod;
       })
 
-      console.log('survey qs', this.survey.questions)
+      this.surveyQuestions = this.surveyResponse.responses.map(response => response.question)
 
-      this.currentProject = this.storageService.state.currentProject.data;
+      this.surveyItemCount(this.surveyQuestions)
+
+      console.log('survey qs', this.surveyResponse.responses)
+
   }
 
 
-  openSnackBar(message: string, action: string) {
+  public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
   }
 
-  editSurvey() {
+  public editSurvey() {
     console.log('that is the life', `/p/${this.projectId}/s/${this.survey._id}/edit`)
     this.router.navigateByUrl(`/p/${this.projectId}/s/${this.survey._id}/edit`);
   }
 
-  deleteCommentPeriod() {
+  public deleteCommentPeriod() {
     if (confirm(`Are you sure you want to delete this survey?`)) {
       this.loading = true;
       this.surveyService.delete(this.survey)
@@ -96,6 +109,25 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
             this.router.navigate(['p', this.projectId, 'project-surveys']);
           }
         );
+    }
+  }
+
+  public downloadDocument(document: any) {
+    return this.api.downloadDocument(document).then(() => {
+      console.log('Download initiated for file(s)');
+    });
+  }
+
+  public surveyItemCount(questions) {
+    let infoCount = 0;
+    for (let i = 0; i < questions.length; i++) {
+      let count = i + 1;
+      if (questions[i].type === 'info') {
+        this.countArray.push('')
+        infoCount++;
+      } else {
+        this.countArray.push(count - infoCount)
+      }
     }
   }
 

@@ -15,7 +15,7 @@
               <a [routerLink]="['/p', survey.project, 'project-surveys']">Surveys</a>
           </li>
           <li *ngIf="isEditing" class="breadcrumb-item active" aria-current="page">
-            <a [routerLink]="['/p', survey.project, 'project-surveys', survey._id]">{{survey.name}}</a>
+            <a [routerLink]="['/p', survey.project, 's', survey._id]">{{survey.name}}</a>
           </li>
           <li *ngIf="isEditing" class="breadcrumb-item active" aria-current="page">
             Edit
@@ -35,15 +35,17 @@
       </mat-form-field>
     <div class="edit-buttons">
       <em>Last Save: Apr 8, 2020</em>
-      <button class="btn btn-outline-primary">Cancel</button>
-      <button class="btn btn-primary" (click)="onSubmit()">Save</button>
+      <button class="btn btn-outline-primary" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-primary" [disabled]="surveyForm.invalid || currentQuestionsForm.length === 0" (click)="onSubmit()">Save</button>
     </div>
   </div>
+  <label class="survey-edit-warning" *ngIf="isEditing">Repeated edits to surveys may decrease reportability. If you foresee many changes to this survey, it is recommended you instead create a new one.</label>
 
   <div cdkDropListGroup class="new-survey-view">
-    <div class="survey-components-view survey-view-section">
+    <div #componentsPane class="col-md-3" >
       <h4>Components</h4>
         <div
+        [ngClass]="{'fixed': surveyPosition > 120 }"
         cdkDropList
         [cdkDropListData]="components"
         class="survey-components-list"
@@ -51,39 +53,14 @@
         [cdkDropListEnterPredicate]="noDrop"
         (cdkDropListDropped)="dropComponent($event)">
 
-          <div class="available-component" *ngFor="let component of components" cdkDrag><i class="material-icons available-component-control" cdkDragHandle>crop_free</i><span>{{component.name}}</span></div>
+        <div class="available-component" *ngFor="let component of components" cdkDrag [cdkDragDisabled]="component.type === 'docPicker' && !docPickerAvailable">
+          <i class="material-icons component-control available" *ngIf="component.type !== 'docPicker' || docPickerAvailable" cdkDragHandle>crop_free</i>
+            <i class="material-icons component-control unavailable" *ngIf="component.type === 'docPicker' && !docPickerAvailable" cdkDragHandle>crop_free</i>
+            <span>{{component.name}}</span></div>
       </div>
     </div>
-    <div class="survey-components-padder">
-    </div>
 
-    <!-- <div>
-      <form (ngSubmit)="onSubmit()"
-      [formGroup]="form"
-      cdkDropList
-      [cdkDropListData]="questions"
-      class="survey-canvas-list"
-      (cdkDropListDropped)="drop($event)">
-
-        <div *ngFor="let question of questions" class="form-row" cdkDrag>
-          <app-survey-form-question [question]="question" [form]="form"></app-survey-form-question>
-        </div>
-
-        <div class="form-row">
-          <button type="submit" [disabled]="!form.valid">Save</button>
-        </div>
-      </form>
-
-      <div *ngIf="payLoad" class="form-row">
-        <strong>Saved the following values</strong><br>{{payLoad}}
-      </div>
-    </div> -->
-
-    <!-- <app-survey-form-builder [questions]="questions$ | async"></app-survey-form-builder> -->
-
-
-    <div class="survey-canvas-view survey-view-section">
-      {{surveyForm.value | json}}
+    <div class="col-md-9 ">
       <h4>Survey Canvas</h4>
       <form class="survey-canvas">
         <div
@@ -93,77 +70,127 @@
         (cdkDropListDropped)="dropComponent($event)">
         <div
         class="new-component"
-        *ngFor="let question of surveyQuestionsForm.controls; let i = index"
+        *ngFor="let question of currentQuestionsForm.controls; let i = index"
         cdkDrag>
         <div class="new-component-controls">
-          <button mat-icon-button color="primary" class="control-button control-handle">
+          <button mat-icon-button class="theme-color control-button control-handle">
             <i class="material-icons control-button-icon" cdkDragHandle>crop_free</i>
           </button>
-          <button mat-icon-button color="primary" class="control-button delete-icon" (click)="deleteQuestion(i)">
+          <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteQuestion(i)">
             <i class="material-icons control-button-icon">close</i>
           </button>
         </div>
         <div [formGroup]="question" class="new-component-contents">
-
-
-          <!-- <app-survey-form-question [question]="question" [index]="i"></app-survey-form-question> -->
-          <div *ngIf="question.value.questionText" class="new-component-text">
+          <div *ngIf="question.value.questionText || question.value.questionText === null || question.value.questionText === ''" class="new-component-text">
             <strong>{{i + 1}}. </strong>
             <mat-form-field class="new-component-text-form">
               <mat-label>{{question.value.type | camelToString}}</mat-label>
-              <textarea matInput mat-autosize="true" formControlName="questionText" name="commentPeriodInfo" class="component-text-box" placeholder="Placeholder text"></textarea>
+              <textarea matInput mat-autosize="true" formControlName="questionText" name="questionText" class="component-text-box"></textarea>
              </mat-form-field>
          </div>
-         <div *ngIf="question.value.infoText" class="new-component-text">
+         <div *ngIf="question.value.type === 'info'" class="new-component-text">
           <strong>{{i + 1}}. </strong>
           <mat-form-field class="new-component-text-form">
             <mat-label>{{question.value.type | camelToString}}</mat-label>
-            <textarea matInput mat-autosize="true" formControlName="infoText" name="commentPeriodInfo" class="component-text-box" placeholder="Placeholder text"></textarea>
+            <textarea matInput mat-autosize="true" formControlName="infoText" name="infoText" class="component-text-box" placeholder="Placeholder text"></textarea>
            </mat-form-field>
          </div>
-         <div *ngIf="question.value.docPickerText" class="new-component-text">
+         <div *ngIf="question.value.type === 'docPicker'" class="new-component-text">
             <strong>{{i + 1}}. </strong>
             <mat-form-field class="new-component-text-form">
               <mat-label>{{question.value.type | camelToString}}</mat-label>
-              <textarea matInput mat-autosize="true" formControlName="docPickerText" name="commentPeriodInfo" class="component-text-box" placeholder="Placeholder text"></textarea>
+              <textarea matInput mat-autosize="true" formControlName="docPickerText" name="docPickerText" class="component-text-box" placeholder="Placeholder text"></textarea>
             </mat-form-field>
          </div>
-              <div class="new-component-config">
+         <div *ngIf="question.value.type === 'email'" class="new-component-text">
+          <strong>{{i + 1}}. </strong>
+          <mat-form-field class="new-component-text-form">
+            <mat-label>{{question.value.type | camelToString}}</mat-label>
+            <textarea matInput mat-autosize="true" formControlName="emailText" name="emailText" class="component-text-box"></textarea>
+           </mat-form-field>
+        </div>
+        <div *ngIf="question.value.type === 'phoneNumber'"  class="new-component-text">
+          <strong>{{i + 1}}. </strong>
+          <mat-form-field class="new-component-text-form">
+            <mat-label>{{question.value.type | camelToString}}</mat-label>
+            <textarea matInput mat-autosize="true" formControlName="phoneNumberText" name="phoneNumberText" class="component-text-box"></textarea>
+           </mat-form-field>
+        </div>
+              <div class="new-component-config" [ngClass]="{'new-likert-config': question.value.type === 'likert' }">
                 <div class="new-component-setup">
 
                 <div *ngIf="question.value.type === 'singleChoice' || question.value.type === 'multiChoice'">
-                  <mat-form-field *ngFor="let choice of question.controls.choices.controls; let ci = index" class="new-component-choice-form">
-                      <i class="material-icons">check_box_outline_blank</i>
-                      <input matInput value="{{choice.value}}">
-                      <mat-hint>Choice text</mat-hint>
-                      <button mat-icon-button color="primary" class="control-button delete-icon" (click)="deleteChoice(i, ci)">
+                  <div *ngFor="let choice of question.controls.choices.controls; let ci = index" class="new-component-choice-form">
+                      <i *ngIf="question.value.type === 'singleChoice'" class="material-icons">radio_button_unchecked</i>
+                      <i *ngIf="question.value.type === 'multiChoice'" class="material-icons">check_box_outline_blank</i>
+                      <mat-form-field class="new-component-choice-form">
+                        <input matInput [formControl]="choice" value="{{choice.value}}">
+                        <mat-hint>Choice text</mat-hint>
+                      </mat-form-field>
+                      <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteChoice(question, ci)">
                         <i class="material-icons control-button-icon">close</i>
                       </button>
-                  </mat-form-field>
-                  <div *ngIf="question.value.other === true" class="new-component-choice-form">
+                  </div>
+                  <div *ngIf="question.controls.other.value === true" class="new-component-choice-form">
                     <i class="material-icons">check_box_outline_blank</i>
-                    <p>Other: __________________</p>
+                    <p>Other:</p>
+                    <button mat-icon-button class="theme-color control-button delete-icon other-delete" (click)="removeOther(question)">
+                      <i class="material-icons control-button-icon">close</i>
+                    </button>
+                  </div>
+                </div>
+                <div *ngIf="question.value.type === 'likert'">
+                  <div *ngIf="question.contains('answerRequired')" class="likert-options">
+                      <div class="">
+                        <mat-checkbox class="likert-required" checked="question.value.answerRequired.value" formControlName="answerRequired">Required?</mat-checkbox>
+                      </div>
+                  </div>
+                  <div *ngFor="let attribute of question.controls.attributes.controls; let ai = index" class="new-component-likert-form">
+                    <div class="new-component-attribute">
+
+                      <mat-form-field class="attribute-form-field">
+                        <input class="attribute-input" [formControl]="attribute.controls.attribute" matInput value="{{attribute.controls.attribute.value}}">
+                        <mat-hint>Attribute text</mat-hint>
+                      </mat-form-field>
+                      <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteAttribute(question, ai)">
+                        <i class="material-icons control-button-icon">close</i>
+                      </button>
+                    </div>
+                    <div class="new-component-likert-form">
+                    <mat-form-field *ngFor="let choice of attribute.controls.choices.controls; let ci = index" class="new-component-likert-choice">
+                        <input class="likert-choice-input" [formControl]="choice" matInput value="{{choice.value}}">
+                        <mat-hint class="likert-choice-hint">{{likertChoiceText(ci)}}</mat-hint>
+                    </mat-form-field>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="new-component-options">
-                <div *ngIf="question.value.type === 'smallText' || component === 'largeText'">
+              <div *ngIf="question.contains('answerRequired') && question.value.type !== 'likert'" class="new-component-options">
+                <div>
+                  <div class="new-component-text-response-form">
+                    <mat-checkbox checked="theme-color question.value.answerRequired.value" formControlName="answerRequired">Required?</mat-checkbox>
+                  </div>
+                </div>
+                <div *ngIf="question.value.type === 'smallText' || question.value.type === 'largeText'">
                   <mat-form-field class="new-component-text-response-form">
-                    <input matInput>
+                    <input formControlName="maxChars" type="number" matInput>
                     <mat-hint>Response character limit</mat-hint>
                   </mat-form-field>
                 </div>
                 <div *ngIf="question.value.type === 'multiChoice'">
                   <mat-form-field class="new-component-text-response-form">
-                    <input type="number" matInput>
+                    <input formControlName="choose" type="number" matInput>
                     <mat-hint>Choices allowed(leave blank for unlimited)</mat-hint>
                   </mat-form-field>
                 </div>
               </div>
             </div>
             <div *ngIf="question.value.type === 'singleChoice' || question.value.type === 'multiChoice'" class="new-component-buttons">
-              <button class="add-button" mat-button color="primary" (click)=addChoice(i)><i class="material-icons">add</i>Add choice</button>
-              <button class="add-button" mat-button color="primary" (click)=addOther(i)><i class="material-icons">add</i>Add "Other"</button>
+              <button class="theme-color add-button" mat-button (click)=addChoice(question,i)><i class="material-icons">add</i>Add choice</button>
+              <button class="theme-color add-button" mat-button (click)=addOther(question) [disabled]="question.controls.other.value === true"><i class="material-icons">add</i>Add "Other"</button>
+            </div>
+            <div *ngIf="question.value.type === 'likert'" class="new-component-buttons">
+              <button class="theme-color add-button" mat-button (click)=addAttribute(question)><i class="material-icons">add</i>Add attribute</button>
             </div>
         </div>
 
@@ -172,13 +199,6 @@
       </form>
     </div>
   </div>
-
-  <!-- <div class="component-options-view survey-view-section">
-    <h4>Component Options</h4>
-    <div class="component-options">
-      <p>{{availOptions}}</p>
-    </div>
-  </div> -->
 </form>
 
 </section>

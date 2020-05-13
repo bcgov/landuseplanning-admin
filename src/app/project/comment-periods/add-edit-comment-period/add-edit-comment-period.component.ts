@@ -87,12 +87,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Get built surveys if available
-    this.surveyService.getAllByProjectId(this.currentProject._id)
-      .subscribe((res: any) => {
-        this.availableSurveys = res.data;
-      });
-
 
     // Check if we're editing
     this.route.url.subscribe(segments => {
@@ -104,8 +98,10 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               (data: any) => {
-                if (data.commentPeriod) {
-                  this.commentPeriod = data.commentPeriod;
+                console.log('the data', data)
+                if (data.cpAndSurveys.commentPeriod) {
+                  this.commentPeriod = data.cpAndSurveys.commentPeriod;
+                  this.availableSurveys = data.cpAndSurveys.surveys.data;
                   this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
                   this.initSelectedDocs();
                   this.initForm();
@@ -255,15 +251,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     if (this.commentPeriodForm.get('commentingMethod').value !== "surveyTool") {
       this.commentPeriod.surveySelected = null;
     } else {
-      this.availableSurveys.forEach(survey => {
-        // Save survey ID instead of name
-        if (survey.name === this.commentPeriodForm.get('surveySelected').value) {
-          this.commentPeriod.surveySelected = survey._id;
-        }
-      })
+      if (this.commentPeriodForm.get('surveySelected').value === "(None Selected)") {
+        this.commentPeriod.surveySelected = null;
+      } else {
+        this.commentPeriod.surveySelected = this.commentPeriodForm.get('surveySelected').value;
+      }
     }
-
-    console.log('why o why', this.commentPeriod.surveySelected)
 
     // Check info for comment
     // Check description

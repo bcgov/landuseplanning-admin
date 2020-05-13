@@ -49,23 +49,26 @@ export class SurveyBuilderService {
     if (questionToEdit) {
       questionProps = questionToEdit;
     } else {
-      questionProps = new SurveyQuestion({ type: previousContainer[previousIndex].type});
+      questionProps = new SurveyQuestion({
+        type: previousContainer[previousIndex].type,
+        answerRequired: true
+      });
     }
 
     if (questionProps.type === 'smallText') {
       return new FormGroup({
         type: new FormControl(questionProps.type),
         questionText: new FormControl(questionProps.questionText, Validators.required),
-        answerRequired: new FormControl(),
-        maxChars: new FormControl(null, Validators.pattern('/^\d+$/'))
+        answerRequired: new FormControl(questionProps.answerRequired),
+        maxChars: new FormControl(questionProps.maxChars)
       })
 
     } else if (questionProps.type === 'largeText') {
       return new FormGroup({
         type: new FormControl(questionProps.type),
         questionText: new FormControl(questionProps.questionText, Validators.required),
-        answerRequired: new FormControl(),
-        maxChars: new FormControl(null, Validators.pattern('/^\d+$/'))
+        answerRequired: new FormControl(questionProps.answerRequired),
+        maxChars: new FormControl(questionProps.maxChars)
       })
 
     } else if (questionProps.type === 'singleChoice') {
@@ -98,30 +101,73 @@ export class SurveyBuilderService {
     } else if (questionProps.type === 'likert') {
       return new FormGroup({
         type: new FormControl(questionProps.type),
-        questionText: new FormControl(null, Validators.required),
+        questionText: new FormControl(questionProps.questionText, Validators.required),
         answerRequired: new FormControl(questionProps.answerRequired),
-        attributes: new FormControl(),
-        choices: new FormArray([])
+        attributes: this.getLikertAttributes(questionProps.attributes)
       })
     } else if (questionProps.type === 'email') {
       return new FormGroup({
         type: new FormControl(questionProps.type),
+        emailText: new FormControl('Email', Validators.required),
         answerRequired: new FormControl(questionProps.answerRequired),
       })
     } else if (questionProps.type === 'phoneNumber') {
       return new FormGroup({
         type: new FormControl(questionProps.type),
+        phoneNumberText: new FormControl('Phone number', Validators.required),
         answerRequired: new FormControl(questionProps.answerRequired),
       })
     }
   }
 
-  getChoicesArray(questionChoices: []): FormArray {
-    const choicesArray = new FormArray([]);
-    questionChoices.forEach(choice => {
-      choicesArray.push(new FormControl(choice))
+  newChoice() {
+    return new FormControl(null, Validators.required)
+  }
+
+  newLikertAttribute() {
+    return new FormGroup({
+      attribute: new FormControl(null, Validators.required),
+      choices: this.getChoicesArray(null, 5)
     })
+  }
+
+  getChoicesArray(questionChoices?: [], amount?: number): FormArray {
+    const choicesArray = new FormArray([], Validators.required);
+    let choiceAmount: number;
+    if (questionChoices) {
+      questionChoices.forEach(choice => {
+        choicesArray.push(new FormControl(choice, Validators.required))
+      })
+    } else {
+      if (amount) {
+        choiceAmount = amount;
+      } else {
+        choiceAmount = 1;
+      }
+      for (let i = 0; i < choiceAmount; i++) {
+        choicesArray.push(new FormControl(null, Validators.required));
+      }
+    }
     return choicesArray;
+  }
+
+  getLikertAttributes(questionAttributes?): FormArray {
+    let attributesArray = new FormArray([], Validators.required);
+    if (questionAttributes) {
+      questionAttributes.forEach(attributeGroup => {
+        attributesArray.push(new FormGroup({
+          attribute: new FormControl(attributeGroup.attribute, Validators.required),
+          choices: this.getChoicesArray(attributeGroup.choices)
+        }))
+      })
+    } else {
+      attributesArray.push(new FormGroup({
+        attribute: new FormControl(null, Validators.required),
+        choices: this.getChoicesArray(null, 5)
+      }))
+    }
+
+    return attributesArray;
   }
 
   getQuestions() {

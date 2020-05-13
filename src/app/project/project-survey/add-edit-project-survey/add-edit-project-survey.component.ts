@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Renderer2, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { CdkDragDrop, moveItemInArray, copyArrayItem } from '@angular/cdk/drag-drop';
@@ -23,6 +23,7 @@ import { first } from 'rxjs/operators';
   providers:  [SurveyBuilderService, SurveyService]
 })
 export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
+  @ViewChild('componentsPane') componentsPane;
 
   public currentProject;
   public availOptions;
@@ -33,9 +34,14 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   public survey = {} as Survey;
   public surveyForm: FormGroup;
   public surveyQuestionsForm: FormArray;
-  public Editor = ClassicEditor;
+  public surveyPosition: number;
+  public surveyChanged: boolean;
+  public changesSaved: boolean;
+  public docPickerAvailable: boolean;
+  public docPickerInstance: any[];
   public questions$: Observable<any>;
   // public canvasComponents: any;
+  public scrollListener: () => void;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   @Input() questions: any[] = [];
@@ -52,34 +58,28 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     private router: Router,
     private storageService: StorageService,
     private ngxSmartModalService: NgxSmartModalService,
+    private renderer: Renderer2
   ) {
     this.questions$ = surveyBuilderService.getQuestions();
   }
 
   ngOnInit() {
-    console.log(this.addEditPlaceholder)
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
     this.storageService.state.currentCommentPeriod = null;
 
-
-    this.questions$
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((data) => {
-        this.questions = data;
-      })
+    this.scrollListener = this.renderer.listen(document.getElementById('scrollTop'), 'scroll', (event) => {
+      this.surveyPosition = event.srcElement.scrollTop;
+    })
 
     this.currentProject = this.storageService.state.currentProject.data;
 
-
-
     this.surveyForm = new FormGroup({
-      name: new FormControl(''),
-      questions: new FormArray([])
+      name: new FormControl('', Validators.required),
+      questions: new FormArray([], Validators.required)
     })
 
     this.surveyQuestionsForm = this.surveyForm.get('questions') as FormArray;
-
 
     // Check if we're editing
     this.route.url.subscribe(segments => {
@@ -87,6 +87,8 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
         if (segment.path === 'edit') {
           this.isEditing = true;
           this.isEditing ? this.addEditPlaceholder = 'Edit Survey' : this.addEditPlaceholder = 'New Survey';
+
+          this.checkForDocPicker(this.surveyForm.value)
           // get data from route resolver
           this.route.data
             .takeUntil(this.ngUnsubscribe)
@@ -113,7 +115,6 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
           this.initForm();
           this.loading = false;
           this.isEditing ? this.addEditPlaceholder = 'Edit Survey' : this.addEditPlaceholder = 'New Survey';
-
           // this._changeDetectionRef.detectChanges();
         }
       });
@@ -132,18 +133,30 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     if (surveyToEdit) {
       this.surveyForm = new FormGroup({
         name: new FormControl(surveyToEdit.name, Validators.required),
-        questions: new FormArray([])
+        questions: new FormArray([], Validators.required)
       })
-    } else {
-      this.surveyForm = new FormGroup({
-        name: new FormControl(''),
-        questions: new FormArray([])
-      })
+      this.surveyQuestionsForm = this.surveyForm.get('questions') as FormArray;
+      this.surveyBuilderService.buildEditForm(this.surveyQuestionsForm, this.survey.questions)
     }
 
-    this.surveyQuestionsForm = this.surveyForm.get('questions') as FormArray;
+    // Listen for survey changes
+    this.surveyForm.valueChanges
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(form => {
+        this.checkForDocPicker(form);
+        this.surveyChanged = true;
+      })
 
-    this.surveyBuilderService.buildEditForm(this.surveyQuestionsForm, this.survey.questions)
+      this.checkForDocPicker(this.surveyForm.value)
+  }
+
+  get currentQuestionsForm() { return this.surveyQuestionsForm as FormArray }
+
+
+  checkForDocPicker(form) {
+    this.docPickerInstance = form.questions.filter(question => question.type === 'docPicker')
+    console.log('doc picker avail', this.docPickerInstance)
+    this.docPickerAvailable = !this.docPickerInstance.length;
   }
 
   components = [
@@ -154,7 +167,8 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     { name: 'Document Picker', type: 'docPicker' },
     { name: 'Likert Scale', type: 'likert' },
     { name: 'Info', type: 'info' },
-    { name: 'Email Box', type: 'email' }
+    { name: 'Email', type: 'email' },
+    { name: 'Phone Number', type: 'phoneNumber' }
   ];
 
   dropComponent(event: CdkDragDrop<string[]>) {
@@ -176,7 +190,6 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
     questionForm.removeAt(firstIndex)
     questionForm.insert(secondIndex, question)
-
   }
 
   deleteQuestion(index: number) {
@@ -200,23 +213,71 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  addChoice(index) {
-    this.surveyQuestionsForm.controls[index]['controls'].choices.controls.push(new FormControl());
+  isUndefined(value) {
+    if (typeof value === 'undefined') {
+      return true
+    } else {
+
+    }
   }
 
-  deleteChoice(index, choiceIndex) {
-    this.surveyQuestionsForm.controls[index]['controls'].choices.removeAt(choiceIndex);
+  likertChoiceText(position: number): string {
+    const positionText = [
+      'Left',
+      'Centre-left',
+      'Centre',
+      'Centre-right',
+      'Right'
+    ]
+    return positionText[position];
   }
 
-  addOther(index) {
-    this.surveyQuestionsForm.controls[index].value.other = true
+  public addChoice(question) {
+    question.controls.choices.push(this.surveyBuilderService.newChoice());
+  }
+
+  public deleteChoice(question, choiceIndex: number) {
+    question.controls.choices.removeAt(choiceIndex);
+  }
+
+  public addOther(question) {
+    question.controls.other.setValue(true)
+  }
+
+  public removeOther(question) {
+    question.controls.other.setValue(false)
+  }
+
+  public addAttribute(attribute) {
+    attribute.controls.attributes.push(this.surveyBuilderService.newLikertAttribute());
+  }
+
+  public deleteAttribute(question, attributeIndex: number) {
+    console.log('test', question)
+    question.controls.attributes.removeAt(attributeIndex);
   }
 
   public onSubmit() {
+    if (this.surveyForm.valid) {
+      this.submitForm();
+    } else {
+      alert('Your survey contains errors. Please complete all required fields.');
+      return;
+    }
+  }
+
+  private submitForm() {
+
+
     this.loading = true;
 
+    // Survey date created - only save if not editing
+    if (!this.isEditing) {
+      this.survey.dateAdded = new Date();
+    }
+
     //Survey save date
-    this.survey.lastSaved = new Date()
+    this.survey.lastSaved = new Date();
 
     // Survey Name
     this.survey.name = this.surveyForm.get('name').value;
@@ -224,7 +285,9 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
     this.survey.commentPeriod = this.currentProject.commentPeriodForBanner._id;
 
-    this.survey.questions = this.surveyForm.controls['questions'].value;
+    this.survey.questions = this.surveyForm.get('questions').value;
+
+    console.log('this is what you are sending', this.survey)
 
     this.loading = false;
 
@@ -240,6 +303,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
             alert('Uh-oh, couldn\'t save survey');
           },
           () => { // onCompleted
+            this.changesSaved = true;
             this.loading = false;
             this.openSnackBar('This survey was saved successfuly.', 'Close');
             this.router.navigate(['/p', this.survey.project, 's', this.survey._id]);
@@ -266,14 +330,11 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   }
 
   public onCancel() {
-    if (confirm(`Are you sure you want to discard all changes?`)) {
-      this.storageService.state.selectedDocumentsForCP = null;
       if (this.isEditing) {
-        // this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
+        this.router.navigate(['/p', this.currentProject._id, 's', this.survey._id]);
       } else {
-        this.router.navigate(['/p', this.currentProject._id, 'project-survey']);
+        this.router.navigate(['/p', this.currentProject._id, 'project-surveys']);
       }
-    }
   }
 
   public openSnackBar(message: string, action: string) {
@@ -283,6 +344,10 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // Remove scroll listener
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

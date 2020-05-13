@@ -115,7 +115,6 @@
       </div>
 
         <h2 class="h2">Commenting Method</h2>
-        {{ commentPeriodForm.value | json }}
         <div class="form-row">
           <div class="form-group form-check form-check-inline col-md-12">
             <input id="basicForm" name="commentingMethod" formControlName="commentingMethod" class="form-radio-input" type="radio" value="basicForm" checked>
@@ -130,7 +129,8 @@
         <div [hidden]="commentPeriodForm.value.commentingMethod !== 'surveyTool'" class="form-row">
           <div class="form-group col-md-6">
             <select formControlName="surveySelected" id="surveySelect" class="form-control">
-              <option *ngFor="let survey of availableSurveys">{{survey.name}}</option>
+              <option>(None Selected)</option>
+              <option *ngFor="let survey of availableSurveys" [value]=survey._id>{{survey.name}}</option>
             </select>
             <label for="surveySelect"> Select survey for this comment period.</label>
             <!-- <button class="btn btn-outline-primary">Create new survey</button> -->

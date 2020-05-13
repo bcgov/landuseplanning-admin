@@ -9,6 +9,7 @@ import { NewlinesPipe } from 'app/shared/pipes/newlines.pipe';
 import { PublishedPipe } from 'app/shared/pipes/published.pipe';
 import { ObjectFilterPipe } from 'app/shared/pipes/object-filter.pipe';
 import { VarDirective } from 'app/shared/utils/ng-var.directive';
+import { ScrollListenDirective } from 'app/shared/utils/scroll-listen.directive';
 import { FileUploadComponent } from 'app/file-upload/file-upload.component';
 import { TableTemplateComponent } from 'app/shared/components/table-template/table-template.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -59,7 +60,8 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     CamelToStringPipe,
     TableDirective,
     TableTemplateComponent,
-    VarDirective
+    VarDirective,
+    ScrollListenDirective
   ],
   exports: [
     CommentStatsComponent,
@@ -80,7 +82,8 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     CamelToStringPipe,
     PublishedPipe,
     TableTemplateComponent,
-    VarDirective
+    VarDirective,
+    ScrollListenDirective
   ],
   providers: [
     TableTemplateUtils,

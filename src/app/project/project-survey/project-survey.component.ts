@@ -28,7 +28,12 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
     {
       name: 'Name',
       value: 'name',
-      width: 'col-9'
+      width: 'col-6'
+    },
+    {
+      name: 'Date Added',
+      value: 'dateAdded',
+      width: 'col-3'
     },
     {
       name: 'Last Saved',
@@ -103,24 +108,14 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
   setSurveyRowData() {
     let surveyList = [];
     this.surveys.forEach(survey => {
-      // Determine if the CP is published by checking in read is Public
-
-      // let isPublished = 'Not Published';
-      // survey.read.forEach(element => {
-      //   if (element === 'public') {
-      //     isPublished = 'Published';
-      //   }
-      // });
 
       surveyList.push(
         {
           _id: survey._id,
           name: survey.name,
           lastSaved: survey.lastSaved,
+          dateAdded: survey.dateAdded,
           project: survey.project,
-          // TODO: Figure out pending, deferred, published, rejected
-
-          // commmentData:
           // _id: commentPeriod._id,
           // project: commentPeriod.project
         }

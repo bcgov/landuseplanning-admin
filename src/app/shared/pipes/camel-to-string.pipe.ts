@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CamelToStringPipe implements PipeTransform {
 
-  transform(value): string {
+  transform(value: string): string {
       const newString = value
                         .replace(/([a-z\d])([A-Z])/g, '$1' + ' ' + '$2')
                         .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + ' ' + '$2')

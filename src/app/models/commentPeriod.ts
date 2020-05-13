@@ -26,7 +26,7 @@ export class CommentPeriod {
   isResolved: Boolean;
   isVetted: String;
   commentingMethod: string;
-  surveySelected: string | Survey;
+  surveySelected: string;
   externalToolPopupText: string;
   openCommentPeriod: String;
   openHouses: Array<Object>;

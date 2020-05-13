@@ -23,13 +23,13 @@
     <mat-tab-group [selectedIndex]="selectedTab">
       <mat-tab label="DETAILS">
         <br>
-        <app-comment-period-details-tab [commentPeriod]="commentPeriod"></app-comment-period-details-tab>
+        <app-comment-period-details-tab [commentPeriod]="commentPeriod" [surveys]=surveys></app-comment-period-details-tab>
       </mat-tab>
       <mat-tab label="REVIEW COMMENTS">
         <app-review-comments-tab></app-review-comments-tab>
       </mat-tab>
       <mat-tab label="REVIEW SURVEY RESPONSES">
-        <app-review-survey-responses-tab></app-review-survey-responses-tab>
+        <app-review-survey-responses-tab [surveys]=surveys></app-review-survey-responses-tab>
       </mat-tab>
     </mat-tab-group>
   </div>

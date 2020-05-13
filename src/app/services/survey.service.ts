@@ -62,16 +62,16 @@ export class SurveyService {
       .catch(error => this.api.handleError(error));
   }
 
-  getSummaryById(periodId: string): Observable<CommentPeriodSummary> {
-    return this.api.getPeriodSummary(periodId)
-      .map(res => {
-        if (res) {
-          return new CommentPeriodSummary(res);
-        }
-        return null;
-      })
-      .catch(error => this.api.handleError(error));
-  }
+  // getSummaryById(periodId: string): Observable<CommentPeriodSummary> {
+  //   return this.api.getPeriodSummary(periodId)
+  //     .map(res => {
+  //       if (res) {
+  //         return new CommentPeriodSummary(res);
+  //       }
+  //       return null;
+  //     })
+  //     .catch(error => this.api.handleError(error));
+  // }
 
     // get a survey selected on a comment period by comment period id
     getSelectedSurveyByCPId(periodId: string): Observable<Survey> {
@@ -92,7 +92,7 @@ export class SurveyService {
         .catch(this.api.handleError);
     }
 
-  add(survey: any): Observable<any> {
+  add(survey: Survey): Observable<Survey> {
     return this.api.addSurvey(survey)
       .catch(error => this.api.handleError(error));
   }
@@ -105,8 +105,8 @@ export class SurveyService {
       .catch(error => this.api.handleError(error));
   }
 
-  delete(period: CommentPeriod): Observable<CommentPeriod> {
-    return this.api.deleteCommentPeriod(period)
+  delete(survey: Survey): Observable<Survey> {
+    return this.api.deleteSurvey(survey)
       .catch(error => this.api.handleError(error));
   }
 
@@ -122,43 +122,43 @@ export class SurveyService {
 
   // returns first period
   // multiple comment periods are currently not supported
-  getCurrent(periods: CommentPeriod[]): CommentPeriod {
-    return (periods.length > 0) ? periods[0] : null;
-  }
+  // getCurrent(periods: CommentPeriod[]): CommentPeriod {
+  //   return (periods.length > 0) ? periods[0] : null;
+  // }
 
-  getStatus(period: CommentPeriod): string {
-    if (!period || !period.dateStarted || !period.dateCompleted) {
-      return this.commentStatuses[this.NOT_OPEN];
-    }
+  // getStatus(period: CommentPeriod): string {
+  //   if (!period || !period.dateStarted || !period.dateCompleted) {
+  //     return this.commentStatuses[this.NOT_OPEN];
+  //   }
 
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startDate = new Date(period.dateStarted);
-    const endDate = new Date(period.dateCompleted);
+  //   const now = new Date();
+  //   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  //   const startDate = new Date(period.dateStarted);
+  //   const endDate = new Date(period.dateCompleted);
 
-    if (endDate < today) {
-      return this.commentStatuses[this.CLOSED];
-    } else if (startDate > today) {
-      return this.commentStatuses[this.NOT_STARTED];
-    } else {
-      return this.commentStatuses[this.OPEN];
-    }
-  }
+  //   if (endDate < today) {
+  //     return this.commentStatuses[this.CLOSED];
+  //   } else if (startDate > today) {
+  //     return this.commentStatuses[this.NOT_STARTED];
+  //   } else {
+  //     return this.commentStatuses[this.OPEN];
+  //   }
+  // }
 
-  isNotOpen(period: CommentPeriod): boolean {
-    return (this.getStatus(period) === this.commentStatuses[this.NOT_OPEN]);
-  }
+  // isNotOpen(period: CommentPeriod): boolean {
+  //   return (this.getStatus(period) === this.commentStatuses[this.NOT_OPEN]);
+  // }
 
-  isClosed(period: CommentPeriod): boolean {
-    return (this.getStatus(period) === this.commentStatuses[this.CLOSED]);
-  }
+  // isClosed(period: CommentPeriod): boolean {
+  //   return (this.getStatus(period) === this.commentStatuses[this.CLOSED]);
+  // }
 
-  isNotStarted(period: CommentPeriod): boolean {
-    return (this.getStatus(period) === this.commentStatuses[this.NOT_STARTED]);
-  }
+  // isNotStarted(period: CommentPeriod): boolean {
+  //   return (this.getStatus(period) === this.commentStatuses[this.NOT_STARTED]);
+  // }
 
-  isOpen(period: CommentPeriod): boolean {
-    return (this.getStatus(period) === this.commentStatuses[this.OPEN]);
-  }
+  // isOpen(period: CommentPeriod): boolean {
+  //   return (this.getStatus(period) === this.commentStatuses[this.OPEN]);
+  // }
 
 }

@@ -17,15 +17,15 @@ export class CommentPeriodResolver implements Resolve<Object> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const commentPeriodId = route.paramMap.get('commentPeriodId');
+    const projectId = route.parent.params['projId'];
     // force-reload so we always have latest data
     return forkJoin(
       from(this.commentPeriodService.getSummaryById(commentPeriodId)),
       from(this.commentPeriodService.getById(commentPeriodId)),
-      from(this.surveyService.getSelectedSurveyByCPId(commentPeriodId))
-    ).map(([summary, commentPeriod, surveySelected]) => {
+      from(this.surveyService.getAllByProjectId(projectId))
+    ).map(([summary, commentPeriod, surveys]) => {
       commentPeriod.summary = summary;
-      commentPeriod.surveySelected = surveySelected;
-      return new CommentPeriod(commentPeriod);
+      return { commentPeriod: new CommentPeriod(commentPeriod), surveys: surveys};
     });
   }
 }

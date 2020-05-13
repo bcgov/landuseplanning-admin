@@ -4,12 +4,30 @@
   h3 {
     margin-bottom: 0;
   }
+}
 
+.survey-response-header {
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: 1px solid lightgrey;
+  padding-bottom: 1.25rem;
 
+  div {
+
+    &:first-child {
+      flex-grow: 1;
+    }
+
+    margin-right: 2rem;
+    font-size: 1.15rem;
+
+    span {
+      font-weight: bold;
+    }
+  }
 }
 
 .survey-main {
-  margin-top: 1rem;
   padding: 1.25rem;
 
   .info-entry {
@@ -24,7 +42,7 @@
 
   .question-choice-list {
     list-style-type: none;
-    color: grey;
+    // color: grey;
     padding: 1rem;
     font-size: 1.1rem;
     margin: 0;
@@ -38,6 +56,10 @@
   .choice-limit {
     margin: 0;
     padding-left: 1rem;
+  }
+
+  .selected-choice {
+    font-weight: bold;
   }
 
   .text-box {
@@ -77,6 +99,19 @@
   }
 }
 
+.answer-text {
+  margin: 0.75rem 1.25rem;
+}
+
+.no-answer-text {
+  margin: 0.75rem 1.25rem;
+  font-style: italic;
+}
+
+.attachments {
+  padding: 1.25rem;
+}
+
 .last-saved {
   text-align: right;
   padding-top: 0.3rem;
@@ -100,39 +135,90 @@ h1 {
 
 div .attribute {
   display:block;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: bold;
   padding: 30px 0 0 4.25%;
   margin-bottom:10px;
 }
+
 div .likert {
   list-style:none;
   width:100%;
   margin:0;
   display:block;
 }
+
 div .likert:last-of-type {
-  border-bottom:0;
+  border-bottom: 0;
 }
 
 div .likert li {
-  display:inline-block;
-  width:19%;
-  text-align:center;
+  display: inline-block;
+  width: 19%;
+  text-align: center;
   vertical-align: top;
 }
-
-// div .likert li input[type=radio] {
-//   display:block;
-//   position:relative;
-//   top:0;
-//   left:50%;
-//   margin-left:-6px;
-
-// }
 
 div .likert li label {
   width:100%;
 
 }
 
+textarea,
+input[type="text"] {
+  border-radius: 2px;
+  box-shadow: none;
+  -webkit-appearance: none;
+  border: 1px solid #ababab;
+  font-size: 1rem;
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #5091cd;
+  }
+}
+.card-text {
+    color: rgb(51,102,187);
+    cursor: pointer;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.btn-group-toggle .btn {
+  margin-bottom: 0;
+  border-radius: 24px;
+  background: none;
+  color: #003367;
+  border: 2px solid #003367;
+  font-weight: 600;
+
+  &:hover {
+    background: #fcb118;
+  }
+
+  &.active {
+    background: #003367;
+    color: #fff;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .btn-group-toggle {
+    display: block;
+    margin-top: 10px;
+  }
+
+  .btn-group.btn-group-toggle > div {
+    display: inline-block;
+    margin-top: 6px;
+  }
+}
+
+h3 {
+  letter-spacing: -0.02rem;
+  font-size: 1rem;
+  font-weight: 700;
+  display: inline-block;
+}

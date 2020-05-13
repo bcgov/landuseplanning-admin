@@ -1,5 +1,7 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+
 
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
@@ -7,10 +9,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ReviewSurveyResponsesTabTableRowsComponent } from './review-survey-responses-tab-table-rows/review-survey-responses-tab-table-rows.component';
 
-import { CommentService } from 'app/services/comment.service';
+import { SurveyService } from 'app/services/survey.service';
+import { SurveyResponseService } from 'app/services/surveyResponse.service';
 import { StorageService } from 'app/services/storage.service';
 
-import { Comment } from 'app/models/comment';
+import { Survey } from 'app/models/survey';
+import { SurveyResponse } from 'app/models/surveyResponse';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 @Component({
@@ -19,8 +23,16 @@ import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
   styleUrls: ['./review-survey-responses-tab.component.css']
 })
 export class ReviewSurveyResponsesTabComponent implements OnInit {
-  public comments: Array<Comment>;
+
+  @Input() public surveys: Array<Survey>;
+
+  public surveyNames = {};
+  public surveyResponses: Array<SurveyResponse>;
   public loading = true;
+  public tableParams: TableParamsObject = new TableParamsObject();
+  public commentPeriodId: string;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+
 
   public filter = {
     'pending': false,
@@ -29,8 +41,8 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     'rejected': false
   };
 
-  public commentTableData: TableObject;
-  public commentTableColumns: any[] = [
+  public surveyResponseTableData: TableObject;
+  public surveyResponseTableColumns: any[] = [
     {
       name: 'ID',
       value: 'commentId',
@@ -42,36 +54,32 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       width: 'col-2'
     },
     {
-      name: 'Date',
-      value: 'dateAdded',
-      width: 'col-3'
-    },
-    {
-      name: 'Attachments',
-      value: 'null',
-      width: 'col-2',
-      nosort: true
-    },
-    {
       name: 'Location',
       value: 'location',
       width: 'col-2'
     },
     {
-      name: 'Status',
-      value: 'eaoStatus',
-      width: 'col-2'
-    }
+      name: 'Date',
+      value: 'dateAdded',
+      width: 'col-3'
+    },
+    {
+      name: 'Survey',
+      value: 'survey',
+      width: 'col-3'
+    },
+    {
+      name: 'Attachments',
+      value: 'null',
+      width: 'col-1',
+      nosort: true
+    },
   ];
-
-  public tableParams: TableParamsObject = new TableParamsObject();
-  public commentPeriodId: string;
-
-  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private _changeDetectionRef: ChangeDetectorRef,
-    private commentService: CommentService,
+    private surveyService: SurveyService,
+    private surveyResponseService: SurveyResponseService,
     private route: ActivatedRoute,
     private router: Router,
     private storageService: StorageService,
@@ -82,15 +90,16 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     if (this.storageService.state.commentReviewTabParams == null) {
       this.route.params.subscribe(params => {
         this.commentPeriodId = params.commentPeriodId;
-        this.filter.pending = params.pending == null || params.pending === 'false' ? false : true;
-        this.filter.published = params.published == null || params.published === 'false' ? false : true;
-        this.filter.deferred = params.deferred == null || params.deferred === 'false' ? false : true;
-        this.filter.rejected = params.rejected == null || params.rejected === 'false' ? false : true;
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params, this.filter);
         if (this.tableParams.sortBy === '') {
           this.tableParams.sortBy = '-commentId';
         }
       });
+
+      if (this.surveys) {
+        this.surveys.forEach(survey => this.surveyNames[survey._id] = survey.name)
+      }
+
     } else {
       this.commentPeriodId = this.storageService.state.commentReviewTabParams.commentPeriodId;
       this.filter = this.storageService.state.commentReviewTabParams.filter;
@@ -99,7 +108,8 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     }
     this.storageService.state.selectedTab = 0;
 
-    this.commentService.getByPeriodId(
+
+    this.surveyResponseService.getByPeriodId(
       this.commentPeriodId,
       this.tableParams.currentPage,
       this.tableParams.pageSize,
@@ -111,17 +121,12 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
         if (res) {
           this.tableParams.totalListItems = res.totalCount;
           if (this.tableParams.totalListItems > 0) {
-            this.comments = res.data;
+            this.surveyResponses = res.data;
             this.setCommentRowData();
 
-            // If there is a published comment, we are not allowed to delete the comment period.
+            // If there is a published survey response, we are not allowed to delete the comment period.
             let canDelete = true;
-            for (let comment of this.comments) {
-              if (comment.eaoStatus === 'Published') {
-                canDelete = false;
-                break;
-              }
-            }
+
             this.storageService.state.canDeleteCommentPeriod = { type: 'canDeleteCommentPeriod', data: canDelete };
           } else {
             this.storageService.state.canDeleteCommentPeriod = { type: 'canDeleteCommentPeriod', data: true };
@@ -137,44 +142,44 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       });
   }
 
-  public togglePending() {
-    this.filter.pending = !this.filter.pending;
-    this.getPaginatedComments(1);
-  }
-  public togglePublished() {
-    this.filter.published = !this.filter.published;
-    this.getPaginatedComments(1);
-  }
-  public toggleDeferred() {
-    this.filter.deferred = !this.filter.deferred;
-    this.getPaginatedComments(1);
-  }
-  public toggleRejected() {
-    this.filter.rejected = !this.filter.rejected;
-    this.getPaginatedComments(1);
-  }
+  // public togglePending() {
+  //   this.filter.pending = !this.filter.pending;
+  //   this.getPaginatedComments(1);
+  // }
+  // public togglePublished() {
+  //   this.filter.published = !this.filter.published;
+  //   this.getPaginatedComments(1);
+  // }
+  // public toggleDeferred() {
+  //   this.filter.deferred = !this.filter.deferred;
+  //   this.getPaginatedComments(1);
+  // }
+  // public toggleRejected() {
+  //   this.filter.rejected = !this.filter.rejected;
+  //   this.getPaginatedComments(1);
+  // }
 
   setCommentRowData() {
-    let commentList = [];
-    this.comments.forEach(comment => {
-      commentList.push(
+    let surveyResponseList = [];
+    this.surveyResponses.forEach(sr => {
+      surveyResponseList.push(
         {
-          _id: comment._id,
+          _id: sr._id,
           // Safety check if documents are null or are present with an emtpy array
-          attachments: comment.documents !== null ? comment.documents.length : 0,
-          commentId: comment.commentId,
-          author: comment.author,
-          comment: comment.comment,
-          dateAdded: comment.dateAdded,
-          eaoStatus: comment.eaoStatus,
-          location: comment.location,
-          period: comment.period,
+          attachments: sr.documents !== null ? sr.documents.length : 0,
+          commentId: sr.commentId,
+          author: sr.author,
+          responses: sr.responses,
+          dateAdded: sr.dateAdded,
+          location: sr.location,
+          period: sr.period,
+          survey: this.surveyNames[sr.survey],
         }
       );
     });
-    this.commentTableData = new TableObject(
+    this.surveyResponseTableData = new TableObject(
       ReviewSurveyResponsesTabTableRowsComponent,
-      commentList,
+      surveyResponseList,
       this.tableParams
     );
   }
@@ -195,11 +200,11 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
 
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    this.commentService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy, true, this.filter)
+    this.surveyResponseService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy, true, this.filter)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;
-        this.comments = res.data;
+        this.surveyResponses = res.data;
         this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.filter);
         this.setCommentRowData();
 
@@ -207,6 +212,8 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
         this.loading = false;
         this._changeDetectionRef.detectChanges();
       });
+
+    this.surveyResponseService.getAllByProjectId
   }
 
   ngOnDestroy() {

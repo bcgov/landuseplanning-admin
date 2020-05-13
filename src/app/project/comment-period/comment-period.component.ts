@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
+import { Survey } from 'app/models/survey';
 
 import { StorageService } from 'app/services/storage.service';
 
@@ -17,6 +18,7 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   public commentPeriod: CommentPeriod;
+  public surveys: Array<Survey>;
   public loading: Boolean = true;
   public currentProject;
   public selectedTab = 0;
@@ -43,8 +45,10 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           (data) => {
-            if (data.commentPeriod) {
-              this.commentPeriod = data.commentPeriod;
+            console.log('have a look', data)
+            if (data.cpAndSurveys.commentPeriod) {
+              this.commentPeriod = data.cpAndSurveys.commentPeriod;
+              this.surveys = data.cpAndSurveys.surveys.data;
               this.storageService.state.selectedDocumentsForCP = null;
             } else {
               alert('Uh-oh, couldn\'t load comment period ');

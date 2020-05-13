@@ -5,9 +5,10 @@ import { SurveyQuestion } from './surveyQuestion';
 export class Survey {
   _id: string;
   name: string;
+  dateAdded: Date;
   lastSaved: Date;
-  commentPeriod: CommentPeriod;
-  project: Project;
+  commentPeriod: string;
+  project: string;
   questions: SurveyQuestion[];
 
   // Permissions
@@ -18,6 +19,7 @@ export class Survey {
   constructor(obj?: any) {
     this._id = obj && obj._id || null;
     this.name = obj && obj.name || null;
+    this.dateAdded = obj.dateAdded || null;
     this.lastSaved = obj.lastSaved || null;
     this.commentPeriod = obj.period || null;
     this.project = obj.project || null;

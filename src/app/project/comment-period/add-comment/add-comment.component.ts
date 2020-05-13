@@ -33,7 +33,8 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   public loading = true;
 
   public addCommentForm: FormGroup;
-  public commentingMethod: String;
+  public commentingMethod: string;
+  public externalEngagementTool: boolean;
 
   constructor(
     private api: ApiService,
@@ -56,6 +57,11 @@ export class AddCommentComponent implements OnInit, OnDestroy {
           this.commentPeriod = data.commentPeriod;
           if (this.commentPeriod.commentingMethod) {
             this.commentingMethod = this.commentPeriod.commentingMethod;
+            if (this.commentingMethod === 'externalEngagementTool') {
+              this.externalEngagementTool = true;
+            } else {
+              this.externalEngagementTool = false;
+            }
           } else {
             this.initForm();
           }

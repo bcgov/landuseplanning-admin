@@ -46,6 +46,7 @@ import { ProjectService } from 'app/services/project.service';
 import { SearchService } from 'app/services/search.service';
 import { SideBarService } from 'app/services/sidebar.service';
 import { SurveyService } from 'app/services/survey.service';
+import { SurveyResponseService } from 'app/services/surveyResponse.service';
 import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
 import { UserService } from 'app/services/user.service';
 
@@ -159,6 +160,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     SearchService,
     SideBarService,
     SurveyService,
+    SurveyResponseService,
     SurveyBuilderService,
     UserService,
   ],

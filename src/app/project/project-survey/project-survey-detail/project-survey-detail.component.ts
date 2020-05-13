@@ -26,8 +26,10 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
   public surveyLastSaved: any;
   public loading;
   public survey: any;
+  public surveyCopy: any;
+  public countArray = [];
   public commentPeriodDocs = [];
-  public canDeleteCommentPeriod = false;
+  public canDeleteSurvey = false;
   public prettyCommentingMethod: string;
   public surveySelected: string | Survey;
 
@@ -49,13 +51,20 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     .takeUntil(this.ngUnsubscribe)
     .subscribe(
       (data) => {
+        console.log('it ran ')
         this.survey = data.survey;
       })
 
       console.log('survey qs', this.survey.questions)
 
+
+      this.surveyItemCount(this.survey.questions)
+
+
       this.currentProject = this.storageService.state.currentProject.data;
   }
+
+
 
 
   openSnackBar(message: string, action: string) {
@@ -69,7 +78,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl(`/p/${this.projectId}/s/${this.survey._id}/edit`);
   }
 
-  deleteCommentPeriod() {
+  deleteSurvey() {
     if (confirm(`Are you sure you want to delete this survey?`)) {
       this.loading = true;
       this.surveyService.delete(this.survey)
@@ -85,9 +94,22 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
             // Clear out the document state that was stored previously.
             this.loading = false;
             this.openSnackBar('This survey has been deleted', 'Close');
-            this.router.navigate(['p', this.projectId, 'project-surveys']);
+            this.router.navigate(['/p', this.projectId, 'project-surveys']);
           }
         );
+    }
+  }
+
+  surveyItemCount(questions) {
+    let infoCount = 0;
+    for (let i = 0; i < questions.length; i++) {
+      let count = i + 1;
+      if (questions[i].type === 'info') {
+        this.countArray.push('')
+        infoCount++;
+      } else {
+        this.countArray.push(count - infoCount)
+      }
     }
   }
 
@@ -108,7 +130,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
   // }
 
   public checkIfCanDelete() {
-    this.canDeleteCommentPeriod = true;
+    this.canDeleteSurvey = true;
   }
 
   ngOnDestroy() {

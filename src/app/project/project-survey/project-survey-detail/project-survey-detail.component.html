@@ -17,7 +17,7 @@
         <button class="dropdown-item" (click)="editSurvey()">Edit</button>
         <!-- <button class="dropdown-item" (click)="addComment()">Add a comment</button> -->
         <!-- <button class="dropdown-item" (click)="exportComments()">Export All Responses</button> -->
-        <button *ngIf="canDeleteCommentPeriod" class="dropdown-item" (click)="deleteCommentPeriod()">Delete</button>
+        <button *ngIf="canDeleteSurvey" class="dropdown-item" (click)="deleteSurvey()">Delete</button>
       </div>
     </div>
   </div>
@@ -42,33 +42,57 @@
     <div class="row survey-main">
       <div *ngFor="let question of survey.questions; let i = index" class="col-md-8">
         <div *ngIf="question.type === 'smallText'">
-          <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+          <p class="question-text">{{countArray[i]}}. {{question.questionText}}<span class="required">{{question.answerRequired ? '*' : ''}}</span></p>
           <input class="text-box" disabled>
         </div>
         <div *ngIf="question.type === 'largeText'">
-          <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+          <p class="question-text">{{countArray[i]}}. {{question.questionText}}<span class="required">{{question.answerRequired ? '*' : ''}}</span></p>
           <textarea class="text-box" disabled></textarea>
         </div>
         <div *ngIf="question.type === 'singleChoice'">
-          <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+          <p class="question-text">{{countArray[i]}}. {{question.questionText}}<span class="required">{{question.answerRequired ? '*' : ''}}</span></p>
           <p class="choice-limit">(Choose One)</p>
           <ul class="question-choice-list">
             <li *ngFor="let choice of question.choices" class="list-item"><i class="material-icons">radio_button_unchecked</i>{{choice}}</li>
           </ul>
         </div>
         <div *ngIf="question.type === 'multiChoice'">
-          <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+          <p class="question-text">{{countArray[i]}}. {{question.questionText}}<span class="required">{{question.answerRequired ? '*' : ''}}</span></p>
           <p *ngIf="question.choose > 0" class="choice-limit">(Choose {{question.choose}})</p>
           <ul class="question-choice-list">
             <li *ngFor="let choice of question.choices" class="list-item"><i class="material-icons">check_box_outline_blank</i>{{choice}}</li>
           </ul>
         </div>
+        <div *ngIf="question.type === 'likert'">
+          <p class="question-text">{{countArray[i]}}. {{question.questionText}}<span class="required">{{question.answerRequired ? '*' : ''}}</span></p>
+          <p *ngIf="question.attributes > 0" class="choice-limit">(Choose {{question.choose}})</p>
+          <div class="wrap">
+            <div *ngFor="let attribute of question.attributes">
+              <label class="attribute">{{attribute.attribute}}</label>
+              <ul class='likert'>
+                <li *ngFor="let choice of attribute.choices">
+                  <i class="material-icons">radio_button_unchecked</i>
+                  <label>{{choice}}</label>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
         <div *ngIf="question.type === 'docPicker'">
-          <p class="question-text">{{i + 1}}. {{question.docPickerText}}</p>
+          <p class="question-text">{{countArray[i]}}. {{question.docPickerText}}</p>
           <div class="doc-picker">Upload a document</div>
         </div>
         <div *ngIf="question.type === 'info'" [ngClass]="{'info-entry' : question.type === 'info'}">
-          <span class="info-number">{{i + 1}}.</span><p class="info-text">{{question.infoText}}</p>
+          <span class="info-number"></span><p class="info-text">{{question.infoText}}</p>
+        </div>
+        <div *ngIf="question.type === 'email'">
+          <p class="question-text">{{countArray[i]}}. {{question.emailText}}<span class="required">{{question.answerRequired ? '*' : ''}}</span></p>
+          <input class="text-box" disabled>
+        </div>
+        <div *ngIf="question.type === 'phoneNumber'">
+          <p class="question-text">{{countArray[i]}}. {{question.phoneNumberText}}<span class="required">{{question.answerRequired ? '*' : ''}}</span></p>
+          <input class="text-box" disabled>
         </div>
       </div>
     </div>

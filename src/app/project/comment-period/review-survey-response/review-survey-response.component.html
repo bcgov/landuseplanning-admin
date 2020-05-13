@@ -1,129 +1,168 @@
-<nav class="action-container">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item" >
+<nav *ngIf="!loading" class="action-container">
+  <ol class="breadcrumb" *ngIf="commentPeriod">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/projects']">All Projects</a>
+    </li>
+    <li class="breadcrumb-item">
       <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">
-      <a [routerLink]="['/p', currentProject._id, 'project-surveys']">Surveys</a>
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/p', currentProject._id, 'comment-periods']">Comment Periods</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/p', currentProject._id, 'cp', commentPeriod._id]">
+        {{commentPeriod.dateStarted | date: 'MMMM d'}} - {{commentPeriod.dateCompleted | date}}
+      </a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-      {{survey.name}}
+      Survey Response
     </li>
   </ol>
-  <div>
-    <div ngbDropdown placement="bottom-right">
-      <button class="btn btn-primary" id="actionDropdown" (click)="checkIfCanDelete()" ngbDropdownToggle>Actions</button>
-      <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
-        <button class="dropdown-item" (click)="editSurvey()">Edit</button>
-        <!-- <button class="dropdown-item" (click)="addComment()">Add a comment</button> -->
-        <!-- <button class="dropdown-item" (click)="exportComments()">Export All Responses</button> -->
-        <button *ngIf="canDeleteCommentPeriod" class="dropdown-item" (click)="deleteCommentPeriod()">Delete</button>
-      </div>
-    </div>
-  </div>
-</nav>
+  </nav>
 
 <div class="spinner-container" *ngIf="loading">
   <div class="spinner-new rotating"></div>
 </div>
 
-  <form *ngIf="commentReviewForm" [formGroup]="commentReviewForm" (ngSubmit)="register()">
-    <div class="form-row">
-      <div class="form-group col-md-12">
-        <label for="proponentResponse"><b>Attachments</b></label>
-        <div *ngIf="comment.documentsList?.length > 0">
-          <ul class="doc-list mb-3">
-            <li *ngFor="let document of comment.documentsList">
-              <span class="cell icon">
-                <i class="material-icons">insert_drive_file</i>
-              </span>
-              <span class="cell name clickable-row" [title]="document.internalOriginalName || ''"
-                (click)='downloadDocument(document)'>
-                <span class="cell__txt-content">{{document.internalOriginalName}}</span>
-              </span>
-            </li>
-          </ul>
-        </div>
-        <div *ngIf="comment.documentsList?.length === 0">
-          <p>This survey response has no associated documents.</p>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputAddDate"><b>Date Added</b></label>
-        <div class="input-group">
-          <input id="inputAddDate" container='body' type="text" class="form-control" placeholder="Select an add date"
-            name="dateAdded" formControlName="dateAdded" ngbDatepicker #addDatePicker="ngbDatepicker">
-          <div class="input-group-append">
-            <button disabled class="btn btn-outline-secondary calendar" (click)="addDatePicker.toggle()"
-              type="button"></button>
-          </div>
-        </div>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="inputPostDate"><b>Date Posted</b></label>
-        <div class="input-group">
-          <input id="inputPostDate" container='body' type="text" class="form-control" placeholder="Select a post date"
-            name="datePosted" formControlName="datePosted" ngbDatepicker #postDatePicker="ngbDatepicker">
-          <div class="input-group-append">
-            <button disabled class="btn btn-outline-secondary calendar" (click)="postDatePicker.toggle()"
-              type="button"></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </form>
-
   <main class="container-fluid-padding">
-    <h1>{{currentProject.name}} <span class="date">| Survey</span></h1>
 
     <div class="spinner-container" *ngIf="loading">
       <div class="spinner-new rotating"></div>
     </div>
 
     <section id="">
-      <div class="row survey-meta-info">
-        <div class="col-md-9">
-          <h3>{{survey.name}}</h3>
-        </div>
-        <div class="col-md-3 last-saved">
-          <p class="last-saved-text">Last Saved: <span>{{survey.lastSaved | date:'longDate'}}</span></p>
+      <div class="row">
+        <div class="col-md-12 survey-response-header">
+          <div><span>Survey Response # {{surveyResponse.commentId}}</span></div>
+          <div><span>Author:</span> {{surveyResponse.author}}</div>
+          <div><span>Location:</span> {{surveyResponse.location}}</div>
+          <div><span>Date Added:</span> {{surveyResponse.dateAdded | date: 'longDate'}}</div>
         </div>
       </div>
+      <div class="row">
+      <div class="col-md-8">
+
       <div class="row survey-main">
-        <div *ngFor="let question of survey.questions; let i = index" class="col-md-8">
-          <div *ngIf="question.type === 'smallText'">
-            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
-            <input class="text-box" disabled>
+        <div *ngFor="let entry of surveyResponse.responses; let i = index" class="col-md-12">
+          <div *ngIf="entry.question.type === 'smallText'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <p *ngIf="entry.answer.textAnswer" class="answer-text">{{entry.answer.textAnswer}}</p>
+            <p *ngIf="!entry.answer.textAnswer" class="no-answer-text">(blank)</p>
           </div>
-          <div *ngIf="question.type === 'largeText'">
-            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
-            <textarea class="text-box" disabled></textarea>
+          <div *ngIf="entry.question.type === 'largeText'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <p *ngIf="entry.answer.textAnswer" class="answer-text">{{entry.answer.textAnswer}}</p>
+            <p *ngIf="!entry.answer.textAnswer" class="no-answer-text">(blank)</p>
           </div>
-          <div *ngIf="question.type === 'singleChoice'">
-            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
+          <div *ngIf="entry.question.type === 'singleChoice'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
             <p class="choice-limit">(Choose One)</p>
             <ul class="question-choice-list">
-              <li *ngFor="let choice of question.choices" class="list-item"><i class="material-icons">radio_button_unchecked</i>{{choice}}</li>
+              <li *ngFor="let choice of entry.question.choices; let ci = index" class="list-item">
+                <i *ngIf="entry.answer.singleChoice !== choice" class="material-icons">radio_button_unchecked</i>
+                <i *ngIf="entry.answer.singleChoice === choice" class="material-icons">radio_button_checked</i>
+                <span [ngClass]="{'selected-choice' : entry.answer.singleChoice === choice}">{{choice}}</span>
+              </li>
+              <li *ngIf="entry.answer.otherText" class="list-item">
+                <i class="material-icons">radio_button_checked</i>
+                <span class="selected-choice">{{entry.answer.otherText}}</span>
+              </li>
             </ul>
           </div>
-          <div *ngIf="question.type === 'multiChoice'">
-            <p class="question-text">{{i + 1}}. {{question.questionText}}{{question.answerRequired ? '*' : ''}}</p>
-            <p *ngIf="question.choose > 0" class="choice-limit">(Choose {{question.choose}})</p>
+          <div *ngIf="entry.question.type === 'multiChoice'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <p *ngIf="entry.question.choose > 0" class="choice-limit">(Choose {{entry.question.choose}})</p>
             <ul class="question-choice-list">
-              <li *ngFor="let choice of question.choices" class="list-item"><i class="material-icons">check_box_outline_blank</i>{{choice}}</li>
+              <li *ngFor="let choice of entry.question.choices; let ci = index" class="list-item">
+                <i *ngIf="!entry.answer.multiChoices.includes(choice)" class="material-icons">check_box_outline_blank</i>
+                <i *ngIf="entry.answer.multiChoices.includes(choice)" class="material-icons">check_box</i>
+                <span [ngClass]="{'selected-choice' : entry.answer.multiChoices.includes(choice)}">{{choice}}</span>
+              </li>
+              <li *ngIf="entry.answer.otherText" class="list-item">
+                <i class="material-icons">check_box</i>
+                <span class="selected-choice">{{entry.answer.otherText}}</span>
+              </li>
             </ul>
           </div>
-          <div *ngIf="question.type === 'docPicker'">
-            <p class="question-text">{{i + 1}}. {{question.docPickerText}}</p>
+          <div *ngIf="entry.question.type === 'likert'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <div class="wrap">
+              <div *ngFor="let attribute of entry.question.attributes; let ai = index">
+                <label class="attribute">{{attribute.attribute}}</label>
+                <ul class='likert'>
+                  <li *ngFor="let choice of attribute.choices; let ci = index">
+                    <i *ngIf="entry.answer.attributeChoices[ai] !== choice" class="material-icons">radio_button_unchecked</i>
+                    <i *ngIf="entry.answer.attributeChoices[ai] === choice" class="material-icons">radio_button_checked</i>
+                    <label [ngClass]="{'selected-choice' : entry.answer.attributeChoices[ai] === choice}">{{choice}}</label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+          <div *ngIf="entry.question.type === 'docPicker'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.docPickerText}}</p>
             <div class="doc-picker">Upload a document</div>
           </div>
-          <div *ngIf="question.type === 'info'" [ngClass]="{'info-entry' : question.type === 'info'}">
-            <span class="info-number">{{i + 1}}.</span><p class="info-text">{{question.infoText}}</p>
+          <div *ngIf="entry.question.type === 'info'" [ngClass]="{'info-entry' : entry.question.type === 'info'}">
+            <span class="info-number"></span><p class="info-text">{{entry.question.infoText}}</p>
+          </div>
+          <div *ngIf="entry.question.type === 'email'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.emailText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <p *ngIf="entry.answer.emailAnswer" class="answer-text">{{entry.answer.emailAnswer}}</p>
+            <p *ngIf="!entry.answer.emailAnswer" class="no-answer-text">(blank)</p>
+          </div>
+          <div *ngIf="entry.question.type === 'phoneNumber'">
+            <p class="question-text">{{countArray[i]}}. {{entry.question.phoneNumberText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <p *ngIf="entry.answer.phoneNumberAnswer" class="answer-text">{{entry.answer.phoneNumberAnswer}}</p>
+            <p *ngIf="!entry.answer.phoneNumberAnswer" class="no-answer-text">(blank)</p>
           </div>
         </div>
       </div>
+    </div>
+
+      <div class="col-md-4">
+        <!-- <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="isAnonymousCheckBox"><b>Make author's name visible to the public</b></label>&nbsp;
+            <input id="isAnonymousCheckBox" type="checkbox" name="isAnonymous" formControlName="isNamePublic">
+          </div>
+        </div> -->
+        <div class="form-row attachments">
+          <div class="form-group col-md-12">
+            <label for="proponentResponse"><b>Attachments</b></label>
+            <div *ngIf="surveyResponse.documentsList?.length > 0">
+              <ul class="doc-list mb-3">
+                <li *ngFor="let document of surveyResponse.documentsList">
+                  <span class="cell icon">
+                    <i class="material-icons">insert_drive_file</i>
+                  </span>
+                  <span class="cell name clickable-row" [title]="document.internalOriginalName || ''"
+                    (click)='downloadDocument(document)'>
+                    <span class="cell__txt-content">{{document.internalOriginalName}}</span>
+                  </span>
+                  <!-- <span class="cell actions">
+                    <a class="btn btn-light" [class.active]="document.eaoStatus === 'Published'" role="button"
+                      title="Publish this document" (click)="toggleDocumentPublish(document, 'Published')">
+                      Publish
+                    </a>
+                    <a class="btn btn-light" [class.active]="document.eaoStatus === 'Rejected'" role="button"
+                      title="Reject this document" (click)="toggleDocumentPublish(document, 'Rejected')">
+                      Reject
+                    </a>
+                  </span> -->
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="surveyResponse.documentsList?.length === 0">
+              <p>This survey response has no associated documents.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
    </section>
 
 </main>

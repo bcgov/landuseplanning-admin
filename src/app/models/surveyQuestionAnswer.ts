@@ -1,7 +1,10 @@
 export class SurveyQuestionAnswer {
   _id: string;
-  textResponse?: string;
-  choices?: string[];
+  textAnswer?: string;
+  singleChoice?: string;
+  multiChoices?: string[];
+  attributeChoices?: string[];
   otherText?: string;
-  likert?: any;
+  emailAnswer?: string;
+  phoneNumberAnswer?: string;
 }

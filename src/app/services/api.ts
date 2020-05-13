@@ -366,6 +366,11 @@ export class ApiService {
     return this.http.post<any>(`${this.pathAPI}/${queryString}`, survey, {});
   }
 
+  deleteSurvey(survey: Survey): Observable<Survey> {
+    const queryString = `survey/${survey._id}`;
+    return this.http.delete<Survey>(`${this.pathAPI}/${queryString}`, {});
+  }
+
   // NB: returns array with 1 element
   getSurvey(id: string): Observable<Survey[]> {
     const fields = [
@@ -388,6 +393,7 @@ export class ApiService {
     const fields = [
       'project',
       'commentPeriod',
+      'dateAdded',
       'lastSaved',
       'name'
     ];
@@ -407,6 +413,7 @@ export class ApiService {
       '_id',
       'name',
       'lastSaved',
+      'dateAdded',
       'commentPeriod',
       'project',
       'questions',
@@ -417,8 +424,75 @@ export class ApiService {
   }
 
   saveSurvey(survey: Survey): Observable<Survey> {
-    const queryString = `commentperiod/${survey._id}`;
+    const queryString = `survey/${survey._id}`;
     return this.http.put<Survey>(`${this.pathAPI}/${queryString}`, survey, {});
+  }
+
+  //
+  // Survey Responses
+  //
+
+  getSurveyResponse(id: string, populateNextComment: boolean): Observable<any> {
+    const fields = [
+      '_id',
+      'author',
+      'commentId',
+      'dateAdded',
+      'documents',
+      'location',
+      'period',
+      'survey',
+      'responses',
+      'read',
+      'write',
+      'delete'
+    ];
+    let queryString = `surveyResponse/${id}?fields=${this.buildValues(fields)}`;
+    // if (populateNextComment) { queryString += '&populateNextComment=true'; }
+    console.log('this is what we are sending',`${this.pathAPI}/${queryString}` )
+    return this.http.get<any>(`${this.pathAPI}/${queryString}`, { observe: 'response' });
+  }
+
+  getResponsesByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string, count: boolean, filter: object): Observable<Object> {
+    const fields = [
+      '_id',
+      'author',
+      'location',
+      'commentId',
+      'dateAdded',
+      'documents',
+      'project',
+      'period',
+      'survey',
+      'read'
+    ];
+
+    let queryString = `surveyResponse?&period=${periodId}`;
+    if (pageNum !== null) { queryString += `&pageNum=${pageNum - 1}`; }
+    if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
+    if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
+    if (count !== null) { queryString += `&count=${count}`; }
+    // if (filter !== {}) {
+    //   Object.keys(filter).forEach(key => {
+    //     queryString += `&${key}=${filter[key]}`;
+    //   });
+    // }
+    queryString += `&fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+
+  getResponsesByProjId(projId: string): Observable<Object> {
+    const fields = [
+      'project'
+    ];
+
+    let queryString = `surveyResponse?&project=${projId}&`;
+    queryString += `count=true&`;
+    queryString += `fields=${this.buildValues(fields)}`;
+
+    return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //

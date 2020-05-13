@@ -19,6 +19,7 @@ import { ProjectDocumentsComponent } from './project-documents/project-documents
 import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
+import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
 
 import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
@@ -28,6 +29,7 @@ import { DocumentsResolver } from './project-documents/project-document-resolver
 import { ShapeFileResolver } from 'app/projects/add-edit-project/project-shapefile-resolver.services';
 import { ProjectResolver } from './project-resolver.service';
 import { ReviewCommentResolver } from './comment-period/review-comment/review-comment-resolver.service';
+import { ReviewSurveyResponseResolver } from './comment-period/review-survey-response/review-survey-response-resolver.service';
 import { ProjectUpdatesResolver } from './project-updates/project-updates-resolver.services';
 import { ContactsResolver } from 'app/contacts/contacts-resolver.service';
 //import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
@@ -41,6 +43,7 @@ import { ProjectSurveyDetailComponent } from './project-survey/project-survey-de
 import { ProjectSurveyResolver } from './project-survey/project-survey-resolver.services';
 import { ProjectSurveyDetailResolver } from './project-survey/project-survey-detail/project-survey-detail-resolver.services';
 import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
+import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
 
 const routes: Routes = [
   {
@@ -127,7 +130,8 @@ const routes: Routes = [
       },
       {
         path: 'project-surveys/add',
-        component: AddEditProjectSurveyComponent
+        component: AddEditProjectSurveyComponent,
+        // canDeactivate: [AddEditRouteGuard]
       },
       {
         path: 's/:surveyId',
@@ -150,7 +154,8 @@ const routes: Routes = [
           },
           {
             path: 'edit',
-            component: AddEditProjectSurveyComponent
+            component: AddEditProjectSurveyComponent,
+            // canDeactivate: [AddEditRouteGuard]
           },
           // {
           //   path: 'project/:surveyResponseId',
@@ -197,13 +202,13 @@ const routes: Routes = [
         path: 'comment-periods',
         component: CommentPeriodsComponent,
         resolve: {
-          commentPeriods: CommentPeriodsResolver
+          periodsAndSurveys: CommentPeriodsResolver
         }
       },
       {
         path: 'cp/:commentPeriodId',
         resolve: {
-          commentPeriod: CommentPeriodResolver,
+          cpAndSurveys: CommentPeriodResolver,
         },
         children: [
           {
@@ -246,6 +251,23 @@ const routes: Routes = [
                 component: ReviewCommentComponent
               }
             ]
+          },
+          {
+            path: 'sr/:surveyResponseId',
+            resolve: {
+              surveyResponse: ReviewSurveyResponseResolver
+            },
+            children: [
+              {
+                path: '',
+                redirectTo: 'details',
+                pathMatch: 'full'
+              },
+              {
+                path: 'details',
+                component: ReviewSurveyResponseComponent
+              }
+            ]
           }
         ]
       },
@@ -276,6 +298,7 @@ const routes: Routes = [
     ProjectSurveyResolver,
     ProjectSurveyDetailResolver,
     ReviewCommentResolver,
+    ReviewSurveyResponseResolver,
     // ProjectContactsResolver,
     LinkOrganizationResolver,
     ContactSelectResolver,

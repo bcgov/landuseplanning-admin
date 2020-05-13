@@ -11,6 +11,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 // components
@@ -57,6 +58,9 @@ import { ReviewSurveyResponsesTabComponent } from './comment-period/review-surve
 import { ReviewSurveyResponsesTabTableRowsComponent } from './comment-period/review-survey-responses-tab/review-survey-responses-tab-table-rows/review-survey-responses-tab-table-rows.component';
 import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 
+// Routes Guards
+import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard'
+
 @NgModule({
   imports: [
     CommonModule,
@@ -64,6 +68,7 @@ import { ReviewSurveyResponseComponent } from './comment-period/review-survey-re
     NgbModule,
     MatMenuModule,
     MatTabsModule,
+    MatCheckboxModule,
     NgxPaginationModule,
     ProjectRoutingModule,
     ReactiveFormsModule,
@@ -129,10 +134,11 @@ import { ReviewSurveyResponseComponent } from './comment-period/review-survey-re
     ProjectUpdatesComponent,
   ],
   providers: [
+    AddEditRouteGuard,
     ApiService,
     ExcelService,
     ProjectService,
-    StorageService
+    StorageService,
   ]
 })
 

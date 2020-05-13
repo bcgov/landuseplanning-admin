@@ -1,3 +1,5 @@
+import { SurveyLikert } from './surveyLikert'
+
 export class SurveyQuestion {
   _id: string;
   type: string;
@@ -5,10 +7,13 @@ export class SurveyQuestion {
   answerRequired: boolean;
   maxChars?: number;
   choices?: string[];
+  choose?: number;
   other?: boolean;
-  likert?: any;
+  attributes?: SurveyLikert[];
   infoText?: string;
   docPickerText?: string;
+  emailText?: string;
+  phoneNumberText?: string;
 
   // Permissions
   read: Array<string> = [];
@@ -22,7 +27,7 @@ export class SurveyQuestion {
     this.answerRequired = obj && obj.answerRequired || null;
     this.maxChars = obj && obj.maxChars || null;
     this.choices = obj && obj.choices || null;
-    this.likert = obj && obj.likert || null;
+    this.attributes = obj && obj.attributes || null;
     this.other = obj && obj.other || null;
     this.infoText = obj && obj.infoText || null;
     this.docPickerText = obj && obj.docPickerText || null;

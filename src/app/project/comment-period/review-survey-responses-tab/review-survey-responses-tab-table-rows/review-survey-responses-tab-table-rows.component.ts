@@ -4,19 +4,19 @@ import { TableComponent } from 'app/shared/components/table-template/table.compo
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { Router } from '@angular/router';
 
-import { Comment } from 'app/models/comment';
+import { SurveyResponse } from 'app/models/surveyResponse';
 import { StorageService } from 'app/services/storage.service';
 
 @Component({
   selector: 'app-review-survey-responses-tab-table-rows',
   templateUrl: './review-survey-responses-tab-table-rows.component.html',
-  styleUrls: ['./review-survey-responses-tab-table-rows.component.css']
+  styleUrls: ['./review-survey-responses-tab-table-rows.component.scss']
 })
 export class ReviewSurveyResponsesTabTableRowsComponent implements OnInit, TableComponent {
   @Input() data: TableObject;
   @Output() selectedCount: EventEmitter<any> = new EventEmitter();
 
-  public comments: Comment[];
+  public surveyResponses: SurveyResponse[];
   public paginationData: any;
   public projectId: string;
 
@@ -27,11 +27,14 @@ export class ReviewSurveyResponsesTabTableRowsComponent implements OnInit, Table
 
   ngOnInit() {
     this.projectId = this.storageService.state.currentProject.data._id;
-    this.comments = this.data.data;
+    this.surveyResponses = this.data.data;
     this.paginationData = this.data.paginationData;
+
+    console.log('here they are', this.surveyResponses)
   }
 
-  goToItem(comment) {
-    this.router.navigate([`p/${this.projectId}/cp/${comment.period}/c/${comment._id}/comment-details`]);
+  goToItem(surveyResponse) {
+    console.log('clicked', `p/${this.projectId}/cp/${surveyResponse.period}/sr/${surveyResponse._id}/details`)
+    this.router.navigate([`p/${this.projectId}/cp/${surveyResponse.period}/sr/${surveyResponse._id}/details`]);
   }
 }
