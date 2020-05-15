@@ -42,6 +42,9 @@ import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/
 import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
 import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
 import { CommentPeriodBannerComponent } from './comment-period-banner/comment-period-banner.component';
+import { ProjectEmailSubscribeComponent } from './project-email-subscribe/project-email-subscribe.component';
+import { EmailSubscribeService } from 'app/services/emailSubscribe.service';
+import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/email-subscribe-table-rows/email-subscribe-table-rows.component';
 
 @NgModule({
   imports: [
@@ -83,6 +86,8 @@ import { CommentPeriodBannerComponent } from './comment-period-banner/comment-pe
     ReviewCommentsTabTableRowsComponent,
     ShapefileTableRowsComponent,
     UploadComponent,
+    ProjectEmailSubscribeComponent,
+    EmailSubscribeTableRowsComponent,
   ],
   entryComponents: [
     AddDocumentTableRowsComponent,
@@ -93,6 +98,7 @@ import { CommentPeriodBannerComponent } from './comment-period-banner/comment-pe
     ReviewCommentsTabTableRowsComponent,
     ShapefileTableRowsComponent,
     UploadComponent,
+    EmailSubscribeTableRowsComponent,
   ],
   exports: [
     ComplianceComponent,
@@ -105,7 +111,8 @@ import { CommentPeriodBannerComponent } from './comment-period-banner/comment-pe
     ApiService,
     ExcelService,
     ProjectService,
-    StorageService
+    StorageService,
+    EmailSubscribeService
   ]
 })
 
