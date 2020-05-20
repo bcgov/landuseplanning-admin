@@ -71,11 +71,7 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
       })
 
       this.surveyQuestions = this.surveyResponse.responses.map(response => response.question)
-
       this.surveyItemCount(this.surveyQuestions)
-
-      console.log('survey qs', this.surveyResponse.responses)
-
   }
 
 
@@ -86,7 +82,6 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
   }
 
   public editSurvey() {
-    console.log('that is the life', `/p/${this.projectId}/s/${this.survey._id}/edit`)
     this.router.navigateByUrl(`/p/${this.projectId}/s/${this.survey._id}/edit`);
   }
 

@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { CdkDragDrop, moveItemInArray, copyArrayItem } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSmartModalService } from 'ngx-smart-modal';
-import { FormGroup, FormControl, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -39,29 +39,20 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   public changesSaved: boolean;
   public docPickerAvailable: boolean;
   public docPickerInstance: any[];
-  public questions$: Observable<any>;
-  // public canvasComponents: any;
   public scrollListener: () => void;
+  public payLoad = '';
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  @Input() questions: any[] = [];
-  public payLoad = '';
-
-
   constructor(
-    // public questions: any,
     public surveyBuilderService: SurveyBuilderService,
     private surveyService: SurveyService,
-    private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
     private storageService: StorageService,
     private ngxSmartModalService: NgxSmartModalService,
     private renderer: Renderer2
-  ) {
-    this.questions$ = surveyBuilderService.getQuestions();
-  }
+  ) {}
 
   ngOnInit() {
     this.storageService.state.selectedDocumentsForCP = null;
@@ -94,11 +85,9 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               (data: any) => {
-                console.log('here is the survey', data.survey)
                 if (data.survey) {
                   this.survey = data.survey;
                   this.storageService.state.currentSurvey = { type: 'currentSurvey', data: this.survey };
-                  // this.initSelectedDocs();
                   this.initForm(this.survey);
 
                   this.loading = false;
@@ -155,7 +144,6 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   checkForDocPicker(form) {
     this.docPickerInstance = form.questions.filter(question => question.type === 'docPicker')
-    console.log('doc picker avail', this.docPickerInstance)
     this.docPickerAvailable = !this.docPickerInstance.length;
   }
 
@@ -253,7 +241,6 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   }
 
   public deleteAttribute(question, attributeIndex: number) {
-    console.log('test', question)
     question.controls.attributes.removeAt(attributeIndex);
   }
 
@@ -261,13 +248,13 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     if (this.surveyForm.valid) {
       this.submitForm();
     } else {
-      alert('Your survey contains errors. Please complete all required fields.');
+      this.surveyForm.markAllAsTouched();
+      alert('Your survey is missing one or more required fields. Please review it for missing text, choices, or attributes.');
       return;
     }
   }
 
   private submitForm() {
-
 
     this.loading = true;
 
@@ -279,15 +266,11 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     //Survey save date
     this.survey.lastSaved = new Date();
 
-    // Survey Name
+    // Survey Name, Project, CommentPeriod, Questions
     this.survey.name = this.surveyForm.get('name').value;
     this.survey.project = this.currentProject._id;
-
     this.survey.commentPeriod = this.currentProject.commentPeriodForBanner._id;
-
     this.survey.questions = this.surveyForm.get('questions').value;
-
-    console.log('this is what you are sending', this.survey)
 
     this.loading = false;
 
@@ -323,7 +306,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
           () => { // onCompleted
             this.loading = false;
             this.openSnackBar('This survey was created successfuly.', 'Close');
-            this.router.navigate(['p', this.currentProject._id, 'project-survey']);
+            this.router.navigate(['/p', this.currentProject._id, 'project-surveys']);
           }
         );
     }

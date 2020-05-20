@@ -29,18 +29,17 @@
 
 <section *ngIf="!loading" class="container-fluid-padding">
   <form [formGroup]="surveyForm">
-  <div class="survey-builder-header">
+    <div class="survey-builder-header">
       <mat-form-field class="survey-name" >
         <input matInput placeholder="{{addEditPlaceholder}}" formControlName="name">
+        <mat-error class="survey-name-error" *ngIf="surveyForm.get('name').invalid">Survey name is required</mat-error>
       </mat-form-field>
     <div class="edit-buttons">
-      <em>Last Save: Apr 8, 2020</em>
+      <em>Last Save: {{ (survey?.lastSaved | date: 'longDate') || '-'}}</em>
       <button class="btn btn-outline-primary" (click)="onCancel()">Cancel</button>
-      <button class="btn btn-primary" [disabled]="surveyForm.invalid || currentQuestionsForm.length === 0" (click)="onSubmit()">Save</button>
+      <button class="btn btn-primary" [disabled]="currentQuestionsForm.length === 0" (click)="onSubmit()">Save</button>
     </div>
   </div>
-  <label class="survey-edit-warning" *ngIf="isEditing">Repeated edits to surveys may decrease reportability. If you foresee many changes to this survey, it is recommended you instead create a new one.</label>
-
   <div cdkDropListGroup class="new-survey-view">
     <div #componentsPane class="col-md-3" >
       <h4>Components</h4>
@@ -53,15 +52,15 @@
         [cdkDropListEnterPredicate]="noDrop"
         (cdkDropListDropped)="dropComponent($event)">
 
-        <div class="available-component" *ngFor="let component of components" cdkDrag [cdkDragDisabled]="component.type === 'docPicker' && !docPickerAvailable">
-          <i class="material-icons component-control available" *ngIf="component.type !== 'docPicker' || docPickerAvailable" cdkDragHandle>crop_free</i>
-            <i class="material-icons component-control unavailable" *ngIf="component.type === 'docPicker' && !docPickerAvailable" cdkDragHandle>crop_free</i>
+        <div class="available-component" [ngClass]="{'unavailable': component.type === 'docPicker' && !docPickerAvailable}" *ngFor="let component of components" cdkDrag [cdkDragDisabled]="component.type === 'docPicker' && !docPickerAvailable">
+          <i class="material-icons component-control available" *ngIf="component.type !== 'docPicker' || docPickerAvailable">crop_free</i>
+            <i class="material-icons component-control unavailable" *ngIf="component.type === 'docPicker' && !docPickerAvailable">crop_free</i>
             <span>{{component.name}}</span></div>
       </div>
     </div>
 
     <div class="col-md-9 ">
-      <h4>Survey Canvas</h4>
+      <h4>Survey Canvas <span class="survey-edit-warning" *ngIf="isEditing">Repeated edits to surveys may decrease reportability.</span></h4>
       <form class="survey-canvas">
         <div
         cdkDropList
@@ -86,6 +85,7 @@
             <mat-form-field class="new-component-text-form">
               <mat-label>{{question.value.type | camelToString}}</mat-label>
               <textarea matInput mat-autosize="true" formControlName="questionText" name="questionText" class="component-text-box"></textarea>
+              <mat-error *ngIf="question.invalid">Question text is required</mat-error>
              </mat-form-field>
          </div>
          <div *ngIf="question.value.type === 'info'" class="new-component-text">
@@ -93,6 +93,7 @@
           <mat-form-field class="new-component-text-form">
             <mat-label>{{question.value.type | camelToString}}</mat-label>
             <textarea matInput mat-autosize="true" formControlName="infoText" name="infoText" class="component-text-box" placeholder="Placeholder text"></textarea>
+            <mat-error *ngIf="question.invalid">Info box text is required</mat-error>
            </mat-form-field>
          </div>
          <div *ngIf="question.value.type === 'docPicker'" class="new-component-text">
@@ -100,6 +101,7 @@
             <mat-form-field class="new-component-text-form">
               <mat-label>{{question.value.type | camelToString}}</mat-label>
               <textarea matInput mat-autosize="true" formControlName="docPickerText" name="docPickerText" class="component-text-box" placeholder="Placeholder text"></textarea>
+              <mat-error *ngIf="question.invalid">Document picker text is required</mat-error>
             </mat-form-field>
          </div>
          <div *ngIf="question.value.type === 'email'" class="new-component-text">
@@ -107,6 +109,7 @@
           <mat-form-field class="new-component-text-form">
             <mat-label>{{question.value.type | camelToString}}</mat-label>
             <textarea matInput mat-autosize="true" formControlName="emailText" name="emailText" class="component-text-box"></textarea>
+            <mat-error *ngIf="question.invalid">Email text is required</mat-error>
            </mat-form-field>
         </div>
         <div *ngIf="question.value.type === 'phoneNumber'"  class="new-component-text">
@@ -114,25 +117,28 @@
           <mat-form-field class="new-component-text-form">
             <mat-label>{{question.value.type | camelToString}}</mat-label>
             <textarea matInput mat-autosize="true" formControlName="phoneNumberText" name="phoneNumberText" class="component-text-box"></textarea>
+            <mat-error *ngIf="question.invalid">Phone number text is required</mat-error>
            </mat-form-field>
         </div>
               <div class="new-component-config" [ngClass]="{'new-likert-config': question.value.type === 'likert' }">
                 <div class="new-component-setup">
 
                 <div *ngIf="question.value.type === 'singleChoice' || question.value.type === 'multiChoice'">
-                  <div *ngFor="let choice of question.controls.choices.controls; let ci = index" class="new-component-choice-form">
+                  <div *ngFor="let choice of question['controls'].choices.controls; let ci = index" class="new-component-choice-form">
                       <i *ngIf="question.value.type === 'singleChoice'" class="material-icons">radio_button_unchecked</i>
                       <i *ngIf="question.value.type === 'multiChoice'" class="material-icons">check_box_outline_blank</i>
                       <mat-form-field class="new-component-choice-form">
                         <input matInput [formControl]="choice" value="{{choice.value}}">
                         <mat-hint>Choice text</mat-hint>
+                        <mat-error *ngIf="choice.invalid">Choice text is required</mat-error>
                       </mat-form-field>
                       <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteChoice(question, ci)">
                         <i class="material-icons control-button-icon">close</i>
                       </button>
                   </div>
-                  <div *ngIf="question.controls.other.value === true" class="new-component-choice-form">
-                    <i class="material-icons">check_box_outline_blank</i>
+                  <div *ngIf="question['controls'].other.value === true" class="new-component-choice-form">
+                    <i *ngIf="question.value.type === 'singleChoice'" class="material-icons">radio_button_unchecked</i>
+                    <i *ngIf="question.value.type === 'multiChoice'" class="material-icons">check_box_outline_blank</i>
                     <p>Other:</p>
                     <button mat-icon-button class="theme-color control-button delete-icon other-delete" (click)="removeOther(question)">
                       <i class="material-icons control-button-icon">close</i>
@@ -141,16 +147,16 @@
                 </div>
                 <div *ngIf="question.value.type === 'likert'">
                   <div *ngIf="question.contains('answerRequired')" class="likert-options">
-                      <div class="">
+                      <div>
                         <mat-checkbox class="likert-required" checked="question.value.answerRequired.value" formControlName="answerRequired">Required?</mat-checkbox>
                       </div>
                   </div>
-                  <div *ngFor="let attribute of question.controls.attributes.controls; let ai = index" class="new-component-likert-form">
+                  <div *ngFor="let attribute of question['controls'].attributes.controls; let ai = index" class="new-component-likert-form">
                     <div class="new-component-attribute">
-
                       <mat-form-field class="attribute-form-field">
                         <input class="attribute-input" [formControl]="attribute.controls.attribute" matInput value="{{attribute.controls.attribute.value}}">
                         <mat-hint>Attribute text</mat-hint>
+                        <mat-error *ngIf="attribute.controls.attribute.invalid">Attribute text is required</mat-error>
                       </mat-form-field>
                       <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteAttribute(question, ai)">
                         <i class="material-icons control-button-icon">close</i>
@@ -160,9 +166,10 @@
                     <mat-form-field *ngFor="let choice of attribute.controls.choices.controls; let ci = index" class="new-component-likert-choice">
                         <input class="likert-choice-input" [formControl]="choice" matInput value="{{choice.value}}">
                         <mat-hint class="likert-choice-hint">{{likertChoiceText(ci)}}</mat-hint>
+                        <mat-error class="likert-choice-hint" *ngIf="choice.invalid">{{likertChoiceText(ci) + ' choice is required'}}</mat-error>
                     </mat-form-field>
-                    </div>
                   </div>
+                </div>
                 </div>
               </div>
               <div *ngIf="question.contains('answerRequired') && question.value.type !== 'likert'" class="new-component-options">
@@ -171,26 +178,30 @@
                     <mat-checkbox checked="theme-color question.value.answerRequired.value" formControlName="answerRequired">Required?</mat-checkbox>
                   </div>
                 </div>
-                <div *ngIf="question.value.type === 'smallText' || question.value.type === 'largeText'">
-                  <mat-form-field class="new-component-text-response-form">
+                <div *ngIf="question.value.type === 'smallText' || question.value.type === 'largeText'" class="limit-options">
+                  <mat-form-field class="new-component-text-response-form limit-input">
                     <input formControlName="maxChars" type="number" matInput>
-                    <mat-hint>Response character limit</mat-hint>
                   </mat-form-field>
+                  <label class="limit-label">Character limit</label>
                 </div>
-                <div *ngIf="question.value.type === 'multiChoice'">
-                  <mat-form-field class="new-component-text-response-form">
+                <div *ngIf="question.value.type === 'multiChoice'"  class="limit-options">
+                  <mat-form-field class="new-component-text-response-form limit-input">
                     <input formControlName="choose" type="number" matInput>
-                    <mat-hint>Choices allowed(leave blank for unlimited)</mat-hint>
                   </mat-form-field>
+                  <label class="limit-label">Choices</label>
                 </div>
               </div>
             </div>
             <div *ngIf="question.value.type === 'singleChoice' || question.value.type === 'multiChoice'" class="new-component-buttons">
-              <button class="theme-color add-button" mat-button (click)=addChoice(question,i)><i class="material-icons">add</i>Add choice</button>
-              <button class="theme-color add-button" mat-button (click)=addOther(question) [disabled]="question.controls.other.value === true"><i class="material-icons">add</i>Add "Other"</button>
+              <div>
+                <button class="theme-color add-button" mat-button (click)=addChoice(question,i)><i class="material-icons">add</i>Add choice</button>
+                <button class="theme-color add-button" mat-button (click)=addOther(question) [disabled]="question['controls'].other.value === true"><i class="material-icons">add</i>Add "Other"</button>
+              </div>
+              <p *ngIf="!question['controls'].choices.length"  class="form-error">At least one choice is required.</p>
             </div>
             <div *ngIf="question.value.type === 'likert'" class="new-component-buttons">
               <button class="theme-color add-button" mat-button (click)=addAttribute(question)><i class="material-icons">add</i>Add attribute</button>
+              <p *ngIf="!question['controls'].attributes.length"  class="form-error">At least one attribute is required.</p>
             </div>
         </div>
 
@@ -199,6 +210,10 @@
       </form>
     </div>
   </div>
+  <div class="edit-buttons">
+    <em>Last Save: {{ (survey?.lastSaved | date: 'longDate') || '-'}}</em>
+    <button class="btn btn-outline-primary" (click)="onCancel()">Cancel</button>
+    <button class="btn btn-primary" [disabled]="currentQuestionsForm.length === 0" (click)="onSubmit()">Save</button>
+  </div>
 </form>
-
 </section>

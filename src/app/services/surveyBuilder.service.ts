@@ -1,8 +1,7 @@
-import { Injectable }   from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 
-import { SurveyQuestion }     from '../models/surveyQuestion';
-import { of } from 'rxjs';
+import { SurveyQuestion } from '../models/surveyQuestion';
 import { Utils } from 'app/shared/utils/utils';
 
 
@@ -10,36 +9,13 @@ import { Utils } from 'app/shared/utils/utils';
 export class SurveyBuilderService {
 
   private utils = new Utils();
-  public questions: any;
 
-  constructor() {
-
-    this.questions = []
-  }
-
-  // toFormGroup(questions: SurveyQuestion<string>[] ) {
-  //   let group: any = {};
-
-  //   questions.forEach(question => {
-  //     group[question.key] = question.required ? new FormControl(question.value || '', Validators.required)
-  //                                             : new FormControl(question.value || '');
-  //   });
-  //   console.log('this is the group', group);
-  //   return new FormGroup(group);
-  // }
-
-
-  currentForm() {}
-
-  // genForm() {
-  //   this.toFormGroup(this.questions)
-  // }
+  constructor() {}
 
   buildEditForm(surveyQuestionsForm: FormArray, surveyQuestionsToEdit: SurveyQuestion[]): FormArray {
     surveyQuestionsToEdit.forEach(question => {
       surveyQuestionsForm.push(this.newQuestion(null, null, question))
     })
-    console.log(surveyQuestionsForm);
     return surveyQuestionsForm;
   }
 
@@ -62,7 +38,6 @@ export class SurveyBuilderService {
         answerRequired: new FormControl(questionProps.answerRequired),
         maxChars: new FormControl(questionProps.maxChars)
       })
-
     } else if (questionProps.type === 'largeText') {
       return new FormGroup({
         type: new FormControl(questionProps.type),
@@ -120,11 +95,11 @@ export class SurveyBuilderService {
     }
   }
 
-  newChoice() {
+  newChoice(): FormControl {
     return new FormControl(null, Validators.required)
   }
 
-  newLikertAttribute() {
+  newLikertAttribute(): FormGroup {
     return new FormGroup({
       attribute: new FormControl(null, Validators.required),
       choices: this.getChoicesArray(null, 5)
@@ -168,9 +143,5 @@ export class SurveyBuilderService {
     }
 
     return attributesArray;
-  }
-
-  getQuestions() {
-    return of(this.questions);
   }
 }

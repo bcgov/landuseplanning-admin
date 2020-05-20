@@ -11,7 +11,5 @@ export class ScrollListenDirective {
   @HostListener('scroll', ['$event'])
   onScroll(event) {
 
-    // console.log('the vent', event, this.componentsPane )
-    // this.scrollArea
   }
 }

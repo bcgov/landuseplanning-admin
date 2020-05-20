@@ -449,7 +449,6 @@ export class ApiService {
     ];
     let queryString = `surveyResponse/${id}?fields=${this.buildValues(fields)}`;
     // if (populateNextComment) { queryString += '&populateNextComment=true'; }
-    console.log('this is what we are sending',`${this.pathAPI}/${queryString}` )
     return this.http.get<any>(`${this.pathAPI}/${queryString}`, { observe: 'response' });
   }
 

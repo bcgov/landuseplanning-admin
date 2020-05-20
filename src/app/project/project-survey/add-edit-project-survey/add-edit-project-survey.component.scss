@@ -5,7 +5,6 @@
 h1 {
   background: white;
   color: black;
-  // font-size: 2.1rem;
   margin: -19px -24px 30px;
   padding: 9px 26px 14px;
   box-sizing: content-box;
@@ -24,10 +23,20 @@ h1 {
 .survey-edit-warning {
   color: blue;
   font-size: 0.9rem;
-  margin-top: -1rem;
-  float: left;
+  margin-top: 0.5rem;
+  margin-right: 2rem;
+  float: right;
   font-weight: bold;
-  padding: 0 0 15px 26px;
+}
+
+.survey-name-error {
+  font-size: 0.9rem;
+}
+
+.form-error {
+  color: red;
+  align-self: center;
+  margin: 0 1rem 0 0;
 }
 
 .survey-builder-header {
@@ -35,10 +44,7 @@ h1 {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  // font-size: 2.1rem;
-  // margin: -26px -24px 30px;
-  // padding: 9px 26px 14px;
-  // box-sizing: content-box;
+  margin-bottom: 1.5rem;
 }
 
 .edit-buttons {
@@ -46,6 +52,7 @@ h1 {
     flex-direction: row;
     padding-bottom: 20px;
     align-items: flex-end;
+    justify-content: flex-end;
     margin: 11px;
 
     em {
@@ -77,10 +84,6 @@ mat-checkbox ::ng-deep .mat-checkbox-inner-container
   background-color: blue !important;
   color: blue;
 }
-
-// ::ng-deep.mat-form-field-ripple {
-//  background-color: blue !important;;
-// }
 
 ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-ripple .mat-ripple-element {
   opacity: 0.03 !important;
@@ -117,7 +120,6 @@ mat-checkbox ::ng-deep .mat-checkbox-inner-container
 
 .control-handle {
   cursor: move;
-
 }
 
 textarea {
@@ -125,7 +127,14 @@ textarea {
   overflow: hidden;
 }
 
+.new-component-setup {
+  width: 100%;
+}
 
+.new-component-buttons {
+  display: flex;
+  justify-content: space-between;
+}
 
 .survey-components-list, .survey-canvas-list {
   min-height: 60px;
@@ -251,6 +260,7 @@ textarea {
   background: white;
   font-size: 1.2rem;
   display: flex;
+  cursor: move;
 
   span {
     align-self: center;
@@ -303,11 +313,24 @@ textarea {
 
 .likert-options {
   text-align: right;
-  // float: right;
 }
 
 .likert-choice-hint {
   font-size: 0.75rem;
+}
+
+.limit-options {
+  display: flex;
+
+  .limit-input {
+    width: 60px;
+    text-align: center;
+  }
+
+  .limit-label {
+    align-self: center;
+    padding-left: 0.5rem;
+  }
 }
 
 .component-text-box {
@@ -331,6 +354,7 @@ textarea {
 
 .unavailable {
   color: grey;
+  cursor: initial;
 }
 
 .control-button-icon {

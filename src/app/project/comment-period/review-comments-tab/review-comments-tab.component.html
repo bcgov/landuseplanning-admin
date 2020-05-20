@@ -32,7 +32,7 @@
     </div>
   </div>
   <div class="result-num">
-    Displaying <strong>{{tableParams.pageSize}} of {{tableParams.totalListItems}}</strong> Comments
+    Displaying <strong>{{tableParams.totalListItems >= tableParams.pageSize ? tableParams.pageSize : tableParams.totalListItems }} of {{tableParams.totalListItems}}</strong> Comments
   </div>
 </section>
 

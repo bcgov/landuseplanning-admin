@@ -29,12 +29,9 @@ export class ReviewSurveyResponsesTabTableRowsComponent implements OnInit, Table
     this.projectId = this.storageService.state.currentProject.data._id;
     this.surveyResponses = this.data.data;
     this.paginationData = this.data.paginationData;
-
-    console.log('here they are', this.surveyResponses)
   }
 
   goToItem(surveyResponse) {
-    console.log('clicked', `p/${this.projectId}/cp/${surveyResponse.period}/sr/${surveyResponse._id}/details`)
     this.router.navigate([`p/${this.projectId}/cp/${surveyResponse.period}/sr/${surveyResponse._id}/details`]);
   }
 }

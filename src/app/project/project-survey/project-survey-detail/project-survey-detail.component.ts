@@ -51,16 +51,10 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     .takeUntil(this.ngUnsubscribe)
     .subscribe(
       (data) => {
-        console.log('it ran ')
         this.survey = data.survey;
       })
 
-      console.log('survey qs', this.survey.questions)
-
-
       this.surveyItemCount(this.survey.questions)
-
-
       this.currentProject = this.storageService.state.currentProject.data;
   }
 
@@ -74,7 +68,6 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
   }
 
   editSurvey() {
-    console.log('that is the life', `/p/${this.projectId}/s/${this.survey._id}/edit`)
     this.router.navigateByUrl(`/p/${this.projectId}/s/${this.survey._id}/edit`);
   }
 

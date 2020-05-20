@@ -13,7 +13,6 @@ export class ProjectSurveyDetailResolver implements Resolve<Object> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const surveyId = route.paramMap.get('surveyId');
-    console.log('it is the project', surveyId)
 
     return this.surveyService.getById(surveyId);
   }
