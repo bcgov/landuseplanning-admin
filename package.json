@@ -44,7 +44,7 @@
     "lodash": "4.17.15",
     "material-components-web": "^5.1.0",
     "moment": "~2.25.0",
-    "moment-timezone": "~0.5.14",
+    "moment-timezone": "0.5.25",
     "mygovbc-bootstrap-theme": "^0.4.1",
     "ngx-cookie-service": "^2.4.0",
     "ngx-pagination": "^3.2.0",
