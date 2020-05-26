@@ -28,7 +28,7 @@
         "source": {
           "type": "Git",
           "git": {
-            "uri": "https://github.com/bcgov/gcpe-lup-admin"
+            "uri": "https://github.com/bcgov/landuseplanning-admin"
           }
         },
         "strategy": {

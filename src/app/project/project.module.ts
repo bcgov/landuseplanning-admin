@@ -51,12 +51,13 @@ import { CommentPeriodBannerComponent } from './comment-period-banner/comment-pe
 import { ProjectSurveyComponent } from './project-survey/project-survey.component';
 import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
 import { ProjectSurveyTableRowsComponent } from './project-survey/project-survey-table-rows/project-survey-table-rows.component';
-// import { SurveyFormBuilderComponent } from './project-survey/add-edit-project-survey/survey-form-builder/survey-form-builder.component';
-// import { SurveyFormQuestionComponent } from './project-survey/add-edit-project-survey/survey-form-question/survey-form-question.component';
 import { ProjectSurveyDetailComponent } from './project-survey/project-survey-detail/project-survey-detail.component';
 import { ReviewSurveyResponsesTabComponent } from './comment-period/review-survey-responses-tab/review-survey-responses-tab.component';
 import { ReviewSurveyResponsesTabTableRowsComponent } from './comment-period/review-survey-responses-tab/review-survey-responses-tab-table-rows/review-survey-responses-tab-table-rows.component';
 import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
+import { ProjectEmailSubscribeComponent } from './project-email-subscribe/project-email-subscribe.component';
+import { EmailSubscribeService } from 'app/services/emailSubscribe.service';
+import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/email-subscribe-table-rows/email-subscribe-table-rows.component';
 
 // Routes Guards
 import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard'
@@ -109,12 +110,12 @@ import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-
     ProjectSurveyComponent,
     AddEditProjectSurveyComponent,
     ProjectSurveyTableRowsComponent,
-    // SurveyFormBuilderComponent,
-    // SurveyFormQuestionComponent,
     ProjectSurveyDetailComponent,
     ReviewSurveyResponsesTabComponent,
     ReviewSurveyResponsesTabTableRowsComponent,
     ReviewSurveyResponseComponent,
+    ProjectEmailSubscribeComponent,
+    EmailSubscribeTableRowsComponent,
   ],
   entryComponents: [
     AddDocumentTableRowsComponent,
@@ -125,6 +126,7 @@ import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-
     ReviewCommentsTabTableRowsComponent,
     ShapefileTableRowsComponent,
     UploadComponent,
+    EmailSubscribeTableRowsComponent,
   ],
   exports: [
     ComplianceComponent,
@@ -139,6 +141,7 @@ import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-
     ExcelService,
     ProjectService,
     StorageService,
+    EmailSubscribeService
   ]
 })
 
