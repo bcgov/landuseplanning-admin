@@ -44,8 +44,11 @@ import { DocumentService } from 'app/services/document.service';
 import { KeycloakService } from 'app/services/keycloak.service';
 import { ProjectService } from 'app/services/project.service';
 import { SearchService } from 'app/services/search.service';
-import { UserService } from 'app/services/user.service';
 import { SideBarService } from 'app/services/sidebar.service';
+import { SurveyService } from 'app/services/survey.service';
+import { SurveyResponseService } from 'app/services/surveyResponse.service';
+import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
+import { UserService } from 'app/services/user.service';
 
 // feature modules
 import { TokenInterceptor } from 'app/shared/utils/token-interceptor';
@@ -110,7 +113,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AddEditActivityComponent,
     SearchHelpComponent,
     UserTableRowsComponent,
-    EnvBannerComponent,
+    EnvBannerComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -156,6 +159,9 @@ export function kcFactory(keycloakService: KeycloakService) {
     RecentActivityService,
     SearchService,
     SideBarService,
+    SurveyService,
+    SurveyResponseService,
+    SurveyBuilderService,
     UserService,
   ],
   entryComponents: [

@@ -1,0 +1,15 @@
+<tr
+  *ngFor="let response of surveyResponses | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
+  class="clickable-row">
+  <td (click)="goToItem(response)" data-label="CommentId" scope="row" class="col-1">{{response.commentId}}</td>
+  <td (click)="goToItem(response)" data-label="Author" scope="row" class="col-2">{{response.author}}</td>
+  <td (click)="goToItem(response)" data-label="Location" scope="row" class="col-2">{{response.location}}</td>
+  <td (click)="goToItem(response)" data-label="Date" scope="row" class="col-3">{{response.dateAdded | date:'longDate'}}</td>
+  <td (click)="goToItem(response)" data-label="Survey Name" scope="row" class="col-3">{{response.survey}}</td>
+  <td (click)="goToItem(response)" data-label="Attachments" scope="row" class="col-1">
+    <i *ngIf="response.attachments" class="material-icons">
+      attach_file
+    </i>
+    {{response.attachments}}
+  </td>
+</tr>

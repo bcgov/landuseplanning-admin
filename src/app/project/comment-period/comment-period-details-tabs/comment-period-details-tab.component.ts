@@ -5,6 +5,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
 
+import { Survey } from 'app/models/survey';
+import { SurveyService } from 'app/services/survey.service';
+
 import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { StorageService } from 'app/services/storage.service';
@@ -21,6 +24,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   @Input() public commentPeriod: CommentPeriod;
+  @Input() public surveys: Array<Survey>;
 
   public commentPeriodPublishedStatus: string;
   public publishAction: string;
@@ -28,11 +32,16 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
   public loading = true;
   public commentPeriodDocs = [];
   public canDeleteCommentPeriod = false;
+  public prettyCommentingMethod: string;
+  public surveySelected: string;
+  public surveyNames = {};
 
   constructor(
     private api: ApiService,
+    private surveyService: SurveyService,
     private commentPeriodService: CommentPeriodService,
     private documentService: DocumentService,
+    private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
     private storageService: StorageService
@@ -52,6 +61,15 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
         );
     }
 
+    if (!this.surveys) {
+      this.route.data.subscribe(res => {this.surveys = res.cpAndSurveys.surveys.data})
+    }
+
+    if (this.surveys) {
+      this.surveys.forEach(survey => this.surveyNames[survey._id] = survey.name)
+    }
+
+    this.surveySelected = this.commentPeriod.surveySelected;
     this.loading = false;
   }
 

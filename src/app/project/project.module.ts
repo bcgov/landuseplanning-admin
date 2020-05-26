@@ -7,6 +7,12 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ProjectRoutingModule } from './project-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 // components
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
@@ -42,9 +48,19 @@ import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/
 import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
 import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
 import { CommentPeriodBannerComponent } from './comment-period-banner/comment-period-banner.component';
+import { ProjectSurveyComponent } from './project-survey/project-survey.component';
+import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
+import { ProjectSurveyTableRowsComponent } from './project-survey/project-survey-table-rows/project-survey-table-rows.component';
+import { ProjectSurveyDetailComponent } from './project-survey/project-survey-detail/project-survey-detail.component';
+import { ReviewSurveyResponsesTabComponent } from './comment-period/review-survey-responses-tab/review-survey-responses-tab.component';
+import { ReviewSurveyResponsesTabTableRowsComponent } from './comment-period/review-survey-responses-tab/review-survey-responses-tab-table-rows/review-survey-responses-tab-table-rows.component';
+import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 import { ProjectEmailSubscribeComponent } from './project-email-subscribe/project-email-subscribe.component';
 import { EmailSubscribeService } from 'app/services/emailSubscribe.service';
 import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/email-subscribe-table-rows/email-subscribe-table-rows.component';
+
+// Routes Guards
+import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard'
 
 @NgModule({
   imports: [
@@ -53,11 +69,16 @@ import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/emai
     NgbModule,
     MatMenuModule,
     MatTabsModule,
+    MatCheckboxModule,
     NgxPaginationModule,
     ProjectRoutingModule,
     ReactiveFormsModule,
     CKEditorModule,
-    SharedModule
+    SharedModule,
+    DragDropModule,
+    MatGridListModule,
+    MatInputModule,
+    MatButtonModule
   ],
   declarations: [
     AddCommentComponent,
@@ -86,6 +107,13 @@ import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/emai
     ReviewCommentsTabTableRowsComponent,
     ShapefileTableRowsComponent,
     UploadComponent,
+    ProjectSurveyComponent,
+    AddEditProjectSurveyComponent,
+    ProjectSurveyTableRowsComponent,
+    ProjectSurveyDetailComponent,
+    ReviewSurveyResponsesTabComponent,
+    ReviewSurveyResponsesTabTableRowsComponent,
+    ReviewSurveyResponseComponent,
     ProjectEmailSubscribeComponent,
     EmailSubscribeTableRowsComponent,
   ],
@@ -108,6 +136,7 @@ import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/emai
     ProjectUpdatesComponent,
   ],
   providers: [
+    AddEditRouteGuard,
     ApiService,
     ExcelService,
     ProjectService,

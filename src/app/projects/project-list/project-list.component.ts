@@ -112,7 +112,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     let projectList = [];
     if (this.projects && this.projects.length > 0) {
       this.projects.forEach(project => {
-        console.log(project.isPublished);
         project.read.includes('public') ? this.visibility = "Published" : this.visibility = "Not Published";
         projectList.push(
           {

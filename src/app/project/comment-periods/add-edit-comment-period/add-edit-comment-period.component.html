@@ -44,6 +44,13 @@
 
 <section *ngIf="!loading" class="container-fluid-padding">
     <form [formGroup]="commentPeriodForm" (ngSubmit)="register(commentPeriodForm)">
+      <div class="text-right">
+        <button class="btn btn-outline-primary" type="cancel" (click)="onCancel()">Cancel</button>
+        &nbsp;
+        <button [disabled]="!commentPeriodForm.valid" class="btn btn-primary" type="submit"
+            (click)="onSubmit()">Save</button>
+    </div>
+      <h2>Status</h2>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputStartDate">Start Date*</label>
@@ -89,14 +96,48 @@
             </div>
         </div>
 
+
+        <h2 class="h2">Descriptions</h2>
         <div class="form-row">
-          <div class="form-group form-check form-check-inline col-md-4">
-            <input id="externalEngagementTool" name="externalEngagementTool" formControlName="externalEngagementTool" class="form-check-input" type="checkbox">
-            <label for="externalEngagementTool" class="external-comments-label">External Engagement Tool</label>
+          <div class="form-group col-md-6">
+              <label for="infoForCommentText">Comment Period Short Description*</label>
+              <textarea required id="infoForCommentText" class="form-control" rows="3" name="infoForCommentText"
+                  formControlName="infoForCommentText"></textarea>
+          </div>
+      </div>
+
+      <div class="form-row">
+          <div class="form-group col-md-6">
+              <label for="commentPeriodInfo">Comment Period Long Description*</label>
+              <ckeditor name="commentPeriodInfo" id="commentPeriodInfo" formControlName="commentPeriodInfo" [editor]="Editor"
+                  [data]="commentPeriodInfo"></ckeditor>
+          </div>
+      </div>
+
+        <h2 class="h2">Commenting Method</h2>
+        <div class="form-row">
+          <div class="form-group form-check form-check-inline col-md-12">
+            <input id="basicForm" name="commentingMethod" formControlName="commentingMethod" class="form-radio-input" type="radio" value="basicForm" checked>
+            <label for="basicForm" class="comment-method-label">Basic Form</label>
+            <input id="surveyTool" name="commentingMethod" formControlName="commentingMethod" class="form-radio-input" value="surveyTool" type="radio">
+            <label for="surveyTool" class="comment-method-label">Survey</label>
+            <input id="externalEngagementTool" name="commentingMethod" formControlName="commentingMethod" class="form-check-input" value="externalEngagementTool" type="radio">
+            <label for="externalEngagementTool" class="comment-method-label">External Engagement Tool</label>
           </div>
         </div>
 
-        <div [hidden]="!commentPeriodForm.value.externalEngagementTool" class="form-row">
+        <div [hidden]="commentPeriodForm.value.commentingMethod !== 'surveyTool'" class="form-row">
+          <div class="form-group col-md-6">
+            <select formControlName="surveySelected" id="surveySelect" class="form-control">
+              <option>(None Selected)</option>
+              <option *ngFor="let survey of availableSurveys" [value]=survey._id>{{survey.name}}</option>
+            </select>
+            <label for="surveySelect"> Select survey for this comment period.</label>
+            <!-- <button class="btn btn-outline-primary">Create new survey</button> -->
+          </div>
+        </div>
+
+        <div [hidden]="commentPeriodForm.value.commentingMethod !== 'externalEngagementTool'" class="form-row">
           <div class="form-group col-md-6">
             <label for="externalToolPopupText">External Tool Popup Text*</label>
                 <ckeditor name="externalToolPopupText" id="externalToolPopupText"
@@ -106,25 +147,9 @@
           </div>
         </div>
 
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="infoForCommentText">Comment Period Short Description*</label>
-                <textarea required id="infoForCommentText" class="form-control" rows="3" name="infoForCommentText"
-                    formControlName="infoForCommentText"></textarea>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="commentPeriodInfo">Comment Period Long Description*</label>
-                <ckeditor name="commentPeriodInfo" id="commentPeriodInfo" formControlName="commentPeriodInfo" [editor]="Editor"
-                    [data]="commentPeriodInfo"></ckeditor>
-            </div>
-        </div>
-
+        <h2 class="h2">Related Documents</h2>
         <div class="form-row">
             <div class="form-group col-md-12">
-                <label for="documentsSel">Related Documents</label>
                 <ul class="doc-list mb-3" *ngIf="storageService.state.selectedDocumentsForCP">
                     <li *ngFor="let doc of storageService.state.selectedDocumentsForCP.data">
                         <span class="cell icon">
@@ -142,11 +167,12 @@
                     </li>
                 </ul>
                 <div>
-                    <button class="btn btn-primary" type="button" (click)="addDocuments()">Add Documents</button>
+                    <button class="btn btn-outline-primary" type="button" (click)="addDocuments()">Add Documents</button>
                 </div>
             </div>
         </div>
 
+        <h2 class="h2">Open Houses</h2>
         <div formArrayName="openHouses">
             <div class="card" *ngFor="let item of commentPeriodForm.get('openHouses')['controls']; let $index=index"
                 [formGroupName]="$index">
@@ -184,15 +210,8 @@
             &nbsp;
         </div>
 
-        <button class="btn btn-primary" (click)="addOpenHouseRow()">
+        <button class="btn btn-outline-primary" (click)="addOpenHouseRow()">
             Add Another Open House
         </button>
-
-        <div class="text-right">
-            <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
-            &nbsp;
-            <button [disabled]="!commentPeriodForm.valid" class="btn btn-primary" type="submit"
-                (click)="onSubmit()">Save</button>
-        </div>
     </form>
 </section>

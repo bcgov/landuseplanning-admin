@@ -20,6 +20,7 @@ import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefi
 import { ProjectEmailSubscribeComponent } from './project-email-subscribe/project-email-subscribe.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
+import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
 
 import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
@@ -29,6 +30,7 @@ import { DocumentsResolver } from './project-documents/project-document-resolver
 import { ShapeFileResolver } from 'app/projects/add-edit-project/project-shapefile-resolver.services';
 import { ProjectResolver } from './project-resolver.service';
 import { ReviewCommentResolver } from './comment-period/review-comment/review-comment-resolver.service';
+import { ReviewSurveyResponseResolver } from './comment-period/review-survey-response/review-survey-response-resolver.service';
 import { ProjectUpdatesResolver } from './project-updates/project-updates-resolver.services';
 import { ContactsResolver } from 'app/contacts/contacts-resolver.service';
 //import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
@@ -37,6 +39,12 @@ import { LinkOrganizationComponent } from 'app/shared/components/link-organizati
 import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
 import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
 import { ShapefilesResolver } from './project-shapefiles/project-shapefile-resolver.services';
+import { ProjectSurveyComponent } from './project-survey/project-survey.component';
+import { ProjectSurveyDetailComponent } from './project-survey/project-survey-detail/project-survey-detail.component';
+import { ProjectSurveyResolver } from './project-survey/project-survey-resolver.services';
+import { ProjectSurveyDetailResolver } from './project-survey/project-survey-detail/project-survey-detail-resolver.services';
+import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
+import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
 
 const routes: Routes = [
   {
@@ -119,6 +127,38 @@ const routes: Routes = [
         component: ProjectEmailSubscribeComponent,
       },
       {
+        path: 'project-surveys',
+        component: ProjectSurveyComponent,
+        resolve: {
+          surveys: ProjectSurveyResolver
+        }
+      },
+      {
+        path: 'project-surveys/add',
+        component: AddEditProjectSurveyComponent,
+      },
+      {
+        path: 's/:surveyId',
+        resolve: {
+          survey: ProjectSurveyDetailResolver,
+        },
+        children: [
+          {
+            path: '',
+            redirectTo: 'project-survey-details',
+            pathMatch: 'full'
+          },
+          {
+            path: 'project-survey-details',
+            component: ProjectSurveyDetailComponent
+          },
+          {
+            path: 'edit',
+            component: AddEditProjectSurveyComponent,
+          },
+        ]
+      },
+      {
         path: 'compliance',
         component: ComplianceComponent,
       },
@@ -144,13 +184,13 @@ const routes: Routes = [
         path: 'comment-periods',
         component: CommentPeriodsComponent,
         resolve: {
-          commentPeriods: CommentPeriodsResolver
+          periodsAndSurveys: CommentPeriodsResolver
         }
       },
       {
         path: 'cp/:commentPeriodId',
         resolve: {
-          commentPeriod: CommentPeriodResolver,
+          cpAndSurveys: CommentPeriodResolver,
         },
         children: [
           {
@@ -193,6 +233,23 @@ const routes: Routes = [
                 component: ReviewCommentComponent
               }
             ]
+          },
+          {
+            path: 'sr/:surveyResponseId',
+            resolve: {
+              surveyResponse: ReviewSurveyResponseResolver
+            },
+            children: [
+              {
+                path: '',
+                redirectTo: 'details',
+                pathMatch: 'full'
+              },
+              {
+                path: 'details',
+                component: ReviewSurveyResponseComponent
+              }
+            ]
           }
         ]
       },
@@ -220,7 +277,10 @@ const routes: Routes = [
     ProjectUpdatesResolver,
     DocumentDetailResolver,
     ProjectResolver,
+    ProjectSurveyResolver,
+    ProjectSurveyDetailResolver,
     ReviewCommentResolver,
+    ReviewSurveyResponseResolver,
     // ProjectContactsResolver,
     LinkOrganizationResolver,
     ContactSelectResolver,

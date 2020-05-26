@@ -1,0 +1,31 @@
+<nav class="action-container">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" >
+      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Surveys
+    </li>
+  </ol>
+  <div>
+    <button type="button" class="btn btn-primary" (click)="addSurvey()">
+      <i class="material-icons">add</i>Add New Survey</button>
+  </div>
+</nav>
+
+<main class="container-fluid-padding">
+  <h1>{{currentProject.name}}</h1>
+
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+
+  <app-table-template *ngIf="tableParams.totalListItems > 0" [columns]="surveyTableColumns"
+    [data]="surveyTableData" (onColumnSort)='setColumnSort($event)'
+    (onPageNumUpdate)='getPaginatedSurveys($event, null, null)'>
+  </app-table-template>
+
+  <div *ngIf="tableParams.totalListItems === 0">
+    No surveys have been created for this project. <a [routerLink]="['/p', currentProject._id, 'project-survey', 'add']">Create one now.</a>
+  </div>
+</main>

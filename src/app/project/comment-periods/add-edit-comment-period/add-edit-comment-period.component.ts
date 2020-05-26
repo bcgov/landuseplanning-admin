@@ -7,8 +7,10 @@ import * as moment from 'moment';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
-
 import { CommentPeriodService } from 'app/services/commentperiod.service';
+
+import { SurveyService } from 'app/services/survey.service';
+
 import { ConfigService } from 'app/services/config.service';
 import { DocumentService } from 'app/services/document.service';
 import { StorageService } from 'app/services/storage.service';
@@ -31,6 +33,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   public publishedState = 'unpublished';
   public commentPeriodForm: FormGroup;
+  public availableSurveys: any;
 
   public startMeridian = true;
 
@@ -46,6 +49,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     private _changeDetectionRef: ChangeDetectorRef,
     private commentPeriodService: CommentPeriodService,
     private config: ConfigService,
+    private surveyService: SurveyService,
     private documentService: DocumentService,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -83,6 +87,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
       }
     });
 
+
     // Check if we're editing
     this.route.url.subscribe(segments => {
       segments.map(segment => {
@@ -93,8 +98,10 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               (data: any) => {
-                if (data.commentPeriod) {
-                  this.commentPeriod = data.commentPeriod;
+                console.log('the data', data)
+                if (data.cpAndSurveys.commentPeriod) {
+                  this.commentPeriod = data.cpAndSurveys.commentPeriod;
+                  this.availableSurveys = data.cpAndSurveys.surveys.data;
                   this.storageService.state.currentCommentPeriod = { type: 'currentCommentPeriod', data: this.commentPeriod };
                   this.initSelectedDocs();
                   this.initForm();
@@ -128,7 +135,8 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         'endDate': new FormControl(),
         'endTime': new FormControl(),
         'publishedStateSel': new FormControl(),
-        'externalEngagementTool' : new FormControl(),
+        'commentingMethod' : new FormControl(),
+        'surveySelected' : new FormControl(),
         'externalToolPopupText' : new FormControl(),
         'infoForCommentText': new FormControl(),
         'commentPeriodInfo': new FormControl(),
@@ -159,8 +167,13 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     // Publish state
     this.commentPeriodForm.controls.publishedStateSel.setValue(this.commentPeriod.isPublished ? 'published' : 'unpublished');
 
+    // Survey Tool
+    if (this.commentPeriod.commentingMethod) {
+      this.commentPeriodForm.controls.commentingMethod.setValue(this.commentPeriod.commentingMethod);
+    }
+    this.commentPeriodForm.controls.surveySelected.setValue(this.commentPeriod.surveySelected);
+
     // External Comments form
-    this.commentPeriodForm.controls.externalEngagementTool.setValue(this.commentPeriod.externalEngagementTool);
     this.commentPeriodForm.controls.externalToolPopupText.setValue(this.commentPeriod.externalToolPopupText);
 
     // Description
@@ -224,13 +237,25 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
       this.commentPeriod.isPublished = false;
     }
 
-    this.commentPeriod.externalEngagementTool = this.commentPeriodForm.get('externalEngagementTool').value;
+    //Commenting Method
+    this.commentPeriod.commentingMethod = this.commentPeriodForm.get('commentingMethod').value;
 
-    // Check for external comments form and only save externalToolPopupText if externalEngagementTool is true
-    if (this.commentPeriodForm.get('externalEngagementTool').value !== true) {
+    // Only save external popup text if external engagement tool is selected
+    if (this.commentPeriodForm.get('commentingMethod').value !== "externalEngagementTool") {
       this.commentPeriod.externalToolPopupText = null;
     } else {
       this.commentPeriod.externalToolPopupText = this.commentPeriodForm.get('externalToolPopupText').value;
+    }
+
+    // Only save Survey Selected if surveyTool is selected
+    if (this.commentPeriodForm.get('commentingMethod').value !== "surveyTool") {
+      this.commentPeriod.surveySelected = null;
+    } else {
+      if (this.commentPeriodForm.get('surveySelected').value === "(None Selected)") {
+        this.commentPeriod.surveySelected = null;
+      } else {
+        this.commentPeriod.surveySelected = this.commentPeriodForm.get('surveySelected').value;
+      }
     }
 
     // Check info for comment
@@ -263,6 +288,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Submit
     if (this.isEditing) {
+      console.log('attempting to save cp', this.commentPeriod)
       this.commentPeriodService.save(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
