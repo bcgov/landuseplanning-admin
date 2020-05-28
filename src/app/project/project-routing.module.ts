@@ -17,6 +17,7 @@ import { ProjectComponent } from './project.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
+import { ProjectEmailSubscribeComponent } from './project-email-subscribe/project-email-subscribe.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
@@ -122,6 +123,10 @@ const routes: Routes = [
         }
       },
       {
+        path: 'project-email-subscribe',
+        component: ProjectEmailSubscribeComponent,
+      },
+      {
         path: 'project-surveys',
         component: ProjectSurveyComponent,
         resolve: {
@@ -131,7 +136,6 @@ const routes: Routes = [
       {
         path: 'project-surveys/add',
         component: AddEditProjectSurveyComponent,
-        // canDeactivate: [AddEditRouteGuard]
       },
       {
         path: 's/:surveyId',
@@ -151,7 +155,6 @@ const routes: Routes = [
           {
             path: 'edit',
             component: AddEditProjectSurveyComponent,
-            // canDeactivate: [AddEditRouteGuard]
           },
         ]
       },

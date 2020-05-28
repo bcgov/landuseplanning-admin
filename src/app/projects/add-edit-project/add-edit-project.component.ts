@@ -136,7 +136,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         if (this.storageService.state.projectLead) {
           this.projectLead = this.storageService.state.projectLead.name;
           this.projectLeadId = this.storageService.state.projectLead._id;
-        } else if (this.isEditing && data.project.projectLead._id && data.project.projectLead._id !== '') {
+        } else if (this.isEditing && data.project.projectLead && data.project.projectLead._id && data.project.projectLead._id !== '') {
           this.projectLead = data.project.projectLead.displayName;
           this.projectLeadId = data.project.projectLead._id;
         }

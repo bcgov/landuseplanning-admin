@@ -1,10 +1,10 @@
-# bcgov/gcpe-lup-admin
+# bcgov/landuseplanning-admin
 
 Administrative front-end for the Land Use Planning application. Based on the PRC Application [bcgov/nrts-prc-admin](https://github.com/bcgov/nrts-prc-admin).
 
-* [Admin](https://github.com/bcgov/gcpe-lup-admin) - front-end for admin users.
-* [Public](https://github.com/bcgov/gcpe-lup-public) - front-end for public users.
-* [Api](https://github.com/bcgov/gcpe-lup-api) - back-end that serves both admin and public requests.
+* [Admin](https://github.com/bcgov/landuseplanning-admin) - front-end for admin users.
+* [Public](https://github.com/bcgov/landuseplanning-public) - front-end for public users.
+* [Api](https://github.com/bcgov/landuseplanning-api) - back-end that serves both admin and public requests.
 
 # Pre-requisites
 
@@ -44,8 +44,8 @@ Instructions on how running tests unit tests and end-to-end tests can be found i
 
 # OpenShift Build and Deployment
 
-For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/gcpe-lup-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using [nginx](https://www.nginx.com/).
+For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/landuseplanning-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using [nginx](https://www.nginx.com/).
 
 # How to Contribute
 
-Feel free to create pull requests from the default "dev" branch, click here to create one automatically: <https://github.com/bcgov/gcpe-lup-admin/pull/new/dev>
+Feel free to create pull requests from the default "dev" branch, click here to create one automatically: <https://github.com/bcgov/landuseplanning-admin/pull/new/dev>
