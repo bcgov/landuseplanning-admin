@@ -154,7 +154,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     { name: 'Multiple Choice', type: 'multiChoice'},
     { name: 'Document Picker', type: 'docPicker' },
     { name: 'Likert Scale', type: 'likert' },
-    { name: 'Info', type: 'info' },
+    { name: 'Info Text', type: 'info' },
     { name: 'Email', type: 'email' },
     { name: 'Phone Number', type: 'phoneNumber' }
   ];
@@ -266,10 +266,9 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     //Survey save date
     this.survey.lastSaved = new Date();
 
-    // Survey Name, Project, CommentPeriod, Questions
+    // Survey Name, Project, Questions
     this.survey.name = this.surveyForm.get('name').value;
     this.survey.project = this.currentProject._id;
-    this.survey.commentPeriod = this.currentProject.commentPeriodForBanner._id;
     this.survey.questions = this.surveyForm.get('questions').value;
 
     this.loading = false;

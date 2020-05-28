@@ -1,5 +1,3 @@
-import { Project } from './project';
-import { CommentPeriod } from './commentPeriod';
 import { SurveyQuestion } from './surveyQuestion';
 
 export class Survey {
@@ -7,7 +5,6 @@ export class Survey {
   name: string;
   dateAdded: Date;
   lastSaved: Date;
-  commentPeriod: string;
   project: string;
   questions: SurveyQuestion[];
 
@@ -21,7 +18,6 @@ export class Survey {
     this.name = obj && obj.name || null;
     this.dateAdded = obj.dateAdded || null;
     this.lastSaved = obj.lastSaved || null;
-    this.commentPeriod = obj.period || null;
     this.project = obj.project || null;
     this.questions = obj.questions || null;
 

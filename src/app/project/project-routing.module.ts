@@ -144,10 +144,6 @@ const routes: Routes = [
             redirectTo: 'project-survey-details',
             pathMatch: 'full'
           },
-          // {
-          //   path: 'add-survey-response',
-          //   component: AddSurveyResponse
-          // },
           {
             path: 'project-survey-details',
             component: ProjectSurveyDetailComponent
@@ -157,23 +153,6 @@ const routes: Routes = [
             component: AddEditProjectSurveyComponent,
             // canDeactivate: [AddEditRouteGuard]
           },
-          // {
-          //   path: 'project/:surveyResponseId',
-          //   resolve: {
-          //     comment: ReviewSurveyResponseResolver
-          //   },
-          //   children: [
-          //     {
-          //       path: '',
-          //       redirectTo: 'survey-response-details',
-          //       pathMatch: 'full'
-          //     },
-          //     {
-          //       path: 'survey-response-details',
-          //       component: ReviewSurveyResponseResolver
-          //     }
-          //   ]
-          // }
         ]
       },
       {
@@ -197,6 +176,9 @@ const routes: Routes = [
       {
         path: 'comment-periods/add',
         component: AddEditCommentPeriodComponent,
+        resolve: {
+          surveys: ProjectSurveyResolver
+        }
       },
       {
         path: 'comment-periods',

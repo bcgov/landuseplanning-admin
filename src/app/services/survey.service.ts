@@ -6,8 +6,6 @@ import * as _ from 'lodash';
 
 import { ApiService } from './api';
 import { Survey } from 'app/models/survey';
-import { CommentPeriod } from 'app/models/commentPeriod';
-import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
 
 @Injectable()
 export class SurveyService {
@@ -62,35 +60,24 @@ export class SurveyService {
       .catch(error => this.api.handleError(error));
   }
 
-  // getSummaryById(periodId: string): Observable<CommentPeriodSummary> {
-  //   return this.api.getPeriodSummary(periodId)
-  //     .map(res => {
-  //       if (res) {
-  //         return new CommentPeriodSummary(res);
-  //       }
-  //       return null;
-  //     })
-  //     .catch(error => this.api.handleError(error));
-  // }
+  // get a survey selected on a comment period by comment period id
+  getSelectedSurveyByCPId(periodId: string): Observable<Survey> {
+    return this.api.getPeriodSelectedSurvey(periodId)
+      .map((res: any) => {
+        if (res) {
+          const surveys = res;
+          // return the first (only) survey
+          return surveys.length > 0 ? new Survey(surveys[0]) : null;
+        }
+      })
+      .map((survey: Survey) => {
+        if (!survey) { return null as Survey; }
 
-    // get a survey selected on a comment period by comment period id
-    getSelectedSurveyByCPId(periodId: string): Observable<Survey> {
-      return this.api.getPeriodSelectedSurvey(periodId)
-        .map((res: any) => {
-          if (res) {
-            const surveys = res;
-            // return the first (only) comment period
-            return surveys.length > 0 ? new Survey(surveys[0]) : null;
-          }
-        })
-        .map((survey: Survey) => {
-          if (!survey) { return null as Survey; }
-
-          this.survey = survey;
-          return this.survey;
-        })
-        .catch(this.api.handleError);
-    }
+        this.survey = survey;
+        return this.survey;
+      })
+      .catch(this.api.handleError);
+  }
 
   add(survey: Survey): Observable<Survey> {
     return this.api.addSurvey(survey)
@@ -109,56 +96,5 @@ export class SurveyService {
     return this.api.deleteSurvey(survey)
       .catch(error => this.api.handleError(error));
   }
-
-  // publish(period: CommentPeriod): Observable<CommentPeriod> {
-  //   return this.api.publishCommentPeriod(period)
-  //     .catch(error => this.api.handleError(error));
-  // }
-
-  // unPublish(period: CommentPeriod): Observable<CommentPeriod> {
-  //   return this.api.unPublishCommentPeriod(period)
-  //     .catch(error => this.api.handleError(error));
-  // }
-
-  // returns first period
-  // multiple comment periods are currently not supported
-  // getCurrent(periods: CommentPeriod[]): CommentPeriod {
-  //   return (periods.length > 0) ? periods[0] : null;
-  // }
-
-  // getStatus(period: CommentPeriod): string {
-  //   if (!period || !period.dateStarted || !period.dateCompleted) {
-  //     return this.commentStatuses[this.NOT_OPEN];
-  //   }
-
-  //   const now = new Date();
-  //   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  //   const startDate = new Date(period.dateStarted);
-  //   const endDate = new Date(period.dateCompleted);
-
-  //   if (endDate < today) {
-  //     return this.commentStatuses[this.CLOSED];
-  //   } else if (startDate > today) {
-  //     return this.commentStatuses[this.NOT_STARTED];
-  //   } else {
-  //     return this.commentStatuses[this.OPEN];
-  //   }
-  // }
-
-  // isNotOpen(period: CommentPeriod): boolean {
-  //   return (this.getStatus(period) === this.commentStatuses[this.NOT_OPEN]);
-  // }
-
-  // isClosed(period: CommentPeriod): boolean {
-  //   return (this.getStatus(period) === this.commentStatuses[this.CLOSED]);
-  // }
-
-  // isNotStarted(period: CommentPeriod): boolean {
-  //   return (this.getStatus(period) === this.commentStatuses[this.NOT_STARTED]);
-  // }
-
-  // isOpen(period: CommentPeriod): boolean {
-  //   return (this.getStatus(period) === this.commentStatuses[this.OPEN]);
-  // }
 
 }

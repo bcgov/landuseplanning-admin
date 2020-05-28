@@ -379,7 +379,6 @@ export class ApiService {
       'name',
       'lastSaved',
       'project',
-      'commentPeriod',
       'questions',
       'read',
       'write',
@@ -392,7 +391,6 @@ export class ApiService {
   getSurveysByProjId(projId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
     const fields = [
       'project',
-      'commentPeriod',
       'dateAdded',
       'lastSaved',
       'name'
@@ -414,7 +412,6 @@ export class ApiService {
       'name',
       'lastSaved',
       'dateAdded',
-      'commentPeriod',
       'project',
       'questions',
     ];

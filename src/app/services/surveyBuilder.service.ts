@@ -27,7 +27,7 @@ export class SurveyBuilderService {
     } else {
       questionProps = new SurveyQuestion({
         type: previousContainer[previousIndex].type,
-        answerRequired: true
+        answerRequired: false
       });
     }
 

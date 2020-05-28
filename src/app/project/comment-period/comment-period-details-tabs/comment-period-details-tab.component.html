@@ -58,7 +58,7 @@
       <h3>COMMENTING METHOD:</h3>
       <p class="commenting-method">{{commentPeriod.commentingMethod | camelToString}}</p>
       <div class="survey-selected" *ngIf="commentPeriod.commentingMethod === 'surveyTool'">
-        <span *ngIf="commentPeriod.surveySelected">: <a [routerLink]="['/p', projectId, 's', surveySelected, 'project-survey-details']"> {{surveyNames[surveySelected]}}</a></span>
+        <span *ngIf="commentPeriod.surveySelected !== null">: <a [routerLink]="['/p', projectId, 's', surveySelected, 'project-survey-details']"> {{surveyNames[surveySelected]}}</a></span>
         <strong *ngIf="commentPeriod.surveySelected === null">(None Selected)</strong>
       </div>
     </div>

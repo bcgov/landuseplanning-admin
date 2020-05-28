@@ -6,7 +6,7 @@ import { SideBarService } from 'app/services/sidebar.service';
 import { StorageService } from 'app/services/storage.service';
 
 @Component({
-  selector: 'app-project [testing]',
+  selector: 'app-project',
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })

@@ -21,9 +21,6 @@ export class CommentPeriodsResolver implements Resolve<Object> {
     const sortBy = route.params.sortBy ? route.params.sortBy : '-dateStarted';
 
     // force-reload so we always have latest data
-    // return this.commentPeriodService.getAllByProjectId(projectId, pageNum, pageSize, sortBy);
-
-
     return forkJoin(
       from(this.commentPeriodService.getAllByProjectId(projectId, pageNum, pageSize, sortBy)),
       from(this.surveyService.getAllByProjectId(projectId))

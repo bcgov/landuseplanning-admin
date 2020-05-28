@@ -19,6 +19,7 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
 
   public commentPeriod: CommentPeriod;
   public surveys: Array<Survey>;
+  public surveyCount: number;
   public loading: Boolean = true;
   public currentProject;
   public selectedTab = 0;
@@ -45,10 +46,10 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           (data) => {
-            console.log('have a look', data)
             if (data.cpAndSurveys.commentPeriod) {
               this.commentPeriod = data.cpAndSurveys.commentPeriod;
               this.surveys = data.cpAndSurveys.surveys.data;
+              this.surveyCount = data.cpAndSurveys.surveys.totalCount;
               this.storageService.state.selectedDocumentsForCP = null;
             } else {
               alert('Uh-oh, couldn\'t load comment period ');
