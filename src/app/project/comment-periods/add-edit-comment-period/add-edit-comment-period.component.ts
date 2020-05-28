@@ -98,7 +98,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               (data: any) => {
-                console.log('the data', data)
                 if (data.cpAndSurveys.commentPeriod) {
                   this.commentPeriod = data.cpAndSurveys.commentPeriod;
                   this.availableSurveys = data.cpAndSurveys.surveys.data;
@@ -109,8 +108,8 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
                   this.loading = false;
                   this._changeDetectionRef.detectChanges();
                 } else {
-                  alert('Uh-oh, couldn\'t load comment periods');
-                  // project not found --> navigate back to search
+                  alert('Uh-oh, couldn\'t load comment period.');
+                  // Comment period not found --> navigate back to search
                   this.router.navigate(['/search']);
                 }
                 this.loading = false;
@@ -118,9 +117,20 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
               }
             );
         } else {
-          this.initForm();
-          this.loading = false;
-          this._changeDetectionRef.detectChanges();
+          // Different resolver that only loads available surveys
+          this.route.data
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            (data: any) => {
+              if (data.surveys.data) {
+                this.availableSurveys = data.surveys.data;
+              } else {
+                this.availableSurveys = [];
+              }
+              this.initForm();
+              this.loading = false;
+              this._changeDetectionRef.detectChanges();
+          })
         }
       });
     });

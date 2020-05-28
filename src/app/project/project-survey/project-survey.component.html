@@ -26,6 +26,6 @@
   </app-table-template>
 
   <div *ngIf="tableParams.totalListItems === 0">
-    No surveys have been created for this project. <a [routerLink]="['/p', currentProject._id, 'project-survey', 'add']">Create one now.</a>
+    No surveys have been created for this project. <a [routerLink]="['/p', currentProject._id, 'project-surveys', 'add']">Create one now.</a>
   </div>
 </main>

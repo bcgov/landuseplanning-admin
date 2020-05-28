@@ -25,11 +25,19 @@
         <br>
         <app-comment-period-details-tab [commentPeriod]="commentPeriod" [surveys]=surveys></app-comment-period-details-tab>
       </mat-tab>
-      <mat-tab label="REVIEW COMMENTS">
-        <app-review-comments-tab></app-review-comments-tab>
-      </mat-tab>
-      <mat-tab label="REVIEW SURVEY RESPONSES">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          REVIEW SURVEY RESPONSES
+          <span class="response-count">{{surveyCount}}</span>
+        </ng-template>
         <app-review-survey-responses-tab [surveys]=surveys></app-review-survey-responses-tab>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          REVIEW BASIC FORM RESPONSES
+          <!-- <span>{{surveyCount}}</span> -->
+        </ng-template>
+        <app-review-comments-tab></app-review-comments-tab>
       </mat-tab>
     </mat-tab-group>
   </div>

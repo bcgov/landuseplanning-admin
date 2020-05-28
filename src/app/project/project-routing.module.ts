@@ -179,6 +179,9 @@ const routes: Routes = [
       {
         path: 'comment-periods/add',
         component: AddEditCommentPeriodComponent,
+        resolve: {
+          surveys: ProjectSurveyResolver
+        }
       },
       {
         path: 'comment-periods',

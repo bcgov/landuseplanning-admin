@@ -91,7 +91,7 @@
          <div *ngIf="question.value.type === 'info'" class="new-component-text">
           <strong>{{i + 1}}. </strong>
           <mat-form-field class="new-component-text-form">
-            <mat-label>{{question.value.type | camelToString}}</mat-label>
+            <mat-label>Info Text</mat-label>
             <textarea matInput mat-autosize="true" formControlName="infoText" name="infoText" class="component-text-box" placeholder="Placeholder text"></textarea>
             <mat-error *ngIf="question.invalid">Info box text is required</mat-error>
            </mat-form-field>

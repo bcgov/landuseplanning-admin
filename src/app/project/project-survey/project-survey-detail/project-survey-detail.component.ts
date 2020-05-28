@@ -3,8 +3,6 @@ import { Subject } from 'rxjs/Subject';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
-import { ApiService } from 'app/services/api';
-import { DocumentService } from 'app/services/document.service';
 import { StorageService } from 'app/services/storage.service';
 import { SurveyService } from 'app/services/survey.service';
 
@@ -37,29 +35,28 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private surveyService: SurveyService,
     private snackBar: MatSnackBar,
-    private documentService: DocumentService,
     private router: Router,
     private route: ActivatedRoute,
-    private api: ApiService,
-
     ) {}
 
-  ngOnInit(): void {
-    this.projectId = this.storageService.state.currentProject.data._id;
+  ngOnInit() {
+      this.route.data
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((data: any) => {
+        if (data.survey) {
+          this.survey = data.survey;
+          this.surveyItemCount(this.survey.questions)
+          this.currentProject = this.storageService.state.currentProject.data;
+          this.projectId = this.storageService.state.currentProject.data._id;
+          this.loading = false;
+        } else {
+          alert('Uh-oh, couldn\'t survey. It may no longer exist.');
+          // survey not found --> navigate back to search
+          this.router.navigate(['/search']);
+        }
+      });
 
-    this.route.data
-    .takeUntil(this.ngUnsubscribe)
-    .subscribe(
-      (data) => {
-        this.survey = data.survey;
-      })
-
-      this.surveyItemCount(this.survey.questions)
-      this.currentProject = this.storageService.state.currentProject.data;
   }
-
-
-
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
