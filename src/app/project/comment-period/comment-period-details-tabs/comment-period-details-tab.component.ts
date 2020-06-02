@@ -149,6 +149,12 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
     this.api.exportComments(this.commentPeriod._id);
   }
 
+  public exportSurveyResponses() {
+    // Export all survey responses to CSV
+    this.openSnackBar('Download Initiated', 'Close');
+    this.api.exportSurveyResponses(this.commentPeriod._id);
+  }
+
   public downloadDocument(document) {
     return this.api.downloadDocument(document).then(() => {
       console.log('Download initiated for file');
