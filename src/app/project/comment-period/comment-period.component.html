@@ -28,14 +28,13 @@
       <mat-tab>
         <ng-template mat-tab-label>
           REVIEW SURVEY RESPONSES
-          <span class="response-count">{{surveyCount}}</span>
+          <!-- <span *ngIf="surveyCount" class="response-count">{{surveyCount}}</span> -->
         </ng-template>
         <app-review-survey-responses-tab [surveys]=surveys></app-review-survey-responses-tab>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
           REVIEW BASIC FORM RESPONSES
-          <!-- <span>{{surveyCount}}</span> -->
         </ng-template>
         <app-review-comments-tab></app-review-comments-tab>
       </mat-tab>

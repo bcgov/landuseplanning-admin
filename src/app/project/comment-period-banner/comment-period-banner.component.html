@@ -11,7 +11,7 @@
                         View Comment Period
                     </button>
                     &nbsp;
-                    <button type="button" class="btn btn-primary" (click)="goToAddComment()">
+                    <button *ngIf="commentPeriod.commentingMethod !== 'surveyTool'" type="button" class="btn btn-primary" (click)="goToAddComment()">
                         Submit a Comment
                     </button>
                 </div>
