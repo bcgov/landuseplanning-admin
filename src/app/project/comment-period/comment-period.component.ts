@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -23,6 +23,8 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
   public loading: Boolean = true;
   public currentProject;
   public selectedTab = 0;
+  public responseCount: number;
+  public commentCount: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -63,6 +65,14 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
       this.commentPeriod = this.storageService.state.currentCommentPeriod.data;
       this.loading = false;
     }
+  }
+
+  loadResponseCount($event) {
+    this.responseCount = $event;
+  }
+
+  loadCommentCount($event) {
+    this.commentCount = $event;
   }
 
   ngOnDestroy() {

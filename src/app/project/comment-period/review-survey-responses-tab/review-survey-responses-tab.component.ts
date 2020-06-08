@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 
@@ -25,6 +25,7 @@ import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 export class ReviewSurveyResponsesTabComponent implements OnInit {
 
   @Input() public surveys: Array<Survey>;
+  @Output() responsesLoaded = new EventEmitter();
 
   public surveyNames = {};
   public surveyResponses: Array<SurveyResponse>;
@@ -108,7 +109,6 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     }
     this.storageService.state.selectedTab = 0;
 
-
     this.surveyResponseService.getByPeriodId(
       this.commentPeriodId,
       this.tableParams.currentPage,
@@ -120,6 +120,7 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       .subscribe((res: any) => {
         if (res) {
           this.tableParams.totalListItems = res.totalCount;
+          this.responsesLoaded.emit(res.totalCount);
           if (this.tableParams.totalListItems > 0) {
             this.surveyResponses = res.data;
             this.setCommentRowData();

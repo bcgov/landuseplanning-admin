@@ -8,22 +8,30 @@
         </li>
         <li class="breadcrumb-item active" aria-current="page">Email Subscribers</li>
     </ol>
+    <div>
+      <div ngbDropdown placement="bottom-right">
+        <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
+        <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+          <button class="dropdown-item" (click)="exportSubscribers()">Export subscribers</button>
+        </div>
+      </div>
+    </div>
 </nav>
 <div class="container-fluid-padding">
     <div class="spinner-container" *ngIf="loading">
         <div class="spinner-new rotating"></div>
     </div>
 
-    <!--<app-table-template 
-        *ngIf="!loading && tableParams.totalListItems != 0" 
+    <!--<app-table-template
+        *ngIf="!loading && tableParams.totalListItems != 0"
         (checkboxChange)='checkChange($event)'
-        [columns]="tableColumns" 
-        [data]="tableData" 
+        [columns]="tableColumns"
+        [data]="tableData"
         (onColumnSort)='setColumnSort($event)'
-        (onSelectedRow)='updateSelectedRow($event)' 
+        (onSelectedRow)='updateSelectedRow($event)'
         (onPageNumUpdate)='getPaginatedDocs($event, null, null)'>
     </app-table-template>-->
-    <app-table-template 
+    <app-table-template
         *ngIf="tableParams.totalListItems > 0"
         [columns]="tableColumns"
         [data]="tableData"

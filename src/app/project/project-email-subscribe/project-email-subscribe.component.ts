@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { get } from 'lodash';
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 import { ApiService } from 'app/services/api';
 import { EmailSubscribeService } from 'app/services/emailSubscribe.service';
@@ -52,6 +53,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
     private route: ActivatedRoute,
     private storageService: StorageService,
     private tableTemplateUtils: TableTemplateUtils,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -97,6 +99,18 @@ export class ProjectEmailSubscribeComponent implements OnInit {
         this.tableParams
       );
     }
+  }
+
+  public openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
+
+  public exportSubscribers() {
+    // Export all subscriber emails to CSV
+    this.openSnackBar('Download Initiated', 'Close');
+    this.api.exportSubscribers(this.currentProject._id);
   }
 
 }
