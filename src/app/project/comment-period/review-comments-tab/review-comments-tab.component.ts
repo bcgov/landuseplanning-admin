@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
 import { TableObject } from 'app/shared/components/table-template/table-object';
@@ -20,6 +20,9 @@ import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 })
 
 export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
+
+  @Output() commentsLoaded = new EventEmitter();
+
   public comments: Array<Comment>;
   public loading = true;
 
@@ -111,6 +114,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         if (res) {
           this.tableParams.totalListItems = res.totalCount;
+          this.commentsLoaded.emit(res.totalCount);
           if (this.tableParams.totalListItems > 0) {
             this.comments = res.data;
             this.setCommentRowData();

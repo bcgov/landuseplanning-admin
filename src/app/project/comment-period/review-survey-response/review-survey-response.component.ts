@@ -113,10 +113,16 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
     });
   }
 
+  //
+  // Displays the question number beside each question
+  //
   public surveyItemCount(questions) {
+    // Does not display number next to info boxes
     let infoCount = 0;
     for (let i = 0; i < questions.length; i++) {
-      let count = i + 1;
+      // Increment count by three to account for array index of 0
+      // and the author and location fields present on each survey
+      let count = i + 3;
       if (questions[i].type === 'info') {
         this.countArray.push('')
         infoCount++;
@@ -125,22 +131,6 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
       }
     }
   }
-
-  // public addComment() {
-  //   this.router.navigate(['/p', this.commentPeriod.project, 'cp', this.commentPeriod._id, 'add-comment']);
-  // }
-
-  // public exportSurveyResponses() {
-  //   // Export all comments to CSV
-  //   this.openSnackBar('Download Initiated', 'Close');
-  //   this.api.exportComments(this.commentPeriod._id);
-  // }
-
-  // public downloadDocument(document) {
-  //   return this.api.downloadDocument(document).then(() => {
-  //     console.log('Download initiated for file');
-  //   });
-  // }
 
   public checkIfCanDelete() {
     this.canDeleteCommentPeriod = true;

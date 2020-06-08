@@ -846,46 +846,45 @@ export class ApiService {
       filename = document.documentFileName;
     }
     filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
-    if (this.isMS) {
-      window.navigator.msSaveBlob(blob, filename);
-    } else {
-      const url = window.URL.createObjectURL(blob);
-      const a = window.document.createElement('a');
-      window.document.body.appendChild(a);
-      a.setAttribute('style', 'display: none');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    }
+
+    this.createDownloadFile(blob, filename);
   }
 
   public async exportComments(period: String) {
     const queryString = `comment/export/${period}`;
     const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
-    let filename = 'export.csv';
-    filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
-    if (this.isMS) {
-      window.navigator.msSaveBlob(blob, filename);
-    } else {
-      const url = window.URL.createObjectURL(blob);
-      const a = window.document.createElement('a');
-      window.document.body.appendChild(a);
-      a.setAttribute('style', 'display: none');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    }
+
+    this.createDownloadFile(blob);
   }
 
   public async exportSurveyResponses(period: String) {
     const queryString = `surveyResponse/export/${period}`;
     const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
-    let filename = `export_${new Date().toISOString().split('T')[0]}.csv`;
-    filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
+
+    this.createDownloadFile(blob);
+  }
+
+  public async exportSubscribers(projectId: String) {
+    const queryString = `emailSubscribe/export/${projectId}`;
+    const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
+
+    this.createDownloadFile(blob);
+  }
+
+  //
+  // Handle creation and download of file to browser
+  //
+  public createDownloadFile(blob, docName?) {
+    let filename;
+    if (docName) {
+      filename = docName;
+    } else {
+      // Filename should be date it was exported
+      filename = `export_${new Date().toISOString().split('T')[0]}.csv`;
+      filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
+    }
+
+
     if (this.isMS) {
       window.navigator.msSaveBlob(blob, filename);
     } else {
@@ -1018,7 +1017,7 @@ export class ApiService {
       'email',
     ];
     //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
-    const queryString = `emailSubscribe/${emailAddress}/${projectId}`;
+    const queryString = `emailSubscribe/${emailAddress}/project/${projectId}`;
     console.log(this.pathAPI, '/', queryString);
     return this.http.delete<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
