@@ -124,18 +124,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     //   observables = observables.concat(this.commentPeriodService.delete(this.project.currentPeriods));
     // }
 
-    // // delete decision documents
-    // if (this.project.decision && this.project.decision.documents) {
-    //   for (const doc of this.project.decision.documents) {
-    //     observables = observables.concat(this.documentService.delete(doc));
-    //   }
-    // }
-
-    // // delete decision
-    // if (this.project.decision) {
-    //   observables = observables.concat(this.decisionService.delete(this.project.decision));
-    // }
-
     // // delete project documents
     // if (this.project.documents) {
     //   for (const doc of this.project.documents) {
@@ -253,6 +241,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             );
         }
       );
+  }
+
+  projectFieldType(fieldValue) {
+    return typeof fieldValue;
   }
 
   stringifyOverlappingDistricts(districts: string | string[]): string {

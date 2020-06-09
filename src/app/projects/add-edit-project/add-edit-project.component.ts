@@ -141,20 +141,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
           this.projectLeadId = data.project.projectLead._id;
         }
 
-
-        /**
-         * Since Land Use Planning project no longer uses "project directors"
-         */
-        // if (this.storageService.state.projectDirector) {
-        //   this.projectDirector = this.storageService.state.projectDirector.name;
-        //   this.projectDirectorId = this.storageService.state.projectDirector._id;
-        // } else if (this.isEditing && data.project.projectDirector._id && data.project.projectDirector._id !== '') {
-        //   this.projectDirector = data.project.projectDirector.displayName;
-        //   this.projectDirectorId = data.project.projectDirector._id;
-        // }
-
-
-
         this.project = data.project;
         this.buildForm(data);
         this.loading = false;
@@ -184,7 +170,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       this.myForm = new FormGroup({
         'name': new FormControl(),
         'partner': new FormControl(),
-        'agreements': new FormControl(),
+        'agreements': new FormArray([]),
         'description': new FormControl(),
         'overlappingRegionalDistricts': new FormControl(),
         'region': new FormControl(),
@@ -204,6 +190,9 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         'projectLead': new FormControl(),
         'projectAdmin': new FormControl()
       });
+
+      // Form always has at least one agreement field
+      this.addLinkFormGroup(this.agreements);
     }
   }
 
@@ -211,15 +200,31 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     return this.myForm.get('existingLandUsePlans') as FormArray;
   }
 
-  addExistingLandUsePlan() {
-    this.existingLandUsePlans.push(new FormGroup({
+  get agreements() {
+    return this.myForm.get('agreements') as FormArray;
+  }
+
+  addLinkFormGroup(formEntry) {
+    if (formEntry === this.existingLandUsePlans) {
+      formEntry.push(new FormGroup({
         'existingLandUsePlan': new FormControl(),
         'existingLandUsePlanURL': new FormControl()
       }));
+    }
+    if (formEntry === this.agreements) {
+      formEntry.push(new FormGroup({
+        'agreementName': new FormControl(),
+        'agreementUrl': new FormControl()
+      }));
+    }
   }
 
-  removeExistingLandUsePlan(index) {
-    this.existingLandUsePlans.removeAt(index);
+  removeLinkFormGroup(formEntry, index) {
+    formEntry.removeAt(index);
+  }
+
+  public formValueType(formValue) {
+    return typeof formValue;
   }
 
   private setNavigation() {
@@ -294,6 +299,24 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       return formArray;
     }
 
+    let existingAgreementsArray = (formData) => {
+      let formArray = [];
+      if (Array.isArray(formData.agreements)) {
+        for (let i = 0; i < formData.agreements.length; i++ ) {
+          formArray[i] = new FormGroup({
+            'agreementName': new FormControl(formData.agreements[i].agreementName),
+            'agreementUrl': new FormControl(formData.agreements[i].agreementUrl)
+          })
+        }
+      } else {
+        formArray.push(new FormGroup({
+          'agreementName': new FormControl(formData.agreements),
+          'agreementUrl': new FormControl()
+        }))
+      }
+      return formArray;
+    }
+
     let overlappingDistrictsArray = (formData) => {
       let formArray = [];
       if (Array.isArray(formData.overlappingRegionalDistricts)) {
@@ -308,7 +331,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'partner': new FormControl(formData.partner),
-      'agreements': new FormControl(formData.agreements),
+      // 'agreements': new FormControl(formData.agreements),
       'description': new FormControl(formData.description),
       'overlappingRegionalDistricts': new FormControl(overlappingDistrictsArray(formData)),
       'region': new FormControl(formData.region),
@@ -327,6 +350,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     });
 
     theForm.addControl('existingLandUsePlans', new FormArray(existingPlansFormArray(formData)));
+    theForm.addControl('agreements', new FormArray(existingAgreementsArray(formData)));
 
     return theForm;
   }
@@ -344,7 +368,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     return {
       'name': form.controls.name.value,
       'partner': form.controls.partner.value,
-      'agreements': form.controls.agreements.value,
+      'agreements': this.agreementsFullFields(),
       'description': form.controls.description.value,
       'overlappingRegionalDistricts': form.controls.overlappingRegionalDistricts.value,
       'region': form.controls.region.value,
@@ -400,8 +424,8 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     } else if (this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null) {
       alert('Partner(s) cannot be empty.');
       return false;
-    } else if (this.myForm.controls.agreements.value === '' || this.myForm.controls.agreements.value == null) {
-      alert('Agreements cannot be empty.');
+    } else if (this.agreementFieldsError()) {
+      alert('Agreement name(s) cannot be empty.');
       return false;
     } else if (this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null) {
       alert('Description cannot be empty.');
@@ -452,12 +476,35 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   //   }
   // }
 
+
+  private agreementFieldsError() {
+    let agreements = this.myForm.controls.agreements;
+    for (let i = 0; agreements.value.length > i; i++) {
+      if (agreements.value[i].agreementName === null ||
+          agreements.value[i].agreementName === '')
+      {
+        return true;
+      }
+    }
+  }
+
   private existingPlanFullFields() {
     let completedFields = [];
     let existingPlans = this.myForm.controls.existingLandUsePlans;
     for (let i = 0; existingPlans.value.length > i; i++) {
       if (existingPlans.value[i].existingLandUsePlan !== null || existingPlans.value[i].existingLandUsePlanURL !== null) {
         completedFields.push(existingPlans.value[i]);
+      }
+    }
+    return completedFields;
+  }
+
+  private agreementsFullFields() {
+    let completedFields = [];
+    let agreements = this.myForm.controls.agreements;
+    for (let i = 0; agreements.value.length > i; i++) {
+      if (agreements.value[i].agreementName !== null || agreements.value[i].agreementUrl !== null) {
+        completedFields.push(agreements.value[i]);
       }
     }
     return completedFields;

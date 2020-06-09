@@ -32,13 +32,20 @@
       <h3 for="partner">Partner First Nation(s): </h3>
       <p id="partner">{{project?.partner || '-'}}</p>
     </div>
-    <div class="label-pair">
-      <h3 for="agreements">Agreements: </h3>
-      <p class="agreements">{{project?.agreements || '-'}}</p>
-    </div>
     <div class="label-pair full">
       <h3 for="description">Description: </h3>
       <p id="description">{{project?.description || 'No project description available'}}</p>
+    </div>
+    <div *ngIf="projectFieldType(project?.agreements) === 'string'" class="label-pair">
+      <h3 for="agreements">Agreements: </h3>
+      <p class="agreements">{{project?.agreements || '-'}}</p>
+    </div>
+    <div *ngIf="projectFieldType(project?.agreements) === 'object'">
+      <h3 for="ceaa">Agreements: </h3>
+      <div *ngFor="let agreement of project?.agreements; let i=index">
+        <p class="agreement-name">- {{agreement?.agreementName || '-'}}</p><span *ngIf="agreement.agreementUrl">: </span>
+        <p class="agreement-url"><a href="{{agreement.agreementUrl}}">{{ agreement?.agreementUrl }}</a></p>
+      </div>
     </div>
   </section>
   <section>
@@ -62,21 +69,19 @@
   </section>
   <section>
     <h2>Supplementary Information</h2>
+    <h3 for="ceaa">Existing Land Use Plan(s):</h3>
     <div *ngIf="multipleExistingPlans else singlePlan">
       <div *ngFor="let existingPlan of project?.existingLandUsePlans; let i=index">
-        <h3 for="ceaa">Existing Land Use Plan</h3>
-        <p id="ceaa">Name: {{existingPlan?.existingLandUsePlan || '-'}}</p>
-        <p id="ceaa-url">URL: <a href="{{existingPlan.existingLandUsePlanURLs}}">{{ existingPlan?.existingLandUsePlanURL || '-'}}</a></p>
+        <p class="existing-plan-name">- {{existingPlan?.existingLandUsePlan || '-'}}</p><span *ngIf="existingPlan?.existingLandUsePlanURL">: </span>
+        <p class="existing-plan-url"><a href="{{existingPlan.existingLandUsePlanURL}}">{{ existingPlan?.existingLandUsePlanURL}}</a></p>
       </div>
       <div class="label-pair" *ngIf="project?.existingLandUsePlans.length === 0">
         <p class="no-existing-plans">No existing land use plan(s).</p>
       </div>
     </div>
-
     <ng-template #singlePlan>
-      <h3 for="ceaa">Existing Land Use Plan</h3>
-      <p id="ceaa">Name: {{project?.existingLandUsePlans || '-'}}</p>
-      <p id="ceaa-url">URL: <a href="{{project.existingLandUsePlanURLs}}">{{ project.existingLandUsePlanURLs || '-'}}</a></p>
+      <p class="existing-plan-name">- {{project?.existingLandUsePlans || '-'}}</p><span *ngIf="project.existingLandUsePlanURLs">: </span>
+      <p class="existing-plan-url"><a href="{{project.existingLandUsePlanURLs}}">{{ project.existingLandUsePlanURLs || '-'}}</a></p>
     </ng-template>
   </section>
   <section>
