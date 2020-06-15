@@ -4,6 +4,7 @@ import { Subject, forkJoin } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
+import * as _ from 'lodash'
 
 import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
@@ -59,6 +60,7 @@ export class ProjectShapefilesComponent implements OnInit, OnDestroy {
   public currentProject;
   public canPublish;
   public canUnpublish;
+  public pathAPI: string;
 
   public tableParams: TableParamsObject = new TableParamsObject();
 
@@ -73,7 +75,12 @@ export class ProjectShapefilesComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private storageService: StorageService,
     private tableTemplateUtils: TableTemplateUtils
-  ) { }
+  ) {
+    // The following items are loaded by a file that is only present on cluster builds.
+    // Locally, this will be empty and local defaults will be used.
+    const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+    this.pathAPI = (_.isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+  }
 
   ngOnInit() {
     if (this.storageService.state.projectDocumentTableParams == null) {
@@ -158,8 +165,7 @@ export class ProjectShapefilesComponent implements OnInit, OnDestroy {
             selBox.style.top = '0';
             selBox.style.opacity = '0';
             const safeName = item.documentFileName.replace(/ /g, '_');
-            selBox.value = window.location.origin + `/api/document/${item._id}/fetch/${safeName}`;
-            // selBox.value = window.location.origin + `/api/public/document/${item._id}/download`;
+            selBox.value = `${this.pathAPI}/document/${item._id}/fetch/${safeName}`;
             document.body.appendChild(selBox);
             selBox.focus();
             selBox.select();
@@ -186,21 +192,21 @@ export class ProjectShapefilesComponent implements OnInit, OnDestroy {
 
         this._changeDetectionRef.detectChanges();
         break;
-      case 'edit':
-        let selectedDocs = [];
-        this.documentTableData.data.map((item) => {
-          if (item.checkbox === true) {
-            selectedDocs.push(this.documents.filter(d => d._id === item._id)[0]);
-          }
-        });
-        // Store and send to the edit page.
-        this.storageService.state.selectedDocs = selectedDocs;
-        // Set labels if doc size === 1
-        if (selectedDocs.length === 1) {
-          this.storageService.state.labels = selectedDocs[0].labels;
-        }
-        this.router.navigate(['p', this.currentProject._id, 'project-shapefiles', 'edit']);
-        break;
+      // case 'edit':
+      //   let selectedDocs = [];
+      //   this.documentTableData.data.map((item) => {
+      //     if (item.checkbox === true) {
+      //       selectedDocs.push(this.documents.filter(d => d._id === item._id)[0]);
+      //     }
+      //   });
+      //   // Store and send to the edit page.
+      //   this.storageService.state.selectedDocs = selectedDocs;
+      //   // Set labels if doc size === 1
+      //   if (selectedDocs.length === 1) {
+      //     this.storageService.state.labels = selectedDocs[0].labels;
+      //   }
+      //   this.router.navigate(['p', this.currentProject._id, 'project-shapefiles', 'edit']);
+      //   break;
       case 'delete':
         this.deleteDocument();
         break;
