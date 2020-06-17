@@ -1,7 +1,8 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 import { CommentPeriod } from 'app/models/commentPeriod';
 
@@ -19,12 +20,13 @@ import { DocumentService } from 'app/services/document.service';
   styleUrls: ['./comment-period-details-tab.component.scss']
 })
 
-export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
+export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDestroy {
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   @Input() public commentPeriod: CommentPeriod;
   @Input() public surveys: Array<Survey>;
+  @Input() public surveysWithResponses: Array<any>;
 
   public commentPeriodPublishedStatus: string;
   public publishAction: string;
@@ -44,7 +46,8 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private ngxSmartModalService: NgxSmartModalService
   ) { }
 
   ngOnInit() {
@@ -65,12 +68,30 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
       this.route.data.subscribe(res => {this.surveys = res.cpAndSurveys.surveys.data})
     }
 
+    // Set up listener for modal when it returns
+    this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe(() => {
+      const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+      data.selection ? this.exportSurveyResponses(this.commentPeriod._id, data.selection) : null;
+    })
+
+    this.surveySelected = this.commentPeriod.surveySelected;
+    this.loading = false;
+  }
+
+  ngOnChanges() {
     if (this.surveys) {
       this.surveys.forEach(survey => this.surveyNames[survey._id] = survey.name)
     }
 
-    this.surveySelected = this.commentPeriod.surveySelected;
-    this.loading = false;
+    if (this.surveysWithResponses) {
+      for (let surveyId in this.surveyNames) {
+        if (!this.surveysWithResponses.includes(surveyId)) {
+          delete this.surveyNames[surveyId]
+        }
+      }
+    }
   }
 
   setPublishStatus() {
@@ -149,11 +170,29 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnDestroy {
     this.api.exportComments(this.commentPeriod._id);
   }
 
-  public exportSurveyResponses() {
+  public onExportSurveyResponses() {
     // Export all survey responses to CSV
-    this.openSnackBar('Download Initiated', 'Close');
-    this.api.exportSurveyResponses(this.commentPeriod._id);
+    if (this.surveysWithResponses.length > 1) {
+      this.ngxSmartModalService.setModalData({
+        selectData: this.surveyNames,
+        selectLabel: 'survey',
+        type: 'select',
+        title: 'Export responses by survey',
+        message: 'More than one survey has been responded to. <br /> Please select which responses to export by survey.'
+      }, 'confirmation-modal', true);
+
+      this.ngxSmartModalService.open('confirmation-modal');
+    } else {
+      this.exportSurveyResponses(this.commentPeriod._id);
+    }
   }
+
+  exportSurveyResponses(cpID, surveyID?) {
+    surveyID = surveyID || null;
+    this.openSnackBar('Download Initiated', 'Close');
+    this.api.exportSurveyResponses(cpID, surveyID);
+  }
+
 
   public downloadDocument(document) {
     return this.api.downloadDocument(document).then(() => {

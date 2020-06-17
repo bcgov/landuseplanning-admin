@@ -23,14 +23,20 @@
     <mat-tab-group [selectedIndex]="selectedTab">
       <mat-tab label="DETAILS">
         <br>
-        <app-comment-period-details-tab [commentPeriod]="commentPeriod"></app-comment-period-details-tab>
+        <app-comment-period-details-tab
+          [commentPeriod]="commentPeriod"
+          [surveysWithResponses]=responseSurveys>
+        </app-comment-period-details-tab>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
           REVIEW SURVEY RESPONSES
           <span *ngIf="responseCount" class="response-count">{{responseCount}}</span>
         </ng-template>
-        <app-review-survey-responses-tab [surveys]=surveys [surveys]=surveys (responsesLoaded)="loadResponseCount($event)"></app-review-survey-responses-tab>
+        <app-review-survey-responses-tab
+          [surveys]=surveys
+          (responsesLoaded)="loadResponseCount($event)">
+        </app-review-survey-responses-tab>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>

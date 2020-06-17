@@ -78,9 +78,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       const data = this.ngxSmartModalService.getModalData('confirmation-modal');
       this.projectActions(data);
       })
-    // this.project = this.projectComponent.project;
-    // Handles when we come back to this page.
-
   }
 
   projectActions(modalResponse) {

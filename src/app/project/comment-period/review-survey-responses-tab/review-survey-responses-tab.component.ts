@@ -112,6 +112,19 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     this.surveyResponseService.getByPeriodId(
       this.commentPeriodId,
       this.tableParams.currentPage,
+      0,
+      this.tableParams.sortBy,
+      true,
+      this.filter)
+      .subscribe((res: any) => {
+        if (res) {
+          this.responsesLoaded.emit(res);
+        }
+      })
+
+    this.surveyResponseService.getByPeriodId(
+      this.commentPeriodId,
+      this.tableParams.currentPage,
       this.tableParams.pageSize,
       this.tableParams.sortBy,
       true,
@@ -120,7 +133,6 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       .subscribe((res: any) => {
         if (res) {
           this.tableParams.totalListItems = res.totalCount;
-          this.responsesLoaded.emit(res.totalCount);
           if (this.tableParams.totalListItems > 0) {
             this.surveyResponses = res.data;
             this.setCommentRowData();
