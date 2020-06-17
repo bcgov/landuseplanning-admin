@@ -23,13 +23,6 @@ export class SurveyResponseService {
     private documentService: DocumentService
   ) { }
 
-
-  // get count of comments for the specified comment period id
-  getCountByPeriodId(periodId: string): Observable<number> {
-    return this.api.getCountCommentsByPeriodId(periodId)
-      .catch(error => this.api.handleError(error));
-  }
-
   getById(surveyResponseId: string, populateNextComment: boolean = false): Observable<SurveyResponse> {
     return this.api.getSurveyResponse(surveyResponseId, populateNextComment)
       .pipe(

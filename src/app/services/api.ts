@@ -857,8 +857,10 @@ export class ApiService {
     this.createDownloadFile(blob);
   }
 
-  public async exportSurveyResponses(period: String) {
-    const queryString = `surveyResponse/export/${period}`;
+  public async exportSurveyResponses(period: String, surveyID?) {
+    let surveyPath;
+    surveyID ? surveyPath = `/survey/${surveyID}` : surveyPath = ''
+    const queryString = `surveyResponse/export/${period}${surveyPath}`;
     const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
 
     this.createDownloadFile(blob);

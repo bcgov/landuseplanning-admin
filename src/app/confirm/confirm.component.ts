@@ -2,6 +2,8 @@ import { Component, AfterViewInit } from '@angular/core';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 interface SmartModalData {
+  selectData?: any;
+  selectLabel?: string;
   type?: string;
   title?: string;
   message?: string;
@@ -13,12 +15,26 @@ interface SmartModalData {
 })
 export class ConfirmComponent implements AfterViewInit {
   modalData: SmartModalData;
+  itemSelected: any;
+  selectDataObjectHandler = Object.keys;
+  confirmActions: {
+    publish: {},
+    delete: {},
+    unpublish: {},
+    select: {}
+  };
 
   constructor(
     public ngxSmartModalService: NgxSmartModalService,
     ) {}
 
   ngAfterViewInit() {
+    this.confirmActions = {
+      publish: {publishConfirm: true},
+      delete: {deleteConfirm: true},
+      unpublish: {unpublishConfirm: true},
+      select: {}
+    }
     this.modalData = this.ngxSmartModalService.getModalData('confirmation-modal');
   }
 
@@ -27,13 +43,12 @@ export class ConfirmComponent implements AfterViewInit {
   }
 
   confirm() {
-    if (this.modalData.type === 'publish') {
-      this.ngxSmartModalService.setModalData({publishConfirm: true}, 'confirmation-modal', true);
-    } else if (this.modalData.type === 'delete') {
-      this.ngxSmartModalService.setModalData({deleteConfirm: true}, 'confirmation-modal', true);
-    } else if (this.modalData.type === 'unpublish') {
-      this.ngxSmartModalService.setModalData({unpublishConfirm: true}, 'confirmation-modal', true);
+    if (this.modalData.type === 'select') {
+      this.confirmActions.select['selection'] = this.itemSelected;
     }
+
+    this.ngxSmartModalService.setModalData(this.confirmActions[this.modalData.type], 'confirmation-modal', true);
+
     this.ngxSmartModalService.close('confirmation-modal');
   }
 }

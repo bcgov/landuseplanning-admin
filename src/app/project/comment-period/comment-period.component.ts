@@ -25,6 +25,7 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
   public selectedTab = 0;
   public responseCount: number;
   public commentCount: number;
+  public responseSurveys: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,7 +69,13 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
   }
 
   loadResponseCount($event) {
-    this.responseCount = $event;
+    this.responseCount = $event.totalCount;
+    this.filterResponseSurveys($event.data);
+  }
+
+  filterResponseSurveys(responseData) {
+    let responseSurveys = responseData.map(response => response.survey)
+    this.responseSurveys = Array.from(new Set(responseSurveys))
   }
 
   loadCommentCount($event) {

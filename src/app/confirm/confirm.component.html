@@ -4,10 +4,19 @@
 			<h4 class="smart-modal-title" [innerHTML]="modalData?.title || 'Confirm'"></h4>
 		</div>
 		<div class="smart-modal-body">
-			<p [innerHTML]="modalData?.message || 'Are you sure?'"></p>
+      <p [innerHTML]="modalData?.message || 'Are you sure?'"></p>
+      <div *ngIf="modalData?.type === 'select'" class="form-row">
+        <div class="form-group">
+            <label for="selectData">{{modalData?.selectLabel.charAt(0).toUpperCase() + modalData?.selectLabel.slice(1)}}</label>
+            <select [(ngModel)]="itemSelected" required name="selectData" id="selectData" class="form-control">
+                <option disabled selected value>-- select an option --</option>
+                <option [value]="item" *ngFor="let item of selectDataObjectHandler(modalData?.selectData)">{{modalData?.selectData[item]}}</option>
+            </select>
+        </div>
+    </div>
 		</div>
 		<div class="smart-modal-footer">
-			<button type="button" class="btn btn-primary" (click)="confirm()">OK</button>
+			<button type="button" class="btn btn-primary" [disabled]="modalData?.type === 'select' && !itemSelected" (click)="confirm()">OK</button>
 			<button type="button" class="btn btn-light" (click)="close()">Cancel</button>
 		</div>
 	</div>
