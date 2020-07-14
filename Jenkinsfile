@@ -619,7 +619,7 @@ pipeline {
               def results = nodejsLinter()
             }
           }
-        }*/
+        }
         stage('Sonarqube') {
           steps {
             script {
@@ -627,7 +627,7 @@ pipeline {
               def result = nodejsSonarqube()
             }
           }
-        }
+        }*/
       }
     }
 
