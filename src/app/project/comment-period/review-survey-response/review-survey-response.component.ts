@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { FormGroup, FormControl, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
 import { SurveyQuestion }    from 'app/models/surveyQuestion';

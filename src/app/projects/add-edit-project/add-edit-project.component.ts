@@ -5,7 +5,7 @@ import * as moment from 'moment-timezone';
 import { Subject, of, forkJoin } from 'rxjs';
 import { Utils } from 'app/shared/utils/utils';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import * as Editor from 'assets/ckeditor5/build/ckeditor';
 
 import { StorageService } from 'app/services/storage.service';
 import { ConfigService } from 'app/services/config.service';
@@ -23,7 +23,7 @@ import { Document } from 'app/models/document';
 })
 export class AddEditProjectComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  public Editor = ClassicEditor;
+  public Editor = Editor;
   public myForm: FormGroup;
   public back: any = {};
   public REGIONS: Array<Object> = [

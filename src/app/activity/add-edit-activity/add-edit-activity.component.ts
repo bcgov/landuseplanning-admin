@@ -6,6 +6,8 @@ import { ProjectService } from 'app/services/project.service';
 import { RecentActivityService } from 'app/services/recent-activity';
 import { RecentActivity } from 'app/models/recentActivity';
 import { Utils } from 'app/shared/utils/utils';
+import * as ClassicEditor from 'assets/ckeditor5/build/ckeditor';
+
 
 @Component({
   selector: 'app-add-edit-activity',
@@ -19,12 +21,7 @@ export class AddEditActivityComponent implements OnInit, OnDestroy {
   public loading = true;
   public projects = [];
   public activity: any;
-
-  public tinyMceSettings = {
-    skin: false,
-    browser_spellcheck: true,
-    height: 240
-  };
+  public Editor = ClassicEditor;
 
   constructor(
     private router: Router,
