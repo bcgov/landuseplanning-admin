@@ -30,7 +30,6 @@
     "@angular/router": "^6.1.7",
     "@auth0/angular-jwt": "^2.0.0",
     "@ckeditor/ckeditor5-angular": "^1.1.0",
-    "@ckeditor/ckeditor5-build-classic": "^12.4.0",
     "@ng-bootstrap/ng-bootstrap": "^6.0.0",
     "@tinymce/tinymce-angular": "^3.0.1",
     "@types/geojson": "^7946.0.2",

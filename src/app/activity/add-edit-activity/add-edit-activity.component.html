@@ -32,7 +32,7 @@
     <div class="flex-container">
       <div class="label-pair lrg">
         <label for="content">Content* </label>
-        <editor [init]="tinyMceSettings" name="content" id="content" formControlName="content"></editor>
+        <ckeditor name="content" id="content" formControlName="content" [editor]="Editor"></ckeditor>
       </div>
     </div>
     <div class="flex-container">

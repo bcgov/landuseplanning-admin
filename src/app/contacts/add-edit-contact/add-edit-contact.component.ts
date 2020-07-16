@@ -32,11 +32,6 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
   public loading = false;
   public contactId = '';
   public contact = null;
-  public tinyMceSettings = {
-    skin: false,
-    browser_spellcheck: true,
-    height: 240
-  };
   public phonePattern;
 
   constructor(
