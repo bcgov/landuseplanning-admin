@@ -47,6 +47,11 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
+.question-type {
+  color: blue;
+  font-weight: 700;
+}
+
 .edit-buttons {
     display: flex;
     flex-direction: row;
@@ -132,6 +137,7 @@ textarea {
 }
 
 .new-component-buttons {
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
 }
@@ -234,6 +240,11 @@ textarea {
   margin: 1rem;
 }
 
+.survey-canvas-heading {
+  display: flex;
+  justify-content: space-between;
+}
+
 .survey-canvas-view {
   flex-grow: 1;
   max-width: 75%;
@@ -278,7 +289,7 @@ textarea {
 }
 
 .new-component-contents {
-  padding: 0 1.5rem 1rem 1.5rem;
+  // padding: 0 1.5rem 1rem 1.5rem;
 }
 
 .new-component-type {
@@ -287,7 +298,9 @@ textarea {
 }
 
 .new-component-text {
-
+  margin: 1rem 0;
+  padding: 0 2rem 0 1rem;
+  max-width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -295,7 +308,8 @@ textarea {
 }
 
 .new-component-text-form {
-  flex-grow: 1;
+  width: 95%;
+  // flex-grow: 1;
   margin: 0 1rem;
 }
 

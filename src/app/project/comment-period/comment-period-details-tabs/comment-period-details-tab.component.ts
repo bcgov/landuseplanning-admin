@@ -178,7 +178,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
         selectLabel: 'survey',
         type: 'select',
         title: 'Export responses by survey',
-        message: 'More than one survey has been responded to. <br /> Please select which responses to export by survey.'
+        message: 'This comment period has more than one survey with responses. <br /> Please select which responses to export by survey.'
       }, 'confirmation-modal', true);
 
       this.ngxSmartModalService.open('confirmation-modal');

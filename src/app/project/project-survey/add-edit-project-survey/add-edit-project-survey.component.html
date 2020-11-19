@@ -51,7 +51,6 @@
         cdkDropListSortingDisabled
         [cdkDropListEnterPredicate]="noDrop"
         (cdkDropListDropped)="dropComponent($event)">
-
         <div class="available-component" [ngClass]="{'unavailable': component.type === 'docPicker' && !docPickerAvailable}" *ngFor="let component of components" cdkDrag [cdkDragDisabled]="component.type === 'docPicker' && !docPickerAvailable">
           <i class="material-icons component-control available" *ngIf="component.type !== 'docPicker' || docPickerAvailable">crop_free</i>
             <i class="material-icons component-control unavailable" *ngIf="component.type === 'docPicker' && !docPickerAvailable">crop_free</i>
@@ -60,56 +59,85 @@
     </div>
 
     <div class="col-md-9 ">
-      <h4>Survey Canvas <span class="survey-edit-warning" *ngIf="isEditing">Repeated edits to surveys may decrease reportability.</span></h4>
+      <div class="survey-canvas-heading">
+        <h4>Survey Canvas</h4>
+        <span class="survey-edit-warning" *ngIf="isEditing">Repeated edits to surveys may decrease reportability.</span>
+      </div>
       <form class="survey-canvas">
         <div
         cdkDropList
-        [cdkDropListData]="questions"
+        [cdkDropListData]="surveyQuestionsForm"
         class="survey-canvas-list"
         (cdkDropListDropped)="dropComponent($event)">
         <div
         class="new-component"
         *ngFor="let question of currentQuestionsForm.controls; let i = index"
         cdkDrag>
-        <div class="new-component-controls">
-          <button mat-icon-button class="theme-color control-button control-handle">
-            <i class="material-icons control-button-icon" cdkDragHandle>crop_free</i>
-          </button>
-          <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteQuestion(i)">
-            <i class="material-icons control-button-icon">close</i>
-          </button>
-        </div>
         <div [formGroup]="question" class="new-component-contents">
+          <div class="new-component-controls">
+            <button mat-icon-button class="theme-color control-button control-handle">
+              <i class="material-icons control-button-icon" cdkDragHandle>crop_free</i>
+            </button>
+            <div class="question-type">{{question.value.type | camelToString}}</div>
+            <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteQuestion(i)">
+              <i class="material-icons control-button-icon">close</i>
+            </button>
+          </div>
           <div *ngIf="question.value.questionText || question.value.questionText === null || question.value.questionText === ''" class="new-component-text">
             <strong>{{i + 1}}. </strong>
-            <mat-form-field class="new-component-text-form">
-              <mat-label>{{question.value.type | camelToString}}</mat-label>
-              <textarea matInput mat-autosize="true" formControlName="questionText" name="questionText" class="component-text-box"></textarea>
-              <mat-error *ngIf="question.invalid">Question text is required</mat-error>
-             </mat-form-field>
+            <div class="new-component-text-form">
+              <!-- <textarea matInput mat-autosize="true" formControlName="questionText" name="questionText" class="component-text-box"></textarea> -->
+              <ckeditor
+                name="questionText"
+                class="component-text-box"
+                #editorTest
+                formControlName="questionText"
+                (change)="onCKEditorChange($event)"
+                [config]="editorConfig"
+                [editor]="Editor"
+                [data]="question.value.questionText">
+              </ckeditor>
+              <mat-error *ngIf="question.get('questionText').touched && question.get('questionText').invalid">Question text is required</mat-error>
+            </div>
          </div>
          <div *ngIf="question.value.type === 'info'" class="new-component-text">
           <strong>{{i + 1}}. </strong>
-          <mat-form-field class="new-component-text-form">
+          <div class="new-component-text-form">
             <mat-label>Info Text</mat-label>
-            <textarea matInput mat-autosize="true" formControlName="infoText" name="infoText" class="component-text-box" placeholder="Placeholder text"></textarea>
-            <mat-error *ngIf="question.invalid">Info box text is required</mat-error>
-           </mat-form-field>
+            <ckeditor
+            name="infoText"
+            class="component-text-box"
+            formControlName="infoText"
+            (change)="onCKEditorChange($event)"
+            [config]="editorConfig"
+            [editor]="Editor"
+            [data]="question.value.infoText">
+          </ckeditor>
+            <!-- <textarea matInput mat-autosize="true" formControlName="infoText" name="infoText" class="component-text-box" placeholder="Placeholder text"></textarea> -->
+            <mat-error *ngIf="question.get('infoText').touched && question.get('infoText').invalid">Info box text is required</mat-error>
+        </div>
          </div>
          <div *ngIf="question.value.type === 'docPicker'" class="new-component-text">
             <strong>{{i + 1}}. </strong>
-            <mat-form-field class="new-component-text-form">
-              <mat-label>{{question.value.type | camelToString}}</mat-label>
-              <textarea matInput mat-autosize="true" formControlName="docPickerText" name="docPickerText" class="component-text-box" placeholder="Placeholder text"></textarea>
-              <mat-error *ngIf="question.invalid">Document picker text is required</mat-error>
-            </mat-form-field>
+            <div class="new-component-text-form">
+              <ckeditor
+              name="docPickerText"
+              class="component-text-box"
+              #editorTest
+              formControlName="docPickerText"
+              [config]="editorConfig"
+              [editor]="Editor"
+              [data]="question.value.docPickerText">
+            </ckeditor>
+            <mat-error *ngIf="question.get('docPickerText').touched && question.get('docPickerText').invalid">Document picker text is required</mat-error>
+            </div>
          </div>
          <div *ngIf="question.value.type === 'email'" class="new-component-text">
           <strong>{{i + 1}}. </strong>
           <mat-form-field class="new-component-text-form">
             <mat-label>{{question.value.type | camelToString}}</mat-label>
             <textarea matInput mat-autosize="true" formControlName="emailText" name="emailText" class="component-text-box"></textarea>
-            <mat-error *ngIf="question.invalid">Email text is required</mat-error>
+            <mat-error *ngIf="question.get('emailText').touched && question.get('emailText').invalid">Email text is required</mat-error>
            </mat-form-field>
         </div>
         <div *ngIf="question.value.type === 'phoneNumber'"  class="new-component-text">
@@ -117,7 +145,7 @@
           <mat-form-field class="new-component-text-form">
             <mat-label>{{question.value.type | camelToString}}</mat-label>
             <textarea matInput mat-autosize="true" formControlName="phoneNumberText" name="phoneNumberText" class="component-text-box"></textarea>
-            <mat-error *ngIf="question.invalid">Phone number text is required</mat-error>
+            <mat-error *ngIf="question.get('phoneNumberText').touched && question.get('phoneNumberText').invalid">Phone number text is required</mat-error>
            </mat-form-field>
         </div>
               <div class="new-component-config" [ngClass]="{'new-likert-config': question.value.type === 'likert' }">
@@ -130,7 +158,7 @@
                       <mat-form-field class="new-component-choice-form">
                         <input matInput [formControl]="choice" value="{{choice.value}}">
                         <mat-hint>Choice text</mat-hint>
-                        <mat-error *ngIf="choice.invalid">Choice text is required</mat-error>
+                        <mat-error *ngIf="choice.touched && choice.invalid">Choice text is required</mat-error>
                       </mat-form-field>
                       <button mat-icon-button class="theme-color control-button delete-icon" (click)="deleteChoice(question, ci)">
                         <i class="material-icons control-button-icon">close</i>
