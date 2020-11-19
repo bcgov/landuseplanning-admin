@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import * as ClassicEditor from 'assets/ckeditor5/build/ckeditor';
+import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 
 import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
 import { SurveyQuestion }    from 'app/models/surveyQuestion';
@@ -40,7 +42,9 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   public docPickerInstance: any[];
   public scrollListener: () => void;
   public payLoad = '';
+  public Editor = ClassicEditor;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  public editorConfig: any;
 
   constructor(
     public surveyBuilderService: SurveyBuilderService,
@@ -57,6 +61,21 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
     this.storageService.state.currentCommentPeriod = null;
+    this.editorConfig = {
+      intialData: '',
+      link: {
+        decorators: {
+            openInNewTab: {
+                mode: 'manual',
+                label: 'Open in a new tab',
+                attributes: {
+                    target: '_blank',
+                    rel: 'noopener noreferrer'
+                }
+            }
+        }
+      }
+    }
 
     this.scrollListener = this.renderer.listen(document.getElementById('scrollTop'), 'scroll', (event) => {
       this.surveyPosition = event.srcElement.scrollTop;
@@ -159,6 +178,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   ];
 
   dropComponent(event: CdkDragDrop<string[]>) {
+    console.log('is it touched?', this.surveyQuestionsForm)
     if (event.previousContainer === event.container) {
       this.moveQuestion(this.surveyQuestionsForm, event.previousIndex, event.currentIndex);
     } else {
@@ -196,11 +216,11 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     }
   }
 
-  noDrop(): false {
+  public noDrop(): false {
     return false;
   }
 
-  isUndefined(value) {
+  public isUndefined(value) {
     if (typeof value === 'undefined') {
       return true
     } else {
@@ -208,7 +228,17 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     }
   }
 
-  likertChoiceText(position: number): string {
+  public onCKEditorChange( { editor }: ChangeEvent ) {
+    const data = editor.getData();
+
+    if (data.length === 0) {
+      console.log('error!', this.surveyQuestionsForm);
+
+
+    }
+}
+
+  public likertChoiceText(position: number): string {
     const positionText = [
       'Left',
       'Centre-left',

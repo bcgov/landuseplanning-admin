@@ -18,8 +18,13 @@
 
   .question-text {
     font-size: 1.1rem;
-    font-weight: bold;
+    // font-weight: bold;
     margin: 1.5rem 0 0 0;
+    display: flex;
+
+    span {
+      padding-right: 0.3rem;
+    }
   }
 
   .question-choice-list {
@@ -58,11 +63,7 @@
 
   .info-text {
     display: inline-block;
-    border-top: 2px solid black;
-    border-bottom: 2px solid black;
-    text-align: center;
     margin: 1rem 0rem;
-    font-weight: bold;
     padding: 1rem;
     font-size: 1.1rem;
     flex-grow: 1;
@@ -72,7 +73,6 @@
     border: 2px dashed lightgrey;
     margin: 1rem;
     color: grey;
-    text-align: center;
     padding: 2rem;
   }
 }

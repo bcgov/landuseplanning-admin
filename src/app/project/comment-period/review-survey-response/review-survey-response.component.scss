@@ -36,14 +36,14 @@
 
   .question-text {
     font-size: 1.1rem;
-    font-weight: bold;
     margin: 1.5rem 0 0 0;
+    display: flex;
   }
 
   .question-choice-list {
     list-style-type: none;
     // color: grey;
-    padding: 1rem;
+    padding: 1rem 0;
     font-size: 1.1rem;
     margin: 0;
 
@@ -84,11 +84,7 @@
 
   .info-text {
     display: inline-block;
-    border-top: 2px solid black;
-    border-bottom: 2px solid black;
-    text-align: center;
     margin: 1rem 0rem;
-    font-weight: bold;
     padding: 1rem;
     font-size: 1.1rem;
     flex-grow: 1;
@@ -96,19 +92,20 @@
 
   .doc-picker {
     border: 2px dashed lightgrey;
-    margin: 1rem;
+    margin: 1rem 0;
     color: grey;
-    text-align: center;
     padding: 2rem;
   }
 }
 
 .answer-text {
-  margin: 0.75rem 1.25rem;
+  margin: 0.75rem 0rem;
+  font-weight: 700;
 }
 
 .no-answer-text {
   margin: 0.75rem 1.25rem;
+  font-weight: 700;
   font-style: italic;
 }
 
@@ -125,7 +122,9 @@
   }
 }
 
-
+.question-count {
+  padding-right: 1rem;
+}
 
 h1 {
   margin-bottom: 16px;
@@ -141,7 +140,7 @@ div .attribute {
   display:block;
   font-size: 1rem;
   font-weight: bold;
-  padding: 30px 0 0 4.25%;
+  padding: 30px 0;
   margin-bottom:10px;
 }
 
@@ -150,6 +149,7 @@ div .likert {
   width:100%;
   margin:0;
   display:block;
+  padding-left: 1rem;
 }
 
 div .likert:last-of-type {

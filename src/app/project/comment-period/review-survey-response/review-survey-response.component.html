@@ -36,7 +36,7 @@
           <div><span>Survey Response # {{surveyResponse.commentId}}</span></div>
           <!-- <div><span>Author:</span> {{surveyResponse.author}}</div>
           <div><span>Location:</span> {{surveyResponse.location}}</div> -->
-          <div><span>Date Added:</span> {{surveyResponse.dateAdded | date: 'longDate'}}</div>
+          <div><span>Date Submitted:</span> {{surveyResponse.dateAdded | date: 'longDate'}}</div>
         </div>
       </div>
       <div class="row">
@@ -55,17 +55,17 @@
         </div>
         <div *ngFor="let entry of surveyResponse.responses; let i = index" class="col-md-12">
           <div *ngIf="entry.question.type === 'smallText'">
-            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <div class="question-text"><span>{{countArray[i]}}. </span><p [innerHTML]="entry.question.questionText"><span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p></div>
             <p *ngIf="entry.answer.textAnswer" class="answer-text">{{entry.answer.textAnswer}}</p>
             <p *ngIf="!entry.answer.textAnswer" class="no-answer-text">(blank)</p>
           </div>
           <div *ngIf="entry.question.type === 'largeText'">
-            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <div class="question-text"><span>{{countArray[i]}}. </span><p [innerHTML]="entry.question.questionText"><span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p></div>
             <p *ngIf="entry.answer.textAnswer" class="answer-text">{{entry.answer.textAnswer}}</p>
             <p *ngIf="!entry.answer.textAnswer" class="no-answer-text">(blank)</p>
           </div>
           <div *ngIf="entry.question.type === 'singleChoice'">
-            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <div class="question-text"><span>{{countArray[i]}}. </span><p [innerHTML]="entry.question.questionText"><span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p></div>
             <p class="choice-limit">(Choose One)</p>
             <ul class="question-choice-list">
               <li *ngFor="let choice of entry.question.choices; let ci = index" class="list-item">
@@ -80,7 +80,7 @@
             </ul>
           </div>
           <div *ngIf="entry.question.type === 'multiChoice'">
-            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <div class="question-text"><span>{{countArray[i]}}. </span><p [innerHTML]="entry.question.questionText"><span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p></div>
             <p *ngIf="entry.question.choose > 0" class="choice-limit">(Choose {{entry.question.choose}})</p>
             <ul class="question-choice-list">
               <li *ngFor="let choice of entry.question.choices; let ci = index" class="list-item">
@@ -95,7 +95,7 @@
             </ul>
           </div>
           <div *ngIf="entry.question.type === 'likert'">
-            <p class="question-text">{{countArray[i]}}. {{entry.question.questionText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
+            <div class="question-text"><span>{{countArray[i]}}. </span><p [innerHTML]="entry.question.questionText"><span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p></div>
             <div class="wrap">
               <div *ngFor="let attribute of entry.question.attributes; let ai = index">
                 <label class="attribute">{{attribute.attribute}}</label>
@@ -111,11 +111,11 @@
 
           </div>
           <div *ngIf="entry.question.type === 'docPicker'">
-            <p class="question-text">{{countArray[i]}}. {{entry.question.docPickerText}}</p>
+            <div class="question-text"><span>{{countArray[i]}}. </span><p [innerHTML]="entry.question.docPickerText"><span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p></div>
             <div class="doc-picker">Upload a document</div>
           </div>
           <div *ngIf="entry.question.type === 'info'" [ngClass]="{'info-entry' : entry.question.type === 'info'}">
-            <span class="info-number"></span><p class="info-text">{{entry.question.infoText}}</p>
+            <div class="question-text"><p [innerHTML]="entry.question.infoText"></p></div>
           </div>
           <div *ngIf="entry.question.type === 'email'">
             <p class="question-text">{{countArray[i]}}. {{entry.question.emailText}}<span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p>
@@ -132,12 +132,6 @@
     </div>
 
       <div class="col-md-4">
-        <!-- <div class="form-row">
-          <div class="form-group col-md-12">
-            <label for="isAnonymousCheckBox"><b>Make author's name visible to the public</b></label>&nbsp;
-            <input id="isAnonymousCheckBox" type="checkbox" name="isAnonymous" formControlName="isNamePublic">
-          </div>
-        </div> -->
         <div class="form-row attachments">
           <div class="form-group col-md-12">
             <label for="proponentResponse"><b>Attachments</b></label>
@@ -151,16 +145,6 @@
                     (click)='downloadDocument(document)'>
                     <span class="cell__txt-content">{{document.internalOriginalName}}</span>
                   </span>
-                  <!-- <span class="cell actions">
-                    <a class="btn btn-light" [class.active]="document.eaoStatus === 'Published'" role="button"
-                      title="Publish this document" (click)="toggleDocumentPublish(document, 'Published')">
-                      Publish
-                    </a>
-                    <a class="btn btn-light" [class.active]="document.eaoStatus === 'Rejected'" role="button"
-                      title="Reject this document" (click)="toggleDocumentPublish(document, 'Rejected')">
-                      Reject
-                    </a>
-                  </span> -->
                 </li>
               </ul>
             </div>
