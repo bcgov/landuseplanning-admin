@@ -25,7 +25,7 @@ export class KeycloakService {
       case 'https://lup-dev.pathfinder.gov.bc.ca':
         // Dev etc
         this.keycloakEnabled = true;
-        this.keycloakUrl = 'https://dev.oidc.gov.bc.ca/auth';
+        this.keycloakUrl = 'https://oidc.gov.bc.ca/auth';
         // this.keycloakUrl = 'https://sso.pathfinder.gov.bc.ca/auth';
         this.keycloakRealm = 'aaoozhcp';
         break;
