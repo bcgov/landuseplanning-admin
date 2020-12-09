@@ -43,7 +43,7 @@
       <div class="col-md-8">
 
       <div class="row survey-main">
-        <div class="col-md-12">
+        <!-- <div class="col-md-12">
           <div>
             <p class="question-text">1. Your name<span class="required">*</span></p>
             <p class="answer-text">{{surveyResponse.author}}</p>
@@ -52,7 +52,7 @@
             <p class="question-text">2. Location<span class="required">*</span></p>
             <p class="answer-text">{{surveyResponse.location}}</p>
           </div>
-        </div>
+        </div> -->
         <div *ngFor="let entry of surveyResponse.responses; let i = index" class="col-md-12">
           <div *ngIf="entry.question.type === 'smallText'">
             <div class="question-text"><span>{{countArray[i]}}. </span><p [innerHTML]="entry.question.questionText"><span class="required">{{entry.question.answerRequired ? '*' : ''}}</span></p></div>
