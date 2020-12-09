@@ -49,16 +49,16 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       value: 'commentId',
       width: 'col-1'
     },
-    {
-      name: 'Name',
-      value: 'author',
-      width: 'col-2'
-    },
-    {
-      name: 'Location',
-      value: 'location',
-      width: 'col-2'
-    },
+    // {
+    //   name: 'Name',
+    //   value: 'author',
+    //   width: 'col-2'
+    // },
+    // {
+    //   name: 'Location',
+    //   value: 'location',
+    //   width: 'col-2'
+    // },
     {
       name: 'Date',
       value: 'dateAdded',

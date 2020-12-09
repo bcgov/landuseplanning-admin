@@ -97,9 +97,9 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     // Does not display number next to info boxes
     let infoCount = 0;
     for (let i = 0; i < questions.length; i++) {
-      // Increment count by three to account for array index of 0
-      // and the author and location fields present on each survey
-      let count = i + 3;
+      // Removing the author and location field so
+      // only incrementing by 1
+      let count = i + 1;
       if (questions[i].type === 'info') {
         this.countArray.push('')
         infoCount++;
