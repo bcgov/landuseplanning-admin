@@ -26,14 +26,12 @@ export class KeycloakService {
         // Dev etc
         this.keycloakEnabled = true;
         this.keycloakUrl = 'https://oidc.gov.bc.ca/auth';
-        // this.keycloakUrl = 'https://sso.pathfinder.gov.bc.ca/auth';
         this.keycloakRealm = 'aaoozhcp';
         break;
 
       case 'https://lup-test.pathfinder.gov.bc.ca':
         // Test
         this.keycloakEnabled = true;
-        // this.keycloakUrl = 'https://sso-test.pathfinder.gov.bc.ca/auth';
         this.keycloakUrl = 'https://test.oidc.gov.bc.ca/auth';
         this.keycloakRealm = 'aaoozhcp';
         break;
@@ -41,7 +39,6 @@ export class KeycloakService {
       default:
         // Prod
         this.keycloakEnabled = true;
-        // this.keycloakUrl = 'https://sso.pathfinder.gov.bc.ca/auth';
         this.keycloakUrl = 'https://oidc.gov.bc.ca/auth';
         this.keycloakRealm = 'aaoozhcp';
     }
