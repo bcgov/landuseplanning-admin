@@ -29,7 +29,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   public REGIONS: Array<Object> = [
     'Cariboo',
     'Kootney Boundary',
-    'North Coast',
+    'West Coast',
     'Northeast',
     'Omineca',
     'Skeena',
@@ -63,7 +63,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     'Mount Waddington',
     'Nanaimo',
     'North Okanagan',
-    'North Coast',
+    'West Coast',
     'Okanagan - Similkameen',
     'Peace River',
     'qathet',
