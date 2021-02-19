@@ -22,7 +22,7 @@ RUN echo "" > /etc/nginx/adminServerEnvironmentSettings.js
 USER root
 
 # Fix up permissions
-RUN chmod -R 0777 /tmp /var /run /etc /mnt /usr/libexec/s2i/
+RUN chmod -Rf 0777 /tmp /var /run /etc /mnt /usr/libexec/s2i/ || true
 
 # Work-around for issues with S2I builds on Windows
 WORKDIR /tmp
