@@ -33,7 +33,7 @@ USER 0
 #      rm -rf /var/cache/yum/*
 
 # update npm, and install some dependencies that are slow to install.
-RUN npm i npm@6.4.1 -g	&& \
+RUN npm i -d npm@6.7.0 -g	&& \
   rm -R /opt/rh/rh-nodejs10/root/usr/lib/node_modules/npm
 
 
