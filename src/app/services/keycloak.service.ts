@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { JwtUtil } from 'app/jwt-util';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import * as _ from 'lodash';
+import { UserService } from 'app/services/user.service';
+import { User } from 'app/models/user';
 
 declare var Keycloak: any;
 
@@ -13,8 +16,11 @@ export class KeycloakService {
   private keycloakUrl: string;
   private keycloakRealm: string;
   private loggedOut: string;
+  private pathAPI: string;
 
-  constructor() {
+  constructor(
+    private http: HttpClient
+  ) {
     switch (window.location.origin) {
       // Always enable sso
       // case 'http://localhost:4200':
@@ -42,6 +48,12 @@ export class KeycloakService {
         this.keycloakUrl = 'https://oidc.gov.bc.ca/auth';
         this.keycloakRealm = 'aaoozhcp';
     }
+
+    // The following item is loaded by a file that is only present on cluster builds.
+    // Locally, this will be empty and local defaults will be used.
+    const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+
+    this.pathAPI = (_.isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
   }
 
   isKeyCloakEnabled(): boolean {
@@ -119,6 +131,10 @@ export class KeycloakService {
           .success((auth) => {
             // console.log('KC Refresh Success?:', self.keycloakAuth.authServerUrl);
             console.log('KC Success:', auth);
+
+            // After successful login, see if there's a user model for project permissions
+            this.checkUser(self.keycloakAuth.tokenParsed);
+
             if (!auth) {
               if (this.loggedOut === 'true') {
                 // Don't do anything, they wanted to remain logged out.
@@ -136,6 +152,52 @@ export class KeycloakService {
           });
       });
     }
+  }
+
+  /**
+   * Checks if user exists by .sub
+   *
+   * @param userToken User
+   * @returns void
+   */
+  checkUser(userToken: User): void {
+    if (userToken) {
+      const queryString = `user/${userToken.sub}`;
+      this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {})
+      .subscribe(
+        res => this.addUserIfNone(res, userToken),
+        err => console.log('Error retrieving user: ', err)
+      )
+    }
+  }
+
+  /**
+   * Checks if users is returned and adds a user entry if not
+   *
+   * @param userArray Array of users
+   * @param userToken Keycloak parsed token
+   * @return void
+   */
+  addUserIfNone(userArray: User[], userToken: User): void {
+    if (userArray.length === 0) {
+      console.log('User does not yet exist, adding: ', userArray)
+
+      const user = new User({
+        sub: userToken.sub,
+        firstName: userToken.given_name,
+        lastName: userToken.family_name,
+        displayName: `${userToken.given_name} ${userToken.family_name}`,
+        email: userToken.email
+      });
+
+      this.http.post<User>(`${this.pathAPI}/user`, user, {})
+      .subscribe(
+        res => console.log('Added new user', res),
+        err => console.log('Error adding new user: ', err)
+        )
+      } else {
+        console.log('User already exists', userArray)
+      }
   }
 
   isValidForSite() {

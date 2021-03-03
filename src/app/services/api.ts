@@ -1038,6 +1038,22 @@ export class ApiService {
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
+  // NB: returns array with 1 element
+  getUser(userID: string): Observable<User[]> {
+    const fields = [
+      'userID',
+      'firstName',
+      'lastName',
+      'displayName',
+      'email',
+    ];
+    const queryString = `user/${userID}?fields=${this.buildValues(fields)}`;
+    return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  //
+  // Organizations
+  //
   getOrgs(): Observable<Org[]> {
     const fields = [
       'displayName',
