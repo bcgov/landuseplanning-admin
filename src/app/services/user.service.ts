@@ -16,4 +16,17 @@ export class UserService {
   add(user: User): Observable<User> {
     return this.api.addUser(user).pipe(catchError(error => this.api.handleError(error)));
   }
+
+  getByUserID(userID: string): Observable<User> {
+    return this.api.getUser(userID).pipe(
+      map(res => {
+        if (res && res.length > 0) {
+          // return the first (only) user
+          return new User(res[0]);
+        }
+        return null;
+      }),
+      catchError(error => this.api.handleError(error))
+    );
+  }
 }
