@@ -2,11 +2,15 @@ import * as _ from 'lodash';
 
 export class User {
   _id: string;
+  sub: string;
   firstName: string;
   middleName: string;
   lastName: string;
+  given_name: string;
+  family_name: string;
   displayName: string;
   email: string;
+  projectPermissions: string[];
   org: any;
   orgName: string;
   title: string;
@@ -29,8 +33,11 @@ export class User {
     this.firstName = obj && obj.firstName || undefined;
     this.middleName = obj && obj.middleName || undefined;
     this.lastName = obj && obj.lastName || undefined;
+    this.given_name = obj && obj.lastName || undefined;
+    this.family_name = obj && obj.lastName || undefined;
     this.displayName = obj && obj.displayName || undefined;
     this.email = obj && obj.email || undefined;
+    this.projectPermissions = obj && obj.projectPermissions || undefined;
     this.org = obj && obj.org || undefined;
     this.orgName = obj && obj.orgName || undefined;
     this.title = obj && obj.title || undefined;
@@ -47,6 +54,7 @@ export class User {
     this.postalCode = obj && obj.postalCode || undefined;
     this.notes = obj && obj.notes || undefined;
     this.checkbox = obj && obj.checkbox || undefined;
+    this.sub = obj && obj.sub || undefined;
 
     Object.keys(obj).forEach(e => {
       this[`${e}`] = `${obj[e]}`;

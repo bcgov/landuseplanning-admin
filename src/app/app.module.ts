@@ -113,7 +113,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     AddEditActivityComponent,
     SearchHelpComponent,
     UserTableRowsComponent,
-    EnvBannerComponent
+    EnvBannerComponent,
   ],
   imports: [
     BrowserAnimationsModule,

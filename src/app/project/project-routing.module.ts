@@ -22,6 +22,7 @@ import { ProjectUpdatesComponent } from './project-updates/project-updates.compo
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
+import { ProjectPermissionsComponent } from './project-permissions/project-permissions.component';
 
 import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
@@ -136,6 +137,10 @@ const routes: Routes = [
       {
         path: 'project-surveys/add',
         component: AddEditProjectSurveyComponent,
+      },
+      {
+        path: 'project-permissions',
+        component: ProjectPermissionsComponent
       },
       {
         path: 's/:surveyId',

@@ -1010,6 +1010,7 @@ export class ApiService {
     ];
     //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
     const queryString = `emailSubscribe?project=${projectId}&fields=${this.buildValues(fields)}`;
+    console.log('the request', `emailSubscribe?fields=${this.buildValues(fields)}`)
     return this.http.get<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -1038,6 +1039,42 @@ export class ApiService {
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
+  // NB: returns array with 1 element
+  getUser(userID: string): Observable<User[]> {
+    const fields = [
+      'userID',
+      'firstName',
+      'lastName',
+      'displayName',
+      'email',
+    ];
+    const queryString = `user/${userID}?fields=${this.buildValues(fields)}`;
+    return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getAllUsers(): Observable<Object> {
+    const fields = [
+      'sub',
+      'displayName',
+      'projectPermissions',
+    ];
+    const queryString = `user?fields=${this.buildValues(fields)}`;
+    return this.http.get<User>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  addProjectToUser(user: User, proj: Project): Observable<User> {
+    const queryString = `user/addPermission/${user._id}/${proj._id}`;
+    return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
+  }
+
+  removeProjectFromUser(user: User, proj: Project): Observable<User> {
+    const queryString = `user/removePermission/${user._id}/${proj._id}`;
+    return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
+  }
+
+  //
+  // Organizations
+  //
   getOrgs(): Observable<Org[]> {
     const fields = [
       'displayName',
