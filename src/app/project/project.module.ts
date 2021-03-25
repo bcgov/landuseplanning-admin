@@ -36,6 +36,7 @@ import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 import { ShapefileTableRowsComponent } from './project-shapefiles/project-shapefile-table-rows/project-shapefile-table-rows.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
+import { NavbarComponent } from 'app/shared/components/navbar/navbar.component';
 
 // services
 import { ApiService } from 'app/services/api';
@@ -60,7 +61,9 @@ import { EmailSubscribeService } from 'app/services/emailSubscribe.service';
 import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/email-subscribe-table-rows/email-subscribe-table-rows.component';
 
 // Routes Guards
-import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard'
+import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
+import { ProjectPermissionsComponent } from './project-permissions/project-permissions.component';
+import { PermissionsTableRowsComponent } from './project-permissions/permissions-table-rows/permissions-table-rows.component'
 
 @NgModule({
   imports: [
@@ -116,6 +119,9 @@ import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-
     ReviewSurveyResponseComponent,
     ProjectEmailSubscribeComponent,
     EmailSubscribeTableRowsComponent,
+    ProjectPermissionsComponent,
+    PermissionsTableRowsComponent,
+    NavbarComponent
   ],
   entryComponents: [
     AddDocumentTableRowsComponent,

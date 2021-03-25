@@ -72,7 +72,6 @@ import { LinkOrganizationComponent } from './shared/components/link-organization
 import { LinkOrganizationTableRowsComponent } from './shared/components/link-organization/link-organization-table-rows/link-organization-table-rows.component';
 import { ContactSelectComponent } from './shared/components/contact-select/contact-select.component';
 import { ContactSelectTableRowsComponent } from './shared/components/contact-select/contact-select-table-rows/contact-select-table-rows.component';
-import { PermissionsComponent } from './permissions/permissions.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -115,7 +114,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     SearchHelpComponent,
     UserTableRowsComponent,
     EnvBannerComponent,
-    PermissionsComponent
   ],
   imports: [
     BrowserAnimationsModule,

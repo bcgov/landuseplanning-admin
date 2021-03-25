@@ -10,6 +10,7 @@ export class User {
   family_name: string;
   displayName: string;
   email: string;
+  projectPermissions: string[];
   org: any;
   orgName: string;
   title: string;
@@ -36,6 +37,7 @@ export class User {
     this.family_name = obj && obj.lastName || undefined;
     this.displayName = obj && obj.displayName || undefined;
     this.email = obj && obj.email || undefined;
+    this.projectPermissions = obj && obj.projectPermissions || undefined;
     this.org = obj && obj.org || undefined;
     this.orgName = obj && obj.orgName || undefined;
     this.title = obj && obj.title || undefined;

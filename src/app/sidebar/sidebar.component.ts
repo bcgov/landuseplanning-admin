@@ -2,9 +2,11 @@ import { Component, HostBinding, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
 import { SideBarService } from 'app/services/sidebar.service';
+import { KeycloakService } from 'app/services/keycloak.service'
 import { filter } from 'rxjs/operators';
 import { StorageService } from 'app/services/storage.service';
 import { Subject } from 'rxjs/Subject';
+import { JwtUtil } from 'app/jwt-util';
 
 @Component({
   selector: 'app-sidebar',
@@ -21,13 +23,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
   public showProjectDetailsSubItems = false;
   public currentProjectId = '';
   public currentMenu = '';
+  public canUserCreateProjects: boolean;
 
   @HostBinding('class.is-toggled')
   isOpen = false;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private storageService: StorageService,
-    private sideBarService: SideBarService) {
+    private sideBarService: SideBarService,
+    private keycloakService: KeycloakService
+    ) {
 
     router.events.pipe(
       filter(event => event instanceof NavigationEnd))
@@ -36,6 +42,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.routerSnapshot = event;
         this.SetActiveSidebarItem();
       });
+
+      router.events
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(val => {
+          const token = this.keycloakService.getToken();
+          if (token) {
+            const jwt = new JwtUtil().decodeToken(token);
+            this.canUserCreateProjects = jwt.realm_access.roles.includes('create-projects')
+          }
+        });
   }
 
   ngOnInit() {

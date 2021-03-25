@@ -161,7 +161,9 @@ export class KeycloakService {
    * @returns void
    */
   checkUser(userToken: User): void {
+    console.log('Checking for user')
     if (userToken) {
+      console.log('is this happening')
       const queryString = `user/${userToken.sub}`;
       this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {})
       .subscribe(
@@ -182,12 +184,15 @@ export class KeycloakService {
     if (userArray.length === 0) {
       console.log('User does not yet exist, adding: ', userArray)
 
+      // Creating the user in the DB for the first time.
+      // Empty project permissions.
       const user = new User({
         sub: userToken.sub,
         firstName: userToken.given_name,
         lastName: userToken.family_name,
         displayName: `${userToken.given_name} ${userToken.family_name}`,
-        email: userToken.email
+        email: userToken.email,
+        projectPermissions: []
       });
 
       this.http.post<User>(`${this.pathAPI}/user`, user, {})

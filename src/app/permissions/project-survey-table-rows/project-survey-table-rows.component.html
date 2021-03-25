@@ -1,5 +1,0 @@
-<tr *ngFor="let survey of surveys | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }">
-  <td scope="row" class="col-6" data-label="Name" (click)="goToItem(survey)">{{survey.name}}</td>
-  <td scope="row" class="col-3" data-label="Date Added" (click)="goToItem(survey)">{{survey.dateAdded | date:'longDate'}}</td>
-  <td scope="row" class="col-3" data-label="Last Saved" (click)="goToItem(survey)">{{survey.lastSaved | date:'longDate'}}</td>
-</tr>
