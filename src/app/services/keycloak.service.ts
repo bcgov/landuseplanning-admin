@@ -163,7 +163,6 @@ export class KeycloakService {
   checkUser(userToken: User): void {
     console.log('Checking for user')
     if (userToken) {
-      console.log('is this happening')
       const queryString = `user/${userToken.sub}`;
       this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {})
       .subscribe(

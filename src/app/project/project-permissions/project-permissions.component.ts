@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { get } from 'lodash';
-import { NavBarButton } from 'app/models/navBarButton'
 import { Project } from 'app/models/project'
 
 import { ApiService } from 'app/services/api';

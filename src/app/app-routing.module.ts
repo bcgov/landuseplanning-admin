@@ -23,7 +23,6 @@ import { AddEditOrganizationComponent } from './organizations/add-edit-organizat
 import { EditOrganizationResolver } from './organizations/add-edit-organization/edit-organization-resolver.services';
 import { LinkOrganizationComponent } from './shared/components/link-organization/link-organization.component';
 import { LinkOrganizationResolver } from './shared/components/link-organization/link-organization-resolver.services';
-// import { ProjectPermissionsComponent } from './project/project-permissions/project-permissions.component';
 
 const routes: Routes = [
   {
@@ -128,10 +127,6 @@ const routes: Routes = [
     path: 'activity/add',
     component: AddEditActivityComponent
   },
-  // {
-  //   path: 'permissions',
-  //   component: ProjectPermissionsComponent
-  // },
   {
     path: 'search-help',
     component: SearchHelpComponent

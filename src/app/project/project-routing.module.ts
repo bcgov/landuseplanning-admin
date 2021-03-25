@@ -24,7 +24,6 @@ import { ReviewSurveyResponseComponent } from './comment-period/review-survey-re
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectPermissionsComponent } from './project-permissions/project-permissions.component';
 
-
 import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 import { DocumentDetailResolver } from './project-documents/detail/document-detail-resolver.service';
