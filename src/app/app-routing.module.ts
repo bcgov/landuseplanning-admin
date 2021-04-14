@@ -8,14 +8,14 @@ import { SearchComponent } from './search/search.component';
 import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
 import { ContactsComponent } from './contacts/contacts.component';
-import { ActivityComponent } from './activity/activity.component';
+// import { ActivityComponent } from './activity/activity.component';
 import { SearchHelpComponent } from './search-help/search-help.component';
 
 import { ContactsResolver } from './contacts/contacts-resolver.service';
-import { ActivityComponentResolver } from './activity/activity-component-resolver.services';
+// import { ActivityComponentResolver } from './activity/activity-component-resolver.services';
 
 import { CanDeactivateGuard } from 'app/services/can-deactivate-guard.service';
-import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
+// import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
 import { EditContactResolver } from './contacts/add-edit-contact/edit-contact-resolver.services';
 import { OrganizationsComponent } from './organizations/organizations.component';
 import { OrganizationsResolver } from './organizations/organizations-resolver.service';
@@ -109,24 +109,24 @@ const routes: Routes = [
       users: ContactsResolver
     }
   },
-  {
-    path: 'activity',
-    component: ActivityComponent,
-    resolve: {
-      activities: ActivityComponentResolver
-    },
-  },
-  {
-    path: 'activity/:activityId/edit',
-    component: AddEditActivityComponent,
-    resolve: {
-      activity: ActivityComponentResolver
-    }
-  },
-  {
-    path: 'activity/add',
-    component: AddEditActivityComponent
-  },
+  // {
+  //   path: 'activity',
+  //   component: ActivityComponent,
+  //   resolve: {
+  //     activities: ActivityComponentResolver
+  //   },
+  // },
+  // {
+  //   path: 'activity/:activityId/edit',
+  //   component: AddEditActivityComponent,
+  //   resolve: {
+  //     activity: ActivityComponentResolver
+  //   }
+  // },
+  // {
+  //   path: 'activity/add',
+  //   component: AddEditActivityComponent
+  // },
   {
     path: 'search-help',
     component: SearchHelpComponent
@@ -152,7 +152,7 @@ const routes: Routes = [
     RouterModule
   ],
   providers: [
-    ActivityComponentResolver,
+    // ActivityComponentResolver,
     CanDeactivateGuard,
     ContactsResolver,
     EditContactResolver,

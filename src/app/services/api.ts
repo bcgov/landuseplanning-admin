@@ -439,6 +439,7 @@ export class ApiService {
       'documents',
       'location',
       'period',
+      'project',
       'survey',
       'responses',
       'read',
@@ -660,6 +661,7 @@ export class ApiService {
     const fields = [
       '_id',
       'author',
+      'project',
       'comment',
       'commentId',
       'dateAdded',
@@ -684,6 +686,8 @@ export class ApiService {
     }
     queryString += `&fields=${this.buildValues(fields)}`;
 
+    console.log('the query string', queryString)
+
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -692,6 +696,7 @@ export class ApiService {
     const fields = [
       '_id',
       'author',
+      'project',
       'comment',
       'commentId',
       'dateAdded',
@@ -982,6 +987,22 @@ export class ApiService {
   }
 
   // Activity
+  getRecentActivity(id: string): Observable<RecentActivity[]> {
+    const fields = [
+      '_id',
+      'headline',
+      'content',
+      'dateAdded',
+      'project',
+      'pinned',
+      'active',
+      'contentUrl',
+      'documentUrl'
+    ];
+    const queryString = `recentActivity/${id}?fields=${this.buildValues(fields)}`;
+    return this.http.get<RecentActivity[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
   addRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
     const queryString = `recentActivity/`;
     return this.http.post<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});

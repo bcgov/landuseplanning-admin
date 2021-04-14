@@ -54,6 +54,7 @@ export class CommentPeriodComponent implements OnInit, OnDestroy {
               this.surveys = data.cpAndSurveys.surveys.data;
               this.surveyCount = data.cpAndSurveys.surveys.totalCount;
               this.storageService.state.selectedDocumentsForCP = null;
+              console.log('the surveys from the tab review', this.surveys)
             } else {
               alert('Uh-oh, couldn\'t load comment period ');
               // comment period not found --> navigate back to search

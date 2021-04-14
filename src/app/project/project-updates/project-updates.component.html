@@ -1,13 +1,16 @@
-<nav class="action-container" aria-label="breadcrumb">
+<nav class="action-container">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a [routerLink]="['/projects']">All Projects</a>
+    <li class="breadcrumb-item" >
+      <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
     </li>
-    <li class="breadcrumb-item">
-      <a *ngIf='currentProject' [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
+    <li class="breadcrumb-item active" aria-current="page">
+      Updates
     </li>
-    <li class="breadcrumb-item active" aria-current="page">Updates</li>
   </ol>
+  <div>
+    <button type="button" class="btn btn-primary" (click)="addUpdate()">
+      <i class="material-icons">add</i>Add New Update</button>
+  </div>
 </nav>
 <div class="container-fluid-padding">
   <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
@@ -37,11 +40,8 @@
 
   <app-table-template
     *ngIf="!loading && tableParams.totalListItems != 0"
-    (checkboxChange)='checkChange($event)'
     [columns]="tableColumns"
     [data]="tableData"
-    (onColumnSort)='setColumnSort($event)'
-    (onSelectedRow)='updateSelectedRow($event)'
     (onPageNumUpdate)='getPaginatedDocs($event, null, null)'>
   </app-table-template>
 </div>

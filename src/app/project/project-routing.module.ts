@@ -46,6 +46,8 @@ import { ProjectSurveyResolver } from './project-survey/project-survey-resolver.
 import { ProjectSurveyDetailResolver } from './project-survey/project-survey-detail/project-survey-detail-resolver.services';
 import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
 import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
+import { AddEditProjectUpdateComponent } from './project-updates/add-edit-project-update/add-edit-project-update.component';
+import { AddEditProjectUpdateResolver } from './project-updates/add-edit-project-update/add-edit-project-update-resolver';
 
 const routes: Routes = [
   {
@@ -173,6 +175,17 @@ const routes: Routes = [
         resolve: {
           documents: ProjectUpdatesResolver
         }
+      },
+      {
+        path: 'project-updates/:projectUpdateId/edit',
+        component: AddEditProjectUpdateComponent,
+        resolve: {
+          activity: AddEditProjectUpdateResolver
+        }
+      },
+      {
+        path: 'project-updates/add',
+        component: AddEditProjectUpdateComponent
       },
       {
         path: 'comment-periods/add/add-documents',

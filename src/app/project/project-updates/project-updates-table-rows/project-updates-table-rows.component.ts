@@ -1,39 +1,41 @@
 import { Component, Input, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-
 import { TableComponent } from 'app/shared/components/table-template/table.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { Router } from '@angular/router';
-import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Subject } from 'rxjs';
 import { RecentActivityService } from 'app/services/recent-activity';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { StorageService } from 'app/services/storage.service'
 
 @Component({
-  selector: 'tbody[app-activity-table-rows]',
-  templateUrl: './activity-table-rows.component.html',
-  styleUrls: ['./activity-table-rows.component.scss']
+  selector: 'tbody[app-project-updates-table-rows]',
+  templateUrl: './project-updates-table-rows.component.html',
+  styleUrls: ['./project-updates-table-rows.component.scss']
 })
 
-export class ActivityTableRowsComponent implements OnInit, OnDestroy, TableComponent {
+export class ProjectUpdatesTableRowsComponent implements OnInit, OnDestroy, TableComponent {
   @Input() data: TableObject;
 
   public entries: any;
   public paginationData: any;
   public dropdownItems = ['Edit', 'Delete'];
   public targetActivity: any;
+  public currentProject: any;
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   constructor(
+    public router: Router,
     private _changeDetectionRef: ChangeDetectorRef,
-    private router: Router,
     private ngxSmartModalService: NgxSmartModalService,
     private recentActivityService: RecentActivityService,
+    private storageService: StorageService
   ) { }
 
   async ngOnInit() {
     this.entries = this.data.data;
     this.paginationData = this.data.paginationData;
+    this.currentProject = this.storageService.state.currentProject.data;
 
     this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
       .takeUntil(this.ngUnsubscribe)
@@ -84,7 +86,7 @@ export class ActivityTableRowsComponent implements OnInit, OnDestroy, TableCompo
 
   goToItem(activity) {
     console.log('activity:', activity);
-    this.router.navigate(['/activity', activity._id, 'edit']);
+    this.router.navigate(['p', this.currentProject._id, 'project-updates', activity._id , 'edit']);
   }
 
   ngOnDestroy() {

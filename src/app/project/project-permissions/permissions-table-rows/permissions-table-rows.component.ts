@@ -50,7 +50,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     console.log('checkbox add user permission:', event.checked, user)
 
     if (this.hasProjectPermission(user)) {
-      console.log('does not include it')
+      console.log('does not include it', typeof(user.projectPermissions))
       this.userService.removeProjectPermission(user, this.currentProject)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
