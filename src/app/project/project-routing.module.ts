@@ -22,6 +22,7 @@ import { ProjectUpdatesComponent } from './project-updates/project-updates.compo
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
+import { ProjectPermissionsComponent } from './project-permissions/project-permissions.component';
 
 import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
@@ -45,6 +46,8 @@ import { ProjectSurveyResolver } from './project-survey/project-survey-resolver.
 import { ProjectSurveyDetailResolver } from './project-survey/project-survey-detail/project-survey-detail-resolver.services';
 import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
 import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
+import { AddEditProjectUpdateComponent } from './project-updates/add-edit-project-update/add-edit-project-update.component';
+import { AddEditProjectUpdateResolver } from './project-updates/add-edit-project-update/add-edit-project-update-resolver';
 
 const routes: Routes = [
   {
@@ -138,6 +141,10 @@ const routes: Routes = [
         component: AddEditProjectSurveyComponent,
       },
       {
+        path: 'project-permissions',
+        component: ProjectPermissionsComponent
+      },
+      {
         path: 's/:surveyId',
         resolve: {
           survey: ProjectSurveyDetailResolver,
@@ -168,6 +175,17 @@ const routes: Routes = [
         resolve: {
           documents: ProjectUpdatesResolver
         }
+      },
+      {
+        path: 'project-updates/:projectUpdateId/edit',
+        component: AddEditProjectUpdateComponent,
+        resolve: {
+          activity: AddEditProjectUpdateResolver
+        }
+      },
+      {
+        path: 'project-updates/add',
+        component: AddEditProjectUpdateComponent
       },
       {
         path: 'comment-periods/add/add-documents',

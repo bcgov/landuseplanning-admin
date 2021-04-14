@@ -65,9 +65,12 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
     .takeUntil(this.ngUnsubscribe)
     .subscribe(
       (data) => {
+        console.log('what is the activated route data?', data)
         this.surveyResponse = data.surveyResponse;
         this.commentPeriod = data.cpAndSurveys.commentPeriod;
       })
+
+      console.log('survey responses', this.surveyResponse)
 
       this.surveyQuestions = this.surveyResponse.responses.map(response => response.question)
       this.surveyItemCount(this.surveyQuestions)

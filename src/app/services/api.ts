@@ -439,6 +439,7 @@ export class ApiService {
       'documents',
       'location',
       'period',
+      'project',
       'survey',
       'responses',
       'read',
@@ -660,6 +661,7 @@ export class ApiService {
     const fields = [
       '_id',
       'author',
+      'project',
       'comment',
       'commentId',
       'dateAdded',
@@ -684,6 +686,8 @@ export class ApiService {
     }
     queryString += `&fields=${this.buildValues(fields)}`;
 
+    console.log('the query string', queryString)
+
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -692,6 +696,7 @@ export class ApiService {
     const fields = [
       '_id',
       'author',
+      'project',
       'comment',
       'commentId',
       'dateAdded',
@@ -982,6 +987,22 @@ export class ApiService {
   }
 
   // Activity
+  getRecentActivity(id: string): Observable<RecentActivity[]> {
+    const fields = [
+      '_id',
+      'headline',
+      'content',
+      'dateAdded',
+      'project',
+      'pinned',
+      'active',
+      'contentUrl',
+      'documentUrl'
+    ];
+    const queryString = `recentActivity/${id}?fields=${this.buildValues(fields)}`;
+    return this.http.get<RecentActivity[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
   addRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
     const queryString = `recentActivity/`;
     return this.http.post<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});
@@ -1010,6 +1031,7 @@ export class ApiService {
     ];
     //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
     const queryString = `emailSubscribe?project=${projectId}&fields=${this.buildValues(fields)}`;
+    console.log('the request', `emailSubscribe?fields=${this.buildValues(fields)}`)
     return this.http.get<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -1038,6 +1060,42 @@ export class ApiService {
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
+  // NB: returns array with 1 element
+  getUser(userID: string): Observable<User[]> {
+    const fields = [
+      'userID',
+      'firstName',
+      'lastName',
+      'displayName',
+      'email',
+    ];
+    const queryString = `user/${userID}?fields=${this.buildValues(fields)}`;
+    return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  getAllUsers(): Observable<Object> {
+    const fields = [
+      'sub',
+      'displayName',
+      'projectPermissions',
+    ];
+    const queryString = `user?fields=${this.buildValues(fields)}`;
+    return this.http.get<User>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  addProjectToUser(user: User, proj: Project): Observable<User> {
+    const queryString = `user/addPermission/${user._id}/${proj._id}`;
+    return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
+  }
+
+  removeProjectFromUser(user: User, proj: Project): Observable<User> {
+    const queryString = `user/removePermission/${user._id}/${proj._id}`;
+    return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
+  }
+
+  //
+  // Organizations
+  //
   getOrgs(): Observable<Org[]> {
     const fields = [
       'displayName',

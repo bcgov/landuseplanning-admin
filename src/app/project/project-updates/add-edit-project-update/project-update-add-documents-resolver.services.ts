@@ -6,7 +6,7 @@ import { SearchService } from 'app/services/search.service';
 import { StorageService } from 'app/services/storage.service';
 
 @Injectable()
-export class ActivityAddDocumentsResolver implements Resolve<Observable<object>> {
+export class ProjectUpdateAddDocumentsResolver implements Resolve<Observable<object>> {
   constructor(
     private searchService: SearchService,
     private storageService: StorageService

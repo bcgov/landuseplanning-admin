@@ -54,15 +54,11 @@ import { UserService } from 'app/services/user.service';
 import { TokenInterceptor } from 'app/shared/utils/token-interceptor';
 import { MapComponent } from './map/map.component';
 import { MetricsComponent } from './metrics/metrics.component';
-import { ActivityComponent } from './activity/activity.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { UserTableRowsComponent } from './contacts/user-table-rows/user-table-rows.component';
-import { ActivityTableRowsComponent } from 'app/activity/activity-table-rows/activity-table-rows.component';
 import { CurrencyPipe } from '@angular/common';
-import { AddEditActivityComponent } from './activity/add-edit-activity/add-edit-activity.component';
 import { RecentActivityService } from './services/recent-activity';
 import { SearchHelpComponent } from './search-help/search-help.component';
-import { ActivityDetailTableRowsComponent } from './activity/activity-detail-table-rows/activity-detail-table-rows.component';
 import { InputModalComponent } from './input-modal/input-modal.component';
 import { AddEditContactComponent } from './contacts/add-edit-contact/add-edit-contact.component';
 import { OrganizationsComponent } from './organizations/organizations.component';
@@ -79,10 +75,14 @@ export function kcFactory(keycloakService: KeycloakService) {
 
 @NgModule({
   declarations: [
-    ActivityComponent,
-    ActivityDetailTableRowsComponent,
-    ActivityTableRowsComponent,
-    AddEditActivityComponent,
+    // ProjectUpdatesComponent,
+    // ProjectUpdatesTableRowsComponent,
+    // AddEditProjectUpdateComponent,
+    // ProjectUpdatesDetailTableRowsComponent,
+    // ActivityComponent,
+    // ActivityDetailTableRowsComponent,
+    // ActivityTableRowsComponent,
+    // AddEditActivityComponent,
     AddEditContactComponent,
     AddEditOrganizationComponent,
     AppComponent,
@@ -105,15 +105,11 @@ export function kcFactory(keycloakService: KeycloakService) {
     ToggleButtonComponent,
     MapComponent,
     MetricsComponent,
-    ActivityComponent,
     ContactsComponent,
     UserTableRowsComponent,
-    ActivityTableRowsComponent,
-    ActivityDetailTableRowsComponent,
-    AddEditActivityComponent,
     SearchHelpComponent,
     UserTableRowsComponent,
-    EnvBannerComponent
+    EnvBannerComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -165,9 +161,10 @@ export function kcFactory(keycloakService: KeycloakService) {
     UserService,
   ],
   entryComponents: [
-    ActivityDetailTableRowsComponent,
-    ActivityTableRowsComponent,
-    AddEditActivityComponent,
+    // ActivityDetailTableRowsComponent,
+    // ActivityTableRowsComponent,
+    // AddEditActivityComponent,
+    // ActivityDetailTableRowsComponent,
     AddEditContactComponent,
     AddEditOrganizationComponent,
     LinkOrganizationComponent,
@@ -175,8 +172,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     ConfirmComponent,
     InputModalComponent,
     OrganizationsTableRowsComponent,
-    ActivityTableRowsComponent,
-    ActivityDetailTableRowsComponent,
     LinkOrganizationTableRowsComponent,
     ContactSelectTableRowsComponent,
     UserTableRowsComponent

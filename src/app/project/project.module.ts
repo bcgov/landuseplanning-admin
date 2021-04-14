@@ -31,11 +31,15 @@ import { MilestonesComponent } from './milestones/milestones.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
 import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
-import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 import { ShapefileTableRowsComponent } from './project-shapefiles/project-shapefile-table-rows/project-shapefile-table-rows.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
+import { NavbarComponent } from 'app/shared/components/navbar/navbar.component';
+import { ProjectUpdatesComponent } from 'app/project/project-updates/project-updates.component';
+import { ProjectUpdatesTableRowsComponent } from 'app/project/project-updates/project-updates-table-rows/project-updates-table-rows.component';
+import { AddEditProjectUpdateComponent } from 'app/project/project-updates/add-edit-project-update/add-edit-project-update.component';
+import { AddEditProjectUpdateResolver } from 'app/project/project-updates/add-edit-project-update/add-edit-project-update-resolver'
 
 // services
 import { ApiService } from 'app/services/api';
@@ -60,7 +64,9 @@ import { EmailSubscribeService } from 'app/services/emailSubscribe.service';
 import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/email-subscribe-table-rows/email-subscribe-table-rows.component';
 
 // Routes Guards
-import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard'
+import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
+import { ProjectPermissionsComponent } from './project-permissions/project-permissions.component';
+import { PermissionsTableRowsComponent } from './project-permissions/permissions-table-rows/permissions-table-rows.component'
 
 @NgModule({
   imports: [
@@ -102,6 +108,8 @@ import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-
     ProjectDocumentsComponent,
     ProjectShapefilesComponent,
     ProjectUpdatesComponent,
+    ProjectUpdatesTableRowsComponent,
+    AddEditProjectUpdateComponent,
     ReviewCommentComponent,
     ReviewCommentsTabComponent,
     ReviewCommentsTabTableRowsComponent,
@@ -116,6 +124,9 @@ import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-
     ReviewSurveyResponseComponent,
     ProjectEmailSubscribeComponent,
     EmailSubscribeTableRowsComponent,
+    ProjectPermissionsComponent,
+    PermissionsTableRowsComponent,
+    NavbarComponent
   ],
   entryComponents: [
     AddDocumentTableRowsComponent,
@@ -141,7 +152,8 @@ import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-
     ExcelService,
     ProjectService,
     StorageService,
-    EmailSubscribeService
+    EmailSubscribeService,
+    AddEditProjectUpdateResolver
   ]
 })
 

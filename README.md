@@ -49,3 +49,7 @@ For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.
 # How to Contribute
 
 Feel free to create pull requests from the default "dev" branch, click here to create one automatically: <https://github.com/bcgov/landuseplanning-admin/pull/new/dev>
+
+# Documentation
+
+[Navbar Component](https://github.com/bcgov/landuseplanning-admin/tree/dev/src/app/shared/components/navbar)

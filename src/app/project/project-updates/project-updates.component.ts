@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 import { Subject } from 'rxjs';
 import { SearchTerms } from 'app/models/search';
-import { ActivityDetailTableRowsComponent } from 'app/activity/activity-detail-table-rows/activity-detail-table-rows.component';
+import { ProjectUpdatesTableRowsComponent } from './project-updates-table-rows/project-updates-table-rows.component';
 
 @Component({
   selector: 'app-project-updates',
@@ -27,20 +27,47 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
     {
       name: 'Headline',
       value: 'headine',
-      width: 'col-10',
-      nosort: true
+      width: 'col-3',
+      nosort: false
     },
     {
-      name: 'Date',
-      value: 'dateUpdated',
+      name: 'Project',
+      value: 'project',
+      width: 'col-3',
+      nosort: false
+    },
+    {
+      name: 'Date Added',
+      value: 'dateAdded',
+      width: 'col-2',
+      nosort: false
+    },
+    {
+      name: 'Status',
+      value: 'status',
+      width: 'col-2',
+      nosort: false
+    },
+    {
+      name: 'Delete',
+      value: 'delete',
       width: 'col-2',
       nosort: true
     }
   ];
+  public pageBreadcrumbs = [{
+    pageTitle: 'Updates',
+    routerLink: ''
+  }];
+  public navBarButtons = [{
+    label: "Add Update",
+    materialIcon: "add",
+    action: this.addUpdate
+  }];
 
   constructor(
+    public router: Router,
     private storageService: StorageService,
-    private router: Router,
     private route: ActivatedRoute,
     private tableTemplateUtils: TableTemplateUtils,
     private _changeDetectionRef: ChangeDetectorRef
@@ -87,11 +114,17 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
         );
       });
       this.tableData = new TableObject(
-        ActivityDetailTableRowsComponent,
+        ProjectUpdatesTableRowsComponent,
         list,
         this.tableParams
       );
     }
+  }
+
+  addUpdate(router = this.router, currentProject = this.currentProject): void {
+    // this.storageService.state.currentProject = this.currentProject;
+    console.log('the router', router)
+    router.navigate(['p', currentProject._id, 'project-updates', 'add']);
   }
 
   public onSubmit() {

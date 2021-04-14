@@ -1,0 +1,9 @@
+<tr *ngFor="let entry of entries"
+    class="clickable-row">
+    <td data-label="User" scope="row" class="col-8">{{entry.displayName}}</td>
+    <td data-label="Access" scope="row" class="col-4">
+      <mat-checkbox (change)="handlePermissionCheckboxChange($event, entry)"
+                    [checked]=hasProjectPermission(entry)>
+      </mat-checkbox>
+    </td>
+</tr>
