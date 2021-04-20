@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
+import { JwtUtil } from 'app/jwt-util';
 
 import { Project } from 'app/models/project';
 import { SearchTerms } from 'app/models/search';
@@ -14,6 +15,7 @@ import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 import { ProjectListTableRowsComponent } from './project-list-table-rows/project-list-table-rows.component';
 
 import { SearchService } from 'app/services/search.service';
+import { KeycloakService } from 'app/services/keycloak.service'
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 
 @Component({
@@ -30,6 +32,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   public tableParams: TableParamsObject = new TableParamsObject();
   public terms = new SearchTerms();
   public visibility: string = '';
+  public canUserCreateProjects: boolean;
 
   public projectTableData: TableObject;
   public projectTableColumns: any[] = [
@@ -68,6 +71,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private tableTemplateUtils: TableTemplateUtils,
     private navigationStackUtils: NavigationStackUtils,
     private searchService: SearchService,
+    private keycloakService: KeycloakService,
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
@@ -80,6 +84,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
           this.tableParams.sortBy = '+name';
           this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords);
         }
+
+        const token = this.keycloakService.getToken();
+        if (token) {
+          const jwt = new JwtUtil().decodeToken(token);
+          console.log('here it is', jwt)
+          this.canUserCreateProjects = jwt.realm_access.roles.includes('create-projects')
+        }
+
         this.route.data
           .takeUntil(this.ngUnsubscribe)
           .subscribe((res: any) => {
