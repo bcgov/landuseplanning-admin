@@ -830,6 +830,7 @@ export class ApiService {
       'documentFileName',
       'internalOriginalName',
       'displayName',
+      'documentURLText',
       'internalURL',
       'internalMime'
     ];
@@ -997,7 +998,8 @@ export class ApiService {
       'pinned',
       'active',
       'contentUrl',
-      'documentUrl'
+      'documentUrl',
+      'documentUrlText'
     ];
     const queryString = `recentActivity/${id}?fields=${this.buildValues(fields)}`;
     return this.http.get<RecentActivity[]>(`${this.pathAPI}/${queryString}`, {});

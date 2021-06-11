@@ -6,6 +6,7 @@ export class RecentActivity {
     headline: string;
     content: string;
     documentUrl: string;
+    documentUrlText: string;
     contentUrl: string;
     pinned: boolean;
 
@@ -15,6 +16,7 @@ export class RecentActivity {
         this.dateAdded = obj && obj.dateAdded || null;
         this.content = obj && obj.content || null;
         this.documentUrl = obj && obj.documentUrl || null;
+        this.documentUrlText = obj && obj.documentUrlText || null;
         this.contentUrl = obj && obj.contentUrl || null;
         this.headline = obj && obj.headline || null;
         this.active = obj && obj.active || null;
