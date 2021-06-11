@@ -40,7 +40,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.document = res.document;
-        console.log(document);
+        console.log('the document', this.document);
         if (this.document.read.includes('public')) {
           this.publishText = 'Unpublish';
         } else {

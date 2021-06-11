@@ -81,6 +81,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
             'displayName': new FormControl(this.documents[0].displayName, Validators.required),
             'description': new FormControl(this.documents[0].description, Validators.required),
             'projectPhase': new FormControl(this.documents[0].projectPhase, Validators.required)
+
           });
         } else {
           this.multiEdit = true;

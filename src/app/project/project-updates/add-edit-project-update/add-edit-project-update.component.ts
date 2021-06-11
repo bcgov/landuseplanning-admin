@@ -51,7 +51,8 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
             'active': '',
             'pinned': false,
             'contentUrl': '',
-            'documentUrl': ''
+            'documentUrl': '',
+            'documentUrlText': ''
           });
           this.pageBreadcrumbs = null;
           this.addEditPageTitle = 'Add';
@@ -98,6 +99,7 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
         // TODO: ETL this to merge.
         contentUrl: this.myForm.controls.contentUrl.value,
         documentUrl: this.myForm.controls.documentUrl.value,
+        documentUrlText: this.myForm.controls.documentUrlText.value,
         active: this.myForm.controls.active.value === 'yes' ? true : false,
         pinned: this.activity.pinned
       });
@@ -115,6 +117,7 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
         project: this.currentProject._id,
         contentUrl: this.myForm.controls.contentUrl.value,
         documentUrl: this.myForm.controls.documentUrl.value,
+        documentUrlText: this.myForm.controls.documentUrlText.value,
         pinned: false,
         active: this.myForm.controls.active.value === 'yes' ? true : false
       });
@@ -140,7 +143,8 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
       'dateAdded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(data.dateAdded))),
       'active': new FormControl(data.active ? 'yes' : 'no'),
       'contentUrl': new FormControl(data.contentUrl),
-      'documentUrl': new FormControl(data.documentUrl)
+      'documentUrl': new FormControl(data.documentUrl),
+      'documentUrlText': new FormControl(data.documentUrlText),
     });
   }
 
