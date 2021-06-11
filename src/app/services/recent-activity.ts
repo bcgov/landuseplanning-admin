@@ -50,7 +50,6 @@ export class RecentActivityService {
     return this.api.getRecentActivity(activityId)
     .map(res => {
       if (res && res.length > 0) {
-        console.log('the res', res[0])
         return new RecentActivity(res[0]);
       }
       return [];
