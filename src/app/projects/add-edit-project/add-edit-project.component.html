@@ -53,6 +53,27 @@
           <label for="description">Description* </label>
           <textarea name="description" id="description" formControlName="description" class="form-control"></textarea>
         </div>
+
+        <div class="flex-container">
+          <div class="form-group mb-0">
+            <label for="shapeFile">Upload Project Banner Image</label>
+            <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
+              (filesChange)="addBannerDocument($event); projectFiles = []"></app-file-upload>
+            <br>
+            <div class="doc-list mb-3" *ngIf="bannerImageDocument">
+                <!-- <span class="cell name" [title]="doc.displayName || ''">
+                  <span class="cell__txt-content">{{doc.documentFileName}}</span>
+                </span> -->
+                <img class="" src="bannerImageDocument.internalURL">
+                <span class="cell actions">
+                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteBannerDocument(doc)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </span>
+              </div>
+          </div>
+        </div>
+
         <div *ngIf="formValueType(myForm.value.agreements) === 'object'" class="label-pair med">
         <div *ngFor="let agreement of agreements.controls; let i=index" >
           <div class="flex-container" [formGroup]="agreement">
@@ -120,8 +141,8 @@
           <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
             (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
           <br>
-          <ul class="doc-list mb-3" *ngIf="documents?.length > 0">
-            <li *ngFor="let doc of documents">
+          <ul class="doc-list mb-3" *ngIf="shapefileDocuments?.length > 0">
+            <li *ngFor="let doc of shapefileDocuments">
               <span class="cell icon">
                 <i class="material-icons">insert_drive_file</i>
               </span>

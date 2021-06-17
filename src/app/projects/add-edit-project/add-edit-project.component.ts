@@ -91,7 +91,9 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
 
   // Shape file upload
   public projectFiles: Array<File> = [];
-  public documents: Document[] = [];
+  public shapefileDocuments: Document[] = [];
+
+  public bannerImageDocument: Document;
 
   constructor(
     private route: ActivatedRoute,
@@ -108,21 +110,17 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // This is to get Region information from List (db) and put into a list(regions)
-    /*
-    this.config.lists.map(item => {
-      switch (item.type) {
-        case 'region':
-          this.regions.push(item.name);
-          break;
-      }
-    });*/
+
     this.route.data.subscribe((res: any) => {
       if (res) {
         if (res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-          this.documents = res.documents[0].data.searchResults;
+          let returnedDocuments = res.documents[0].data.searchResults;
+          this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null )
+
+          let bannerImageDocumentArray = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null )
+          this.bannerImageDocument = bannerImageDocumentArray[0];
         } else {
-          this.documents = [];
+          this.shapefileDocuments = [];
         }
       }
     });
@@ -331,7 +329,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     let theForm = new FormGroup({
       'name': new FormControl(formData.name),
       'partner': new FormControl(formData.partner),
-      // 'agreements': new FormControl(formData.agreements),
       'description': new FormControl(formData.description),
       'overlappingRegionalDistricts': new FormControl(overlappingDistrictsArray(formData)),
       'region': new FormControl(formData.region),
@@ -462,21 +459,6 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Available for disallowing the user to fill only one of the existing land use plan fields
-  // private existingPlanFieldsError() {
-  //   let existingPlans = this.myForm.controls.existingLandUsePlans;
-  //   for (let i = 0; existingPlans.value.length > i; i++) {
-  //     if (existingPlans.value[i].existingLandUsePlan === null ||
-  //         existingPlans.value[i].existingLandUsePlanURL === null ||
-  //         existingPlans.value[i].existingLandUsePlanURL === '' ||
-  //         existingPlans.value[i].existingLandUsePlan === '')
-  //     {
-  //       return true;
-  //     }
-  //   }
-  // }
-
-
   private agreementFieldsError() {
     let agreements = this.myForm.controls.agreements;
     for (let i = 0; agreements.value.length > i; i++) {
@@ -514,7 +496,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     if (!this.validateForm()) {
       return;
     }
-    // this.existingPlanFullFields();
+
     if (!this.isEditing) {
       // POST
       let project = new Project(
@@ -544,7 +526,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
       console.log('PUTing', project);
       project._id = this.project._id;
       let observables = [];
-      this.documents.forEach(doc => {
+      this.shapefileDocuments.forEach(doc => {
         const formData = new FormData();
         formData.append('upfile', doc.upfile);
         formData.append('project', this.project._id);
@@ -554,6 +536,15 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         observables.push(this.documentService.add(formData));
         observables.push(this.documentService.publish(doc._id));
       });
+      // const bannerImageFormData = new FormData();
+      // bannerImageFormData.append('upfile', this.bannerImageDocument.upfile);
+      // bannerImageFormData.append('project', this.project._id);
+      // bannerImageFormData.append('documentFileName', this.bannerImageDocument.documentFileName);
+      // bannerImageFormData.append('displayName',  this.bannerImageDocument.documentFileName);
+      // bannerImageFormData.append('documentSource', 'BANNER');
+
+      // observables.push(this.documentService.add(bannerImageFormData));
+      // observables.push(this.documentService.publish(this.bannerImageDocument._id));
       forkJoin(observables)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -603,13 +594,24 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     }
   }
 
+  public addBannerDocument(files) {
+    if (files && files[0]) { // safety check
+      this.bannerImageDocument = new Document();
+      this.bannerImageDocument.upfile = files[0];
+      this.bannerImageDocument.documentFileName = files[0].name;
+
+      this._changeDetectorRef.detectChanges();
+      console.log('here are the files', this.bannerImageDocument);
+    }
+  }
+
   public addDocuments(files: FileList) {
     if (files) { // safety check
       for (let i = 0; i < files.length; i++) {
         if (files[i]) {
           // ensure file is not already in the list
 
-          if (this.documents.find(x => x.documentFileName === files[i].name)) {
+          if (this.shapefileDocuments.find(x => x.documentFileName === files[i].name)) {
             // this.snackBarRef = this.snackBar.open('Can\'t add duplicate file', null, { duration: 2000 });
             continue;
           }
@@ -621,19 +623,19 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
           document.documentFileName = files[i].name;
 
           // save document for upload to db when project is added or saved
-          this.documents.push(document);
+          this.shapefileDocuments.push(document);
         }
       }
-      console.log('Documents', this.documents);
+      console.log('Documents', this.shapefileDocuments);
     }
     this._changeDetectorRef.detectChanges();
   }
 
   public deleteDocument(doc: Document) {
-    if (doc && this.documents) { // safety check
+    if (doc && this.shapefileDocuments) { // safety check
       // remove doc from current list
       this.projectFiles = this.projectFiles.filter(item => (item.name !== doc.documentFileName));
-      this.documents = this.documents.filter(item => (item.documentFileName !== doc.documentFileName));
+      this.shapefileDocuments = this.shapefileDocuments.filter(item => (item.documentFileName !== doc.documentFileName));
     }
   }
 
