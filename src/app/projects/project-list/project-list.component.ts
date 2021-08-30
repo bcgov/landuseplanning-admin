@@ -88,7 +88,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         const token = this.keycloakService.getToken();
         if (token) {
           const jwt = new JwtUtil().decodeToken(token);
-          console.log('here it is', jwt)
           this.canUserCreateProjects = jwt.realm_access.roles.includes('create-projects')
         }
 
