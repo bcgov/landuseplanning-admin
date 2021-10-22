@@ -16,6 +16,7 @@ import { Survey }    from 'app/models/survey';
 import { StorageService } from 'app/services/storage.service';
 import { SurveyService } from 'app/services/survey.service';
 import { first } from 'rxjs/operators';
+import { values } from 'lodash';
 
 @Component({
   selector: 'app-add-edit-project-survey',
@@ -278,6 +279,22 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
       alert('Your survey is missing one or more required fields. Please review it for missing text, choices, or attributes.');
       return;
     }
+  }
+
+  /**
+   * On Required Choice Change to ensure it doesn't go below 0 or by max count.
+   *
+   * @param   {[type]}  event  The event.
+   * @param   {[type]}  question  The Question object.
+   *
+   * @return  {void}
+   */
+  public onRequiredChoiceChange(event, question) {
+      const formControl = question.controls.choose;
+      const min = event.target.getAttribute('min') ?? 0;
+      const max = event.target.getAttribute('max') ?? 100;
+      const valueConstraint = Math.min(max, Math.max(min, formControl.value ))
+      formControl.setValue(valueConstraint);
   }
 
   private submitForm() {

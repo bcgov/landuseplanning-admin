@@ -214,9 +214,9 @@
                 </div>
                 <div *ngIf="question.value.type === 'multiChoice'"  class="limit-options">
                   <mat-form-field class="new-component-text-response-form limit-input">
-                    <input formControlName="choose" type="number" matInput>
+                    <input formControlName="choose" type="number" min=0 max="{{question['controls'].choices.length}}" matInput (change)="onRequiredChoiceChange($event, question)">
                   </mat-form-field>
-                  <label class="limit-label">Choices</label>
+                  <label class="limit-label">Required Choices</label>
                 </div>
               </div>
             </div>
