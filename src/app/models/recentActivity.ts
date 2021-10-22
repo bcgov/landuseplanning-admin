@@ -20,6 +20,6 @@ export class RecentActivity {
         this.contentUrl = obj && obj.contentUrl || null;
         this.headline = obj && obj.headline || null;
         this.active = obj && obj.active || null;
-        this.pinned = obj && obj.pinned || null;
+        this.pinned = obj && obj.pinned || false;
     }
 }

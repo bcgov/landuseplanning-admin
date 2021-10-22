@@ -103,10 +103,8 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
         active: this.myForm.controls.active.value === 'yes' ? true : false,
         pinned: this.activity.pinned
       });
-      console.log('saving:', activity);
       this.recentActivityService.save(activity)
         .subscribe(item => {
-          // console.log('item', item);
           this.router.navigate(['p', this.currentProject._id, 'project-updates']);
         });
     } else {
@@ -121,10 +119,8 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
         pinned: false,
         active: this.myForm.controls.active.value === 'yes' ? true : false
       });
-      console.log('adding:', activity);
       this.recentActivityService.add(activity)
         .subscribe(item => {
-          // console.log('saved:', item);
           this.router.navigate(['p', this.currentProject._id, 'project-updates']);
         });
     }
