@@ -1,6 +1,6 @@
 {
-  "name": "base-app",
-  "version": "0.0.0",
+  "name": "landuseplanning-admin",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
