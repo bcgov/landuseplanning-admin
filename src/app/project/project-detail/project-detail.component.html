@@ -36,6 +36,10 @@
       <h3 for="description">Description: </h3>
       <p id="description">{{project?.description || 'No project description available'}}</p>
     </div>
+    <div class="label-pair full">
+      <h3 for="details">Project Details: </h3>
+      <p id="details" [innerHTML]="project?.details || 'No project details available'"></p>
+    </div>
     <div *ngIf="projectFieldType(project?.agreements) === 'string'" class="label-pair">
       <h3 for="agreements">Agreements: </h3>
       <p class="agreements">{{project?.agreements || '-'}}</p>
