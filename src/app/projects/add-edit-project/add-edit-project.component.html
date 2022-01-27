@@ -23,12 +23,11 @@
     </ol>
   </div>
 </nav>
-
 <main class="container-fluid-padding add-edit-form">
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>
-  <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+  <form [formGroup]="myForm" novalidate>
     <div class="text-right">
       <button class="btn btn-primary" type="cancel" (click)="onCancel()">Cancel</button>
       &nbsp;
@@ -52,6 +51,11 @@
         <div class="label-pair med">
           <label for="description">Description* </label>
           <textarea name="description" id="description" formControlName="description" class="form-control"></textarea>
+        </div>
+        <div class="label-pair med">
+          <label for="details">Project Details </label>
+          <ckeditor name="details" id="details" formControlName="details" [editor]="Editor" [data]="project?.details"></ckeditor>
+          <label class="additional-label" for="details">Appears on the Project Details tab under the map.</label>
         </div>
         <div class="label-pair med">
           <div class="form-group mb-0">
@@ -97,8 +101,8 @@
       <div class="flex-container-no-wrap">
         <div class="flex-container">
           <div class="label-pair almost-full">
-            <label for="region">Region* </label>
-            <select required class="form-control" formControlName="region">
+            <label for="region">Region </label>
+            <select class="form-control" formControlName="region">
               <option *ngFor="let region of REGIONS" [ngValue]="region">{{region}}</option>
             </select>
           </div>
@@ -110,21 +114,9 @@
           <label for="lon">Long* </label>
           <input name="lon" id="lon" formControlName="lon" type="text" class="form-control" />
         </div>
-        <!--<div class="input-group-prepend">
-          <button [disabled]="!myForm.valid || documents?.length === 0 || docNameInvalid" (click)="uploadDocuments()"
-            class="btn btn-outline-primary mr-1" type="submit" id="button-cl"><i
-              class="material-icons">arrow_upward</i>Upload</button>
-        </div>-->
-        <!-- <div class="label-pair file">
-          <label for="addFile">Add Shape File </label>
-          <div class="input-group">
-            <i class="material-icons" role="presentation">attach_file</i>
-            <input name="addFile" id="addFile" formControlName="addFile" type="file" class="form-control" />
-          </div>
-        </div> -->
       </div>
       <div class="label-pair med">
-        <label for="overlappingRegionalDistricts">Overlapping Regional Districts* </label>
+        <label for="overlappingRegionalDistricts">Overlapping Regional Districts </label>
         <select multiple name="overlappingRegionalDistricts" id="overlappingRegionalDistricts"
           formControlName="overlappingRegionalDistricts" class="form-control">
           <option *ngFor="let overlappingRegionalDistricts of OVERLAPPING_REGIONAL_DISTRICTS"
@@ -200,9 +192,15 @@
       <h2>Engagement Information</h2>
       <div class="flex-container">
         <div class="add-row med">
-          <p>Additional information for the Engagement tab</p>
+          <label for="engagementLabel">Engagement Label* </label>
+          <input name="engagementLabel" id="engagementLabel" formControlName="engagementLabel" type="text" class="form-control" />
+          <label class="additional-label" for="engagementLabel">Appears in the header of the Comment Period and in the Comment Period box. e.g. "Public Comment Period".</label>
+        </div>
+        <div class="add-row med">
+          <label for="enagementInfo">Engagement Tab Information </label>
           <ckeditor name="engagementInfo" id="engagementInfo" formControlName="engagementInfo" [editor]="Editor"
             [data]="project?.engagementInfo"></ckeditor>
+          <label class="additional-label" for="engagementInfo">Appears at the top of the Engagement tab.</label>
         </div>
       </div>
     </section>

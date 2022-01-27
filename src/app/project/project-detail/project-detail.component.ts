@@ -6,9 +6,8 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/concat';
 import { of } from 'rxjs';
 
-import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
-import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { Project } from 'app/models/project';
 import { ApiService } from 'app/services/api';
 import { ProjectService } from 'app/services/project.service';
@@ -50,6 +49,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   ) {
   }
 
+  /**
+   * Init component.
+   *
+   * @returns {undefined}
+   */
   ngOnInit() {
     this.route.parent.data
       .takeUntil(this.ngUnsubscribe)
@@ -61,8 +65,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.overlappingDistrictsListString = this.stringifyOverlappingDistricts(this.project.overlappingRegionalDistricts as string | string[]);
             this.storageService.state.currentProject = { type: 'currentProject', data: this.project };
             this.project.read.includes('public') ? this.visibility = "Published" : this.visibility = "Not Published";
-
-            // this.loading = false;
             this._changeDetectorRef.detectChanges();
           } else {
             alert('Uh-oh, couldn\'t load project');
@@ -75,11 +77,17 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
-      const data = this.ngxSmartModalService.getModalData('confirmation-modal');
-      this.projectActions(data);
-      })
+        const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+        this.projectActions(data);
+      });
   }
 
+  /**
+   * Take action based on user response within modal.
+   *
+   * @param {object} modalResponse
+   * @returns {undefined}
+   */
   projectActions(modalResponse) {
     if (modalResponse.publishConfirm === true) {
       this.internalPublishProject();
@@ -88,14 +96,22 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Save the current project data into state and navigate to the project edit view.
+   *
+   * @returns {undefined}
+   */
   editProject() {
-    console.log('editing');
     this.storageService.state.project = this.project;
     this.storageService.state.back = { url: ['/p', this.project._id, 'project-details'], label: 'Edit Project' };
     this.router.navigate(['p', this.project._id, 'edit']);
-    console.log('finished routing and setting state');
   }
 
+  /**
+   * If a project has no submitted comments, show a modal to confirm deletion.
+   *
+   * @returns {undefined}
+   */
   public deleteProject() {
     if (this.project['numComments'] > 0) {
       alert('A project with submitted comments cannot be deleted.');
@@ -111,29 +127,15 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.ngxSmartModalService.open('confirmation-modal');
   }
 
+  /**
+   * Delete the project by making a call to the API.
+   *
+   * @todo Either remove this if projects can't be deleted or make it work.
+   * @returns {undefined}
+   */
   private internalDeleteProject() {
     this.isDeleting = true;
-
     let observables = of(null);
-
-    // // delete comment period
-    // if (this.project.currentPeriods) {
-    //   observables = observables.concat(this.commentPeriodService.delete(this.project.currentPeriods));
-    // }
-
-    // // delete project documents
-    // if (this.project.documents) {
-    //   for (const doc of this.project.documents) {
-    //     observables = observables.concat(this.documentService.delete(doc));
-    //   }
-    // }
-
-    // // delete features
-    // observables = observables.concat(this.featureService.deleteByProjectId(this.project._id));
-
-    // // delete project
-    // // do this last in case of prior failures
-    // observables = observables.concat(this.projectService.delete(this.project));
 
     observables
       .takeUntil(this.ngUnsubscribe)
@@ -143,7 +145,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         },
         error => {
           this.isDeleting = false;
-          console.log('error =', error);
+          console.error('error =', error);
           alert('Uh-oh, couldn\'t delete project');
           // TODO: should fully reload project here so we have latest non-deleted objects
         },
@@ -155,8 +157,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Displays a modal to ask the user if they want to publish this project.
+   *
+   * @returns {undfined}
+   */
   public publishProject() {
-
     this.ngxSmartModalService.setModalData({
         type: 'publish',
         title: 'Confirm Publish',
@@ -164,9 +170,13 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       }, 'confirmation-modal', true);
 
     this.ngxSmartModalService.open('confirmation-modal');
-
   }
 
+  /**
+   * Ask the project service to publish the project.
+   *
+   * @returns {undefined}
+   */
   private internalPublishProject() {
     this.isPublishing = true;
 
@@ -178,7 +188,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         },
         error => {
           this.isPublishing = false;
-          console.log('error =', error);
+          console.error('error =', error);
           alert('Uh-oh, couldn\'t publish project');
           // TODO: should fully reload project here so we have latest isPublished flags for objects
         },
@@ -195,7 +205,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
               },
               error => {
                 this.isPublishing = false;
-                console.log('error =', error);
+                console.error('error =', error);
                 alert('Uh-oh, couldn\'t reload project');
               }
             );
@@ -203,6 +213,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Asks the project service to un-publish the project.
+   *
+   * @returns {undefined}
+   */
   public unPublishProject() {
     this.isUnpublishing = true;
 
@@ -214,14 +229,13 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         },
         error => {
           this.isPublishing = false;
-          console.log('error =', error);
+          console.error('error =', error);
           alert('Uh-oh, couldn\'t publish project');
           // TODO: should fully reload project here so we have latest isPublished flags for objects
         },
         () => { // onCompleted
           this.snackBarRef = this.snackBar.open('Project un-published...', null, { duration: 2000 });
           // reload all data
-          console.log(this.project)
           this.projectService.getById(this.project._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
@@ -232,7 +246,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
               },
               error => {
                 this.isPublishing = false;
-                console.log('error =', error);
+                console.error('error =', error);
                 alert('Uh-oh, couldn\'t reload project');
               }
             );
@@ -240,10 +254,22 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Helper method to return the data type of the field value.
+   *
+   * @param {string|undefined} fieldValue
+   * @returns {string}
+   */
   projectFieldType(fieldValue) {
     return typeof fieldValue;
   }
 
+  /**
+   * Returns a string of the overlapping regional districts.
+   *
+   * @param {string|array} districts
+   * @returns {string}
+   */
   stringifyOverlappingDistricts(districts: string | string[]): string {
     let overlappingDistrictsListString: string;
     if (Array.isArray(districts) === true ) {
@@ -254,6 +280,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     return overlappingDistrictsListString;
   }
 
+  /**
+   * Tear down component.
+   *
+   * @returns {undefined}
+   */
   ngOnDestroy() {
     // dismiss any open snackbar
     if (this.snackBarRef) { this.snackBarRef.dismiss(); }

@@ -2,13 +2,15 @@ import { CommentPeriod } from './commentPeriod';
 import * as moment from 'moment';
 
 export class Project {
-  // the following are retrieved from the API
+  // The following are retrieved from the API.
   _id: string;
   existingLandUsePlans: {existingLandUsePlan: string, existingLandUsePlanURL: string}[];
   centroid: any[] = [];
   description: String;
+  details: String;
   engagementStatus: String;
   backgroundInfo: String;
+  engagementLabel: String;
   engagementInfo: String;
   documentInfo: String;
   overlappingRegionalDistricts: String[];
@@ -17,7 +19,7 @@ export class Project {
   region: String;
   agreements: { agreementName: string, agreementUrl: string }[];
 
-  // Everything else
+  // Everything else.
   addedBy: String;
   existingLandUsePlanURLs: String;
   code: String;
@@ -27,7 +29,7 @@ export class Project {
   dateAdded: String;
   dateUpdated: String;
   duration: String;
-  // TODO: directoryStructure
+  // TODO: directoryStructure.
   eaoMember: String;
   epicProjectID: Number;
   fedElecDist: String;
@@ -44,18 +46,16 @@ export class Project {
 
   eaDecision: any;
 
-  // Project contacts
+  // Project contacts.
   projectLead: any;
   projectDirector: any;
 
-  // Permissions
+  // Permissions.
   read: Array<String> = [];
   write: Array<String> = [];
   delete: Array<String> = [];
 
   pins: any[] = [];
-
-  // Not from API directly
   currentPeriods: CommentPeriod[];
   commentPeriodForBanner: any;
 
@@ -68,8 +68,10 @@ export class Project {
     this.existingLandUsePlans = obj && obj.existingLandUsePlans     || undefined;
     this.commentPeriodForBanner         = obj && obj.commentPeriodForBanner         || undefined;
     this.description         = obj && obj.description         || undefined;
+    this.details         = obj && obj.details         || undefined;
     this.engagementStatus = obj && obj.engagementStatus || undefined;
     this.backgroundInfo = obj && obj.backgroundInfo || undefined;
+    this.engagementLabel = obj && obj.engagementLabel || undefined;
     this.engagementInfo = obj && obj.engagementInfo || undefined;
     this.documentInfo = obj && obj.documentInfo || undefined;
     this.overlappingRegionalDistricts = obj && obj.overlappingRegionalDistricts            || undefined;
