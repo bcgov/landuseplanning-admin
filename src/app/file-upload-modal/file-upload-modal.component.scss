@@ -1,0 +1,127 @@
+@import "~assets/styles/base/base.scss";
+
+header {
+  padding: 1rem;
+  border-bottom: 2px solid $lightgray;
+
+  h3 {
+    color: $primary;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+}
+
+.file-upload {
+  display: flex;
+
+  section {
+    flex-grow: 1;
+    padding: 1rem;
+    width: 70%;
+    overflow-y: auto;
+    height: 400px;
+
+    .upload {
+      margin-bottom: 2rem;
+    }
+
+    ul {
+      list-style-type: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 0;
+      grid-gap: 12px;
+
+      li {
+        border: 2px solid $lightgray;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 0.5rem;
+        word-wrap: break-word;
+        min-width: 0;
+        max-height: 9rem;
+
+        &:focus {
+          border: 2px solid $link-color;
+        }
+
+        &.selected {
+          border: 3px solid $link-color;
+        }
+
+        .selected-count {
+          position: absolute;
+          display: inline;
+          top: 0;
+          right: 0;
+          transform: translate(50%, -50%);
+          background: $link-color;;
+          color: $white;
+          padding: 2px 7px;
+          border-radius: 3px;
+          font-weight: bold;
+        }
+
+        mat-icon {
+          align-self: center;
+          color: $font-gray;
+          font-size: 3.5rem;
+          line-height: 1.25;
+        }
+      }
+    }
+  }
+
+  aside {
+    width: 30%;
+    padding: 1rem;
+    border-left: 1px solid $lightgray;
+    word-wrap: break-word;
+
+    form {
+      height: 100%;
+
+      &.no-file-selected {
+        display: flex;
+        justify-content: center;
+      }
+
+      p.no-file-selected {
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        color: $font-gray;
+
+        mat-icon {
+          align-self: center;
+          color: $font-gray;
+          font-size: 2.25rem;
+        }
+      }
+    }
+  }
+}
+
+.close-warning {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .close-buttons {
+    button {
+      margin: 0 1rem;
+    }
+  }
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-top: 2px solid $lightgray;
+}

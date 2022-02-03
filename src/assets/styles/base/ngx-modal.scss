@@ -1,0 +1,13 @@
+// ngx smart modal
+.nsm-content {
+  padding: 0 !important;
+}
+
+.nsm-large {
+  max-width: 75% !important;
+  width: 75% !important;
+
+  .nsm-content {
+    width: 100%;
+  }
+}

@@ -52,4 +52,8 @@ Feel free to create pull requests from the default "dev" branch, click here to c
 
 # Documentation
 
+For consistency, it's recommended you make use of common components when building new pages and features. Here are some of the common components used, each with READMEs documenting their usage.
+
 [Navbar Component](https://github.com/bcgov/landuseplanning-admin/tree/dev/src/app/shared/components/navbar)
+[File Upload Modal](https://github.com/bcgov/landuseplanning-admin/tree/dev/src/app/file-upload-modal)
+

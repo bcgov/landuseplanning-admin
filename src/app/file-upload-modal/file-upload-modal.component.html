@@ -1,0 +1,62 @@
+<header>
+  <h3>{{ modalData.title || "Select file(s)" }}</h3>
+</header>
+<main class="close-warning" *ngIf="this.closeDialog">
+  <h4>Are you sure you wish to close?</h4>
+  <p>No files will be uploaded and changes to files will not be saved.</p>
+  <div class="close-buttons">
+    <button class="btn btn-secondary" (click)="handleCancelClose()">Cancel</button>
+    <button class="btn btn-primary" (click)="ngxSmartModalService.close('file-upload-modal')">Close</button>
+  </div>
+</main>
+<main class="file-upload" *ngIf="!this.closeDialog">
+  <section #fileBrowser>
+    <div class="upload">
+      <app-file-upload
+      [maxFiles]="modalData.maxSize"
+      [maxSize]="modalData.maxSize"
+      [fileExt]="fileExt"
+      [files]="uploadedFiles"
+      (filesChange)="uploadFiles($event); uploadedFiles = []">
+    </app-file-upload>
+  </div>
+    <ul *ngIf="fileList.length > 0">
+      <li
+        tabindex="0"
+        class="file"
+        *ngFor="let file of fileList; index as i"
+        (click)=selectFile(file)
+        (keypress)="keyPress($event, file)"
+        [ngClass]="{'selected': isSelected(file)}"
+        [aria-selected]="isSelected(file)">
+        <div *ngIf="isSelected(file)" class="selected-count">{{ selectedCount(file) }}</div>
+        <mat-icon aria-hidden="false" [inline]="true" [aria-label]="getIconInfoFromType(file).aria">
+          {{ getIconInfoFromType(file).icon }}
+        </mat-icon>
+        <span class="file-name">{{ utils.truncateText(file.name, 20) }}</span>
+      </li>
+    </ul>
+  </section>
+  <aside>
+    <form #fileInfoForm [ngClass]="{ 'no-file-selected': 0 === selectedFiles.length }">
+      <p *ngIf="0 === selectedFiles.length" class="no-file-selected">
+        <mat-icon aria-hidden="false" [inline]="true">description</mat-icon>
+        No file selected
+      </p>
+      <div *ngIf="selectedFiles.length > 0">
+        <label>File name</label>
+        <p>{{ selectedFiles[0].name }}</p>
+        <label>Size</label>
+        <p>{{ utils.formatBytes(selectedFiles[0].size) }}</p>
+        <label>Alternative text</label>
+        <input type="text" [formControl]="selectedFiles[0].alt">
+      </div>
+    </form>
+  </aside>
+</main>
+<footer *ngIf="!this.closeDialog">
+  <button class="btn btn-outline-primary" (click)="handleClose()">Cancel</button>
+  <button class="btn btn-primary">
+    <span>{{ isSaveRequired() ? 'Save and s' : 'S' }}</span>elect {{ selectedFiles.length }} file(s)
+  </button>
+</footer>

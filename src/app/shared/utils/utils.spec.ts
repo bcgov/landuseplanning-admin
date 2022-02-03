@@ -3,7 +3,7 @@
 import { Utils } from './utils';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
-describe('sdfasdfas', () => {
+describe('Test convertFormGroupNGBDateToJSDate and convertJSDateToNGBDate methods.', () => {
   let component: Utils;
   let myInstance = new Utils();
   let inputJSDate = new Date(2010, 6, 14);
