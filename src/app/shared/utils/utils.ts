@@ -30,7 +30,14 @@ export class Utils {
     }
   }
 
-  public formatBytes(bytes, decimals = 2) {
+  /**
+   * Format a number of bytes into a human-readable string with units.
+   *
+   * @param bytes The number of bytes.
+   * @param decimals The number of decimal places to use.
+   * @returns The human readable string.
+   */
+  public formatBytes(bytes: number, decimals: number = 2): string {
     if (bytes == null) { return '-'; }
     if (bytes === 0) { return '0 Bytes'; }
 
@@ -41,6 +48,22 @@ export class Utils {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+
+  /**
+   * Truncates text to specified length and then adds ellipes.
+   *
+   * @param stringToTruncate The string to truncate.
+   * @param charsToTruncateBy The characters of the string to keep.
+   * @returns The truncated string plus ellipses(three periods).
+   */
+  public truncateText( stringToTruncate: string, charsToTruncateBy: number ): string {
+    let string = '';
+    if (stringToTruncate.length > charsToTruncateBy) {
+      string = `${stringToTruncate.substring(1, charsToTruncateBy)}...`;
+    }
+
+    return string;
   }
 
   // Returns ID made up of UNIX timestamp + random number converted to alphanumeric string

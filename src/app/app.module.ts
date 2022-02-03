@@ -17,6 +17,7 @@ import { SharedModule } from './shared/shared.module';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import {MatIconModule} from '@angular/material/icon';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 // components
@@ -68,6 +69,7 @@ import { LinkOrganizationComponent } from './shared/components/link-organization
 import { LinkOrganizationTableRowsComponent } from './shared/components/link-organization/link-organization-table-rows/link-organization-table-rows.component';
 import { ContactSelectComponent } from './shared/components/contact-select/contact-select.component';
 import { ContactSelectTableRowsComponent } from './shared/components/contact-select/contact-select-table-rows/contact-select-table-rows.component';
+import { FileUploadModalComponent } from './file-upload-modal/file-upload-modal.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -75,14 +77,6 @@ export function kcFactory(keycloakService: KeycloakService) {
 
 @NgModule({
   declarations: [
-    // ProjectUpdatesComponent,
-    // ProjectUpdatesTableRowsComponent,
-    // AddEditProjectUpdateComponent,
-    // ProjectUpdatesDetailTableRowsComponent,
-    // ActivityComponent,
-    // ActivityDetailTableRowsComponent,
-    // ActivityTableRowsComponent,
-    // AddEditActivityComponent,
     AddEditContactComponent,
     AddEditOrganizationComponent,
     AppComponent,
@@ -110,6 +104,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     SearchHelpComponent,
     UserTableRowsComponent,
     EnvBannerComponent,
+    FileUploadModalComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -122,6 +117,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     ProjectsModule,
     SharedModule,
     MatIconModule,
+    MatTabsModule,
     EditorModule,
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
     NgbModule,

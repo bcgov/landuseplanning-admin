@@ -2,18 +2,16 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Subject, forkJoin } from 'rxjs';
-import { Utils } from 'app/shared/utils/utils';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as Editor from 'assets/ckeditor5/build/ckeditor';
 import * as _ from 'lodash';
-
+import { NgxSmartModalService } from 'ngx-smart-modal';
 import { StorageService } from 'app/services/storage.service';
-import { ConfigService } from 'app/services/config.service';
 import { ProjectService } from 'app/services/project.service';
 import { DocumentService } from 'app/services/document.service';
 import { Project } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
-
+import { ModalData } from 'app/shared/types/modal';
 import { Document } from 'app/models/document';
 
 @Component({
@@ -23,6 +21,7 @@ import { Document } from 'app/models/document';
 })
 export class AddEditProjectComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
+  public fileUploadModalData: ModalData;
   public Editor = Editor;
   public myForm: FormGroup;
   public back: any = {};
@@ -106,7 +105,8 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     private navigationStackUtils: NavigationStackUtils,
     private projectService: ProjectService,
     private storageService: StorageService,
-    private documentService: DocumentService
+    private ngxSmartModalService: NgxSmartModalService,
+    private documentService: DocumentService,
   ) {
   }
 
@@ -209,6 +209,19 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
 
   get agreements() {
     return this.myForm.get('agreements') as FormArray;
+  }
+
+  launchFilePicker() {
+    this.fileUploadModalData = {
+      title: "Select project logo(s).",
+      altRequired: true,
+      fileNum: 3,
+      fileExt: 'jpg, jpeg, png'
+    };
+
+    this.ngxSmartModalService.setModalData( this.fileUploadModalData, 'file-upload-modal');
+
+    this.ngxSmartModalService.open('file-upload-modal');
   }
 
   addLinkFormGroup(formEntry) {

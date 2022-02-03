@@ -75,6 +75,12 @@
               </div>
           </div>
         </div>
+        <div class="label-pair med">
+          <div class="form-group">
+            <label for="logos">Project Logos </label>
+            <input type="button" id="logos" class="btn btn-primary logos-select-btn" value="Select project logo(s)" (click)="launchFilePicker()">
+          </div>
+        </div>
         <div *ngIf="formValueType(myForm.value.agreements) === 'object'" class="label-pair med">
         <div *ngFor="let agreement of agreements.controls; let i=index" >
           <div class="flex-container" [formGroup]="agreement">

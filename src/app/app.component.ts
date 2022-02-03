@@ -3,6 +3,7 @@ import { ConfigService } from './services/config.service';
 import { SideBarService } from 'app/services/sidebar.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
+import { FileUploadModalComponent } from 'app/file-upload-modal/file-upload-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @HostBinding('class.sidebarcontrol')
   isOpen = false;
+  fileUploadModalOptions = {};
 
   constructor(
     public ngxSmartModalService: NgxSmartModalService,
@@ -27,8 +29,14 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isOpen = isOpen;
     });
 
-    this.ngxSmartModalService.create('confirmation-modal', ConfirmComponent, {customClass: 'nsm-centered'});
+    this.fileUploadModalOptions = {
+      customClass: 'nsm-centered nsm-large',
+      closable: false,
+      escapable: false,
+    }
 
+    this.ngxSmartModalService.create('confirmation-modal', ConfirmComponent, {customClass: 'nsm-centered'});
+    this.ngxSmartModalService.create('file-upload-modal', FileUploadModalComponent, this.fileUploadModalOptions);
   }
 
   ngOnDestroy() {
