@@ -50,22 +50,6 @@ export class Utils {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
-  /**
-   * Truncates text to specified length and then adds ellipes.
-   *
-   * @param stringToTruncate The string to truncate.
-   * @param charsToTruncateBy The characters of the string to keep.
-   * @returns The truncated string plus ellipses(three periods).
-   */
-  public truncateText( stringToTruncate: string, charsToTruncateBy: number ): string {
-    let string = '';
-    if (stringToTruncate.length > charsToTruncateBy) {
-      string = `${stringToTruncate.substring(1, charsToTruncateBy)}...`;
-    }
-
-    return string;
-  }
-
   // Returns ID made up of UNIX timestamp + random number converted to alphanumeric string
   public getRandomID() {
     return new Date().getTime() + '-' + Math.random().toString(32).substr(2,9);

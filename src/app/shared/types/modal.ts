@@ -1,6 +1,9 @@
 export interface ModalData {
-  title: string;
-  altRequired: boolean;
-  fileExt: string;
-  fileNum: number;
+  projectID: string;
+  title?: string;
+  altRequired?: boolean;
+  fileExt?: string;
+  fileTypes?: string[];
+  fileNum?: number;
+  returnedFiles?: Document|unknown[];
 }

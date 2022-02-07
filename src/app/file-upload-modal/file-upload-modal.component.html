@@ -1,41 +1,49 @@
 <header>
   <h3>{{ modalData.title || "Select file(s)" }}</h3>
 </header>
-<main class="close-warning" *ngIf="this.closeDialog">
+<main class="close-dialog" *ngIf="closeDialog">
   <h4>Are you sure you wish to close?</h4>
   <p>No files will be uploaded and changes to files will not be saved.</p>
   <div class="close-buttons">
-    <button class="btn btn-secondary" (click)="handleCancelClose()">Cancel</button>
-    <button class="btn btn-primary" (click)="ngxSmartModalService.close('file-upload-modal')">Close</button>
+    <button class="btn btn-outline-primary" (click)="handleCancelClose()">Cancel</button>
+    <button class="btn btn-primary" (click)="closeModal()">Close</button>
   </div>
 </main>
-<main class="file-upload" *ngIf="!this.closeDialog">
+<main class="error-dialog" *ngIf="errorDialog">
+  <h4>Could not select files.</h4>
+  <p class="error-contents">{{ errorMessage }}</p>
+  <button class="btn btn-primary" (click)="handleConfirmError()">Confirm</button>
+</main>
+<main class="file-upload" *ngIf="!closeDialog && !errorDialog">
   <section #fileBrowser>
     <div class="upload">
       <app-file-upload
       [maxFiles]="modalData.maxSize"
       [maxSize]="modalData.maxSize"
       [fileExt]="fileExt"
-      [files]="uploadedFiles"
-      (filesChange)="uploadFiles($event); uploadedFiles = []">
+      [files]="queuedFiles"
+      (filesChange)="queueFilesForUpload($event); queuedFiles = []">
     </app-file-upload>
   </div>
-    <ul *ngIf="fileList.length > 0">
-      <li
-        tabindex="0"
-        class="file"
-        *ngFor="let file of fileList; index as i"
-        (click)=selectFile(file)
-        (keypress)="keyPress($event, file)"
-        [ngClass]="{'selected': isSelected(file)}"
-        [aria-selected]="isSelected(file)">
-        <div *ngIf="isSelected(file)" class="selected-count">{{ selectedCount(file) }}</div>
-        <mat-icon aria-hidden="false" [inline]="true" [aria-label]="getIconInfoFromType(file).aria">
-          {{ getIconInfoFromType(file).icon }}
-        </mat-icon>
-        <span class="file-name">{{ utils.truncateText(file.name, 20) }}</span>
-      </li>
-    </ul>
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  <ul *ngIf="fileList.length > 0">
+    <li
+      tabindex="0"
+      class="file"
+      *ngFor="let file of fileList; index as i"
+      (click)=selectFile(file)
+      (keypress)="keyPress($event, file)"
+      [ngClass]="{'selected': isSelected(file)}"
+      [attr.aria-selected]="isSelected(file)">
+      <div *ngIf="isSelected(file)" class="selected-count">{{ selectedCount(file) }}</div>
+      <mat-icon aria-hidden="false" [inline]="true" [attr.aria-label]="getIconInfoFromType(file).aria">
+        {{ getIconInfoFromType(file).icon }}
+      </mat-icon>
+      <span class="file-name">{{ truncate(file.documentFileName, { length: 20 }) }}</span>
+    </li>
+  </ul>
   </section>
   <aside>
     <form #fileInfoForm [ngClass]="{ 'no-file-selected': 0 === selectedFiles.length }">
@@ -43,20 +51,25 @@
         <mat-icon aria-hidden="false" [inline]="true">description</mat-icon>
         No file selected
       </p>
-      <div *ngIf="selectedFiles.length > 0">
+      <div *ngIf="selectedFiles.length > 0" class="form-content">
         <label>File name</label>
-        <p>{{ selectedFiles[0].name }}</p>
+        <p>{{ selectedFiles[0].documentFileName }}</p>
         <label>Size</label>
-        <p>{{ utils.formatBytes(selectedFiles[0].size) }}</p>
+        <p>{{ utils.formatBytes(selectedFiles[0].internalSize) }}</p>
         <label>Alternative text</label>
         <input type="text" [formControl]="selectedFiles[0].alt">
       </div>
     </form>
   </aside>
 </main>
-<footer *ngIf="!this.closeDialog">
+<footer *ngIf="!closeDialog && !errorDialog">
   <button class="btn btn-outline-primary" (click)="handleClose()">Cancel</button>
-  <button class="btn btn-primary">
+  <button
+    class="btn btn-primary"
+    (click)="handleSave()"
+    [disabled]="0 === selectedFiles.length"
+    [attr.aria-disabled]="0 === selectedFiles.length"
+  >
     <span>{{ isSaveRequired() ? 'Save and s' : 'S' }}</span>elect {{ selectedFiles.length }} file(s)
   </button>
 </footer>

@@ -1,11 +1,16 @@
 import { Component, OnInit, ChangeDetectorRef, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { SearchService } from 'app/services/search.service';
+import { DocumentService } from 'app/services/document.service';
+import { Document } from 'app/models/document';
 import { Utils } from 'app/shared/utils/utils';
-import { uniqBy } from 'lodash';
-import { UploadedFile } from './types';
+import { uniqBy, truncate } from 'lodash';
+import { DocumentForm } from './types';
 import { ModalData } from 'app/shared/types/modal';
-
+import { Subject, forkJoin, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-file-upload-modal',
@@ -13,34 +18,45 @@ import { ModalData } from 'app/shared/types/modal';
   styleUrls: ['./file-upload-modal.component.scss']
 })
 export class FileUploadModalComponent implements OnInit {
+  loading: boolean;
   closeDialog: boolean;
+  errorDialog: boolean;
+  errorMessage: string;
   modalData: ModalData;
-  uploadedFiles: UploadedFile[];
-  file: UploadedFile;
-  fileList: UploadedFile[];
+  queuedFiles: File[];
+  fileList: DocumentForm[];
   fileExt: string;
-  selectedFiles: UploadedFile[];
+  selectedFiles: DocumentForm[];
+  projectID: string;
+  truncate = truncate;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   @ViewChild("fileBrowser") fileBrowser: ElementRef;
   @ViewChild("fileInfoForm") fileInfoForm: ElementRef;
 
   constructor(
     public utils: Utils,
     private ngxSmartModalService: NgxSmartModalService,
+    private searchService: SearchService,
+    private documentService: DocumentService,
     private _changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
+    this.loading = false;
     this.closeDialog = false;
+    this.errorDialog = false;
+    this.errorMessage = '';
     this.selectedFiles = [];
     this.fileList = [];
-    this.uploadedFiles = [];
+    this.queuedFiles = [];
     this.modalData = this.ngxSmartModalService.getModalData('file-upload-modal');
-
+    this.projectID = this.modalData.projectID;
     if (this.modalData.fileExt) {
       this.fileExt = this.modalData.fileExt;
     } else {
       this.fileExt = 'jpg, jpeg, gif, png, bmp, doc, docx, xls, xlsx, ppt, pptx, pdf, txt, zip';
     }
+    this.loadFileList();
   }
 
   /**
@@ -53,8 +69,19 @@ export class FileUploadModalComponent implements OnInit {
     if (this.isSaveRequired()) {
       this.closeDialog = true;
     } else {
-      this.ngxSmartModalService.close('file-upload-modal');
+      this.closeModal();
     }
+  }
+
+  /**
+   * Close modal and maybe update the modal data.
+   *
+   * @param dataToCloseWith Optionally pass data to modal when closing.
+   * @returns {void}
+   */
+  closeModal(dataToCloseWith: ModalData|{} = {}): void {
+    this.ngxSmartModalService.setModalData(dataToCloseWith, 'file-upload-modal', true);
+    this.ngxSmartModalService.close('file-upload-modal');
   }
 
   /**
@@ -67,22 +94,70 @@ export class FileUploadModalComponent implements OnInit {
   }
 
   /**
-   * Adds a pseudo-random ID and alt tag fields to uploaded files.
-   * Then puts the new files at the beginning of the fileList.
+   * Stop showing the save error dialog.
    *
-   * @param uploadedFiles The files uploaded by the file-upload component.
    * @returns {void}
    */
-  uploadFiles( uploadedFiles: UploadedFile[] ): void {
-    this.uploadedFiles = uploadedFiles.map(file => {
-      // Create a temporary pseudo-random ID to help with sorting.
-      file.id = Math.floor(Math.random() * 1000000000000);
-      file.alt = new FormControl('');
-      return file;
-    })
+  handleConfirmError(): void {
+    this.errorDialog = false;
+  }
 
-    this.uploadedFiles.forEach(file => {
-      this.fileList.unshift(file);
+  /**
+   * Load files from the DB of the same file extension passed in with modalData.fileExt.
+   *
+   * @returns {void}
+   */
+  loadFileList(): void {
+    this.loading = true;
+    const fileExtensionsToLoad = this.fileExt.replace(/\s+/g, '');
+    this.searchService.getSearchResults(
+      '',
+      'Document',
+      [{ 'name': 'project', 'value': this.projectID }],
+      1,
+      10,
+      '-datePosted',
+      { internalExt: fileExtensionsToLoad, documentSource: 'PROJECT' },
+      true
+    ).subscribe(res => {
+      this.loading = false;
+      if (res[0]?.data?.searchResults) {
+        this.fileList = res[0]?.data?.searchResults.map((document: Document) => {
+          let documentForm = new DocumentForm();
+          documentForm._id = document._id;
+          documentForm.alt = new FormControl(document.alt);
+          documentForm.mimeType = document.mimeType;
+          documentForm.internalSize = document.internalSize;
+          documentForm.documentFileName = document.documentFileName;
+          documentForm.queuedForUpload = false;
+
+          return documentForm;
+        })
+      }
+    })
+  }
+
+  /**
+   * Adds a pseudo-random ID and alt tag fields to files queued for upload.
+   * Then puts the new files at the beginning of the fileList.
+   *
+   * @param queuedFiles The files queued for upload.
+   * @returns {void}
+   */
+  queueFilesForUpload( queuedFiles: FileList ): void {
+    Array.from(queuedFiles).forEach((file: File) => {
+      let documentForm = new DocumentForm();
+      // Create a temporary pseudo-random string ID to help with sorting.
+      documentForm._id = Math.random().toString(36).slice(2);
+      documentForm.alt = new FormControl();
+      documentForm.upfile = file;
+      documentForm.internalSize = file.size;
+      documentForm.mimeType = file.type;
+      documentForm.documentFileName = file.name;
+      documentForm.documentSource = 'PROJECT';
+      documentForm.queuedForUpload = true;
+
+      this.fileList.unshift(documentForm);
     });
 
     this._changeDetectorRef.detectChanges();
@@ -96,9 +171,9 @@ export class FileUploadModalComponent implements OnInit {
    * @param file A file that the user wants to select.
    * @returns {void}
    */
-  selectFile( file: UploadedFile ): void {
+  selectFile( file: DocumentForm ): void {
     this.selectedFiles.unshift(file);
-    this.selectedFiles = uniqBy(this.selectedFiles, 'id');
+    this.selectedFiles = uniqBy(this.selectedFiles, '_id');
 
     if (this.selectedFiles.length > this.modalData.fileNum) {
       this.selectedFiles.splice(this.modalData.fileNum);
@@ -112,7 +187,7 @@ export class FileUploadModalComponent implements OnInit {
    * @param file The file the keyboard-using user wants to select.
    * @returns {void}
    */
-  keyPress(event: KeyboardEvent, file: UploadedFile): void {
+  keyPress(event: KeyboardEvent, file: DocumentForm): void {
     if ("Enter" === event.code) {
       this.selectFile(file);
     }
@@ -126,7 +201,7 @@ export class FileUploadModalComponent implements OnInit {
    * @param event The keyboard event.
    * @returns {void}
    */
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
     if ("Escape" === event.code) {
       this.handleClose();
@@ -139,7 +214,7 @@ export class FileUploadModalComponent implements OnInit {
    * @param file The file to check.
    * @returns Whether or not a file is already selected.
    */
-  isSelected( file: UploadedFile ): boolean {
+  isSelected( file: DocumentForm ): boolean {
     return this.selectedFiles.includes(file);
   }
 
@@ -149,7 +224,7 @@ export class FileUploadModalComponent implements OnInit {
    * @param file The file to check.
    * @returns The position the file is in.
    */
-  selectedCount( file: UploadedFile ): number {
+  selectedCount( file: DocumentForm ): number {
     const count = this.selectedFiles.indexOf(file);
     if (count >= 0) {
       return count + 1;
@@ -163,63 +238,131 @@ export class FileUploadModalComponent implements OnInit {
    * @returns If a save is required.
    */
   isSaveRequired(): boolean {
-    return this.uploadedFiles.length > 0 || false;
+    const filesQueuedForUpload = this.fileList.filter(file => file.queuedForUpload);
+    const altTagsUpdated = this.selectedFiles.filter(file => file.alt.dirty);
+    return filesQueuedForUpload.length > 0 || altTagsUpdated.length > 0;
   }
 
   /**
    * Maps the file type to the corresponding icon and aria label.
    * File can be image, doc, or shapefile.
    *
-   * @param file The file
+   * @param file The file to get icon info for.
    * @returns The icon to use and its aria label.
    */
-  getIconInfoFromType( file: UploadedFile ): { aria: string, icon: string } {
-    const iconInfo = {
+  getIconInfoFromType( file: DocumentForm ): { aria: string, icon: string } {
+    const defaultIconInfo = {
       aria: 'File',
       icon: 'description'
     }
-    const docTypes = [
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/pdf"
-    ];
-    const imageTypes = [
-      "image/png",
-      "image/jpeg"
-    ];
-    const shapefileTypes = [
-      "application/zip"
-    ];
-
-    if (docTypes.includes(file.type)) {
-      iconInfo.aria = 'Document';
-      iconInfo.icon = 'description';
-    } else if (imageTypes.includes(file.type)) {
-      iconInfo.aria = 'Image';
-      iconInfo.icon = 'image';
-    } else if (shapefileTypes.includes(file.type)) {
-      iconInfo.aria = 'Shapefile';
-      iconInfo.icon = 'public';
+    const typeIconMap = {
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {aria: 'Document', icon: 'description'},
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {aria: 'Document', icon: 'description'},
+      "application/pdf": {aria: 'Document', icon: 'description'},
+      "image/png": {aria: 'Image', icon: 'image'},
+      "image/jpeg": {aria: 'Image', icon: 'image'},
+      "application/zip": {aria: 'Shapefile', icon: 'public'}
     }
-
-    return iconInfo;
+    return typeIconMap[file.mimeType] ?? defaultIconInfo;
   }
 
   /**
-   * Beginnings of handleSave method.
+   * Validate that the alt fields are filled out if required.
+   * Then begin the process of saving.
    *
-   * @todo Complete function.
+   * @returns {void}
    */
-  handleSave() {
+  handleSave(): void {
     // Validation.
     if (this.modalData.altRequired) {
-      const filesWithEmptyAlt = this.selectedFiles.filter(file => "" === file.alt.value);
+      const filesWithEmptyAlt = this.selectedFiles.filter(file => !file.alt.value);
 
       if (filesWithEmptyAlt.length > 0) {
         // Abort save and show message.
+        this.errorDialog = true;
+        this.errorMessage = "One or more of the selected files do not have an alt tag.";
+        return;
       }
     }
 
-    // Save.
+    this.prepareDataForSave(this.selectedFiles)
+  }
+
+  /**
+   * Create the form data that needs to be sent to the API in order
+   * to save.
+   *
+   * @param filesToSave Selected files to prepare for saving.
+   * @returns {void}
+   */
+  prepareDataForSave(filesToSave: DocumentForm[]): void {
+    // Create an array of observables that will be called in parallel later.
+    const saveDocumentRequests = filesToSave.map((file: DocumentForm) => {
+      let observableThatReturnsDocument;
+      const fileFormData = new FormData();
+
+      if (file.queuedForUpload) {
+        // If a file needs to be uploaded, add all these fields and POST document.
+        fileFormData.append('project', this.projectID);
+        fileFormData.append('documentFileName', file.documentFileName);
+        fileFormData.append('displayName',  file.documentFileName);
+        fileFormData.append('upfile', file.upfile);
+        fileFormData.append('documentSource', file.documentSource);
+        fileFormData.append('alt', file.alt.value);
+
+        observableThatReturnsDocument = this.documentService.add(fileFormData).pipe(catchError(error => of(error)));
+      } else {
+        /**
+         * If file upload is not needed(the file has been saved previously),
+         * just update the alt tag. Only update if the alt tag has changed.
+         * Else, just return the file wrapped in an observable.
+         * */
+        if (file.alt.dirty) {
+          fileFormData.append('alt', file.alt.value);
+          observableThatReturnsDocument = this.documentService.update(fileFormData, file._id).pipe(catchError(error => of(error)));
+        } else {
+          observableThatReturnsDocument = of(file);
+        }
+      }
+      return observableThatReturnsDocument;
+    });
+
+    this.saveFile(saveDocumentRequests);
+  }
+
+  /**
+   * For every file selected, make a call to the API to upload file or update document.
+   * Check that not one of the calls fail. If so, trigger the error dialog.
+   * If all calls succeed, return the documents and close the modal.
+   *
+   * @param observables Either a document is succesfully returned or an HTTP error.
+   * @returns {void}
+   */
+  saveFile(observables: Observable<Document|HttpErrorResponse>[]): void {
+    forkJoin(observables)
+      .subscribe(
+        aggregateResponse => {
+          aggregateResponse.forEach(individualResponse => {
+            if ("status" in individualResponse) {
+              // One or more of the responses is an error.
+              if (500 === individualResponse.status || 400 === individualResponse.status) {
+                console.error(individualResponse);
+                this.errorDialog = true;
+                this.errorMessage = "There was a problem saving the selected files."
+                return;
+              }
+            }
+          });
+
+          this.closeModal({ returnedFiles: aggregateResponse });
+        },
+        error => {
+          console.error('Error returning files', error);
+          this.errorDialog = true;
+          this.errorMessage = "There was a problem saving the selected files."
+          return;
+        },
+        () => {} // On finished.
+      )
   }
 }

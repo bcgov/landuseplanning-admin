@@ -1,10 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Subject, forkJoin } from 'rxjs';
+import { NgxSmartModalComponent } from 'ngx-smart-modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as Editor from 'assets/ckeditor5/build/ckeditor';
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { StorageService } from 'app/services/storage.service';
 import { ProjectService } from 'app/services/project.service';
@@ -19,7 +20,7 @@ import { Document } from 'app/models/document';
   templateUrl: './add-edit-project.component.html',
   styleUrls: ['./add-edit-project.component.scss']
 })
-export class AddEditProjectComponent implements OnInit, OnDestroy {
+export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fileUploadModalData: ModalData;
   public Editor = Editor;
@@ -122,7 +123,7 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
           // The following items are loaded by a file that is only present on cluster builds.
           // Locally, this will be empty and local defaults will be used.
           const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
-          this.pathAPI = (_.isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+          this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
 
           if (this.bannerImageDocument) {
             const safeName = this.bannerImageDocument.documentFileName.replace(/ /g, '_');
@@ -156,11 +157,25 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
         try {
           this._changeDetectorRef.detectChanges();
         } catch (e) {
-          // console.log('e:', e);
+          console.error('error:', e);
         }
       });
 
     this.back = this.storageService.state.back;
+  }
+
+
+  /**
+   * After view init, listen for the file upload modal to close and check if it returned
+   * files that can be saved in the Project.
+   *
+   * @todo Get returned data into project form.
+   * @returns {void}
+   */
+  ngAfterViewInit(): void {
+    this.ngxSmartModalService.getModal('file-upload-modal').onAnyCloseEventFinished.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Returned data from file upload modal.', modal.getData());
+    });
   }
 
   buildForm(resolverData) {
@@ -211,16 +226,22 @@ export class AddEditProjectComponent implements OnInit, OnDestroy {
     return this.myForm.get('agreements') as FormArray;
   }
 
-  launchFilePicker() {
+  /**
+   * Set the modal data and launch file upload modal.
+   *
+   * @returns {void}
+   */
+  launchFilePicker(): void {
     this.fileUploadModalData = {
       title: "Select project logo(s).",
       altRequired: true,
       fileNum: 3,
-      fileExt: 'jpg, jpeg, png'
+      fileExt: 'jpg, jpeg, png',
+      fileTypes: [ 'image/jpeg', 'image/png' ],
+      projectID: this.projectId
     };
 
-    this.ngxSmartModalService.setModalData( this.fileUploadModalData, 'file-upload-modal');
-
+    this.ngxSmartModalService.setModalData( this.fileUploadModalData, 'file-upload-modal', true);
     this.ngxSmartModalService.open('file-upload-modal');
   }
 
