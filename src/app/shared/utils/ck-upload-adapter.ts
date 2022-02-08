@@ -53,7 +53,7 @@ export class CkUploadAdapter {
                   },
                   error => {
                     // Leaving this console.log for now until we have tested and verified on the server.
-                    console.log('CK publish error =', error);
+                    console.error('CK publish error =', error);
                     reject(error);
                   }
                 )
