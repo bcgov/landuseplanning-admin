@@ -1,3 +1,4 @@
+import { FormControl } from '@angular/forms';
 import * as _ from 'lodash';
 
 export class Document {
@@ -18,9 +19,10 @@ export class Document {
   datePosted: Date;
   dateUpdated: Date;
   projectPhase: string;
-
+  alt: string;
   checkbox: boolean;
   upfile: File;
+  mimeType: string;
   labels: any[];
   isPublished = false; // depends on tags; see below
 
@@ -46,6 +48,7 @@ export class Document {
     this.documentAuthor = obj && obj.documentAuthor || null;
     this.eaoStatus = obj && obj.eaoStatus || null;
     this.projectPhase = obj && obj.projectPhase || null;
+    this.alt = obj && obj.alt || null;
 
     this.checkbox = obj && obj.checkbox || null;
     this.upfile = obj && obj.upfile || null;

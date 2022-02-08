@@ -33,6 +33,7 @@ export class AppComponent implements OnInit, OnDestroy {
       customClass: 'nsm-centered nsm-large',
       closable: false,
       escapable: false,
+      dismissable: false
     }
 
     this.ngxSmartModalService.create('confirmation-modal', ConfirmComponent, {customClass: 'nsm-centered'});
