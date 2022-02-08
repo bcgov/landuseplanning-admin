@@ -190,7 +190,7 @@
       <h2>Background Information</h2>
       <div class="flex-container">
         <div class="add-row med">
-          <ckeditor name="backgroundInfo" id="backgroundInfo" formControlName="backgroundInfo" [editor]="Editor" [data]="project?.backgroundInfo"></ckeditor>
+          <ckeditor name="backgroundInfo" id="backgroundInfo" formControlName="backgroundInfo" [editor]="Editor" [data]="project?.backgroundInfo" (ready)="editorOnReady($event)"></ckeditor>
         </div>
       </div>
     </section>
@@ -205,7 +205,7 @@
         <div class="add-row med">
           <label for="enagementInfo">Engagement Tab Information </label>
           <ckeditor name="engagementInfo" id="engagementInfo" formControlName="engagementInfo" [editor]="Editor"
-            [data]="project?.engagementInfo"></ckeditor>
+            [data]="project?.engagementInfo" (ready)="editorOnReady($event)"></ckeditor>
           <label class="additional-label" for="engagementInfo">Appears at the top of the Engagement tab.</label>
         </div>
       </div>
@@ -216,7 +216,7 @@
         <div class="add-row med">
           <p>Additional information for the Documents tab</p>
           <ckeditor name="documentInfo" id="documentInfo" formControlName="documentInfo" [editor]="Editor"
-            [data]="project?.documentInfo"></ckeditor>
+            [data]="project?.documentInfo" (ready)="editorOnReady($event)"></ckeditor>
         </div>
       </div>
     </section>
