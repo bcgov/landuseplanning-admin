@@ -6,6 +6,7 @@
 * Update some methods with ES6 syntax
 * Remove unused function params, libraries, variables, etc.
 * Remove old, commented-out code
+* Enabled image uploading through CKEditor
 
 ### 1.0.0: October 22, 2021
 * Updating version in package.json, and changed package name to landuseplanning-admin
