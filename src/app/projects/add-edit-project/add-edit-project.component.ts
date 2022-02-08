@@ -744,7 +744,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     const projectId = this.projectId;
     const documentService = this.documentService;
     const pathAPI = this.pathAPI;
-    eventData.plugins.get('FileRepository').createUploadAdapter = function (loader) {
+    eventData.plugins.get('FileRepository').createUploadAdapter = (loader) => {
       return new CkUploadAdapter(loader, projectId, documentService, pathAPI);
     };
   }
