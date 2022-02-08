@@ -60,7 +60,7 @@ export class CkUploadAdapter {
             },
             error => {
               // Leaving this console.log for now until we have tested and verified on the server.
-              console.log('CK upload error =', error);
+              console.error('CK upload error =', error);
               reject(error);
             },
             () => {
