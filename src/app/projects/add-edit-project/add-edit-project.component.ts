@@ -739,7 +739,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @param eventData Object type added and used by CK Editor
    * @returns {Promise}
    */
-  public editorOnReady(eventData: EventInfo): void {
+  public editorOnReady(eventData): void {
     // We need to grab our vars explicitely and pass them through to the CK Editor function.
     const projectId = this.projectId;
     const documentService = this.documentService;
