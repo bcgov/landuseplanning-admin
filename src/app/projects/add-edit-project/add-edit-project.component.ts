@@ -10,6 +10,7 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 import { StorageService } from 'app/services/storage.service';
 import { ProjectService } from 'app/services/project.service';
 import { DocumentService } from 'app/services/document.service';
+import { CkUploadAdapter } from 'app/shared/utils/ck-upload-adapter';
 import { Project } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 import { ModalData } from 'app/shared/types/modal';
@@ -730,6 +731,25 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       duration: 2000,
     });
   }
+
+  /**
+   * Uses the CK Editor (ready) to link a file upload handler to the
+   * CK Editor instance.
+   * 
+   * @param eventData Object type added and used by CK Editor
+   * @returns {Promise}
+   */
+  public editorOnReady(eventData): void {
+    // We need to grab our vars explicitely and pass them through to the CK Editor function.
+    const projectId = this.projectId;
+    const documentService = this.documentService;
+    const pathAPI = this.pathAPI;
+    eventData.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return new CkUploadAdapter(loader, projectId, documentService, pathAPI);
+    };
+  }
+
+  register(myForm: FormGroup) { }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
