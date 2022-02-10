@@ -2,7 +2,7 @@
   <ng-container *ngIf="maxFiles > 0">Maximum of {{maxFiles}} files. </ng-container>
   <ng-container *ngIf="maxSize > 0">File size up to {{maxSize}}MB each.</ng-container>
   <br>
-  <!-- <ng-container *ngIf="fileExt.length > 0">Acceptable file types: {{fileExt.splice().join(', ')}}</ng-container> -->
+  <ng-container *ngIf="fileExt.length > 0">Acceptable file types: {{fileExt}}</ng-container>
 </div>
 
 <div draggable="true" ngClass="{{dragDropClass}}">

@@ -75,32 +75,46 @@
               </div>
           </div>
         </div>
-        <div class="label-pair med">
+        <div class="label-pair lrg">
           <div class="form-group">
             <label for="logos">Project Logos </label>
-            <input type="button" id="logos" class="btn btn-primary logos-select-btn" value="Select project logo(s)" (click)="launchFilePicker()">
+            <ul class="project-logos">
+              <li *ngFor="let logo of logos.controls">
+                <div class="logo-name-container">
+                  <label>File name</label>
+                  <p>{{ logo.controls.name.value }}</p>
+                </div>
+                <div class="logo-link-container">
+                  <label for="logo-link">Link</label>
+                  <input type="text" id="logo-link" [formControl]="logo.controls.link">
+                </div>
+              </li>
+            </ul>
+            <div class="logos-buttons">
+              <input type="button" id="logos" class="btn btn-primary" value="{{logos.length > 0 ? 'Reselect project logo(s)' : 'Select project logo(s)'}}" (click)="launchFilePicker()">
+              <input *ngIf="logos.controls.length > 0" type="button" class="btn btn-outline-primary" value="Clear selection" (click)="handleClearLogos()">
+            </div>
           </div>
         </div>
         <div *ngIf="formValueType(myForm.value.agreements) === 'object'" class="label-pair med">
-        <div *ngFor="let agreement of agreements.controls; let i=index" >
-          <div class="flex-container" [formGroup]="agreement">
-          <div class="label-pair existing-land-use-plan">
-            <label for="name">Agreement Name*</label>
-            <input id="agreement-name" formControlName="agreementName"
-              type="text" class="form-control" />
+          <div *ngFor="let agreement of agreements.controls; let i=index" class="project-agreements">
+            <div class="flex-container" [formGroup]="agreement">
+            <div class="label-pair existing-land-use-plan">
+              <label for="name">Agreement Name*</label>
+              <input id="agreement-name" formControlName="agreementName"
+                type="text" class="form-control" />
+            </div>
+            <div class="label-pair existing-land-use-plan-url">
+              <label for="agreement">Agreement URL</label>
+              <input class="agreement-url" formControlName="agreementUrl" type="text" class="form-control" />
+            </div>
+            <button *ngIf="i !== 0" type="button" type="button" class="btn existing-land-use-plan-delete" (click)="removeLinkFormGroup(agreements, i)"><i class="material-icons">delete</i></button>
+            </div>
+            <div class="divider"></div>
           </div>
-          <div class="label-pair existing-land-use-plan-url">
-            <label for="agreement">Agreement URL</label>
-            <input class="agreement-url" formControlName="agreementUrl" type="text" class="form-control" />
-          </div>
-          <button *ngIf="i !== 0" type="button" type="button" class="btn existing-land-use-plan-delete" (click)="removeLinkFormGroup(agreements, i)"><i class="material-icons">delete</i></button>
-          </div>
-          <div class="divider"></div>
+          <button class="btn btn-primary" type="button" (click)="populateFormArray(agreements)">Add additional agreement</button>
         </div>
-        <button class="btn btn-primary" type="button" (click)="addLinkFormGroup(agreements)">Add additional agreement</button>
       </div>
-    </div>
-
     </section>
     <section>
       <h2>Location</h2>
@@ -167,11 +181,11 @@
           <label for="existingLandUsePlanURL">Existing Land Use Plan URL</label>
           <input name="existingLandUsePlanURL" class="existingLandUsePlanURL" formControlName="existingLandUsePlanURL" type="text" class="form-control" />
         </div>
-        <button class="btn existing-land-use-plan-delete" (click)="removeLinkFormGroup(existingLandUsePlans, i)"><span class="existing-land-use-plan-delete-text">Remove</span><i class="material-icons">delete</i></button>
+        <button class="btn existing-land-use-plan-delete" (click)="removeItemFromFormArray(existingLandUsePlans, i)"><span class="existing-land-use-plan-delete-text">Remove</span><i class="material-icons">delete</i></button>
         </div>
         <div class="divider"></div>
       </div>
-      <button class="btn btn-primary" type="button" (click)="addLinkFormGroup(existingLandUsePlans)">Add existing land use plan</button>
+      <button class="btn btn-primary" type="button" (click)="populateFormArray(existingLandUsePlans)">Add existing land use plan</button>
     </section>
     <section>
       <h2>Overall Project Status</h2>

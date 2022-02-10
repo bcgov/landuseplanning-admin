@@ -9,7 +9,7 @@ export class Document {
   internalURL: string;
   passedAVCheck: boolean;
   internalMime: string;
-  internalSize: Number;
+  internalSize: number;
   documentSource: string;
   displayName: string;
   dateUploaded: string;

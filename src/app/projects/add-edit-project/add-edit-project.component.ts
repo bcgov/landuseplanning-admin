@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/forms';
 import { Subject, forkJoin } from 'rxjs';
 import { NgxSmartModalComponent } from 'ngx-smart-modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,6 +15,7 @@ import { Project } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 import { ModalData } from 'app/shared/types/modal';
 import { Document } from 'app/models/document';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-edit-project',
@@ -82,9 +83,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     'Plan Implementation and Monitoring'
   ];
 
-  public projectName;
-  public projectId;
-  public project;
+  public projectName: string;
+  public projectId: string;
+  public project: Project;
 
   public isEditing = false;
 
@@ -112,7 +113,15 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   ) {
   }
 
-  ngOnInit() {
+  /**
+   * Get project data to populate add-edit-project template with from
+   * route resolver. Start to build project form with retrieved data.
+   * Get attached documents(files) such as project banner and shapefiles
+   * from route resolver.
+   *
+   * @returns {void}
+   */
+  ngOnInit(): void {
     this.route.data.subscribe((res: any) => {
       if (res) {
         if (res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
@@ -140,9 +149,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     // Get data related to current project
     this.route.parent.data
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(data => {
+      .subscribe((data: { project: Project }) => {
         this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
 
+        /**
+         * When a user selects a project lead(and is taken to a new window),
+         * make sure the project lead is brought over.
+         **/
         if (this.storageService.state.projectLead) {
           this.projectLead = this.storageService.state.projectLead.name;
           this.projectLeadId = this.storageService.state.projectLead._id;
@@ -168,18 +181,37 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * After view init, listen for the file upload modal to close and check if it returned
-   * files that can be saved in the Project.
+   * files that can be saved in the Project. If files are returned, add their IDs to
+   * project logos.
    *
    * @todo Get returned data into project form.
    * @returns {void}
    */
   ngAfterViewInit(): void {
     this.ngxSmartModalService.getModal('file-upload-modal').onAnyCloseEventFinished.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('Returned data from file upload modal.', modal.getData());
+      const modalData = modal.getData();
+      if (modalData?.returnedFiles) {
+        this.logos.clear();
+        modalData.returnedFiles.forEach(file => {
+          this.logos.push(new FormGroup({
+            'document': new FormControl(file._id),
+            'name': new FormControl(file.documentFileName),
+            'alt': new FormControl(file.alt),
+            'link': new FormControl('')
+          }));
+        });
+      }
     });
   }
 
-  buildForm(resolverData) {
+  /**
+   * Build project edit form either from local storage, from route
+   * resolver data, or a new empty form(if user is adding a new project).
+   *
+   * @param resolverData The route resolved data to build into a form.
+   * @returns {void}
+   */
+  buildForm(resolverData: { project: Project }): void {
     if (this.storageService.state.form) {
       // TODO: Save the projectID if it was originally an edit.
       this.myForm = this.storageService.state.form;
@@ -204,6 +236,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'capital': new FormControl(),
         'notes': new FormControl(),
         'status': new FormControl(),
+        'logos': new FormArray([]),
         'backgroundInfo': new FormControl(),
         'engagementLabel': new FormControl(),
         'engagementInfo': new FormControl(),
@@ -215,16 +248,38 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       });
 
       // Form always has at least one agreement field
-      this.addLinkFormGroup(this.agreements);
+      this.populateFormArray(this.agreements);
     }
   }
 
-  get existingLandUsePlans() {
+  /**
+   * Getter to be able to access the existingLandUsePlans FormControl
+   * as a FormArray.
+   *
+   * @returns {void}
+   */
+  get existingLandUsePlans(): FormArray {
     return this.myForm.get('existingLandUsePlans') as FormArray;
   }
 
-  get agreements() {
+  /**
+   * Getter to be able to access the agreements FormControl
+   * as a FormArray.
+   *
+   * @returns {void}
+   */
+  get agreements(): FormArray {
     return this.myForm.get('agreements') as FormArray;
+  }
+
+  /**
+   * Getter to be able to access the logos FormControl
+   * as a FormArray.
+   *
+   * @returns {void}
+   */
+  get logos(): FormArray {
+    return this.myForm.get('logos') as FormArray;
   }
 
   /**
@@ -238,6 +293,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       altRequired: true,
       fileNum: 3,
       fileExt: 'jpg, jpeg, png',
+      maxSize: 0.5,
       fileTypes: [ 'image/jpeg', 'image/png' ],
       projectID: this.projectId
     };
@@ -246,7 +302,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     this.ngxSmartModalService.open('file-upload-modal');
   }
 
-  addLinkFormGroup(formEntry) {
+  /**
+   * Add a form group to a specific form array.
+   *
+   * @param formEntry Specific form array to populate with a new FormGroup.
+   * @returns {void}
+   */
+   populateFormArray(formEntry: FormArray): void {
     if (formEntry === this.existingLandUsePlans) {
       formEntry.push(new FormGroup({
         'existingLandUsePlan': new FormControl(),
@@ -261,15 +323,42 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  removeLinkFormGroup(formEntry, index) {
-    formEntry.removeAt(index);
+  /**
+   * Clear the selected project logos and the associated information.
+   *
+   * @returns {void}
+   */
+  handleClearLogos(): void {
+    this.myForm.controls.logos = new FormArray([]);
   }
 
-  public formValueType(formValue) {
+  /**
+   * Remove an element from a form array.
+   *
+   * @param formArray The form to remove an item from.
+   * @param index The index of the item to remove.
+   * @returns {void}
+   */
+  removeItemFromFormArray(formArray: FormArray, index: number): void {
+    formArray.removeAt(index);
+  }
+
+  /**
+   * Return the type of the value currently filled into the form.
+   *
+   * @param formValue The value of the form to check the type of.
+   * @returns The type of form control.
+   */
+  public formValueType(formValue: any): string {
     return typeof formValue;
   }
 
-  private setNavigation() {
+  /**
+   * Update the router navigation.
+   *
+   * @returns {void}
+   */
+  private setNavigation(): void {
     if (!this.isEditing) {
       this.navigationStackUtils.pushNavigationStack(
         ['/projects', 'add'],
@@ -305,88 +394,132 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  buildFormFromData(formData) {
-
-    if (!formData.centroid) {
-      formData.centroid = [-123.3656, 48.4284];
-    }
-
-    let existingPlansFormArray = (formData) => {
-      let formArray = [];
-      if (Array.isArray(formData.existingLandUsePlans)) {
-        for (let i = 0; i < formData.existingLandUsePlans.length; i++ ) {
-          formArray[i] = new FormGroup({
-            'existingLandUsePlan': new FormControl(formData.existingLandUsePlans[i].existingLandUsePlan),
-            'existingLandUsePlanURL': new FormControl(formData.existingLandUsePlans[i].existingLandUsePlanURL)
-          })
-        }
-      } else {
-        formArray.push(new FormGroup({
-          'existingLandUsePlan': new FormControl(formData.existingLandUsePlans),
-          'existingLandUsePlanURL': new FormControl(formData.existingLandUsePlanURLs)
-        }))
+  /**
+   * Build an array of form groups existing land use plans from the project data.
+   *
+   * @param projectData The project to build the form with.
+   * @returns The existing land use plans form group array.
+   */
+   buildExistingPlansFormArray(projectData: Project): FormGroup[] {
+    let formArray = [];
+    if (Array.isArray(projectData.existingLandUsePlans)) {
+      for (let i = 0; i < projectData.existingLandUsePlans.length; i++ ) {
+        formArray[i] = new FormGroup({
+          'existingLandUsePlan': new FormControl(projectData.existingLandUsePlans[i].existingLandUsePlan),
+          'existingLandUsePlanURL': new FormControl(projectData.existingLandUsePlans[i].existingLandUsePlanURL)
+        })
       }
-      return formArray;
+    } else {
+      formArray.push(new FormGroup({
+        'existingLandUsePlan': new FormControl(projectData.existingLandUsePlans),
+        'existingLandUsePlanURL': new FormControl(projectData.existingLandUsePlanURLs)
+      }))
     }
-
-    let existingAgreementsArray = (formData) => {
-      let formArray = [];
-      if (Array.isArray(formData.agreements)) {
-        for (let i = 0; i < formData.agreements.length; i++ ) {
-          formArray[i] = new FormGroup({
-            'agreementName': new FormControl(formData.agreements[i].agreementName),
-            'agreementUrl': new FormControl(formData.agreements[i].agreementUrl)
-          })
-        }
-      } else {
-        formArray.push(new FormGroup({
-          'agreementName': new FormControl(formData.agreements),
-          'agreementUrl': new FormControl()
-        }))
-      }
-      return formArray;
-    }
-
-    let overlappingDistrictsArray = (formData) => {
-      let formArray = [];
-      if (Array.isArray(formData.overlappingRegionalDistricts)) {
-        formArray = formData.overlappingRegionalDistricts;
-      } else {
-        formArray.push(formData.overlappingRegionalDistricts);
-      }
-      return formArray;
-    }
-
-
-    let theForm = new FormGroup({
-      'name': new FormControl(formData.name),
-      'partner': new FormControl(formData.partner),
-      'description': new FormControl(formData.description),
-      'details': new FormControl(formData.details),
-      'overlappingRegionalDistricts': new FormControl(overlappingDistrictsArray(formData)),
-      'region': new FormControl(formData.region),
-      'lat': new FormControl(formData.centroid[1]),
-      'lon': new FormControl(formData.centroid[0]),
-      'addFile': new FormControl(formData.addFile),
-      'ea': new FormControl(formData.ea),
-      'status': new FormControl(formData.status),
-      'backgroundInfo': new FormControl(formData.backgroundInfo),
-      'engagementLabel': new FormControl(formData.engagementLabel),
-      'engagementInfo': new FormControl(formData.engagementInfo),
-      'documentInfo': new FormControl(formData.documentInfo),
-      'projectPhase': new FormControl(formData.projectPhase),
-      'projectDirector': new FormControl(formData.projectDirector),
-      'projectLead': new FormControl(formData.projectLead),
-      'projectAdmin': new FormControl(formData.projectAdmin)
-    });
-
-    theForm.addControl('existingLandUsePlans', new FormArray(existingPlansFormArray(formData)));
-    theForm.addControl('agreements', new FormArray(existingAgreementsArray(formData)));
-
-    return theForm;
+    return formArray;
   }
 
-  onCancel() {
+  /**
+   * Build an array of form groups of existing land agreements from project data.
+   *
+   * @param projectData The project data to build the form with.
+   * @returns The array of existing land agreements form groups.
+   */
+  buildExistingAgreementsFormArray(projectData: Project): FormGroup[] {
+    let formArray = [];
+    if (Array.isArray(projectData.agreements)) {
+      for (let i = 0; i < projectData.agreements.length; i++ ) {
+        formArray[i] = new FormGroup({
+          'agreementName': new FormControl(projectData.agreements[i].agreementName),
+          'agreementUrl': new FormControl(projectData.agreements[i].agreementUrl)
+        })
+      }
+    } else {
+      formArray.push(new FormGroup({
+        'agreementName': new FormControl(projectData.agreements),
+        'agreementUrl': new FormControl()
+      }))
+    }
+    return formArray;
+  }
+
+  /**
+   * Build an array of form groups of overlapping regional districts from project data.
+   *
+   * @param projectData The project to build the form with.
+   * @returns The array of overlapping regional districts form groups.
+   */
+  buildOverlappingDistrictsFormArray(projectData: Project): any[] {
+    let formArray = [];
+    if (Array.isArray(projectData.overlappingRegionalDistricts)) {
+      formArray = projectData.overlappingRegionalDistricts;
+    } else {
+      formArray.push(projectData.overlappingRegionalDistricts);
+    }
+    return formArray;
+  }
+
+  /**
+   * Build a an array of form groups to add as a form array to the main
+   * project form.
+   *
+   * @param projectData The project data to build the logos form array with.
+   * @returns The array of logo form groups.
+   */
+  buildLogosFormArray(projectData: Project): FormGroup[] {
+    let logosFormArray = [];
+    if (Array.isArray(projectData.logos)) {
+      logosFormArray = projectData.logos.map(logo => {
+        return new FormGroup({
+          'document': new FormControl(logo.document),
+          'name': new FormControl(logo.name),
+          'alt': new FormControl(logo.alt),
+          'link': new FormControl(logo.link)
+        })
+      })
+    }
+    return logosFormArray;
+  }
+
+  /**
+   * Take project data and build a form from it. Usually invoked when
+   * a user is editing a project rather than creating a new one.
+   *
+   * @param projectData The project to convert to form.
+   * @returns The form to edit the project with.
+   */
+  buildFormFromData(projectData: Project): FormGroup {
+    if (!projectData.centroid) {
+      projectData.centroid = [-123.3656, 48.4284];
+    }
+
+    return new FormGroup({
+      'name': new FormControl(projectData.name),
+      'partner': new FormControl(projectData.partner),
+      'description': new FormControl(projectData.description),
+      'details': new FormControl(projectData.details),
+      'overlappingRegionalDistricts': new FormControl(this.buildOverlappingDistrictsFormArray(projectData)),
+      'existingLandUsePlans': new FormArray(this.buildExistingPlansFormArray(projectData)),
+      'agreements': new FormArray(this.buildExistingAgreementsFormArray(projectData)),
+      'region': new FormControl(projectData.region),
+      'lat': new FormControl(projectData.centroid[1]),
+      'lon': new FormControl(projectData.centroid[0]),
+      'logos': new FormArray(this.buildLogosFormArray(projectData)),
+      'backgroundInfo': new FormControl(projectData.backgroundInfo),
+      'engagementLabel': new FormControl(projectData.engagementLabel),
+      'engagementInfo': new FormControl(projectData.engagementInfo),
+      'documentInfo': new FormControl(projectData.documentInfo),
+      'projectPhase': new FormControl(projectData.projectPhase),
+      'projectDirector': new FormControl(projectData.projectDirector),
+      'projectLead': new FormControl(projectData.projectLead),
+    });
+  }
+
+  /**
+   * Take action when the user wants to cancel adding or editing a project.
+   *
+   * @returns {void}
+   */
+  onCancel(): void {
     this.clearStorageService();
     if (this.back && this.back.url) {
       this.router.navigate(this.back.url);
@@ -395,8 +528,14 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  convertFormToProject(form) {
-    return {
+  /**
+   * Takes current form values and builds a project object.
+   *
+   * @param form Form group to build project with.
+   * @returns The project from the current form values.
+   */
+  convertFormToProject(form: FormGroup): Project {
+    return new Project({
       'name': form.controls.name.value,
       'partner': form.controls.partner.value,
       'agreements': this.agreementsFullFields(),
@@ -405,10 +544,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'overlappingRegionalDistricts': form.controls.overlappingRegionalDistricts.value,
       'region': form.controls.region.value,
       'centroid': [form.get('lon').value, form.get('lat').value],
-      'addFile': form.controls.addFile.value,
       'existingLandUsePlans': this.existingPlanFullFields(),
-      'ea': form.controls.ea.value,
-      'status': form.controls.status.value,
+      'logos': this.getLogosFormValues(),
       'backgroundInfo': form.controls.backgroundInfo.value,
       'engagementLabel': form.controls.engagementLabel.value,
       'engagementInfo': form.controls.engagementInfo.value,
@@ -416,8 +553,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'projectPhase': form.controls.projectPhase.value,
       'projectDirector': this.projectDirectorId,
       'projectLead': this.projectLeadId,
-      'projectAdmin': form.controls.projectAdmin.value
-    };
+    });
   }
 
   private clearStorageService() {
@@ -516,16 +652,66 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     return completedFields;
   }
 
-  onSubmit() {
+  /**
+   * Takes the project logos FormArray and gets the data from it.
+   *
+   * @returns Array of logos objects.
+   */
+  private getLogosFormValues(): Project['logos'] {
+    return this.logos.controls.map((logo: FormGroup) => ({
+        document: logo.controls.document.value,
+        name: logo.controls.name.value,
+        alt: logo.controls.alt.value,
+        link: logo.controls.link.value
+    }));
+  }
+
+  /**
+   * Publish the selected logos.
+   *
+   * @returns {void}
+   */
+  private publishSelectedLogos() {
+    const logoValues = this.getLogosFormValues();
+    const documentPublishRequests = logoValues.map(logo => {
+      return this.documentService.publish(logo.document);
+    });
+    forkJoin(documentPublishRequests)
+    .subscribe(
+      aggregateResponse => {
+        aggregateResponse.forEach((individualResponse: Document|HttpErrorResponse) => {
+          if ("status" in individualResponse) {
+            // One or more of the responses is an error.
+            if (500 === individualResponse.status || 400 === individualResponse.status) {
+              console.error('Error publishing file', individualResponse);
+              alert('There was a problem publishing one or more of the selected logos.')
+              return;
+            }
+          }
+        });
+      },
+      error => {
+        console.error('Error publishing files', error);
+        alert('There was a problem publishing one or more of the selected logos.')
+        return;
+      },
+      () => {} // On finished.
+    )
+  }
+
+  /**
+   * Save the project.
+   *
+   * @returns {void}
+   */
+  onSubmit(): void {
     if (!this.validateForm()) {
       return;
     }
 
     if (!this.isEditing) {
       // POST
-      let project = new Project(
-        this.convertFormToProject(this.myForm)
-      );
+      const project = this.convertFormToProject(this.myForm);
       this.projectService.add(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -544,43 +730,48 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           }
         );
 
-        if (this.bannerImageDocument && ! this.removeBannerImage) {
-          const bannerImageFormData = new FormData();
-          bannerImageFormData.append('upfile', this.bannerImageDocument.upfile);
-          bannerImageFormData.append('project', this.project._id);
-          bannerImageFormData.append('documentFileName', this.bannerImageDocument.documentFileName);
-          bannerImageFormData.append('displayName',  this.bannerImageDocument.documentFileName);
-          bannerImageFormData.append('documentSource', 'BANNER');
+      if (this.bannerImageDocument && ! this.removeBannerImage) {
+        const bannerImageFormData = new FormData();
+        bannerImageFormData.append('upfile', this.bannerImageDocument.upfile);
+        bannerImageFormData.append('project', this.project._id);
+        bannerImageFormData.append('documentFileName', this.bannerImageDocument.documentFileName);
+        bannerImageFormData.append('displayName',  this.bannerImageDocument.documentFileName);
+        bannerImageFormData.append('documentSource', 'BANNER');
 
-          this.documentService.add(bannerImageFormData)
-          .takeUntil(this.ngUnsubscribe)
-          .subscribe(
-            (res) => {
-              // do nothing here - see onCompleted() function below
-              this.documentService.publish(res._id)
-              .takeUntil(this.ngUnsubscribe)
-              .subscribe(
-                res => res,
-                error => {
-                  console.error('error = ', error);
-                  alert('Could not publish banner image. Please publish manually in project documents section.');
-                }
-                )
-              },
+        this.documentService.add(bannerImageFormData)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          (res) => {
+            // do nothing here - see onCompleted() function below
+            this.documentService.publish(res._id)
+            .takeUntil(this.ngUnsubscribe)
+            .subscribe(
+              res => res,
               error => {
                 console.error('error = ', error);
-                alert('Uh-oh, couldn\'t save shapefile.');
-                // TODO: should fully reload project here so we have latest non-deleted objects
-              },
-              () => { // onCompleted
-                // delete succeeded --> navigate back to search
-                // Clear out the document state that was stored previously.
+                alert('Could not publish banner image. Please publish manually in project documents section.');
               }
               )
-        }
+            },
+            error => {
+              console.error('error = ', error);
+              alert('Uh-oh, couldn\'t save shapefile.');
+              // TODO: should fully reload project here so we have latest non-deleted objects
+            },
+            () => { // onCompleted
+              // delete succeeded --> navigate back to search
+              // Clear out the document state that was stored previously.
+            }
+            )
+      }
+
+      // Publish selected logo files.
+      if (this.logos) {
+        this.publishSelectedLogos();
+      }
     } else {
       // PUT
-      let project = new Project(this.convertFormToProject(this.myForm));
+      const project = this.convertFormToProject(this.myForm);
       project._id = this.project._id;
       let observables = [];
       this.shapefileDocuments.forEach(doc => {
@@ -602,9 +793,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         bannerImageFormData.append('displayName',  this.bannerImageDocument.documentFileName);
         bannerImageFormData.append('documentSource', 'BANNER');
         this.documentService.add(bannerImageFormData)
-        // .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          (res) => {
+          .subscribe((res) => {
             // do nothing here - see onCompleted() function below
             this.documentService.publish(res._id)
             // .takeUntil(this.ngUnsubscribe)
@@ -627,6 +816,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           error => {
             alert('Could not delete banner image. Please delete manually in project documents section.');
           })
+      }
+
+      // Publish selected logo files.
+      if (this.logos.dirty) {
+        this.publishSelectedLogos();
       }
       forkJoin(observables)
         .takeUntil(this.ngUnsubscribe)

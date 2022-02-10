@@ -10,4 +10,5 @@ const _Document: new () => Omit<Document, "alt"> = Document;
 export class DocumentForm extends _Document {
   alt: FormControl;
   queuedForUpload: boolean;
+  deselectHovered: boolean;
 }

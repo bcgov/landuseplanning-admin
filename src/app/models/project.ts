@@ -1,4 +1,5 @@
 import { CommentPeriod } from './commentPeriod';
+import { Document } from './document';
 import * as moment from 'moment';
 
 export class Project {
@@ -9,6 +10,7 @@ export class Project {
   description: String;
   details: String;
   engagementStatus: String;
+  logos: ProjectLogo[];
   backgroundInfo: String;
   engagementLabel: String;
   engagementInfo: String;
@@ -70,6 +72,7 @@ export class Project {
     this.description         = obj && obj.description         || undefined;
     this.details         = obj && obj.details         || undefined;
     this.engagementStatus = obj && obj.engagementStatus || undefined;
+    this.logos            = obj && obj.logos || undefined;
     this.backgroundInfo = obj && obj.backgroundInfo || undefined;
     this.engagementLabel = obj && obj.engagementLabel || undefined;
     this.engagementInfo = obj && obj.engagementInfo || undefined;
@@ -109,17 +112,6 @@ export class Project {
     this.projectLead         = obj && obj.projectLead         || undefined;
     this.projectDirector     = obj && obj.projectDirector     || undefined;
 
-    // if (obj && obj.publishDate) {
-    //   this.publishDate = new Date(obj.publishDate);
-    // }
-
-    // // replace \\n (JSON format) with newlines
-    // if (obj && obj.description) {
-    //   this.description = obj.description.replace(/\\n/g, '\n');
-    // }
-    // if (obj && obj.legalDescription) {
-    //   this.legalDescription = obj.legalDescription.replace(/\\n/g, '\n');
-    // }
     // copy pins
     if (obj && obj.pins) {
       obj.pins.forEach(pin => {
@@ -150,23 +142,12 @@ export class Project {
         }
       });
     }
-
-    // if (obj && obj.decision) {
-    //   this.decision = new Decision(obj.decision);
-    // }
-
-    // // copy documents
-    // if (obj && obj.documents) {
-    //   for (const doc of obj.documents) {
-    //     this.documents.push(doc);
-    //   }
-    // }
-
-    // // copy features
-    // if (obj && obj.features) {
-    //   for (const feature of obj.features) {
-    //     this.features.push(feature);
-    //   }
-    // }
   }
+}
+
+export interface ProjectLogo {
+  document: string,
+  name: string,
+  alt: string,
+  link: string
 }

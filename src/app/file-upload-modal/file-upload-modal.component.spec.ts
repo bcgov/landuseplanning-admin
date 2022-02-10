@@ -24,12 +24,12 @@ describe('FileUploadModalComponent', () => {
   });
 
   it('The select file handler should be called when a ', fakeAsync(() => {
-    spyOn(component, 'selectFile');
+    spyOn(component, 'handleSelect');
 
     let button = fixture.debugElement.nativeElement.querySelector('.file');
     button.click();
     tick();
-    expect(component.selectFile).toHaveBeenCalled();
+    expect(component.handleSelect).toHaveBeenCalled();
 
   }));
 });

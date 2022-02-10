@@ -1,5 +1,22 @@
 <header>
   <h3>{{ modalData.title || "Select file(s)" }}</h3>
+  <button
+    class="help-button"
+    (click)="toggleHelp()"
+    aria-label="Instructions for use of file uploader."
+  >
+    <mat-icon>help_outline</mat-icon>
+  </button>
+  <article class="help-dialog" *ngIf="showHelp">
+    Choose files from your desktop and upload them. Select existing files.
+    Change their alternative text. Press "Select files" to finalize your selection.
+    <br>
+    <br>
+    Keyboard Instructions: <br>
+    - Arrow keys to navigate. <br>
+    - Enter to select files and press buttons. <br>
+    - Escape to exit. <br>
+  </article>
 </header>
 <main class="close-dialog" *ngIf="closeDialog">
   <h4>Are you sure you wish to close?</h4>
@@ -18,7 +35,7 @@
   <section #fileBrowser>
     <div class="upload">
       <app-file-upload
-      [maxFiles]="modalData.maxSize"
+      [maxFiles]="modalData.fileNum"
       [maxSize]="modalData.maxSize"
       [fileExt]="fileExt"
       [files]="queuedFiles"
@@ -33,11 +50,22 @@
       tabindex="0"
       class="file"
       *ngFor="let file of fileList; index as i"
-      (click)=selectFile(file)
+      (click)=handleSelect(file)
       (keypress)="keyPress($event, file)"
       [ngClass]="{'selected': isSelected(file)}"
       [attr.aria-selected]="isSelected(file)">
-      <div *ngIf="isSelected(file)" class="selected-count">{{ selectedCount(file) }}</div>
+      <div
+        *ngIf="isSelected(file)"
+        tabindex="0"
+        class="selected-count"
+        (click)="handleDeselect($event, file)"
+        [ngClass]="{'deslect-button': file.deselectHovered}"
+        (mouseenter)="handleFileHover($event, file, 'mouseenter')"
+        (mouseleave)="handleFileHover($event, file, 'mouseleave')"
+      >
+        <span *ngIf="!file.deselectHovered">{{ selectedCount(file) }}</span>
+        <mat-icon *ngIf="file.deselectHovered" [inline]="true">close</mat-icon>
+      </div>
       <mat-icon aria-hidden="false" [inline]="true" [attr.aria-label]="getIconInfoFromType(file).aria">
         {{ getIconInfoFromType(file).icon }}
       </mat-icon>

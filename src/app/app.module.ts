@@ -15,7 +15,8 @@ import { ProjectModule } from 'app/project/project.module';
 import { ProjectsModule } from 'app/projects/projects.module';
 import { SharedModule } from './shared/shared.module';
 import { EditorModule } from '@tinymce/tinymce-angular';
-import {MatIconModule} from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { MatTabsModule } from '@angular/material/tabs';
 
@@ -117,6 +118,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     ProjectsModule,
     SharedModule,
     MatIconModule,
+    MatTooltipModule,
     MatTabsModule,
     EditorModule,
     AppRoutingModule, // <-- module import order matters - https://angular.io/guide/router#module-import-order-matters
