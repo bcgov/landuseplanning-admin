@@ -5,5 +5,6 @@ export interface ModalData {
   fileExt?: string;
   fileTypes?: string[];
   fileNum?: number;
+  maxSize?: number;
   returnedFiles?: Document|unknown[];
 }

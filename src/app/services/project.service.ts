@@ -2,20 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import * as _ from 'lodash';
-
+import { cloneDeep } from 'lodash';
 import { ApiService } from './api';
-
 import { Project } from 'app/models/project';
 import { CommentPeriod } from 'app/models/commentPeriod';
 import { Org } from 'app/models/org';
-
-interface GetParameters {
-  getFeatures?: boolean;
-  getDocuments?: boolean;
-  getCurrentPeriod?: boolean;
-  getDecision?: boolean;
-}
 
 @Injectable()
 export class ProjectService {
@@ -109,7 +100,7 @@ export class ProjectService {
    */
   save(orig: Project): Observable<Project> {
     // make a (deep) copy of the passed-in project so we don't change it
-    const proj = _.cloneDeep(orig);
+    const proj = cloneDeep(orig);
 
     // replace newlines with \\n (JSON format)
     if (proj.description) {
@@ -138,7 +129,6 @@ export class ProjectService {
    * @returns
    */
   publish(proj: Project): Observable<Project> {
-    console.log('publishgin');
     return this.api.publishProject(proj)
       .catch(error => this.api.handleError(error));
   }

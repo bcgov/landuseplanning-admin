@@ -27,7 +27,9 @@ export class FileUploadModalComponent implements OnInit {
   fileList: DocumentForm[];
   fileExt: string;
   selectedFiles: DocumentForm[];
+  showDeselectButton: boolean;
   projectID: string;
+  showHelp: boolean;
   truncate = truncate;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   @ViewChild("fileBrowser") fileBrowser: ElementRef;
@@ -45,6 +47,7 @@ export class FileUploadModalComponent implements OnInit {
     this.loading = false;
     this.closeDialog = false;
     this.errorDialog = false;
+    this.showDeselectButton = false;
     this.errorMessage = '';
     this.selectedFiles = [];
     this.fileList = [];
@@ -103,6 +106,15 @@ export class FileUploadModalComponent implements OnInit {
   }
 
   /**
+   * Toggle the help dialog.
+   *
+   * @returns {void}
+   */
+  toggleHelp(): void {
+    this.showHelp = this.showHelp ? false : true;
+  }
+
+  /**
    * Load files from the DB of the same file extension passed in with modalData.fileExt.
    *
    * @returns {void}
@@ -156,6 +168,7 @@ export class FileUploadModalComponent implements OnInit {
       documentForm.documentFileName = file.name;
       documentForm.documentSource = 'PROJECT';
       documentForm.queuedForUpload = true;
+      documentForm.deselectHovered = false;
 
       this.fileList.unshift(documentForm);
     });
@@ -171,13 +184,28 @@ export class FileUploadModalComponent implements OnInit {
    * @param file A file that the user wants to select.
    * @returns {void}
    */
-  selectFile( file: DocumentForm ): void {
+  handleSelect( file: DocumentForm ): void {
+    file.deselectHovered = false;
     this.selectedFiles.unshift(file);
     this.selectedFiles = uniqBy(this.selectedFiles, '_id');
 
     if (this.selectedFiles.length > this.modalData.fileNum) {
       this.selectedFiles.splice(this.modalData.fileNum);
     }
+  }
+
+  /**
+   * Deselects a file by removing it from the selected files array.
+   *
+   * @param event Click event to deselect the file.
+   * @param file The file to deselect.
+   * @returns {void}
+   */
+  handleDeselect(event: MouseEvent, file: DocumentForm): void {
+    const fileIndex = this.selectedFiles.indexOf(file);
+    this.selectedFiles.splice(fileIndex, 1);
+    // Prevent event from being triggered by element's parent.
+    event.stopPropagation();
   }
 
   /**
@@ -189,7 +217,7 @@ export class FileUploadModalComponent implements OnInit {
    */
   keyPress(event: KeyboardEvent, file: DocumentForm): void {
     if ("Enter" === event.code) {
-      this.selectFile(file);
+      this.handleSelect(file);
     }
   }
 
@@ -232,6 +260,25 @@ export class FileUploadModalComponent implements OnInit {
   }
 
   /**
+   * When a user hovers over the selected file count, switch it to an X to indicate
+   * it can be deselected.
+   *
+   * @param event The hover on or off event.
+   * @param file The file that the user is hovering over, and that now shows a deselect icon.
+   * @param eventType Whether the mouse is entering or leaving the file element area.
+   * @returns {void}
+   */
+  handleFileHover(event: MouseEvent, file: DocumentForm, eventType: string): void {
+    if ('mouseenter' === eventType) {
+      file.deselectHovered = true;
+    } else if ('mouseleave' === eventType) {
+      file.deselectHovered = false;
+    }
+    // Prevent event from being triggered by element's parent.
+    event.stopPropagation();
+  }
+
+  /**
    * Checks if the user has selected files to upload, or made
    * changes to the information tied to files.
    *
@@ -268,12 +315,13 @@ export class FileUploadModalComponent implements OnInit {
 
   /**
    * Validate that the alt fields are filled out if required.
+   * Validate that selected files aren't too big.
    * Then begin the process of saving.
    *
    * @returns {void}
    */
   handleSave(): void {
-    // Validation.
+    // Alt tag validation.
     if (this.modalData.altRequired) {
       const filesWithEmptyAlt = this.selectedFiles.filter(file => !file.alt.value);
 
@@ -281,6 +329,22 @@ export class FileUploadModalComponent implements OnInit {
         // Abort save and show message.
         this.errorDialog = true;
         this.errorMessage = "One or more of the selected files do not have an alt tag.";
+        return;
+      }
+    }
+
+    // Max file size validation.
+    if (this.modalData.maxSize) {
+      const filesTooLarge = this.selectedFiles.filter(file => {
+        const fileSizeinMB = file.internalSize / 1024 / 1024; // in KB
+        const size = Math.round(fileSizeinMB * 100) / 100; // convert up to 2 decimal places
+        return size > this.modalData.maxSize;
+      });
+
+      if (filesTooLarge.length > 0) {
+        // Abort save and show message.
+        this.errorDialog = true;
+        this.errorMessage = `One or more of the selected files is too large. The maximum file size is ${this.modalData.maxSize}MB`;
         return;
       }
     }
@@ -321,7 +385,12 @@ export class FileUploadModalComponent implements OnInit {
           fileFormData.append('alt', file.alt.value);
           observableThatReturnsDocument = this.documentService.update(fileFormData, file._id).pipe(catchError(error => of(error)));
         } else {
-          observableThatReturnsDocument = of(file);
+          const fileData = {
+            ...file,
+            alt: file.alt.value
+          };
+
+          observableThatReturnsDocument = of(new Document(fileData));
         }
       }
       return observableThatReturnsDocument;

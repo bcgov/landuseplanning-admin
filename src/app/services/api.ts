@@ -139,6 +139,7 @@ export class ApiService {
       'description',
       'details',
       'engagementStatus',
+      'logos',
       'backgroundInfo',
       'engagementInfo',
       'engagementLabel',
