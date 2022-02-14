@@ -1,3 +1,6 @@
+### 1.1.1 February 11, 2022
+* Added OpenShift templates for the Admin pipeline
+
 ### 1.1.0 January 26, 2022
 * Remove unnecessary console.log calls
 * Graceful error handling for some methods
