@@ -159,10 +159,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     UserService,
   ],
   entryComponents: [
-    // ActivityDetailTableRowsComponent,
-    // ActivityTableRowsComponent,
-    // AddEditActivityComponent,
-    // ActivityDetailTableRowsComponent,
     AddEditContactComponent,
     AddEditOrganizationComponent,
     LinkOrganizationComponent,
