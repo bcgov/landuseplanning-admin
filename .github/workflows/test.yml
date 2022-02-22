@@ -18,4 +18,4 @@ jobs:
       - name: Run ESLint
         run: npm run lint
       - name: Run Tests
-        run: npm run tests
+        run: npm run tests -- --watch=false --browsers=ChromeHeadless
