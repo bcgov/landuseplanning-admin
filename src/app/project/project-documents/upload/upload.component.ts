@@ -96,8 +96,8 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'documents', data: this.documents };
     this.storageService.state = { type: 'labels', data: this.labels };
-    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-documents', 'upload'], label: 'Upload Document(s)' };
-    this.router.navigate(['/p', this.currentProject._id, 'project-documents', 'upload', 'add-label']);
+    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-files', 'upload'], label: 'Upload File(s)' };
+    this.router.navigate(['/p', this.currentProject._id, 'project-files', 'upload', 'add-label']);
   }
 
   register(myForm: FormGroup) {
@@ -149,7 +149,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         () => { // onCompleted
           // delete succeeded --> navigate back to search
           // Clear out the document state that was stored previously.
-          this.router.navigate(['p', this.currentProject._id, 'project-documents']);
+          this.router.navigate(['p', this.currentProject._id, 'project-files']);
           this.loading = false;
         }
       );

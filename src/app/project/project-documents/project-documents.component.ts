@@ -1,7 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
-import {MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NavBarButton, PageBreadcrumb } from 'app/shared/components/navbar/types';
 import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
 import * as _ from 'lodash'
@@ -13,7 +14,6 @@ import { StorageService } from 'app/services/storage.service';
 
 import { DocumentTableRowsComponent } from './project-document-table-rows/project-document-table-rows.component';
 
-import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
@@ -29,7 +29,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public documents: Document[] = null;
   public loading = true;
-
+  public navBarButtons: NavBarButton[];
+  public pageBreadcrumbs: PageBreadcrumb[];
   public documentTableData: TableObject;
   public documentTableColumns: any[] = [
     {
@@ -56,12 +57,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   ];
 
   public selectedCount = 0;
-
   public currentProject;
   public canPublish;
   public canUnpublish;
   public pathAPI: string;
-
   public tableParams: TableParamsObject = new TableParamsObject();
 
   constructor(
@@ -135,6 +134,11 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       this.documentActions(data);
       });
 
+    this.pageBreadcrumbs = [{ pageTitle: this.currentProject.name, routerLink: [ '/p', this.currentProject._id ]}];
+    this.navBarButtons = [{
+      label: 'Upload File(s)',
+      action: () => this.router.navigate(['p', this.currentProject._id, 'project-files', 'upload'])
+    }];
   }
 
   public openSnackBar(message: string, action: string) {
@@ -195,7 +199,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         if (selectedDocs.length === 1) {
           this.storageService.state.labels = selectedDocs[0].labels;
         }
-        this.router.navigate(['p', this.currentProject._id, 'project-documents', 'edit']);
+        this.router.navigate(['p', this.currentProject._id, 'project-files', 'edit']);
         break;
       case 'delete':
         this.deleteDocument();
@@ -352,7 +356,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     params['keywords'] = this.tableParams.keywords;
     numItems === 'max' ? params['pageSize'] = this.tableParams.pageSize = this.tableParams.totalListItems : params['pageSize'] = this.tableParams.pageSize = numItems;
 
-    this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
+    this.router.navigate(['p', this.currentProject._id, 'project-files', params]);
   }
 
   public onSubmit() {
@@ -379,7 +383,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     params['keywords'] = encode(this.tableParams.keywords = this.tableParams.keywords || '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     params['pageSize'] = this.tableParams.pageSize = 10;
 
-    this.router.navigate(['p', this.currentProject._id, 'project-documents', params]);
+    this.router.navigate(['p', this.currentProject._id, 'project-files', params]);
   }
 
   setRowData() {

@@ -1,14 +1,4 @@
-<nav class="action-container" aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a [routerLink]="['/projects']">All Projects</a>
-    </li>
-    <li class="breadcrumb-item">
-      <a *ngIf='currentProject' [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">Documents</li>
-  </ol>
-</nav>
+<app-navbar [currentProject]="currentProject" currentPageTitle="Files" buttonType="single" [pageBreadcrumbs]="pageBreadcrumbs" [navBarButtons]="navBarButtons"></app-navbar>
 <div class="container-fluid-padding">
   <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
     <div class="input-group main-search-field">
@@ -72,12 +62,6 @@
         class="material-icons">cloud_download</i>Download</button>
     <button (click)="selectAction('delete')" class="btn btn-outline-secondary mr-1" [disabled]="!isEnabled('delete')"
       type="button" id="button-d"><i class="material-icons">delete</i>Delete</button>
-    <a *ngIf='currentProject' class="upload-docs" [ngClass]="{'active': currentProject._id === 'activity'}"
-      [routerLink]="['/p', currentProject._id, 'project-documents', 'upload']">
-      <button class="btn btn-outline-secondary mr-1" type="button" id="button-d">
-        <i class="material-icons">file_upload</i>Upload Document(s)
-      </button>
-    </a>
   </div>
 
   <app-table-template *ngIf="!loading && tableParams.totalListItems != 0" (checkboxChange)='checkChange($event)'

@@ -38,7 +38,7 @@ A brief guide to Angular CLI's code scaffolding can be found in [eagle-common-co
 ```
 ng new my-app --routing --style scss
 ```
-## Getting Help
+## Testing support
 
 Instructions on how running tests unit tests and end-to-end tests can be found in our [test documentation](https://github.com/bcgov/eagle-dev-guides/blob/master/dev_guides/angular_scaffolding.md#running-tests).
 
@@ -50,10 +50,15 @@ For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.
 
 Feel free to create pull requests from the default "dev" branch, click here to create one automatically: <https://github.com/bcgov/landuseplanning-admin/pull/new/dev>
 
-# Documentation
+# Developer Documentation
+
+## Common Components
 
 For consistency, it's recommended you make use of common components when building new pages and features. Here are some of the common components used, each with READMEs documenting their usage.
 
-[Navbar Component](https://github.com/bcgov/landuseplanning-admin/tree/dev/src/app/shared/components/navbar)
-[File Upload Modal](https://github.com/bcgov/landuseplanning-admin/tree/dev/src/app/file-upload-modal)
+- [Navbar Component](https://github.com/bcgov/landuseplanning-admin/tree/dev/src/app/shared/components/navbar)
+- [File Upload Modal](https://github.com/bcgov/landuseplanning-admin/tree/dev/src/app/file-upload-modal)
 
+## Conventions
+
+What are referred to as "files" in the UI are called "documents" internally. Documents used to just refer to files of type document(pdf, docx) but now include any file. You can generally approach "file" and "document" as being used interchangeably within the code. There are certain exceptions where "document(s)" may refer to files of type document. In those instances, there should be comments in the code to clarify.

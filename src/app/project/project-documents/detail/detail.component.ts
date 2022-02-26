@@ -87,8 +87,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   onEdit() {
     this.storageService.state.selectedDocs = [this.document];
     this.storageService.state.labels = this.document.labels;
-    this.storageService.state.back = { url: ['/p', this.document.project, 'project-documents', 'detail', this.document._id], label: 'View Document' };
-    this.router.navigate(['p', this.document.project, 'project-documents', 'edit']);
+    this.storageService.state.back = { url: ['/p', this.document.project, 'project-files', 'detail', this.document._id], label: 'File Document' };
+    this.router.navigate(['p', this.document.project, 'project-files', 'edit']);
   }
 
   public togglePublish() {

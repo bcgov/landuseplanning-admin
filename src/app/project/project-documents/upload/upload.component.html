@@ -7,9 +7,9 @@
       <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-      <a [routerLink]="['/p', currentProject._id, 'project-documents']">Documents</a>
+      <a [routerLink]="['/p', currentProject._id, 'project-files']">Files</a>
     </li>
-    <li class="breadcrumb-item">Upload Document(s)</li>
+    <li class="breadcrumb-item">Upload Files(s)</li>
   </ol>
 </nav>
 <div class="container-fluid-padding">
@@ -20,10 +20,6 @@
   <div class="form-group mb-0">
     <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
       <div class="form-row">
-        <!-- <div class="form-group col-md-4">
-          <label for="documentAuthor">Author*</label>
-          <input name="documentAuthor" id="documentAuthor" formControlName="documentAuthor" type="text" class="form-control" />
-        </div> -->
         <div class="form-group col-md-4">
           <label for="projectPhase">Project Phase*</label>
           <select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
@@ -43,19 +39,8 @@
                 type="button"></button>
             </div>
           </div>
-          <div class="invalid-notice" *ngIf="myForm.get('datePosted').invalid && myForm.get('datePosted').touched">Document upload date is required</div>
+          <div class="invalid-notice" *ngIf="myForm.get('datePosted').invalid && myForm.get('datePosted').touched">File upload date is required</div>
         </div>
-        <!--<div class="form-group col-md-4">
-          <label for="inputAddress">Upload Date*</label>
-          <div class="input-group">
-            <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="dateUploaded"
-              formControlName="dateUploaded" ngbDatepicker #dateUploadedPicker="ngbDatepicker" />
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary calendar" (click)="dateUploadedPicker.toggle()"
-                type="button"></button>
-            </div>
-          </div>
-        </div>-->
       </div>
       <div class="form-row">
         <div class="form-group col-md-12">
@@ -67,7 +52,7 @@
               <input *ngIf="documents && documents.length > 1" disabled class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName">
               <input *ngIf="!documents || documents.length < 2" class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName" (ngModelChange)="validateChars()">
           </div>
-          <div class="invalid-notice" *ngIf="myForm.get('displayName').invalid && myForm.get('displayName').touched">Document name is required</div>
+          <div class="invalid-notice" *ngIf="myForm.get('displayName').invalid && myForm.get('displayName').touched">File name is required</div>
         </div>
       </div>
       <div class="form-row">
@@ -75,7 +60,7 @@
           <label for="inputDescription">Description*</label>
           <textarea class="form-control" id="inputDescription" name="description" rows="1"
             formControlName="description"></textarea>
-            <div class="invalid-notice" *ngIf="myForm.get('description').invalid && myForm.get('description').touched">Document description is required</div>
+            <div class="invalid-notice" *ngIf="myForm.get('description').invalid && myForm.get('description').touched">File description is required</div>
         </div>
       </div>
     </form>

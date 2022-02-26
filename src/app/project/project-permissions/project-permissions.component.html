@@ -1,6 +1,7 @@
 <app-navbar
-  pageTitle="Permissions"
-  [currentProject]="currentProject">
+  currentPageTitle="Permissions"
+  [currentProject]="currentProject"
+  [pageBreadcrumbs]="pageBreadcrumbs">
 </app-navbar>
 <div class="container-fluid-padding">
   <div class="spinner-container" *ngIf="loading">
@@ -9,8 +10,7 @@
   <app-table-template
       *ngIf="tableParams.totalListItems > 0"
       [columns]="tableColumns"
-      [data]="tableData"
-      >
+      [data]="tableData">
   </app-table-template>
   <div *ngIf="tableParams.totalListItems == 0">
       No users found.
