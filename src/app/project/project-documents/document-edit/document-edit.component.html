@@ -7,8 +7,8 @@
       <a [routerLink]="['/p', currentProject._id]">{{currentProject.name}}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page"><a
-        [routerLink]="['/p', currentProject._id, 'project-documents']">Documents</a></li>
-    <li class="breadcrumb-item">Edit Document(s)</li>
+        [routerLink]="['/p', currentProject._id, 'project-files']">Files</a></li>
+    <li class="breadcrumb-item">Edit File(s)</li>
   </ol>
 </nav>
 <main class="container-fluid-padding">
@@ -32,7 +32,7 @@
       <div *ngIf="multiEdit" class="form-row">
         <div class="col-md-12">
           <div class="alert alert-warning" role="alert">
-            Leave the Document Date field <strong>BLANK</strong> unless you want to <strong>change the Document Date of ALL the selected documents.</strong> The same applies for the rest of the fields.
+            Leave the File Date field <strong>BLANK</strong> unless you want to <strong>change the Date of ALL the selected files.</strong> The same applies for the rest of the fields.
           </div>
         </div>
       </div>
@@ -47,8 +47,8 @@
       </div>
       <div class="form-row">
         <div class="form-group col-md-4">
-          <label *ngIf="!multiEdit" for="inputAddress">Document Date*</label>
-          <label *ngIf="multiEdit" for="labelsel">Document Date</label>
+          <label *ngIf="!multiEdit" for="inputAddress">File Date*</label>
+          <label *ngIf="multiEdit" for="labelsel">File Date</label>
           <div class="input-group">
             <input [required]="!multiEdit" type="text" class="form-control" placeholder="yyyy-mm-dd" name="datePosted"
               formControlName="datePosted" ngbDatepicker #datePostedPicker="ngbDatepicker" />
@@ -57,24 +57,24 @@
                   type="button"></button>
               </div>
           </div>
-          <div class="invalid-notice" *ngIf="myForm.get('datePosted').invalid && myForm.get('datePosted').touched">Document date is required</div>
+          <div class="invalid-notice" *ngIf="myForm.get('datePosted').invalid && myForm.get('datePosted').touched">File date is required</div>
         </div>
       </div>
       <div *ngIf="!multiEdit" class="form-row">
         <div class="form-group col-md-12">
-          <label for="displayName">Document Name*</label>
+          <label for="displayName">File Name*</label>
           <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
             \ / | : * ? " < > are not accepted file name characters
           </div>
           <input class="form-control" id="displayName" name="displayName" rows="1" formControlName="displayName" (ngModelChange)="validateChars()">
-          <div class="invalid-notice" *ngIf="myForm.get('displayName').invalid && myForm.get('displayName').touched">Document name is required</div>
+          <div class="invalid-notice" *ngIf="myForm.get('displayName').invalid && myForm.get('displayName').touched">File name is required</div>
         </div>
       </div>
       <div *ngIf="!multiEdit" class="form-row">
         <div class="form-group col-md-12">
           <label for="inputDescription">Description</label>
           <textarea class="form-control" id="inputDescription" name="description" rows="3" formControlName="description"></textarea>
-          <div class="invalid-notice" *ngIf="myForm.get('description').invalid && myForm.get('description').touched">Document description is required</div>
+          <div class="invalid-notice" *ngIf="myForm.get('description').invalid && myForm.get('description').touched">File description is required</div>
         </div>
       </div>
     </form>

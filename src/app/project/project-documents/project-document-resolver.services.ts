@@ -26,7 +26,7 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
         pageNum,
         pageSize,
         sortBy,
-        { documentSource: 'PROJECT' },
+        {},
         true);
     } else {
       return this.searchService.getSearchResults(
@@ -36,7 +36,7 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
         this.storageService.state.projectDocumentTableParams.pageNum,
         this.storageService.state.projectDocumentTableParams.pageSize,
         this.storageService.state.projectDocumentTableParams.sortBy,
-        { documentSource: 'PROJECT' },
+        {},
         true);
     }
   }

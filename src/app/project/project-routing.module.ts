@@ -33,8 +33,6 @@ import { ProjectResolver } from './project-resolver.service';
 import { ReviewCommentResolver } from './comment-period/review-comment/review-comment-resolver.service';
 import { ReviewSurveyResponseResolver } from './comment-period/review-survey-response/review-survey-response-resolver.service';
 import { ProjectUpdatesResolver } from './project-updates/project-updates-resolver.services';
-import { ContactsResolver } from 'app/contacts/contacts-resolver.service';
-//import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
 import { LinkOrganizationResolver } from 'app/shared/components/link-organization/link-organization-resolver.services';
 import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
 import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
@@ -45,7 +43,6 @@ import { ProjectSurveyDetailComponent } from './project-survey/project-survey-de
 import { ProjectSurveyResolver } from './project-survey/project-survey-resolver.services';
 import { ProjectSurveyDetailResolver } from './project-survey/project-survey-detail/project-survey-detail-resolver.services';
 import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
-import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
 import { AddEditProjectUpdateComponent } from './project-updates/add-edit-project-update/add-edit-project-update.component';
 import { AddEditProjectUpdateResolver } from './project-updates/add-edit-project-update/add-edit-project-update-resolver';
 
@@ -89,33 +86,33 @@ const routes: Routes = [
         component: ProjectDetailComponent,
       },
       {
-        path: 'project-documents',
+        path: 'project-files',
         component: ProjectDocumentsComponent,
         resolve: {
           documents: DocumentsResolver
         }
       },
       {
-        path: 'project-documents/upload',
+        path: 'project-files/upload',
         component: UploadComponent,
       },
       {
-        path: 'project-documents/edit',
+        path: 'project-files/edit',
         component: DocumentEditComponent,
       },
       {
-        path: 'project-documents/edit/add-label',
+        path: 'project-files/edit/add-label',
         component: AddLabelComponent,
       },
       {
-        path: 'project-documents/detail/:docId',
+        path: 'project-files/detail/:docId',
         component: DocumentDetailComponent,
         resolve: {
           document: DocumentDetailResolver
         }
       },
       {
-        path: 'project-documents/upload/add-label',
+        path: 'project-files/upload/add-label',
         component: AddLabelComponent,
       },
       {

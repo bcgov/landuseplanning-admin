@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Project } from 'app/models/project';
-import { NavBarButton } from 'app/models/navBarButton';
+import { NavBarButton, PageBreadcrumb } from './types';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -13,19 +13,9 @@ export class NavbarComponent implements OnInit {
   @Input() currentProject?: Project;
   @Input() currentPageTitle?: string;
   @Input() navBarButtons?: NavBarButton[];
-  @Input() pageBreadcrumbs?: {
-    pageTitle: string;
-    routerLink: Object;
-  }[];
+  @Input() pageBreadcrumbs?: PageBreadcrumb[];
 
-  router = 'sus';
+  constructor() {}
 
-  constructor(
-    // public router: Router
-
-  ) { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

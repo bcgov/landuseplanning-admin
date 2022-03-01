@@ -67,36 +67,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     // urlArray[0] will be empty so we use shift to get rid of it.
     urlArray.shift();
     if (urlArray[0] === 'p') {
-      /* Useless switch
-      switch (urlArray[2]) {
-        case 'compliance': {
-          break;
-        }
-        case 'valued-components': {
-          break;
-        }
-        case 'project-updates': {
-          break;
-        }
-        case 'project-groups': {
-          break;
-        }
-        case 'project-pins': {
-          break;
-        }
-        case 'project-documents': {
-          break;
-        }
-        case 'comment-periods': {
-          break;
-        }
-        case 'milestones': {
-          break;
-        }
-        default: {
-          break;
-        }
-      }*/
       this.currentProjectId = urlArray[1];
       try {
         this.currentMenu = urlArray[2];
@@ -125,7 +95,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   goToDocuments(currentProjectId) {
     this.storageService.state.projectDocumentTableParams = null;
-    this.router.navigate(['p', currentProjectId, 'project-documents']);
+    this.router.navigate(['p', currentProjectId, 'project-files']);
   }
 
   ngOnDestroy() {

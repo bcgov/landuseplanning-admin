@@ -67,7 +67,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
 
     // Check if documents are null (nav straight to this page)
     if (!this.documents || this.documents.length === 0) {
-      this.router.navigate(['p', this.currentProject._id, 'project-documents']);
+      this.router.navigate(['p', this.currentProject._id, 'project-files']);
     } else {
       if (this.storageService.state.form) {
         this.myForm = this.storageService.state.form;
@@ -108,7 +108,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     if (this.storageService.state.back && this.storageService.state.back.url) {
       this.router.navigate(this.storageService.state.back.url);
     } else {
-      this.router.navigate(['/p', this.currentProject._id, 'project-documents']);
+      this.router.navigate(['/p', this.currentProject._id, 'project-files']);
     }
   }
 
@@ -207,8 +207,8 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     console.log('Adding labels');
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'labels', data: this.labels };
-    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-documents', 'edit'], label: 'Edit Document(s)' };
-    this.router.navigate(['/p', this.currentProject._id, 'project-documents', 'edit', 'add-label']);
+    this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-files', 'edit'], label: 'Edit File(s)' };
+    this.router.navigate(['/p', this.currentProject._id, 'project-files', 'edit', 'add-label']);
   }
 
   public togglePublish() {
