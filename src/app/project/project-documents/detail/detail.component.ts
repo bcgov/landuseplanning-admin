@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Document } from 'app/models/document';
 import { Project } from 'app/models/project';
@@ -7,8 +7,9 @@ import { ApiService } from 'app/services/api';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { Utils } from 'app/shared/utils/utils';
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'app-detail',
@@ -21,8 +22,11 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   public currentProject: Project = null;
   public publishText: string;
   public humanReadableSize: string;
+  public pathAPI: string;
+  public documentUrl: string;
 
   constructor(
+    public utils: Utils,
     private route: ActivatedRoute,
     private router: Router,
     public api: ApiService,
@@ -31,7 +35,12 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private documentService: DocumentService,
     private ngxSmartModalService: NgxSmartModalService,
-  ) {}
+  ) {
+    // The following items are loaded by a file that is only present on cluster builds.
+    // Locally, this will be empty and local defaults will be used.
+    const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+    this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+  }
 
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
@@ -40,7 +49,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.document = res.document;
-        console.log('the document', this.document);
+        const safeName = this.document.documentFileName.replace(/ /g, '_');
+        this.documentUrl = `${this.pathAPI}/document/${this.document._id}/fetch/${safeName}`;
         if (this.document.read.includes('public')) {
           this.publishText = 'Unpublish';
         } else {
@@ -48,7 +58,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         }
         this._changeDetectionRef.detectChanges();
       });
-      this.humanReadableSize = this.formatBytes(this.document.internalSize);
+      this.humanReadableSize = this.utils.formatBytes(this.document.internalSize);
 
     this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
       .takeUntil(this.ngUnsubscribe)
@@ -59,7 +69,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             this.documentService.publish(this.document._id).subscribe(
               res => { },
               error => {
-                console.log('error =', error);
+                console.error('error =', error);
                 alert('Uh-oh, couldn\'t update document');
               },
               () => {
@@ -72,7 +82,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           this.documentService.unPublish(this.document._id).subscribe(
             res => { },
             error => {
-              console.log('error =', error);
+              console.error('error =', error);
               alert('Uh-oh, couldn\'t update document');
             },
             () => {
@@ -87,7 +97,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   onEdit() {
     this.storageService.state.selectedDocs = [this.document];
     this.storageService.state.labels = this.document.labels;
-    this.storageService.state.back = { url: ['/p', this.document.project, 'project-files', 'detail', this.document._id], label: 'File Document' };
+    this.storageService.state.back = { url: ['/p', this.document.project, 'project-files', 'detail', this.document._id], label: 'View File' };
     this.router.navigate(['p', this.document.project, 'project-files', 'edit']);
   }
 
@@ -100,17 +110,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
       this.ngxSmartModalService.open('confirmation-modal');
   }
-
-  private formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}
 
   public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {

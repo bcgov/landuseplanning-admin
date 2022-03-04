@@ -9,7 +9,6 @@
       <a [ngClass]="{'active': currentMenu === 'project-surveys'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-surveys']"><i class="material-icons">format_list_bulleted</i>Surveys</a>
       <a [ngClass]="{'active': currentMenu === 'project-files'}" class="project-menu" (click)="goToDocuments(currentProjectId)" [routerLink]="['p', currentProjectId, 'project-files']"><i class="material-icons">insert_drive_file</i>Files</a>
       <a [ngClass]="{'active': currentMenu === 'project-updates'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-updates']"><i class="material-icons">notifications_active</i>Project Updates</a>
-      <a [ngClass]="{'active': currentMenu === 'project-shapefiles'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-shapefiles']"><i class="material-icons">event_note</i>Shapefiles</a>
       <a [ngClass]="{'active': currentMenu === 'project-email-subscribe'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-email-subscribe']"><i class="material-icons">email</i>Email Subscribers</a>
       <a *ngIf="canUserCreateProjects" [ngClass]="{'active': currentMenu === 'project-permissions' || currentProjectId === 'c'}" class="project-menu" [routerLink]="['p', currentProjectId, 'project-permissions']"><i class="material-icons ">security</i>Permissions</a>
     </section>

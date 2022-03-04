@@ -1,6 +1,6 @@
 <app-navbar [currentProject]="currentProject" currentPageTitle="Files" buttonType="single" [pageBreadcrumbs]="pageBreadcrumbs" [navBarButtons]="navBarButtons"></app-navbar>
 <div class="container-fluid-padding">
-  <form #f="ngForm" class="search-form ui form" (ngSubmit)="onSubmit()">
+  <form #f="ngForm" class="search-form ui form" (ngSubmit)="reloadSearchResults()">
     <div class="input-group main-search-field">
       <input class="form-control" type="text" name="keywordInput" placeholder="Enter keywords to search..."
         id="keywordInput" [(ngModel)]="tableParams.keywords" autofocus />
@@ -16,19 +16,28 @@
             <i class="material-icons md-18">info</i>
             <span> Search Help</span>
         </a>
-    <div class="row">
-        <div class="ml-auto " ngbDropdown placement="bottom-right">
-        <button class="btn btn-secondary btn-num-items dropdown-toggle" id="actionDropdown" ngbDropdownToggle>Items per page</button>
-        <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
-                <a class="dropdown-item" (click)="onNumItems(10)">10</a>
-            <a class="dropdown-item" (click)="onNumItems(25)">25</a>
-            <a class="dropdown-item" (click)="onNumItems(50)">50</a>
-            <a class="dropdown-item" (click)="onNumItems(100)">100</a>
-            <a class="dropdown-item" (click)="onNumItems('max')">Show All</a>
-        </div>
+    <div>
+        <div class="ml-auto" ngbDropdown placement="bottom-right">
+          <button class="btn btn-secondary btn-num-items dropdown-toggle" id="actionDropdown" ngbDropdownToggle>Items per page</button>
+          <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+              <a class="dropdown-item" (click)="onNumItems(10)">10</a>
+              <a class="dropdown-item" (click)="onNumItems(25)">25</a>
+              <a class="dropdown-item" (click)="onNumItems(50)">50</a>
+              <a class="dropdown-item" (click)="onNumItems(100)">100</a>
+              <a class="dropdown-item" (click)="onNumItems('max')">Show All</a>
+          </div>
         </div>
     </div>
-
+    <div>
+      <div class="ml-auto" ngbDropdown placement="bottom-right">
+        <button class="btn btn-secondary btn-num-items dropdown-toggle" id="actionDropdown" ngbDropdownToggle>File type</button>
+        <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+            <a class="dropdown-item" (click)="filterFilesByType('image')">Image</a>
+            <a class="dropdown-item" (click)="filterFilesByType('document')">Document</a>
+            <a class="dropdown-item" (click)="filterFilesByType('shapefile')">Shapefile</a>
+        </div>
+      </div>
+    </div>
     </div>
     <div class="results">
       <p *ngIf="!loading && tableParams.totalListItems == 0">

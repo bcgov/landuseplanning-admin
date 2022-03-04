@@ -61,5 +61,10 @@
       <h3 for="internalSize">Filesize: </h3>
       <p id="internalSize">{{ (document && document.internalSize) ? humanReadableSize : '0' }}</p>
     </div>
+    <div class="label-pair">
+      <h3 for="url">URL: </h3>
+      <a *ngIf="'Publish' !== publishText" id="url" target="blank" href="{{documentUrl || '-'}}">{{documentUrl || '-'}}</a>
+      <span *ngIf="'Publish' === publishText">-</span>
+    </div>
   </section>
 </main>
