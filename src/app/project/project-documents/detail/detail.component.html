@@ -63,8 +63,8 @@
     </div>
     <div class="label-pair">
       <h3 for="url">URL: </h3>
-      <a *ngIf="'Publish' !== publishText" id="url" target="blank" href="{{documentUrl || '-'}}">{{documentUrl || '-'}}</a>
-      <span *ngIf="'Publish' === publishText">-</span>
+      <a *ngIf="isPublished(document)" id="url" target="blank" href="{{documentUrl || '-'}}">{{documentUrl || '-'}}</a>
+      <span *ngIf="!isPublished(document)">-</span>
     </div>
   </section>
 </main>

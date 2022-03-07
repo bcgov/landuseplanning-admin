@@ -25,8 +25,6 @@ export class DocumentTableRowsComponent implements OnInit, TableComponent {
 
   ngOnInit() {
     this.documents = this.data.data;
-    console.log('the data,', this.documents);
-
     this.paginationData = this.data.paginationData;
   }
 

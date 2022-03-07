@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Subject, forkJoin } from 'rxjs';
 import { NgxSmartModalComponent } from 'ngx-smart-modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -929,7 +929,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Uses the CK Editor (ready) to link a file upload handler to the
    * CK Editor instance.
-   * 
+   *
    * @param eventData Object type added and used by CK Editor
    * @returns {Promise}
    */

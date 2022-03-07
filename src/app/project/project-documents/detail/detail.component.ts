@@ -101,6 +101,16 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', this.document.project, 'project-files', 'edit']);
   }
 
+  /**
+   * Checks if a document is published.
+   *
+   * @param {Document} file The document to check the publish status of.
+   * @returns If the file is published or not.
+   */
+  public isPublished(file: Document): boolean {
+    return file?.read?.includes('public');
+  }
+
   public togglePublish() {
       this.ngxSmartModalService.setModalData({
         type: 'publish',
