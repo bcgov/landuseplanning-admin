@@ -3,6 +3,7 @@ import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { TableComponent } from 'app/shared/components/table-template/table.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { Router } from '@angular/router';
+import { Utils } from 'app/shared/utils/utils';
 
 @Component({
   selector: 'tbody[app-document-table-rows]',
@@ -18,6 +19,7 @@ export class DocumentTableRowsComponent implements OnInit, TableComponent {
   public paginationData: any;
 
   constructor(
+    public utils: Utils,
     private router: Router
   ) { }
 

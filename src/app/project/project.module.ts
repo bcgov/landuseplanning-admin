@@ -30,10 +30,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MilestonesComponent } from './milestones/milestones.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
-import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
 import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
-import { ShapefileTableRowsComponent } from './project-shapefiles/project-shapefile-table-rows/project-shapefile-table-rows.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { NavbarComponent } from 'app/shared/components/navbar/navbar.component';
 import { ProjectUpdatesComponent } from 'app/project/project-updates/project-updates.component';
@@ -106,14 +104,12 @@ import { PermissionsTableRowsComponent } from './project-permissions/permissions
     MilestonesComponent,
     ProjectDetailComponent,
     ProjectDocumentsComponent,
-    ProjectShapefilesComponent,
     ProjectUpdatesComponent,
     ProjectUpdatesTableRowsComponent,
     AddEditProjectUpdateComponent,
     ReviewCommentComponent,
     ReviewCommentsTabComponent,
     ReviewCommentsTabTableRowsComponent,
-    ShapefileTableRowsComponent,
     UploadComponent,
     ProjectSurveyComponent,
     AddEditProjectSurveyComponent,
@@ -135,7 +131,6 @@ import { PermissionsTableRowsComponent } from './project-permissions/permissions
     CommentPeriodsTableRowsComponent,
     DocumentTableRowsComponent,
     ReviewCommentsTabTableRowsComponent,
-    ShapefileTableRowsComponent,
     UploadComponent,
     EmailSubscribeTableRowsComponent,
   ],

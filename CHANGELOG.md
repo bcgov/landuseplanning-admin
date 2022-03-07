@@ -1,3 +1,6 @@
+### 1.2.0 March 3, 2022
+* Add "files" section in place of Documents and Shapefiles sections [DESENG-72](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-72)
+
 ### 1.1.1 February 11, 2022
 * Added OpenShift templates for the Admin pipeline
 * Add github actions for tests and build

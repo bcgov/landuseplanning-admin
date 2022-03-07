@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NavBarButton, PageBreadcrumb } from 'app/shared/components/navbar/types';
 import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
-import * as _ from 'lodash'
+import { isEmpty } from 'lodash'
 
 import { ApiService } from 'app/services/api';
 import { DocumentService } from 'app/services/document.service';
@@ -13,7 +13,6 @@ import { SearchService } from 'app/services/search.service';
 import { StorageService } from 'app/services/storage.service';
 
 import { DocumentTableRowsComponent } from './project-document-table-rows/project-document-table-rows.component';
-
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
@@ -42,7 +41,17 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     {
       name: 'Name',
       value: 'displayName',
-      width: 'col-6'
+      width: 'col-5'
+    },
+    {
+      name: 'Size',
+      value: 'internalSize',
+      width: 'col-1'
+    },
+    {
+      name: 'Type',
+      value: 'internalExt',
+      width: 'col-1'
     },
     {
       name: 'Status',
@@ -78,9 +87,13 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     // The following items are loaded by a file that is only present on cluster builds.
     // Locally, this will be empty and local defaults will be used.
     const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
-    this.pathAPI = (_.isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+    this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
   }
 
+  /**
+   * Load all documents/files for the project. Set the data and params for the
+   * table - the UI component used to display documents.
+   */
   ngOnInit() {
     if (this.storageService.state.projectDocumentTableParams == null) {
       this.route.params
@@ -141,13 +154,25 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     }];
   }
 
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Display the snackbar UI component which shows a message to the user.
+   *
+   * @param {string} message The message to display in the snackbar.
+   * @param {string} action The action to be passed to the snackbar component.
+   */
+  public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {verticalPosition: 'top', horizontalPosition: 'center', duration: 4000});
   }
-  public selectAction(action) {
+
+  /**
+   * Handles the various actions a user can perform to documents
+   * (copying their URLs, select all docs, edit, delete, etc.).
+   *
+   * @param {string} action The action the user has selected.
+   */
+  public selectAction(action: string): void {
     let promises = [];
 
-    // select all documents
     switch (action) {
       case 'copyLink':
         this.documentTableData.data.map((item) => {
@@ -159,7 +184,6 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             selBox.style.opacity = '0';
             const safeName = item.documentFileName.replace(/ /g, '_');
             selBox.value = `${this.pathAPI}/document/${item._id}/fetch/${safeName}`;
-            // selBox.value = window.location.origin + `/api/public/document/${item._id}/download`;
             document.body.appendChild(selBox);
             selBox.focus();
             selBox.select();
@@ -182,7 +206,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
         this.selectedCount = someSelected ? 0 : this.documentTableData.data.length;
 
-        this.setPublishUnpublish();
+        this.toggleCanPublish();
 
         this._changeDetectionRef.detectChanges();
         break;
@@ -202,7 +226,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         this.router.navigate(['p', this.currentProject._id, 'project-files', 'edit']);
         break;
       case 'delete':
-        this.deleteDocument();
+        this.onDeleteDocument();
         break;
       case 'download':
         this.documentTableData.data.map((item) => {
@@ -210,22 +234,28 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             promises.push(this.api.downloadDocument(this.documents.filter(d => d._id === item._id)[0]));
           }
         });
-        return Promise.all(promises).then(() => {
-          console.log('Download initiated for file(s)');
+        Promise.all(promises).then(() => {
+          this.openSnackBar('Download initiated.', 'Close');
         });
-        break;
       case 'publish':
-        this.publishDocument();
+        this.onPublishDocument();
         break;
       case 'unpublish':
-        this.unpublishDocument();
+        this.onUnpublishDocument();
         break;
       case 'copyLink':
         break;
     }
   }
 
-  documentActions(modalData) {
+  /**
+   * Trigger certain actions after a user responds to a modal
+   * confirmation message to delete or toggle the published
+   * state of a document.
+   *
+   * @param {object} modalData Data passed back from the modal which tracks the user's response.
+   */
+  public documentActions(modalData: {publishConfirm?: boolean, deleteConfirm?: boolean, unpublishConfirm?: boolean}): void {
     if (modalData.publishConfirm) {
       this.internalPublishDocument();
     } else if (modalData.deleteConfirm) {
@@ -237,11 +267,18 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  navSearchHelp() {
+  /**
+   * Navigate to the search help page.
+   */
+  public navSearchHelp(): void {
     this.router.navigate(['/search-help']);
   }
 
-  publishDocument() {
+  /**
+   * Handle publishing a document. Display a modal to the user
+   * to first confirm the action.
+   */
+  public onPublishDocument(): void {
     this.ngxSmartModalService.setModalData({
       type: 'publish',
       title: 'Publish Document(s)',
@@ -251,7 +288,11 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.ngxSmartModalService.open('confirmation-modal');
   }
 
-  internalPublishDocument() {
+  /**
+   * Publish a document. Make a call to the document service
+   * for each selected document.
+   */
+  private internalPublishDocument(): void {
     this.loading = true;
     let observables = [];
     this.documentTableData.data.map(item => {
@@ -263,18 +304,22 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .subscribe(
         res => { },
         err => {
-          console.log('Error:', err);
+          console.error('Error:', err);
         },
         () => {
           this.loading = false;
           this.canUnpublish = false;
           this.canPublish = false;
-          this.onSubmit();
+          this.reloadSearchResults();
         }
       );
   }
 
-  unpublishDocument() {
+  /**
+   * Handle un-publishing a document. Display a modal to the user
+   * to first confirm the action.
+   */
+  public onUnpublishDocument(): void {
     this.ngxSmartModalService.setModalData({
       type: 'unpublish',
       title: 'Unpublish Document(s)',
@@ -284,7 +329,11 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.ngxSmartModalService.open('confirmation-modal');
   }
 
-  internalUnpublishDocument() {
+  /**
+   * Un-publish a document. Make a call to the document service
+   * for each selected document.
+   */
+  private internalUnpublishDocument(): void {
     this.loading = true;
     let observables = [];
     this.documentTableData.data.map(item => {
@@ -294,20 +343,24 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     });
     forkJoin(observables)
       .subscribe(
-        res => { },
+        res => {},
         err => {
-          console.log('Error:', err);
+          console.error('Error:', err);
         },
         () => {
           this.loading = false;
           this.canUnpublish = false;
           this.canPublish = false;
-          this.onSubmit();
+          this.reloadSearchResults();
         }
       );
   }
 
-  deleteDocument() {
+  /**
+   * Handler for deleting docuements. First displays a confirmation
+   * modal to the user before proceeding.
+   */
+  public onDeleteDocument(): void {
     this.ngxSmartModalService.setModalData({
       type: 'delete',
       title: 'Delete Document',
@@ -317,7 +370,11 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.ngxSmartModalService.open('confirmation-modal');
   }
 
-  public internalDeleteDocument() {
+  /**
+   * Delete a document. Make a call to the document service
+   * to delete every checked document.
+   */
+  private internalDeleteDocument(): void {
     this.loading = true;
     // Delete the Document(s)
     let itemsToDelete = [];
@@ -327,19 +384,19 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       }
     });
     this.loading = false;
-    return Promise.all(itemsToDelete).then(() => {
+    Promise.all(itemsToDelete).then(() => {
       // Reload main page.
-      this.onSubmit();
+      this.reloadSearchResults();
     });
   }
 
-  public onNumItems(numItems) {
-    // dismiss any open snackbar
-    // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
-
-    // NOTE: Angular Router doesn't reload page on same URL
-    // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
-    // WORKAROUND: add timestamp to force URL to be different than last time
+  /**
+   * Angular Router doesn't reload page on same URL.
+   * As a workaround, add timestamp to force URL to be different than last time.
+   *
+   * @see https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
+   */
+  private updateWindowEncodeURI() {
     const encode = encodeURIComponent;
     window['encodeURIComponent'] = (component: string) => {
       return encode(component).replace(/[!'()*]/g, (c) => {
@@ -347,6 +404,15 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         return '%' + c.charCodeAt(0).toString(16);
       });
     };
+  }
+
+  /**
+   * When a user selects a number of documents to show in the table.
+   *
+   * @param {number|string} numItems The number of documents to display(or "max").
+   */
+  public onNumItems(numItems: number|string) {
+    this.updateWindowEncodeURI();
 
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
@@ -354,39 +420,37 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     params['currentPage'] = this.tableParams.currentPage = 1;
     params['sortBy'] = this.tableParams.sortBy;
     params['keywords'] = this.tableParams.keywords;
-    numItems === 'max' ? params['pageSize'] = this.tableParams.pageSize = this.tableParams.totalListItems : params['pageSize'] = this.tableParams.pageSize = numItems;
+    if ('max' === numItems) {
+      params['pageSize'] = this.tableParams.pageSize = this.tableParams.totalListItems
+    } else if ('number' === typeof numItems){
+      params['pageSize'] = this.tableParams.pageSize = numItems;
+    }
 
     this.router.navigate(['p', this.currentProject._id, 'project-files', params]);
   }
 
-  public onSubmit() {
-    // dismiss any open snackbar
-    // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
-
-    // NOTE: Angular Router doesn't reload page on same URL
-    // REF: https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
-    // WORKAROUND: add timestamp to force URL to be different than last time
-
-    const encode = encodeURIComponent;
-    window['encodeURIComponent'] = (component: string) => {
-      return encode(component).replace(/[!'()*]/g, (c) => {
-        // Also encode !, ', (, ), and *
-        return '%' + c.charCodeAt(0).toString(16);
-      });
-    };
+  /**
+   * Reload the document search results based on the set table params.
+   */
+  public reloadSearchResults(): void {
+    this.updateWindowEncodeURI();
 
     const params = this.terms.getParams();
     params['ms'] = new Date().getMilliseconds();
     params['dataset'] = this.terms.dataset;
     params['currentPage'] = this.tableParams.currentPage = 1;
     params['sortBy'] = this.tableParams.sortBy = '-datePosted';
-    params['keywords'] = encode(this.tableParams.keywords = this.tableParams.keywords || '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    params['keywords'] = encodeURIComponent(this.tableParams.keywords = this.tableParams.keywords || '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     params['pageSize'] = this.tableParams.pageSize = 10;
 
     this.router.navigate(['p', this.currentProject._id, 'project-files', params]);
   }
 
-  setRowData() {
+  /**
+   * Set the data to use in the table UI component. This displays
+   * the loaded documents to the user.
+   */
+  setRowData(): void {
     let documentList = [];
     if (this.documents && this.documents.length > 0) {
       this.documents.forEach(document => {
@@ -394,6 +458,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
           {
             displayName: document.displayName,
             documentFileName: document.documentFileName,
+            internalSize: document.internalSize,
+            internalExt: document.internalExt,
             datePosted: document.datePosted,
             status: document.read.includes('public') ? 'Published' : 'Not Published',
             _id: document._id,
@@ -410,7 +476,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  setColumnSort(column) {
+  /**
+   * Sort existing results by column(name, date, size, type, etc.)
+   *
+   * @param {string} column The column to sort by.
+   */
+  setColumnSort(column: string): void {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
     } else {
@@ -419,29 +490,41 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.getPaginatedDocs(this.tableParams.currentPage);
   }
 
-  isEnabled(button) {
+  /**
+   * Checks the current selectedCount and if publishing is possible.
+   * If not, then grey out the button that allows a certain action.
+   *
+   * @param {string} button The button or action chosen.
+   * @returns If the button corresponding with an action is not disabled.
+   */
+  isEnabled(button: string): boolean {
     switch (button) {
       case 'copyLink':
         return this.selectedCount === 1;
-        break;
       case 'publish':
         return this.selectedCount > 0 && this.canPublish;
-        break;
       case 'unpublish':
         return this.selectedCount > 0 && this.canUnpublish;
-        break;
       default:
         return this.selectedCount > 0;
-        break;
     }
   }
 
-  updateSelectedRow(count) {
+  /**
+   * If a document is selected, enable the user's ability to publish it.
+   *
+   * @param {number} count The row number.
+   */
+  public updateSelectedRow(count: number): void {
     this.selectedCount = count;
-    this.setPublishUnpublish();
+    this.toggleCanPublish();
   }
 
-  setPublishUnpublish() {
+  /**
+   * Checks if a document is publishable by checking it's
+   * current published state.
+   */
+  public toggleCanPublish(): void {
     this.canPublish = false;
     this.canUnpublish = false;
     for (let document of this.documentTableData.data) {
@@ -459,7 +542,51 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getPaginatedDocs(pageNumber) {
+  /**
+   * Get files with a certain extension. Update table params and URL to
+   * match requested file types.
+   *
+   * @param {string} fileTypeToLoad The general file type to filter by.
+   */
+  public filterFilesByType(fileTypeToLoad: string): void {
+    const fileTypes = {
+      image: 'png,jpg,jpeg,gif,bmp',
+      document: 'doc,docx,pdf,xls,xlsx,txt,ppt,pptx',
+      shapefile: 'zip'
+    };
+    this.tableParams.filter = { internalExt: fileTypes[fileTypeToLoad] };
+
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, 1, this.tableParams.sortBy);
+    this.searchService.getSearchResults(
+      '',
+      'Document',
+      [{ 'name': 'project', 'value': this.currentProject._id }],
+      1,
+      10,
+      '-datePosted',
+      this.tableParams.filter,
+      true
+    ).subscribe(res => {
+      this.tableParams.totalListItems = 0;
+      this.documents = [];
+
+      if (res[0]?.data?.meta[0]?.searchResultsTotal) {
+        this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
+        this.documents = res[0].data.searchResults;
+      }
+
+      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
+      this.setRowData();
+      this._changeDetectionRef.detectChanges();
+    })
+  }
+
+  /**
+   * Load a "page" of documents.
+   *
+   * @param {number} pageNumber The page number of documents to get.
+   */
+  public getPaginatedDocs(pageNumber: number): void {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
@@ -473,13 +600,13 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       pageNumber,
       this.tableParams.pageSize,
       this.tableParams.sortBy,
-      { documentSource: 'PROJECT' },
+      this.tableParams.filter,
       true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
         this.documents = res[0].data.searchResults;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords || '');
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
         this.setRowData();
         this.loading = false;
         this._changeDetectionRef.detectChanges();

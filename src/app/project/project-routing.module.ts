@@ -16,7 +16,6 @@ import { MilestonesComponent } from './milestones/milestones.component';
 import { ProjectComponent } from './project.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectDocumentsComponent } from './project-documents/project-documents.component';
-import { ProjectShapefilesComponent } from './project-shapefiles/project-shapefiles.component';
 import { ProjectEmailSubscribeComponent } from './project-email-subscribe/project-email-subscribe.component';
 import { ProjectUpdatesComponent } from './project-updates/project-updates.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
@@ -37,7 +36,6 @@ import { LinkOrganizationResolver } from 'app/shared/components/link-organizatio
 import { LinkOrganizationComponent } from 'app/shared/components/link-organization/link-organization.component';
 import { ContactSelectResolver } from 'app/shared/components/contact-select/contact-select-resolver.services';
 import { ContactSelectComponent } from 'app/shared/components/contact-select/contact-select.component';
-import { ShapefilesResolver } from './project-shapefiles/project-shapefile-resolver.services';
 import { ProjectSurveyComponent } from './project-survey/project-survey.component';
 import { ProjectSurveyDetailComponent } from './project-survey/project-survey-detail/project-survey-detail.component';
 import { ProjectSurveyResolver } from './project-survey/project-survey-resolver.services';
@@ -114,13 +112,6 @@ const routes: Routes = [
       {
         path: 'project-files/upload/add-label',
         component: AddLabelComponent,
-      },
-      {
-        path: 'project-shapefiles',
-        component: ProjectShapefilesComponent,
-        resolve: {
-          documents: ShapefilesResolver
-        }
       },
       {
         path: 'project-email-subscribe',
@@ -302,8 +293,6 @@ const routes: Routes = [
     // ProjectContactsResolver,
     LinkOrganizationResolver,
     ContactSelectResolver,
-    ShapeFileResolver,
-    ShapefilesResolver
   ]
 })
 

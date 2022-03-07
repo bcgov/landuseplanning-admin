@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
-// import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import { throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as _ from 'lodash';
+import { each, isEmpty } from 'lodash';
 
 import { KeycloakService } from 'app/services/keycloak.service';
 
@@ -16,7 +15,6 @@ import { CommentPeriod } from 'app/models/commentPeriod';
 import { Survey } from 'app/models/survey';
 import { Decision } from 'app/models/decision';
 import { Document } from 'app/models/document';
-// import { Feature } from 'app/models/recentActivity';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 import { Org } from 'app/models/org';
@@ -67,8 +65,8 @@ export class ApiService {
     const remote_public_path = window.localStorage.getItem('from_admin_server--remote_public_path');  // available in case its ever needed
     const deployment_env = window.localStorage.getItem('from_admin_server--deployment_env');
 
-    this.pathAPI = (_.isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
-    this.env = (_.isEmpty(deployment_env)) ? 'local' : deployment_env;
+    this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+    this.env = (isEmpty(deployment_env)) ? 'local' : deployment_env;
   }
 
   handleError(error: any): Observable<never> {
@@ -1132,7 +1130,7 @@ export class ApiService {
   //
   private buildValues(collection: any[]): string {
     let values = '';
-    _.each(collection, function (a) {
+    each(collection, function (a) {
       values += a + '|';
     });
     // trim the last |

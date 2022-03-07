@@ -51,7 +51,6 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(data => {
         if (data.comment) {
-          console.log('the data', data)
           this.comment = data.comment;
 
           if (this.storageService.state.currentCommentPeriod) {
