@@ -1,3 +1,6 @@
+### 1.2.1 March 7, 2022
+* Upgrade karma to 6.3.16 [DESENG-88](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-88)
+
 ### 1.2.0 March 3, 2022
 * Add "files" section in place of Documents and Shapefiles sections [DESENG-72](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-72)
 
