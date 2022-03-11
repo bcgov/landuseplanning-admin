@@ -1,3 +1,6 @@
+### 1.3.0 March 10, 2022
+* Restore linting rules [DESENG-89](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-89)
+
 ### 1.2.1 March 7, 2022
 * Upgrade karma to 6.3.16 [DESENG-88](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-88)
 
