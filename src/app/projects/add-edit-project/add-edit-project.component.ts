@@ -1,12 +1,11 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import { Subject, forkJoin } from 'rxjs';
-import { NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Subject, forkJoin, Observable } from 'rxjs';
+import { NgxSmartModalComponent, NgxSmartModalService } from 'ngx-smart-modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as Editor from 'assets/ckeditor5/build/ckeditor';
 import { isEmpty } from 'lodash';
-import { NgxSmartModalService } from 'ngx-smart-modal';
 import { StorageService } from 'app/services/storage.service';
 import { ProjectService } from 'app/services/project.service';
 import { DocumentService } from 'app/services/document.service';
@@ -95,8 +94,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   // Shape file upload
   public projectFiles: Array<File> = [];
   public shapefileDocuments: Document[] = [];
+  public shapefilesModified = false;
 
   public bannerImageDocument: Document;
+  public bannerImageModified = false;
   public removeBannerImage: boolean;
   public bannerImageSrc: string;
 
@@ -749,13 +750,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               res => res,
               error => {
                 console.error('error = ', error);
-                alert('Could not publish banner image. Please publish manually in project documents section.');
+                alert('Could not publish banner image. Please publish manually in project files section.');
               }
               )
             },
             error => {
               console.error('error = ', error);
-              alert('Uh-oh, couldn\'t save shapefile.');
+              alert('Uh-oh, couldn\'t save banner image.');
               // TODO: should fully reload project here so we have latest non-deleted objects
             },
             () => { // onCompleted
@@ -770,22 +771,24 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         this.publishSelectedLogos();
       }
     } else {
-      // PUT
+      // Save shapefiles.
       const project = this.convertFormToProject(this.myForm);
       project._id = this.project._id;
-      let observables = [];
+      let saveShapefileObservables: Observable<Document|HttpErrorResponse>[] = [];
       this.shapefileDocuments.forEach(doc => {
-        const formData = new FormData();
-        formData.append('upfile', doc.upfile);
-        formData.append('project', this.project._id);
-        formData.append('documentFileName', doc.documentFileName);
-        formData.append('displayName',  doc.documentFileName);
-        formData.append('documentSource', 'SHAPEFILE');
-        observables.push(this.documentService.add(formData));
-        observables.push(this.documentService.publish(doc._id));
+        // Only queue shapfiles to be saved if they haven't been saved before.
+        if (doc.upfile) {
+          const formData = new FormData();
+          formData.append('upfile', doc.upfile);
+          formData.append('project', this.project._id);
+          formData.append('documentFileName', doc.documentFileName);
+          formData.append('displayName',  doc.documentFileName);
+          formData.append('documentSource', 'SHAPEFILE');
+          saveShapefileObservables.push(this.documentService.add(formData));
+        }
       });
-      if ( this.bannerImageDocument && ! this.removeBannerImage ) {
 
+      if ( this.bannerImageDocument && ! this.removeBannerImage && this.bannerImageModified ) {
         const bannerImageFormData = new FormData();
         bannerImageFormData.append('upfile', this.bannerImageDocument.upfile);
         bannerImageFormData.append('project', this.project._id);
@@ -796,16 +799,16 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           .subscribe((res) => {
             // do nothing here - see onCompleted() function below
             this.documentService.publish(res._id)
-            // .takeUntil(this.ngUnsubscribe)
-            .subscribe(
-              res => res,
-              error => {
-                alert('Could not publish banner image. Please publish manually in project documents section.');
-              }
+              .subscribe(
+                res => res,
+                error => {
+                  alert('Could not publish banner image. Please publish manually in project documents section.');
+                }
               )
             },
             error => {
-              alert('Uh-oh, couldn\'t save shapefile.');
+              console.error('Error:', error);
+              alert('Uh-oh, couldn\'t save banner image.');
             },
             () => {}
             )
@@ -822,22 +825,33 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       if (this.logos.dirty) {
         this.publishSelectedLogos();
       }
-      forkJoin(observables)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          () => { // onNext
-            // Do nothing here - see onCompleted() function below.
-          },
-          error => {
-            console.error('error =', error);
-            alert('Uh-oh, couldn\'t save shapefile.');
-            // TODO: should fully reload project here so we have latest non-deleted objects.
-          },
-          () => { // onCompleted.
-            // Delete succeeded --> navigate back to search.
-            // Clear out the document state that was stored previously.
-          }
-        );
+
+      // Only save shapefiles if they are modified.
+      if (this.shapefilesModified && saveShapefileObservables.length > 0) {
+        // Make all shapefile saves(POST requests) at once.
+        forkJoin(saveShapefileObservables)
+          .subscribe({
+            next: (res) => {
+              const publishShapefileObservables = res.map((doc: Document) => this.documentService.publish(doc._id));
+              forkJoin(publishShapefileObservables)
+                .subscribe({
+                  next: () => {
+                  },
+                  error: (error) => {
+                    console.error('Error publishing shapefiles', error);
+                    alert('Error publishing shapefiles. Please go into the project files section and publish shapfiles manually.');
+                  },
+                  complete: () => {}
+                });
+            },
+            error: (error) => {
+              console.error('Error saving shapefiles', error);
+              alert('Error saving shapefiles.');
+            },
+            complete: () => {}
+          });
+      }
+
       this.projectService.save(project)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
@@ -876,6 +890,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       this.bannerImageDocument.upfile = files[0];
       this.bannerImageDocument.documentFileName = files[0].name;
       this.removeBannerImage = false;
+      this.bannerImageModified = true;
 
       this._changeDetectorRef.detectChanges();
     }
@@ -884,6 +899,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public deleteBannerDocument(doc: Document) {
     if (doc && this.bannerImageDocument) {
       this.removeBannerImage = true;
+      this.bannerImageModified = true;
     }
   }
 
@@ -906,6 +922,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
           // save document for upload to db when project is added or saved
           this.shapefileDocuments.push(document);
+          this.shapefilesModified = true;
         }
       }
     }
@@ -917,6 +934,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // Remove doc from current list.
       this.projectFiles = this.projectFiles.filter(item => (item.name !== doc.documentFileName));
       this.shapefileDocuments = this.shapefileDocuments.filter(item => (item.documentFileName !== doc.documentFileName));
+      this.shapefilesModified = true;
     }
   }
 
@@ -942,8 +960,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       return new CkUploadAdapter(loader, projectId, documentService, pathAPI);
     };
   }
-
-  register(myForm: FormGroup) { }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

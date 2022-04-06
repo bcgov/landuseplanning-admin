@@ -1,3 +1,6 @@
+### 1.3.1 April 6, 2022
+* Fix shapefiles error message [DESENG-102](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-102)
+
 ### 1.3.0 March 10, 2022
 * Restore linting rules [DESENG-89](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-89)
 
