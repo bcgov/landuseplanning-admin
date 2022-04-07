@@ -1,3 +1,6 @@
+### 1.3.2 April 7, 2022
+* Enable image upload in project details ckeditor [DESENG-110](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-110)
+
 ### 1.3.1 April 6, 2022
 * Fix shapefiles error message [DESENG-102](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-102)
 

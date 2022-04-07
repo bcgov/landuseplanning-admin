@@ -54,7 +54,7 @@
         </div>
         <div class="label-pair med">
           <label for="details">Project Details </label>
-          <ckeditor name="details" id="details" formControlName="details" [editor]="Editor" [data]="project?.details"></ckeditor>
+          <ckeditor name="details" id="details" formControlName="details" [editor]="Editor" [data]="project?.details" (ready)="editorOnReady($event)"></ckeditor>
           <label class="additional-label" for="details">Appears on the Project Details tab under the map.</label>
         </div>
         <div class="label-pair med">
@@ -210,7 +210,7 @@
     </section>
     <section>
       <h2>Engagement Information</h2>
-      <div class="flex-container">
+      <div>
         <div class="add-row med">
           <label for="engagementLabel">Engagement Label* </label>
           <input name="engagementLabel" id="engagementLabel" formControlName="engagementLabel" type="text" class="form-control" />
