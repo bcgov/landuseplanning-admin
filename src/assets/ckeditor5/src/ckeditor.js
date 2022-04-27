@@ -83,7 +83,10 @@ Editor.defaultConfig = {
             'imageTextAlternative'
         ]
     },
-    language: 'en'
+    language: 'en',
+    mediaEmbed: {
+      previewsInData: true
+    }
 };
 
 export default Editor;

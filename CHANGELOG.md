@@ -1,3 +1,6 @@
+### 1.3.3 April 27, 2022
+* Enable image upload in project details ckeditor [DESENG-117](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-117)
+
 ### 1.3.2 April 7, 2022
 * Enable image upload in project details ckeditor [DESENG-110](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-110)
 
