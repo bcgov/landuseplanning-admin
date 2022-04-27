@@ -929,12 +929,28 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     this._changeDetectorRef.detectChanges();
   }
 
-  public deleteDocument(doc: Document) {
-    if (doc && this.shapefileDocuments) { // Safety check.
-      // Remove doc from current list.
-      this.projectFiles = this.projectFiles.filter(item => (item.name !== doc.documentFileName));
-      this.shapefileDocuments = this.shapefileDocuments.filter(item => (item.documentFileName !== doc.documentFileName));
-      this.shapefilesModified = true;
+  /**
+   * Makes a call to the delete document endpoint, then removes the document from the view.
+   *
+   * @param {Document} doc The document to delete.
+   * @returns {void}
+   */
+  public deleteDocument(doc: Document): void {
+    if (doc && this.shapefileDocuments) {
+      this.documentService.delete(doc)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+            res => {
+              // Remove doc from current list.
+              this.projectFiles = this.projectFiles.filter(item => (item.name !== doc.documentFileName));
+              this.shapefileDocuments = this.shapefileDocuments.filter(item => (item.documentFileName !== doc.documentFileName));
+              this.shapefilesModified = true;
+            },
+            error => {
+              console.error(error);
+              alert('Uh-oh, couldn\'t delete shapefile.');
+            }
+        );
     }
   }
 
