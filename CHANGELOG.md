@@ -1,3 +1,6 @@
+### 1.3.5 May 25, 2022
+* Patch moment npm dependency [DESENG-135](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-135)
+
 ### 1.3.4 April 27, 2022
 * Delete shapefile document when removing it from project [DESENG-114](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-114)
 
