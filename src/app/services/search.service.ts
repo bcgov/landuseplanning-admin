@@ -4,7 +4,6 @@ import { of } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import * as _ from 'lodash';
-import * as moment from 'moment';
 
 import { ApiService } from './api';
 import { SearchResults } from 'app/models/search';
