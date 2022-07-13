@@ -1,3 +1,6 @@
+### 1.3.6 July 13, 2022
+* Resolve broken logo in absence of link [DESENG-160](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-160)
+
 ### 1.3.5 May 25, 2022
 * Patch moment npm dependency [DESENG-135](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-135)
 

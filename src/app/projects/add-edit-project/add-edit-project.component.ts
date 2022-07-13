@@ -24,6 +24,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fileUploadModalData: ModalData;
+  public wasFilePickerLaunched = false;
   public Editor = Editor;
   public myForm: FormGroup;
   public back: any = {};
@@ -301,6 +302,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.ngxSmartModalService.setModalData( this.fileUploadModalData, 'file-upload-modal', true);
     this.ngxSmartModalService.open('file-upload-modal');
+    this.wasFilePickerLaunched = true;
   }
 
   /**
@@ -711,7 +713,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     if (!this.isEditing) {
-      // POST
+      // Save new project.
       const project = this.convertFormToProject(this.myForm);
       this.projectService.add(project)
         .takeUntil(this.ngUnsubscribe)
@@ -766,12 +768,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
             )
       }
 
-      // Publish selected logo files.
-      if (this.logos) {
+      // If file picker was launched, assume logos were modified.
+      if (this.wasFilePickerLaunched) {
         this.publishSelectedLogos();
       }
     } else {
-      // Save shapefiles.
+      // Save edited project.
       const project = this.convertFormToProject(this.myForm);
       project._id = this.project._id;
       let saveShapefileObservables: Observable<Document|HttpErrorResponse>[] = [];
@@ -821,8 +823,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           })
       }
 
-      // Publish selected logo files.
-      if (this.logos.dirty) {
+      // If file picker was launched, assume logos were modified.
+      if (this.wasFilePickerLaunched) {
         this.publishSelectedLogos();
       }
 
