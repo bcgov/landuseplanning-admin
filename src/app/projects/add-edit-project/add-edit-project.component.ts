@@ -769,7 +769,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       }
 
       // If file picker was launched, assume logos were modified.
-      if (this.wasFilePickerLaunched) {
+      if (this.wasFilePickerLaunched || this.logos.dirty) {
         this.publishSelectedLogos();
       }
     } else {
@@ -824,7 +824,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       }
 
       // If file picker was launched, assume logos were modified.
-      if (this.wasFilePickerLaunched) {
+      if (this.wasFilePickerLaunched || this.logos.dirty) {
         this.publishSelectedLogos();
       }
 
