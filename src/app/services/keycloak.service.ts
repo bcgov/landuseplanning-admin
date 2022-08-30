@@ -97,7 +97,7 @@ export class KeycloakService {
 
         self.keycloakAuth.onAuthRefreshError = function () {
           console.log('onAuthRefreshError');
-          self.keycloakAuth.login({ idpHint: 'idir' });
+          // self.keycloakAuth.login({ idpHint: 'idir' });
         };
 
         self.keycloakAuth.onAuthLogout = function () {
@@ -107,19 +107,21 @@ export class KeycloakService {
         // Try to get refresh tokens in the background
         self.keycloakAuth.onTokenExpired = function () {
           console.log('the token just expired, tryign update')
-          self.keycloakAuth.updateToken(290)
-            .success(function (refreshed) {
-              console.log('KC refreshed token?:', refreshed);
-            })
-            .error((err) => {
-              console.log('onTokenExpired:KC refresh error:', err);
-              self.keycloakAuth.login({ idpHint: 'idir' });
-            });
+          // self.keycloakAuth.updateToken(290)
+          //   .success(function (refreshed) {
+          //     console.log('KC refreshed token?:', refreshed);
+          //   })
+          //   .error((err) => {
+          //     console.log('onTokenExpired:KC refresh error:', err);
+          //     self.keycloakAuth.login({ idpHint: 'idir' });
+          //   });
         };
 
         self.keycloakAuth.init({
           // Specify the pkceMethod to be compatible with Common Hosted SSO.
-          pkceMethod: 'S256'
+          pkceMethod: 'S256',
+          enableLogging: true,
+          // silentCheckSsoRedirectUri:
         })
           .success((auth) => {
             if (!auth) {
@@ -133,6 +135,7 @@ export class KeycloakService {
               console.log('KC Success:', self.keycloakAuth);
               const userToken = self.keycloakAuth.tokenParsed;
               window.localStorage.setItem('currentUser', JSON.stringify({ username: userToken.displayName, token: this.keycloakAuth.token }));
+              this.addTokensToLocalStorage(self.keycloakAuth.token, self.keycloakAuth.refreshToken);
 
               // After successful login, see if there's a user model for project permissions
               this.checkUser(userToken)
@@ -257,8 +260,12 @@ export class KeycloakService {
    * @memberof KeycloakService
    */
   getToken(): string {
-    const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
-    return currentUser ? currentUser.token : null;
+    return window.localStorage.getItem('kc-token');
+  }
+
+  addTokensToLocalStorage(token, refreshToken): void {
+    window.localStorage.setItem('kc-token', token);
+    window.localStorage.setItem('kc-refreshtoken', refreshToken);
   }
 
   /**
@@ -271,9 +278,12 @@ export class KeycloakService {
   refreshToken(): Observable<any> {
     return new Observable(observer => {
       console.log('keycloak auth updateToken', this.keycloakAuth)
+      this.keycloakAuth.refreshToken = window.localStorage.getItem('kc-refresh-token');
+
       this.keycloakAuth.updateToken(30)
         .then((refreshed) => {
           console.log('KC refreshed token?:', refreshed);
+          this.addTokensToLocalStorage(this.keycloakAuth.token, this.keycloakAuth.refreshToken);
           observer.next();
           observer.complete();
         })
