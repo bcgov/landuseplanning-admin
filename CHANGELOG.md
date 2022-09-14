@@ -1,3 +1,6 @@
+### 1.3.6 Sep 13, 2022
+* Move from keycloak to Common Online SSO [DESENG-179](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-179)
+
 ### 1.3.5 May 25, 2022
 * Patch moment npm dependency [DESENG-135](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-135)
 

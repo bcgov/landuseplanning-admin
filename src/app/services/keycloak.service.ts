@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { JwtUtil } from 'app/jwt-util';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import * as _ from 'lodash';
-import { UserService } from 'app/services/user.service';
 import { User } from 'app/models/user';
 
 declare var Keycloak: any;
@@ -22,30 +21,28 @@ export class KeycloakService {
     private http: HttpClient
   ) {
     switch (window.location.origin) {
-      case 'https://lup-dev.pathfinder.gov.bc.ca':
-      case 'https://lup-dev.pathfinder.gov.bc.ca':
+      case 'https://landuseplanning-test.apps.silver.devops.gov.bc.ca/':
+      case 'https://landuseplanning-dev.apps.silver.devops.gov.bc.ca/':
         // Staging(Dev, Test).
         this.keycloakEnabled = true;
-        this.keycloakUrl = 'https://oidc.gov.bc.ca/auth';
+        this.keycloakUrl = "https://test.loginproxy.gov.bc.ca/auth";
         break;
-
-      case 'https://lup-test.pathfinder.gov.bc.ca':
+      case 'https://landuseplanning.gov.bc.ca/':
         // Prod.
         this.keycloakEnabled = true;
-        this.keycloakUrl = 'https://test.oidc.gov.bc.ca/auth';
+        this.keycloakUrl = "https://loginproxy.gov.bc.ca/auth";
         break;
-
       default:
         // Local development.
         this.keycloakEnabled = true;
-        this.keycloakUrl = 'https://dev.loginproxy.gov.bc.ca/auth';
+        this.keycloakUrl = "https://dev.loginproxy.gov.bc.ca/auth";
     }
 
     // The following item is loaded by a file that is only present on cluster builds.
     // Locally, this will be empty and local defaults will be used.
-    const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+    const remoteApiPath = window.localStorage.getItem('from_admin_server--remote_api_path');
 
-    this.pathAPI = (_.isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+    this.pathAPI = (_.isEmpty(remoteApiPath)) ? 'http://localhost:3000/api' : remoteApiPath;
   }
 
   isKeyCloakEnabled(): boolean {
@@ -66,13 +63,21 @@ export class KeycloakService {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
   }
 
-  init(): Promise<any> {
-
+  /**
+   * Sets up configiruation for Keycloak adapter and initializes Keycloak. This
+   * will check for an active session and if none is found, will redirect the user to
+   * log in.
+   *
+   * Also adds an entry in the DB for user if they haven't logged in before.
+   *
+   * @returns Void if keycloak inits successfully.
+   */
+  init(): Promise<void> {
     this.loggedOut = this.getParameterByName('loggedout');
 
     const self = this;
     if (this.keycloakEnabled) {
-      // Bootup KC
+      // Bootup KC.
       this.keycloakEnabled = true;
       return new Promise<void>((resolve, reject) => {
         const config = {
@@ -83,84 +88,63 @@ export class KeycloakService {
 
         self.keycloakAuth = new Keycloak(config);
 
-        self.keycloakAuth.onAuthSuccess = function () {
-          // console.log('onAuthSuccess');
-        };
-
-        self.keycloakAuth.onAuthError = function () {
-          console.log('onAuthError');
-        };
-
-        self.keycloakAuth.onAuthRefreshSuccess = function () {
-          // console.log('onAuthRefreshSuccess');
-        };
-
-        self.keycloakAuth.onAuthRefreshError = function () {
-          console.log('onAuthRefreshError');
-          // self.keycloakAuth.login({ idpHint: 'idir' });
-        };
-
-        self.keycloakAuth.onAuthLogout = function () {
-          // console.log('onAuthLogout');
+        self.keycloakAuth.onAuthRefreshError = () => {
+          self.keycloakAuth.login({ idpHint: 'idir' });
         };
 
         // Try to get refresh tokens in the background
-        self.keycloakAuth.onTokenExpired = function () {
-          console.log('the token just expired, tryign update')
-          // self.keycloakAuth.updateToken(290)
-          //   .success(function (refreshed) {
-          //     console.log('KC refreshed token?:', refreshed);
-          //   })
-          //   .error((err) => {
-          //     console.log('onTokenExpired:KC refresh error:', err);
-          //     self.keycloakAuth.login({ idpHint: 'idir' });
-          //   });
+        self.keycloakAuth.onTokenExpired = () => {
+          self.keycloakAuth.updateToken(180)
+            .success()
+            .error(() => {
+              self.keycloakAuth.login({ idpHint: 'idir' });
+            });
         };
 
         self.keycloakAuth.init({
           // Specify the pkceMethod to be compatible with Common Hosted SSO.
           pkceMethod: 'S256',
-          enableLogging: true,
-          // silentCheckSsoRedirectUri:
+          onLoad: 'check-sso',
+          // Without this option, keycloak assumes we're logged out and dumps all tokens.
+          checkLoginIframe: false
         })
           .success((auth) => {
             if (!auth) {
-              if (this.loggedOut === 'true') {
+              if ('true' === this.loggedOut) {
                 // Don't do anything, they wanted to remain logged out.
                 resolve();
               } else {
                 self.keycloakAuth.login({ idpHint: 'idir' });
               }
             } else {
-              console.log('KC Success:', self.keycloakAuth);
               const userToken = self.keycloakAuth.tokenParsed;
               window.localStorage.setItem('currentUser', JSON.stringify({ username: userToken.displayName, token: this.keycloakAuth.token }));
-              this.addTokensToLocalStorage(self.keycloakAuth.token, self.keycloakAuth.refreshToken);
-
               // After successful login, see if there's a user model for project permissions
               this.checkUser(userToken)
                 .subscribe(
                   userArray => {
                     if (0 === userArray.length) {
+                      // If no user exists with this email, add them to the DB.
                       this.addNewUser(userToken)
-                        .subscribe(res => {
-                          resolve()
+                        .subscribe(() => {
+                          resolve();
                         }, err => {
-                          console.log('Could not add new user', err);
+                          console.error('Could not add new user', err);
                           reject();
                         });
                     } else if (1 === userArray.length) {
                       const user = userArray[0];
-                      if (user.idir_user_guid && user.idir_user_guid === userToken.idir_user_guid) {
+                      if (user.idirUserGuid && user.idirUserGuid === userToken.idir_user_guid) {
                         resolve();
                       } else {
+                        // If user exists in the DB, but their GUID doesn't match the token, update the GUID.
                         this.updateUserWithGuid(user, userToken)
                         .subscribe(
-                          res => {
+                          () => {
                             resolve();
                           },
                           err => {
-                            console.log('Could not update the user', err);
+                            console.error('Could not update the user', err);
                             reject();
                           }
                         );
@@ -169,14 +153,14 @@ export class KeycloakService {
                       reject();
                     }
                   },
-                  err => console.log('Error retrieving user: ', err)
+                  err => console.error('Error retrieving user: ', err)
                 );
 
               resolve();
             }
           })
           .error((err) => {
-            console.log('KC error:', err);
+            console.error('Keycloak error. Error initializing', err);
             reject();
           });
       });
@@ -184,10 +168,10 @@ export class KeycloakService {
   }
 
   /**
-   * Checks if user exists by .sub
+   * Queries the API for a DB entry for a user containing their email.
    *
-   * @param userToken User
-   * @returns void
+   * @param {User} userToken User object to query with.
+   * @returns {Observable<User[]>}
    */
   checkUser(userToken: User): Observable<User[]> {
     if (userToken && userToken.email) {
@@ -204,16 +188,21 @@ export class KeycloakService {
         'write',
         'delete',
       ].join('|');
-      const queryString = encodeURIComponent(`user/${userToken.email}`);
-      return this.http.get<User[]>(`${this.pathAPI}/${queryString}/email?fields=${fields}`, {});
+      const queryString = encodeURIComponent(userToken.email);
+      return this.http.get<User[]>(`${this.pathAPI}/user/email/${queryString}?fields=${fields}`, {});
     }
   }
 
-  addNewUser(userToken: User): Observable<User> {
+  /**
+   * Add a new user object to the DB.
+   *
+   * @param {User} userToken The user to add.
+   * @returns {Observable[<User>]}
+   */
+  addNewUser(userToken): Observable<User> {
     // Creating the user in the DB for the first time.
-    // Empty project permissions.
     const user = new User({
-      idir_user_guid: userToken.idir_user_guid,
+      idirUserGuid: userToken.idir_user_guid,
       firstName: userToken.given_name,
       lastName: userToken.family_name,
       displayName: `${userToken.given_name} ${userToken.family_name}`,
@@ -224,20 +213,18 @@ export class KeycloakService {
     return this.http.post<User>(`${this.pathAPI}/user`, user, {});
   }
 
-  updateUserWithGuid(user, userToken) {
-      // Update user with GUID
-      user.idir_user_guid = userToken.idir_user_guid;
-      return this.http.put<User>(`${this.pathAPI}/user/${user._id}/_id`, user, {});
-  }
-
-  allTokens() {
-    const self = this;
-
-    return [
-      self.keycloakAuth.token,
-      self.keycloakAuth.idToken,
-      self.keycloakAuth.refreshToken
-    ]
+  /**
+   * Takes the user's token, gets the GUID from it, and updates the user's
+   * DB entry with it.
+   *
+   * @param {User} user The user object to add to.
+   * @param {User} userToken The user token to get the GUID from.
+   * @returns {Observable<User>}
+   */
+  updateUserWithGuid(user: User, userToken): Observable<User> {
+      // Update user object with GUID.
+      user.idirUserGuid = userToken.idir_user_guid;
+      return this.http.put<User>(`${this.pathAPI}/user/${user._id}`, user, {});
   }
 
   isValidForSite() {
@@ -260,12 +247,13 @@ export class KeycloakService {
    * @memberof KeycloakService
    */
   getToken(): string {
-    return window.localStorage.getItem('kc-token');
-  }
+    if (!this.keycloakEnabled) {
+      // return the local storage token
+      const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
+      return currentUser ? currentUser.token : null;
+    }
 
-  addTokensToLocalStorage(token, refreshToken): void {
-    window.localStorage.setItem('kc-token', token);
-    window.localStorage.setItem('kc-refreshtoken', refreshToken);
+    return this.keycloakAuth.token;
   }
 
   /**
@@ -277,18 +265,13 @@ export class KeycloakService {
    */
   refreshToken(): Observable<any> {
     return new Observable(observer => {
-      console.log('keycloak auth updateToken', this.keycloakAuth)
-      this.keycloakAuth.refreshToken = window.localStorage.getItem('kc-refresh-token');
-
       this.keycloakAuth.updateToken(30)
-        .then((refreshed) => {
-          console.log('KC refreshed token?:', refreshed);
-          this.addTokensToLocalStorage(this.keycloakAuth.token, this.keycloakAuth.refreshToken);
+        .then(() => {
           observer.next();
           observer.complete();
         })
         .catch(() => {
-          console.log('KC refresh error');
+          console.error('KC refresh token error');
           observer.error();
         });
 
@@ -297,12 +280,10 @@ export class KeycloakService {
   }
 
   getLogoutURL(): string {
-    // https://logon.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
-    // https://logontest.gov.bc.ca/clp-cgi/logoff.cgi?returl=http://localhost:4200/admin/
     if (this.keycloakEnabled) {
       return this.keycloakAuth.authServerUrl + '/realms/' + this.keycloakRealm + '/protocol/openid-connect/logout?redirect_uri=' + window.location.origin + '/admin/not-authorized?loggedout=true';
     } else {
-      // go to the /login page
+      // Go to the /login page.
       return window.location.origin + '/admin/login';
     }
   }

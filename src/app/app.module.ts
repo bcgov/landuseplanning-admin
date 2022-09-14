@@ -125,7 +125,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     NgbModule,
     NgxPaginationModule,
     CKEditorModule,
-    NgxSmartModalModule.forRoot()
+    NgxSmartModalModule.forRoot(),
   ],
   providers: [
     KeycloakService,
