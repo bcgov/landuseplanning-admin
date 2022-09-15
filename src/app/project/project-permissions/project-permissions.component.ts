@@ -87,7 +87,6 @@ export class ProjectPermissionsComponent implements OnInit {
           }
         );
       });
-      console.log('List', list);
       this.tableData = new TableObject(
         PermissionsTableRowsComponent,
         list,

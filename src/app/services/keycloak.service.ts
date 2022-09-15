@@ -10,7 +10,7 @@ declare var Keycloak: any;
 
 @Injectable()
 export class KeycloakService {
-  public keycloakAuth: any;
+  private keycloakAuth: any;
   private keycloakEnabled: boolean;
   private keycloakUrl: string;
   private keycloakRealm: string;
@@ -118,8 +118,8 @@ export class KeycloakService {
               }
             } else {
               const userToken = self.keycloakAuth.tokenParsed;
-              window.localStorage.setItem('currentUser', JSON.stringify({ username: userToken.displayName, token: this.keycloakAuth.token }));
-              // After successful login, see if there's a user model for project permissions
+              window.localStorage.setItem('currentUser', JSON.stringify({ username: userToken.displayName, token: userToken }));
+              // After successful login, see if there's a user model for project permissions.
               this.checkUser(userToken)
                 .subscribe(
                   userArray => {
@@ -134,8 +134,12 @@ export class KeycloakService {
                         });
                     } else if (1 === userArray.length) {
                       const user = userArray[0];
-                      if (user.idirUserGuid && user.idirUserGuid === userToken.idir_user_guid) {
-                        resolve();
+                      if (user.idirUserGuid && "idir_user_guid" in userToken) {
+                        if (user.idirUserGuid === userToken.idir_user_guid) {
+                          resolve();
+                        } else {
+                          reject();
+                        }
                       } else {
                         // If user exists in the DB, but their GUID doesn't match the token, update the GUID.
                         this.updateUserWithGuid(user, userToken)

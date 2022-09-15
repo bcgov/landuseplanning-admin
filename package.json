@@ -1,6 +1,6 @@
 {
   "name": "landuseplanning-admin",
-  "version": "1.3.6",
+  "version": "1.4.0",
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",

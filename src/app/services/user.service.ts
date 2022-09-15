@@ -44,7 +44,7 @@ export class UserService {
             * Checks that users returned are valid and not leftover "Contact"
             * documents that don't represent real backend users
             */
-            if (user.sub) {
+            if (user.idirUserGuid) {
               userList.push(user);
             }
           });
