@@ -75,7 +75,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
         this.loading = false;
       })
       .catch(error => {
-        console.log('error', error);
+        console.log('Error getting email subscribe data', error);
         // alert('Uh-oh, error getting email address');
       });
   }

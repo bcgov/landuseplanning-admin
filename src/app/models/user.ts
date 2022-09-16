@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 export class User {
   _id: string;
   sub: string;
+  idirUserGuid: string;
   firstName: string;
   middleName: string;
   lastName: string;
@@ -55,6 +56,7 @@ export class User {
     this.notes = obj && obj.notes || undefined;
     this.checkbox = obj && obj.checkbox || undefined;
     this.sub = obj && obj.sub || undefined;
+    this.idirUserGuid = obj && obj.idir_user_guid || undefined;
 
     Object.keys(obj).forEach(e => {
       this[`${e}`] = `${obj[e]}`;

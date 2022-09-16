@@ -19,7 +19,6 @@ export class ConfigService implements OnDestroy {
     this.api.getFullDataSet('List')
       .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
-        console.log('svc lists:', res);
         // Store here for later use across the application.
         this._lists = res[0].searchResults;
       });

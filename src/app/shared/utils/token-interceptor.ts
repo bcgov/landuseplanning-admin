@@ -37,13 +37,14 @@ export class TokenInterceptor implements HttpInterceptor {
     request = this.addAuthHeader(request);
 
     return next.handle(request).catch(error => {
-      if (error.status === 403) {
+      if (403 === error.status) {
         return this.refreshToken().pipe(
           switchMap(() => {
             request = this.addAuthHeader(request);
             return next.handle(request);
           }),
           catchError((err) => {
+            console.error('Error executing refreshToken method.');
             return Observable.throw(err);
           })
         );

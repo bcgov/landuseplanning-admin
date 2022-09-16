@@ -1079,6 +1079,7 @@ export class ApiService {
   getAllUsers(): Observable<Object> {
     const fields = [
       'sub',
+      'idirUserGuid',
       'displayName',
       'projectPermissions',
     ];

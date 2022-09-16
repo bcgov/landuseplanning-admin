@@ -38,9 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private _api: ApiService;
   public jwt: {
     username: String,
-    realm_access: {
-      roles: Array<String>
-    }
+    client_roles: string[],
     scopes: Array<String>
   };
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
@@ -60,7 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         // TODO: Change this to observe the change in the _api.token
         if (token) {
           const jwt = new JwtUtil().decodeToken(token);
-          this.welcomeMsg = jwt ? ('Hello ' + jwt.preferred_username) : 'Login';
+          this.welcomeMsg = jwt ? ('Hello ' + jwt.display_name) : 'Login';
           this.jwt = jwt;
         } else {
           this.welcomeMsg = 'Login';
@@ -90,7 +88,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   renderMenu(route: String) {
     // Sysadmin's get administration.
     if (route === 'administration') {
-      return (this.jwt && this.jwt.realm_access && this.jwt.realm_access.roles.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
+      return (this.jwt && this.jwt.client_roles.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
     }
   }
 
