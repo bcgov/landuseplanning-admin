@@ -21,13 +21,13 @@ export class KeycloakService {
     private http: HttpClient
   ) {
     switch (window.location.origin) {
-      case 'https://landuseplanning-test.apps.silver.devops.gov.bc.ca/':
-      case 'https://landuseplanning-dev.apps.silver.devops.gov.bc.ca/':
+      case 'https://landuseplanning-test.apps.silver.devops.gov.bc.ca':
+      case 'https://landuseplanning-dev.apps.silver.devops.gov.bc.ca':
         // Staging(Dev, Test).
         this.keycloakEnabled = true;
         this.keycloakUrl = "https://test.loginproxy.gov.bc.ca/auth";
         break;
-      case 'https://landuseplanning.gov.bc.ca/':
+      case 'https://landuseplanning.gov.bc.ca':
         // Prod.
         this.keycloakEnabled = true;
         this.keycloakUrl = "https://loginproxy.gov.bc.ca/auth";
