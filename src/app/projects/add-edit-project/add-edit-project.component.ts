@@ -96,10 +96,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public shapefileDocuments: Document[] = [];
   public shapefilesModified = false;
 
-  public bannerImageDocument: Document;
+  public bannerImageDocument: Document | null;
+  public allBannerImageDocuments: Document[] = [];
   public bannerImageModified = false;
   public removeBannerImage: boolean;
-  public bannerImageSrc: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -127,58 +127,56 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       if (res) {
         if (res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
           let returnedDocuments = res.documents[0].data.searchResults;
-          this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null )
-          let bannerImageDocumentArray = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null )
-          this.bannerImageDocument = bannerImageDocumentArray[0];
+          this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null );
+          this.allBannerImageDocuments = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null );
 
           // The following items are loaded by a file that is only present on cluster builds.
           // Locally, this will be empty and local defaults will be used.
           const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
           this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
 
-          if (this.bannerImageDocument) {
-            const safeName = this.bannerImageDocument.documentFileName.replace(/ /g, '_');
-            this.bannerImageSrc = `${this.pathAPI}/document/${this.bannerImageDocument._id}/fetch/${safeName}`;
-          }
+
+              // Get data related to current project
+              this.route.parent.data
+              .takeUntil(this.ngUnsubscribe)
+              .subscribe((data: { project: Project }) => {
+                this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
+
+                /**
+                 * When a user selects a project lead(and is taken to a new window),
+                 * make sure the project lead is brought over.
+                 **/
+                if (this.storageService.state.projectLead) {
+                  this.projectLead = this.storageService.state.projectLead.name;
+                  this.projectLeadId = this.storageService.state.projectLead._id;
+                } else if (this.isEditing && data.project.projectLead && data.project.projectLead._id && data.project.projectLead._id !== '') {
+                  this.projectLead = data.project.projectLead.displayName;
+                  this.projectLeadId = data.project.projectLead._id;
+                }
+
+                this.project = data.project;
+                this.buildForm(data);
+                this.bannerImageDocument = this.allBannerImageDocuments.find((doc) => doc._id === this.project.backgroundImage);
+                this.loading = false;
+
+                try {
+                  this._changeDetectorRef.detectChanges();
+                } catch (e) {
+                  console.error('error:', e);
+                }
+              });
         } else {
           this.shapefileDocuments = [];
-          this.bannerImageDocument = null;
+          this.allBannerImageDocuments = null;
         }
       }
+    },
+    (error) => {
+      console.error('Error loading project data: ', error);
+      alert("Uh oh, couldn't load project.");
+      this.back = this.storageService.state.back;
     });
-
-    // Get data related to current project
-    this.route.parent.data
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((data: { project: Project }) => {
-        this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
-
-        /**
-         * When a user selects a project lead(and is taken to a new window),
-         * make sure the project lead is brought over.
-         **/
-        if (this.storageService.state.projectLead) {
-          this.projectLead = this.storageService.state.projectLead.name;
-          this.projectLeadId = this.storageService.state.projectLead._id;
-        } else if (this.isEditing && data.project.projectLead && data.project.projectLead._id && data.project.projectLead._id !== '') {
-          this.projectLead = data.project.projectLead.displayName;
-          this.projectLeadId = data.project.projectLead._id;
-        }
-
-        this.project = data.project;
-        this.buildForm(data);
-        this.loading = false;
-
-        try {
-          this._changeDetectorRef.detectChanges();
-        } catch (e) {
-          console.error('error:', e);
-        }
-      });
-
-    this.back = this.storageService.state.back;
   }
-
 
   /**
    * After view init, listen for the file upload modal to close and check if it returned
@@ -701,79 +699,150 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
+   * Returns the banner image values as FormData to be used in an API call.
+   *
+   * @returns {FormData}
+   */
+  getBannerImageFormData(): FormData {
+    const bannerImageFormData = new FormData();
+    bannerImageFormData.append('upfile',this.bannerImageDocument.upfile);
+    bannerImageFormData.append('documentFileName', this.bannerImageDocument.documentFileName);
+    bannerImageFormData.append('displayName',  this.bannerImageDocument.documentFileName);
+    bannerImageFormData.append('documentSource', 'BANNER');
+
+    return bannerImageFormData;
+  }
+
+
+  /**
+   * Save a new project to the DB.
+   *
+   * @param {Project} project The project data to save.
+   * @return {void}
+   */
+  saveNewProject(project: Project): void {
+    this.projectService.add(project)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        (data) => {
+          this.projectId = data._id;
+        },
+        error => {
+          console.error('error = ', error);
+          alert('Uh-oh, couldn\'t create project');
+        },
+        () => {
+          this.clearStorageService();
+          this.loading = false;
+          this.router.navigate(['/p', this.projectId, 'project-details']);
+        }
+      );
+  }
+
+  /**
+   * Update an existing project after the user makes edits.
+   *
+   * @param {Project} project The project data to save.
+   * @return {void}
+   */
+  updateExistingProject(project: Project): void {
+    this.projectService.save(project)
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe(
+      () => {
+        this.clearStorageService();
+        this.loading = false;
+        this.router.navigated = false;
+        this.openSnackBar('This project was created successfully.', 'Close');
+        this.router.navigate(['/p', this.project._id, 'project-details']);
+      },
+      error => {
+        console.error('error =', error);
+        alert('Uh-oh, couldn\'t edit project');
+      },
+    );
+  }
+
+  /**
+   * Sends two API requests. One to add the document, and another to publish it. Will notify the user
+   * if there is an issue anywhere along the way.
+   *
+   * @param {Project} project The project to save the banner image to.
+   * @param bannerImageFormData The banner image form data to send as a request to the API.
+   * @return {void}
+   */
+  addAndPublishBannerThenSaveProject(project: Project, bannerImageFormData: FormData): void {
+    this.documentService.add(bannerImageFormData)
+    .subscribe((addedDocument) => {
+      this.documentService.publish(addedDocument._id)
+        .subscribe(
+          (publishedDocument) => {
+            // Update the project with the saved and published background image document ID.
+            project.backgroundImage = publishedDocument._id;
+            this.updateExistingProject(project);
+          },
+          error => {
+            alert('Could not publish banner image. Please publish manually in project documents section.');
+          }
+        )
+      },
+      error => {
+        console.error('Error:', error);
+        alert('Uh-oh, couldn\'t save banner image.');
+      });
+  }
+
+  /**
    * Save the project.
    *
    * @returns {void}
    */
   onSubmit(): void {
+    // If the form has validation errors, don't save or update anything.
     if (!this.validateForm()) {
       return;
     }
 
+    // Get the project data from the form.
+    const project = this.convertFormToProject(this.myForm);
+
+    // If project is not being edited(i.e. a new project).
     if (!this.isEditing) {
-      // POST
-      const project = this.convertFormToProject(this.myForm);
-      this.projectService.add(project)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          (data) => {
-            this.projectId = data._id;
-          },
-          error => {
-            console.error('error = ', error);
-            alert('Uh-oh, couldn\'t create project');
-          },
-          () => { // onCompleted
-            this.clearStorageService();
-            this.loading = false;
-            // this.openSnackBar('This project was created successfuly.', 'Close');
-            this.router.navigate(['/p', this.projectId, 'project-details']);
-          }
-        );
+      this.saveNewProject(project);
 
-      if (this.bannerImageDocument && ! this.removeBannerImage) {
-        const bannerImageFormData = new FormData();
-        bannerImageFormData.append('upfile', this.bannerImageDocument.upfile);
-        bannerImageFormData.append('project', this.project._id);
-        bannerImageFormData.append('documentFileName', this.bannerImageDocument.documentFileName);
-        bannerImageFormData.append('displayName',  this.bannerImageDocument.documentFileName);
-        bannerImageFormData.append('documentSource', 'BANNER');
+      if (this.bannerImageDocument) {
+        const bannerImageFormData = this.getBannerImageFormData();
 
+        // Add, publish, then save the published document's ID as the project's backgroundImage value.
         this.documentService.add(bannerImageFormData)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
-          (res) => {
-            // do nothing here - see onCompleted() function below
-            this.documentService.publish(res._id)
+          (addedDocument) => {
+            this.documentService.publish(addedDocument._id)
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
-              res => res,
+              (publishedDocument) => {
+                project.backgroundImage = publishedDocument._id;
+                this.updateExistingProject(project);
+              },
               error => {
                 console.error('error = ', error);
                 alert('Could not publish banner image. Please publish manually in project files section.');
-              }
-              )
+              });
             },
             error => {
               console.error('error = ', error);
               alert('Uh-oh, couldn\'t save banner image.');
-              // TODO: should fully reload project here so we have latest non-deleted objects
-            },
-            () => { // onCompleted
-              // delete succeeded --> navigate back to search
-              // Clear out the document state that was stored previously.
-            }
-            )
+            });
       }
 
       // Publish selected logo files.
       if (this.logos) {
         this.publishSelectedLogos();
       }
-    } else {
-      // Save shapefiles.
-      const project = this.convertFormToProject(this.myForm);
+    } else { // If the user is editing an existing project.
       project._id = this.project._id;
+      // Save shapefiles.
       let saveShapefileObservables: Observable<Document|HttpErrorResponse>[] = [];
       this.shapefileDocuments.forEach(doc => {
         // Only queue shapfiles to be saved if they haven't been saved before.
@@ -788,37 +857,49 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         }
       });
 
-      if ( this.bannerImageDocument && ! this.removeBannerImage && this.bannerImageModified ) {
-        const bannerImageFormData = new FormData();
-        bannerImageFormData.append('upfile', this.bannerImageDocument.upfile);
-        bannerImageFormData.append('project', this.project._id);
-        bannerImageFormData.append('documentFileName', this.bannerImageDocument.documentFileName);
-        bannerImageFormData.append('displayName',  this.bannerImageDocument.documentFileName);
-        bannerImageFormData.append('documentSource', 'BANNER');
-        this.documentService.add(bannerImageFormData)
-          .subscribe((res) => {
-            // do nothing here - see onCompleted() function below
-            this.documentService.publish(res._id)
-              .subscribe(
-                res => res,
-                error => {
-                  alert('Could not publish banner image. Please publish manually in project documents section.');
-                }
-              )
-            },
-            error => {
-              console.error('Error:', error);
-              alert('Uh-oh, couldn\'t save banner image.');
-            },
-            () => {}
-            )
+      if (this.bannerImageDocument &&
+          this.project.backgroundImage &&
+          this.bannerImageDocument._id !== this.project.backgroundImage) {
+        /**
+         * If the current banner image doesn't match the originally-loaded one,
+         * delete the original, then save the new one.
+         */
+        const bannerImageToDelete = new Document();
+        const bannerImageFormData = this.getBannerImageFormData();
 
-      } else if (this.bannerImageDocument && this.removeBannerImage) {
-        this.documentService.delete(this.bannerImageDocument)
-          .subscribe(res => res,
-          error => {
-            alert('Could not delete banner image. Please delete manually in project documents section.');
-          })
+        bannerImageToDelete._id = this.project.backgroundImage;
+        bannerImageFormData.append('project', this.project._id);
+
+        this.documentService.delete(bannerImageToDelete)
+          .subscribe(
+            () => {
+              this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
+            },
+            (error) => {
+              // Still add and publish the new banner image. We just need the user to delete it in this case.
+              alert('Could not delete banner image. Please delete manually in project documents section.');
+              this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
+            });
+      } else if (this.bannerImageDocument && !this.project.backgroundImage) {
+        // If the banner image document is being selected by the user for the first time.
+        const bannerImageFormData = this.getBannerImageFormData();
+        bannerImageFormData.append('project', this.project._id);
+
+        this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
+      } else if (!this.bannerImageDocument) {
+        // Remove the banner image entirely.
+        const bannerImageToDelete = new Document();
+        bannerImageToDelete._id = this.project.backgroundImage;
+        this.documentService.delete(bannerImageToDelete)
+          .subscribe(
+            (res) => {
+              // Remove the background image value now that it's been deleted.
+              project.backgroundImage = null;
+              this.updateExistingProject(project);
+            },
+            (error) => {
+              alert('Could not delete banner image. Please delete manually in project documents section.');
+            });
       }
 
       // Publish selected logo files.
@@ -851,22 +932,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
             complete: () => {}
           });
       }
-
-      this.projectService.save(project)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          () => { // onCompleted.
-            this.clearStorageService();
-            this.loading = false;
-            this.router.navigated = false;
-            this.openSnackBar('This project was created successfully.', 'Close');
-            this.router.navigate(['/p', this.project._id, 'project-details']);
-          },
-          error => {
-            console.error('error =', error);
-            alert('Uh-oh, couldn\'t edit project');
-          },
-        );
     }
   }
 
@@ -884,9 +949,16 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  public addBannerDocument(files) {
+  /**
+   * Add/replace a banner image for the project.
+   *
+   * @param {File[]} files An array of File objects.
+   * @return {void}
+   */
+  public updateBannerDocument(files: File[]): void {
     if (files && files[0]) {
       this.bannerImageDocument = new Document();
+      this.bannerImageDocument._id = '';
       this.bannerImageDocument.upfile = files[0];
       this.bannerImageDocument.documentFileName = files[0].name;
       this.removeBannerImage = false;
@@ -896,11 +968,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  public deleteBannerDocument(doc: Document) {
-    if (doc && this.bannerImageDocument) {
-      this.removeBannerImage = true;
-      this.bannerImageModified = true;
-    }
+  /**
+   * Delete the banner image by "unassigning" it from bannerImageDocument.
+   *
+   * @return {void}
+   */
+  public deleteBannerDocument() {
+    this.bannerImageDocument = null;
   }
 
   public addDocuments(files: FileList) {

@@ -1,5 +1,4 @@
 import { CommentPeriod } from './commentPeriod';
-import { Document } from './document';
 import * as moment from 'moment';
 
 export class Project {
@@ -12,6 +11,7 @@ export class Project {
   engagementStatus: String;
   logos: ProjectLogo[];
   backgroundInfo: String;
+  backgroundImage: string;
   engagementLabel: String;
   engagementInfo: String;
   documentInfo: String;
@@ -74,6 +74,7 @@ export class Project {
     this.engagementStatus = obj && obj.engagementStatus || undefined;
     this.logos            = obj && obj.logos || undefined;
     this.backgroundInfo = obj && obj.backgroundInfo || undefined;
+    this.backgroundImage = obj && obj.backgroundImage || undefined;
     this.engagementLabel = obj && obj.engagementLabel || undefined;
     this.engagementInfo = obj && obj.engagementInfo || undefined;
     this.documentInfo = obj && obj.documentInfo || undefined;
@@ -146,8 +147,8 @@ export class Project {
 }
 
 export interface ProjectLogo {
-  document: string,
-  name: string,
-  alt: string,
-  link: string
+  document: string;
+  name: string;
+  alt: string;
+  link: string;
 }
