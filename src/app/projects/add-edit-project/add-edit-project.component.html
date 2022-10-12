@@ -60,15 +60,15 @@
         <div class="label-pair med">
           <div class="form-group mb-0">
             <label for="shapeFile">Upload Project Banner Image</label>
-            <app-file-upload *ngIf="!bannerImageDocument || removeBannerImage" [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
-              (filesChange)="addBannerDocument($event); projectFiles = []"></app-file-upload>
+            <app-file-upload *ngIf="!bannerImageDocument" [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
+              (filesChange)="updateBannerDocument($event); projectFiles = []"></app-file-upload>
             <br>
-            <div class="doc-list mb-3" *ngIf="bannerImageDocument && ! removeBannerImage">
+            <div class="doc-list mb-3" *ngIf="bannerImageDocument">
                 <span class="cell name" [title]="bannerImageDocument.displayName || ''">
                   <span class="cell__txt-content">{{bannerImageDocument.documentFileName}}</span>
                 </span>
                 <span class="cell actions">
-                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteBannerDocument(bannerImageDocument)">
+                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteBannerDocument()">
                     <i class="material-icons">delete</i>
                   </button>
                 </span>
