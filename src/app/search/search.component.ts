@@ -102,7 +102,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           this._changeDetectionRef.detectChanges();
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
 
           // update variables on error
           this.searching = false;
@@ -140,7 +140,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     params['currentPage'] = this.currentPage ? this.currentPage : 1;
     params['pageSize'] = this.pageSize ? this.pageSize : 10;
 
-    // console.log('params =', params);
     this.router.navigate(['search', params]);
   }
 

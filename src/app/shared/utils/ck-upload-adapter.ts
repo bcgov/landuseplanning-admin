@@ -52,15 +52,15 @@ export class CkUploadAdapter {
                     });
                   },
                   error => {
-                    // Leaving this console.log for now until we have tested and verified on the server.
-                    console.error('CK publish error =', error);
+                    // Leaving this console.error for now until we have tested and verified on the server.
+                    console.error(error);
                     reject(error);
                   }
                 )
             },
             error => {
-              // Leaving this console.log for now until we have tested and verified on the server.
-              console.error('CK upload error =', error);
+              // Leaving this console.error for now until we have tested and verified on the server.
+              console.error(error);
               reject(error);
             },
             () => {

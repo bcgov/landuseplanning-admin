@@ -71,7 +71,7 @@ export class ApiService {
 
   handleError(error: any): Observable<never> {
     const reason = error.message ? (error.error ? `${error.message} - ${error.error.message}` : error.message) : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
-    console.log('API error =', reason);
+    console.error('API error =', reason);
     if (error && error.status === 403 && !this.keycloakService.isKeyCloakEnabled()) {
       window.location.href = '/admin/login';
     }
@@ -687,9 +687,6 @@ export class ApiService {
       });
     }
     queryString += `&fields=${this.buildValues(fields)}`;
-
-    console.log('the query string', queryString)
-
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -961,7 +958,6 @@ export class ApiService {
       });
     }
     queryString += `&fields=${this.buildValues(fields)}`;
-    console.log(queryString);
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
@@ -1035,18 +1031,15 @@ export class ApiService {
     ];
     //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
     const queryString = `emailSubscribe?project=${projectId}&fields=${this.buildValues(fields)}`;
-    console.log('the request', `emailSubscribe?fields=${this.buildValues(fields)}`)
     return this.http.get<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 
   deleteEmail(emailAddress: string, projectId: string): Observable<EmailSubscribe> {
-    console.log('Delete email API', emailAddress, projectId);
     const fields = [
       'email',
     ];
     //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
     const queryString = `emailSubscribe/${emailAddress}/project/${projectId}`;
-    console.log(this.pathAPI, '/', queryString);
     return this.http.delete<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 

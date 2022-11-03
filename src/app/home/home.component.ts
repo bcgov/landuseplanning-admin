@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.numProjects = value;
         },
         () => {
-          console.log('error = could not count projects');
+          console.error('could not count projects');
         }
       );
   }

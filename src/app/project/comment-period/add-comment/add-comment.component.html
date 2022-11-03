@@ -30,7 +30,7 @@
     <div class="spinner-new rotating"></div>
   </div>
   <div *ngIf="!externalEngagementTool else externalToolText">
-  <form [formGroup]="addCommentForm" (ngSubmit)="register()">
+  <form [formGroup]="addCommentForm">
     <div class="form-row">
       <div class="form-group col-md-8">
         <div class="btn-group btn-group-toggle">

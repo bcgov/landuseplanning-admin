@@ -75,7 +75,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
         this.loading = false;
       })
       .catch(error => {
-        console.log('Error getting email subscribe data', error);
+        console.error(error);
         // alert('Uh-oh, error getting email address');
       });
   }
@@ -92,7 +92,6 @@ export class ProjectEmailSubscribeComponent implements OnInit {
           }
         );
       });
-      console.log('List', list);
       this.tableData = new TableObject(
         EmailSubscribeTableRowsComponent,
         list,

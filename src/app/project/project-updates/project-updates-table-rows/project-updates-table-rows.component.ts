@@ -67,7 +67,7 @@ export class ProjectUpdatesTableRowsComponent implements OnInit, OnDestroy, Tabl
           this._changeDetectionRef.detectChanges();
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
         });
   }
 
@@ -79,13 +79,12 @@ export class ProjectUpdatesTableRowsComponent implements OnInit, OnDestroy, Tabl
           this._changeDetectionRef.detectChanges();
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
         }
       );
   }
 
   goToItem(activity) {
-    console.log('activity:', activity);
     this.router.navigate(['p', this.currentProject._id, 'project-updates', activity._id , 'edit']);
   }
 

@@ -22,8 +22,6 @@ describe('Test convertFormGroupNGBDateToJSDate and convertJSDateToNGBDate method
       calculated5 = myInstance.convertJSDateToNGBDate(inputJSDate3);
       calculated6 = myInstance.convertFormGroupNGBDateToJSDate(NGBdate3);
       calculated7 = myInstance.convertJSDateToNGBDate(inputJSDate4);
-       console.log('calculated  NGBdate is :', calculated7 );
-       console.log('Expected JSdate is : ', inputJSDate4);
 
   it('Test 1: should create a NGB date 2010 july 14', () => {
     // console.debug('calculated NGBDate is:' , calculated1);

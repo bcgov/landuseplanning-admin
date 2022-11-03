@@ -13,7 +13,7 @@
 
 <div class="container-fluid-padding">
   <div class="form-group mb-0">
-    <form [formGroup]="myForm" (ngSubmit)="register(myForm)" novalidate>
+    <form [formGroup]="myForm" novalidate>
       <div class="form-row">
         <div *ngFor="let label of labels" class="form-group col">
           <button type="button" class="col-12 btn" (click)="toggleSelected(label)"

@@ -71,7 +71,7 @@ export class ProjectPermissionsComponent implements OnInit {
         this.loading = false;
       })
       .catch(error => {
-        console.log('Error getting users data', error);
+        console.error(error);
       });
   }
 

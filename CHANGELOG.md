@@ -1,3 +1,6 @@
+### 1.4.2 Nov 3, 2022
+* Remove unneeded console.log calls and convert errors to console.error [DESENG-5](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-5)
+
 ### 1.4.1 Oct 12, 2022
 * Banner image not loading on frontend [DESENG-181](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-181)
 * Banner image not deleting [DESENG-182](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-182)

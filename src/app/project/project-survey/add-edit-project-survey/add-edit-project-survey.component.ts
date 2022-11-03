@@ -230,7 +230,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     const data = editor.getData();
 
     if (data.length === 0) {
-      console.log('error!', this.surveyQuestionsForm);
+      console.error('error!', this.surveyQuestionsForm);
 
 
     }
@@ -324,7 +324,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
         .subscribe(
           () => { },
           error => {
-            console.log('error =', error);
+            console.error(error);
             alert('Uh-oh, couldn\'t save survey');
           },
           () => { // onCompleted
@@ -335,13 +335,12 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
           }
         );
     } else {
-      console.log('Attempting to add new survey:', this.survey);
       this.surveyService.add(this.survey)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           () => { },
           error => {
-            console.log('error =', error);
+            console.error(error);
             alert('Uh-oh, couldn\'t add new survey');
             this.loading = false;
           },

@@ -36,7 +36,7 @@
 </div>
 
 <main *ngIf="!loading" class="container-fluid-padding">
-  <form *ngIf="commentReviewForm" [formGroup]="commentReviewForm" (ngSubmit)="register()">
+  <form *ngIf="commentReviewForm" [formGroup]="commentReviewForm">
     <div class="form-row">
       <div class="form-group col-md-8">
         <div class="btn-group btn-group-toggle">

@@ -44,17 +44,11 @@ export class AddLabelComponent implements OnInit, OnDestroy {
 
     this.labels = this.storageService.state.labels;
     this.back = this.storageService.state.back;
-    console.log('labels:', this.labels);
   }
 
   toggleSelected(label: any) {
     label.selected = !label.selected;
     this.storageService.state.labels = this.labels;
-  }
-
-  register(myForm: FormGroup) {
-    console.log('Successful registration');
-    console.log(myForm);
   }
 
   cancel() {

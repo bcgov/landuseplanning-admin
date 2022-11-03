@@ -75,7 +75,6 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
     if (!this.isEditing) {
       if (this.navigationObject) {
         // We're coming from a different component so we have to preserve our nav stack.
-        console.log('nav object', this.navigationObject);
         let nextBreadcrumbs = [...this.navigationObject.breadcrumbs];
         nextBreadcrumbs.push(
           {
@@ -162,7 +161,6 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
     if (!this.isEditing) {
       this.userService.add(user)
         .subscribe(item => {
-          console.log('item', item);
           if (this.navigationStackUtils.getLastBackUrl()) {
             this.router.navigate(this.navigationStackUtils.popNavigationStack().backUrl);
           } else {
@@ -173,7 +171,6 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
       user._id = this.contactId;
       this.userService.save(user)
         .subscribe(item => {
-          console.log('item', item);
           this.router.navigate(['/contacts']);
         });
     }

@@ -136,7 +136,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
           this.comment = newComment;
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
           alert('Uh-oh, couldn\'t edit comment');
         },
         () => {
@@ -213,9 +213,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
   }
 
   public downloadDocument(document: Document) {
-    return this.api.downloadDocument(document).then(() => {
-      console.log('Download initiated for file(s)');
-    });
+    return this.api.downloadDocument(document);
   }
 
   public toggleDocumentPublish(document: any, action: String) {
@@ -225,12 +223,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       document.eaoStatus = 'Rejected';
     }
   }
-
-  public register() {
-    console.log('Successful registration');
-    console.log(this.commentReviewForm);
-  }
-
+    
   public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,

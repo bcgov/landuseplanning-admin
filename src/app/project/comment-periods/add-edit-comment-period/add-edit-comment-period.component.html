@@ -43,7 +43,7 @@
 </nav>
 
 <section *ngIf="!loading" class="container-fluid-padding">
-    <form [formGroup]="commentPeriodForm" (ngSubmit)="register(commentPeriodForm)">
+    <form [formGroup]="commentPeriodForm">
       <div class="text-right">
         <button class="btn btn-outline-primary" type="cancel" (click)="onCancel()">Cancel</button>
         &nbsp;

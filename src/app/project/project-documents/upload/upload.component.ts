@@ -100,11 +100,6 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.router.navigate(['/p', this.currentProject._id, 'project-files', 'upload', 'add-label']);
   }
 
-  register(myForm: FormGroup) {
-    console.log('Successful registration');
-    console.log(myForm);
-  }
-
   public uploadDocuments() {
     this.loading = true;
 
@@ -142,7 +137,7 @@ export class UploadComponent implements OnInit, OnDestroy {
           // do nothing here - see onCompleted() function below
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
           alert('Uh-oh, couldn\'t delete project');
           // TODO: should fully reload project here so we have latest non-deleted objects
         },

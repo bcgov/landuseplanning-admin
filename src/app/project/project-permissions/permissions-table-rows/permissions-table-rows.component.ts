@@ -58,7 +58,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
           this.entries = returnedUsers;
         },
         error => {
-          console.log('error:', error);
+          console.error(error);
           alert('Uh-oh, couldn\'t remove user from project.');
           this.router.navigate(['/p', this.currentProject._id ]);
         },
@@ -74,7 +74,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
 
         },
         error => {
-          console.log('error:', error);
+          console.error(error);
           alert('Uh-oh, couldn\'t add user to project.');
           this.router.navigate(['/p', this.currentProject._id ]);
         },
