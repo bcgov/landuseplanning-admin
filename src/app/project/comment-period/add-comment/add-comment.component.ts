@@ -132,7 +132,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
       .subscribe(
         res => { },
         error => {
-          console.log('error =', error);
+          console.error(error);
           alert('Uh-oh, couldn\'t add comment');
         },
         () => { // onCompleted
@@ -201,9 +201,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   }
 
   public downloadFile(document: Document) {
-    return this.api.downloadDocument(document).then(() => {
-      console.log('Download initiated for file(s)');
-    });
+    return this.api.downloadDocument(document);
   }
 
   public toggleDocumentPublish(document: any, action: String) {
@@ -263,11 +261,6 @@ export class AddCommentComponent implements OnInit, OnDestroy {
       this.commentFiles = this.commentFiles.filter(item => (item.name !== doc.documentFileName));
       this.documents = this.documents.filter(item => (item.documentFileName !== doc.documentFileName));
     }
-  }
-
-  public register() {
-    console.log('Successful registration');
-    console.log(this.addCommentForm);
   }
 
   public openSnackBar(message: string, action: string) {

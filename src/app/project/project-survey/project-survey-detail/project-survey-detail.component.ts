@@ -76,7 +76,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
         .subscribe(
           () => { },
           error => {
-            console.log('error =', error);
+            console.error(error);
             alert('Uh-oh, couldn\'t delete survey');
           },
           () => { // onCompleted
@@ -120,9 +120,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
   // }
 
   // public downloadDocument(document) {
-  //   return this.api.downloadDocument(document).then(() => {
-  //     console.log('Download initiated for file');
-  //   });
+  //   return this.api.downloadDocument(document);
   // }
 
   public checkIfCanDelete() {

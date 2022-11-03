@@ -177,9 +177,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
             promises.push(this.api.downloadDocument(this.documents.filter(d => d._id === item._id)[0]));
           }
         });
-        return Promise.all(promises).then(() => {
-          console.log('Download initiated for file(s)');
-        });
+        return Promise.all(promises);
         break;
       case 'copyLink':
         break;

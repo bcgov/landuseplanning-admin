@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
           this.error = 'Username or password is incorrect';
           this.loading = false;
         }

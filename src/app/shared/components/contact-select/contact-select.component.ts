@@ -91,7 +91,6 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res) {
-          console.log('This should be users', res);
           if (res.users[0].data.meta && res.users[0].data.meta.length > 0) {
             this.tableParams.totalListItems = res.users[0].data.meta[0].searchResultsTotal;
             this.users = res.users[0].data.searchResults;

@@ -298,13 +298,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // Submit
     if (this.isEditing) {
-      console.log('attempting to save cp', this.commentPeriod)
       this.commentPeriodService.save(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           () => { },
           error => {
-            console.log('error =', error);
+            console.error(error);
             alert('Uh-oh, couldn\'t edit comment period');
           },
           () => { // onCompleted
@@ -315,13 +314,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         );
     } else {
       this.commentPeriod.project = this.currentProject._id;
-      console.log('Attempting to add comment period:', this.commentPeriod);
       this.commentPeriodService.add(this.commentPeriod)
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           () => { },
           error => {
-            console.log('error =', error);
+            console.error(error);
             alert('Uh-oh, couldn\'t add new comment period');
           },
           () => { // onCompleted
@@ -352,11 +350,6 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/p', this.currentProject._id, 'comment-periods', 'add', 'add-documents']);
     }
-  }
-
-  public register() {
-    console.log('Successful registration');
-    console.log(this.commentPeriodForm);
   }
 
   private initOpenHouseRow(): FormGroup {

@@ -126,13 +126,7 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
     }
   }
 
-  register(myForm: FormGroup) {
-    console.log('Successful registration');
-    console.log(myForm);
-  }
-
   buildForm(data) {
-    console.log('data:', data);
     this.myForm = new FormGroup({
       'headline': new FormControl(data.headline),
       'content': new FormControl(data.content),

@@ -28,7 +28,6 @@ export class EmailSubscribeTableRowsComponent implements OnInit, TableComponent 
   ) { }
 
   async ngOnInit() {
-    //console.log('This.data', this.data);
     this.currentProject = this.storageService.state.currentProject.data;
     this.entries = this.data.data;
     this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
@@ -57,18 +56,15 @@ export class EmailSubscribeTableRowsComponent implements OnInit, TableComponent 
 
   internalDeleteActivity() {
     // Delete the Activity
-    console.log('This.entries before before: ', this.entries);
 
     this.emailSubscribeService.deleteEmail(this.targetEmail, this.currentProject._id)
       .subscribe(
         () => {
-          console.log('This.entries before: ', this.entries);
           this.entries.splice(this.entries.indexOf(this.targetEmail), 1);
-          console.log('This.entries after: ', this.entries);
           this._changeDetectionRef.detectChanges();
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
         });
   }
 

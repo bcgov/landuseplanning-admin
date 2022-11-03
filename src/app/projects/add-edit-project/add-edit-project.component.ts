@@ -166,8 +166,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
                 }
               });
         } else {
+          this.buildForm();
           this.shapefileDocuments = [];
           this.allBannerImageDocuments = null;
+          this.loading = false;
         }
       }
     },
@@ -210,11 +212,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @param resolverData The route resolved data to build into a form.
    * @returns {void}
    */
-  buildForm(resolverData: { project: Project }): void {
+  buildForm(resolverData?: { project: Project }): void {
     if (this.storageService.state.form) {
       // TODO: Save the projectID if it was originally an edit.
       this.myForm = this.storageService.state.form;
-    } else if (!(Object.keys(resolverData).length === 0 && resolverData.constructor === Object)) {
+    } else if (resolverData && !(Object.keys(resolverData).length === 0 && resolverData.constructor === Object)) {
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);

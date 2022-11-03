@@ -146,7 +146,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
         .subscribe(
           () => { },
           error => {
-            console.log('error =', error);
+            console.error(error);
             alert('Uh-oh, couldn\'t delete comment period');
           },
           () => { // onCompleted
@@ -195,9 +195,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
 
 
   public downloadDocument(document) {
-    return this.api.downloadDocument(document).then(() => {
-      console.log('Download initiated for file');
-    });
+    return this.api.downloadDocument(document);
   }
 
   public checkIfCanDelete() {

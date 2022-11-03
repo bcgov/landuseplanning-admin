@@ -137,7 +137,6 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     // Save all the elements to all the documents.
-    console.log('this.myForm:', this.myForm);
     // go through and upload one at a time.
     let observables = [];
 
@@ -189,7 +188,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
           this.storageService.state.selectedDocs = d;
         },
         error => {
-          console.log('error =', error);
+          console.error(error);
           alert('Uh-oh, couldn\'t delete project');
           // TODO: should fully reload project here so we have latest non-deleted objects
         },
@@ -204,7 +203,6 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   }
 
   addLabels() {
-    console.log('Adding labels');
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'labels', data: this.labels };
     this.storageService.state.back = { url: ['/p', this.currentProject._id, 'project-files', 'edit'], label: 'Edit File(s)' };
@@ -227,7 +225,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
             // do nothing here - see onCompleted() function below
           },
           error => {
-            console.log('error =', error);
+            console.error(error);
             alert('Uh-oh, couldn\'t update document\'s publish status');
             // TODO: should fully reload project here so we have latest non-deleted objects
           },
@@ -240,11 +238,6 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
           }
         );
     });
-  }
-
-  register(myForm: FormGroup) {
-    console.log('Successful registration');
-    console.log(myForm);
   }
 
   public openSnackBar(message: string, action: string) {

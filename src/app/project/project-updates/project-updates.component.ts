@@ -123,7 +123,6 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
 
   addUpdate(router = this.router, currentProject = this.currentProject): void {
     // this.storageService.state.currentProject = this.currentProject;
-    console.log('the router', router)
     router.navigate(['p', currentProject._id, 'project-updates', 'add']);
   }
 
