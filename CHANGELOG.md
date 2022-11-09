@@ -1,3 +1,6 @@
+### 1.5.1 Nov 9, 2022
+* Added doc blocks. [DESENG-95](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-95)
+
 ### 1.5.0 Nov 8, 2022
 * Implement way to run individual tests [DESENG-111](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-111)
 * Update README to only use h2 tags and below

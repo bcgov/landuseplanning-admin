@@ -557,6 +557,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
+  /**
+   * Clears the local storage of project and form details.
+   * 
+   * @returns {void}
+   */
   private clearStorageService() {
     this.storageService.state.form = null;
     this.storageService.state.selectedOrganization = null;
@@ -566,6 +571,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     this.navigationStackUtils.popNavigationStack();
   }
 
+  /**
+   * @todo Delete?
+   */
   public linkOrganization() {
     this.storageService.state.form = this.myForm;
     this.setNavigation();
@@ -576,6 +584,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Select an existing contact for form or create a new one
+   * 
+   * @param {string} contact The selected contact
+   * @returns {void}
+   */
   public contactSelect(contact: string) {
     this.storageService.state.form = this.myForm;
     this.storageService.state.contactType = contact;
@@ -587,6 +601,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Validates the form and alerts the user if any mistakes are made.
+   * 
+   * @returns {boolean}
+   */
   private validateForm() {
     if (this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null) {
       alert('Name cannot be empty.');
@@ -620,6 +639,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Inspects the agreements and makes sure that they are valid. If not, a boolean error flag is returned.
+   * 
+   * @returns {boolean}
+   */
   private agreementFieldsError() {
     let agreements = this.myForm.controls.agreements;
     for (let i = 0; agreements.value.length > i; i++) {
@@ -631,6 +655,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Adds an existing plan to the completed fields if its existingLandUsePlan and existingLandUsePlanURL values are not null.
+   * 
+   * @returns {array}
+   */
   private existingPlanFullFields() {
     let completedFields = [];
     let existingPlans = this.myForm.controls.existingLandUsePlans;
@@ -642,6 +671,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     return completedFields;
   }
 
+  /**
+   * Adds an agreement to the completed fields if its agreementName and agreementUrl values are not null.
+   * 
+   * @returns {array}
+   */
   private agreementsFullFields() {
     let completedFields = [];
     let agreements = this.myForm.controls.agreements;
@@ -937,6 +971,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Removes the currently selected contact's information if they are a project director or project lead.
+   * 
+   * @param {string} contact The selected contact
+   * @returns {void}
+   */
   public removeSelectedContact(contact: string) {
     if (contact === 'projectDirector') {
       this.storageService.state.projectDirector = null;
@@ -1030,6 +1070,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * 
+   * @param {string} message A snack bar notification message
+   * @param {string} action A snack bar notification action
+   * @returns {null}
+   */
   public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
@@ -1053,6 +1100,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     };
   }
 
+  /**
+   * Unsubscribe from observables
+   * 
+   * @returns {null}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
