@@ -1,4 +1,4 @@
-# bcgov/landuseplanning-admin
+## bcgov/landuseplanning-admin
 
 Administrative front-end for the Land Use Planning application. Based on the PRC Application [bcgov/nrts-prc-admin](https://github.com/bcgov/nrts-prc-admin).
 
@@ -6,7 +6,7 @@ Administrative front-end for the Land Use Planning application. Based on the PRC
 * [Public](https://github.com/bcgov/landuseplanning-public) - front-end for public users.
 * [Api](https://github.com/bcgov/landuseplanning-api) - back-end that serves both admin and public requests.
 
-# Pre-requisites
+## Pre-requisites
 
 | Package | Version |
 | ------- | ------- |
@@ -42,15 +42,29 @@ ng new my-app --routing --style scss
 
 Instructions on how running tests unit tests and end-to-end tests can be found in our [test documentation](https://github.com/bcgov/eagle-dev-guides/blob/master/dev_guides/angular_scaffolding.md#running-tests).
 
-# OpenShift Build and Deployment
+### Running a single test
+
+It is possible to run a single `describe` or `it`  block by changing it to `fdescribe` or `fit` respectively. The prepended `f` stands for "focus." As of Oct. 13, 2022, the version of Karma we're using only provides this method of running portions of the test code. For example:
+
+```
+fdescribe('Example test block', () => {
+  it('Checks the veractiy of "true"', () => {
+    expect(true).toBeTruthy();
+  });
+});
+```
+
+Now if you run `ng test`, only this `fdescribe` block will run.
+
+## OpenShift Build and Deployment
 
 For dev, test, and production builds on OpenShift/Jenkins see [openshift/README.md](https://github.com/bcgov/landuseplanning-admin/blob/master/openshift/README.md) for detailed instructions on how to setup in an OpenShift environment using [nginx](https://www.nginx.com/).
 
-# How to Contribute
+## How to Contribute
 
 Feel free to create pull requests from the default "dev" branch, click here to create one automatically: <https://github.com/bcgov/landuseplanning-admin/pull/new/dev>
 
-# Developer Documentation
+## Developer Documentation
 
 ## Common Components
 
