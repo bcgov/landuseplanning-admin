@@ -1,3 +1,8 @@
+### 1.5.0 Nov 8, 2022
+* Implement way to run individual tests [DESENG-111](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-111)
+* Update README to only use h2 tags and below
+* Fix incorrectly installed node_module causing errors during testing
+
 ### 1.4.2 Nov 3, 2022
 * Remove unneeded console.log calls and convert errors to console.error [DESENG-5](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-5)
 

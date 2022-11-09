@@ -254,11 +254,6 @@ describe('SearchService', () => {
             expect(result[1]['isCreated']).toBe(undefined);
           });
 
-          it('has a clFile property padded to 7 digits', () => {
-            expect(result[0]['clFile']).toBe('0000011');
-            expect(result[1]['clFile']).toBe('0000022');
-          });
-
           it('has an appStatus', () => {
             // expect(result[0].appStatus).toBe('someStatusString');
           });
@@ -454,10 +449,6 @@ describe('SearchService', () => {
 
           it('does not add an isCreated property set to true', () => {
             expect(tantalisResult[0]['isCreated']).toBe(undefined);
-          });
-
-          it('has a clFile property padded to 7 digits', () => {
-            expect(tantalisResult[0].clFile).toBe('0000011');
           });
 
           // it('has an appStatus', () => {
