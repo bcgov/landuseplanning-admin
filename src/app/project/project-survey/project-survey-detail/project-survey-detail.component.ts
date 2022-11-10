@@ -127,6 +127,11 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     this.canDeleteSurvey = true;
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

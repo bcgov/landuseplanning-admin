@@ -559,7 +559,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Clears the local storage of project and form details.
-   * 
+   *
    * @returns {void}
    */
   private clearStorageService() {
@@ -586,7 +586,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Select an existing contact for form or create a new one
-   * 
+   *
    * @param {string} contact The selected contact
    * @returns {void}
    */
@@ -603,7 +603,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Validates the form and alerts the user if any mistakes are made.
-   * 
+   *
    * @returns {boolean}
    */
   private validateForm() {
@@ -641,7 +641,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Inspects the agreements and makes sure that they are valid. If not, a boolean error flag is returned.
-   * 
+   *
    * @returns {boolean}
    */
   private agreementFieldsError() {
@@ -657,7 +657,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Adds an existing plan to the completed fields if its existingLandUsePlan and existingLandUsePlanURL values are not null.
-   * 
+   *
    * @returns {array}
    */
   private existingPlanFullFields() {
@@ -673,7 +673,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Adds an agreement to the completed fields if its agreementName and agreementUrl values are not null.
-   * 
+   *
    * @returns {array}
    */
   private agreementsFullFields() {
@@ -973,7 +973,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Removes the currently selected contact's information if they are a project director or project lead.
-   * 
+   *
    * @param {string} contact The selected contact
    * @returns {void}
    */
@@ -1072,7 +1072,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
-   * 
+   *
    * @param {string} message A snack bar notification message
    * @param {string} action A snack bar notification action
    * @returns {null}
@@ -1102,8 +1102,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Unsubscribe from observables
-   * 
+   *
    * @returns {null}
+   */
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
    */
   ngOnDestroy() {
     this.ngUnsubscribe.next();

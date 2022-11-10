@@ -58,7 +58,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
     private storageService: StorageService
   ) { }
 
-  ngOnInit() {
+  /**
+   * Set up contacts table entries with data from API.
+   *
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.route.params
       .takeUntil(this.ngUnsubscribe)
       .subscribe(params => {
@@ -80,7 +85,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
       });
   }
 
-  public onSubmit(currentPage = 1) {
+  /**
+   * Submit handler for a search of the contacts table.
+   *
+   * @param {number} currentPage Current page value used for paginated search results.
+   * @return {void}
+   */
+  public onSubmit(currentPage: number = 1): void {
     // dismiss any open snackbar
     // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
 
@@ -101,7 +112,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.router.navigate(['contacts', params]);
   }
 
-  setDocumentRowData() {
+  /**
+   * Set document table data.
+   *
+   * @return {void}
+   */
+  setDocumentRowData(): void {
     if (this.users && this.users.length > 0) {
       const list = [...this.users];
       this.documentTableData = new TableObject(
@@ -112,7 +128,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
     }
   }
 
-  setColumnSort(column) {
+  /**
+   * Update the table params when sorting by a given value(column).
+   *
+   * @param {string} column The column to sort by.
+   * @return {void}
+   */
+  setColumnSort(column: string): void {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
     } else {
@@ -121,17 +143,34 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.onSubmit(this.tableParams.currentPage);
   }
 
-  updateSelectedRow(count) {
+  /**
+   * Set the selected count.
+   *
+   * @param {number} count The count to set.
+   * @return {void}
+   */
+  updateSelectedRow(count: number): void {
     this.selectedCount = count;
   }
 
-  addContact() {
+  /**
+   * Clear the current contact from the storage service, then clear the navigation
+   * stack and send the user to the add new contact page.
+   *
+   * @return {void}
+   */
+  addContact(): void {
     this.storageService.state.contactForm = null;
     this.storageService.state.selectedOrganization = null;
     this.navigationStackUtils.clearNavigationStack();
     this.router.navigate(['contacts', 'add']);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

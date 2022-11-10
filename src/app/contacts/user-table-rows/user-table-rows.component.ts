@@ -21,12 +21,23 @@ export class UserTableRowsComponent implements OnInit {
     private navigationStackUtils: NavigationStackUtils
   ) { }
 
-  ngOnInit() {
+  /**
+   * Set up contacts and pagination data from route resolver data.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.contacts = this.data.data;
     this.paginationData = this.data.paginationData;
   }
 
-  editItem(contact) {
+  /**
+   * Goes to the edit screen for a contact/user.
+   * 
+   * @param {User} contact The user/contact to edit.
+   * @return {void}
+   */
+  editItem(contact): void {
     this.navigationStackUtils.clearNavigationStack();
     this.router.navigate(['c/', contact._id, 'edit']);
   }

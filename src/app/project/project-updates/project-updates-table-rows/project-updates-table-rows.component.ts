@@ -88,6 +88,11 @@ export class ProjectUpdatesTableRowsComponent implements OnInit, OnDestroy, Tabl
     this.router.navigate(['p', this.currentProject._id, 'project-updates', activity._id , 'edit']);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

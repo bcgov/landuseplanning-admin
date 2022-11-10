@@ -223,13 +223,18 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       document.eaoStatus = 'Rejected';
     }
   }
-    
+
   public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

@@ -22,39 +22,88 @@ export class FileUploadComponent {
 
   constructor() { }
 
-  @HostListener('dragover', ['$event']) onDragOver(event) {
+  /**
+   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
+   * the user feedback when using drag/drop in the file picker UI.
+   *
+   * @param {DragEvent} event A drag over event.
+   * @return {void}
+   */
+  @HostListener('dragover', ['$event']) onDragOver(event: DragEvent): void {
     this.dragDropClass = 'droparea';
     event.preventDefault();
   }
 
-  @HostListener('dragenter', ['$event']) onDragEnter(event) {
+  /**
+   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
+   * the user feedback when using drag/drop in the file picker UI.
+   *
+   * @param {DragEvent} event A drag over event.
+   * @return {void}
+   */
+  @HostListener('dragenter', ['$event']) onDragEnter(event: DragEvent): void {
     this.dragDropClass = 'droparea';
     event.preventDefault();
   }
 
-  @HostListener('dragend', ['$event']) onDragEnd(event) {
+  /**
+   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
+   * the user feedback when using drag/drop in the file picker UI.
+   *
+   * @param {DragEvent} event A drag over event.
+   * @return {void}
+   */
+  @HostListener('dragend', ['$event']) onDragEnd(event: DragEvent): void {
     this.dragDropClass = 'dragarea';
     event.preventDefault();
   }
 
-  @HostListener('dragleave', ['$event']) onDragLeave(event) {
+  /**
+   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
+   * the user feedback when using drag/drop in the file picker UI.
+   *
+   * @param {DragEvent} event A drag over event.
+   * @return {void}
+   */
+  @HostListener('dragleave', ['$event']) onDragLeave(event: DragEvent): void {
     this.dragDropClass = 'dragarea';
     event.preventDefault();
   }
 
-  @HostListener('drop', ['$event']) onDrop(event) {
+  /**
+   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
+   * the user feedback when using drag/drop in the file picker UI.
+   *
+   * Also add to selected files when they are dropped in the drop area.
+   *
+   * @param {DragEvent} event A drag over event.
+   * @return {void}
+   */
+  @HostListener('drop', ['$event']) onDrop(event: DragEvent): void {
     this.dragDropClass = 'dragarea';
     event.preventDefault();
     event.stopPropagation();
     this.addFiles(event.dataTransfer.files);
   }
 
-  onFileChange(event) {
+  /**
+   * File change handler. Updates selected files.
+   *
+   * @param {Event} event File selection event.
+   * @return {void}
+   */
+  onFileChange(event): void {
     const files = event.target.files;
     this.addFiles(files);
   }
 
-  addFiles(files: FileList) {
+  /**
+   * Clears error associated with file selection. Validates files and then add them to selected files.
+   *
+   * @param {FileList} files List of files.
+   * @return {void}
+   */
+  addFiles(files: FileList): void {
     this.errors = []; // clear previous errors
 
     if (this.isValidFiles(files)) {
@@ -64,7 +113,15 @@ export class FileUploadComponent {
       this.filesChange.emit(this.files);
     }
   }
-  removeFile(file: File) {
+
+  /**
+   * Clears error associated with file selection.
+   * Remove a file from the selected files list if it's already a member of it.
+   *
+   * @param {File} file File to remove.
+   * @return {void}
+   */
+  removeFile(file: File): void {
     this.errors = []; // clear previous errors
 
     const index = this.files.indexOf(file);
@@ -74,6 +131,12 @@ export class FileUploadComponent {
     this.filesChange.emit(this.files);
   }
 
+  /**
+   * Validate files by checking against the maximum selected files, correct file extensions, maximum size.
+   *
+   * @param {FileList} files Files to validate.
+   * @returns {boolean}
+   */
   private isValidFiles(files: FileList): boolean {
     if (this.maxFiles > 0) { this.validateMaxFiles(files); }
     if (this.fileExt.length > 0) { this.validateFileExtensions(files); }
@@ -81,6 +144,12 @@ export class FileUploadComponent {
     return (this.errors.length === 0);
   }
 
+  /**
+   * Validate that the correct amount of files have been selected(not too many).
+   *
+   * @param {FileList} files The files to validate.
+   * @returns {boolean}
+   */
   private validateMaxFiles(files: FileList): boolean {
     if ((files.length + this.files.length) > this.maxFiles) {
       this.errors.push('Too many files');
@@ -90,6 +159,12 @@ export class FileUploadComponent {
     return true;
   }
 
+  /**
+   * Validate files are the correct extension.
+   *
+   * @param {FileList} files The files to validate.
+   * @returns {boolean}
+   */
   private validateFileExtensions(files: FileList): boolean {
     let ret = true;
     const extensions = this.fileExt.split(',').map(function (x) { return x.toUpperCase().trim(); });
@@ -104,6 +179,12 @@ export class FileUploadComponent {
     return ret;
   }
 
+  /**
+   * Validate that files are not too large.
+   *
+   * @param {FileList} files The files to validate.
+   * @returns {boolean}
+   */
   private validateFileSizes(files: FileList): boolean {
     let ret = true;
     for (let i = 0; i < files.length; i++) {

@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import { Topic } from 'app/models/topic';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { User } from 'app/models/user';
 import { UserService } from 'app/services/user.service';
@@ -42,6 +41,11 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
     private userService: UserService
   ) { }
 
+  /**
+   * Get the data for the contact and populate form if editing existing contact.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     if (this.navigationStackUtils.getNavigationStack()) {
       this.navigationObject = this.navigationStackUtils.getLastNavigationObject();
@@ -71,7 +75,13 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
       });
   }
 
-  private setBreadcrumbs() {
+  /**
+   * When the contact view is loaded, preserve and existing and amend to the breadcrumbs.
+   * Also, update the navigation stack with the add contact link.
+   * 
+   * @return {void}
+   */
+  private setBreadcrumbs(): void {
     if (!this.isEditing) {
       if (this.navigationObject) {
         // We're coming from a different component so we have to preserve our nav stack.
@@ -118,7 +128,13 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildForm(data) {
+  /**
+   * Take User data and populate a form with it.
+   * 
+   * @param {User} data The user data to populate into the contact form.
+   * @return {void}
+   */
+  private buildForm(data): void {
     this.contactForm = new FormGroup({
       'firstName': new FormControl(data.firstName),
       'lastName': new FormControl(data.lastName),
@@ -127,11 +143,22 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
     });
   }
 
-  private clearStorageService() {
+  /**
+   * Clear storage service of contact data.
+   * 
+   * @return {void}
+   */
+  private clearStorageService(): void {
     this.storageService.state.contactForm = null;
   }
 
-  public onSubmit() {
+  /**
+   * Handle the form submission by validating certain aspects of the form,
+   * preparing the data, then posting it to the API.
+   * 
+   * @returns {void}
+   */
+  public onSubmit(): void {
     // Validating form
     // TODO: cover all validation cases.
     if (this.contactForm.controls.firstName.value === '') {
@@ -176,7 +203,13 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onCancel() {
+  /**
+   * When the user hits "cancel" exit this view and return the user to the contacts overview
+   * page or to their previous position in the navigation stack.
+   * 
+   * @return {void}
+   */
+  public onCancel(): void {
     this.clearStorageService();
     let backUrl = this.navigationStackUtils.getLastBackUrl();
     if (backUrl === null) {
@@ -187,11 +220,21 @@ export class AddEditContactComponent implements OnInit, OnDestroy {
     }
   }
 
-  get phoneNumber() {
+  /**
+   * Getter for the phoneNumber form entry.
+   * 
+   * @return {AbstractControl}
+   */
+  get phoneNumber(): AbstractControl {
     return this.contactForm.get('phoneNumber');
   }
 
-  ngOnDestroy() {
+  /**
+   * Terminate subscriptions when component is unmounted.
+   * 
+   * @return {void}
+   */
+  ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

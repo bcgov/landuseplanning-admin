@@ -192,6 +192,11 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
     this.router.navigate(url);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

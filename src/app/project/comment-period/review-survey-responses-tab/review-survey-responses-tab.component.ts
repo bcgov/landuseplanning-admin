@@ -229,6 +229,11 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     this.surveyResponseService.getAllByProjectId
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
