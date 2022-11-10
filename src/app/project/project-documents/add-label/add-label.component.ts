@@ -55,6 +55,11 @@ export class AddLabelComponent implements OnInit, OnDestroy {
     this.router.navigate(this.back.url);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

@@ -51,6 +51,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

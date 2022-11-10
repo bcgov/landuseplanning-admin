@@ -152,6 +152,11 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', this.currentProject._id, 'project-surveys', 'add']);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

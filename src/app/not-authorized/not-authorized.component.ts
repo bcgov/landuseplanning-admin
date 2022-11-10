@@ -24,6 +24,11 @@ export class NotAuthorizedComponent implements OnInit, OnDestroy {
     window.location.href = window.location.origin + '/admin/search';
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

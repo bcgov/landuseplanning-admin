@@ -214,6 +214,11 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
     this.onSubmit();
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

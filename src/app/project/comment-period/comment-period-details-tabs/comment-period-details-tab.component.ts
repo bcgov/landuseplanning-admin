@@ -202,6 +202,11 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     this.canDeleteCommentPeriod = this.storageService.state.canDeleteCommentPeriod.data;
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

@@ -177,6 +177,11 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', this.currentProject._id, 'comment-periods', 'add']);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

@@ -98,6 +98,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', currentProjectId, 'project-files']);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

@@ -106,6 +106,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isNavMenuOpen = false;
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

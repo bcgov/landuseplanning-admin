@@ -168,6 +168,11 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', this.currentProject._id, 'project-updates', params]);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

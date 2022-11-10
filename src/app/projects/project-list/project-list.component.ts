@@ -215,6 +215,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.router.navigate(['projects', params]);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

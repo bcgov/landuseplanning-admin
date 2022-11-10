@@ -12,6 +12,12 @@ export class ContactsResolver implements Resolve<object> {
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
+  /**
+   * Get route params and make a request to the search API.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<object>}
+   */
   resolve(route: ActivatedRouteSnapshot): Observable<object> {
     let tableParams = this.tableTemplateUtils.getParamsFromUrl(route.params);
 
