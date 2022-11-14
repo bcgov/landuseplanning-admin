@@ -23,8 +23,8 @@ export class FileUploadComponent {
   constructor() { }
 
   /**
-   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
-   * the user feedback when using drag/drop in the file picker UI.
+   * Drag event handler to apply styles when items are dragged over the file upload area.
+   * This gives the user feedback when dragging items in the file picker UI.
    *
    * @param {DragEvent} event A drag over event.
    * @return {void}
@@ -35,8 +35,8 @@ export class FileUploadComponent {
   }
 
   /**
-   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
-   * the user feedback when using drag/drop in the file picker UI.
+   * Drag event handler to apply styles when items are dragged into the file upload area.
+   * This gives the user feedback when dragging items in the file picker UI.
    *
    * @param {DragEvent} event A drag over event.
    * @return {void}
@@ -47,8 +47,8 @@ export class FileUploadComponent {
   }
 
   /**
-   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
-   * the user feedback when using drag/drop in the file picker UI.
+   * Drag event handler to apply styles when and item stops being dragged. This
+   * gives the user feedback when dragging items in the file picker UI.
    *
    * @param {DragEvent} event A drag over event.
    * @return {void}
@@ -59,8 +59,8 @@ export class FileUploadComponent {
   }
 
   /**
-   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
-   * the user feedback when using drag/drop in the file picker UI.
+   * Drag event handler to apply styles when items are dragged. This gives
+   * the user feedback when dragging items out of the file picker UI.
    *
    * @param {DragEvent} event A drag over event.
    * @return {void}
@@ -71,8 +71,8 @@ export class FileUploadComponent {
   }
 
   /**
-   * Drag/drop event handler to apply styles when items are dragged/dropped. This gives
-   * the user feedback when using drag/drop in the file picker UI.
+   * Drop event handler to apply styles when items are dragged. This gives
+   * the user feedback when dropping items in the file picker UI.
    *
    * Also add to selected files when they are dropped in the drop area.
    *

@@ -4,7 +4,13 @@ import { Injectable } from '@angular/core';
 export class Utils {
   constructor() { }
 
-  public convertJSDateToNGBDate(jSDate: Date) {
+  /**
+   * Convert a Javascript date to a ng Bootstrap date.
+   * 
+   * @param {Date} jSDate Javascript date object to convert.
+   * @returns {object}
+   */
+  public convertJSDateToNGBDate(jSDate: Date): object {
     return {
       'year': jSDate.getFullYear(),
       'month': jSDate.getMonth() + 1,
@@ -12,6 +18,13 @@ export class Utils {
     };
   }
 
+  /**
+   * Convert ng Bootstrap date object to Javascript date object.
+   * 
+   * @param {object} nGBDate The ng Bootstrap date object.
+   * @param {object} nGBTime The ng Bootstrap time object.
+   * @returns {Date}
+   */
   public convertFormGroupNGBDateToJSDate(nGBDate, nGBTime = null) {
     if (nGBTime === null) {
       return new Date(
@@ -50,7 +63,11 @@ export class Utils {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
-  // Returns ID made up of UNIX timestamp + random number converted to alphanumeric string
+  /**
+   * Returns ID made up of UNIX timestamp + random number converted to alphanumeric string. 
+   * 
+   * @returns {Date}
+   */
   public getRandomID() {
     return new Date().getTime() + '-' + Math.random().toString(32).substr(2,9);
   }

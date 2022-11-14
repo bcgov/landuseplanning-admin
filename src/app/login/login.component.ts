@@ -19,8 +19,13 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private api: ApiService, private keycloakService: KeycloakService) {}
 
-  ngOnInit() {
-    // Redir to the main index page if they try to get here.
+  /**
+   * Check if keycloak is enabled and if so, redirect the user to the root of the app.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
+    // Redirect to the main index page if they try to get here.
     if (this.keycloakService.isKeyCloakEnabled()) {
       this.router.navigate(['/']);
     }

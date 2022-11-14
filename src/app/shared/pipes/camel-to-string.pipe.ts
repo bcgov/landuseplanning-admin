@@ -5,6 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CamelToStringPipe implements PipeTransform {
 
+  /**
+   * Transforms a camelCase to a more human-readable one by inserting spaces
+   * and removing capitals.
+   * 
+   * @param {string} value Value to transform.
+   * @returns {string}
+   */
   transform(value: string): string {
       if (value) {
         const newString = value
