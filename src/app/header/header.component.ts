@@ -92,10 +92,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Evaluate whether or not to render the admin menu based on the user's roles.
+   * Evaluate whether or not to render the admin menu based on the user's roles and current route.
    * 
-   * @param {string} route 
-   * @returns {void|boolean}
+   * @param {string} route The URL route to check.
+   * @return {void|boolean}
    */
   renderMenu(route: string): void|boolean {
     // Sysadmin's get administration.
