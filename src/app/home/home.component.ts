@@ -17,7 +17,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     private projectService: ProjectService
   ) { }
 
-  ngOnInit() {
+  /**
+   * Get the total number of projects from the API.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     // although we aren't currently using numProjects,
     // this verifies our login token and redirects in case of error
     this.projectService.getCount()

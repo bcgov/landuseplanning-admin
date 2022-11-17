@@ -24,8 +24,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   public count = 0; // for template
   private snackBarRef: MatSnackBarRef<SimpleSnackBar> = null;
   private ngUnsubscribe = new Subject<boolean>();
-  public currentPage: 1;
-  public pageSize: 10;
+  public currentPage = 1;
+  public pageSize = 10;
 
   public results: Array<any> = [];
 
@@ -40,7 +40,13 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   // TODO: when clicking on radio buttons, url must change to reflect dataset.
 
-  ngOnInit() {
+  /**
+   * Get route query params and convert them into search terms to send to the
+   * search API.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     // get search terms from route
     this.route.params
       .takeUntil(this.ngUnsubscribe)
@@ -65,12 +71,27 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  handleRadioChange(value) {
+  /**
+   * If the search type radio button changes, change the dataset to
+   * search within. Then trigger a search.
+   * 
+   * @param {string} value The dataset value that's been selected.
+   * @return {void}
+   */
+  handleRadioChange(value: string): void {
     this.terms.dataset = value;
     this.onSubmit();
   }
 
-  private doSearch(pageNumber, pageSize) {
+  /**
+   * Fires a search request to the API - querying by keywords, dataset, and
+   * passing params for search pagination.
+   * 
+   * @param {number} pageNumber The page number to search for.
+   * @param {number} pageSize The size of the page to search for.
+   * @return {void}
+   */
+  private doSearch(pageNumber: number, pageSize: number): void {
     this.results = [];
 
     this.searching = true;
@@ -117,15 +138,26 @@ export class SearchComponent implements OnInit, OnDestroy {
         });
   }
 
-  updatePageNumber(pageNumber) {
+  /**
+   * Update the page number for search pagination and submit a new search.
+   * Scroll the user to the top of the page.
+   * 
+   * @param {number} pageNumber The page number to search for.
+   * @return {void}
+   */
+  updatePageNumber(pageNumber: number): void {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.currentPage = pageNumber;
     this.onSubmit();
   }
 
-  // reload page with current search terms
-  public onSubmit() {
+  /**
+   * Reload page with current search terms.
+   * 
+   * @return {void}
+   */
+  public onSubmit(): void {
     // dismiss any open snackbar
     if (this.snackBarRef) {
       this.snackBarRef.dismiss();
@@ -143,7 +175,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.router.navigate(['search', params]);
   }
 
-  ngOnDestroy() {
+  /**
+   * Terminate subscriptions when component is unmounted.
+   * Dismiss any open snackbar.
+   *
+   * @return {void}
+   */
+  ngOnDestroy(): void {
     // dismiss any open snackbar
     if (this.snackBarRef) { this.snackBarRef.dismiss(); }
 

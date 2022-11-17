@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges, HostListener } from '@angular/core';
+import { Component, SimpleChanges, HostListener } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Dictionary } from 'lodash';
 import { Utils } from 'app/shared/utils/utils';
@@ -8,32 +8,38 @@ import { Utils } from 'app/shared/utils/utils';
   templateUrl: './input-modal.component.html',
   styleUrls: ['./input-modal.component.scss']
 })
-export class InputModalComponent implements OnInit {
-
-  groupName = '';
+export class InputModalComponent {
 
   constructor(
     public activeModal: NgbActiveModal, // also used in template
     private utils: Utils
   ) { }
 
-  ngOnInit() {
-  }
-
-  public cancel() {
+  /**
+   * Close the bootstrap modal when user hits cancel.
+   * 
+   * @return {void}
+   */
+  public cancel(): void {
     this.activeModal.close(null);
   }
 
-  reset() {
-    this.groupName = '';
+  /**
+   * Close the input modal after the user has hit "save."
+   * 
+   * @return {void}
+   */
+  save(): void {
+    this.activeModal.close();
   }
 
-  save() {
-    this.activeModal.close(this.groupName);
-  }
-
-  // Handle escape key press.
-  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+  /**
+   * Handle the escape keypress to cancel the bootstrap modal.
+   * 
+   * @param {KeyboardEvent} event Keyboard event to handle.
+   * @return {void}
+   */
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent): void {
     this.cancel();
   }
 }

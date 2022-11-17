@@ -19,7 +19,12 @@ export class VarDirective {
 
   constructor(private vcRef: ViewContainerRef, private templateRef: TemplateRef<any>) {}
 
-  updateView() {
+  /**
+   * Destroy all views in this view container, then create an embedded view.
+   * 
+   * @return {void}
+   */
+  updateView(): void {
     this.vcRef.clear();
     this.vcRef.createEmbeddedView(this.templateRef, this.context);
   }

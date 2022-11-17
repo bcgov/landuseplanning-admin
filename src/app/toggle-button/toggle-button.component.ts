@@ -16,7 +16,12 @@ export class ToggleButtonComponent {
     private sidebarService: SideBarService
   ) { }
 
-  toggleSideNav() {
+  /**
+   * Toggle the side nav menu's visibility.
+   * 
+   * @return {void}
+   */
+  toggleSideNav(): void {
     this.sidebarService.toggle();
     this.classApplied = !this.classApplied;
   }

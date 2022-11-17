@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import * as _ from 'lodash';
 
 @Component({
@@ -6,7 +6,7 @@ import * as _ from 'lodash';
   templateUrl: './env-banner.component.html',
   styleUrls: ['./env-banner.component.scss']
 })
-export class EnvBannerComponent implements OnInit {
+export class EnvBannerComponent {
 
   public env: string;  // Could be anything per Openshift settings but generally is one of 'local' | 'dev' | 'test' | 'prod' | 'demo'
   public showBanner: boolean;
@@ -21,8 +21,4 @@ export class EnvBannerComponent implements OnInit {
       this.showBanner = true;
     }
    }
-
-  ngOnInit() {
-  }
-
 }

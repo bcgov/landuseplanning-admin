@@ -23,7 +23,16 @@ export class AppComponent implements OnInit, OnDestroy {
     private sideBarService: SideBarService
   ) { }
 
-  ngOnInit() {
+  /**
+   * Bootstrap the app by:
+   * - setting up the config service(to hold app config in state)
+   * - initializing the sidebar service
+   * - initializing the file upload modal options
+   * - setting up all app modal services
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.configService.init();
     this.sideBarService.change.subscribe(isOpen => {
       this.isOpen = isOpen;
@@ -40,7 +49,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.ngxSmartModalService.create('file-upload-modal', FileUploadModalComponent, this.fileUploadModalOptions);
   }
 
-  ngOnDestroy() {
+  /**
+   * Tear down the app config service if the app is un-mounted.
+   * 
+   * @return {void}
+   */
+  ngOnDestroy(): void {
     this.configService.destroy();
   }
 }

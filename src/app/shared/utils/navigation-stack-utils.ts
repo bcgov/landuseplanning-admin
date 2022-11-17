@@ -5,6 +5,11 @@ import { StorageService } from 'app/services/storage.service';
 export class NavigationStackUtils {
     constructor(private storageService: StorageService) { }
 
+    /**
+     * Returns the current navigation stack stored in the storage service.
+     * 
+     * @returns {any|null}
+     */
     public getNavigationStack() {
         if (this.storageService.state.navigationStack) {
             return this.storageService.state.navigationStack;
@@ -13,6 +18,11 @@ export class NavigationStackUtils {
         }
     }
 
+    /**
+     * Get the most recent "back" URL in the navigation stack.
+     * 
+     * @returns {any|null}
+     */
     public getLastBackUrl() {
         let stack = this.getNavigationStack();
         if (stack) {
@@ -22,6 +32,11 @@ export class NavigationStackUtils {
         }
     }
 
+    /**
+     * Get the most recent item in the navigation stack.
+     * 
+     * @returns {any|null}
+     */
     public getLastNavigationObject() {
         let stack = this.getNavigationStack();
         if (stack) {
@@ -31,27 +46,14 @@ export class NavigationStackUtils {
         }
     }
 
-    /*
-    Example of a back Url array:
-    ['/p', this.project._id, 'edit']
-
-    Example of a breadcrumbs array:
-    Note that the objects in the array contain a route and a label.
-    [
-        {
-            route: ['/projects'],
-            label: 'All Projects'
-        },
-        {
-            route: ['/p', this.project._id],
-            label: this.project.name
-        },
-        {
-            route: ['/p', this.project._id, 'edit'],
-            label: 'Edit'
-        }
-    ]
-    */
+    /**
+     * Push the "back" URL, the breadcrumbs, the component ID into the navigation stack.
+     * 
+     * @param {array} backUrl The "back" URL of the navigation.
+     * @param {array} breadcrumbs The breadcrumbs to push into navigation.
+     * @param {string} componentId The current component ID.
+     * @return {void}
+     */
     public pushNavigationStack(backUrl: Array<String>, breadcrumbs: Array<Object>, componentId: String = null) {
         let navigationObject = {
             backUrl: backUrl,
@@ -67,6 +69,11 @@ export class NavigationStackUtils {
         }
     }
 
+    /**
+     * Take the top item off the navigation stack.
+     * 
+     * @returns {any|null}
+     */
     public popNavigationStack() {
         let stack = this.getNavigationStack();
         if (stack) {
@@ -84,6 +91,13 @@ export class NavigationStackUtils {
         }
     }
 
+    /**
+     * Attempt to navigate to the breadcrumb.
+     * 
+     * @param {object} breadcrumb The breadcrumb to navigate to.
+     * @param {Router} router The Angular router.
+     * @return {void}
+     */
     public navigateBreadcrumb(breadcrumb, router) {
         let stack = this.getNavigationStack();
         let poppedItem = null;
@@ -105,6 +119,11 @@ export class NavigationStackUtils {
         }
     }
 
+    /**
+     * Clear the navigation stack stored in the storage service.
+     * 
+     * @return {void}
+     */
     public clearNavigationStack() {
         this.storageService.state.navigationStack = null;
     }

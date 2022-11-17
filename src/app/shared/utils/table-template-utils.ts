@@ -11,6 +11,16 @@ export class TableTemplateUtils {
     private router: Router
   ) { }
 
+  /**
+   * When the table is sorted, updated, or changed, update the URL accordingly.
+   * 
+   * @param {string} sortString Type of sort happening in the table.
+   * @param {number} currentPage The current page number.
+   * @param {number} pageSize The page size number.
+   * @param {object|null} filter Filter for the table entries.
+   * @param {string} keywords Keywords that are searched for in the table entries.
+   * @return {void}
+   */
   public updateUrl(sortString, currentPage, pageSize, filter = null, keywords = '') {
     let currentUrl = this.router.url;
     currentUrl = (this.platformLocation as any).getBaseHrefFromDOM() + currentUrl.slice(1);
@@ -35,6 +45,15 @@ export class TableTemplateUtils {
     window.history.replaceState({}, '', currentUrl);
   }
 
+  /**
+   * Get the params from the URL and turn them into the table state.
+   * 
+   * @param {object} params URL params.
+   * @param {object|null} filter What the table filter should be.
+   * @param {number} defaultPageSize The default page size for the table results.
+   * @param {array} filterFieldList The filters the table can have.
+   * @returns {TableParamsObject}
+   */
   public getParamsFromUrl(params, filter = null, defaultPageSize = null, filterFieldList = []) {
     let pageSize = +Constants.tableDefaults.DEFAULT_PAGE_SIZE;
     if (defaultPageSize !== null) {
@@ -66,6 +85,14 @@ export class TableTemplateUtils {
     );
   }
 
+  /**
+   * Update the table params object.
+   *  
+   * @param {TableParamsObject} tableParams The current table params to update.
+   * @param {number} pageNumber The page number to update the table with.
+   * @param {string} sortBy What to sort the table by.
+   * @returns {TableParamsObject}
+   */
   public updateTableParams(tableParams: TableParamsObject, pageNumber: number, sortBy: string) {
     tableParams.sortBy = sortBy;
     tableParams.currentPage = pageNumber;

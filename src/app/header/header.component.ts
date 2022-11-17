@@ -67,7 +67,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit() {
+  /**
+   * Checks if the user is authorized to view the header. Checkers for Internet Explorer
+   * or Edge and displays a modal with an incompatible browser error to the user.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     // Make sure they have the right role.
     if (!this.keycloakService.isValidForSite()) {
       this.router.navigate(['/not-authorized']);
@@ -85,24 +91,45 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   }
 
-  renderMenu(route: String) {
+  /**
+   * Evaluate whether or not to render the admin menu based on the user's roles and current route.
+   * 
+   * @param {string} route The URL route to check.
+   * @return {void|boolean}
+   */
+  renderMenu(route: string): void|boolean {
     // Sysadmin's get administration.
     if (route === 'administration') {
       return (this.jwt && this.jwt.client_roles.find(x => x === 'sysadmin') && this.jwt.username === 'admin');
     }
   }
 
-  navigateToLogout() {
+  /**
+   * Redirect the user to the keycloak logout URL if they log out.
+   * 
+   * @return {void}
+   */
+  navigateToLogout(): void {
     // reset login status
     this.api.logout();
     window.location.href = this.keycloakService.getLogoutURL();
   }
 
-  toggleNav() {
+  /**
+   * Open or close the nav menu.
+   * 
+   * @return {void}
+   */
+  toggleNav(): void {
     this.isNavMenuOpen = !this.isNavMenuOpen;
   }
 
-  closeNav() {
+  /**
+   * Close the nav menu.
+   * 
+   * @return {void}
+   */
+  closeNav(): void {
     this.isNavMenuOpen = false;
   }
 

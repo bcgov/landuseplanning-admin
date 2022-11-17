@@ -4,10 +4,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { OrderByPipe } from 'app/shared/pipes/order-by.pipe';
 import { NewlinesPipe } from 'app/shared/pipes/newlines.pipe';
 import { PublishedPipe } from 'app/shared/pipes/published.pipe';
-import { ObjectFilterPipe } from 'app/shared/pipes/object-filter.pipe';
 import { VarDirective } from 'app/shared/utils/ng-var.directive';
 import { ScrollListenDirective } from 'app/shared/utils/scroll-listen.directive';
 import { FileUploadComponent } from 'app/file-upload/file-upload.component';
@@ -20,7 +18,6 @@ import { TableTemplateUtils } from './utils/table-template-utils';
 import { CommentStatsComponent } from './components/comment-stats/comment-stats.component';
 import { ListConverterPipe } from './pipes/list-converter.pipe';
 import { CamelToStringPipe } from './pipes/camel-to-string.pipe';
-import { OrgNamePipe } from './pipes/org-name.pipe';
 import { Utils } from './utils/utils';
 //import { ContactSelectComponent } from './components/contact-select/contact-select.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <== add the imports!
@@ -53,9 +50,6 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     ContactSelectTableRowsComponent,
     ListConverterPipe,
     NewlinesPipe,
-    ObjectFilterPipe,
-    OrderByPipe,
-    OrgNamePipe,
     PublishedPipe,
     CamelToStringPipe,
     TableDirective,
@@ -77,8 +71,6 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     MatSnackBarModule,
     NewlinesPipe,
     NgxPaginationModule,
-    OrderByPipe,
-    OrgNamePipe,
     CamelToStringPipe,
     PublishedPipe,
     TableTemplateComponent,

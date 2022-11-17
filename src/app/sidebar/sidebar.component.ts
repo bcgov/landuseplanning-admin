@@ -54,7 +54,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
         });
   }
 
-  ngOnInit() {
+  /**
+   * Contact the sidebar service to update the state of the sidebar(open or closed).
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.sideBarService.change
       .takeUntil(this.ngUnsubscribe)
       .subscribe(isOpen => {
@@ -62,7 +67,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
       });
   }
 
-  SetActiveSidebarItem() {
+  /**
+   * When the user navigates to a certain place in the app, update
+   * the sidebar to show where the user is at, if applicable.
+   * 
+   * @return {void}
+   */
+  SetActiveSidebarItem(): void {
     let urlArray = this.routerSnapshot.url.split('/');
     // urlArray[0] will be empty so we use shift to get rid of it.
     urlArray.shift();
@@ -81,19 +92,40 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleDropdown() {
+  /**
+   * Toggle the visibility of the dropdown(sub-items) in the sidebar.
+   * 
+   * @return {void}
+   */
+  toggleDropdown(): void {
     this.showProjectDetailsSubItems = !this.showProjectDetailsSubItems;
   }
 
-  toggleNav() {
+  /**
+   * Toggle the visibility of the nav menu.
+   * 
+   * @return {void}
+   */
+  toggleNav(): void {
     this.isNavMenuOpen = !this.isNavMenuOpen;
   }
 
-  closeNav() {
+  /**
+   * Close the nav menu by updating the relevant state.
+   * 
+   * @return {void}
+   */
+  closeNav(): void {
     this.isNavMenuOpen = false;
   }
 
-  goToDocuments(currentProjectId) {
+  /**
+   * Navigate to the files of a selected project.
+   * 
+   * @param {string} currentProjectId Currently selected project.
+   * @return {void}
+   */
+  goToDocuments(currentProjectId: string): void {
     this.storageService.state.projectDocumentTableParams = null;
     this.router.navigate(['p', currentProjectId, 'project-files']);
   }
