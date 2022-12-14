@@ -43,7 +43,13 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
     private utils: Utils
   ) { }
 
-  ngOnInit() {
+  /**
+   * Get the current project from local storage, then get the comment to
+   * review, get the comment period(or notify the user if it's not found).
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.currentProject = this.storageService.state.currentProject.data;
     this.storageService.state.selectedTab = 1;
 
@@ -80,7 +86,13 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       });
   }
 
-  private initForm() {
+  /**
+   * Initialize a new empty form group for the comment review then populate
+   * it with the comment data.
+   * 
+   * @return {void}
+   */
+  private initForm(): void {
     this.commentReviewForm = new FormGroup({
       'dateAdded': new FormControl({ value: '', disabled: true }),
       'datePosted': new FormControl({ value: '', disabled: true }),
@@ -105,7 +117,15 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
     this.commentReviewForm.controls.rejectionNotesText.setValue(this.comment.rejectedNotes);
   }
 
-  public onSubmit(action) {
+  /**
+   * On form submission, update the comment with the reponse
+   * (publish, reject, defer, pending), save the response by hitting
+   * the comment API, then move on to the next comment to review, or exit.
+   * 
+   * @param {string} action Whether to move to the next comment or stop review.
+   * @return {void}
+   */
+  public onSubmit(action: string): void {
     this.loading = true;
 
     this.comment.isAnonymous = !this.commentReviewForm.get('isNamePublic').value;
@@ -159,13 +179,28 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       );
   }
 
-  public onCancel() {
+  /**
+   * Cancel a review and exit the form. Prompt the user to confirm first,
+   * then navigate away from the form.
+   * 
+   * @return {void}
+   */
+  public onCancel(): void {
     if (confirm(`Are you sure you want to discard all changes?`)) {
       this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
     }
   }
 
-  public setEaoStatus(status: string) {
+  /**
+   * Handle setting the "response" to a comment. When adding the comment
+   * the user can publish, defer, or reject it immediately.
+   * 
+   * If no status is set by the user, set the status to "pending."
+   * 
+   * @param {string} status The comment status(publish, defer, reject).
+   * @return {void}
+   */
+   public setEaoStatus(status: string): void {
     switch (status) {
       case 'Published': {
         if (!this.commentReviewForm.get('isPublished').value) {
@@ -212,11 +247,25 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
     this._changeDetectionRef.detectChanges();
   }
 
-  public downloadDocument(document: Document) {
+  /**
+   * Send a call to the API to download a given document/file. Return the
+   * async response.
+   * 
+   * @param {Document} document The document(file) to download.
+   * @returns {Promise<void>}
+   */
+   public downloadDocument(document: Document) {
     return this.api.downloadDocument(document);
   }
 
-  public toggleDocumentPublish(document: any, action: String) {
+  /**
+   * When the document is published or rejected, update the document object.
+   * 
+   * @param {Document} document The document object to update.
+   * @param {string} action Whether to publish or reject the document.
+   * @return {void}
+   */
+   public toggleDocumentPublish(document: Document, action: string): void {
     if (action === 'Published' && !this.commentReviewForm.get('isRejected').value) {
       document.eaoStatus = 'Published';
     } else if (action === 'Rejected' && !this.commentReviewForm.get('isRejected').value) {
@@ -224,7 +273,14 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
     }
   }
 
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });

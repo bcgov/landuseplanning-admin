@@ -73,8 +73,14 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
       this.surveyItemCount(this.surveyQuestions)
   }
 
-
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+  public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
@@ -106,7 +112,14 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
     }
   }
 
-  public downloadDocument(document: any) {
+  /**
+   * Send a call to the API to download a given document/file. Return the
+   * async response.
+   * 
+   * @param {Document} document The document(file) to download.
+   * @returns {Promise<void>}
+   */
+   public downloadDocument(document) {
     return this.api.downloadDocument(document);
   }
 
@@ -128,7 +141,12 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
     }
   }
 
-  public checkIfCanDelete() {
+  /**
+   * Set the comment period as able to be deleted.
+   * 
+   * @return {void}
+   */
+   public checkIfCanDelete(): void {
     this.canDeleteCommentPeriod = true;
   }
 

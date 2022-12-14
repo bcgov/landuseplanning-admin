@@ -10,6 +10,13 @@ export class ProjectUpdatesResolver implements Resolve<Observable<object>> {
     private searchService: SearchService
   ) { }
 
+  /**
+   * Get route params and make a request to the API to get a single
+   * project update(RecentActivity) that matches the request params.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
   resolve(route: ActivatedRouteSnapshot): Observable<object> {
     const projectId = route.parent.paramMap.get('projId');
     const pageNum = route.params.currentPage ? route.params.currentPage : 1;

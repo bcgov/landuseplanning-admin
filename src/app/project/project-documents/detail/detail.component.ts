@@ -121,7 +121,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this.ngxSmartModalService.open('confirmation-modal');
   }
 
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });

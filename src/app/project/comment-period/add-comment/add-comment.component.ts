@@ -46,8 +46,13 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     private utils: Utils
   ) { }
 
-  ngOnInit() {
-
+  /**
+   * Get the current coment period's commenting method, then initialize the
+   * relevant commenting form.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.currentProject = this.storageService.state.currentProject.data;
 
     this.route.data
@@ -74,7 +79,14 @@ export class AddCommentComponent implements OnInit, OnDestroy {
       });
   }
 
-  private initForm() {
+  /**
+   * Set up a new, empty form group for a comment form. Set comment anonymity
+   * to false by default and set the date the comment was(will be) made to
+   * the current date.
+   * 
+   * @return {void}
+   */
+  private initForm(): void {
     this.addCommentForm = new FormGroup({
       'authorText': new FormControl(),
       'commentText': new FormControl(),
@@ -95,7 +107,14 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     this.addCommentForm.controls.datePosted.setValue(this.utils.convertJSDateToNGBDate(new Date()));
   }
 
-  public onSubmit() {
+  /**
+   * Handle the form submission. Translate various form values to their internal
+   * equivalents. Convert bootstrap date format to Javascript format. Finally,
+   * submit the form by making a post request to the comment API.
+   * 
+   * @return {void}
+   */
+  public onSubmit(): void {
     this.loading = true;
 
     this.comment.author = this.addCommentForm.get('authorText').value;
@@ -143,7 +162,13 @@ export class AddCommentComponent implements OnInit, OnDestroy {
       );
   }
 
-  public onCancel() {
+  /**
+   * Handle when the user wants to leave the form and stop adding/editing a comment.
+   * Navigates the user away from the form if the user confirms they wish to leave.
+   * 
+   * @return {void}
+   */
+  public onCancel(): void {
     if (this.commentingMethod === 'externalEngagementTool') {
       this.router.navigate(['/p', this.currentProject._id, 'cp', this.commentPeriod._id]);
     } else if (confirm(`Are you sure you want to discard all changes?`)) {
@@ -151,7 +176,16 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     }
   }
 
-  public setEaoStatus(status: string) {
+  /**
+   * Handle setting the "response" to a comment. When adding the comment
+   * the user can publish, defer, or reject it immediately.
+   * 
+   * If no status is set by the user, set the status to "pending."
+   * 
+   * @param {string} status The comment status(publish, defer, reject).
+   * @return {void}
+   */
+  public setEaoStatus(status: string): void {
     switch (status) {
       case 'Published': {
         if (!this.addCommentForm.get('isPublished').value) {
@@ -200,11 +234,24 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Return the async response from the document API for a document download.
+   * 
+   * @param {Document} document The document object to pass to the API.
+   * @returns {Promise<void>}
+   */
   public downloadFile(document: Document) {
     return this.api.downloadDocument(document);
   }
 
-  public toggleDocumentPublish(document: any, action: String) {
+  /**
+   * When the document is published or rejected, update the document object.
+   * 
+   * @param {Document} document The document object to update.
+   * @param {string} action Whether to publish or reject the document.
+   * @return {void}
+   */
+  public toggleDocumentPublish(document: Document, action: string): void {
     if (action === 'Published' && !this.addCommentForm.get('isRejected').value) {
       document.eaoStatus = 'Published';
     } else if (action === 'Rejected' && !this.addCommentForm.get('isRejected').value) {
@@ -212,6 +259,11 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Update the comment form to display all the loaded documents/files.
+   * 
+   * @returns {Array}
+   */
   private setDocumentForm() {
     let docForms = [];
     this.documents.forEach(doc => {
@@ -231,8 +283,13 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     return docForms;
   }
 
-
-  public addDocuments(files: FileList) {
+  /**
+   * Add new documents/files to the comment form.
+   * 
+   * @param {FileList} files The uploaded files in the form.
+   * @return {void}
+   */
+  public addDocuments(files: FileList): void {
     if (files) { // safety check
       for (let i = 0; i < files.length; i++) {
         if (files[i]) {
@@ -255,6 +312,12 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Delete a file/document from the comment form and from the documents list.
+   * 
+   * @param {Document} doc The document/file to delete.
+   * @return {void}
+   */
   public deleteDocument(doc: Document) {
     if (doc && this.documents) { // safety check
       // remove doc from current list
@@ -263,7 +326,14 @@ export class AddCommentComponent implements OnInit, OnDestroy {
     }
   }
 
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+  public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });

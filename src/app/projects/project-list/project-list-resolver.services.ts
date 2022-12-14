@@ -13,6 +13,13 @@ export class ProjectListResolver implements Resolve<Object> {
     private tableTemplateUtils: TableTemplateUtils,
   ) { }
 
+  /**
+   * Get route params and make a request to the API to get a set of projects
+   * that match the search params.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     let tableParams = this.tableTemplateUtils.getParamsFromUrl(route.params);
     if (tableParams.sortBy === '') {

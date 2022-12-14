@@ -159,6 +159,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    *
    * @param {string} message The message to display in the snackbar.
    * @param {string} action The action to be passed to the snackbar component.
+   * @return {void}
    */
   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {verticalPosition: 'top', horizontalPosition: 'center', duration: 4000});

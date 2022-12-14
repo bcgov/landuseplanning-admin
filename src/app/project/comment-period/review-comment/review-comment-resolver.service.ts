@@ -11,7 +11,14 @@ export class ReviewCommentResolver implements Resolve<Object> {
     private commentService: CommentService
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Object> {
+  /**
+   * Get route params and make a request to the API to get a single
+   * comment.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
+   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const commentId = route.paramMap.get('commentId');
 
     // force-reload so we always have latest data

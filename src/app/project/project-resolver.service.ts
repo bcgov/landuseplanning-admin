@@ -12,7 +12,14 @@ export class ProjectResolver implements Resolve<Project> {
     private projectService: ProjectService
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Project> {
+  /**
+   * Get route params and make a request to the API to get a single
+   * project for a given date range.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Project>}
+   */
+   resolve(route: ActivatedRouteSnapshot): Observable<Project> {
     const projId = route.paramMap.get('projId');
     let start = new Date();
     let end = new Date();

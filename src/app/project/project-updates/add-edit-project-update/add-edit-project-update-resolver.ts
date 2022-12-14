@@ -12,7 +12,14 @@ export class AddEditProjectUpdateResolver implements Resolve<Observable<object>>
     private recentActivityService: RecentActivityService
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<object> {
+  /**
+   * Get route params and make a request to the API to get a single
+   * project update(RecentActivity).
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
+  resolve(route: ActivatedRouteSnapshot): Observable<object> {
     const activityId = route.params.projectUpdateId;
 
     return this.recentActivityService.getById(activityId);
