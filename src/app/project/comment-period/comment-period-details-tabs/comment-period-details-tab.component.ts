@@ -50,7 +50,15 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     private ngxSmartModalService: NgxSmartModalService
   ) { }
 
-  ngOnInit() {
+  /**
+   * Set the default publish status of the comment period, update the project
+   * ID, check for comment period documents and fetch them from the API, get
+   * surveys associated with the comment period, and set up the modal window
+   * to be used later.
+   *
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.setPublishStatus();
     this.projectId = this.storageService.state.currentProject.data._id;
 
@@ -80,7 +88,13 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     this.loading = false;
   }
 
-  ngOnChanges() {
+  /**
+   * When any data-bound property of a directive changes, update the current
+   * survey names by removing surveys without responses from that list.
+   *
+   * @return {void}
+   */
+  ngOnChanges(): void {
     if (this.surveys) {
       this.surveys.forEach(survey => this.surveyNames[survey._id] = survey.name)
     }
@@ -94,12 +108,24 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     }
   }
 
-  setPublishStatus() {
+  /**
+   * Update the properties related to publish status.
+   *
+   * @return {void}
+   */
+  setPublishStatus(): void {
     this.commentPeriodPublishedStatus = this.commentPeriod.isPublished ? 'Published' : 'Not Published';
     this.publishAction = this.commentPeriod.isPublished ? 'Un-Publish' : 'Publish';
   }
 
-  public togglePublishState() {
+  /**
+   * Toggle the publish state of a comment period. First, confirm the action with
+   * the user, then send an API request to publish/unpublish and update the user
+   * when that action is complete.
+   *
+   * @return {void}
+   */
+  public togglePublishState(): void {
     if (confirm(`Are you sure you want to ${this.publishAction} this comment period?`)) {
       this.loading = true;
       if (this.commentPeriod.isPublished) {
@@ -128,17 +154,36 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     }
   }
 
-  openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
   }
 
-  editCommentPeriod() {
+  /**
+   * Navigate the user to the edit comment period form.
+   *
+   * @return {void}
+   */
+  editCommentPeriod(): void {
     this.router.navigateByUrl(`/p/${this.projectId}/cp/${this.commentPeriod._id}/edit`);
   }
 
-  deleteCommentPeriod() {
+  /**
+   * Delete a comment period. First prompt the user to confirm, then send a
+   * delete request to the API. Finally, display a message to the user
+   * that the process was successful or not.
+   *
+   * @return {void}
+   */
+  deleteCommentPeriod(): void {
     if (confirm(`Are you sure you want to delete this comment period?`)) {
       this.loading = true;
       this.commentPeriodService.delete(this.commentPeriod)
@@ -160,17 +205,35 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     }
   }
 
-  public addComment() {
+  /**
+   * Add a new comment to this comment period. Navigate the user to
+   * the add comment form.
+   *
+   * @return {void}
+   */
+  public addComment(): void {
     this.router.navigate(['/p', this.commentPeriod.project, 'cp', this.commentPeriod._id, 'add-comment']);
   }
 
-  public exportComments() {
+  /**
+   * Export all comments from this comment period. Provide feedback
+   * to the user, then contact the API to initiate the export.
+   *
+   * @return {void}
+   */
+  public exportComments(): void {
     // Export all comments to CSV
     this.openSnackBar('Download Initiated', 'Close');
     this.api.exportComments(this.commentPeriod._id);
   }
 
-  public onExportSurveyResponses() {
+  /**
+   * If there are multiple surveys attached to the comment period, prompt
+   * the user to choose which survey to export the responses of.
+   *
+   * @return {void}
+   */
+  public onExportSurveyResponses(): void {
     // Export all survey responses to CSV
     if (this.surveysWithResponses.length > 1) {
       this.ngxSmartModalService.setModalData({
@@ -187,18 +250,38 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     }
   }
 
-  exportSurveyResponses(cpID, surveyID?) {
+  /**
+   * Send a call to the API to export survey responses and prompt the user
+   * that it's been initiated.
+   *
+   * @param {string} cpID Comment period ID.
+   * @param {string} surveyID Survey ID to export responses for.
+   * @return {void}
+   */
+  exportSurveyResponses(cpID, surveyID?): void {
     surveyID = surveyID || null;
     this.openSnackBar('Download Initiated', 'Close');
     this.api.exportSurveyResponses(cpID, surveyID);
   }
 
-
+  /**
+   * Send a call to the API to download a given document/file. Return the
+   * async response.
+   *
+   * @param {Document} document The document(file) to download.
+   * @returns {Promise<void>}
+   */
   public downloadDocument(document) {
     return this.api.downloadDocument(document);
   }
 
-  public checkIfCanDelete() {
+  /**
+   * Get the value from the storage service that the comment period can be
+   * deleted.
+   *
+   * @return {void}
+   */
+  public checkIfCanDelete(): void {
     this.canDeleteCommentPeriod = this.storageService.state.canDeleteCommentPeriod.data;
   }
 
@@ -207,7 +290,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
    *
    * @return {void}
    */
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

@@ -23,16 +23,14 @@ export class ProjectComponent implements OnInit, OnDestroy {
     private _changeDetectorRef: ChangeDetectorRef,
     private sidebarService: SideBarService,
     private storageService: StorageService
-  ) {
-  }
+  ) {}
 
-  toggleSideNav() {
-    this.sidebarService.toggle();
-    this.classApplied = !this.classApplied;
-  }
-
+  /**
+   * Get the project from the route resolver.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
-    // get data from route resolver
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe(
@@ -50,6 +48,17 @@ export class ProjectComponent implements OnInit, OnDestroy {
         }
       );
   }
+
+  /**
+   * Open/close the sidebar and add/remove the class to style it
+   * to give feedback to the user.
+   * 
+   * @return {void}
+   */
+     toggleSideNav() {
+      this.sidebarService.toggle();
+      this.classApplied = !this.classApplied;
+    }
 
   /**
    * Terminate subscriptions when component is unmounted.

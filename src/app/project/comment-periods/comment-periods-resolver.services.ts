@@ -14,7 +14,14 @@ export class CommentPeriodsResolver implements Resolve<Object> {
     private surveyService: SurveyService,
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Object> {
+  /**
+   * Get route params and make a request to the API to get all project comment
+   * periods, all project surveys, and return them as a single response.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
+   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const projectId = route.parent.paramMap.get('projId');
     const pageNum = route.params.pageNum ? route.params.pageNum : 1;
     const pageSize = route.params.pageSize ? route.params.pageSize : 10;

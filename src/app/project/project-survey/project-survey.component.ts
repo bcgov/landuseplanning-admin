@@ -56,6 +56,13 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
+  /**
+   * Clear local storage of comment period data, then get the current project
+   * from it. Get the table data from the route params. The get all the survey
+   * data from the route resolver.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
@@ -96,6 +103,14 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * When the user sorts the table by column, update the table params
+   * with the sort type and direction(+,-), then get a list of surveys
+   * sorted accordingly.
+   * 
+   * @param {string} column What value to sort by.
+   * @return {void}
+   */
   setColumnSort(column) {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
@@ -105,6 +120,12 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
     this.getPaginatedSurveys(this.tableParams.currentPage);
   }
 
+  /**
+   * Set the data to use in the table UI component. This displays
+   * the loaded surveys to the user.
+   * 
+   * @return {void}
+   */
   setSurveyRowData() {
     let surveyList = [];
     this.surveys.forEach(survey => {
@@ -128,6 +149,12 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Section the surveys into "pages" for display in the table.
+   * 
+   * @param {number} pageNumber The page number to update the table with.
+   * @return {void}
+   */
   public getPaginatedSurveys(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
@@ -147,6 +174,12 @@ export class ProjectSurveyComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Add a new survey. Set the current project in local storage, then navigate
+   * the user to the "add survey" view.
+   * 
+   * @return {void}
+   */
   public addSurvey() {
     this.storageService.state.currentProject = this.currentProject;
     this.router.navigate(['p', this.currentProject._id, 'project-surveys', 'add']);

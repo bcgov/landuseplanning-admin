@@ -48,6 +48,13 @@ export class ProjectPermissionsComponent implements OnInit {
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
+  /**
+   * Get the current project from local storage. Update the page breadcrumbs.
+   * Get the table config from the route params(to display a default selection
+   * of users in the permissions table). Then get the users from the user API.
+   * 
+   * @return {void}
+   */
   ngOnInit(): void {
     this.currentProject = this.storageService.state.currentProject.data;
     this.pageBreadcrumbs = [{
@@ -75,6 +82,12 @@ export class ProjectPermissionsComponent implements OnInit {
       });
   }
 
+  /**
+   * Set the data to use in the table UI component. This displays
+   * the loaded users(with permissions) to the user.
+   * 
+   * @return {void}
+   */
   setRowData() {
     let list = [];
     if (this.users && this.users.length > 0) {

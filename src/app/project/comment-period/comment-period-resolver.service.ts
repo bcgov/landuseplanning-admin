@@ -15,7 +15,15 @@ export class CommentPeriodResolver implements Resolve<Object> {
     private surveyService: SurveyService,
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Object> {
+  /**
+   * Get route params and make a request to the API to get the comment period
+   * summary, the comment period, and all project surveys. Then return all
+   * as a single response.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
+   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const commentPeriodId = route.paramMap.get('commentPeriodId');
     const projectId = route.parent.params['projId'];
     // force-reload so we always have latest data

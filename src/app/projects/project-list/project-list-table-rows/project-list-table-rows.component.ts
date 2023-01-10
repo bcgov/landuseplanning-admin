@@ -20,11 +20,22 @@ export class ProjectListTableRowsComponent implements OnInit, TableComponent {
         private router: Router
     ) { }
 
+    /**
+     * Get the project and pagination data from the route resolver.
+     * 
+     * @return {void}
+     */
     ngOnInit() {
         this.projects = this.data.data;
         this.paginationData = this.data.paginationData;
     }
 
+    /**
+     * Navigate the user to the project view.
+     * 
+     * @param {Project} project The project to navigate to.
+     * @return {void}
+     */
     goToProject(project) {
         this.router.navigate([`p/${project._id}/project-details`]);
     }

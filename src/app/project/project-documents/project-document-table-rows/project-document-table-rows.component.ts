@@ -23,11 +23,23 @@ export class DocumentTableRowsComponent implements OnInit, TableComponent {
     private router: Router
   ) { }
 
-  ngOnInit() {
+  /**
+   * Get the documents and pagination data from the route resolver.
+   *
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.documents = this.data.data;
     this.paginationData = this.data.paginationData;
   }
 
+  /**
+   * Handle selecting an individual document and update the count of all
+   * selected documents.
+   *
+   * @param {Document} item The document object to select.
+   * @return {void}
+   */
   selectItem(item) {
     item.checkbox = !item.checkbox;
 
@@ -40,7 +52,13 @@ export class DocumentTableRowsComponent implements OnInit, TableComponent {
     this.selectedCount.emit(count);
   }
 
-  goToItem(item) {
+  /**
+   * Navigate the user to the document(file).
+   *
+   * @param {Document} item The document to navigate to.
+   * @return {void}
+   */
+  goToItem(item): void {
     this.router.navigate(['p', item.project._id, 'project-files', 'detail', item._id]);
   }
 }

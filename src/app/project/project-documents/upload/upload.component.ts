@@ -46,6 +46,13 @@ export class UploadComponent implements OnInit, OnDestroy {
     private config: ConfigService
   ) { }
 
+  /**
+   * Get the current project from local storage, then set up the config
+   * for adding authors and labels. Finally, set up the form for uploading
+   * project documents(files).
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
 
@@ -92,6 +99,12 @@ export class UploadComponent implements OnInit, OnDestroy {
     this._changeDetectionRef.detectChanges();
   }
 
+  /**
+   * Save the user's changes to the document edit view, then navigate them
+   * to the "add labels" view.
+   * 
+   * @return {void}
+   */
   addLabels() {
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'documents', data: this.documents };
@@ -100,6 +113,13 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.router.navigate(['/p', this.currentProject._id, 'project-files', 'upload', 'add-label']);
   }
 
+  /**
+   * Handle a document upload. For each document, prepare the document data
+   * then contact the document API to save it. Once saved, navigate the user away
+   * from the "upload document" view.
+   * 
+   * @return {void}
+   */
   public uploadDocuments() {
     this.loading = true;
 
@@ -150,6 +170,12 @@ export class UploadComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Make sure the document name doesn't include any invalid characters
+   * (that wouldn't work within a URL, for example).
+   * 
+   * @return {void}
+   */
   public validateChars() {
     if (this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g)) {
       this.docNameInvalid = true;
@@ -158,6 +184,12 @@ export class UploadComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Loop through the added files and convert them to Document
+   * objects. Then, refresh the view.
+   * 
+   * @return {void}
+   */
   public addDocuments(files: FileList) {
     if (files) { // safety check
       for (let i = 0; i < files.length; i++) {
@@ -183,6 +215,12 @@ export class UploadComponent implements OnInit, OnDestroy {
     this._changeDetectionRef.detectChanges();
   }
 
+  /**
+   * Remove the document from the project files and documents in memory.
+   * 
+   * @param {Document} doc The document to delete.
+   * @return {void}
+   */
   public deleteDocument(doc: Document) {
     if (doc && this.documents) { // safety check
       // remove doc from current list

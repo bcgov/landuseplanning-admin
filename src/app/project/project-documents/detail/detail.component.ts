@@ -42,6 +42,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
   }
 
+  /**
+   * Get the current project from local storage. Then, get the associated document
+   * from local storage along with the accessible document URLs. Set up the
+   * modal service to handle publishing/unpublishing the project.
+   *
+   * @return {void}
+   */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
 
@@ -94,6 +101,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * When a project edit is initiated, get the associated documents
+   * from local storage. Also add the router destination for the project
+   * detail view. Finally navigate the user to the "edit project" view.
+   *
+   * @return {void}
+   */
   onEdit() {
     this.storageService.state.selectedDocs = [this.document];
     this.storageService.state.labels = this.document.labels;
@@ -111,6 +125,12 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     return file?.read?.includes('public');
   }
 
+  /**
+   * Update the modal service to prompt the user to confirm the publishing
+   * of a project. Then update the modal to display to the user.
+   *
+   * @return {void}
+   */
   public togglePublish() {
       this.ngxSmartModalService.setModalData({
         type: 'publish',
@@ -121,7 +141,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this.ngxSmartModalService.open('confirmation-modal');
   }
 
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });

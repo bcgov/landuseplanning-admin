@@ -58,6 +58,13 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     private utils: Utils
   ) { }
 
+  /**
+   * Get the current project from local storage, set up config. Contact the route
+   * resolver to get the comment period, available surveys. Then trigger the
+   * form initilization.
+   *
+   * @return {void}
+   */
   ngOnInit() {
     // BUG: Go to add docs. refresh. it will redirect and have errors.
     this.currentProject = this.storageService.state.currentProject.data;
@@ -136,6 +143,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Set up the comment period form from local storage, the route resolver,
+   * or set up a blank form if neither are present(adding a new comment period).
+   *
+   * @return {void}
+   */
   private initForm() {
     if (this.storageService.state.addEditCPForm == null) {
       // Prep comment period form.
@@ -167,6 +180,11 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Set up a form using a saved comment period to fill it in.
+   *
+   * @return {void}
+   */
   private initForEditing() {
     // Date started and completed
     this.commentPeriodForm.controls.startDate.setValue(this.utils.convertJSDateToNGBDate(this.commentPeriod.dateStarted));
@@ -208,6 +226,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * If there's no selected document(file) in local storage, contact the API to
+   * get the documents tied to the comment period.
+   *
+   * @return {void}
+   */
   private initSelectedDocs() {
     if (this.storageService.state.selectedDocumentsForCP == null) {
       if (this.commentPeriod.relatedDocuments && this.commentPeriod.relatedDocuments.length > 0) {
@@ -224,6 +248,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * On comment period form submit, prepare the CP data and submit to the
+   * API dependent on whether it's an edit or a new CP.
+   *
+   * @returns {void}
+   */
   public onSubmit() {
     this.loading = true;
     // TODO: Calulator integration.
@@ -332,6 +362,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     this.storageService.state.selectedDocumentsForCP = null;
   }
 
+  /**
+   * Cancel adding/editing the comment period. Navigate the user away
+   * from the form.
+   *
+   * @return {void}
+   */
   public onCancel() {
     if (confirm(`Are you sure you want to discard all changes?`)) {
       this.storageService.state.selectedDocumentsForCP = null;
@@ -343,6 +379,12 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Update the storage service with the comment period form data(so user doesn't
+   * lose their changes), then navigate the user to the "add documents" page.
+   *
+   * @return {void}
+   */
   public addDocuments() {
     this.storageService.state.addEditCPForm = { type: 'addEditCPForm', data: this.commentPeriodForm };
     if (this.isEditing) {
@@ -352,6 +394,11 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Set up the open house part of the form.
+   *
+   * @returns {FormGroup}
+   */
   private initOpenHouseRow(): FormGroup {
     return this.formBuilder.group({
       eventDate: null,
@@ -359,16 +406,33 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Set up the open house form array and add a single form group to it.
+   *
+   * @return {void}
+   */
   public addOpenHouseRow(): void {
     const openHouseArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
     openHouseArray.push(this.initOpenHouseRow());
   }
 
+  /**
+   * Add open house form group with form data already entered.
+   *
+   * @param {FormGroup} openHouse The open house form group to add.
+   * @return {void}
+   */
   public addOpenHouseRowWithFields(openHouse): void {
     const openHouseArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
     openHouseArray.push(openHouse);
   }
 
+  /**
+   * Remove a particular open house form group from the form array.
+   *
+   * @param {number} rowIndex The index of the form array to remove.
+   * @return {void}
+   */
   public removeOpenHouseRow(rowIndex: number): void {
     const openHousesArray = <FormArray>this.commentPeriodForm.controls['openHouses'];
     if (openHousesArray.length > 1) {
@@ -378,11 +442,24 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Remove the added document(file) from the comment period.
+   *
+   * @param {Document} doc Document to remove.
+   * @return {void}
+   */
   public removeSelectedDoc(doc) {
     this.storageService.state.selectedDocumentsForCP.data = this.storageService.state.selectedDocumentsForCP.data.filter(obj => obj._id !== doc._id);
   }
 
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });

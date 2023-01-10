@@ -19,11 +19,22 @@ export class ProjectSurveyTableRowsComponent implements OnInit, TableComponent {
       private router: Router
   ) { }
 
+  /**
+   * Get the survey and pagination data from the route resolver.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
       this.surveys = this.data.data;
       this.paginationData = this.data.paginationData;
   }
 
+  /**
+   * Navigate the user to the survey they clicked on in the table.
+   * 
+   * @param {Survey} survey The selected survey from the table.
+   * @return {void}
+   */
   goToItem(survey) {
       this.router.navigate([`p/${survey.project}/s/${survey._id}/project-survey-details`]);
   }

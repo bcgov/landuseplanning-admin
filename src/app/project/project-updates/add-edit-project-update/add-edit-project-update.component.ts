@@ -37,6 +37,12 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
     private storageService: StorageService
   ) { }
 
+  /**
+   * Get the current project from local storage, then set up the project update
+   * form dependent on whether the user is editing an update or not.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
     this.route.data
@@ -83,10 +89,22 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * When the user hits "cancel" exit this view and return the user to the updates overview
+   * page.
+   * 
+   * @return {void}
+   */
   onCancel() {
     this.router.navigate(['p', this.currentProject._id, 'project-updates']);
   }
 
+  /**
+   * When the project update is saved, check if the user is editing, then prepare
+   * the data and hit the project update API.
+   * 
+   * @return {void}
+   */
   onSubmit() {
     if (this.isEditing) {
       let activity = new RecentActivity({
@@ -126,6 +144,12 @@ export class AddEditProjectUpdateComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Populate the form with the RecentActivity(update) data for editing.
+   * 
+   * @param {RecentActivity} data The data to populate the form with.
+   * @return {void}
+   */
   buildForm(data) {
     this.myForm = new FormGroup({
       'headline': new FormControl(data.headline),

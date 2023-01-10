@@ -12,6 +12,13 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
     private storageService: StorageService
   ) { }
 
+  /**
+   * Get route params and make a request to the API to get a set of
+   * documents(files) that match the request params.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
   resolve(route: ActivatedRouteSnapshot): Observable<object> {
     const projectId = route.parent.paramMap.get('projId');
     if (this.storageService.state.projectDocumentTableParams == null) {

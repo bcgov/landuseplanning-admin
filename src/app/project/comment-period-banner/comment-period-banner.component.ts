@@ -18,6 +18,11 @@ export class CommentPeriodBannerComponent implements OnInit {
     private storageService: StorageService
   ) { }
 
+  /**
+   * Get the comment period from local storage, if it exists therein.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.projectId = this.storageService.state.currentProject.data._id;
     if (this.storageService.state.currentProject.data.commentPeriodForBanner) {
@@ -27,10 +32,20 @@ export class CommentPeriodBannerComponent implements OnInit {
     }
   }
 
+  /**
+   * Navigate the user to the project comments page.
+   * 
+   * @return {void}
+   */
   goToViewComments() {
     this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id, 'comment-period-details']);
   }
 
+  /**
+   * Navigate the user to the "Add Comment" page.
+   * 
+   * @return {void}
+   */
   goToAddComment() {
     this.router.navigate(['/p', this.projectId, 'cp', this.commentPeriod._id, 'add-comment']);
   }

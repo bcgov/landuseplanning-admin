@@ -39,7 +39,13 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     ) {}
 
-  ngOnInit() {
+  /**
+   * Load the survey data from the route resolver, store the number of questions
+   * set the current project by retrieving the relevant data from local storage.
+   *
+   * @return {void}
+   */
+  ngOnInit(): void {
       this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe((data: any) => {
@@ -55,20 +61,38 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
           this.router.navigate(['/search']);
         }
       });
-
   }
 
-  openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
   }
 
-  editSurvey() {
+  /**
+   * Navigate the user to the survey edit screen.
+   *
+   * @return {void}
+   */
+  editSurvey(): void {
     this.router.navigateByUrl(`/p/${this.projectId}/s/${this.survey._id}/edit`);
   }
 
-  deleteSurvey() {
+  /**
+   * Handle the deletion of a survey. First, prompt the user to confirm,
+   * then make a call to the API to delete the survey in the database. Give
+   * feedback when the action is complete whether or not it succeeded or failed.
+   *
+   * @return {void}
+   */
+  deleteSurvey(): void {
     if (confirm(`Are you sure you want to delete this survey?`)) {
       this.loading = true;
       this.surveyService.delete(this.survey)
@@ -90,10 +114,13 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  //
-  // Displays the question number beside each question
-  //
-  surveyItemCount(questions) {
+  /**
+   * Displays the question number beside each question.
+   *
+   * @param {Array} questions The questions to display a number beside.
+   * @return {void}
+   */
+  surveyItemCount(questions): void {
     // Does not display number next to info boxes
     let infoCount = 0;
     for (let i = 0; i < questions.length; i++) {
@@ -109,21 +136,12 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  // public addComment() {
-  //   this.router.navigate(['/p', this.commentPeriod.project, 'cp', this.commentPeriod._id, 'add-comment']);
-  // }
-
-  // public exportSurveyResponses() {
-  //   // Export all comments to CSV
-  //   this.openSnackBar('Download Initiated', 'Close');
-  //   this.api.exportComments(this.commentPeriod._id);
-  // }
-
-  // public downloadDocument(document) {
-  //   return this.api.downloadDocument(document);
-  // }
-
-  public checkIfCanDelete() {
+  /**
+   * Set the survey as able to be deleted.
+   *
+   * @return {void}
+   */
+   public checkIfCanDelete(): void {
     this.canDeleteSurvey = true;
   }
 

@@ -56,6 +56,13 @@ export class ProjectEmailSubscribeComponent implements OnInit {
     private snackBar: MatSnackBar
   ) { }
 
+  /**
+   * Get the current project from local storage, then update the table
+   * with the route params(to show a default set of email subscribers).
+   * Then, get the email subscribe data from the database.
+   *
+   * @return {void}
+   */
   ngOnInit(): void {
     this.currentProject = this.storageService.state.currentProject.data;
 
@@ -80,6 +87,12 @@ export class ProjectEmailSubscribeComponent implements OnInit {
       });
   }
 
+  /**
+   * Set the data to use in the table UI component. This displays
+   * the loaded email subscribe objects to the user.
+   *
+   * @return {void}
+   */
   setRowData() {
     let list = [];
     if (this.emailSubscribe && this.emailSubscribe.length > 0) {
@@ -100,12 +113,25 @@ export class ProjectEmailSubscribeComponent implements OnInit {
     }
   }
 
-  public openSnackBar(message: string, action: string) {
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+   public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
   }
 
+  /**
+   * Give feedback to the user that the export was initiated,
+   * then contact the API to export all email subscribers.
+   *
+   * @return {void}
+   */
   public exportSubscribers() {
     // Export all subscriber emails to CSV
     this.openSnackBar('Download Initiated', 'Close');

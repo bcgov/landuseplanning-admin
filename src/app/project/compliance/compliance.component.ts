@@ -15,6 +15,11 @@ export class ComplianceComponent implements OnInit {
     private storageService: StorageService
   ) { }
 
+  /**
+   * Get the current project from local storage.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
   }

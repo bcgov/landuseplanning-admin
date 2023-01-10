@@ -82,7 +82,14 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
-  ngOnInit() {
+  /**
+   * If the comment review params are empty, get the comment data from the route
+   * resolver and update the various filters that track the state of the review.
+   * Update the table params.
+   *
+   * @return {void}
+   */
+  ngOnInit(): void {
     if (this.storageService.state.commentReviewTabParams == null) {
       this.route.params.subscribe(params => {
         this.commentPeriodId = params.commentPeriodId;
@@ -142,24 +149,53 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Toggle the pending filter and get the paginated comments.
+   *
+   * @return {void}
+   */
   public togglePending() {
     this.filter.pending = !this.filter.pending;
     this.getPaginatedComments(1);
   }
+
+  /**
+   * Toggle the published filter and get the paginated comments.
+   *
+   * @return {void}
+   */
   public togglePublished() {
     this.filter.published = !this.filter.published;
     this.getPaginatedComments(1);
   }
+
+  /**
+   * Toggle the deffered filter and get the paginated comments.
+   *
+   * @return {void}
+   */
   public toggleDeferred() {
     this.filter.deferred = !this.filter.deferred;
     this.getPaginatedComments(1);
   }
+
+  /**
+   * Toggle the rejected filter and get the paginated comments.
+   *
+   * @return {void}
+   */
   public toggleRejected() {
     this.filter.rejected = !this.filter.rejected;
     this.getPaginatedComments(1);
   }
 
-  setCommentRowData() {
+  /**
+   * Update the comment list with all the comment data, then add that update
+   * to the table with the comments.
+   *
+   * @return {void}
+   */
+  setCommentRowData(): void {
     let commentList = [];
     this.comments.forEach(comment => {
       commentList.push(
@@ -184,7 +220,15 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
     );
   }
 
-  setColumnSort(column) {
+  /**
+   * When the user sorts the table by column, update the table params
+   * with the sort type and direction(+,-), then get a list of comments
+   * sorted accordingly.
+   *
+   * @param {string} column What value to sort by.
+   * @return {void}
+   */
+  setColumnSort(column): void {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
     } else {
@@ -193,7 +237,15 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
     this.getPaginatedComments(this.tableParams.currentPage);
   }
 
-  getPaginatedComments(pageNumber) {
+  /**
+   * Scroll to the top of the window, then get the table params to make
+   * a call to the API with. Returns a specific comment period. Update the URL
+   * with the user's selected table data.
+   *
+   * @param {number} pageNumber The page number used in getting updated table params.
+   * @return {void}
+   */
+  getPaginatedComments(pageNumber): void {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;

@@ -11,6 +11,13 @@ export class ProjectSurveyResolver implements Resolve<Object> {
     private surveyService: SurveyService,
   ) { }
 
+  /**
+   * Get route params and make a request to the API to get a single
+   * survey that matches the request params.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
   resolve(route: ActivatedRouteSnapshot): Observable<Object> {
     const projectId = route.parent.paramMap.get('projId');
     const pageNum = route.params.pageNum ? route.params.pageNum : 1;

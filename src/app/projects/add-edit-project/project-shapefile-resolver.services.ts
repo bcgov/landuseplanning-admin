@@ -11,6 +11,13 @@ export class ShapeFileResolver implements Resolve<Observable<object>> {
     private storageService: StorageService
   ) { }
 
+  /**
+   * Get route params and make a request to the API to get a set of shapefiles
+   * that match the search params.
+   *
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @returns {Observable<Object>}
+   */
   resolve(route: ActivatedRouteSnapshot): Observable<object> {
     let pageNum = 1;
     let pageSize = 10;
