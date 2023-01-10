@@ -49,16 +49,6 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       value: 'commentId',
       width: 'col-1'
     },
-    // {
-    //   name: 'Name',
-    //   value: 'author',
-    //   width: 'col-2'
-    // },
-    // {
-    //   name: 'Location',
-    //   value: 'location',
-    //   width: 'col-2'
-    // },
     {
       name: 'Date',
       value: 'dateAdded',
@@ -87,6 +77,15 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
+  /**
+   * If there are no comment review params in local storage, get the comment
+   * period ID from the route resolver, reset the table sorting, then set the
+   * list of surveys. Else, set the comment review params from local storage.
+   * 
+   * Also queries the API for the attached survey response.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     if (this.storageService.state.commentReviewTabParams == null) {
       this.route.params.subscribe(params => {
@@ -155,23 +154,12 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       });
   }
 
-  // public togglePending() {
-  //   this.filter.pending = !this.filter.pending;
-  //   this.getPaginatedComments(1);
-  // }
-  // public togglePublished() {
-  //   this.filter.published = !this.filter.published;
-  //   this.getPaginatedComments(1);
-  // }
-  // public toggleDeferred() {
-  //   this.filter.deferred = !this.filter.deferred;
-  //   this.getPaginatedComments(1);
-  // }
-  // public toggleRejected() {
-  //   this.filter.rejected = !this.filter.rejected;
-  //   this.getPaginatedComments(1);
-  // }
-
+  /**
+   * Set up the survey response data for use display in the table(by building
+   * a new TableObject with the data).
+   * 
+   * @return {void}
+   */
   setCommentRowData() {
     let surveyResponseList = [];
     this.surveyResponses.forEach(sr => {
@@ -197,7 +185,15 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     );
   }
 
-  setColumnSort(column) {
+  /**
+   * When the user sorts the table by column, update the table params
+   * with the sort type and direction(+,-), then get a list of comments
+   * sorted accordingly.
+   * 
+   * @param {string} column What value to sort by.
+   * @return {void}
+   */
+  setColumnSort(column): void {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
     } else {
@@ -206,6 +202,12 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
     this.getPaginatedComments(this.tableParams.currentPage);
   }
 
+  /**
+   * Section the survey responses into "pages" for display in the table.
+   * 
+   * @param {number} pageNumber The page number to update the table with.
+   * @return {void}
+   */
   getPaginatedComments(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);

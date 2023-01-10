@@ -26,13 +26,25 @@ export class ReviewCommentsTabTableRowsComponent implements OnInit, TableCompone
     private storageService: StorageService
   ) { }
 
-  ngOnInit() {
+  /**
+   * Set the project ID from local storage, get the comments data and the
+   * pagination data.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.projectId = this.storageService.state.currentProject.data._id;
     this.comments = this.data.data;
     this.paginationData = this.data.paginationData;
   }
 
-  goToItem(comment) {
+  /**
+   * Navigate the user to a table item when it's clicked on.
+   * 
+   * @param {Comment} comment The comment to navigate to.
+   * @return {void}
+   */
+  goToItem(comment): void {
     this.router.navigate([`p/${this.projectId}/cp/${comment.period}/c/${comment._id}/comment-details`]);
   }
 }

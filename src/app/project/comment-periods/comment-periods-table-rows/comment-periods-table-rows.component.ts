@@ -20,13 +20,23 @@ export class CommentPeriodsTableRowsComponent implements OnInit, TableComponent 
         private router: Router
     ) { }
 
-    ngOnInit() {
+    /**
+     * Get the comment periods and pagination data from the route resolver.
+     * 
+     * @return {void}
+     */
+    ngOnInit(): void {
         this.commentPeriods = this.data.data;
         this.paginationData = this.data.paginationData;
-
     }
 
-    goToItem(commentPeriod) {
+    /**
+     * Navigate the user to the comment period.
+     * 
+     * @param {CommentPeriod} commentPeriod The comment period to navigate to.
+     * @return {void}
+     */
+    goToItem(commentPeriod): void {
         this.router.navigate([`p/${commentPeriod.project}/cp/${commentPeriod._id}/comment-period-details`]);
     }
 }

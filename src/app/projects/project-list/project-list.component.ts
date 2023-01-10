@@ -75,6 +75,13 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
+  /**
+   * Get the project table data from the route params. Check if the user can
+   * add new projects(to enable or disable the button on this view). Get all
+   * project data from the route resolver.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.route.params
       .takeUntil(this.ngUnsubscribe)
@@ -114,11 +121,23 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Clear the navigation stack, then navigate the user to the "add project"
+   * page.
+   * 
+   * @return {void}
+   */
   addProject() {
     this.navigationStackUtils.clearNavigationStack();
     this.router.navigate(['/projects', 'add']);
   }
 
+  /**
+   * Set the data to use in the table UI component. This displays
+   * the loaded projects to the user.
+   * 
+   * @return {void}
+   */
   setRowData() {
     let projectList = [];
     if (this.projects && this.projects.length > 0) {
@@ -145,6 +164,13 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Turn the array of overlapping districts and turn it into a comma-
+   * separated string.
+   * 
+   * @param {string|string[]} districts The array to turn into a string.
+   * @returns {string}
+   */
   stringifyOverlappingDistricts(districts: string | string[]): string {
     let overlappingDistrictsListString: string;
     if (Array.isArray(districts) === true ) {
@@ -155,6 +181,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     return overlappingDistrictsListString;
   }
 
+  /**
+   * When the user sorts the table by column, update the table params
+   * with the sort type and direction(+,-), then get a list of projects
+   * sorted accordingly.
+   * 
+   * @param {string} column What value to sort by.
+   * @return {void}
+   */
   setColumnSort(column) {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
@@ -164,6 +198,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.getPaginatedProjects(this.tableParams.currentPage);
   }
 
+  /**
+   * Section the projects into "pages" for display in the table.
+   * 
+   * @param {number} pageNumber The page number to update the table with.
+   * @return {void}
+   */
   getPaginatedProjects(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
@@ -197,6 +237,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Update the table contents and the URL when the user searches in the 
+   * projects table.
+   * 
+   * @return {void}
+   */
   public onSubmit() {
     // dismiss any open snackbar
     // if (this.snackBarRef) { this.snackBarRef.dismiss(); }

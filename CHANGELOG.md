@@ -1,3 +1,6 @@
+### 1.5.2 Jan 9, 2023
+* Added doc blocks to "project" and "projects" folders. [DESENG-226](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-226)
+
 ### 1.5.1 Nov 9, 2022
 * Added doc blocks to all areas except services, and projects. [DESENG-95](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-95)
 

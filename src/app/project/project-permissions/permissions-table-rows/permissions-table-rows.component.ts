@@ -33,6 +33,12 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     private router: Router
   ) { }
 
+  /**
+   * Get the current project from local storage, then get all users with
+   * their permissions from the route resolver.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
     this.entries = this.data.data;

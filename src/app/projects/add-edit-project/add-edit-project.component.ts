@@ -209,7 +209,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Build project edit form either from local storage, from route
    * resolver data, or a new empty form(if user is adding a new project).
    *
-   * @param resolverData The route resolved data to build into a form.
+   * @param {object} resolverData The route resolved data to build into a form.
    * @returns {void}
    */
   buildForm(resolverData?: { project: Project }): void {
@@ -306,7 +306,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Add a form group to a specific form array.
    *
-   * @param formEntry Specific form array to populate with a new FormGroup.
+   * @param {FormArray} formEntry Specific form array to populate with a new FormGroup.
    * @returns {void}
    */
    populateFormArray(formEntry: FormArray): void {
@@ -336,8 +336,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Remove an element from a form array.
    *
-   * @param formArray The form to remove an item from.
-   * @param index The index of the item to remove.
+   * @param {FormArray} formArray The form to remove an item from.
+   * @param {number} index The index of the item to remove.
    * @returns {void}
    */
   removeItemFromFormArray(formArray: FormArray, index: number): void {
@@ -347,8 +347,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Return the type of the value currently filled into the form.
    *
-   * @param formValue The value of the form to check the type of.
-   * @returns The type of form control.
+   * @param {any} formValue The value of the form to check the type of.
+   * @returns {string} The type of form control.
    */
   public formValueType(formValue: any): string {
     return typeof formValue;
@@ -398,8 +398,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Build an array of form groups existing land use plans from the project data.
    *
-   * @param projectData The project to build the form with.
-   * @returns The existing land use plans form group array.
+   * @param {Project} projectData The project to build the form with.
+   * @returns {FormGroup[]} The existing land use plans form group array.
    */
    buildExistingPlansFormArray(projectData: Project): FormGroup[] {
     let formArray = [];
@@ -422,8 +422,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Build an array of form groups of existing land agreements from project data.
    *
-   * @param projectData The project data to build the form with.
-   * @returns The array of existing land agreements form groups.
+   * @param {Project} projectData The project data to build the form with.
+   * @returns {FormGroup[]} The array of existing land agreements form groups.
    */
   buildExistingAgreementsFormArray(projectData: Project): FormGroup[] {
     let formArray = [];
@@ -446,8 +446,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Build an array of form groups of overlapping regional districts from project data.
    *
-   * @param projectData The project to build the form with.
-   * @returns The array of overlapping regional districts form groups.
+   * @param {Project} projectData The project to build the form with.
+   * @returns {Array} The array of overlapping regional districts form groups.
    */
   buildOverlappingDistrictsFormArray(projectData: Project): any[] {
     let formArray = [];
@@ -463,8 +463,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Build a an array of form groups to add as a form array to the main
    * project form.
    *
-   * @param projectData The project data to build the logos form array with.
-   * @returns The array of logo form groups.
+   * @param {Project} projectData The project data to build the logos form array with.
+   * @returns {FormGroup[]} The array of logo form groups.
    */
   buildLogosFormArray(projectData: Project): FormGroup[] {
     let logosFormArray = [];
@@ -532,8 +532,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Takes current form values and builds a project object.
    *
-   * @param form Form group to build project with.
-   * @returns The project from the current form values.
+   * @param {FormGroup} form Form group to build project with.
+   * @returns {Project} The project from the current form values.
    */
   convertFormToProject(form: FormGroup): Project {
     return new Project({
@@ -587,7 +587,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Select an existing contact for form or create a new one
    *
-   * @param {string} contact The selected contact
+   * @param {string} contact The selected contact.
    * @returns {void}
    */
   public contactSelect(contact: string) {
@@ -658,7 +658,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Adds an existing plan to the completed fields if its existingLandUsePlan and existingLandUsePlanURL values are not null.
    *
-   * @returns {array}
+   * @returns {Array}
    */
   private existingPlanFullFields() {
     let completedFields = [];
@@ -674,7 +674,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Adds an agreement to the completed fields if its agreementName and agreementUrl values are not null.
    *
-   * @returns {array}
+   * @returns {Array}
    */
   private agreementsFullFields() {
     let completedFields = [];
@@ -690,7 +690,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Takes the project logos FormArray and gets the data from it.
    *
-   * @returns Array of logos objects.
+   * @returns {Array} Array of logos objects.
    */
   private getLogosFormValues(): Project['logos'] {
     return this.logos.controls.map((logo: FormGroup) => ({
@@ -804,7 +804,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * if there is an issue anywhere along the way.
    *
    * @param {Project} project The project to save the banner image to.
-   * @param bannerImageFormData The banner image form data to send as a request to the API.
+   * @param {FormData} bannerImageFormData The banner image form data to send as a request to the API.
    * @return {void}
    */
   addAndPublishBannerThenSaveProject(project: Project, bannerImageFormData: FormData): void {
@@ -1019,6 +1019,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     this.bannerImageDocument = null;
   }
 
+  /**
+   * Loop through the added documents(files) and convert them to Document
+   * objects.
+   * 
+   * @param {FileList} files 
+   * @return {void}
+   */
   public addDocuments(files: FileList) {
     if (files) { // safety check
       for (let i = 0; i < files.length; i++) {
@@ -1087,10 +1094,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Uses the CK Editor (ready) to link a file upload handler to the
    * CK Editor instance.
    *
-   * @param eventData Object type added and used by CK Editor
+   * @param {CKEDITOR} eventData Object type added and used by CK Editor
    * @returns {Promise}
    */
-  public editorOnReady(eventData): void {
+  public editorOnReady(eventData) {
     // We need to grab our vars explicitely and pass them through to the CK Editor function.
     const projectId = this.projectId;
     const documentService = this.documentService;
@@ -1100,11 +1107,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     };
   }
 
-  /**
-   * Unsubscribe from observables
-   *
-   * @returns {null}
-   */
   /**
    * Terminate subscriptions when component is unmounted.
    *

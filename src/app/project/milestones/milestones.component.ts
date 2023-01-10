@@ -1,15 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-milestones',
   templateUrl: './milestones.component.html',
   styleUrls: ['./milestones.component.scss']
 })
-export class MilestonesComponent implements OnInit {
+export class MilestonesComponent {
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }

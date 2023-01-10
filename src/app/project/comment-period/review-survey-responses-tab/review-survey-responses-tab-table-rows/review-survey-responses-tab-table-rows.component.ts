@@ -25,13 +25,25 @@ export class ReviewSurveyResponsesTabTableRowsComponent implements OnInit, Table
     private storageService: StorageService
   ) { }
 
-  ngOnInit() {
+  /**
+   * Get the project ID from local storage. Get the survey responses and
+   * pagination data from the route resolver.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.projectId = this.storageService.state.currentProject.data._id;
     this.surveyResponses = this.data.data;
     this.paginationData = this.data.paginationData;
   }
 
-  goToItem(surveyResponse) {
+  /**
+   * Navigate the user to the survey response.
+   * 
+   * @param {SurveyResponse} surveyResponse The survey response to navigate to.
+   * @return {void}
+   */
+  goToItem(surveyResponse): void {
     this.router.navigate([`p/${this.projectId}/cp/${surveyResponse.period}/sr/${surveyResponse._id}/details`]);
   }
 }

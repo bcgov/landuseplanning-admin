@@ -85,7 +85,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   /**
    * Take action based on user response within modal.
    *
-   * @param {object} modalResponse
+   * @param {object} modalResponse A modal response object.
    * @returns {undefined}
    */
   projectActions(modalResponse) {

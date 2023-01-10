@@ -93,6 +93,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Load all documents/files for the project. Set the data and params for the
    * table - the UI component used to display documents.
+   * 
+   * @return {void}
    */
   ngOnInit() {
     if (this.storageService.state.projectDocumentTableParams == null) {
@@ -170,6 +172,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * (copying their URLs, select all docs, edit, delete, etc.).
    *
    * @param {string} action The action the user has selected.
+   * @return {void}
    */
   public selectAction(action: string): void {
     let promises = [];
@@ -255,6 +258,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * state of a document.
    *
    * @param {object} modalData Data passed back from the modal which tracks the user's response.
+   * @return {void}
    */
   public documentActions(modalData: {publishConfirm?: boolean, deleteConfirm?: boolean, unpublishConfirm?: boolean}): void {
     if (modalData.publishConfirm) {
@@ -270,6 +274,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
   /**
    * Navigate to the search help page.
+   * 
+   * @return {void}
    */
   public navSearchHelp(): void {
     this.router.navigate(['/search-help']);
@@ -278,6 +284,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Handle publishing a document. Display a modal to the user
    * to first confirm the action.
+   * 
+   * @return {void}
    */
   public onPublishDocument(): void {
     this.ngxSmartModalService.setModalData({
@@ -292,6 +300,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Publish a document. Make a call to the document service
    * for each selected document.
+   * 
+   * @return {void}
    */
   private internalPublishDocument(): void {
     this.loading = true;
@@ -319,6 +329,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Handle un-publishing a document. Display a modal to the user
    * to first confirm the action.
+   * 
+   * @return {void}
    */
   public onUnpublishDocument(): void {
     this.ngxSmartModalService.setModalData({
@@ -333,6 +345,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Un-publish a document. Make a call to the document service
    * for each selected document.
+   * 
+   * @return {void}
    */
   private internalUnpublishDocument(): void {
     this.loading = true;
@@ -360,6 +374,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Handler for deleting docuements. First displays a confirmation
    * modal to the user before proceeding.
+   * 
+   * @return {void}
    */
   public onDeleteDocument(): void {
     this.ngxSmartModalService.setModalData({
@@ -374,6 +390,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Delete a document. Make a call to the document service
    * to delete every checked document.
+   * 
+   * @return {void}
    */
   private internalDeleteDocument(): void {
     this.loading = true;
@@ -396,6 +414,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * As a workaround, add timestamp to force URL to be different than last time.
    *
    * @see https://stackoverflow.com/questions/40983055/how-to-reload-the-current-route-with-the-angular-2-router
+   * @return {string}
    */
   private updateWindowEncodeURI() {
     const encode = encodeURIComponent;
@@ -411,6 +430,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * When a user selects a number of documents to show in the table.
    *
    * @param {number|string} numItems The number of documents to display(or "max").
+   * @return {void}
    */
   public onNumItems(numItems: number|string) {
     this.updateWindowEncodeURI();
@@ -432,6 +452,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
   /**
    * Reload the document search results based on the set table params.
+   * 
+   * @return {void}
    */
   public reloadSearchResults(): void {
     this.updateWindowEncodeURI();
@@ -450,6 +472,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Set the data to use in the table UI component. This displays
    * the loaded documents to the user.
+   * 
+   * @return {void}
    */
   setRowData(): void {
     let documentList = [];
@@ -515,6 +539,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * If a document is selected, enable the user's ability to publish it.
    *
    * @param {number} count The row number.
+   * @return {void}
    */
   public updateSelectedRow(count: number): void {
     this.selectedCount = count;
@@ -524,6 +549,8 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Checks if a document is publishable by checking it's
    * current published state.
+   * 
+   * @return {void}
    */
   public toggleCanPublish(): void {
     this.canPublish = false;
@@ -548,6 +575,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * match requested file types.
    *
    * @param {string} fileTypeToLoad The general file type to filter by.
+   * @return {void}
    */
   public filterFilesByType(fileTypeToLoad: string): void {
     const fileTypes = {
@@ -586,6 +614,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * Load a "page" of documents.
    *
    * @param {number} pageNumber The page number of documents to get.
+   * @return {void}
    */
   public getPaginatedDocs(pageNumber: number): void {
     // Go to top of page after clicking to a different page.

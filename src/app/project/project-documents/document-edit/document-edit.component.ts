@@ -48,6 +48,13 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     private utils: Utils
   ) { }
 
+  /**
+   * Get project and project documents(files) from local storage.
+   * Set up the configuration for authors and labels. Set up the project
+   * documents add/edit form.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
@@ -104,6 +111,12 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
+  /**
+   * If local storage has a previous router location, navigate the user to it,
+   * otherwise, navigate the user to the "project files" view.
+   * 
+   * @return {void}
+   */
   goBack() {
     if (this.storageService.state.back && this.storageService.state.back.url) {
       this.router.navigate(this.storageService.state.back.url);
@@ -112,6 +125,12 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Make sure the document name doesn't include any invalid characters
+   * (that wouldn't work within a URL, for example).
+   * 
+   * @return {void}
+   */
   public validateChars() {
     if (this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g)) {
       this.docNameInvalid = true;
@@ -120,7 +139,14 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  // on multi edit save, check if form fields have a value
+  /**
+   * On multi edit save, check if date form controls have valid date values.
+   * 
+   * @param {NgbDate} formValue The form control date to check.
+   * @param {Date} docValue The doc date value to check.
+   * @param {boolean} isDate If the form value to check is a date.
+   * @returns {NgbDate|Date}
+   */
   multiEditGetUpdatedValue(formValue, docValue, isDate = false) {
     if (formValue !== null) {
       if (isDate) {
@@ -133,6 +159,12 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Save the project documents by preparing the form data, then contacting
+   * the document API. Multiple documents can be saved at once.
+   * 
+   * @return {void}
+   */
   save() {
     this.loading = true;
 
@@ -202,6 +234,12 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Save the user's changes to the document edit view, then navigate them
+   * to the "add labels" view.
+   * 
+   * @return {void}
+   */
   addLabels() {
     this.storageService.state = { type: 'form', data: this.myForm };
     this.storageService.state = { type: 'labels', data: this.labels };
@@ -239,7 +277,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
         );
     });
   }
-  
+
   /**
    * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
    *

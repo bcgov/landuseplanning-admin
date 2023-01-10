@@ -53,24 +53,28 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private api: ApiService,
+  ) {}
 
-    ) {}
-
-  ngOnInit() {
+  /**
+   * Get the current project from local storage. Get the survey response and
+   * comment period from the route resolver. Update the survey questions property
+   * and the number of survey questions.
+   * 
+   * @return {void}
+   */
+  ngOnInit(): void {
     this.currentProject = this.storageService.state.currentProject.data;
     this.storageService.state.selectedTab = 1;
 
-
     this.route.data
     .takeUntil(this.ngUnsubscribe)
-    .subscribe(
-      (data) => {
+    .subscribe((data) => {
         this.surveyResponse = data.surveyResponse;
         this.commentPeriod = data.cpAndSurveys.commentPeriod;
-      })
+    })
 
-      this.surveyQuestions = this.surveyResponse.responses.map(response => response.question)
-      this.surveyItemCount(this.surveyQuestions)
+    this.surveyQuestions = this.surveyResponse.responses.map(response => response.question)
+    this.surveyItemCount(this.surveyQuestions)
   }
 
   /**
@@ -86,30 +90,13 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
     });
   }
 
-  public editSurvey() {
+  /**
+   * Navigate the user to the survey edit page.
+   * 
+   * @return {void}
+   */
+  public editSurvey(): void {
     this.router.navigateByUrl(`/p/${this.projectId}/s/${this.survey._id}/edit`);
-  }
-
-  public deleteCommentPeriod() {
-    if (confirm(`Are you sure you want to delete this survey?`)) {
-      this.loading = true;
-      this.surveyService.delete(this.survey)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          () => { },
-          error => {
-            console.error(error);
-            alert('Uh-oh, couldn\'t delete survey');
-          },
-          () => { // onCompleted
-            // delete succeeded --> navigate back to search
-            // Clear out the document state that was stored previously.
-            this.loading = false;
-            this.openSnackBar('This survey has been deleted', 'Close');
-            this.router.navigate(['p', this.projectId, 'project-surveys']);
-          }
-        );
-    }
   }
 
   /**
@@ -123,9 +110,12 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
     return this.api.downloadDocument(document);
   }
 
-  //
-  // Displays the question number beside each question
-  //
+  /**
+   * Builds a numbered list to keep track of the questions in the survey builder.
+   * 
+   * @param {Array} questions The survey questions to build a list for.
+   * @return {void}
+   */
   public surveyItemCount(questions) {
     // Does not display number next to info boxes
     let infoCount = 0;

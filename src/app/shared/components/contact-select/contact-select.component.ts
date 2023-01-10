@@ -132,6 +132,12 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Set the data to use in the table UI component. This displays
+   * the loaded contacts to the user.
+   * 
+   * @return {void}
+   */
   setRowData() {
     let dataList = [];
     if (this.users && this.users.length > 0) {
@@ -156,6 +162,14 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * When the user sorts the table by column, update the table params
+   * with the sort type and direction(+,-), then navigate to the contact
+   * add or edit page.
+   * 
+   * @param {string} column What value to sort by.
+   * @return {void}
+   */
   setColumnSort(column) {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;

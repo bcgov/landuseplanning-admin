@@ -73,6 +73,12 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
     private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
+  /**
+   * Get the current project from local storage, set up the table with the route
+   * params, then get the project update documents from the route resolver.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
 
@@ -105,6 +111,12 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Set the data to use in the table UI component. This displays
+   * the loaded updates to the user.
+   * 
+   * @return {void}
+   */
   setRowData() {
     let list = [];
     if (this.recentActivities && this.recentActivities.length > 0) {
@@ -121,11 +133,23 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Navigate the user to the "add update" view.
+   * 
+   * @param {Router} router The router to navigate the user with.
+   * @param {Project} currentProject The current project.
+   * @return {void}
+   */
   addUpdate(router = this.router, currentProject = this.currentProject): void {
     // this.storageService.state.currentProject = this.currentProject;
     router.navigate(['p', currentProject._id, 'project-updates', 'add']);
   }
 
+  /**
+   * Search through the list of project updates and update the URL accordingly.
+   * 
+   * @return {void}
+   */
   public onSubmit() {
     // dismiss any open snackbar
     // if (this.snackBarRef) { this.snackBarRef.dismiss(); }
@@ -149,6 +173,12 @@ export class ProjectUpdatesComponent implements OnInit, OnDestroy {
     this.router.navigate(['p', this.currentProject._id, 'project-updates', params]);
   }
 
+  /**
+   * Load a "page" of documents.
+   *
+   * @param {number} pageNumber The page number of documents to get.
+   * @return {void}
+   */
   getPaginatedDocs(pageNumber) {
     // Go to top of page after clicking to a different page.
     const encode = encodeURIComponent;

@@ -71,6 +71,14 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     private tableTemplateUtils: TableTemplateUtils
   ) { }
 
+  /**
+   * Update local storage with null values for data related to the comment
+   * period. Get the current project from local storage. Then contact the route
+   * params for the table data. Finally, get the comment period data from the
+   * route resolver.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.storageService.state.selectedDocumentsForCP = null;
     this.storageService.state.addEditCPForm = null;
@@ -112,6 +120,14 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * When the user sorts the table by column, update the table params
+   * with the sort type and direction(+,-), then get a list of comments
+   * sorted accordingly.
+   * 
+   * @param {string} column What value to sort by.
+   * @return {void}
+   */
   setColumnSort(column) {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
@@ -121,6 +137,11 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     this.getPaginatedComments(this.tableParams.currentPage);
   }
 
+  /**
+   * Set the table row data with the comment period data. Update the table object.
+   * 
+   * @return {void}
+   */
   setCPRowData() {
     let cpList = [];
     this.commentPeriods.forEach(commentPeriod => {
@@ -153,6 +174,12 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Section the comments into "pages" for display in the table.
+   * 
+   * @param {number} pageNumber The page number to update the table with.
+   * @return {void}
+   */
   public getPaginatedComments(pageNumber) {
     // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
@@ -172,6 +199,12 @@ export class CommentPeriodsComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Get the current project from local storage, then navigate to the add
+   * comment period page.
+   * 
+   * @return {void}
+   */
   public addCommentPeriod() {
     this.storageService.state.currentProject = this.currentProject;
     this.router.navigate(['p', this.currentProject._id, 'comment-periods', 'add']);

@@ -23,6 +23,11 @@ export class AddLabelComponent implements OnInit, OnDestroy {
     private storageService: StorageService
   ) { }
 
+  /**
+   * Set up the form for adding labels to projects.
+   * 
+   * @return {void}
+   */
   ngOnInit() {
     this.route.parent.paramMap
       .takeUntil(this.ngUnsubscribe)
@@ -46,11 +51,23 @@ export class AddLabelComponent implements OnInit, OnDestroy {
     this.back = this.storageService.state.back;
   }
 
+  /**
+   * Toggle the label selection, then update local storage with all labels
+   * (including those selected or not).
+   * 
+   * @param {object} label The label object that's selected.
+   * @return {void}
+   */
   toggleSelected(label: any) {
     label.selected = !label.selected;
     this.storageService.state.labels = this.labels;
   }
 
+  /**
+   * Cancel adding a label. Navigate the user away from the add label view.
+   * 
+   * @return {void}
+   */
   cancel() {
     this.router.navigate(this.back.url);
   }
