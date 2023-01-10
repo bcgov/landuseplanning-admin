@@ -86,7 +86,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
    * If the comment review params are empty, get the comment data from the route
    * resolver and update the various filters that track the state of the review.
    * Update the table params.
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -151,7 +151,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   /**
    * Toggle the pending filter and get the paginated comments.
-   * 
+   *
    * @return {void}
    */
   public togglePending() {
@@ -161,7 +161,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   /**
    * Toggle the published filter and get the paginated comments.
-   * 
+   *
    * @return {void}
    */
   public togglePublished() {
@@ -171,7 +171,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   /**
    * Toggle the deffered filter and get the paginated comments.
-   * 
+   *
    * @return {void}
    */
   public toggleDeferred() {
@@ -181,7 +181,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   /**
    * Toggle the rejected filter and get the paginated comments.
-   * 
+   *
    * @return {void}
    */
   public toggleRejected() {
@@ -191,8 +191,8 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
 
   /**
    * Update the comment list with all the comment data, then add that update
-   * the table with the comments.
-   * 
+   * to the table with the comments.
+   *
    * @return {void}
    */
   setCommentRowData(): void {
@@ -224,7 +224,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
    * When the user sorts the table by column, update the table params
    * with the sort type and direction(+,-), then get a list of comments
    * sorted accordingly.
-   * 
+   *
    * @param {string} column What value to sort by.
    * @return {void}
    */
@@ -241,7 +241,7 @@ export class ReviewCommentsTabComponent implements OnInit, OnDestroy {
    * Scroll to the top of the window, then get the table params to make
    * a call to the API with. Returns a specific comment period. Update the URL
    * with the user's selected table data.
-   * 
+   *
    * @param {number} pageNumber The page number used in getting updated table params.
    * @return {void}
    */

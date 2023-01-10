@@ -76,14 +76,14 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
    * Get the current project from local storage. Check the URL: if the user
    * is trying to edit a comment period, and there's no current comment period,
    * redirect the user to the comment period edit page.
-   * 
+   *
    * Then, if not redirecting, get the table params and documents from the
    * route resolver.
-   * 
+   *
+   * @todo Investigate possible bug: If you refresh while adding comment period, the page does not show up.
    * @return {void}
    */
   ngOnInit() {
-    // BUG: If you refresh while adding comment period, the page does not show up.
     let isRedirecting = false;
 
     this.currentProject = this.storageService.state.currentProject.data;
@@ -143,7 +143,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   /**
    * Handle various actions for modifying/working with documents(files).
    * This includes, copying their links, selecting, downloading.
-   * 
+   *
    * @param {string} action The document action to take.
    * @returns {void}
    */
@@ -211,7 +211,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   /**
    * Submit a document(file). Reset the table params and navigate the user to
    * the appropriate destination based on their editing status or not.
-   * 
+   *
    * @return {void}
    */
   public onSubmit() {
@@ -241,7 +241,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   /**
    * Set the document(file) row data, update the TableObject with
    * the document data.
-   * 
+   *
    * @return {void}
    */
   setDocumentRowData() {
@@ -270,7 +270,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
    * When the user sorts the table by column, update the table params
    * with the sort type and direction(+,-), then get a list of documents(files)
    * sorted accordingly.
-   * 
+   *
    * @param {string} column What value to sort by.
    * @return {void}
    */
@@ -285,7 +285,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
 
   /**
    * Enables the copy link button if there is a selected document.
-   * 
+   *
    * @param {string} button The button to enable.
    * @returns {void}
    */
@@ -345,7 +345,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   /**
    * Remove a selected document(file) from local storage, and un-check the checkbox
    * on the selected document.
-   * 
+   *
    * @param {Document} doc The document to de-select.
    * @return {void}
    */
@@ -361,8 +361,8 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   /**
    * When the user wants to exit the page, remove selected documents from local
    * storage and navigate away.
-   * 
-   * @param {Array} navigation The commands to pass to the router to navigate with.
+   *
+   * @param {any[]} navigation The commands to pass to the router to navigate with.
    * @return {void}
    */
   clearSelectedDocs(navigation) {

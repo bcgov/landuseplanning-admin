@@ -47,9 +47,9 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   ) { }
 
   /**
-   * Get the current coment period's commenting method, then initialize the
+   * Get the current comment period's commenting method, then initialize the
    * relevant commenting form.
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -83,7 +83,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
    * Set up a new, empty form group for a comment form. Set comment anonymity
    * to false by default and set the date the comment was(will be) made to
    * the current date.
-   * 
+   *
    * @return {void}
    */
   private initForm(): void {
@@ -111,7 +111,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
    * Handle the form submission. Translate various form values to their internal
    * equivalents. Convert bootstrap date format to Javascript format. Finally,
    * submit the form by making a post request to the comment API.
-   * 
+   *
    * @return {void}
    */
   public onSubmit(): void {
@@ -165,7 +165,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   /**
    * Handle when the user wants to leave the form and stop adding/editing a comment.
    * Navigates the user away from the form if the user confirms they wish to leave.
-   * 
+   *
    * @return {void}
    */
   public onCancel(): void {
@@ -179,10 +179,10 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   /**
    * Handle setting the "response" to a comment. When adding the comment
    * the user can publish, defer, or reject it immediately.
-   * 
+   *
    * If no status is set by the user, set the status to "pending."
-   * 
-   * @param {string} status The comment status(publish, defer, reject).
+   *
+   * @param {string} status The comment status(publish, defer, reject, pending).
    * @return {void}
    */
   public setEaoStatus(status: string): void {
@@ -236,7 +236,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
 
   /**
    * Return the async response from the document API for a document download.
-   * 
+   *
    * @param {Document} document The document object to pass to the API.
    * @returns {Promise<void>}
    */
@@ -246,7 +246,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
 
   /**
    * When the document is published or rejected, update the document object.
-   * 
+   *
    * @param {Document} document The document object to update.
    * @param {string} action Whether to publish or reject the document.
    * @return {void}
@@ -261,7 +261,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
 
   /**
    * Update the comment form to display all the loaded documents/files.
-   * 
+   *
    * @returns {Array}
    */
   private setDocumentForm() {
@@ -285,7 +285,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
 
   /**
    * Add new documents/files to the comment form.
-   * 
+   *
    * @param {FileList} files The uploaded files in the form.
    * @return {void}
    */
@@ -314,7 +314,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
 
   /**
    * Delete a file/document from the comment form and from the documents list.
-   * 
+   *
    * @param {Document} doc The document/file to delete.
    * @return {void}
    */
@@ -327,7 +327,7 @@ export class AddCommentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.

@@ -55,7 +55,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
    * ID, check for comment period documents and fetch them from the API, get
    * surveys associated with the comment period, and set up the modal window
    * to be used later.
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -91,7 +91,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   /**
    * When any data-bound property of a directive changes, update the current
    * survey names by removing surveys without responses from that list.
-   * 
+   *
    * @return {void}
    */
   ngOnChanges(): void {
@@ -110,7 +110,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
 
   /**
    * Update the properties related to publish status.
-   * 
+   *
    * @return {void}
    */
   setPublishStatus(): void {
@@ -122,7 +122,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
    * Toggle the publish state of a comment period. First, confirm the action with
    * the user, then send an API request to publish/unpublish and update the user
    * when that action is complete.
-   * 
+   *
    * @return {void}
    */
   public togglePublishState(): void {
@@ -155,7 +155,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.
@@ -169,7 +169,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
 
   /**
    * Navigate the user to the edit comment period form.
-   * 
+   *
    * @return {void}
    */
   editCommentPeriod(): void {
@@ -177,10 +177,10 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   }
 
   /**
-   * Delete a comment period. First prompt the user to confirm, then send a 
+   * Delete a comment period. First prompt the user to confirm, then send a
    * delete request to the API. Finally, display a message to the user
    * that the process was successful or not.
-   * 
+   *
    * @return {void}
    */
   deleteCommentPeriod(): void {
@@ -208,7 +208,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   /**
    * Add a new comment to this comment period. Navigate the user to
    * the add comment form.
-   * 
+   *
    * @return {void}
    */
   public addComment(): void {
@@ -218,7 +218,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   /**
    * Export all comments from this comment period. Provide feedback
    * to the user, then contact the API to initiate the export.
-   * 
+   *
    * @return {void}
    */
   public exportComments(): void {
@@ -230,7 +230,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   /**
    * If there are multiple surveys attached to the comment period, prompt
    * the user to choose which survey to export the responses of.
-   * 
+   *
    * @return {void}
    */
   public onExportSurveyResponses(): void {
@@ -253,7 +253,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   /**
    * Send a call to the API to export survey responses and prompt the user
    * that it's been initiated.
-   * 
+   *
    * @param {string} cpID Comment period ID.
    * @param {string} surveyID Survey ID to export responses for.
    * @return {void}
@@ -267,7 +267,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   /**
    * Send a call to the API to download a given document/file. Return the
    * async response.
-   * 
+   *
    * @param {Document} document The document(file) to download.
    * @returns {Promise<void>}
    */
@@ -278,7 +278,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   /**
    * Get the value from the storage service that the comment period can be
    * deleted.
-   * 
+   *
    * @return {void}
    */
   public checkIfCanDelete(): void {

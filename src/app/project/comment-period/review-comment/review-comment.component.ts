@@ -46,7 +46,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
   /**
    * Get the current project from local storage, then get the comment to
    * review, get the comment period(or notify the user if it's not found).
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -89,7 +89,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
   /**
    * Initialize a new empty form group for the comment review then populate
    * it with the comment data.
-   * 
+   *
    * @return {void}
    */
   private initForm(): void {
@@ -121,7 +121,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
    * On form submission, update the comment with the reponse
    * (publish, reject, defer, pending), save the response by hitting
    * the comment API, then move on to the next comment to review, or exit.
-   * 
+   *
    * @param {string} action Whether to move to the next comment or stop review.
    * @return {void}
    */
@@ -182,7 +182,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
   /**
    * Cancel a review and exit the form. Prompt the user to confirm first,
    * then navigate away from the form.
-   * 
+   *
    * @return {void}
    */
   public onCancel(): void {
@@ -194,9 +194,9 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
   /**
    * Handle setting the "response" to a comment. When adding the comment
    * the user can publish, defer, or reject it immediately.
-   * 
+   *
    * If no status is set by the user, set the status to "pending."
-   * 
+   *
    * @param {string} status The comment status(publish, defer, reject).
    * @return {void}
    */
@@ -250,7 +250,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
   /**
    * Send a call to the API to download a given document/file. Return the
    * async response.
-   * 
+   *
    * @param {Document} document The document(file) to download.
    * @returns {Promise<void>}
    */
@@ -260,7 +260,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
 
   /**
    * When the document is published or rejected, update the document object.
-   * 
+   *
    * @param {Document} document The document object to update.
    * @param {string} action Whether to publish or reject the document.
    * @return {void}
@@ -274,7 +274,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.

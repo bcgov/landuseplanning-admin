@@ -23,6 +23,12 @@ export class AddDocumentTableRowsComponent implements OnInit, TableComponent {
     private storageService: StorageService
   ) { }
 
+  /**
+   * Get the documents and pagination data from the table data argument.
+   * If present, get the selected comment period documents from local storage.
+   *
+   * @return {void}
+   */
   ngOnInit() {
     this.documents = this.data.data;
     this.paginationData = this.data.paginationData;
@@ -38,6 +44,13 @@ export class AddDocumentTableRowsComponent implements OnInit, TableComponent {
     }
   }
 
+  /**
+   * Handle selecting an individual document and update the count of all
+   * selected documents.
+   *
+   * @param {Document} item The document object to select.
+   * @return {void}
+   */
   selectItem(item) {
     item.checkbox = !item.checkbox;
     if (item.checkbox) {

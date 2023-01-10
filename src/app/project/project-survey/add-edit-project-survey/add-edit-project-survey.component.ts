@@ -66,7 +66,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
    * Get any existing survey and load it into the form if the user
    * is editing a survey. Finally, set up the modal service to display a warning
    * for when the user exits without saving.
-   * 
+   *
    * @return {void}
    */
   ngOnInit() {
@@ -150,7 +150,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
    * Initialize the survey form depending on whether the user is adding a new
    * survey or editing an existing one. Set up a listener for survey form changes
    * to keep track of doc picker components.
-   * 
+   *
    * @param {Survey} surveyToEdit The survey to edit and plug into the form.
    * @return {void}
    */
@@ -177,7 +177,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   /**
    * Form getter method - necessary to be able to access Angular FormArrays.
-   * 
+   *
    * @return {FormArray}
    */
   get currentQuestionsForm() { return this.surveyQuestionsForm as FormArray }
@@ -185,7 +185,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * Check the survey form group for the existence of a doc picker component
    * to ensure there is only ever one of them in the survey.
-   * 
+   *
    * @param {FormGroup} form The survey form group to check.
    * @return {void}
    */
@@ -212,7 +212,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * Listen for when a component is dropped into the survey builder area.
    * Update the survey form with the newly-added component.
-   * 
+   *
    * @param {CdkDragDrop} event A drag/drop event to watch for.
    * @return {void}
    */
@@ -233,7 +233,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * When the user has dragged a question to a different position in the survey
    * form, update its position in the survey FormArray.
-   * 
+   *
    * @param {FormArray} questionForm The survey form.
    * @param {number} firstIndex The position the question was at before it was dragged.
    * @param {number} secondIndex The position to move the question to.
@@ -249,7 +249,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * On question delete, display a modal prompt to confirm, then initiate
    * the deletion.
-   * 
+   *
    * @param {number} index The form question to delete.
    * @return {void}
    */
@@ -267,7 +267,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * If the user confirms the survey question can be deleted(via modal prompt),
    * Remove the control from the FormArray.
-   * 
+   *
    * @param {ModalData} modalResponse The modal data to check.
    * @return {void}
    */
@@ -280,7 +280,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * A callback that returns false to indicate a component can't be dropped
    * (for more than one doc picker component, for example).
-   * 
+   *
    * @returns {false}
    */
   public noDrop(): false {
@@ -289,7 +289,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   /**
    * Check if a value is undefined.
-   * 
+   *
    * @param {any} value Value of various types to check.
    * @returns {boolean}
    */
@@ -303,7 +303,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   /**
    * If the CK Editor can't be retrieved, throw an error in the console.
-   * 
+   *
    * @param {ChangeEvent} editor The change event containing the CK Editor.
    * @return {void}
    */
@@ -318,7 +318,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * Get the likert choice position text to make it easier for the user
    * to edit.
-   * 
+   *
    * @param {number} position The position of the likert choice.
    * @returns {string}
    */
@@ -335,7 +335,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   /**
    * Add a single or multiple choice option to a question.
-   * 
+   *
    * @param {FormControl} question Single or multiple choice question.
    * @return {void}
    */
@@ -345,7 +345,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   /**
    * Delete a single or multiple choice option from a question.
-   * 
+   *
    * @param {FormControl} question Single or multiple choice question.
    * @return {void}
    */
@@ -357,7 +357,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
    * Add an "other" field to a multiple choice question so the
    * user filling out the survey can add a choice that's not available
    * in the multiple choice.
-   * 
+   *
    * @param {FormControl} question Multiple choice form control.
    * @return {void}
    */
@@ -368,7 +368,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
    * Remove the "other" field to a multiple choice question so the
    * user filling out the survey has to choose from the available
    * multiple choice options.
-   * 
+   *
    * @param {FormControl} question Multiple choice form control.
    * @return {void}
    */
@@ -378,7 +378,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   /**
    * Add a likert component attribute.
-   * 
+   *
    * @param {number} attribute Particular attribute index to add to the form control.
    * @return {void}
    */
@@ -388,8 +388,8 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
 
   /**
    * Delete a likert component attribute.
-   * 
-   * @param {FormControl} question Likert component question form control. 
+   *
+   * @param {FormControl} question Likert component question form control.
    * @param {number} attributeIndex Particular attribute index to delete.
    * @return {void}
    */
@@ -401,7 +401,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
    * When the user saves their work, first check if the survey is valid. If so,
    * initiate a save with the API, otherwise notify the user of the invalid
    * parts of the survey to correct.
-   * 
+   *
    * @returns {void}
    */
   public onSubmit() {
@@ -433,7 +433,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * When the user saves the survey, prepare the survey data, then save or
    * update the survey by contacting the survey API.
-   * 
+   *
    * @return {void}
    */
   private submitForm() {
@@ -495,7 +495,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * When the user hits "cancel," exit this view and return the user to the
    * existing survey details view, or to the project surveys overview page.
-   * 
+   *
    * @return {void}
    */
   public onCancel() {
@@ -507,7 +507,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.
@@ -522,7 +522,7 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   /**
    * Tear down processes that consume memory when the component is un-mounted,
    * including the scroll listener and any ongoing subscriptions(mainly HTTP calls).
-   * 
+   *
    * @return {void}
    */
   ngOnDestroy() {

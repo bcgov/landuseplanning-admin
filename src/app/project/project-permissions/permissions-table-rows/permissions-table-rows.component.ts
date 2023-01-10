@@ -36,7 +36,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
   /**
    * Get the current project from local storage, then get all users with
    * their permissions from the route resolver.
-   * 
+   *
    * @return {void}
    */
   ngOnInit() {
@@ -45,7 +45,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.

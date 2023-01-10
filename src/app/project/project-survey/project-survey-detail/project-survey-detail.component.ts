@@ -42,7 +42,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
   /**
    * Load the survey data from the route resolver, store the number of questions
    * set the current project by retrieving the relevant data from local storage.
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.
@@ -78,7 +78,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
 
   /**
    * Navigate the user to the survey edit screen.
-   * 
+   *
    * @return {void}
    */
   editSurvey(): void {
@@ -89,7 +89,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
    * Handle the deletion of a survey. First, prompt the user to confirm,
    * then make a call to the API to delete the survey in the database. Give
    * feedback when the action is complete whether or not it succeeded or failed.
-   * 
+   *
    * @return {void}
    */
   deleteSurvey(): void {
@@ -116,7 +116,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
 
   /**
    * Displays the question number beside each question.
-   * 
+   *
    * @param {Array} questions The questions to display a number beside.
    * @return {void}
    */
@@ -138,7 +138,7 @@ export class ProjectSurveyDetailComponent implements OnInit, OnDestroy {
 
   /**
    * Set the survey as able to be deleted.
-   * 
+   *
    * @return {void}
    */
    public checkIfCanDelete(): void {

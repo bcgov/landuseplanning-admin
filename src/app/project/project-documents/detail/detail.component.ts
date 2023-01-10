@@ -46,7 +46,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
    * Get the current project from local storage. Then, get the associated document
    * from local storage along with the accessible document URLs. Set up the
    * modal service to handle publishing/unpublishing the project.
-   * 
+   *
    * @return {void}
    */
   ngOnInit() {
@@ -102,10 +102,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * If the user wishes to edit the project, get the associated documents
+   * When a project edit is initiated, get the associated documents
    * from local storage. Also add the router destination for the project
    * detail view. Finally navigate the user to the "edit project" view.
-   * 
+   *
    * @return {void}
    */
   onEdit() {
@@ -128,7 +128,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   /**
    * Update the modal service to prompt the user to confirm the publishing
    * of a project. Then update the modal to display to the user.
-   * 
+   *
    * @return {void}
    */
   public togglePublish() {
@@ -142,7 +142,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.

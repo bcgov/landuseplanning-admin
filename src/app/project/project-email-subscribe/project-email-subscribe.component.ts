@@ -60,7 +60,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
    * Get the current project from local storage, then update the table
    * with the route params(to show a default set of email subscribers).
    * Then, get the email subscribe data from the database.
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -90,7 +90,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
   /**
    * Set the data to use in the table UI component. This displays
    * the loaded email subscribe objects to the user.
-   * 
+   *
    * @return {void}
    */
   setRowData() {
@@ -114,7 +114,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.
@@ -129,7 +129,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
   /**
    * Give feedback to the user that the export was initiated,
    * then contact the API to export all email subscribers.
-   * 
+   *
    * @return {void}
    */
   public exportSubscribers() {

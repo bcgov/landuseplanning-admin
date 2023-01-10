@@ -62,7 +62,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
    * Get the current project from local storage, set up config. Contact the route
    * resolver to get the comment period, available surveys. Then trigger the
    * form initilization.
-   * 
+   *
    * @return {void}
    */
   ngOnInit() {
@@ -146,7 +146,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   /**
    * Set up the comment period form from local storage, the route resolver,
    * or set up a blank form if neither are present(adding a new comment period).
-   * 
+   *
    * @return {void}
    */
   private initForm() {
@@ -182,7 +182,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   /**
    * Set up a form using a saved comment period to fill it in.
-   * 
+   *
    * @return {void}
    */
   private initForEditing() {
@@ -229,7 +229,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   /**
    * If there's no selected document(file) in local storage, contact the API to
    * get the documents tied to the comment period.
-   * 
+   *
    * @return {void}
    */
   private initSelectedDocs() {
@@ -251,7 +251,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   /**
    * On comment period form submit, prepare the CP data and submit to the
    * API dependent on whether it's an edit or a new CP.
-   * 
+   *
    * @returns {void}
    */
   public onSubmit() {
@@ -365,7 +365,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   /**
    * Cancel adding/editing the comment period. Navigate the user away
    * from the form.
-   * 
+   *
    * @return {void}
    */
   public onCancel() {
@@ -382,7 +382,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   /**
    * Update the storage service with the comment period form data(so user doesn't
    * lose their changes), then navigate the user to the "add documents" page.
-   * 
+   *
    * @return {void}
    */
   public addDocuments() {
@@ -396,7 +396,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   /**
    * Set up the open house part of the form.
-   * 
+   *
    * @returns {FormGroup}
    */
   private initOpenHouseRow(): FormGroup {
@@ -408,7 +408,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   /**
    * Set up the open house form array and add a single form group to it.
-   * 
+   *
    * @return {void}
    */
   public addOpenHouseRow(): void {
@@ -418,7 +418,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   /**
    * Add open house form group with form data already entered.
-   * 
+   *
    * @param {FormGroup} openHouse The open house form group to add.
    * @return {void}
    */
@@ -429,7 +429,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   /**
    * Remove a particular open house form group from the form array.
-   * 
+   *
    * @param {number} rowIndex The index of the form array to remove.
    * @return {void}
    */
@@ -444,7 +444,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
   /**
    * Remove the added document(file) from the comment period.
-   * 
+   *
    * @param {Document} doc Document to remove.
    * @return {void}
    */
@@ -453,7 +453,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.

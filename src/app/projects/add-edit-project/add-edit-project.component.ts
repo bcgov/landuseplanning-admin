@@ -1022,8 +1022,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Loop through the added documents(files) and convert them to Document
    * objects.
-   * 
-   * @param {FileList} files 
+   *
+   * @param {FileList} files
    * @return {void}
    */
   public addDocuments(files: FileList) {
@@ -1078,7 +1078,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.
@@ -1094,7 +1094,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Uses the CK Editor (ready) to link a file upload handler to the
    * CK Editor instance.
    *
-   * @param {CKEDITOR} eventData Object type added and used by CK Editor
+   * @param {CKEDITOR} eventData Object type added and used by CK Editor.
    * @returns {Promise}
    */
   public editorOnReady(eventData) {

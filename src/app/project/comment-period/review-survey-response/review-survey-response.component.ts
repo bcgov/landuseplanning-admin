@@ -59,7 +59,7 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
    * Get the current project from local storage. Get the survey response and
    * comment period from the route resolver. Update the survey questions property
    * and the number of survey questions.
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -78,7 +78,7 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.
@@ -92,7 +92,7 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
 
   /**
    * Navigate the user to the survey edit page.
-   * 
+   *
    * @return {void}
    */
   public editSurvey(): void {
@@ -102,7 +102,7 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
   /**
    * Send a call to the API to download a given document/file. Return the
    * async response.
-   * 
+   *
    * @param {Document} document The document(file) to download.
    * @returns {Promise<void>}
    */
@@ -112,7 +112,7 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
 
   /**
    * Builds a numbered list to keep track of the questions in the survey builder.
-   * 
+   *
    * @param {Array} questions The survey questions to build a list for.
    * @return {void}
    */
@@ -133,7 +133,7 @@ export class ReviewSurveyResponseComponent implements OnInit, OnDestroy {
 
   /**
    * Set the comment period as able to be deleted.
-   * 
+   *
    * @return {void}
    */
    public checkIfCanDelete(): void {

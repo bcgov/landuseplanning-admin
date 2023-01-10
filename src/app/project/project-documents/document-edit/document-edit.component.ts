@@ -52,7 +52,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
    * Get project and project documents(files) from local storage.
    * Set up the configuration for authors and labels. Set up the project
    * documents add/edit form.
-   * 
+   *
    * @return {void}
    */
   ngOnInit() {
@@ -114,7 +114,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   /**
    * If local storage has a previous router location, navigate the user to it,
    * otherwise, navigate the user to the "project files" view.
-   * 
+   *
    * @return {void}
    */
   goBack() {
@@ -128,7 +128,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   /**
    * Make sure the document name doesn't include any invalid characters
    * (that wouldn't work within a URL, for example).
-   * 
+   *
    * @return {void}
    */
   public validateChars() {
@@ -141,7 +141,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
 
   /**
    * On multi edit save, check if date form controls have valid date values.
-   * 
+   *
    * @param {NgbDate} formValue The form control date to check.
    * @param {Date} docValue The doc date value to check.
    * @param {boolean} isDate If the form value to check is a date.
@@ -162,7 +162,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   /**
    * Save the project documents by preparing the form data, then contacting
    * the document API. Multiple documents can be saved at once.
-   * 
+   *
    * @return {void}
    */
   save() {
@@ -237,7 +237,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   /**
    * Save the user's changes to the document edit view, then navigate them
    * to the "add labels" view.
-   * 
+   *
    * @return {void}
    */
   addLabels() {
@@ -279,7 +279,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
    *
    * @param {string} message A snack bar notification message.
    * @param {string} action A snack bar notification action.
