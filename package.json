@@ -1,6 +1,6 @@
 {
   "name": "landuseplanning-admin",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
@@ -11,6 +11,7 @@
     "test": "echo 'Test suite should be run with \"`npm run tests` or npm `run tests-ci`\"'",
     "tests": "ng test",
     "tests-ci": "ng test --watch=false",
+    "tests-coverage": "ng test --no-watch --code-coverage",
     "lint": "ng lint --format=stylish",
     "e2e": "ng e2e",
     "postinstall": "ng build --prod --deploy-url /admin/ --base-href /admin/"

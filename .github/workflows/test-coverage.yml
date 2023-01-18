@@ -1,0 +1,19 @@
+name: Test Code Coverage of LUP Admin
+on:
+  pull_request:
+    branches:
+      - dev
+jobs:
+  static_checks:
+    if: github.repository_owner == 'bcgov' && github.event.pull_request.draft == false
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install packages
+        run: npm install
+      - name: Test code coverage
+        run: npm run tests-coverage

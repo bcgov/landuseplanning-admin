@@ -1,3 +1,6 @@
+### 1.6.0 Jan 17, 2023
+* Implemented Github code coverage testing/validation. [DESENG-139](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-139)
+
 ### 1.5.2 Jan 9, 2023
 * Added doc blocks to "project" and "projects" folders. [DESENG-226](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-226)
 
