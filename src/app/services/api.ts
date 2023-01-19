@@ -69,6 +69,13 @@ export class ApiService {
     this.env = (isEmpty(deployment_env)) ? 'local' : deployment_env;
   }
 
+  /**
+   * Handle if an error is returned from the API. If the user isn't authenticated,
+   * kick them back to the login screen.
+   *
+   * @param {any} error An error returned from the observable.
+   * @returns {Observable}
+   */
   handleError(error: any): Observable<never> {
     const reason = error.message ? (error.error ? `${error.message} - ${error.error.message}` : error.message) : (error.status ? `${error.status} - ${error.statusText}` : 'Server error');
     console.error('API error =', reason);
@@ -78,6 +85,16 @@ export class ApiService {
     return throwError(error);
   }
 
+  /**
+   * Manually log the user in if the keycloak instance isn't working. Contact the Login
+   * Service and get an access token if the user authenticates successfully.
+   * This function may be removed at some point as I'm not sure it's used anywhere.
+   *
+   * @deprecated
+   * @param {string} username The username to log in with.
+   * @param {string} password The password to log in with.
+   * @returns {Observable}
+   */
   login(username: string, password: string): Observable<boolean> {
     return this.http.post<LocalLoginResponse>(`${this.pathAPI}/login/token`, { username: username, password: password })
       .map(res => {
@@ -94,15 +111,27 @@ export class ApiService {
       });
   }
 
+  /**
+   * Log the user out by reseting the token and remove user from local storage.
+   *
+   * @return {void}
+   */
   logout() {
     // clear token + remove user from local storage to log user out
     this.token = null;
     window.localStorage.removeItem('currentUser');
   }
 
-  //
-  // Projects
-  //
+  /**
+   * Converts a query string to an API request for all projects. Returns each project
+   * with a specific set of fields.
+   *
+   * @param {number} pageNum The number of pages of results to return.
+   * @param {number} pageSize The page size for the results.
+   * @param {string} sortBy Sort the results by a given field.
+   * @param {Boolean} populate Whether or not to populate the results(a Mongo DB operation).
+   * @returns {Observable}
+   */
   getProjects(pageNum: number, pageSize: number, sortBy: string, populate: Boolean = true): Observable<Object> {
     const fields = [
       'engagementStatus',
@@ -125,11 +154,24 @@ export class ApiService {
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Get the full configuration dataset from the DB.
+   *
+   * @param {string} dataSet The dataset to retrieve.
+   * @returns {Observable}
+   */
   getFullDataSet(dataSet: string): Observable<any> {
     return this.http.get<any>(`${this.pathAPI}/search?pageSize=1000&dataset=${dataSet}`, {});
   }
 
-  // NB: returns array with 1 element
+  /**
+   * Get a single project from the DB. You can optionally filter by comment period start and end date.
+   *
+   * @param {string} id The project ID.
+   * @param {string} cpStart The comment period start.
+   * @param {string} cpEnd The comment period end.
+   * @returns {Observable}
+   */
   getProject(id: string, cpStart: string, cpEnd: string): Observable<Project[]> {
     const fields = [
       'existingLandUsePlans',
@@ -185,6 +227,11 @@ export class ApiService {
     return this.http.get<Project[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Return to the total count of returned projects.
+   *
+   * @returns {Observable}
+   */
   getCountProjects(): Observable<number> {
     const queryString = `project`;
     return this.http.head<HttpResponse<Object>>(`${this.pathAPI}/${queryString}`, { observe: 'response' })
@@ -196,21 +243,45 @@ export class ApiService {
       );
   }
 
+  /**
+   * Add project to the DB.
+   *
+   * @param {Proejct} proj The project object to add.
+   * @returns {Observable}
+   */
   addProject(proj: Project): Observable<Project> {
     const queryString = `project/`;
     return this.http.post<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
 
+  /**
+   * Publish a project by toggling its visibility to "public" app users.
+   *
+   * @param {Project} proj Project to publish.
+   * @returns {Observable}
+   */
   publishProject(proj: Project): Observable<Project> {
     const queryString = `project/${proj._id}/publish`;
     return this.http.put<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
 
+  /**
+   * Unpublish a project by toggling its visibility to "public" app users.
+   *
+   * @param {Project} proj Project to unpublish.
+   * @returns {Observable}
+   */
   unPublishProject(proj: Project): Observable<Project> {
     const queryString = `project/${proj._id}/unpublish`;
     return this.http.put<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
 
+  /**
+   * Delete a project in the DB.
+   *
+   * @param {Project} proj The project to delete.
+   * @returns {Observable}
+   */
   deleteProject(proj: Project): Observable<Project> {
     const queryString = `project/${proj._id}`;
     return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});

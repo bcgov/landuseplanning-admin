@@ -1,7 +1,5 @@
-import { Component, SimpleChanges, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Dictionary } from 'lodash';
-import { Utils } from 'app/shared/utils/utils';
 
 @Component({
   selector: 'app-input-modal',
@@ -9,33 +7,37 @@ import { Utils } from 'app/shared/utils/utils';
   styleUrls: ['./input-modal.component.scss']
 })
 export class InputModalComponent {
+  groupName = '';
 
   constructor(
     public activeModal: NgbActiveModal, // also used in template
-    private utils: Utils
   ) { }
 
   /**
    * Close the bootstrap modal when user hits cancel.
-   * 
+   *
    * @return {void}
    */
   public cancel(): void {
     this.activeModal.close(null);
   }
 
+  public reset() {
+    this.groupName = '';
+  }
+
   /**
    * Close the input modal after the user has hit "save."
-   * 
+   *
    * @return {void}
    */
   save(): void {
-    this.activeModal.close();
+    this.activeModal.close(this.groupName);
   }
 
   /**
    * Handle the escape keypress to cancel the bootstrap modal.
-   * 
+   *
    * @param {KeyboardEvent} event Keyboard event to handle.
    * @return {void}
    */
