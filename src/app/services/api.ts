@@ -165,7 +165,7 @@ export class ApiService {
   }
 
   /**
-   * Get a single project from the DB. You can optionally filter by comment period start and end date.
+   * Get a single project from the DB. Comment periods can be filtered by start and end date.
    *
    * @param {string} id The project ID.
    * @param {string} cpStart The comment period start.
@@ -338,46 +338,16 @@ export class ApiService {
     return this.http.delete<Project>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Save a project.
+   * 
+   * @param {Project} proj The project to delete.
+   * @returns {Observable}
+   */
   saveProject(proj: Project): Observable<Project> {
     const queryString = `project/${proj._id}`;
     return this.http.put<Project>(`${this.pathAPI}/${queryString}`, proj, {});
   }
-
-  // //
-  // // Features
-  // //
-  // getFeaturesByTantalisId(tantalisId: number): Observable<Feature[]> {
-  //   const fields = [
-  //     'type',
-  //     'tags',
-  //     'geometry',
-  //     'geometryName',
-  //     'properties',
-  //     'isDeleted',
-  //     'projectID'
-  //   ];
-  //   const queryString = `feature?isDeleted=false&tantalisId=${tantalisId}&fields=${this.buildValues(fields)}`;
-  //   return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
-  // }
-
-  // getFeaturesByProjectId(projectId: string): Observable<Feature[]> {
-  //   const fields = [
-  //     'type',
-  //     'tags',
-  //     'geometry',
-  //     'geometryName',
-  //     'properties',
-  //     'isDeleted',
-  //     'projectID'
-  //   ];
-  //   const queryString = `feature?isDeleted=false&projectId=${projectId}&fields=${this.buildValues(fields)}`;
-  //   return this.http.get<Feature[]>(`${this.pathAPI}/${queryString}`, {});
-  // }
-
-  // deleteFeaturesByProjectId(projectID: string): Observable<Object> {
-  //   const queryString = `feature/?projectID=${projectID}`;
-  //   return this.http.delete(`${this.pathAPI}/${queryString}`, {});
-  // }
 
   //
   // Decisions
@@ -432,20 +402,34 @@ export class ApiService {
     return this.http.put<Decision>(`${this.pathAPI}/${queryString}`, decision, {});
   }
 
-  //
-  // Surveys
-  //
+  /**
+   * Add a new survey.
+   * 
+   * @param {Survey} survey The survey to add.
+   * @returns {Observable}
+   */
   addSurvey(survey): Observable<any> {
     const queryString = `survey/`;
     return this.http.post<any>(`${this.pathAPI}/${queryString}`, survey, {});
   }
 
+  /**
+   * Delete a survey.
+   * 
+   * @param {Survey} survey The survey to delete.
+   * @returns {Observable}
+   */
   deleteSurvey(survey: Survey): Observable<Survey> {
     const queryString = `survey/${survey._id}`;
     return this.http.delete<Survey>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  // NB: returns array with 1 element
+  /**
+   * Get a survey and include a specified set of fields in the result.
+   * 
+   * @param {string} id The survey to get by ID.
+   * @returns {Observable}
+   */
   getSurvey(id: string): Observable<Survey[]> {
     const fields = [
       '_id',
@@ -462,6 +446,16 @@ export class ApiService {
     return this.http.get<Survey[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Get a survey by project ID - include a specified set of fields in the result(s).
+   * Results can be paginated and sorted.
+   * 
+   * @param {string} projId The ID of the project to get surveys by.
+   * @param {number} pageNum The page number to paginate by.
+   * @param {number} pageSize The page size to paginate by.
+   * @param {any} sortBy The field to sort by.
+   * @returns {Observable}
+   */
   getSurveysByProjId(projId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
     const fields = [
       'project',
@@ -480,6 +474,12 @@ export class ApiService {
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Get the survey attached to a particular comment period.
+   * 
+   * @param {string} periodId The comment period to get the survey for.
+   * @returns {Observable}
+   */
   getPeriodSelectedSurvey(periodId: string): Observable<Survey[]> {
     const fields = [
       '_id',
@@ -494,16 +494,24 @@ export class ApiService {
     return this.http.get<Survey[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Save a survey.
+   * 
+   * @param {Survey} survey The survey to save.
+   * @returns {Observable}
+   */
   saveSurvey(survey: Survey): Observable<Survey> {
     const queryString = `survey/${survey._id}`;
     return this.http.put<Survey>(`${this.pathAPI}/${queryString}`, survey, {});
   }
 
-  //
-  // Survey Responses
-  //
-
-  getSurveyResponse(id: string, populateNextComment: boolean): Observable<any> {
+  /**
+   * Get a particular survey response with a specified set of fields.
+   * 
+   * @param {string} id The survey response ID.
+   * @returns {Observable}
+   */
+  getSurveyResponse(id: string): Observable<any> {
     const fields = [
       '_id',
       'author',
@@ -520,11 +528,21 @@ export class ApiService {
       'delete'
     ];
     let queryString = `surveyResponse/${id}?fields=${this.buildValues(fields)}`;
-    // if (populateNextComment) { queryString += '&populateNextComment=true'; }
     return this.http.get<any>(`${this.pathAPI}/${queryString}`, { observe: 'response' });
   }
 
-  getResponsesByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string, count: boolean, filter: object): Observable<Object> {
+  /**
+   * Get the survey responses by comment period ID. Results can also be paginated
+   * and sorted by a specific field.
+   * 
+   * @param {string} periodId The comment period ID to get survey responses for.
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @param {boolean} count Whether or not to get the count of the results.
+   * @returns {Observable}
+   */
+  getResponsesByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string, count: boolean): Observable<Object> {
     const fields = [
       '_id',
       'author',
@@ -543,17 +561,17 @@ export class ApiService {
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (count !== null) { queryString += `&count=${count}`; }
-    // if (filter !== {}) {
-    //   Object.keys(filter).forEach(key => {
-    //     queryString += `&${key}=${filter[key]}`;
-    //   });
-    // }
     queryString += `&fields=${this.buildValues(fields)}`;
 
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
-
+  /**
+   * Get survey responses by project ID.
+   * 
+   * @param {string} projId The project ID to get the responses for.
+   * @returns {Observable}
+   */
   getResponsesByProjId(projId: string): Observable<Object> {
     const fields = [
       'project'
@@ -566,9 +584,15 @@ export class ApiService {
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  //
-  // Comment Periods
-  //
+  /**
+   * Get comment periods by project ID. Results can be sorted and paginated.
+   * 
+   * @param {string} projId The project ID to get comment periods.
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @returns {Observable}
+   */
   getPeriodsByProjId(projId: string, pageNum: number, pageSize: number, sortBy: string): Observable<Object> {
     const fields = [
       'project',
@@ -588,7 +612,12 @@ export class ApiService {
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  // NB: returns array with 1 element
+  /**
+   * Get comment period. Get a CP with a specified set of fields.
+   * 
+   * @param {string} id Comment period ID to get by.
+   * @returns {Observable}
+   */
   getPeriod(id: string): Observable<CommentPeriod[]> {
     const fields = [
       '_id',
@@ -640,6 +669,12 @@ export class ApiService {
     return this.http.get<CommentPeriod[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Get comment period summary with a select set of fields.
+   * 
+   * @param {string} id The comment period to get the summary by.
+   * @returns {Observable}
+   */
   getPeriodSummary(id: string): Observable<CommentPeriodSummary> {
     const fields = [
       '_id',
@@ -690,34 +725,67 @@ export class ApiService {
     return this.http.get<CommentPeriodSummary>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Add a new comment period.
+   * 
+   * @param {CommentPeriod} period The comment period object to add.
+   * @returns {Observable}
+   */
   addCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
     const queryString = `commentperiod/`;
     return this.http.post<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, {});
   }
 
+  /**
+   * Save a comment period.
+   * 
+   * @param {CommentPeriod} period The comment period object to save.
+   * @returns {Observable}
+   */
   saveCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
     const queryString = `commentperiod/${period._id}`;
     return this.http.put<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, {});
   }
 
+  /**
+   * Delete a comment period.
+   * 
+   * @param {CommentPeriod} period The comment period object to delete.
+   * @returns {Observable}
+   */
   deleteCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
     const queryString = `commentperiod/${period._id}`;
     return this.http.delete<CommentPeriod>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Publish a comment period by toggling its visibility to "public" app users.
+   * 
+   * @param {CommentPeriod} period The comment period object to publish.
+   * @returns {Observable}
+   */
   publishCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
     const queryString = `commentperiod/${period._id}/publish`;
     return this.http.put<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, {});
   }
 
+  /**
+   * Unpublish a comment period by toggling its visibility to "public" app users.
+   * 
+   * @param {CommentPeriod} period The comment period object to unpublish.
+   * @returns {Observable}
+   */
   unPublishCommentPeriod(period: CommentPeriod): Observable<CommentPeriod> {
     const queryString = `commentperiod/${period._id}/unpublish`;
     return this.http.put<CommentPeriod>(`${this.pathAPI}/${queryString}`, period, {});
   }
 
-  //
-  // Comments
-  //
+  /**
+   * Get the total number of comments on a comment period.
+   * 
+   * @param {string} periodId The comment period ID to get comments on.
+   * @returns {Observable}
+   */
   getCountCommentsByPeriodId(periodId: string): Observable<number> {
     // NB: count only pending comments
     const queryString = `comment?isDeleted=false&commentStatus='Pending'&_commentPeriod=${periodId}`;
@@ -730,6 +798,17 @@ export class ApiService {
       );
   }
 
+  /**
+   * Get all comments by a comment period. Results can be paginated and sorted.
+   * 
+   * @param {string} periodId The comment period to get comments for.
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @param {boolean} count Whether or not to enumerate the total count of comments.
+   * @param {object} filter Filter to only include certain fields.
+   * @returns {Observable}
+   */
   getCommentsByPeriodId(periodId: string, pageNum: number, pageSize: number, sortBy: string, count: boolean, filter: object): Observable<Object> {
     const fields = [
       '_id',
@@ -761,7 +840,13 @@ export class ApiService {
     return this.http.get<Object>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  // NB: returns array with 1 element
+  /**
+   * Get a particular comment and return a select set of fields.
+   * 
+   * @param {string} id The comment ID to get with.
+   * @param {boolean} populateNextComment Whether or not to populate the following comment.
+   * @returns {Observable}
+   */
   getComment(id: string, populateNextComment: boolean): Observable<any> {
     const fields = [
       '_id',
@@ -792,24 +877,46 @@ export class ApiService {
     return this.http.get<any>(`${this.pathAPI}/${queryString}`, { observe: 'response' });
   }
 
+  /**
+   * Add a new comment.
+   * 
+   * @param {Comment} comment The comment object to add.
+   * @returns {Observable}
+   */
   addComment(comment: Comment): Observable<Comment> {
     const queryString = `comment/`;
     return this.http.post<Comment>(`${this.pathAPI}/${queryString}`, comment, {});
   }
 
+  /**
+   * Save a comment.
+   * 
+   * @param {Comment} comment The comment object to save.
+   * @returns {Observable}
+   */
   saveComment(comment: Comment): Observable<Comment> {
     const queryString = `comment/${comment._id}`;
     return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, comment, {});
   }
 
+  /**
+   * Update the status of a comment.
+   * 
+   * @param {Comment} comment The comment object to add.
+   * @param {string} status The status to update with.
+   * @returns {Observable}
+   */
   updateCommentStatus(comment: Comment, status: string): Observable<Comment> {
     const queryString = `comment/${comment._id}/status`;
     return this.http.put<Comment>(`${this.pathAPI}/${queryString}`, { 'status': status }, {});
   }
 
-  //
-  // Documents
-  //
+  /**
+   * Get documents by project. Return a select set of fields.
+   * 
+   * @param {string} projId Project ID to return documents for. 
+   * @returns {Observable}
+   */
   getDocumentsByAppId(projId: string): Observable<Document[]> {
     const fields = [
       '_project',
@@ -822,6 +929,12 @@ export class ApiService {
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Get mutliple individual documents by their respective IDs.
+   * 
+   * @param {Array} ids The document IDs to retrieve by.
+   * @returns {Observable}
+   */
   getDocumentsByMultiId(ids: Array<String>): Observable<Document[]> {
     const fields = [
       '_id',
@@ -849,7 +962,12 @@ export class ApiService {
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  // NB: returns array with 1 element
+  /**
+   * Get document by ID. Return a select set of fields.
+   * 
+   * @param {string} id The document ID to get by.
+   * @returns {Observable}
+   */
   getDocument(id: string): Observable<Document[]> {
     const fields = [
       '_addedBy',
@@ -875,26 +993,57 @@ export class ApiService {
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Update a document with edited form data.
+   * 
+   * @param {FormData} formData The form data to update the document with.
+   * @param {string} _id The document to udpate.
+   * @returns {Observable}
+   */
   updateDocument(formData: FormData, _id: any): Observable<Document> {
     const queryString = `document/${_id}`;
     return this.http.put<Document>(`${this.pathAPI}/${queryString}`, formData, {});
   }
 
+  /**
+   * Delete a document.
+   * 
+   * @param {Document} doc The document to delete.
+   * @returns {Observable}
+   */
   deleteDocument(doc: Document): Observable<Document> {
     const queryString = `document/${doc._id}`;
     return this.http.delete<Document>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Publish a document by toggling its visibility to "public" app users.
+   * 
+   * @param {string} docId The document ID to publish.
+   * @returns {Observable}
+   */
   publishDocument(docId: String): Observable<Document> {
     const queryString = `document/${docId}/publish`;
     return this.http.put<Document>(`${this.pathAPI}/${queryString}`, {}, {});
   }
 
+  /**
+   * Unpublish a document by toggling its visibility to "public" app users.
+   * 
+   * @param {string} docId The document ID to unpublish.
+   * @returns {Observable}
+   */
   unPublishDocument(docId: String): Observable<Document> {
     const queryString = `document/${docId}/unpublish`;
     return this.http.put<Document>(`${this.pathAPI}/${queryString}`, {}, {});
   }
 
+  /**
+   * Upload a new document.
+   * 
+   * @param {FormData} formData The form data to upload the document with.
+   * @returns {Observable}
+   */
   uploadDocument(formData: FormData): Observable<Document> {
     const fields = [
       'documentFileName',
@@ -908,11 +1057,24 @@ export class ApiService {
     return this.http.post<Document>(`${this.pathAPI}/${queryString}`, formData, {});
   }
 
+  /**
+   * Get a blob of data. Possibly a document(file), or CSV.
+   * 
+   * @param {string} id The document ID to download with.
+   * @returns {Promise}
+   */
   private downloadResource(id: string): Promise<Blob> {
     const queryString = `document/${id}/download`;
     return this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
   }
 
+  /**
+   * Initiate a download of a document. Get the reference to the document
+   * dependending on whether or not it was added as part of a comment.
+   * 
+   * @param {Document} document The document object to download.
+   * @return {Promise}
+   */
   public async downloadDocument(document: Document): Promise<void> {
     const blob = await this.downloadResource(document._id);
     let filename;
@@ -926,6 +1088,12 @@ export class ApiService {
     this.createDownloadFile(blob, filename);
   }
 
+  /**
+   * Get a CSV of all comments by comment period.
+   * 
+   * @param {string} period The comment period to get comments for.
+   * @return {Promise}
+   */
   public async exportComments(period: String) {
     const queryString = `comment/export/${period}`;
     const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
@@ -933,6 +1101,14 @@ export class ApiService {
     this.createDownloadFile(blob);
   }
 
+  /**
+   * Get a CSV of all survey responses by comment period and optionally, by 
+   * survey.
+   * 
+   * @param {string} period The comment period to get comments for.
+   * @param {string} surveyID The survey to get comments for.
+   * @return {Promise}
+   */
   public async exportSurveyResponses(period: String, surveyID?) {
     let surveyPath;
     surveyID ? surveyPath = `/survey/${surveyID}` : surveyPath = ''
@@ -942,6 +1118,12 @@ export class ApiService {
     this.createDownloadFile(blob);
   }
 
+  /**
+   * Get all email subscribers as a CSV export.
+   * 
+   * @param {string} projectId The project ID to get subscribers by.
+   * @return {Promise}
+   */
   public async exportSubscribers(projectId: String) {
     const queryString = `emailSubscribe/export/${projectId}`;
     const blob = await this.http.get<Blob>(this.pathAPI + '/' + queryString, { responseType: 'blob' as 'json' }).toPromise();
@@ -949,9 +1131,13 @@ export class ApiService {
     this.createDownloadFile(blob);
   }
 
-  //
-  // Handle creation and download of file to browser
-  //
+  /**
+   * Handle creation and download of file to browser.
+   * 
+   * @param {any} blob The blob of data to download.
+   * @param {string} docName The document(file) name to download.
+   * @return {void}
+   */
   public createDownloadFile(blob, docName?) {
     let filename;
     if (docName) {
@@ -978,6 +1164,13 @@ export class ApiService {
     }
   }
 
+  /**
+   * Encode a document(file) and open it in the browser. Get the reference to
+   * the document dependending on whether or not it was added as part of a comment.
+   * 
+   * @param {Document} document The document to open.
+   * @return {Promise}
+   */
   public async openDocument(document: Document): Promise<void> {
     let filename;
     if (document.documentSource === 'COMMENT') {
@@ -989,17 +1182,34 @@ export class ApiService {
     window.open(this.pathAPI + '/document/' + document._id + '/fetch/' + filename, '_blank');
   }
 
-  //
-  // Get Item via search endpoint
-  //
+  /**
+   * Get item via search endpoint - can be any valid schema the app uses
+   * (Project, Document, RecentActivity, etc.).
+   * 
+   * @param {string} _id The ID of the item to retrieve.
+   * @param {string} schema The schema type(Project, Document, RecentActivity, etc.).
+   * @returns {Observable}
+   */
   getItem(_id: string, schema: string): Observable<SearchResults[]> {
     let queryString = `search?dataset=Item&_id=${_id}&_schemaName=${schema}`;
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  //
-  // Searching
-  //
+  /**
+   * Search any schema. Return the exact fields and optionally paginate and sort
+   * the results. You can also populate the search results(MongoDB operation).
+   *
+   * @param {string} keys The search keywords.
+   * @param {string} dataset The schema to use(Project, Document, RecentActivity, etc.).
+   * @param {Array} fields The fields to return on the object.
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @param {object} queryModifier Change the combination of fields to return by.
+   * @param {boolean} populate Whether or not to populate the results.
+   * @param {object} filter Filter to only include certain fields.
+   * @returns {Observable}
+   */
   searchKeywords(keys: string, dataset: string, fields: any[], pageNum: number, pageSize: number, sortBy: string = null, queryModifier: object = {}, populate = false, filter = {}): Observable<SearchResults[]> {
     let queryString = `search?dataset=${dataset}`;
     if (fields && fields.length > 0) {
@@ -1056,7 +1266,12 @@ export class ApiService {
     return this.http.get<SearchResults[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  // Activity
+  /**
+   * Get recent activity by ID. Return a select set of fields.
+   * 
+   * @param {string} id The recent activity ID to get by.
+   * @returns {Observable}
+   */
   getRecentActivity(id: string): Observable<RecentActivity[]> {
     const fields = [
       '_id',
@@ -1074,24 +1289,45 @@ export class ApiService {
     return this.http.get<RecentActivity[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Add a new recent activity.
+   * 
+   * @param {RecentActivity} recentActivity The new recent activity object to add.
+   * @returns {Observable}
+   */
   addRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
     const queryString = `recentActivity/`;
     return this.http.post<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});
   }
 
+  /**
+   * Save a recent activity.
+   * 
+   * @param {RecentActivity} recentActivity The recent activity object to save.
+   * @returns {Observable}
+   */
   saveRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
     const queryString = `recentActivity/${recentActivity._id}`;
     return this.http.put<RecentActivity>(`${this.pathAPI}/${queryString}`, recentActivity, {});
   }
 
+  /**
+   * Delete a recent activity.
+   * 
+   * @param {RecentActivity} recentActivity The recent activity object to delete.
+   * @returns {Observable}
+   */
   deleteRecentActivity(recentActivity: RecentActivity): Observable<RecentActivity> {
     const queryString = `recentActivity/${recentActivity._id}`;
     return this.http.delete<RecentActivity>(`${this.pathAPI}/${queryString}`, {});
   }
 
-  //
-  // Email subscribe
-  //
+  /**
+   * Get all email subscribers by project.
+   * 
+   * @param {string} projectId The project ID to get subscribers for.
+   * @returns {Observable}
+   */
   getEmails(projectId: string): Observable<Object> {
     const fields = [
       'email',
@@ -1100,11 +1336,17 @@ export class ApiService {
       'dateSubscribed',
       'dateConfirmed',
     ];
-    //const queryString = 'emailSubscribe?fields=' + this.buildValues(fields);
     const queryString = `emailSubscribe?project=${projectId}&fields=${this.buildValues(fields)}`;
     return this.http.get<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Delete a single project email subscriber.
+   * 
+   * @param {string} emailAddress The email address to remove the entry for.
+   * @param {string} projectId The project ID it's subscribed to.
+   * @returns {Observable}
+   */
   deleteEmail(emailAddress: string, projectId: string): Observable<EmailSubscribe> {
     const fields = [
       'email',
@@ -1114,21 +1356,34 @@ export class ApiService {
     return this.http.delete<EmailSubscribe>(`${this.pathAPI}/${queryString}`, {});
   }
 
-
-  //
-  // Users
-  //
+  /**
+   * Save a user object.
+   * 
+   * @param {User} user The user object to save.
+   * @returns {Observable}
+   */
   saveUser(user: User): Observable<User> {
     const queryString = `user/${user._id}`;
     return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
+  /**
+   * Add a new user object.
+   * 
+   * @param {User} user The new user object to add.
+   * @returns {Observable}
+   */
   addUser(user: User): Observable<User> {
     const queryString = `user/`;
     return this.http.post<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
-  // NB: returns array with 1 element
+  /**
+   * Get a single user and return a select set of fields.
+   * 
+   * @param {string} userID The user ID to retrieve by.
+   * @returns {Observable}
+   */
   getUser(userID: string): Observable<User[]> {
     const fields = [
       'userID',
@@ -1141,6 +1396,11 @@ export class ApiService {
     return this.http.get<User[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Get all users - return a select set of fields.
+   * 
+   * @returns {Observable}
+   */
   getAllUsers(): Observable<Object> {
     const fields = [
       'sub',
@@ -1152,11 +1412,25 @@ export class ApiService {
     return this.http.get<User>(`${this.pathAPI}/${queryString}`, {});
   }
 
+  /**
+   * Give a user permission to view/edit a project.
+   * 
+   * @param {User} user The user to give permission to.
+   * @param {Project} proj The project to give the user permission to access.
+   * @returns {Observable}
+   */
   addProjectToUser(user: User, proj: Project): Observable<User> {
     const queryString = `user/addPermission/${user._id}/${proj._id}`;
     return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
+  /**
+   * Remove view/edit permissions of a project from a user.
+   * 
+   * @param {User} user The user to remove permission on.
+   * @param {Project} proj The project to remove access for.
+   * @returns {Observable}
+   */
   removeProjectFromUser(user: User, proj: Project): Observable<User> {
     const queryString = `user/removePermission/${user._id}/${proj._id}`;
     return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
@@ -1191,9 +1465,12 @@ export class ApiService {
     return this.http.post<Org>(`${this.pathAPI}/${queryString}`, org, {});
   }
 
-  //
-  // Local helpers
-  //
+  /**
+   * Helper function to build a collection of values into a URL query string.
+   * 
+   * @param {Array} collection The array of fields to make into a query string.
+   * @returns {string}
+   */
   private buildValues(collection: any[]): string {
     let values = '';
     each(collection, function (a) {
