@@ -19,32 +19,13 @@ export class EmailSubscribeService {
     private api: ApiService,
   ) { }
 
-  // get a specific email by address & project
-  /*
-  getById(commentId: string, forceReload: boolean = false): Observable<Comment> {
-    if (this.comment && this.comment._id === commentId && !forceReload) {
-      return Observable.of(this.comment);
-    }
-
-    // first get the comment data
-    return this.api.getComment(commentId)
-    .pipe(
-      flatMap(res => {
-        let comments = res.body;
-        if (!comments || comments.length === 0) {
-          return of(null as Comment);
-        }
-        // Safety check for null documents or an empty array of documents.
-        if (comments[0].documents === null || comments[0].documents && comments[0].documents.length === 0) {
-          return of(new Comment(comments[0]));
-        }
-        // now get the rest of the data for this project
-        return this._getExtraAppData(new Comment(comments[0]));
-      })
-    )
-    .catch(error => this.api.handleError(error));
-  }*/
-
+  /**
+   * Get all email subscribers on a single project. Get the raw response data and return it
+   * as Email Subscribe objects.
+   *
+   * @param {string} currentProjectId The project to get subscribers for.
+   * @returns {Observable}
+   */
   public getAll(currentProjectId: string): Observable<Object> {
     let emailSubscribe = [];
     return this.api.getEmails(currentProjectId)
@@ -63,6 +44,13 @@ export class EmailSubscribeService {
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Remove an email subscription for a given project.
+   *
+   * @param {string} emailAddress The email address to remove.
+   * @param {string} projectId The project to remove the subscriber for.
+   * @returns {Observable}
+   */
   public deleteEmail(emailAddress: string, projectId: string): Observable<Object> {
     return this.api.deleteEmail(emailAddress, projectId)
       .map((res: any) => {

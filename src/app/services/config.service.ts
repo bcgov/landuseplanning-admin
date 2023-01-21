@@ -24,18 +24,25 @@ export class ConfigService implements OnDestroy {
       });
   }
 
-  // called by app constructor
-  public init() {
-  }
-
-  // called by app constructor
-  public destroy() {
-    // FUTURE: save settings to window.localStorage?
-  }
-
-  // getters/setters
+  /**
+   * Getter for the current lists value.
+   *
+   * @return {Array}
+   */
   get lists(): any[] { return this._lists; }
+
+  /**
+   * Getter for the current baseLayerName value.
+   *
+   * @return {string}
+   */
   get baseLayerName(): string { return this._baseLayerName; }
+
+  /**
+   * Setter for the baseLayerName.
+   *
+   * @return {void}
+   */
   set baseLayerName(val: string) { this._baseLayerName = val; }
 
   /**

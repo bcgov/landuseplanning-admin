@@ -45,10 +45,21 @@ export class KeycloakService {
     this.pathAPI = (_.isEmpty(remoteApiPath)) ? 'http://localhost:3000/api' : remoteApiPath;
   }
 
+  /**
+   * Check if keycloak is enabled.
+   *
+   * @returns {boolean}
+   */
   isKeyCloakEnabled(): boolean {
     return this.keycloakEnabled;
   }
 
+  /**
+   * Gets a URL parameter value.
+   *
+   * @param {string} name The name of the URL param to get.
+   * @returns {string|null}
+   */
   private getParameterByName(name) {
     const url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');
@@ -283,6 +294,11 @@ export class KeycloakService {
     });
   }
 
+  /**
+   * Get the logout URL based on whether or not keycloak is enabled.
+   *
+   * @returns {string}
+   */
   getLogoutURL(): string {
     if (this.keycloakEnabled) {
       return this.keycloakAuth.authServerUrl + '/realms/' + this.keycloakRealm + '/protocol/openid-connect/logout?redirect_uri=' + window.location.origin + '/admin/not-authorized?loggedout=true';

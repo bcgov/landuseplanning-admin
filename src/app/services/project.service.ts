@@ -17,7 +17,7 @@ export class ProjectService {
   ) { }
 
   /**
-   * Gets count of projects.
+   * Gets total count of projects.
    *
    * @returns Observable
    */
@@ -27,12 +27,12 @@ export class ProjectService {
   }
 
   /**
-   * Get all projects.
+   * Get all projects. Results can be paginated and sorted by a particular field.
    *
-   * @param pageNum
-   * @param pageSize
-   * @param sortBy
-   * @returns
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @returns {Observable}
    */
   getAll(pageNum: number = 1, pageSize: number = 20, sortBy: string = null): Observable<Object> {
     return this.api.getProjects(pageNum, pageSize, sortBy)
@@ -50,12 +50,13 @@ export class ProjectService {
   }
 
   /**
-   * Get project by ID.
+   * Get project by ID. A comment period summary can also be retrieved if it falls between
+   * the comment period start and end date.
    *
-   * @param projId
-   * @param cpStart
-   * @param cpEnd
-   * @returns
+   * @param {string} projId The project ID to retrieve with.
+   * @param {string} cpStart The comment period start date.
+   * @param {string} cpEnd The comment period end date.
+   * @returns {Observable}
    */
   getById(projId: string, cpStart: string = null, cpEnd: string = null): Observable<Project> {
     return this.api.getProject(projId, cpStart, cpEnd)
@@ -77,8 +78,8 @@ export class ProjectService {
   /**
    * Add a new project.
    *
-   * @param item
-   * @returns
+   * @param {Project} item The new project to add.
+   * @returns {Observable}
    */
   add(item: Project): Observable<Project> {
     delete item._id;
@@ -93,10 +94,11 @@ export class ProjectService {
   }
 
   /**
-   * Save a project.
+   * Save a project. Also replaces the description field with the newline character
+   * suitable for JSON.
    *
-   * @param orig
-   * @returns
+   * @param {Project} orig The project to save.
+   * @returns {Observable}
    */
   save(orig: Project): Observable<Project> {
     // make a (deep) copy of the passed-in project so we don't change it
@@ -114,8 +116,8 @@ export class ProjectService {
   /**
    * Delete project.
    *
-   * @param proj
-   * @returns
+   * @param {Project} proj Project to delete.
+   * @returns {Observable}
    */
   delete(proj: Project): Observable<Project> {
     return this.api.deleteProject(proj)
@@ -123,10 +125,10 @@ export class ProjectService {
   }
 
   /**
-   * Publish a project.
+   * Publish a project by toggling the visibility for "public" app users.
    *
-   * @param proj
-   * @returns
+   * @param {Project} proj The project to publish.
+   * @returns {Observable}
    */
   publish(proj: Project): Observable<Project> {
     return this.api.publishProject(proj)
@@ -134,10 +136,10 @@ export class ProjectService {
   }
 
   /**
-   * Unpublish a project.
+   * Unpublish a project by toggling the visibility for "public" app users.
    *
-   * @param proj
-   * @returns
+   * @param {Project} proj The project to unpublish.
+   * @returns {Observable}
    */
   unPublish(proj: Project): Observable<Project> {
     return this.api.unPublishProject(proj)

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormArray, Form } from '@angular/forms';
 
 import { SurveyQuestion } from '../models/surveyQuestion';
 import { Utils } from 'app/shared/utils/utils';
@@ -12,6 +12,13 @@ export class SurveyBuilderService {
 
   constructor() {}
 
+  /**
+   * Initialize the survey editing form.
+   *
+   * @param {FormArray} surveyQuestionsForm The form array to add questions to.
+   * @param {Array} surveyQuestionsToEdit The questions to push onto the form array,
+   * @returns {FormArray}
+   */
   buildEditForm(surveyQuestionsForm: FormArray, surveyQuestionsToEdit: SurveyQuestion[]): FormArray {
     surveyQuestionsToEdit.forEach(question => {
       surveyQuestionsForm.push(this.newQuestion(null, null, question))
@@ -19,6 +26,15 @@ export class SurveyBuilderService {
     return surveyQuestionsForm;
   }
 
+  /**
+   * When the user drags a question type over the form area, add a new form question into
+   * the survey form array.
+   *
+   * @param {Array} previousContainer The array of possible form question types.
+   * @param {number} previousIndex The specific index referring to a question type.
+   * @param {SurveyQuestion} questionToEdit The existing survey question to edit(if not a new question).
+   * @returns {FormGroup}
+   */
   newQuestion(previousContainer?, previousIndex?, questionToEdit?: SurveyQuestion): FormGroup {
     let questionProps;
 
@@ -95,10 +111,20 @@ export class SurveyBuilderService {
     }
   }
 
+  /**
+   * Return a new "choice" form control for radio or checkbox form types.
+   *
+   * @returns {FormControl}
+   */
   newChoice(): FormControl {
     return new FormControl(null, Validators.required)
   }
 
+  /**
+   * Return a new likert attribute in a likert type form form group.
+   *
+   * @returns {FormGroup}
+   */
   newLikertAttribute(): FormGroup {
     return new FormGroup({
       attribute: new FormControl(null, Validators.required),
@@ -106,6 +132,16 @@ export class SurveyBuilderService {
     })
   }
 
+  /**
+   * When setting up radio or checkbox form groups, get a nested form
+   * array for the "choices" it contains. Existing choices can be passed
+   * in if the question is being edited. Otherwise, a new empty form
+   * array will be created.
+   *
+   * @param {Array} questionChoices The existing form choices.
+   * @param {number} amount The amount of choices to set up.
+   * @returns {FormArray}
+   */
   getChoicesArray(questionChoices?: [], amount?: number): FormArray {
     const choicesArray = new FormArray([], Validators.required);
     let choiceAmount: number;
@@ -126,6 +162,14 @@ export class SurveyBuilderService {
     return choicesArray;
   }
 
+  /**
+   * When a likert form is being set up, get the attributes form array.
+   * Existing likert attributes can be passed in if the question is being
+   * edited. Otherwise, get a new, empty array of attributes.
+   *
+   * @param questionAttributes
+   * @returns
+   */
   getLikertAttributes(questionAttributes?): FormArray {
     let attributesArray = new FormArray([], Validators.required);
     if (questionAttributes) {

@@ -11,41 +11,12 @@ export class RecentActivityService {
 
   constructor(private api: ApiService) { }
 
-  // getByTantalisId(tantalisId: number): Observable<RecentActivity[]> {
-  //   return this.api.getRecentActivitysByTantalisId(tantalisId)
-  //     .map(res => {
-  //       if (res && res.length > 0) {
-  //         const features: Array<RecentActivity> = [];
-  //         res.forEach(f => {
-  //           features.push(new RecentActivity(f));
-  //         });
-  //         return features;
-  //       }
-  //       return [];
-  //     })
-  //     .catch(error => this.api.handleError(error));
-  // }
-
-  // getByProjectId(projectId: string): Observable<RecentActivity[]> {
-  //   return this.api.getRecentActivitysByProjectId(projectId)
-  //     .map(res => {
-  //       if (res && res.length > 0) {
-  //         const features: Array<RecentActivity> = [];
-  //         res.forEach(f => {
-  //           features.push(new RecentActivity(f));
-  //         });
-  //         return features;
-  //       }
-  //       return [];
-  //     })
-  //     .catch(error => this.api.handleError(error));
-  // }
-
-  // deleteByApplicationId(applicationId: string): Observable<Object> {
-  //   return this.api.deleteRecentActivitysByApplicationId(applicationId)
-  //     .catch(error => this.api.handleError(error));
-  // }
-
+  /**
+   * Get a recetn activity by its ID.
+   *
+   * @param {string} activityId The recent activity ID to get by.
+   * @returns {Observable}
+   */
   getById(activityId: string) {
     return this.api.getRecentActivity(activityId)
     .map(res => {
@@ -57,7 +28,12 @@ export class RecentActivityService {
     .catch(error => this.api.handleError(error));
   }
 
-  // MBL TODO: PUT/POST functionality.
+  /**
+   * Add a new recent activity.
+   *
+   * @param {RecentActivity} activity The recent activity to add.
+   * @returns {Observable}
+   */
   add(activity: RecentActivity) {
     return this.api.addRecentActivity(activity)
     .map(res => {
@@ -69,6 +45,12 @@ export class RecentActivityService {
     .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Save a recent activity object.
+   *
+   * @param {RecentActivity} activity The recent activity to save.
+   * @returns {Observable}
+   */
   save(activity: RecentActivity) {
     return this.api.saveRecentActivity(activity)
     .map(res => {
@@ -80,6 +62,12 @@ export class RecentActivityService {
     .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Delete a recent activity.
+   *
+   * @param {RecentActivity} activity The recent activity to delete.
+   * @returns {Observable}
+   */
   delete(activity: RecentActivity) {
     return this.api.deleteRecentActivity(activity)
     .map(res => {
