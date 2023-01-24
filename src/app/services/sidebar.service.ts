@@ -10,6 +10,11 @@ export class SideBarService {
 
   constructor() { }
 
+  /**
+   * Toggle the sidebar open or closed.
+   *
+   * @return {void}
+   */
   toggle() {
     this.isOpen = !this.isOpen;
     this.change.emit(this.isOpen);

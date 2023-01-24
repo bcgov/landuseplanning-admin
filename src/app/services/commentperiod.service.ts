@@ -28,7 +28,16 @@ export class CommentPeriodService {
     this.commentStatuses[this.OPEN] = 'Commenting Open';
   }
 
-  // get all comment periods for the specified project id
+  /**
+   * Get all comment periods for the specified project id. Results can be paginated
+   * and sorted.
+   *
+   * @param {string} projId The project ID to get the comment period(s) for.
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @returns {Observable}
+   */
   getAllByProjectId(projId: string, pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
     return this.api.getPeriodsByProjId(projId, pageNum, pageSize, sortBy)
       .map((res: any) => {
@@ -47,7 +56,12 @@ export class CommentPeriodService {
       .catch(error => this.api.handleError(error));
   }
 
-  // get a specific comment period by its id
+  /**
+   * Get a specific comment period by its id.
+   *
+   * @param {string} periodId The comment period ID to get.
+   * @returns {Observable}
+   */
   getById(periodId: string): Observable<CommentPeriod> {
     return this.api.getPeriod(periodId)
       .map(res => {
@@ -60,6 +74,12 @@ export class CommentPeriodService {
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Get a comment period summary.
+   *
+   * @param {string} periodId The comment period ID to get.
+   * @returns {Observable}
+   */
   getSummaryById(periodId: string): Observable<CommentPeriodSummary> {
     return this.api.getPeriodSummary(periodId)
       .map(res => {
@@ -71,11 +91,23 @@ export class CommentPeriodService {
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Add a new coment period.
+   *
+   * @param {CommentPeriod} commentPeriod The comment period object to add.
+   * @returns {Observable}
+   */
   add(commentPeriod: CommentPeriod): Observable<CommentPeriod> {
     return this.api.addCommentPeriod(commentPeriod)
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Save a comment period.
+   *
+   * @param {CommentPeriod} orig The comment period object to save.
+   * @returns {Observable}
+   */
   save(orig: CommentPeriod): Observable<CommentPeriod> {
     // make a (deep) copy of the passed-in comment period so we don't change it
     const period = _.cloneDeep(orig);
@@ -84,27 +116,56 @@ export class CommentPeriodService {
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Delete a comment period.
+   *
+   * @param {CommentPeriod} period The comment period to delete.
+   * @returns {Observable}
+   */
   delete(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.deleteCommentPeriod(period)
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Publish a comment period by toggling the visibility for "public" app users.
+   *
+   * @param {CommentPeriod} period The comment period to publish.
+   * @returns {Observable}
+   */
   publish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.publishCommentPeriod(period)
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Unpublish a comment period by toggling the visibility for "public" app users.
+   *
+   * @param {CommentPeriod} period The comment period to unpublish.
+   * @returns {Observable}
+   */
   unPublish(period: CommentPeriod): Observable<CommentPeriod> {
     return this.api.unPublishCommentPeriod(period)
       .catch(error => this.api.handleError(error));
   }
 
-  // returns first period
-  // multiple comment periods are currently not supported
+  /**
+   * Get the first comment period in a list of periods.
+   *
+   * @param {Array} periods The comment period list.
+   * @returns {CommentPeriod}
+   */
   getCurrent(periods: CommentPeriod[]): CommentPeriod {
     return (periods.length > 0) ? periods[0] : null;
   }
 
+  /**
+   * Get the status of the comment period by checking the date range and seeing if
+   * the present is contained therein.
+   *
+   * @param {CommentPeriod} period The comment period to check the status of.
+   * @returns {string}
+   */
   getStatus(period: CommentPeriod): string {
     if (!period || !period.dateStarted || !period.dateCompleted) {
       return this.commentStatuses[this.NOT_OPEN];
@@ -124,20 +185,43 @@ export class CommentPeriodService {
     }
   }
 
+  /**
+   * Check if a comment period is not open.
+   *
+   * @param {CommentPeriod} period The comment period to check.
+   * @returns {boolean}
+   */
   isNotOpen(period: CommentPeriod): boolean {
     return (this.getStatus(period) === this.commentStatuses[this.NOT_OPEN]);
   }
 
+  /**
+   * Check if a comment period is closed.
+   *
+   * @param {CommentPeriod} period The comment period to check.
+   * @returns {CommentPeriod}
+   */
   isClosed(period: CommentPeriod): boolean {
     return (this.getStatus(period) === this.commentStatuses[this.CLOSED]);
   }
 
+  /**
+   * Check if the comment period hasn't started yet.
+   *
+   * @param {CommentPeriod} period The comment period to check.
+   * @returns {boolean}
+   */
   isNotStarted(period: CommentPeriod): boolean {
     return (this.getStatus(period) === this.commentStatuses[this.NOT_STARTED]);
   }
 
+  /**
+   * Check if a comment period is open.
+   *
+   * @param {CommentPeriod} period The comment period to check.
+   * @returns {boolean}
+   */
   isOpen(period: CommentPeriod): boolean {
     return (this.getStatus(period) === this.commentStatuses[this.OPEN]);
   }
-
 }

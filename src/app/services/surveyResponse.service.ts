@@ -23,8 +23,14 @@ export class SurveyResponseService {
     private documentService: DocumentService
   ) { }
 
-  getById(surveyResponseId: string, populateNextComment: boolean = false): Observable<SurveyResponse> {
-    return this.api.getSurveyResponse(surveyResponseId, populateNextComment)
+  /**
+   * Get a survey response by ID.
+   *
+   * @param {string} surveyResponseId The survey response ID to retrieve with.
+   * @returns {Observable}
+   */
+  getById(surveyResponseId: string): Observable<SurveyResponse> {
+    return this.api.getSurveyResponse(surveyResponseId)
       .pipe(
         flatMap((res: any) => {
           // this.pendingCommentCount = res.headers.get('x-pending-comment-count');
@@ -45,9 +51,19 @@ export class SurveyResponseService {
       .catch(error => this.api.handleError(error));
   }
 
-  // get all comments for the specified comment period id
-  getByPeriodId(periodId: string, pageNum: number = null, pageSize: number = null, sortBy: string = '', count: boolean = true, filter: Object = {}): Observable<Object> {
-    return this.api.getResponsesByPeriodId(periodId, pageNum, pageSize, sortBy, count, filter)
+  /**
+   * Get all survey responses for the specified comment period id.
+   * Results can be sorted and paginated.
+   *
+   * @param {string} periodId The comment period ID.
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @param {boolean} count Whether or not to enumerate the total results.
+   * @returns {Observable}
+   */
+  getByPeriodId(periodId: string, pageNum: number = null, pageSize: number = null, sortBy: string = '', count: boolean = true): Observable<Object> {
+    return this.api.getResponsesByPeriodId(periodId, pageNum, pageSize, sortBy, count)
       .map((res: any) => {
         if (res) {
           const surveyResponses: Array<SurveyResponse> = [];
@@ -64,7 +80,12 @@ export class SurveyResponseService {
       .catch(error => this.api.handleError(error));
   }
 
-    // get all comment periods for the specified project id
+  /**
+   * Get all survey responses by project ID.
+   *
+   * @param {string} projId The project ID to get responses for.
+   * @returns {Observable}
+   */
   getAllByProjectId(projId: string): Observable<Object> {
     return this.api.getResponsesByProjId(projId)
       .map((res: any) => {
@@ -83,6 +104,12 @@ export class SurveyResponseService {
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Internal helper method to get attached documents on survey responses.
+   *
+   * @param {SurveyResponse} surveyResponse The survey response to get attached documents on.
+   * @returns {Observable}
+   */
   private _getExtraAppData(surveyResponse: SurveyResponse): Observable<SurveyResponse> {
     return forkJoin(
       this.documentService.getByMultiId(surveyResponse.documents)

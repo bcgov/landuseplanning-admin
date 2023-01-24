@@ -28,7 +28,15 @@ export class SurveyService {
     this.commentStatuses[this.OPEN] = 'Commenting Open';
   }
 
-  // get all comment periods for the specified project id
+  /**
+   * Get all surveys for the specified project id. Results can be sorted and paginated.
+   *
+   * @param {string} projId The project ID to get surveys for.
+   * @param {number} pageNum The page number to paginate with.
+   * @param {number} pageSize The page size to paginate with.
+   * @param {string} sortBy The field to sort by.
+   * @returns {Observable}
+   */
   getAllByProjectId(projId: string, pageNum: number = 1, pageSize: number = 10, sortBy: string = null): Observable<Object> {
     return this.api.getSurveysByProjId(projId, pageNum, pageSize, sortBy)
       .map((res: any) => {
@@ -47,7 +55,12 @@ export class SurveyService {
       .catch(error => this.api.handleError(error));
   }
 
-  // get a specific comment period by its id
+  /**
+   * Get a specific survey by its ID.
+   *
+   * @param {string} surveyId The survey ID.
+   * @returns {Observable}
+   */
   getById(surveyId: string): Observable<Survey> {
     return this.api.getSurvey(surveyId)
       .map(res => {
@@ -60,7 +73,12 @@ export class SurveyService {
       .catch(error => this.api.handleError(error));
   }
 
-  // get a survey selected on a comment period by comment period id
+  /**
+   * Get a survey selected on a comment period by comment period ID.
+   *
+   * @param {string} periodId The comment period ID to get the survey with.
+   * @returns {Observable}
+   */
   getSelectedSurveyByCPId(periodId: string): Observable<Survey> {
     return this.api.getPeriodSelectedSurvey(periodId)
       .map((res: any) => {
@@ -79,11 +97,23 @@ export class SurveyService {
       .catch(this.api.handleError);
   }
 
+  /**
+   * Add a new survey.
+   *
+   * @param {Survey} survey New survey object to add.
+   * @returns {Observable}
+   */
   add(survey: Survey): Observable<Survey> {
     return this.api.addSurvey(survey)
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Save a survey.
+   *
+   * @param {Survey} originalSurvey The survey to save.
+   * @returns {Observable}
+   */
   save(originalSurvey: Survey): Observable<Survey> {
     // make a (deep) copy of the passed-in survey so we don't change it
     const survey = _.cloneDeep(originalSurvey);
@@ -92,6 +122,12 @@ export class SurveyService {
       .catch(error => this.api.handleError(error));
   }
 
+  /**
+   * Delete a survey.
+   *
+   * @param {Survey} survey The survey to delete.
+   * @returns {Observable}
+   */
   delete(survey: Survey): Observable<Survey> {
     return this.api.deleteSurvey(survey)
       .catch(error => this.api.handleError(error));

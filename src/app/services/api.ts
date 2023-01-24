@@ -112,7 +112,7 @@ export class ApiService {
   }
 
   /**
-   * Log the user out by reseting the token and remove user from local storage.
+   * Log the user out by resetting the token and remove user from local storage.
    *
    * @return {void}
    */
@@ -340,7 +340,7 @@ export class ApiService {
 
   /**
    * Save a project.
-   * 
+   *
    * @param {Project} proj The project to delete.
    * @returns {Observable}
    */
@@ -404,7 +404,7 @@ export class ApiService {
 
   /**
    * Add a new survey.
-   * 
+   *
    * @param {Survey} survey The survey to add.
    * @returns {Observable}
    */
@@ -415,7 +415,7 @@ export class ApiService {
 
   /**
    * Delete a survey.
-   * 
+   *
    * @param {Survey} survey The survey to delete.
    * @returns {Observable}
    */
@@ -426,7 +426,7 @@ export class ApiService {
 
   /**
    * Get a survey and include a specified set of fields in the result.
-   * 
+   *
    * @param {string} id The survey to get by ID.
    * @returns {Observable}
    */
@@ -449,7 +449,7 @@ export class ApiService {
   /**
    * Get a survey by project ID - include a specified set of fields in the result(s).
    * Results can be paginated and sorted.
-   * 
+   *
    * @param {string} projId The ID of the project to get surveys by.
    * @param {number} pageNum The page number to paginate by.
    * @param {number} pageSize The page size to paginate by.
@@ -476,7 +476,7 @@ export class ApiService {
 
   /**
    * Get the survey attached to a particular comment period.
-   * 
+   *
    * @param {string} periodId The comment period to get the survey for.
    * @returns {Observable}
    */
@@ -496,7 +496,7 @@ export class ApiService {
 
   /**
    * Save a survey.
-   * 
+   *
    * @param {Survey} survey The survey to save.
    * @returns {Observable}
    */
@@ -507,7 +507,7 @@ export class ApiService {
 
   /**
    * Get a particular survey response with a specified set of fields.
-   * 
+   *
    * @param {string} id The survey response ID.
    * @returns {Observable}
    */
@@ -534,7 +534,7 @@ export class ApiService {
   /**
    * Get the survey responses by comment period ID. Results can also be paginated
    * and sorted by a specific field.
-   * 
+   *
    * @param {string} periodId The comment period ID to get survey responses for.
    * @param {number} pageNum The page number to paginate with.
    * @param {number} pageSize The page size to paginate with.
@@ -568,7 +568,7 @@ export class ApiService {
 
   /**
    * Get survey responses by project ID.
-   * 
+   *
    * @param {string} projId The project ID to get the responses for.
    * @returns {Observable}
    */
@@ -586,7 +586,7 @@ export class ApiService {
 
   /**
    * Get comment periods by project ID. Results can be sorted and paginated.
-   * 
+   *
    * @param {string} projId The project ID to get comment periods.
    * @param {number} pageNum The page number to paginate with.
    * @param {number} pageSize The page size to paginate with.
@@ -613,8 +613,8 @@ export class ApiService {
   }
 
   /**
-   * Get comment period. Get a CP with a specified set of fields.
-   * 
+   * Get a comment period and return it with a specified set of fields.
+   *
    * @param {string} id Comment period ID to get by.
    * @returns {Observable}
    */
@@ -671,7 +671,7 @@ export class ApiService {
 
   /**
    * Get comment period summary with a select set of fields.
-   * 
+   *
    * @param {string} id The comment period to get the summary by.
    * @returns {Observable}
    */
@@ -727,7 +727,7 @@ export class ApiService {
 
   /**
    * Add a new comment period.
-   * 
+   *
    * @param {CommentPeriod} period The comment period object to add.
    * @returns {Observable}
    */
@@ -738,7 +738,7 @@ export class ApiService {
 
   /**
    * Save a comment period.
-   * 
+   *
    * @param {CommentPeriod} period The comment period object to save.
    * @returns {Observable}
    */
@@ -749,7 +749,7 @@ export class ApiService {
 
   /**
    * Delete a comment period.
-   * 
+   *
    * @param {CommentPeriod} period The comment period object to delete.
    * @returns {Observable}
    */
@@ -760,7 +760,7 @@ export class ApiService {
 
   /**
    * Publish a comment period by toggling its visibility to "public" app users.
-   * 
+   *
    * @param {CommentPeriod} period The comment period object to publish.
    * @returns {Observable}
    */
@@ -771,7 +771,7 @@ export class ApiService {
 
   /**
    * Unpublish a comment period by toggling its visibility to "public" app users.
-   * 
+   *
    * @param {CommentPeriod} period The comment period object to unpublish.
    * @returns {Observable}
    */
@@ -782,7 +782,7 @@ export class ApiService {
 
   /**
    * Get the total number of comments on a comment period.
-   * 
+   *
    * @param {string} periodId The comment period ID to get comments on.
    * @returns {Observable}
    */
@@ -800,7 +800,7 @@ export class ApiService {
 
   /**
    * Get all comments by a comment period. Results can be paginated and sorted.
-   * 
+   *
    * @param {string} periodId The comment period to get comments for.
    * @param {number} pageNum The page number to paginate with.
    * @param {number} pageSize The page size to paginate with.
@@ -842,7 +842,7 @@ export class ApiService {
 
   /**
    * Get a particular comment and return a select set of fields.
-   * 
+   *
    * @param {string} id The comment ID to get with.
    * @param {boolean} populateNextComment Whether or not to populate the following comment.
    * @returns {Observable}
@@ -879,7 +879,7 @@ export class ApiService {
 
   /**
    * Add a new comment.
-   * 
+   *
    * @param {Comment} comment The comment object to add.
    * @returns {Observable}
    */
@@ -890,7 +890,7 @@ export class ApiService {
 
   /**
    * Save a comment.
-   * 
+   *
    * @param {Comment} comment The comment object to save.
    * @returns {Observable}
    */
@@ -901,7 +901,7 @@ export class ApiService {
 
   /**
    * Update the status of a comment.
-   * 
+   *
    * @param {Comment} comment The comment object to add.
    * @param {string} status The status to update with.
    * @returns {Observable}
@@ -913,8 +913,8 @@ export class ApiService {
 
   /**
    * Get documents by project. Return a select set of fields.
-   * 
-   * @param {string} projId Project ID to return documents for. 
+   *
+   * @param {string} projId Project ID to return documents for.
    * @returns {Observable}
    */
   getDocumentsByAppId(projId: string): Observable<Document[]> {
@@ -931,7 +931,7 @@ export class ApiService {
 
   /**
    * Get mutliple individual documents by their respective IDs.
-   * 
+   *
    * @param {Array} ids The document IDs to retrieve by.
    * @returns {Observable}
    */
@@ -964,7 +964,7 @@ export class ApiService {
 
   /**
    * Get document by ID. Return a select set of fields.
-   * 
+   *
    * @param {string} id The document ID to get by.
    * @returns {Observable}
    */
@@ -995,7 +995,7 @@ export class ApiService {
 
   /**
    * Update a document with edited form data.
-   * 
+   *
    * @param {FormData} formData The form data to update the document with.
    * @param {string} _id The document to udpate.
    * @returns {Observable}
@@ -1007,7 +1007,7 @@ export class ApiService {
 
   /**
    * Delete a document.
-   * 
+   *
    * @param {Document} doc The document to delete.
    * @returns {Observable}
    */
@@ -1018,7 +1018,7 @@ export class ApiService {
 
   /**
    * Publish a document by toggling its visibility to "public" app users.
-   * 
+   *
    * @param {string} docId The document ID to publish.
    * @returns {Observable}
    */
@@ -1029,7 +1029,7 @@ export class ApiService {
 
   /**
    * Unpublish a document by toggling its visibility to "public" app users.
-   * 
+   *
    * @param {string} docId The document ID to unpublish.
    * @returns {Observable}
    */
@@ -1040,7 +1040,7 @@ export class ApiService {
 
   /**
    * Upload a new document.
-   * 
+   *
    * @param {FormData} formData The form data to upload the document with.
    * @returns {Observable}
    */
@@ -1059,7 +1059,7 @@ export class ApiService {
 
   /**
    * Get a blob of data. Possibly a document(file), or CSV.
-   * 
+   *
    * @param {string} id The document ID to download with.
    * @returns {Promise}
    */
@@ -1071,7 +1071,7 @@ export class ApiService {
   /**
    * Initiate a download of a document. Get the reference to the document
    * dependending on whether or not it was added as part of a comment.
-   * 
+   *
    * @param {Document} document The document object to download.
    * @return {Promise}
    */
@@ -1090,7 +1090,7 @@ export class ApiService {
 
   /**
    * Get a CSV of all comments by comment period.
-   * 
+   *
    * @param {string} period The comment period to get comments for.
    * @return {Promise}
    */
@@ -1102,9 +1102,9 @@ export class ApiService {
   }
 
   /**
-   * Get a CSV of all survey responses by comment period and optionally, by 
+   * Get a CSV of all survey responses by comment period and optionally, by
    * survey.
-   * 
+   *
    * @param {string} period The comment period to get comments for.
    * @param {string} surveyID The survey to get comments for.
    * @return {Promise}
@@ -1120,7 +1120,7 @@ export class ApiService {
 
   /**
    * Get all email subscribers as a CSV export.
-   * 
+   *
    * @param {string} projectId The project ID to get subscribers by.
    * @return {Promise}
    */
@@ -1133,7 +1133,7 @@ export class ApiService {
 
   /**
    * Handle creation and download of file to browser.
-   * 
+   *
    * @param {any} blob The blob of data to download.
    * @param {string} docName The document(file) name to download.
    * @return {void}
@@ -1167,7 +1167,7 @@ export class ApiService {
   /**
    * Encode a document(file) and open it in the browser. Get the reference to
    * the document dependending on whether or not it was added as part of a comment.
-   * 
+   *
    * @param {Document} document The document to open.
    * @return {Promise}
    */
@@ -1185,7 +1185,7 @@ export class ApiService {
   /**
    * Get item via search endpoint - can be any valid schema the app uses
    * (Project, Document, RecentActivity, etc.).
-   * 
+   *
    * @param {string} _id The ID of the item to retrieve.
    * @param {string} schema The schema type(Project, Document, RecentActivity, etc.).
    * @returns {Observable}
@@ -1268,7 +1268,7 @@ export class ApiService {
 
   /**
    * Get recent activity by ID. Return a select set of fields.
-   * 
+   *
    * @param {string} id The recent activity ID to get by.
    * @returns {Observable}
    */
@@ -1291,7 +1291,7 @@ export class ApiService {
 
   /**
    * Add a new recent activity.
-   * 
+   *
    * @param {RecentActivity} recentActivity The new recent activity object to add.
    * @returns {Observable}
    */
@@ -1302,7 +1302,7 @@ export class ApiService {
 
   /**
    * Save a recent activity.
-   * 
+   *
    * @param {RecentActivity} recentActivity The recent activity object to save.
    * @returns {Observable}
    */
@@ -1313,7 +1313,7 @@ export class ApiService {
 
   /**
    * Delete a recent activity.
-   * 
+   *
    * @param {RecentActivity} recentActivity The recent activity object to delete.
    * @returns {Observable}
    */
@@ -1324,7 +1324,7 @@ export class ApiService {
 
   /**
    * Get all email subscribers by project.
-   * 
+   *
    * @param {string} projectId The project ID to get subscribers for.
    * @returns {Observable}
    */
@@ -1342,7 +1342,7 @@ export class ApiService {
 
   /**
    * Delete a single project email subscriber.
-   * 
+   *
    * @param {string} emailAddress The email address to remove the entry for.
    * @param {string} projectId The project ID it's subscribed to.
    * @returns {Observable}
@@ -1358,7 +1358,7 @@ export class ApiService {
 
   /**
    * Save a user object.
-   * 
+   *
    * @param {User} user The user object to save.
    * @returns {Observable}
    */
@@ -1369,7 +1369,7 @@ export class ApiService {
 
   /**
    * Add a new user object.
-   * 
+   *
    * @param {User} user The new user object to add.
    * @returns {Observable}
    */
@@ -1380,7 +1380,7 @@ export class ApiService {
 
   /**
    * Get a single user and return a select set of fields.
-   * 
+   *
    * @param {string} userID The user ID to retrieve by.
    * @returns {Observable}
    */
@@ -1398,7 +1398,7 @@ export class ApiService {
 
   /**
    * Get all users - return a select set of fields.
-   * 
+   *
    * @returns {Observable}
    */
   getAllUsers(): Observable<Object> {
@@ -1414,7 +1414,7 @@ export class ApiService {
 
   /**
    * Give a user permission to view/edit a project.
-   * 
+   *
    * @param {User} user The user to give permission to.
    * @param {Project} proj The project to give the user permission to access.
    * @returns {Observable}
@@ -1426,7 +1426,7 @@ export class ApiService {
 
   /**
    * Remove view/edit permissions of a project from a user.
-   * 
+   *
    * @param {User} user The user to remove permission on.
    * @param {Project} proj The project to remove access for.
    * @returns {Observable}
@@ -1467,7 +1467,7 @@ export class ApiService {
 
   /**
    * Helper function to build a collection of values into a URL query string.
-   * 
+   *
    * @param {Array} collection The array of fields to make into a query string.
    * @returns {string}
    */
