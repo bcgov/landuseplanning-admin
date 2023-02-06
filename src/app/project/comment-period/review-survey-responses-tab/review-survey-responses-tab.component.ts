@@ -113,8 +113,7 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       this.tableParams.currentPage,
       0,
       this.tableParams.sortBy,
-      true,
-      this.filter)
+      true)
       .subscribe((res: any) => {
         if (res) {
           this.responsesLoaded.emit(res);
@@ -126,8 +125,7 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
       this.tableParams.currentPage,
       this.tableParams.pageSize,
       this.tableParams.sortBy,
-      true,
-      this.filter)
+      true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res) {
@@ -215,7 +213,7 @@ export class ReviewSurveyResponsesTabComponent implements OnInit {
 
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
 
-    this.surveyResponseService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy, true, this.filter)
+    this.surveyResponseService.getByPeriodId(this.commentPeriodId, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.sortBy, true)
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         this.tableParams.totalListItems = res.totalCount;

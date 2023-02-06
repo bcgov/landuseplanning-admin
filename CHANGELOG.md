@@ -1,3 +1,8 @@
+### 1.5.3 Feb 6, 2023
+* Fixed inability to save projects. [DESENG-268](https://apps.itsm.gov.bc.
+ca/jira/browse/DESENG-268)
+* Fix some incorrect method calls causing breaking errors
+
 ### 1.5.2 Jan 20, 2023
 * Added doc blocks to "project" and "projects" folders. [DESENG-226](https://apps.itsm.gov.bc.
 ca/jira/browse/DESENG-226)
