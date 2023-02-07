@@ -123,54 +123,57 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @returns {void}
    */
   ngOnInit(): void {
-    this.route.data.subscribe((res: any) => {
-      if (res) {
-        if (res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-          let returnedDocuments = res.documents[0].data.searchResults;
-          this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null );
-          this.allBannerImageDocuments = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null );
+    // Get data related to current project
+    this.route.parent.data
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe((data: { project: Project }) => {
+      if (data.project) {
+        this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
 
-          // The following items are loaded by a file that is only present on cluster builds.
-          // Locally, this will be empty and local defaults will be used.
-          const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
-          this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
-
-
-              // Get data related to current project
-              this.route.parent.data
-              .takeUntil(this.ngUnsubscribe)
-              .subscribe((data: { project: Project }) => {
-                this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
-
-                /**
-                 * When a user selects a project lead(and is taken to a new window),
-                 * make sure the project lead is brought over.
-                 **/
-                if (this.storageService.state.projectLead) {
-                  this.projectLead = this.storageService.state.projectLead.name;
-                  this.projectLeadId = this.storageService.state.projectLead._id;
-                } else if (this.isEditing && data.project.projectLead && data.project.projectLead._id && data.project.projectLead._id !== '') {
-                  this.projectLead = data.project.projectLead.displayName;
-                  this.projectLeadId = data.project.projectLead._id;
-                }
-
-                this.project = data.project;
-                this.buildForm(data);
-                this.bannerImageDocument = this.allBannerImageDocuments.find((doc) => doc._id === this.project.backgroundImage);
-                this.loading = false;
-
-                try {
-                  this._changeDetectorRef.detectChanges();
-                } catch (e) {
-                  console.error('error:', e);
-                }
-              });
-        } else {
-          this.buildForm();
-          this.shapefileDocuments = [];
-          this.allBannerImageDocuments = null;
-          this.loading = false;
+        /**
+         * When a user selects a project lead(and is taken to a new window),
+         * make sure the project lead is brought over.
+         **/
+        if (this.storageService.state.projectLead) {
+          this.projectLead = this.storageService.state.projectLead.name;
+          this.projectLeadId = this.storageService.state.projectLead._id;
+        } else if (this.isEditing && data.project.projectLead && data.project.projectLead._id && data.project.projectLead._id !== '') {
+          this.projectLead = data.project.projectLead.displayName;
+          this.projectLeadId = data.project.projectLead._id;
         }
+
+        this.project = data.project;
+        this.buildForm(data);
+
+        this.route.data.subscribe((res: any) => {
+            if (res && res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
+              let returnedDocuments = res.documents[0].data.searchResults;
+              this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null );
+              this.allBannerImageDocuments = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null );
+    
+              // The following items are loaded by a file that is only present on cluster builds.
+              // Locally, this will be empty and local defaults will be used.
+              const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+              this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+              
+              this.bannerImageDocument = this.allBannerImageDocuments.find((doc) => doc._id === this.project.backgroundImage);
+    
+              try {
+                this._changeDetectorRef.detectChanges();
+              } catch (e) {
+                console.error('error:', e);
+              }
+
+              this.loading = false;
+            } else {
+              this.loading = false;
+            }
+          });
+      } else {
+        this.buildForm();
+        this.shapefileDocuments = [];
+        this.allBannerImageDocuments = null;
+        this.loading = false;
       }
     },
     (error) => {
@@ -179,6 +182,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       this.back = this.storageService.state.back;
     });
   }
+  
 
   /**
    * After view init, listen for the file upload modal to close and check if it returned
@@ -921,21 +925,29 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         const bannerImageFormData = this.getBannerImageFormData();
         bannerImageFormData.append('project', this.project._id);
 
+
         this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
       } else if (!this.bannerImageDocument) {
         // Remove the banner image entirely.
-        const bannerImageToDelete = new Document();
-        bannerImageToDelete._id = this.project.backgroundImage;
-        this.documentService.delete(bannerImageToDelete)
-          .subscribe(
-            (res) => {
-              // Remove the background image value now that it's been deleted.
-              project.backgroundImage = null;
-              this.updateExistingProject(project);
-            },
-            (error) => {
-              alert('Could not delete banner image. Please delete manually in project documents section.');
-            });
+        if (this.project.backgroundImage) {
+          const bannerImageToDelete = new Document();
+          bannerImageToDelete._id = this.project.backgroundImage;
+
+          this.documentService.delete(bannerImageToDelete)
+            .subscribe(
+              (res) => {
+                // Remove the background image value now that it's been deleted.
+                project.backgroundImage = null;
+                this.updateExistingProject(project);
+              },
+              (error) => {
+                alert('Could not delete banner image. Please delete manually in project documents section.');
+              });
+        } else {
+          this.updateExistingProject(project);
+        }
+      } else {
+        this.updateExistingProject(project);
       }
 
       // Publish selected logo files.

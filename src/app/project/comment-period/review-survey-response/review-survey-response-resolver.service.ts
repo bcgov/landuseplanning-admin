@@ -22,6 +22,6 @@ export class ReviewSurveyResponseResolver implements Resolve<Object> {
     const surveyResponseId = route.paramMap.get('surveyResponseId');
 
     // force-reload so we always have latest data
-    return this.surveyResponseService.getById(surveyResponseId, true);
+    return this.surveyResponseService.getById(surveyResponseId);
   }
 }

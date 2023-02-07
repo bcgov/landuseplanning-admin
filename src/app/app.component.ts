@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { ConfigService } from './services/config.service';
 import { SideBarService } from 'app/services/sidebar.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
@@ -11,7 +11,7 @@ import { FileUploadModalComponent } from 'app/file-upload-modal/file-upload-moda
   styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
   @HostBinding('class.sidebarcontrol')
   isOpen = false;
@@ -33,7 +33,6 @@ export class AppComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   ngOnInit(): void {
-    this.configService.init();
     this.sideBarService.change.subscribe(isOpen => {
       this.isOpen = isOpen;
     });
@@ -47,14 +46,5 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.ngxSmartModalService.create('confirmation-modal', ConfirmComponent, {customClass: 'nsm-centered'});
     this.ngxSmartModalService.create('file-upload-modal', FileUploadModalComponent, this.fileUploadModalOptions);
-  }
-
-  /**
-   * Tear down the app config service if the app is un-mounted.
-   * 
-   * @return {void}
-   */
-  ngOnDestroy(): void {
-    this.configService.destroy();
   }
 }
