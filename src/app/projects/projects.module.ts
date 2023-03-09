@@ -7,6 +7,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Providers.
 import { ShapeFileResolver } from './add-edit-project/project-shapefile-resolver.services';
@@ -25,7 +26,8 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
     ProjectsRoutingModule,
     SharedModule,
     CKEditorModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatCheckboxModule
   ],
   declarations: [
     AddEditProjectComponent,

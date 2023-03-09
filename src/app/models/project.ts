@@ -52,6 +52,9 @@ export class Project {
   projectLead: any;
   projectDirector: any;
 
+  // Options
+  activitiesAndUpdatesEnabled: Boolean;
+
   // Permissions.
   read: Array<String> = [];
   write: Array<String> = [];
@@ -87,31 +90,33 @@ export class Project {
 
     this.eaDecision           = obj && obj.eaDecision               || undefined;
 
-    this.existingLandUsePlanURLs = obj && obj.existingLandUsePlanURLs            || undefined;
-    this.code                = obj && obj.code                || undefined;
-    this.commodity           = obj && obj.commodity           || undefined;
-    this.currentPhaseName    = obj && obj.currentPhaseName    || undefined;
-    this.dateAdded           = obj && obj.dateAdded           || undefined;
-    this.dateUpdated         = obj && obj.dateUpdated         || undefined;
-    this.duration            = obj && obj.duration            || undefined;
-    this.eaoMember           = obj && obj.eaoMember           || undefined;
-    this.epicProjectID       = obj && obj.epicProjectID       || undefined;
-    this.fedElecDist         = obj && obj.fedElecDist         || undefined;
-    this.isTermsAgreed       = obj && obj.isTermsAgreed       || undefined;
-    this.overallProgress     = obj && obj.overallProgress     || undefined;
-    this.primaryContact      = obj && obj.primaryContact      || undefined;
-    this.proMember           = obj && obj.proMember           || undefined;
-    this.provElecDist        = obj && obj.provElecDist        || undefined;
-    this.shortName           = obj && obj.shortName           || undefined;
-    this.projectPhase        = obj && obj.projectPhase        || undefined;
-    this.substitution        = obj && obj.substitution        || undefined;
-    this.updatedBy           = obj && obj.updatedBy           || undefined;
-    this.read                = obj && obj.read                || undefined;
-    this.write               = obj && obj.write               || undefined;
-    this.delete              = obj && obj.delete              || undefined;
+    this.existingLandUsePlanURLs     = obj && obj.existingLandUsePlanURLs     || undefined;
+    this.code                        = obj && obj.code                        || undefined;
+    this.commodity                   = obj && obj.commodity                   || undefined;
+    this.currentPhaseName            = obj && obj.currentPhaseName            || undefined;
+    this.dateAdded                   = obj && obj.dateAdded                   || undefined;
+    this.dateUpdated                 = obj && obj.dateUpdated                 || undefined;
+    this.duration                    = obj && obj.duration                    || undefined;
+    this.eaoMember                   = obj && obj.eaoMember                   || undefined;
+    this.epicProjectID               = obj && obj.epicProjectID               || undefined;
+    this.fedElecDist                 = obj && obj.fedElecDist                 || undefined;
+    this.isTermsAgreed               = obj && obj.isTermsAgreed               || undefined;
+    this.overallProgress             = obj && obj.overallProgress             || undefined;
+    this.primaryContact              = obj && obj.primaryContact              || undefined;
+    this.proMember                   = obj && obj.proMember                   || undefined;
+    this.provElecDist                = obj && obj.provElecDist                || undefined;
+    this.shortName                   = obj && obj.shortName                   || undefined;
+    this.projectPhase                = obj && obj.projectPhase                || undefined;
+    this.substitution                = obj && obj.substitution                || undefined;
+    this.updatedBy                   = obj && obj.updatedBy                   || undefined;
+    this.read                        = obj && obj.read                        || undefined;
+    this.write                       = obj && obj.write                       || undefined;
+    this.delete                      = obj && obj.delete                      || undefined;
 
-    this.projectLead         = obj && obj.projectLead         || undefined;
-    this.projectDirector     = obj && obj.projectDirector     || undefined;
+    this.projectLead                 = obj && obj.projectLead                 || undefined;
+    this.projectDirector             = obj && obj.projectDirector             || undefined;
+
+    this.activitiesAndUpdatesEnabled = obj && obj.activitiesAndUpdatesEnabled || undefined;
 
     // copy pins
     if (obj && obj.pins) {
