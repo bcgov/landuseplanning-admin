@@ -1,3 +1,7 @@
+### 1.6.0 Mar 9, 2023
+* Added option to add/remove Activities and Updates section from project description page. [DESENG-283](https://apps.itsm.gov.bc.
+ca/jira/browse/DESENG-283)
+
 ### 1.5.3 Feb 6, 2023
 * Fixed inability to save projects. [DESENG-268](https://apps.itsm.gov.bc.
 ca/jira/browse/DESENG-268)

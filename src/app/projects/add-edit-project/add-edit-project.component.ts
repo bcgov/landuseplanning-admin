@@ -91,6 +91,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public loading = true;
   public pathAPI: string;
 
+  // Options
+  public activitiesAndUpdatesEnabled = false;
+
   // Shape file upload
   public projectFiles: Array<File> = [];
   public shapefileDocuments: Document[] = [];
@@ -249,7 +252,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'projectPhase': new FormControl(),
         'projectDirector': new FormControl(),
         'projectLead': new FormControl(),
-        'projectAdmin': new FormControl()
+        'projectAdmin': new FormControl(),
+        'activitiesAndUpdatesEnabled': new FormControl()
+
       });
 
       // Form always has at least one agreement field
@@ -516,6 +521,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'projectPhase': new FormControl(projectData.projectPhase),
       'projectDirector': new FormControl(projectData.projectDirector),
       'projectLead': new FormControl(projectData.projectLead),
+      'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled)
     });
   }
 
@@ -558,6 +564,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'projectPhase': form.controls.projectPhase.value,
       'projectDirector': this.projectDirectorId,
       'projectLead': this.projectLeadId,
+      'activitiesAndUpdatesEnabled': form.controls.activitiesAndUpdatesEnabled.value
     });
   }
 

@@ -218,7 +218,8 @@ export class ApiService {
       'pins',
       'read',
       'write',
-      'delete'
+      'delete',
+      'activitiesAndUpdatesEnabled'
     ];
     let queryString = `project/${id}?populate=true`;
     if (cpStart !== null) { queryString += `&cpStart[since]=${cpStart}`; }
