@@ -22,7 +22,7 @@ describe('CommentService', () => {
       ]
     });
 
-    service = TestBed.get(CommentService);
+    service = TestBed.inject(CommentService);
     comment = new Comment({ commentPeriod: commentPeriod });
   });
 

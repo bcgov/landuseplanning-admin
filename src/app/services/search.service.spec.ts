@@ -31,7 +31,7 @@ describe('SearchService', () => {
   });
 
   it('should be created', () => {
-    const service = TestBed.get(SearchService);
+    const service = TestBed.inject(SearchService);
     expect(service).toBeTruthy();
   });
 
@@ -40,9 +40,9 @@ describe('SearchService', () => {
     let apiSpy;
     let ProjectServiceSpy;
     beforeEach(() => {
-      service = TestBed.get(SearchService);
-      apiSpy = TestBed.get(ApiService);
-      ProjectServiceSpy = TestBed.get(ProjectService);
+      service = TestBed.inject(SearchService);
+      apiSpy = TestBed.inject(ApiService);
+      ProjectServiceSpy = TestBed.inject(ProjectService);
     });
 
     describe('when getAppsByCLID returns results', () => {

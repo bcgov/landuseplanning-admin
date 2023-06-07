@@ -34,9 +34,9 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
     ProjectListComponent,
     ProjectListTableRowsComponent
   ],
-  entryComponents: [
-    ProjectListTableRowsComponent
-  ],
+  // entryComponents: [
+  //   ProjectListTableRowsComponent
+  // ],
   exports: [
     ProjectListComponent
   ],

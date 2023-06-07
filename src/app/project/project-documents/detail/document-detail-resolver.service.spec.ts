@@ -6,7 +6,7 @@ describe('DocumentDetailResolver', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DocumentDetailResolver = TestBed.get(DocumentDetailResolver);
+    const service: DocumentDetailResolver = TestBed.inject(DocumentDetailResolver);
     expect(service).toBeTruthy();
   });
 });
