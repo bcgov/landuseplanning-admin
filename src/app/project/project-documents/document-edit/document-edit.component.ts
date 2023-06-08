@@ -150,9 +150,9 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   multiEditGetUpdatedValue(formValue, docValue, isDate = false) {
     if (formValue !== null) {
       if (isDate) {
-        return new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(formValue))).toISOString();
+        return new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(formValue))));
       } else {
-        return formValue;
+        return formValue;  
       }
     } else {
       return docValue;
@@ -186,7 +186,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
         this.myForm.value.documentAuthor !== null ? formData.append('documentAuthor', this.myForm.value.documentAuthor) : Function.prototype;
         this.myForm.value.description !== null ? formData.append('description', this.myForm.value.description) : Function.prototype;
         this.myForm.value.displayName !== null ? formData.append('displayName', this.myForm.value.displayName) : Function.prototype;
-        formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
+        formData.append('datePosted', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value)))).toISOString());
         formData.append('documentAuthorType', this.myForm.value.authorsel);
         formData.append('projectPhase', this.myForm.value.projectPhase);
       } else {
