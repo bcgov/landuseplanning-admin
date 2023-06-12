@@ -51,7 +51,7 @@
     "tinymce": "^6.4.2",
     "tslint": "^6.0.0",
     "web-animations-js": "^2.3.1",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz",
+    "xlsx": "git+https://git.sheetjs.com/sheetjs/sheetjs#v0.19.3",
     "zone.js": "^0.10.3"
   },
   "devDependencies": {

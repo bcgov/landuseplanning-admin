@@ -124,16 +124,6 @@ import { PermissionsTableRowsComponent } from './project-permissions/permissions
     PermissionsTableRowsComponent,
     NavbarComponent
   ],
-  // entryComponents: [
-  //   AddDocumentTableRowsComponent,
-  //   CommentPeriodComponent,
-  //   CommentPeriodsComponent,
-  //   CommentPeriodsTableRowsComponent,
-  //   DocumentTableRowsComponent,
-  //   ReviewCommentsTabTableRowsComponent,
-  //   UploadComponent,
-  //   EmailSubscribeTableRowsComponent,
-  // ],
   exports: [
     ComplianceComponent,
     IndigenousNationsComponent,
