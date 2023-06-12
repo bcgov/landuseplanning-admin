@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 
 describe('ListConverterPipe', () => {
   it('create an instance', () => {
-    const pipe: ListConverterPipe = TestBed.get(ListConverterPipe);
+    const pipe: ListConverterPipe = TestBed.inject(ListConverterPipe);
     expect(pipe).toBeTruthy();
   });
 });

@@ -13,7 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
-    const configService: ConfigService = TestBed.get(ConfigService);
+    const configService: ConfigService = TestBed.inject(ConfigService);
     const mockKeycloakService = {
       isValidForSite: () => {
         return true;

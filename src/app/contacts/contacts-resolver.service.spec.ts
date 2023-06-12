@@ -6,7 +6,7 @@ describe('ContactsResolverService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ContactsResolver = TestBed.get(ContactsResolver);
+    const service: ContactsResolver = TestBed.inject(ContactsResolver);
     expect(service).toBeTruthy();
   });
 });

@@ -49,7 +49,7 @@ describe('ProjectListComponent', () => {
     ];
 
     beforeEach(() => {
-      let projectService = TestBed.get(ProjectService);
+      let projectService = TestBed.inject(ProjectService);
       spyOn(projectService, 'getAll').and.returnValue(of(existingProjects));
     });
 
@@ -61,7 +61,7 @@ describe('ProjectListComponent', () => {
 
   describe('when the project service throws an error', () => {
     beforeEach(() => {
-      let projectService = TestBed.get(ProjectService);
+      let projectService = TestBed.inject(ProjectService);
       spyOn(projectService, 'getAll').and.returnValue(throwError('Beep boop server error'));
     });
 

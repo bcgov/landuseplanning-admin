@@ -138,8 +138,8 @@ export class UploadComponent implements OnInit, OnDestroy {
       formData.append('documentSource', 'PROJECT');
 
       formData.append('displayName', this.documents.length > 1 ? doc.documentFileName : this.myForm.value.displayName);
-      formData.append('dateUploaded', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUploaded').value))).toISOString());
-      formData.append('datePosted', new Date(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value))).toISOString());
+      formData.append('dateUploaded', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUploaded').value)))).toISOString());
+      formData.append('datePosted', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value)))).toISOString());
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.documentAuthor);
       formData.append('projectPhase', this.myForm.value.projectPhase);

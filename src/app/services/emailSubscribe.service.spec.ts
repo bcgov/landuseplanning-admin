@@ -26,7 +26,7 @@ describe('EmailSubscribeService', () => {
   });
 
   it('should be created', () => {
-    const service = TestBed.get(EmailSubscribeService);
+    const service = TestBed.inject(EmailSubscribeService);
     expect(service).toBeTruthy();
   });
 
@@ -34,8 +34,8 @@ describe('EmailSubscribeService', () => {
     let service: EmailSubscribeService;
     let apiSpy;
     beforeEach(() => {
-      service = TestBed.get(EmailSubscribeService);
-      apiSpy = TestBed.get(ApiService);
+      service = TestBed.inject(EmailSubscribeService);
+      apiSpy = TestBed.inject(ApiService);
     });
   });
 
@@ -43,8 +43,8 @@ describe('EmailSubscribeService', () => {
     let service: EmailSubscribeService;
     let apiSpy;
     beforeEach(() => {
-      service = TestBed.get(EmailSubscribeService);
-      apiSpy = TestBed.get(ApiService);
+      service = TestBed.inject(EmailSubscribeService);
+      apiSpy = TestBed.inject(ApiService);
     });
 /*
     describe('when no comment is returned by the api', () => {

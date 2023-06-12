@@ -1,3 +1,7 @@
+### 1.6.1 June 12, 2023
+* Updated Angular (version 11) and several packages to address security concerns. [DESENG-345](https://apps.itsm.gov.bc.
+ca/jira/browse/DESENG-345)
+
 ### 1.6.0 Mar 9, 2023
 * Added option to add/remove Activities and Updates section from project description page. [DESENG-283](https://apps.itsm.gov.bc.
 ca/jira/browse/DESENG-283)

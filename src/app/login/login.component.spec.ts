@@ -46,7 +46,7 @@ describe('LoginComponent', () => {
   describe('when keycloak is enabled', () => {
     let service: KeycloakService;
     beforeEach(() => {
-      service = TestBed.get(KeycloakService);
+      service = TestBed.inject(KeycloakService);
       spyOn(service, 'isKeyCloakEnabled').and.returnValue(true);
     });
 

@@ -158,18 +158,6 @@ export function kcFactory(keycloakService: KeycloakService) {
     SurveyBuilderService,
     UserService,
   ],
-  entryComponents: [
-    AddEditContactComponent,
-    AddEditOrganizationComponent,
-    LinkOrganizationComponent,
-    ContactSelectComponent,
-    ConfirmComponent,
-    InputModalComponent,
-    OrganizationsTableRowsComponent,
-    LinkOrganizationTableRowsComponent,
-    ContactSelectTableRowsComponent,
-    UserTableRowsComponent
-  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

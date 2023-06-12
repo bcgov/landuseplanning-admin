@@ -272,7 +272,7 @@
 // Navbar Brand
 .navbar-brand {
   height: 3.4375rem;
-  background-image: url(assets/images/bcgov-header-vert-SM.png);
+  background-image: url(../../assets/images/bcgov-header-vert-SM.png);
   background-position: 8px center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -322,7 +322,7 @@
 
 @media (min-width: 1096px) {
   .navbar-brand {
-    background-image:     url(assets/images/BCID_H_rgb_rev.png);
+    background-image:     url(../../assets/images/BCID_H_rgb_rev.png);
 
 
     &__title {
@@ -343,7 +343,7 @@
 
 @media (min-width: 1224px) {
   .navbar-brand {
-    background-image:     url(assets/images/BCID_H_rgb_rev.png);
+    background-image:     url(../../assets/images/BCID_H_rgb_rev.png);
     background-position: 10px center;
     background-size: contain;
   }
