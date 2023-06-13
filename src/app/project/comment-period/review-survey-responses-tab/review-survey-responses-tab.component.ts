@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 
 

@@ -5,7 +5,7 @@ import { SideBarService } from 'app/services/sidebar.service';
 import { KeycloakService } from 'app/services/keycloak.service'
 import { filter } from 'rxjs/operators';
 import { StorageService } from 'app/services/storage.service';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { JwtUtil } from 'app/jwt-util';
 
 @Component({

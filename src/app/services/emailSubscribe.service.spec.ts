@@ -1,7 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { EmailSubscribe } from 'app/models/emailSubscribe';
 import 'rxjs/add/observable/of';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ApiService } from './api';
 import { EmailSubscribeService } from './emailSubscribe.service';
 

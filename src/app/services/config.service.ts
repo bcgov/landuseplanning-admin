@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ApiService } from './api';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 //
 // This service/class provides a centralized place to persist config values
