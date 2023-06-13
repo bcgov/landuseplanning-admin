@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { flatMap, mergeMap } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
 import 'rxjs/add/operator/toPromise';

@@ -7,7 +7,7 @@ import { KeycloakService } from 'app/services/keycloak.service';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 
 @Component({
