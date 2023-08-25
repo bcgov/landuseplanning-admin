@@ -1,3 +1,6 @@
+### 1.6.2 Aug 25, 2023
+* Added lifecycle to readme file as per Github Issues. [DESENG-376](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-376)
+
 ### 1.6.1 June 12, 2023
 * Updated Angular (version 11) and several packages to address security concerns. [DESENG-345](https://apps.itsm.gov.bc.
 ca/jira/browse/DESENG-345)

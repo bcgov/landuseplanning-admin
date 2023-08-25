@@ -2,6 +2,8 @@
 
 Administrative front-end for the Land Use Planning application. Based on the PRC Application [bcgov/nrts-prc-admin](https://github.com/bcgov/nrts-prc-admin).
 
+[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](<Redirect-URL>)
+
 * [Admin](https://github.com/bcgov/landuseplanning-admin) - front-end for admin users.
 * [Public](https://github.com/bcgov/landuseplanning-public) - front-end for public users.
 * [Api](https://github.com/bcgov/landuseplanning-api) - back-end that serves both admin and public requests.
