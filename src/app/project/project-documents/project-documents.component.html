@@ -1,4 +1,24 @@
-<app-navbar [currentProject]="currentProject" currentPageTitle="Files" buttonType="single" [pageBreadcrumbs]="pageBreadcrumbs" [navBarButtons]="navBarButtons"></app-navbar>
+<nav class="action-container" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+          <a [routerLink]="['/projects']">All Projects</a>
+      </li>
+      <li *ngFor="let crumb of pageBreadcrumbs" class="breadcrumb-item">
+          <a [routerLink]="crumb.routerLink">{{crumb.pageTitle}}</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Files</li>
+  </ol>
+  <div *ngIf="navBarButtons">
+    <div *ngIf="navBarButtons.length > 1" ngbDropdown placement="bottom-right">
+      <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
+      <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
+          <button *ngFor="let navBarButton of navBarButtons;" class="dropdown-item" (click)=navBarButton.action(router)>{{navBarButton.label}}</button>
+      </div>
+    </div>
+    <button *ngIf="navBarButtons.length === 1" (click)="navBarButtons[0].action()" class="btn btn-primary" type="button" id="button-d">
+      <i *ngIf="navBarButtons[0].materialIcon" class="material-icons">{{navBarButtons[0].materialIcon}}</i>{{navBarButtons[0].label}}</button>
+  </div>
+</nav>
 <div class="container-fluid-padding">
   <form #f="ngForm" class="search-form ui form" (ngSubmit)="reloadSearchResults()">
     <div class="input-group main-search-field">

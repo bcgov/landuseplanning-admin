@@ -93,7 +93,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Load all documents/files for the project. Set the data and params for the
    * table - the UI component used to display documents.
-   * 
+   *
    * @return {void}
    */
   ngOnInit() {
@@ -150,10 +150,16 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       });
 
     this.pageBreadcrumbs = [{ pageTitle: this.currentProject.name, routerLink: [ '/p', this.currentProject._id ]}];
-    this.navBarButtons = [{
-      label: 'Upload File(s)',
-      action: () => this.router.navigate(['p', this.currentProject._id, 'project-files', 'upload'])
-    }];
+    this.navBarButtons = [
+      {
+        label: 'Upload File(s)',
+        action: () => this.router.navigate(['p', this.currentProject._id, 'project-files', 'upload'])
+      },
+      {
+        label: 'File Sections',
+        action: () => this.router.navigate(['p', this.currentProject._id, 'project-files' , 'sections'])
+      }
+    ];
   }
 
   /**
@@ -274,7 +280,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
   /**
    * Navigate to the search help page.
-   * 
+   *
    * @return {void}
    */
   public navSearchHelp(): void {
@@ -284,7 +290,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Handle publishing a document. Display a modal to the user
    * to first confirm the action.
-   * 
+   *
    * @return {void}
    */
   public onPublishDocument(): void {
@@ -300,7 +306,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Publish a document. Make a call to the document service
    * for each selected document.
-   * 
+   *
    * @return {void}
    */
   private internalPublishDocument(): void {
@@ -329,7 +335,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Handle un-publishing a document. Display a modal to the user
    * to first confirm the action.
-   * 
+   *
    * @return {void}
    */
   public onUnpublishDocument(): void {
@@ -345,7 +351,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Un-publish a document. Make a call to the document service
    * for each selected document.
-   * 
+   *
    * @return {void}
    */
   private internalUnpublishDocument(): void {
@@ -374,7 +380,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Handler for deleting docuements. First displays a confirmation
    * modal to the user before proceeding.
-   * 
+   *
    * @return {void}
    */
   public onDeleteDocument(): void {
@@ -390,7 +396,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Delete a document. Make a call to the document service
    * to delete every checked document.
-   * 
+   *
    * @return {void}
    */
   private internalDeleteDocument(): void {
@@ -452,7 +458,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
 
   /**
    * Reload the document search results based on the set table params.
-   * 
+   *
    * @return {void}
    */
   public reloadSearchResults(): void {
@@ -472,7 +478,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Set the data to use in the table UI component. This displays
    * the loaded documents to the user.
-   * 
+   *
    * @return {void}
    */
   setRowData(): void {
@@ -549,7 +555,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   /**
    * Checks if a document is publishable by checking it's
    * current published state.
-   * 
+   *
    * @return {void}
    */
   public toggleCanPublish(): void {

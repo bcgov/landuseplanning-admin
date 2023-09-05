@@ -9,6 +9,7 @@ import { each, isEmpty } from 'lodash';
 
 import { KeycloakService } from 'app/services/keycloak.service';
 
+import { DocumentSection } from 'app/models/documentSection';
 import { Project } from 'app/models/project';
 import { Comment } from 'app/models/comment';
 import { CommentPeriod } from 'app/models/commentPeriod';
@@ -1087,6 +1088,44 @@ export class ApiService {
     filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
 
     this.createDownloadFile(blob, filename);
+  }
+
+  /**
+   * Get all document sections by project.
+   *
+   * @param {string} projectId The project ID to get document sections for.
+   * @returns {Observable}
+   */
+  getDocumentSections(projectId: string): Observable<Object> {
+    const fields = [
+      'name',
+      'project',
+      'order',
+    ];
+    const queryString = `documentSection/${projectId}?fields=${this.buildValues(fields)}`;
+    return this.http.get<DocumentSection>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+  /**
+   * Add document section to the DB.
+   *
+   * @param {DocumentSection} docSection The document section object to add.
+   * @returns {Observable}
+   */
+  addDocumentSection(docSection: DocumentSection): Observable<DocumentSection> {
+    const queryString = `documentSection/`;
+    return this.http.post<DocumentSection>(`${this.pathAPI}/${queryString}`, docSection, {});
+  }
+
+  /**
+   * Save a document section.
+   *
+   * @param {DocumentSection} docSection The document section to save.
+   * @returns {Observable}
+   */
+  saveDocumentSection(docSection: DocumentSection): Observable<DocumentSection> {
+    const queryString = `documentSection/${docSection._id}`;
+    return this.http.put<DocumentSection>(`${this.pathAPI}/${queryString}`, docSection, {});
   }
 
   /**
