@@ -1,0 +1,13 @@
+<header>
+  <h3>{{ modalData.title }}</h3>
+</header>
+<main class="add-file-section">
+  <label for="section-name">
+    Title
+    <input id="section-name" type="text" (input)="updateName($event)">
+  </label>
+</main>
+<footer>
+  <button class="btn btn-outline-primary" (click)="handleClose()">Cancel</button>
+  <button class="btn btn-primary" (click)="handleSave()">Save</button>
+</footer>
