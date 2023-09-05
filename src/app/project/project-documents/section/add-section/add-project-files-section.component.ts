@@ -1,10 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { StorageService } from 'app/services/storage.service';
 import { ModalData } from 'app/shared/types/modal';
-import { Utils } from 'app/shared/utils/utils';
 import { Project } from 'app/models/project';
 import { DocumentSection } from 'app/models/documentSection';
 import { DocumentSectionService } from 'app/services/documentSection.service';
@@ -17,37 +14,31 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 })
 export class AddProjectFilesSectionComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  public projects = [];
-  public activity: any;
   public currentProject: Project;
   public modalData: ModalData;
-  public addEditPageTitle: string;
   public sectionName = '';
   public errorMessage = '';
-  public pageBreadcrumbs: { pageTitle: string; routerLink: Object; }[];
 
   constructor(
-    private router: Router,
     private ngxSmartModalService: NgxSmartModalService,
-    private utils: Utils,
     private documentSectionService: DocumentSectionService,
     private storageService: StorageService
   ) { }
 
   /**
-   * Get the current project from local storage, then set up the project update
-   * form dependent on whether the user is editing an update or not.
+   * Get the current project from local storage which will be used to save the new
+   * document section.
    *
    * @return {void}
    */
   ngOnInit(): void {
     this.currentProject = this.storageService.state.currentProject.data;
-    this.modalData = this.ngxSmartModalService.getModalData('add-files-section-modal');
   }
 
   /**
-   * Handle closing the modal window.
-   *
+   * Handle closing the modal window. If a save is successfully completed, set the modal
+   * data to indicate this so that the component that opened the modal knows what operation
+   * took place.
    *
    * @return {void}
    */
@@ -59,20 +50,24 @@ export class AddProjectFilesSectionComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Update the section name when the value in the input changes.
    *
-   * @param event
+   * @param {string} value The value to update the section name with.
+   * @param {void}
    */
-  updateName(event){
-    this.sectionName = event.target.value
+  updateName(value: string): void {
+    this.sectionName = value;
   }
+
   /**
    * When a save is triggered then prepare the data and hit the project update API
-   * to save it.
+   * to save it. Then, if a save is made successfully, close the modal.
+   *
+   * If the section name is empty, abort the save.
    *
    * @return {void}
    */
   handleSave(): void {
-    console.log(this.sectionName)
     if (0 === this.sectionName.length) {
       return;
     }
