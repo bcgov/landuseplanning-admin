@@ -1,0 +1,17 @@
+<app-navbar [currentProject]="currentProject"
+            currentPageTitle="Sections"
+            buttonType="single"
+            [pageBreadcrumbs]="pageBreadcrumbs"
+            [navBarButtons]="navBarButtons">
+</app-navbar>
+<div class="container-fluid-padding">
+
+  <div class="spinner-container" *ngIf="loading">
+    <div class="spinner-new rotating"></div>
+  </div>
+  <app-table-template *ngIf="!loading && tableParams.totalListItems != 0; else elseBlock" (checkboxChange)='checkChange($event)'
+    [columns]="documentTableColumns" [data]="documentTableData" (onColumnSort)='setColumnSort($event)'
+    (onSelectedRow)='updateSelectedRow($event)' (onPageNumUpdate)='getPaginatedDocs($event, null, null)'>
+  </app-table-template>
+  <ng-template #elseBlock>No document sections found.</ng-template>
+</div>

@@ -22,7 +22,9 @@ import { ReviewCommentComponent } from './comment-period/review-comment/review-c
 import { ReviewSurveyResponseComponent } from './comment-period/review-survey-response/review-survey-response.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectPermissionsComponent } from './project-permissions/project-permissions.component';
+import { ProjectFilesSectionComponent } from './project-documents/section/project-files-section.component';
 
+import { FileSectionsResolver } from './project-documents/section/project-files-section-resolver.services';
 import { AddDocumentsResolver } from './comment-periods/add-edit-comment-period/add-documents/add-documents-resolver.services';
 import { CommentPeriodResolver } from './comment-period/comment-period-resolver.service';
 import { DocumentDetailResolver } from './project-documents/detail/document-detail-resolver.service';
@@ -112,6 +114,14 @@ const routes: Routes = [
       {
         path: 'project-files/upload/add-label',
         component: AddLabelComponent,
+      },
+      {
+        path: 'project-files/sections',
+        component: ProjectFilesSectionComponent,
+        runGuardsAndResolvers: "always",
+        resolve: {
+          sections: FileSectionsResolver,
+        }
       },
       {
         path: 'project-email-subscribe',

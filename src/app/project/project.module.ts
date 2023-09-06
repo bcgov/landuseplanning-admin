@@ -13,7 +13,6 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 
-
 // components
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 import { AddLabelComponent } from './project-documents/add-label/add-label.component';
@@ -33,11 +32,11 @@ import { ProjectDocumentsComponent } from './project-documents/project-documents
 import { ReviewCommentsTabComponent } from './comment-period/review-comments-tab/review-comments-tab.component';
 import { ReviewCommentsTabTableRowsComponent } from './comment-period/review-comments-tab/review-comments-tab-table-rows/review-comments-tab-table-rows.component';
 import { UploadComponent } from './project-documents/upload/upload.component';
-import { NavbarComponent } from 'app/shared/components/navbar/navbar.component';
 import { ProjectUpdatesComponent } from 'app/project/project-updates/project-updates.component';
 import { ProjectUpdatesTableRowsComponent } from 'app/project/project-updates/project-updates-table-rows/project-updates-table-rows.component';
 import { AddEditProjectUpdateComponent } from 'app/project/project-updates/add-edit-project-update/add-edit-project-update.component';
 import { AddEditProjectUpdateResolver } from 'app/project/project-updates/add-edit-project-update/add-edit-project-update-resolver'
+import { ProjectFilesSectionComponent } from 'app/project/project-documents/section/project-files-section.component';
 
 // services
 import { ApiService } from 'app/services/api';
@@ -65,6 +64,8 @@ import { EmailSubscribeTableRowsComponent } from './project-email-subscribe/emai
 import { AddEditRouteGuard } from './project-survey/add-edit-project-survey/add-edit-project-survey.guard';
 import { ProjectPermissionsComponent } from './project-permissions/project-permissions.component';
 import { PermissionsTableRowsComponent } from './project-permissions/permissions-table-rows/permissions-table-rows.component'
+import { FileSectionsResolver } from './project-documents/section/project-files-section-resolver.services';
+import { DocumentSectionService } from 'app/services/documentSection.service';
 
 @NgModule({
   imports: [
@@ -122,7 +123,7 @@ import { PermissionsTableRowsComponent } from './project-permissions/permissions
     EmailSubscribeTableRowsComponent,
     ProjectPermissionsComponent,
     PermissionsTableRowsComponent,
-    NavbarComponent
+    ProjectFilesSectionComponent
   ],
   exports: [
     ComplianceComponent,
@@ -138,7 +139,9 @@ import { PermissionsTableRowsComponent } from './project-permissions/permissions
     ProjectService,
     StorageService,
     EmailSubscribeService,
-    AddEditProjectUpdateResolver
+    DocumentSectionService,
+    AddEditProjectUpdateResolver,
+    FileSectionsResolver
   ]
 })
 

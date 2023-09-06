@@ -1,0 +1,30 @@
+header {
+  h3 {
+    margin: 0.75rem;
+  }
+}
+
+.add-file-section {
+  width: 500px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    justify-content: center;
+  }
+
+  input {
+    width: 100%;
+  }
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.75rem;
+}
+
