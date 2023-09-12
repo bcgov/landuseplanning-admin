@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Document } from 'app/models/document';
@@ -7,13 +7,12 @@ import { ApiService } from 'app/services/api';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentSectionService } from 'app/services/documentSection.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DocumentSection } from 'app/models/documentSection';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Utils } from 'app/shared/utils/utils';
-import { isEmpty } from 'lodash';
+import { isEmpty, partition } from 'lodash';
 import { NavBarButton, PageBreadcrumb } from 'app/shared/components/navbar/types';
-
-import { TableObject } from 'app/shared/components/table-template/table-object';
-import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-files-section',
@@ -30,17 +29,17 @@ export class ProjectFilesSectionComponent implements OnInit, OnDestroy {
   public documentUrl: string;
   public navBarButtons: NavBarButton[];
   public pageBreadcrumbs: PageBreadcrumb[];
-  public loading = false;
-  public tableParams: TableParamsObject = new TableParamsObject();
+  public loading = true;
+  public orderChangeLoading = false;
+  public documentSections: DocumentSection[];
 
   constructor(
     public utils: Utils,
     private route: ActivatedRoute,
     private router: Router,
     public api: ApiService,
-    private _changeDetectionRef: ChangeDetectorRef,
-    private storageService: StorageService,
     private snackBar: MatSnackBar,
+    private storageService: StorageService,
     private documentSectionService: DocumentSectionService,
     private ngxSmartModalService: NgxSmartModalService,
 
@@ -57,34 +56,21 @@ export class ProjectFilesSectionComponent implements OnInit, OnDestroy {
    *
    * @return {void}
    */
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {
-      if (res) {
-        // if (res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-        //   this.tableParams.totalListItems = res.documents[0].data.meta[0].searchResultsTotal;
-        //   this.documents = res.documents[0].data.searchResults;
-        // } else {
-        //   this.tableParams.totalListItems = 0;
-        //   this.documents = [];
-        // }
-        // this.setRowData();
-        // this.loading = false;
-        // this._changeDetectionRef.detectChanges();
-        console.log('res', res)
+      if (res && res?.sections?.length > 0) {
+        this.loading = false;
+        this.documentSections = this.sortSectionsByOrder(res.sections);
       } else {
-        alert('Uh-oh, couldn\'t load valued components');
-        // project not found --> navigate back to search
+        alert('Uh-oh, couldn\'t load project file sections.');
+        // Sections not found --> navigate back to search
         this.router.navigate(['/search']);
       }
     });
 
     this.currentProject = this.storageService.state.currentProject.data;
-    this.ngxSmartModalService.setModalData({
-      type: 'add',
-      title: 'Add File Section',
-    }, 'add-files-section-modal', true);
     this.pageBreadcrumbs = [
       { pageTitle: this.currentProject.name, routerLink: [ '/p', this.currentProject._id ] },
       { pageTitle: "Files" , routerLink: [ '/p', this.currentProject._id, 'project-files' ]}
@@ -108,9 +94,107 @@ export class ProjectFilesSectionComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.ngxSmartModalService.getModal('add-files-section-modal').onAnyCloseEventFinished.subscribe((modal: NgxSmartModalComponent) => {
       if ('save' ===  modal.getData()) {
-        // Reload all doc sections...
+        this.orderChangeLoading = true;
+        this.documentSectionService.getAll(this.currentProject._id)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            res => {
+              this.documentSections = res;
+              this.openSnackBar('New section added successfully.', 'Close');
+            },
+            err => {
+              alert('Failed to add new section.');
+              console.error('Failed to add new section.', err)
+            },
+            () => {
+              this.orderChangeLoading = false;
+            }
+          )
       }
     })
+  }
+
+  /**
+   * Split the document sections into those that have an explicit "order"
+   * property declared, and those that don't. Of those that do, sort those by
+   * numerical order value. Finally, concatenate those with "null" as their order
+   * to the bottom of the list of document sections.
+   *
+   * @param documentSections An array of document sections to sort.
+   * @returns The sorted array of sections.
+   */
+  sortSectionsByOrder(documentSections: DocumentSection[]): DocumentSection[]  {
+    const [populatedEntries, nullEntires] = partition(
+      documentSections,
+      (section) => Number.isInteger(section.order)
+    );
+    if (populatedEntries.length > 0) {
+      // Sort by the order property.
+      populatedEntries.sort((a, b) => a.order - b.order);
+    }
+    return populatedEntries.concat(nullEntires);
+  }
+
+  /**
+   * Listen for when a document section is dropped after being moved in the list.
+   * Update the order of the section if necessary.
+   *
+   * @param {CdkDragDrop} event A drag/drop event to watch for.
+   * @return {void}
+  */
+  dropSection(event: CdkDragDrop<string[]>): void {
+    if (event.previousContainer === event.container) {
+      const movedDocumentSection = this.documentSections[event.previousIndex];
+      this.documentSections.splice(event.previousIndex, 1);
+      this.documentSections.splice(event.currentIndex, 0, movedDocumentSection);
+      this.reorderSections();
+    }
+  }
+
+  /**
+   * Reorder the document sections by taking the current positions of each
+   * section in the list and set the "order" property of each one based on
+   * that position. Then, send this array of sections to the API to save the
+   * new "order" values in the DB.
+   */
+  reorderSections(): void {
+    this.orderChangeLoading = true;
+
+    // Manually set the order value based on how the user sorted the array of sections.
+    this.documentSections = this.documentSections.map((section, i) => {
+      section.order = i + 1;
+      return section;
+    });
+
+    // Send the updated ordering of the sections to the API.
+    this.documentSectionService.reorder(this.documentSections, this.currentProject._id)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+        res => {
+          this.documentSections = res;
+          this.openSnackBar('Sections successfully reordered.', 'Close');
+        },
+        err => {
+          alert('Failed to reorder file sections');
+          console.error('Failed to reorder file sections.', err);
+        },
+        () => {
+          this.orderChangeLoading = false;
+        }
+      )
+  }
+
+  /**
+   * Opens a new snack bar notification message with a duration of 2 seconds, and executes an action.
+   *
+   * @param {string} message A snack bar notification message.
+   * @param {string} action A snack bar notification action.
+   * @returns {void}
+   */
+  openSnackBar(message: string, action: string): void {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   /**
@@ -118,7 +202,7 @@ export class ProjectFilesSectionComponent implements OnInit, OnDestroy {
    *
    * @return {void}
    */
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
