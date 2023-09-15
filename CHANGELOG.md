@@ -1,4 +1,4 @@
-### 1.7 Sept 15, 2023
+### 1.7.0 Sept 15, 2023
 * Updated BC-Sans font to version 2.0. [DESENG-387](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-387)
 
 ### 1.6.1 Aug 25, 2023
