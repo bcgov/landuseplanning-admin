@@ -1,3 +1,6 @@
+### 1.7.1 Sept 22, 2023
+* Updated some packages/dependencies to address dependabot alerts. [DESENG-379](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-379)
+
 ### 1.7.0 Sept 15, 2023
 * Updated BC-Sans font to version 2.0. [DESENG-387](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-387)
 
