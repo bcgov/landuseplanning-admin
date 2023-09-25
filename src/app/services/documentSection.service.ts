@@ -14,16 +14,14 @@ export class DocumentSectionService {
    * @param {string} currentProjectId The project to get sections for.
    * @returns {Observable}
    */
-    public getAll(currentProjectId: string): Observable<Object> {
+    public getAll(currentProjectId: string): Observable<DocumentSection[]> {
       let documentSections = [];
       return this.api.getDocumentSections(currentProjectId)
-        .map((res: any) => {
-          let response = {};
+        .map((res: DocumentSection[]) => {
           if (res) {
             res.forEach(section => documentSections.push(new DocumentSection(section)));
-            response = documentSections;
           }
-          return response;
+          return documentSections;
         })
         .catch(error => this.api.handleError(error));
     }
@@ -47,6 +45,18 @@ export class DocumentSectionService {
      */
     save(documentSection: DocumentSection): Observable<DocumentSection> {
       return this.api.saveDocumentSection(documentSection)
+        .catch(error => this.api.handleError(error));
+    }
+
+    /**
+     * Reorder the array of all document sections by updating the "order" value of each object.
+     *
+     * @param docSections The array of document sections to reorder.
+     * @param projectId The project to reorder file/document sections in.
+     * @returns An observable of an array of document sections.
+     */
+    reorder(documentSections: DocumentSection[], projectId: string): Observable<DocumentSection[]>  {
+      return this.api.reorderDocumentSections(documentSections, projectId)
         .catch(error => this.api.handleError(error));
     }
 

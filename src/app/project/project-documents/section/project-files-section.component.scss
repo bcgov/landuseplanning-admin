@@ -1,0 +1,47 @@
+@import "~assets/styles/base/base.scss";
+
+.section-info-icon {
+  font-size: 16px;
+}
+
+table {
+  width: 100%;
+  border: 1px solid $table-light-blue-header;
+  margin-top: 0.5rem;
+
+  th {
+    background-color: $table-light-blue-header;
+    padding: 0.7rem 0.15rem 0.85rem;
+    padding-left: 2.8rem;
+    border: none;
+    text-shadow: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .drag-item {
+    cursor: move;
+    display: flex;
+    padding: 0.25rem;
+    border-bottom: 1px solid $table-light-blue-header;
+
+    &.disabled {
+      cursor: wait;
+
+      .section-drag-icon, .section-name {
+        color: $lightgray;
+      }
+    }
+
+    .section-drag-icon {
+      align-self: center;
+    }
+
+    .section-name {
+      align-self: center;
+      font-size: 1.1rem;
+      padding-left: 1rem;
+      padding-top: 0.3rem;
+    }
+  }
+}

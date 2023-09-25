@@ -2,7 +2,7 @@ export class DocumentSection {
   _id: string;
   project: string;
   name: string;
-  order: string;
+  order: number;
 
   // Permissions
   read: Array<String> = [];

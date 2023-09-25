@@ -1129,6 +1129,18 @@ export class ApiService {
   }
 
   /**
+   * Reorder the array of all document sections by updating the "order" value of each object.
+   *
+   * @param docSections The array of document sections to reorder.
+   * @param projectId The project to reorder file/document sections in.
+   * @returns An observable of an array of document sections.
+   */
+  reorderDocumentSections(docSections: DocumentSection[], projectId: string): Observable<DocumentSection[]> {
+    const queryString = `documentSection/${projectId}`;
+    return this.http.post<DocumentSection[]>(`${this.pathAPI}/${queryString}`, docSections, {});
+  }
+
+  /**
    * Get a CSV of all comments by comment period.
    *
    * @param {string} period The comment period to get comments for.

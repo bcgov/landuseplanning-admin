@@ -1,10 +1,10 @@
 <header>
-  <h3>{{ modalData.title }}</h3>
+  <h3>Add a new document section</h3>
 </header>
 <main class="add-file-section">
   <label for="section-name">
     Title
-    <input id="section-name" type="text" (input)="updateName($event?.target?.event)">
+    <input id="section-name" type="text" (input)="updateName($event.target.value)">
   </label>
 </main>
 <footer>
