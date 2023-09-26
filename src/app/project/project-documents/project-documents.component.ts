@@ -136,7 +136,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
           this.loading = false;
           this._changeDetectionRef.detectChanges();
         } else {
-          alert('Uh-oh, couldn\'t load valued components');
+          alert('Uh-oh, couldn\'t load files.');
           // project not found --> navigate back to search
           this.router.navigate(['/search']);
         }
@@ -160,6 +160,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         action: () => this.router.navigate(['p', this.currentProject._id, 'project-files' , 'sections'])
       }
     ];
+
   }
 
   /**

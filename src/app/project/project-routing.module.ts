@@ -45,6 +45,7 @@ import { ProjectSurveyDetailResolver } from './project-survey/project-survey-det
 import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
 import { AddEditProjectUpdateComponent } from './project-updates/add-edit-project-update/add-edit-project-update.component';
 import { AddEditProjectUpdateResolver } from './project-updates/add-edit-project-update/add-edit-project-update-resolver';
+import { DocumentEditResolver } from './project-documents/document-edit/document-edit-resolver.services';
 
 const routes: Routes = [
   {
@@ -99,6 +100,9 @@ const routes: Routes = [
       {
         path: 'project-files/edit',
         component: DocumentEditComponent,
+        resolve: {
+          sections: DocumentEditResolver
+        }
       },
       {
         path: 'project-files/edit/add-label',

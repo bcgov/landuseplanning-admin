@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { Utils } from 'app/shared/utils/utils';
 import { isEmpty } from 'lodash';
+import { DocumentSection } from 'app/models/documentSection';
 
 @Component({
   selector: 'app-detail',
@@ -24,6 +25,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   public humanReadableSize: string;
   public pathAPI: string;
   public documentUrl: string;
+  public sections: DocumentSection[];
+  public selectedSection: DocumentSection = null;
 
   constructor(
     public utils: Utils,
@@ -55,7 +58,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.route.data
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
-        this.document = res.document;
+        this.document = res.document.document;
+        this.sections = res.document.sections;
+        this.selectedSection = this.sections.find((section) => section._id === this.document.section)
+
         const safeName = this.document.documentFileName.replace(/ /g, '_');
         this.documentUrl = `${this.pathAPI}/document/${this.document._id}/fetch/${safeName}`;
         if (this.document.read.includes('public')) {

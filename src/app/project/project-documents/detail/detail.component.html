@@ -40,6 +40,10 @@
       <p id="projectPhase">{{document.projectPhase}}</p>
     </div>
     <div class="label-pair">
+      <h3 for="projectPhase">Section: </h3>
+      <p id="projectPhase">{{selectedSection?.name || '-'}}</p>
+    </div>
+    <div class="label-pair">
       <h3 for="datePosted">Document Date: </h3>
       <p id="datePosted" *ngIf="document.datePosted !== '1900-01-01T08:00:00.000Z'">{{document.datePosted | date}}</p>
     </div>

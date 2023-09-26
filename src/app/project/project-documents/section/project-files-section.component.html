@@ -9,12 +9,12 @@
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>
-  <div cdkDropListGroup *ngIf="!loading && documentSections; else elseBlock" class="">
+  <div cdkDropListGroup *ngIf="!loading && documentSections.length > 0; else elseBlock" class="">
     <div class="col-md-12" >
-      <h4>Document Sections</h4>
+      <h4>File Sections</h4>
       <span>
         <i class="material-icons section-info-icon">info</i>
-        Click and drag document sections in the list to reorder them.
+        Click and drag file sections in the list to reorder them.
         The order here will match what appears on the frontend.
       </span>
       <table>
@@ -40,5 +40,5 @@
       </table>
     </div>
   </div>
-  <ng-template #elseBlock>No document sections found.</ng-template>
+  <ng-template #elseBlock>No file sections found.</ng-template>
 </div>

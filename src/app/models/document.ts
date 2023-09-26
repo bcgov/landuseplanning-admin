@@ -13,6 +13,7 @@ export class Document {
   internalExt: string;
   documentSource: string;
   displayName: string;
+  section: string;
   dateUploaded: string;
   description: string;
   documentAuthor: string;
@@ -43,6 +44,7 @@ export class Document {
     this.documentSource = obj && obj.documentSource || null;
 
     this.displayName = obj && obj.displayName || null;
+    this.section = obj && obj.section || null;
     this.dateUploaded = obj && obj.dateUploaded || null;
     this.dateUpdated = obj && obj.dateUpdated || null;
     this.datePosted = obj && obj.datePosted || null;
