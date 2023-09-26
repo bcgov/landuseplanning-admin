@@ -60,11 +60,12 @@ export class ProjectFilesSectionComponent implements OnInit, OnDestroy {
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {
-      if (res && res?.sections?.length > 0) {
+      if (res && res?.sections) {
         this.loading = false;
         this.documentSections = this.sortSectionsByOrder(res.sections);
       } else {
         alert('Uh-oh, couldn\'t load project file sections.');
+        console.error('Could not load file sections.', res)
         // Sections not found --> navigate back to search
         this.router.navigate(['/search']);
       }
@@ -119,6 +120,9 @@ export class ProjectFilesSectionComponent implements OnInit, OnDestroy {
    * property declared, and those that don't. Of those that do, sort those by
    * numerical order value. Finally, concatenate those with "null" as their order
    * to the bottom of the list of document sections.
+   *
+   * It's important that this sorting method matches what is used on the frontend
+   * app for file sections.
    *
    * @param documentSections An array of document sections to sort.
    * @returns The sorted array of sections.

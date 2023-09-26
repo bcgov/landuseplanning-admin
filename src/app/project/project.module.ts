@@ -35,7 +35,6 @@ import { UploadComponent } from './project-documents/upload/upload.component';
 import { ProjectUpdatesComponent } from 'app/project/project-updates/project-updates.component';
 import { ProjectUpdatesTableRowsComponent } from 'app/project/project-updates/project-updates-table-rows/project-updates-table-rows.component';
 import { AddEditProjectUpdateComponent } from 'app/project/project-updates/add-edit-project-update/add-edit-project-update.component';
-import { AddEditProjectUpdateResolver } from 'app/project/project-updates/add-edit-project-update/add-edit-project-update-resolver'
 import { ProjectFilesSectionComponent } from 'app/project/project-documents/section/project-files-section.component';
 
 // services
@@ -43,6 +42,8 @@ import { ApiService } from 'app/services/api';
 import { ExcelService } from 'app/services/excel.service';
 import { ProjectService } from 'app/services/project.service';
 import { StorageService } from 'app/services/storage.service';
+import { AddEditProjectUpdateResolver } from 'app/project/project-updates/add-edit-project-update/add-edit-project-update-resolver'
+import { DocumentEditResolver } from './project-documents/document-edit/document-edit-resolver.services';
 import { DocumentEditComponent } from './project-documents/document-edit/document-edit.component';
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
@@ -141,7 +142,8 @@ import { DocumentSectionService } from 'app/services/documentSection.service';
     EmailSubscribeService,
     DocumentSectionService,
     AddEditProjectUpdateResolver,
-    FileSectionsResolver
+    FileSectionsResolver,
+    DocumentEditResolver
   ]
 })
 

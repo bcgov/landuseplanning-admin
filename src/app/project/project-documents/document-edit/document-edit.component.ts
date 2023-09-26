@@ -2,10 +2,11 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DocumentSection } from 'app/models/documentSection';
 
 import { ConfigService } from 'app/services/config.service';
 import { DocumentService } from 'app/services/document.service';
@@ -23,6 +24,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   public documents: any[] = [];
   public currentProject;
   public myForm: FormGroup;
+  public documentSections: DocumentSection[];
   public authors: any[] = [];
   public labels: any[] = [];
   public datePosted: NgbDateStruct = null;
@@ -44,6 +46,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     private _changeDetectionRef: ChangeDetectorRef,
     private snackBar: MatSnackBar,
     private router: Router,
+    private route: ActivatedRoute,
     private storageService: StorageService,
     private utils: Utils
   ) { }
@@ -58,6 +61,16 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
+    this.route.data
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe((res: any) => {
+      if (res && res?.sections) {
+        this.documentSections = res.sections;
+      } else {
+        alert('Uh oh, couldn\'t load document sections.');
+        console.error('Couldn\'t load document sections.', res)
+      }
+    });
 
     this.config.lists.forEach(item => {
       switch (item.type) {
@@ -86,8 +99,9 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
             'documentAuthor': new FormControl(this.documents[0].documentAuthor, Validators.required),
             'datePosted': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.documents[0].datePosted)), Validators.required),
             'displayName': new FormControl(this.documents[0].displayName, Validators.required),
-            'description': new FormControl(this.documents[0].description, Validators.required),
-            'projectPhase': new FormControl(this.documents[0].projectPhase, Validators.required)
+            'description': new FormControl(this.documents[0].description),
+            'projectPhase': new FormControl(this.documents[0].projectPhase, Validators.required),
+            'section': new FormControl(this.documents[0].section)
 
           });
         } else {
@@ -96,17 +110,14 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
             'documentAuthor': new FormControl('', Validators.required),
             'datePosted': new FormControl('', Validators.required),
             'displayName': new FormControl('', Validators.required),
-            'description': new FormControl('', Validators.required),
-            'projectPhase': new FormControl('', Validators.required)
+            'description': new FormControl(''),
+            'projectPhase': new FormControl('', Validators.required),
+            'section': new FormControl('')
           });
         }
       }
 
       this._changeDetectionRef.detectChanges();
-
-      if (this.storageService.state.labels) {
-        // this.labels = this.storageService.state.labels;
-      }
     }
     this.loading = false;
   }
@@ -152,7 +163,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
       if (isDate) {
         return new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(formValue))));
       } else {
-        return formValue;  
+        return formValue;
       }
     } else {
       return docValue;
@@ -189,12 +200,14 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
         formData.append('datePosted', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value)))).toISOString());
         formData.append('documentAuthorType', this.myForm.value.authorsel);
         formData.append('projectPhase', this.myForm.value.projectPhase);
+        formData.append('section', this.myForm.value.section);
       } else {
         doc.documentFileName !== null ? formData.append('documentFileName', doc.documentFileName) : Function.prototype;
         doc.documentAuthor !== null ? formData.append('documentAuthor', doc.documentAuthor) : Function.prototype;
         doc.displayName !== null ? formData.append('displayName', doc.displayName) : Function.prototype;
         doc.description !== null ? formData.append('description', doc.description) : Function.prototype;
         doc.projectPhase !== null ? formData.append('projectPhase', doc.projectPhase) : Function.prototype;
+        formData.append('section', this.myForm.value.section);
 
         // apply changes to datePosted if any
         let datePosted = this.multiEditGetUpdatedValue(this.myForm.value.datePosted, doc.datePosted, true);
