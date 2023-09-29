@@ -925,7 +925,8 @@ export class ApiService {
       'documentFileName',
       'displayName',
       'internalURL',
-      'internalMime'
+      'internalMime',
+      'section',
     ];
     const queryString = `document?isDeleted=false&_project=${projId}&fields=${this.buildValues(fields)}`;
     return this.http.get<Document[]>(`${this.pathAPI}/${queryString}`, {});
@@ -947,6 +948,7 @@ export class ApiService {
       'internalOriginalName',
       'internalSize',
       'displayName',
+      'section',
       'datePosted',
       'dateUploaded',
       'dateReceived',
@@ -981,6 +983,7 @@ export class ApiService {
       'dateUploaded',
       'dateReceived',
       'documentSource',
+      'section',
       'internalURL',
       'internalMime',
       'internalSize',
