@@ -24,7 +24,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   public documents: any[] = [];
   public currentProject;
   public myForm: FormGroup;
-  public documentSections: DocumentSection[];
+  public documentSections: DocumentSection[] = [];
   public authors: any[] = [];
   public labels: any[] = [];
   public datePosted: NgbDateStruct = null;

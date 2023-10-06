@@ -67,6 +67,7 @@ import { ProjectPermissionsComponent } from './project-permissions/project-permi
 import { PermissionsTableRowsComponent } from './project-permissions/permissions-table-rows/permissions-table-rows.component'
 import { FileSectionsResolver } from './project-documents/section/project-files-section-resolver.services';
 import { DocumentSectionService } from 'app/services/documentSection.service';
+import { UploadResolver } from './project-documents/upload/upload-resolver.services';
 
 @NgModule({
   imports: [
@@ -143,7 +144,8 @@ import { DocumentSectionService } from 'app/services/documentSection.service';
     DocumentSectionService,
     AddEditProjectUpdateResolver,
     FileSectionsResolver,
-    DocumentEditResolver
+    DocumentEditResolver,
+    UploadResolver
   ]
 })
 
