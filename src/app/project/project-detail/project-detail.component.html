@@ -8,9 +8,6 @@
   <div ngbDropdown placement="bottom-right" class="d-inline-block">
     <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
     <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
-      <!-- Replace click events -->
-      <button class="dropdown-item" [routerLink]="['/p', 'project._id', 'project-files', 'upload']">Upload
-        File</button>
       <button class="dropdown-item" (click)="editProject()">Edit</button>
       <button class="dropdown-item" (click)="publishProject()">Publish</button>
       <button class="dropdown-item" (click)="unPublishProject()">Un-Publish</button>

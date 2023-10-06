@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, of, forkJoin } from 'rxjs';
 import * as moment from 'moment-timezone';
 
@@ -11,6 +11,7 @@ import { StorageService } from 'app/services/storage.service';
 
 import { Document } from 'app/models/document';
 import { Utils } from 'app/shared/utils/utils';
+import { DocumentSection } from 'app/models/documentSection';
 
 @Component({
   selector: 'app-upload',
@@ -23,6 +24,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   public currentProject;
   public projectFiles: Array<File> = [];
   public documents: Document[] = [];
+  public documentSections: DocumentSection[] = [];
   public datePosted: NgbDateStruct = null;
   public dateUploaded: NgbDateStruct = null;
   public labels: any[] = [];
@@ -43,18 +45,29 @@ export class UploadComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private documentService: DocumentService,
     private utils: Utils,
-    private config: ConfigService
+    private config: ConfigService,
+    private route: ActivatedRoute
   ) { }
 
   /**
    * Get the current project from local storage, then set up the config
    * for adding authors and labels. Finally, set up the form for uploading
    * project documents(files).
-   * 
+   *
    * @return {void}
    */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
+    this.route.data
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe((res: any) => {
+      if (res && res?.sections) {
+        this.documentSections = res.sections;
+      } else {
+        alert('Uh oh, couldn\'t load document sections.');
+        console.error('Couldn\'t load document sections.', res)
+      }
+    });
 
     this.config.lists.forEach(item => {
       switch (item.type) {
@@ -76,7 +89,8 @@ export class UploadComponent implements OnInit, OnDestroy {
         'dateUploaded': new FormControl('', [Validators.required]),
         'displayName': new FormControl('', [Validators.required]),
         'description': new FormControl('', [Validators.required]),
-        'projectPhase': new FormControl('', [Validators.required])
+        'projectPhase': new FormControl('', [Validators.required]),
+        'section': new FormControl(null)
       });
       let today = new Date();
       let todayObj = {
@@ -102,7 +116,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   /**
    * Save the user's changes to the document edit view, then navigate them
    * to the "add labels" view.
-   * 
+   *
    * @return {void}
    */
   addLabels() {
@@ -117,7 +131,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    * Handle a document upload. For each document, prepare the document data
    * then contact the document API to save it. Once saved, navigate the user away
    * from the "upload document" view.
-   * 
+   *
    * @return {void}
    */
   public uploadDocuments() {
@@ -130,19 +144,19 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     this.documents.forEach(doc => {
       const formData = new FormData();
+
       formData.append('upfile', doc.upfile);
       formData.append('project', this.currentProject._id);
-
       formData.append('documentFileName', doc.documentFileName);
-
       formData.append('documentSource', 'PROJECT');
-
       formData.append('displayName', this.documents.length > 1 ? doc.documentFileName : this.myForm.value.displayName);
       formData.append('dateUploaded', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUploaded').value)))).toISOString());
       formData.append('datePosted', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('datePosted').value)))).toISOString());
       formData.append('description', this.myForm.value.description);
       formData.append('documentAuthor', this.myForm.value.documentAuthor);
       formData.append('projectPhase', this.myForm.value.projectPhase);
+      formData.append('section', this.myForm.value.section);
+
       observables.push(this.documentService.add(formData));
     });
 
@@ -158,7 +172,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         },
         error => {
           console.error(error);
-          alert('Uh-oh, couldn\'t delete project');
+          alert('Uh-oh, couldn\'t upload file(s)');
           // TODO: should fully reload project here so we have latest non-deleted objects
         },
         () => { // onCompleted
@@ -173,7 +187,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   /**
    * Make sure the document name doesn't include any invalid characters
    * (that wouldn't work within a URL, for example).
-   * 
+   *
    * @return {void}
    */
   public validateChars() {
@@ -187,7 +201,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   /**
    * Loop through the added files and convert them to Document
    * objects. Then, refresh the view.
-   * 
+   *
    * @return {void}
    */
   public addDocuments(files: FileList) {
@@ -217,7 +231,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   /**
    * Remove the document from the project files and documents in memory.
-   * 
+   *
    * @param {Document} doc The document to delete.
    * @return {void}
    */
