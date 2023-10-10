@@ -30,6 +30,15 @@
       </div>
       <div class="form-row">
         <div class="form-group col-md-4">
+          <label for="section">Section</label>
+          <select name="section" id="section" formControlName="section" class="form-control">
+            <option [ngValue]="null">None</option>
+            <option *ngFor="let section of documentSections" [ngValue]="section._id">{{section.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
           <label for="inputAddress">Document Date*</label>
           <div class="input-group">
             <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="docDate"

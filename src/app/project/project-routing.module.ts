@@ -46,6 +46,7 @@ import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project
 import { AddEditProjectUpdateComponent } from './project-updates/add-edit-project-update/add-edit-project-update.component';
 import { AddEditProjectUpdateResolver } from './project-updates/add-edit-project-update/add-edit-project-update-resolver';
 import { DocumentEditResolver } from './project-documents/document-edit/document-edit-resolver.services';
+import { UploadResolver } from './project-documents/upload/upload-resolver.services';
 
 const routes: Routes = [
   {
@@ -96,6 +97,9 @@ const routes: Routes = [
       {
         path: 'project-files/upload',
         component: UploadComponent,
+        resolve: {
+          sections: UploadResolver
+        }
       },
       {
         path: 'project-files/edit',
