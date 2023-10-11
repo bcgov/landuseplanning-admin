@@ -1,3 +1,6 @@
+### 1.8.0 Oct 11, 2023
+* Add file sections [DESENG-372](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-372)
+
 ### 1.7.1 Sept 22, 2023
 * Updated some packages/dependencies to address dependabot alerts. [DESENG-379](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-379)
 

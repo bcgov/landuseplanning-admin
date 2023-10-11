@@ -4,6 +4,7 @@ import { SideBarService } from 'app/services/sidebar.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { ConfirmComponent } from 'app/confirm/confirm.component';
 import { FileUploadModalComponent } from 'app/file-upload-modal/file-upload-modal.component';
+import { AddProjectFilesSectionComponent } from './project/project-documents/section/add-section/add-project-files-section.component';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,7 @@ export class AppComponent implements OnInit {
    * - initializing the sidebar service
    * - initializing the file upload modal options
    * - setting up all app modal services
-   * 
+   *
    * @return {void}
    */
   ngOnInit(): void {
@@ -46,5 +47,6 @@ export class AppComponent implements OnInit {
 
     this.ngxSmartModalService.create('confirmation-modal', ConfirmComponent, {customClass: 'nsm-centered'});
     this.ngxSmartModalService.create('file-upload-modal', FileUploadModalComponent, this.fileUploadModalOptions);
+    this.ngxSmartModalService.create('add-files-section-modal', AddProjectFilesSectionComponent, {customClass: 'nsm-centered'});
   }
 }

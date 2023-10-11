@@ -47,6 +47,15 @@
       </div>
       <div class="form-row">
         <div class="form-group col-md-4">
+          <label for="section">Section</label>
+          <select name="section" id="section" formControlName="section" class="form-control">
+            <option [ngValue]="null">None</option>
+            <option *ngFor="let section of documentSections" [ngValue]="section._id">{{section.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
           <label *ngIf="!multiEdit" for="inputAddress">File Date*</label>
           <label *ngIf="multiEdit" for="labelsel">File Date</label>
           <div class="input-group">
@@ -85,7 +94,8 @@
           class="material-icons">arrow_back</i>Back</button>
     </div>
     <div class="input-group-prepend">
-      <button [disabled]="!myForm.valid || docNameInvalid" (click)="save()" class="btn btn-outline-primary mr-1" type="submit"
+      <!-- Conditional form disabling was removed as it is causing the form to be unresponsive unexpectedly. -->
+      <button (click)="save()" class="btn btn-outline-primary mr-1" type="submit"
         id="button-cl"><i class="material-icons">save</i>Save</button>
     </div>
   </div>

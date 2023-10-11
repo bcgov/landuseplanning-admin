@@ -19,14 +19,15 @@ import { CommentStatsComponent } from './components/comment-stats/comment-stats.
 import { ListConverterPipe } from './pipes/list-converter.pipe';
 import { CamelToStringPipe } from './pipes/camel-to-string.pipe';
 import { Utils } from './utils/utils';
-//import { ContactSelectComponent } from './components/contact-select/contact-select.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <== add the imports!
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LinkOrganizationComponent } from './components/link-organization/link-organization.component';
 import { LinkOrganizationTableRowsComponent } from './components/link-organization/link-organization-table-rows/link-organization-table-rows.component';
 import { ContactSelectComponent } from './components/contact-select/contact-select.component';
 import { ContactSelectTableRowsComponent } from './components/contact-select/contact-select-table-rows/contact-select-table-rows.component';
 import { NavigationStackUtils } from './utils/navigation-stack-utils';
+import { NavbarComponent } from 'app/shared/components/navbar/navbar.component';
+
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     TableDirective,
     TableTemplateComponent,
     VarDirective,
-    ScrollListenDirective
+    ScrollListenDirective,
+    NavbarComponent
   ],
   exports: [
     CommentStatsComponent,
@@ -75,7 +77,8 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
     PublishedPipe,
     TableTemplateComponent,
     VarDirective,
-    ScrollListenDirective
+    ScrollListenDirective,
+    NavbarComponent
   ],
   providers: [
     TableTemplateUtils,
@@ -84,4 +87,4 @@ import { NavigationStackUtils } from './utils/navigation-stack-utils';
   ]
 })
 
-export class SharedModule { }
+export class SharedModule {}
