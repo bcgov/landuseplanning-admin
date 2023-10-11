@@ -63,7 +63,7 @@
     "url": "https://git.sheetjs.com/sheetjs/sheetjs#v0.19.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.1102.19",
+    "@angular-devkit/build-angular": "^16.2.6",
     "@angular-devkit/schematics": "11.2.19",
     "@angular/cli": "^11.2.19",
     "@angular/compiler": "^11.2.14",
