@@ -1,3 +1,6 @@
+### 1.8.1 Jan 22, 2024
+* Allow for pagination in project contacts [DESENG-487](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-487)
+
 ### 1.8.0 Oct 11, 2023
 * Add file sections [DESENG-372](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-372)
 
