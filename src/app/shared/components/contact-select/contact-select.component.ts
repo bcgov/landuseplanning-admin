@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { SearchTerms } from 'app/models/search';
 
 import { StorageService } from 'app/services/storage.service';
-
+import { SearchService } from 'app/services/search.service';
 import { ContactSelectTableRowsComponent } from './contact-select-table-rows/contact-select-table-rows.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
@@ -26,7 +26,6 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
   public loading = true;
 
   public isEditing = false;
-
   public tableData: TableObject;
   public tableColumns: any[] = [
     {
@@ -58,7 +57,8 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
     private router: Router,
     public storageService: StorageService,
     public navigationStackUtils: NavigationStackUtils,
-    public tableTemplateUtils: TableTemplateUtils
+    public tableTemplateUtils: TableTemplateUtils,
+    private searchService: SearchService,
   ) { }
 
   ngOnInit() {
@@ -135,7 +135,7 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
   /**
    * Set the data to use in the table UI component. This displays
    * the loaded contacts to the user.
-   * 
+   *
    * @return {void}
    */
   setRowData() {
@@ -166,7 +166,7 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
    * When the user sorts the table by column, update the table params
    * with the sort type and direction(+,-), then navigate to the contact
    * add or edit page.
-   * 
+   *
    * @param {string} column What value to sort by.
    * @return {void}
    */
@@ -199,6 +199,37 @@ export class ContactSelectComponent implements OnInit, OnDestroy {
       nextBreadcrumbs
     );
   }
+
+  /**
+   * Load a "page" of contacts.
+   *
+   * @param {number} pageNumber The page number of contacts to get.
+   * @return {void}
+   */
+  public getPaginatedContacts(pageNumber: number) {
+    // Go to top of page after clicking to a different page.
+    window.scrollTo(0, 0);
+    this.loading = true;
+
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
+
+    this.searchService.getSearchResults(null,
+      'User',
+      null,
+      pageNumber,
+      this.tableParams.pageSize,
+      this.tableParams.sortBy,
+      {})
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res: any) => {
+        this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
+        this.users = res[0].data.searchResults;
+        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, null || '');
+        this.setRowData();
+        this.loading = false;
+        this._changeDetectionRef.detectChanges();
+      });
+    }
 
   goBack() {
     let url = this.navigationStackUtils.getLastBackUrl();

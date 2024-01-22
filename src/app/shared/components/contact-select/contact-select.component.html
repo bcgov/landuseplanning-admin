@@ -41,7 +41,7 @@
   <p><i>Click on the contact table row that you would like to add the contact to:</i></p>
 
   <app-table-template *ngIf="tableParams.totalListItems != 0" [columns]="tableColumns" [data]="tableData"
-    (onColumnSort)='setColumnSort($event)' (onPageNumUpdate)='onSubmit($event)'>
+    (onColumnSort)='setColumnSort($event)' (onPageNumUpdate)='getPaginatedContacts($event, null, null)'>
   </app-table-template>
 
   <div class="btn-group" role="group" aria-label="Action Buttons" *ngIf="!loading && tableParams.totalListItems != 0">
