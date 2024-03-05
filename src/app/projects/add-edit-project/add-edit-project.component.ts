@@ -153,14 +153,14 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               let returnedDocuments = res.documents[0].data.searchResults;
               this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null );
               this.allBannerImageDocuments = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null );
-    
+
               // The following items are loaded by a file that is only present on cluster builds.
               // Locally, this will be empty and local defaults will be used.
               const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
               this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
-              
+
               this.bannerImageDocument = this.allBannerImageDocuments.find((doc) => doc._id === this.project.backgroundImage);
-    
+
               try {
                 this._changeDetectorRef.detectChanges();
               } catch (e) {
@@ -185,7 +185,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       this.back = this.storageService.state.back;
     });
   }
-  
+
 
   /**
    * After view init, listen for the file upload modal to close and check if it returned
@@ -253,8 +253,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'projectDirector': new FormControl(),
         'projectLead': new FormControl(),
         'projectAdmin': new FormControl(),
-        'activitiesAndUpdatesEnabled': new FormControl()
-
+        'activitiesAndUpdatesEnabled': new FormControl(),
+        'contactFormEnabled': new FormControl(),
+        'contactFormEmails': new FormArray([new FormControl()])
       });
 
       // Form always has at least one agreement field
@@ -290,6 +291,16 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    */
   get logos(): FormArray {
     return this.myForm.get('logos') as FormArray;
+  }
+
+  /**
+   * Getter to be able to access the contactFormEmails FormControl
+   * as a FormArray.
+   *
+   * @returns {void}
+   */
+  get contactFormEmails(): FormArray {
+    return this.myForm.get('contactFormEmails') as FormArray;
   }
 
   /**
@@ -330,6 +341,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'agreementName': new FormControl(),
         'agreementUrl': new FormControl()
       }));
+    }
+    if (formEntry === this.contactFormEmails) {
+      formEntry.push(new FormControl(''))
     }
   }
 
@@ -502,6 +516,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       projectData.centroid = [-123.3656, 48.4284];
     }
 
+    const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
+
     return new FormGroup({
       'name': new FormControl(projectData.name),
       'partner': new FormControl(projectData.partner),
@@ -521,7 +537,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'projectPhase': new FormControl(projectData.projectPhase),
       'projectDirector': new FormControl(projectData.projectDirector),
       'projectLead': new FormControl(projectData.projectLead),
-      'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled)
+      'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled),
+      'contactFormEnabled': new FormControl(projectData.contactFormEnabled),
+      'contactFormEmails': new FormArray(contactformEmailControls)
     });
   }
 
@@ -564,7 +582,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'projectPhase': form.controls.projectPhase.value,
       'projectDirector': this.projectDirectorId,
       'projectLead': this.projectLeadId,
-      'activitiesAndUpdatesEnabled': form.controls.activitiesAndUpdatesEnabled.value
+      'activitiesAndUpdatesEnabled': form.controls.activitiesAndUpdatesEnabled.value,
+      'contactFormEnabled': form.controls.contactFormEnabled.value,
+      'contactFormEmails': this.getContactFormEmailsFormValues()
     });
   }
 
@@ -711,6 +731,15 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         link: logo.controls.link.value
     }));
   }
+
+    /**
+   * Takes the project contactFormEmails FormArray and gets the data from it.
+   *
+   * @returns {Array} Array of emails.
+   */
+    private getContactFormEmailsFormValues(): Project['contactFormEmails'] {
+      return this.contactFormEmails.controls.map((email: FormControl) => email.value);
+    }
 
   /**
    * Publish the selected logos.

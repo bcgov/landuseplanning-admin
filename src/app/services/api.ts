@@ -220,7 +220,9 @@ export class ApiService {
       'read',
       'write',
       'delete',
-      'activitiesAndUpdatesEnabled'
+      'activitiesAndUpdatesEnabled',
+      'contactFormEnabled',
+      'contactFormEmails'
     ];
     let queryString = `project/${id}?populate=true`;
     if (cpStart !== null) { queryString += `&cpStart[since]=${cpStart}`; }

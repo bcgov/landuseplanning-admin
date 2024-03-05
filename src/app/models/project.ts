@@ -54,6 +54,8 @@ export class Project {
 
   // Options
   activitiesAndUpdatesEnabled: Boolean;
+  contactFormEnabled: Boolean;
+  contactFormEmails: string[];
 
   // Permissions.
   read: Array<String> = [];
@@ -117,6 +119,8 @@ export class Project {
     this.projectDirector             = obj && obj.projectDirector             || undefined;
 
     this.activitiesAndUpdatesEnabled = obj && obj.activitiesAndUpdatesEnabled || undefined;
+    this.contactFormEnabled = obj && obj.contactFormEnabled || undefined;
+    this.contactFormEmails = obj && obj.contactFormEmails || undefined;
 
     // copy pins
     if (obj && obj.pins) {

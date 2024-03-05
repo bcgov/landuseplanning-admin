@@ -266,6 +266,23 @@
         <div class="add-row med">
           <mat-checkbox id="activitiesAndUpdatesEnabled" formControlName="activitiesAndUpdatesEnabled">Enable Activities and Updates Section</mat-checkbox>
         </div>
+        <div class="add-row med">
+          <mat-checkbox id="contactFormEnabled" formControlName="contactFormEnabled" >Enable Contact Form</mat-checkbox>
+          <label for="contactFormEnabled"> Use a <span class="contact-us-emphasis">Contact Us</span> form instead of displaying the Engagement Lead contact information</label>
+          <div *ngIf="myForm.value.contactFormEnabled">
+            <div formArrayName="contactFormEmails" *ngFor="let contactFormEmail of contactFormEmails.controls; let i=index">
+              <div class="flex-container">
+                <div class="label-pair">
+                  <label for="contactFormEmail">Form Recipient</label>
+                  <input id="contactFormEmail" [formControlName]="i" type="email" class="form-control" />
+                </div>
+                <button class="btn" (click)="removeItemFromFormArray(contactFormEmails, i)"><i class="material-icons">delete</i></button>
+              </div>
+              <div class="divider"></div>
+            </div>
+            <button class="btn btn-primary" type="button" (click)="populateFormArray(contactFormEmails)">Add additional recipient</button>
+          </div>
+        </div>
       </div>
     </section>
   </form>
