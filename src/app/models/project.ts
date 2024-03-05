@@ -53,12 +53,14 @@ export class Project {
   projectDirector: any;
 
   // Options
-  activitiesAndUpdatesEnabled: Boolean;
+  activitiesAndUpdatesEnabled: boolean;
+  contactFormEnabled: boolean;
+  contactFormEmails: string[];
 
   // Permissions.
-  read: Array<String> = [];
-  write: Array<String> = [];
-  delete: Array<String> = [];
+  read: string[] = [];
+  write: string[] = [];
+  delete: string[] = [];
 
   pins: any[] = [];
   currentPeriods: CommentPeriod[];
@@ -117,6 +119,8 @@ export class Project {
     this.projectDirector             = obj && obj.projectDirector             || undefined;
 
     this.activitiesAndUpdatesEnabled = obj && obj.activitiesAndUpdatesEnabled || undefined;
+    this.contactFormEnabled = obj && obj.contactFormEnabled || undefined;
+    this.contactFormEmails = obj && obj.contactFormEmails || undefined;
 
     // copy pins
     if (obj && obj.pins) {
