@@ -53,14 +53,14 @@ export class Project {
   projectDirector: any;
 
   // Options
-  activitiesAndUpdatesEnabled: Boolean;
-  contactFormEnabled: Boolean;
+  activitiesAndUpdatesEnabled: boolean;
+  contactFormEnabled: boolean;
   contactFormEmails: string[];
 
   // Permissions.
-  read: Array<String> = [];
-  write: Array<String> = [];
-  delete: Array<String> = [];
+  read: string[] = [];
+  write: string[] = [];
+  delete: string[] = [];
 
   pins: any[] = [];
   currentPeriods: CommentPeriod[];

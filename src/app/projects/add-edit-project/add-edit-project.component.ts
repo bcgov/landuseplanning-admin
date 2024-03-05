@@ -150,7 +150,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.route.data.subscribe((res: any) => {
             if (res && res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-              let returnedDocuments = res.documents[0].data.searchResults;
+              const returnedDocuments = res.documents[0].data.searchResults;
               this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null );
               this.allBannerImageDocuments = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null );
 
@@ -267,7 +267,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Getter to be able to access the existingLandUsePlans FormControl
    * as a FormArray.
    *
-   * @returns {void}
+   * @returns {FormArray}
    */
   get existingLandUsePlans(): FormArray {
     return this.myForm.get('existingLandUsePlans') as FormArray;
@@ -277,7 +277,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Getter to be able to access the agreements FormControl
    * as a FormArray.
    *
-   * @returns {void}
+   * @returns {FormArray}
    */
   get agreements(): FormArray {
     return this.myForm.get('agreements') as FormArray;
@@ -287,7 +287,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Getter to be able to access the logos FormControl
    * as a FormArray.
    *
-   * @returns {void}
+   * @returns {FormArray}
    */
   get logos(): FormArray {
     return this.myForm.get('logos') as FormArray;
@@ -297,7 +297,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * Getter to be able to access the contactFormEmails FormControl
    * as a FormArray.
    *
-   * @returns {void}
+   * @returns {FormArray}
    */
   get contactFormEmails(): FormArray {
     return this.myForm.get('contactFormEmails') as FormArray;
