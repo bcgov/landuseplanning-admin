@@ -1,3 +1,6 @@
+### 1.9.0 Mar 11, 2024
+* Add option for contact form on projects [DESENG-373](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-373)
+
 ### 1.8.1 Jan 22, 2024
 * Allow for pagination in project contacts [DESENG-487](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-487)
 

@@ -14,6 +14,36 @@
   box-sizing: border-box;
 }
 
+section.options {
+
+  > .flex-container {
+    flex-direction: column;
+
+    .add-row {
+      flex: 1;
+
+      mat-checkbox > label {
+        font-size: 1.2rem;
+        margin-left: 1.25rem;
+      }
+    }
+  }
+
+  label {
+    font-weight: normal;
+    display: block;
+
+    .contact-us-emphasis {
+      font-weight: bold;
+    }
+  }
+
+  button {
+    align-self: end;
+    margin-bottom: 1.25rem;
+  }
+}
+
 @media screen and (min-width: 800px) {
   .existing-land-use-plan-url {
     width: 60%;
