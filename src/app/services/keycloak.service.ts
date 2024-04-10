@@ -28,6 +28,8 @@ export class KeycloakService {
         this.keycloakUrl = "https://test.loginproxy.gov.bc.ca/auth";
         break;
       case 'https://landuseplanning.gov.bc.ca':
+      case 'https://www.planninginpartnership.ca/':
+      case 'https://planninginpartnership.ca/':
         // Prod.
         this.keycloakEnabled = true;
         this.keycloakUrl = "https://loginproxy.gov.bc.ca/auth";
