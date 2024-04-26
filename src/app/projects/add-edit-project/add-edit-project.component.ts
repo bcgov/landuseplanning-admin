@@ -176,6 +176,16 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         this.buildForm();
         this.shapefileDocuments = [];
         this.allBannerImageDocuments = null;
+
+        /**
+         * When a user selects a project lead(and is taken to a new window),
+         * make sure the project lead is brought over.
+         **/
+        if (this.storageService.state.projectLead) {
+          this.projectLead = this.storageService.state.projectLead.name;
+          this.projectLeadId = this.storageService.state.projectLead._id;
+        }
+
         this.loading = false;
       }
     },
