@@ -36,7 +36,7 @@ export class ContactSelectTableRowsComponent implements OnInit, TableComponent {
     } else if (this.storageService.state.contactType === 'projectDirector') {
       this.storageService.state.projectDirector = item;
     }
-    
+
     let url = this.navigationStackUtils.getLastBackUrl();
     this.navigationStackUtils.popNavigationStack();
     this.router.navigate(url);
