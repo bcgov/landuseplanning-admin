@@ -1,5 +1,6 @@
-### 1.10.0 April 26, 2024
+### 1.10.0 May 6, 2024
 * Fix bug preventing engagement leads from being selected in new projects [DESENG-601](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-601)
+* Fix bug that prevented indigenous characters from being used as project name and other fields [DESENG-588](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-588)
 
 ### 1.9.0 Mar 11, 2024
 * Add option for contact form on projects [DESENG-373](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-373)
