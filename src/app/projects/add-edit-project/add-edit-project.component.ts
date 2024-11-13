@@ -268,8 +268,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'contactFormEmails': new FormArray([new FormControl()])
       });
 
-      // Form always has at least one agreement field
-      this.populateFormArray(this.agreements);
+      // Form can have no agreements or any number of agreements
+      if (this.agreements) {
+        this.populateFormArray(this.agreements);
+      }
     }
   }
 
@@ -467,11 +469,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           'agreementUrl': new FormControl(projectData.agreements[i].agreementUrl)
         })
       }
-    } else {
-      formArray.push(new FormGroup({
-        'agreementName': new FormControl(projectData.agreements),
-        'agreementUrl': new FormControl()
-      }))
     }
     return formArray;
   }

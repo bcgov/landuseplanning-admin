@@ -37,16 +37,18 @@
       <h3 for="details">Project Details: </h3>
       <p id="details" [innerHTML]="project?.details || 'No project details available'"></p>
     </div>
-    <div *ngIf="projectFieldType(project?.agreements) === 'string'" class="label-pair">
-      <h3 for="agreements">Agreements: </h3>
-      <p class="agreements">{{project?.agreements || '-'}}</p>
-    </div>
-    <div *ngIf="projectFieldType(project?.agreements) === 'object'">
-      <h3 for="ceaa">Agreements: </h3>
+  </section>
+  <section>
+    <h2 for="ceaa">Agreements: </h2>
+    <h3 for="ceaa">Existing agreement(s):</h3>
+    <div *ngIf="project?.agreements?.length > 0">
       <div *ngFor="let agreement of project?.agreements; let i=index">
         <p class="agreement-name">- {{agreement?.agreementName || '-'}}</p><span *ngIf="agreement.agreementUrl">: </span>
         <p class="agreement-url"><a href="{{agreement.agreementUrl}}">{{ agreement?.agreementUrl }}</a></p>
       </div>
+    </div>
+    <div *ngIf="project?.agreements?.length === 0">
+      <p class="no-existing-plans">No existing agreement(s).</p>
     </div>
   </section>
   <section>
