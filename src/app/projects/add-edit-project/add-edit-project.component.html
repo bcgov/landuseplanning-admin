@@ -64,13 +64,13 @@
               (filesChange)="updateBannerDocument($event); projectFiles = []"></app-file-upload>
             <br>
             <div class="doc-list mb-3" *ngIf="bannerImageDocument">
-				<span class="cell name" [title]="bannerImageDocument.displayName || ''">
-					<span class="cell__txt-content">{{bannerImageDocument.documentFileName}}</span>
-				</span>
-				<span class="cell actions">
-					<button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteBannerDocument()">
-					<i class="material-icons">delete</i>
-				  </button>
+              <span class="cell name" [title]="bannerImageDocument.displayName || ''">
+                <span class="cell__txt-content">{{bannerImageDocument.documentFileName}}</span>
+			  </span>
+			  <span class="cell actions">
+                <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteBannerDocument()">
+                  <i class="material-icons">delete</i>
+                </button>
 			  </span>
             </div>
           </div>
@@ -99,25 +99,25 @@
 	  </div>
 	</section>
 	<section>
-		<h2>Agreements</h2>
-        <div *ngIf="formValueType(myForm.value.agreements) === 'object'" class="label-pair med">
-          <div *ngFor="let agreement of agreements.controls; let i=index" class="project-agreements">
-            <div class="flex-container" [formGroup]="agreement">
-				<div class="label-pair existing-land-use-plan">
-					<label for="name">Agreement Name*</label>
-					<input id="agreement-name" formControlName="agreementName"
-					type="text" class="form-control" />
-				</div>
-				<div class="label-pair existing-land-use-plan-url">
-					<label for="agreement">Agreement URL</label>
-					<input class="agreement-url" formControlName="agreementUrl" type="text" class="form-control" />
-				</div>
-            	<button type="button" type="button" class="btn existing-land-use-plan-delete" (click)="removeItemFromFormArray(agreements, i)"><i class="material-icons">delete</i></button>
-            </div>
-            <div class="divider"></div>
-          </div>
-          <button class="btn btn-primary" type="button" (click)="populateFormArray(agreements)">Add agreement</button>
-        </div>
+	  <h2>Agreements</h2>
+	  <div *ngIf="formValueType(myForm.value.agreements) === 'object'" class="label-pair med">
+		<div *ngFor="let agreement of agreements.controls; let i=index" class="project-agreements">
+		<div class="flex-container" [formGroup]="agreement">
+		  <div class="label-pair existing-land-use-plan">
+		  <label for="name">Agreement Name*</label>
+		  <input id="agreement-name" formControlName="agreementName"
+			type="text" class="form-control" />
+		  </div>
+		  <div class="label-pair existing-land-use-plan-url">
+			<label for="agreement">Agreement URL</label>
+			<input class="agreement-url" formControlName="agreementUrl" type="text" class="form-control" />
+		  </div>
+		  <button type="button" type="button" class="btn existing-land-use-plan-delete" (click)="removeItemFromFormArray(agreements, i)"><i class="material-icons">delete</i></button>
+		</div>
+		<div class="divider"></div>
+	  </div>
+	  <button class="btn btn-primary" type="button" (click)="populateFormArray(agreements)">Add agreement</button>
+	</div>
     </section>
     <section>
       <h2>Location</h2>

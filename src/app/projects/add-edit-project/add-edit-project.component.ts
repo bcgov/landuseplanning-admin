@@ -269,9 +269,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       });
 
       // Form can have no agreements or any number of agreements
-	  if (this.agreements) {
-      	this.populateFormArray(this.agreements);
-	  }
+      if (this.agreements) {
+        this.populateFormArray(this.agreements);
+      }
     }
   }
 
