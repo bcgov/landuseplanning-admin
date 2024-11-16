@@ -98,6 +98,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public projectFiles: Array<File> = [];
   public shapefileDocuments: Document[] = [];
   public shapefilesModified = false;
+  public shapeFileTextColour = '#ffffff';
+  public shapeFileColour = '#3388ff';
 
   public bannerImageDocument: Document | null;
   public allBannerImageDocuments: Document[] = [];
@@ -237,6 +239,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
+	  this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     } else {
       this.myForm = new FormGroup({
         'name': new FormControl(),
@@ -249,6 +252,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'lat': new FormControl([]),
         'lon': new FormControl([]),
         'addFile': new FormControl(),
+        'shapeFileColour': new FormControl(),
         'existingLandUsePlans': new FormArray([]),
         'ea': new FormControl(),
         'capital': new FormControl(),
@@ -267,11 +271,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'contactFormEnabled': new FormControl(),
         'contactFormEmails': new FormArray([new FormControl()])
       });
-
-      // Form can have no agreements or any number of agreements
-      if (this.agreements) {
-        this.populateFormArray(this.agreements);
-      }
+	  this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     }
   }
 
@@ -523,6 +523,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       projectData.centroid = [-123.3656, 48.4284];
     }
 
+	// Set the text background colour for the shape file colour picker.
+    if (projectData.shapeFileColour) {
+      this.shapeFileColour = projectData.shapeFileColour;
+      const brightness = this.getColourBrightness(this.shapeFileColour);
+      this.shapeFileTextColour = 'dark' === brightness ? '#ffffff' : '#000000';
+    }
+
     const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
 
     return new FormGroup({
@@ -536,6 +543,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'region': new FormControl(projectData.region),
       'lat': new FormControl(projectData.centroid[1]),
       'lon': new FormControl(projectData.centroid[0]),
+      'shapeFileColour': new FormControl(projectData.shapeFileColour),
       'logos': new FormArray(this.buildLogosFormArray(projectData)),
       'backgroundInfo': new FormControl(projectData.backgroundInfo),
       'engagementLabel': new FormControl(projectData.engagementLabel),
@@ -579,6 +587,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'details': form.controls.details.value,
       'overlappingRegionalDistricts': form.controls.overlappingRegionalDistricts.value,
       'region': form.controls.region.value,
+      'shapeFileColour': form.controls.shapeFileColour.value,
       'centroid': [form.get('lon').value, form.get('lat').value],
       'existingLandUsePlans': this.existingPlanFullFields(),
       'logos': this.getLogosFormValues(),
@@ -779,6 +788,32 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       },
       () => {} // On finished.
     )
+  }
+
+  /**
+   * Updates the shape file colour form value when a new selection is made.
+   * 
+   * @returns {void}
+   */
+  updateShapeFileColour(color: string): void {
+	this.myForm.controls?.shapeFileColour?.setValue(color);
+	this.shapeFileColour = color;
+	const colourBrightness = this.getColourBrightness(color);
+	this.shapeFileTextColour = 'dark' === colourBrightness ? '#ffffff' : '#000000';
+  }
+
+  /**
+   * Calculates if the colour is dark or light. This is useful for displaying text on top of an unknown colour.
+   * 
+   * @returns string
+   */
+  getColourBrightness(color: string): string {
+    const hex = color.replace('#', '');
+    const c_r = parseInt(hex.substring(0, 2), 16);
+    const c_g = parseInt(hex.substring(2, 4), 16);
+    const c_b = parseInt(hex.substring(4, 6), 16);
+    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+    return brightness < 155 ? 'dark' : 'light';
   }
 
   /**

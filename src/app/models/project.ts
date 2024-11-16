@@ -19,6 +19,7 @@ export class Project {
   name: string;
   partner: String;
   region: String;
+  shapeFileColour: string;
   agreements: { agreementName: string, agreementUrl: string }[];
 
   // Everything else.
@@ -87,6 +88,7 @@ export class Project {
     this.name                = obj && obj.name                || undefined;
     this.partner = obj && obj.partner || undefined;
     this.region              = obj && obj.region              || undefined;
+	this.shapeFileColour = obj && obj.shapeFileColour || undefined;
     this.agreements       = obj && obj.agreements                || undefined;
     this.addedBy             = obj && obj.addedBy             || undefined;
 

@@ -190,6 +190,7 @@ export class ApiService {
       'name',
       'partner',
       'region',
+      'shapeFileColour',
       'agreements',
       'addedBy',
       'existingLandUsePlanURLs',

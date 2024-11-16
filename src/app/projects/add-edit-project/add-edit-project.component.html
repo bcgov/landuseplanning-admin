@@ -121,53 +121,64 @@
     </section>
     <section>
       <h2>Location</h2>
-      <div class="flex-container-no-wrap">
-        <div class="flex-container">
-          <div class="label-pair almost-full">
-            <label for="region">Region </label>
-            <select class="form-control" formControlName="region">
-              <option *ngFor="let region of REGIONS" [ngValue]="region">{{region}}</option>
-            </select>
-          </div>
-        <div class="label-pair sm-med">
+      <div class="flex-container-no-wrap form-container-65">
+        <div class="small-margin-right small-margin-bottom half-wide">
+          <label for="region">Region </label>
+          <select class="form-control" formControlName="region">
+            <option *ngFor="let region of REGIONS" [ngValue]="region">{{region}}</option>
+          </select>
+        </div>
+        <div class="small-margin-right small-margin-bottom quarter-wide">
           <label for="lat">Lat* </label>
           <input name="lat" id="lat" formControlName="lat" type="text" class="form-control" />
         </div>
-        <div class="label-pair sm-med">
+        <div class="small-margin-bottom quarter-wide">
           <label for="lon">Long* </label>
           <input name="lon" id="lon" formControlName="lon" type="text" class="form-control" />
         </div>
       </div>
-      <div class="label-pair med">
+      <div class="flex-container form-container-65 small-margin-bottom">
         <label for="overlappingRegionalDistricts">Overlapping Regional Districts </label>
         <select multiple name="overlappingRegionalDistricts" id="overlappingRegionalDistricts"
           formControlName="overlappingRegionalDistricts" class="form-control">
           <option *ngFor="let overlappingRegionalDistricts of OVERLAPPING_REGIONAL_DISTRICTS"
             [ngValue]="overlappingRegionalDistricts">{{overlappingRegionalDistricts}}</option>
-          </select>
+        </select>
       </div>
-    </div>
-      <div class="flex-container">
-        <div class="form-group mb-0">
-          <label for="shapeFile">Upload Shape File </label>
-          <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
-            (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
-          <br>
-          <ul class="doc-list mb-3" *ngIf="shapefileDocuments?.length > 0">
-            <li *ngFor="let doc of shapefileDocuments">
-              <span class="cell icon">
-                <i class="material-icons">insert_drive_file</i>
-              </span>
-              <span class="cell name" [title]="doc.displayName || ''">
-                <span class="cell__txt-content">{{doc.documentFileName}}</span>
-              </span>
-              <span class="cell actions">
-                <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc)">
-                  <i class="material-icons">delete</i>
-                </button>
-              </span>
-            </li>
-          </ul>
+      <div class="flex-container-no-wrap form-container-65">
+	    <div class="small-margin-right half-wide">
+          <div class="form-group mb-0">
+            <label for="shapeFile">Upload Shape File </label>
+            <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
+              (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
+            <br>
+            <ul class="doc-list mb-3" *ngIf="shapefileDocuments?.length > 0">
+              <li *ngFor="let doc of shapefileDocuments">
+                <span class="cell icon">
+                  <i class="material-icons">insert_drive_file</i>
+                </span>
+                <span class="cell name" [title]="doc.displayName || ''">
+                  <span class="cell__txt-content">{{doc.documentFileName}}</span>
+                </span>
+                <span class="cell actions">
+                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+	    <div class="small-margin-bottom half-wide">
+          <label for="shapeFileColour">Shape File Colour</label><br>
+		  <input 
+            class="shape-file-colour-input"
+            formControlName="shapeFileColour"
+            [(colorPicker)]="myForm.controls.shapeFileColour.value"
+            [style.background]="myForm.controls.shapeFileColour.value"
+            [style.color]="shapeFileTextColour"
+            (colorPickerChange)="updateShapeFileColour($event)"
+        />
         </div>
       </div>
     </section>
