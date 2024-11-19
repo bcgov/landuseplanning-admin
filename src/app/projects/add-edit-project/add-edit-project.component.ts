@@ -526,8 +526,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 	// Set the text background colour for the shape file colour picker.
     if (projectData.shapeFileColour) {
       this.shapeFileColour = projectData.shapeFileColour;
-      const brightness = this.getColourBrightness(this.shapeFileColour);
-      this.shapeFileTextColour = 'dark' === brightness ? '#ffffff' : '#000000';
+      this.shapeFileTextColour = this.colourIsBright(this.shapeFileColour) ? '#000000' : '#ffffff';
     }
 
     const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
@@ -795,25 +794,42 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * 
    * @returns {void}
    */
-  updateShapeFileColour(color: string): void {
-	this.myForm.controls?.shapeFileColour?.setValue(color);
-	this.shapeFileColour = color;
-	const colourBrightness = this.getColourBrightness(color);
-	this.shapeFileTextColour = 'dark' === colourBrightness ? '#ffffff' : '#000000';
+  updateShapeFileColour(colour: string): void {
+    this.myForm.controls?.shapeFileColour?.setValue(colour);
+    this.shapeFileColour = colour;
+    this.shapeFileTextColour = this.colourIsBright(colour) ? '#000000' : '#ffffff';
   }
 
   /**
-   * Calculates if the colour is dark or light. This is useful for displaying text on top of an unknown colour.
+   * Calculates if the colour is bright. This is useful for displaying text on top of an unknown colour.
    * 
-   * @returns string
+   * @param {string} colour The colour to assess.
+   * @returns boolean
    */
-  getColourBrightness(color: string): string {
-    const hex = color.replace('#', '');
-    const c_r = parseInt(hex.substring(0, 2), 16);
-    const c_g = parseInt(hex.substring(2, 4), 16);
-    const c_b = parseInt(hex.substring(4, 6), 16);
-    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
-    return brightness < 155 ? 'dark' : 'light';
+  colourIsBright(colour: string): boolean {
+    let rgb: number[] = [0, 0, 0];
+    let opacity: number = 1;
+    if (/^rgba/.test(colour)) {
+      // If colour is in RGBA format, ex: 'rgba(0, 0, 0, 0)'
+      const rgba = colour.match(/\d+(\.\d+)?/g).map(Number);
+      rgb = [rgba[0], rgba[1], rgba[2]];
+      opacity = rgba[3];
+    } else if (/^rgb/.test(colour)) {
+      // If colour is in RGB format, ex: 'rgb(0, 0, 0)'
+      rgb = colour.match(/\d+/g).map(Number);
+    } else if (/^#?[0-9a-fA-F]{3,6}$/.test(colour)) {
+       // If colour is in hex format, ex: '#000000'
+      const hex = colour.replace('#', '');
+      const splitHex = [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)];
+      rgb = splitHex.map(clr => parseInt(clr, 16));
+    } else {
+      return false;
+    }
+    if (rgb.some(num => num > 255)) {
+      return false;
+    }
+    const brightness = ((rgb[0] / opacity * 299) + (rgb[1] / opacity * 587) + (rgb[2] / opacity * 114)) / 1000;
+    return brightness < 155 ? false : true;
   }
 
   /**
