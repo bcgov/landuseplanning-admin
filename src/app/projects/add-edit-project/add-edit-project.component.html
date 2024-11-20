@@ -174,7 +174,8 @@
 		  <input 
             class="shape-file-colour-input"
             formControlName="shapeFileColour"
-            [(colorPicker)]="myForm.controls.shapeFileColour.value"
+            [colorPicker]="myForm.controls.shapeFileColour.value"
+			(colorPicker)="myForm.controls.shapeFileColour.setValue($event)"
             [style.background]="myForm.controls.shapeFileColour.value"
             [style.color]="shapeFileTextColour"
             (colorPickerChange)="updateShapeFileColour($event)"
