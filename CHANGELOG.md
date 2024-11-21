@@ -1,6 +1,7 @@
-### 1.11.0 Nov 13, 2024
+### 1.11.0 Nov 15, 2024
 * Made agreements optional when creating or editing projects, adjusted project overview display. [DESENG-742](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-742)
 * Fixed broken repository link for XLSX (Git has been disabled due to download traffic).
+* Added the option to select a colour for a shapefile. [DESENG-743](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-743)
 
 ## 1.10.0 May 6, 2024
 * Fix bug preventing engagement leads from being selected in new projects [DESENG-601](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-601)

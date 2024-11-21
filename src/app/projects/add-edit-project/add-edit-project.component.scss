@@ -119,3 +119,47 @@ section.options {
     }
   }
 }
+
+section .form-container-65 {
+  width: 65%;
+}
+
+@media (max-width: 1200px) {
+  section .form-container-65 {
+    width: 100%;
+  }
+}
+
+.small-margin-right {
+  margin-right: 1%;
+}
+
+@media (max-width: 799px) {
+	.small-margin-right {
+		margin-right: 0;
+	  }
+  }
+
+.small-margin-bottom {
+  margin-bottom: 1rem;
+}
+
+.half-wide {
+  flex-basis: 50%;
+}
+
+.quarter-wide {
+  flex-basis: 25%;
+}
+
+.shape-file-colour-input {
+  width: 100%; 
+  cursor: pointer; 
+  margin-top: 0.5rem; 
+  border-radius: 0.4rem; 
+  text-align: center; 
+  border-width: 2px; 
+  border-color: #ddd; 
+  border-style: solid; 
+  height: 63px;
+}

@@ -98,6 +98,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public projectFiles: Array<File> = [];
   public shapefileDocuments: Document[] = [];
   public shapefilesModified = false;
+  public shapeFileTextColour = '#ffffff';
+  public shapeFileColour = '#3388ff';
 
   public bannerImageDocument: Document | null;
   public allBannerImageDocuments: Document[] = [];
@@ -237,6 +239,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
+	  this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     } else {
       this.myForm = new FormGroup({
         'name': new FormControl(),
@@ -249,6 +252,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'lat': new FormControl([]),
         'lon': new FormControl([]),
         'addFile': new FormControl(),
+        'shapeFileColour': new FormControl(),
         'existingLandUsePlans': new FormArray([]),
         'ea': new FormControl(),
         'capital': new FormControl(),
@@ -267,11 +271,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'contactFormEnabled': new FormControl(),
         'contactFormEmails': new FormArray([new FormControl()])
       });
-
-      // Form can have no agreements or any number of agreements
-      if (this.agreements) {
-        this.populateFormArray(this.agreements);
-      }
+	  this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     }
   }
 
@@ -523,6 +523,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       projectData.centroid = [-123.3656, 48.4284];
     }
 
+	// Set the text background colour for the shape file colour picker.
+    if (projectData.shapeFileColour) {
+      this.shapeFileColour = projectData.shapeFileColour;
+      this.shapeFileTextColour = this.colourIsBright(this.shapeFileColour) ? '#000000' : '#ffffff';
+    }
+
     const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
 
     return new FormGroup({
@@ -536,6 +542,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'region': new FormControl(projectData.region),
       'lat': new FormControl(projectData.centroid[1]),
       'lon': new FormControl(projectData.centroid[0]),
+      'shapeFileColour': new FormControl(projectData.shapeFileColour),
       'logos': new FormArray(this.buildLogosFormArray(projectData)),
       'backgroundInfo': new FormControl(projectData.backgroundInfo),
       'engagementLabel': new FormControl(projectData.engagementLabel),
@@ -579,6 +586,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'details': form.controls.details.value,
       'overlappingRegionalDistricts': form.controls.overlappingRegionalDistricts.value,
       'region': form.controls.region.value,
+      'shapeFileColour': form.controls.shapeFileColour.value,
       'centroid': [form.get('lon').value, form.get('lat').value],
       'existingLandUsePlans': this.existingPlanFullFields(),
       'logos': this.getLogosFormValues(),
@@ -779,6 +787,49 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       },
       () => {} // On finished.
     )
+  }
+
+  /**
+   * Updates the shape file colour form value when a new selection is made.
+   * 
+   * @returns {void}
+   */
+  updateShapeFileColour(colour: string): void {
+    this.myForm.controls?.shapeFileColour?.setValue(colour);
+    this.shapeFileColour = colour;
+    this.shapeFileTextColour = this.colourIsBright(colour) ? '#000000' : '#ffffff';
+  }
+
+  /**
+   * Calculates if the colour is bright. This is useful for displaying text on top of an unknown colour.
+   * 
+   * @param {string} colour The colour to assess.
+   * @returns boolean
+   */
+  colourIsBright(colour: string): boolean {
+    let rgb: number[] = [0, 0, 0];
+    let opacity: number = 1;
+    if (/^rgba/.test(colour)) {
+      // If colour is in RGBA format, ex: 'rgba(0, 0, 0, 0)'
+      const rgba = colour.match(/\d+(\.\d+)?/g).map(Number);
+      rgb = [rgba[0], rgba[1], rgba[2]];
+      opacity = rgba[3];
+    } else if (/^rgb/.test(colour)) {
+      // If colour is in RGB format, ex: 'rgb(0, 0, 0)'
+      rgb = colour.match(/\d+/g).map(Number);
+    } else if (/^#?[0-9a-fA-F]{3,6}$/.test(colour)) {
+       // If colour is in hex format, ex: '#000000'
+      const hex = colour.replace('#', '');
+      const splitHex = [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)];
+      rgb = splitHex.map(clr => parseInt(clr, 16));
+    } else {
+      return false;
+    }
+    if (rgb.some(num => num > 255)) {
+      return false;
+    }
+    const brightness = ((rgb[0] / opacity * 299) + (rgb[1] / opacity * 587) + (rgb[2] / opacity * 114)) / 1000;
+    return brightness < 155 ? false : true;
   }
 
   /**

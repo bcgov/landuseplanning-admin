@@ -8,6 +8,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 // Providers.
 import { ShapeFileResolver } from './add-edit-project/project-shapefile-resolver.services';
@@ -27,7 +28,8 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
     SharedModule,
     CKEditorModule,
     ReactiveFormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ColorPickerModule
   ],
   declarations: [
     AddEditProjectComponent,
