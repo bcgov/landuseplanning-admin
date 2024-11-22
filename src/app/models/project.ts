@@ -43,6 +43,7 @@ export class Project {
   provElecDist: String;
   shortName: String;
   projectPhase: String;
+  projectTypes: ProjectType[];
   substitution: Boolean;
   updatedBy: String;
   isPublished: boolean;
@@ -111,6 +112,7 @@ export class Project {
     this.provElecDist                = obj && obj.provElecDist                || undefined;
     this.shortName                   = obj && obj.shortName                   || undefined;
     this.projectPhase                = obj && obj.projectPhase                || undefined;
+    this.projectTypes                = obj && obj.projectTypes                || undefined;
     this.substitution                = obj && obj.substitution                || undefined;
     this.updatedBy                   = obj && obj.updatedBy                   || undefined;
     this.read                        = obj && obj.read                        || undefined;
@@ -162,4 +164,9 @@ export interface ProjectLogo {
   name: string;
   alt: string;
   link: string;
+}
+
+export interface ProjectType {
+  name: string;
+  checked: boolean;
 }
