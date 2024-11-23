@@ -84,8 +84,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   public projectTypes: Array<Object> = [
     {name: 'Land Use Planning', checked: false},
-		{name: 'Forest Landscape Planning', checked: false},
-		{name: 'Water Planning and Governance', checked: false}
+    {name: 'Forest Landscape Planning', checked: false},
+    {name: 'Water Planning and Governance', checked: false}
   ];
 
   public projectName: string;
