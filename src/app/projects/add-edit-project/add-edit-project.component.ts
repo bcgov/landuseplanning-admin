@@ -112,8 +112,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public bannerImageModified = false;
   public removeBannerImage: boolean;
 
-	public projectTypeIsChecked = false;
-
   constructor(
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
@@ -247,8 +245,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
-	    this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
-			// this.myForm.value.projectTypes = resolverData.project.projectTypes || this.projectTypes;
+      this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     } else {
       this.myForm = new FormGroup({
         'name': new FormControl(),
@@ -281,8 +278,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'contactFormEnabled': new FormControl(),
         'contactFormEmails': new FormArray([new FormControl()])
       });
-			// set a default colour
-	    this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
+      // set a default colour
+      this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     }
   }
 
@@ -325,16 +322,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   get contactFormEmails(): FormArray {
     return this.myForm.get('contactFormEmails') as FormArray;
   }
-
-	// /**
-  //  * Getter to be able to access the projectTypes FormControl
-  //  * as a FormArray.
-  //  *
-  //  * @returns {FormArray}
-  //  */
-  // get projectTypes(): FormArray {
-  //   return this.myForm.get('projectTypes') as FormArray;
-  // }
 
   /**
    * Set the modal data and launch file upload modal.
@@ -540,17 +527,17 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @returns {FormGroup[]} The array of project type form controls.
    */
   buildProjectTypes(projectData: Project): FormControl[] {
-		let data = []
+    let data = []
     if (projectData.projectTypes) {
       data = projectData.projectTypes.map(pt => {
         return new FormControl(pt);
       })
     } else {
-			data = this.projectTypes.map(pt => {
-				return new FormControl(pt)
-			});
-		}
-		return data;
+      data = this.projectTypes.map(pt => {
+        return new FormControl(pt)
+      });
+    }
+    return data;
   }
 
   /**
@@ -591,7 +578,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementInfo': new FormControl(projectData.engagementInfo),
       'documentInfo': new FormControl(projectData.documentInfo),
       'projectPhase': new FormControl(projectData.projectPhase),
-			'projectTypes': new FormControl(this.buildProjectTypes(projectData)),
+      'projectTypes': new FormControl(this.buildProjectTypes(projectData)),
       'projectDirector': new FormControl(projectData.projectDirector),
       'projectLead': new FormControl(projectData.projectLead),
       'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled),
@@ -791,16 +778,16 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }));
   }
 
-	/**
+  /**
    * Takes the project type form values and retrieves the data.
    *
    * @returns {Array} Array of project type strings.
    */
   private getTypesFormValues(): Project['projectTypes'] {
     return this.myForm.value.projectTypes.map((projectType: FormControl) => ({
-			name: projectType.value.name,
-			checked: projectType.value.checked,
-		}))
+      name: projectType.value.name,
+      checked: projectType.value.checked,
+    }))
   }
 
   /**
@@ -808,9 +795,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    *
    * @returns {Array} Array of emails.
    */
-	private getContactFormEmailsFormValues(): Project['contactFormEmails'] {
-		return this.contactFormEmails.controls.map((email: FormControl) => email.value);
-	}
+  private getContactFormEmailsFormValues(): Project['contactFormEmails'] {
+    return this.contactFormEmails.controls.map((email: FormControl) => email.value);
+  }
 
   /**
    * Publish the selected logos.
@@ -1269,12 +1256,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     };
   }
 
-	public handleProjectTypesChange(eventData, index) {
-		const currentFormProjectTypes = this.myForm.value.projectTypes;
-		if (currentFormProjectTypes[index]) {
-			currentFormProjectTypes[index].setValue({...currentFormProjectTypes[index].value, checked: eventData.checked});
-		}
-	}
+  public handleProjectTypesChange(eventData, index) {
+    const currentFormProjectTypes = this.myForm.value.projectTypes;
+    if (currentFormProjectTypes[index]) {
+      currentFormProjectTypes[index].setValue({...currentFormProjectTypes[index].value, checked: eventData.checked});
+    }
+  }
 
   /**
    * Terminate subscriptions when component is unmounted.
@@ -1285,5 +1272,4 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
-	
 }

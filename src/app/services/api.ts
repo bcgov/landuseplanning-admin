@@ -213,7 +213,7 @@ export class ApiService {
       'provElecDist',
       'shortName',
       'projectPhase',
-			'projectTypes',
+      'projectTypes',
       'substitution',
       'updatedBy',
       'projectLead',
