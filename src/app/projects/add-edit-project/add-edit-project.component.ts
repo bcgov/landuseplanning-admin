@@ -10,7 +10,7 @@ import { StorageService } from 'app/services/storage.service';
 import { ProjectService } from 'app/services/project.service';
 import { DocumentService } from 'app/services/document.service';
 import { CkUploadAdapter } from 'app/shared/utils/ck-upload-adapter';
-import { Project } from 'app/models/project';
+import { Project, ProjectType } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 import { ModalData } from 'app/shared/types/modal';
 import { Document } from 'app/models/document';
@@ -80,6 +80,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     'Plan Development',
     'Plan Evaluation and Approval',
     'Plan Implementation and Monitoring'
+  ];
+
+  public projectTypes: Array<ProjectType> = [
+    {name: 'Land Use Planning', checked: false},
+    {name: 'Forest Landscape Planning', checked: false},
+    {name: 'Water Planning and Governance', checked: false}
   ];
 
   public projectName: string;
@@ -239,7 +245,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
-	  this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
+      this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     } else {
       this.myForm = new FormGroup({
         'name': new FormControl(),
@@ -264,6 +270,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'engagementInfo': new FormControl(),
         'documentInfo': new FormControl(),
         'projectPhase': new FormControl(),
+        'projectTypes': new FormControl(),
         'projectDirector': new FormControl(),
         'projectLead': new FormControl(),
         'projectAdmin': new FormControl(),
@@ -271,7 +278,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'contactFormEnabled': new FormControl(),
         'contactFormEmails': new FormArray([new FormControl()])
       });
-	  this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
+      // set a default colour
+      this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     }
   }
 
@@ -511,6 +519,27 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     return logosFormArray;
   }
 
+	/**
+   * Build an array of form controls to add as a form array to the main project form.
+   * 
+   *
+   * @param {Project} projectData The project data to build the project types form array with.
+   * @returns {FormGroup[]} The array of project type form controls.
+   */
+  buildProjectTypes(projectData: Project): FormControl[] {
+    let data = []
+    if (projectData.projectTypes) {
+      data = projectData.projectTypes.map(pt => {
+        return new FormControl(pt);
+      })
+    } else {
+      data = this.projectTypes.map(pt => {
+        return new FormControl(pt)
+      });
+    }
+    return data;
+  }
+
   /**
    * Take project data and build a form from it. Usually invoked when
    * a user is editing a project rather than creating a new one.
@@ -549,6 +578,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementInfo': new FormControl(projectData.engagementInfo),
       'documentInfo': new FormControl(projectData.documentInfo),
       'projectPhase': new FormControl(projectData.projectPhase),
+      'projectTypes': new FormControl(this.buildProjectTypes(projectData)),
       'projectDirector': new FormControl(projectData.projectDirector),
       'projectLead': new FormControl(projectData.projectLead),
       'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled),
@@ -595,6 +625,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementInfo': form.controls.engagementInfo.value,
       'documentInfo': form.controls.documentInfo.value,
       'projectPhase': form.controls.projectPhase.value,
+      'projectTypes': this.getTypesFormValues(),
       'projectDirector': this.projectDirectorId,
       'projectLead': this.projectLeadId,
       'activitiesAndUpdatesEnabled': form.controls.activitiesAndUpdatesEnabled.value,
@@ -747,14 +778,26 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     }));
   }
 
-    /**
+  /**
+   * Takes the project type form values and retrieves the data.
+   *
+   * @returns {Array} Array of project type strings.
+   */
+  private getTypesFormValues(): ProjectType[] {
+    return this.myForm.value.projectTypes.map((projectType: FormControl) => ({
+      name: projectType.value.name,
+      checked: projectType.value.checked,
+    }))
+  }
+
+  /**
    * Takes the project contactFormEmails FormArray and gets the data from it.
    *
    * @returns {Array} Array of emails.
    */
-    private getContactFormEmailsFormValues(): Project['contactFormEmails'] {
-      return this.contactFormEmails.controls.map((email: FormControl) => email.value);
-    }
+  private getContactFormEmailsFormValues(): Project['contactFormEmails'] {
+    return this.contactFormEmails.controls.map((email: FormControl) => email.value);
+  }
 
   /**
    * Publish the selected logos.
@@ -1211,6 +1254,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     eventData.plugins.get('FileRepository').createUploadAdapter = (loader) => {
       return new CkUploadAdapter(loader, projectId, documentService, pathAPI);
     };
+  }
+
+  public handleProjectTypesChange(eventData, index) {
+    const currentFormProjectTypes = this.myForm.value.projectTypes;
+    if (currentFormProjectTypes[index]) {
+      currentFormProjectTypes[index].setValue({...currentFormProjectTypes[index].value, checked: eventData.checked});
+    }
   }
 
   /**
