@@ -10,7 +10,7 @@ import { StorageService } from 'app/services/storage.service';
 import { ProjectService } from 'app/services/project.service';
 import { DocumentService } from 'app/services/document.service';
 import { CkUploadAdapter } from 'app/shared/utils/ck-upload-adapter';
-import { Project } from 'app/models/project';
+import { Project, ProjectType } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 import { ModalData } from 'app/shared/types/modal';
 import { Document } from 'app/models/document';
@@ -82,7 +82,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     'Plan Implementation and Monitoring'
   ];
 
-  public projectTypes: Array<Object> = [
+  public projectTypes: Array<ProjectType> = [
     {name: 'Land Use Planning', checked: false},
     {name: 'Forest Landscape Planning', checked: false},
     {name: 'Water Planning and Governance', checked: false}
@@ -783,7 +783,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    *
    * @returns {Array} Array of project type strings.
    */
-  private getTypesFormValues(): Project['projectTypes'] {
+  private getTypesFormValues(): ProjectType[] {
     return this.myForm.value.projectTypes.map((projectType: FormControl) => ({
       name: projectType.value.name,
       checked: projectType.value.checked,
