@@ -54,7 +54,7 @@
           <label for="description">Description* </label>
           <textarea name="description" id="description" formControlName="description" class="form-control full-wide"></textarea>
         </div>
-        <div class="flex-container small-margin-bottom">
+        <div class="flex-container small-margin-bottom flex-column">
           <label for="details">Project Details </label>
           <ckeditor name="details" id="details" formControlName="details" [editor]="Editor" [data]="project?.details" (ready)="editorOnReady($event)"></ckeditor>
           <label class="additional-label" for="details">Appears on the Project Details tab under the map.</label>
@@ -177,7 +177,7 @@
             class="shape-file-colour-input"
             formControlName="shapeFileColour"
             [colorPicker]="myForm.controls.shapeFileColour.value"
-			(colorPicker)="myForm.controls.shapeFileColour.setValue($event)"
+            (colorPicker)="myForm.controls.shapeFileColour.setValue($event)"
             [style.background]="myForm.controls.shapeFileColour.value"
             [style.color]="shapeFileTextColour"
             (colorPickerChange)="updateShapeFileColour($event)"
@@ -216,7 +216,7 @@
 				<div class="half-wide flex-container flex-column">
 					<label for="projectTypes">Project Type(s) </label>
 					<div *ngFor="let projectType of myForm.value.projectTypes; let i = index">
-						<mat-checkbox id="{{projectType.value.name}}" [checked]="projectType.value.checked" (change)="handleProjectTypesChange($event, i)"> {{projectType.value.name}}</mat-checkbox>
+						<mat-checkbox id="{{projectType.name}}" [checked]="projectType.checked" (change)="handleProjectTypesChange($event, i)"> {{projectType.name}}</mat-checkbox>
 					</div>
 				</div>
       </div>
@@ -303,6 +303,14 @@
             </div>
             <button class="btn btn-primary" type="button" (click)="populateFormArray(contactFormEmails)">Add additional recipient</button>
           </div>
+        </div>
+      </div>
+      <div class="flex-container form-container-65 medium-margin-bottom" style="margin-top: 1rem">
+        <div class="add-row med full-wide">
+          <label for="collectionNotice"><strong>Project Collection Notice</strong></label>
+          <p>Create a custom project collection notice or leave this field blank to display the default collection notice.</p>
+          <ckeditor name="collectionNotice" id="collectionNotice" formControlName="collectionNotice" [editor]="Editor"
+            [data]="project?.collectionNotice" (ready)="editorOnReady($event)"></ckeditor>
         </div>
       </div>
     </section>

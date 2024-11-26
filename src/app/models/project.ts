@@ -47,6 +47,7 @@ export class Project {
   substitution: Boolean;
   updatedBy: String;
   isPublished: boolean;
+  collectionNotice: String;
 
   eaDecision: any;
 
@@ -125,6 +126,7 @@ export class Project {
     this.activitiesAndUpdatesEnabled = obj && obj.activitiesAndUpdatesEnabled || undefined;
     this.contactFormEnabled = obj && obj.contactFormEnabled || undefined;
     this.contactFormEmails = obj && obj.contactFormEmails || undefined;
+    this.collectionNotice = obj && obj.collectionNotice || undefined;
 
     // copy pins
     if (obj && obj.pins) {
