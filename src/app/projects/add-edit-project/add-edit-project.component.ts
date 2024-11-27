@@ -270,13 +270,14 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'engagementInfo': new FormControl(),
         'documentInfo': new FormControl(),
         'projectPhase': new FormControl(),
-        'projectTypes': new FormControl(),
+        'projectTypes': new FormControl(this.projectTypes),
         'projectDirector': new FormControl(),
         'projectLead': new FormControl(),
         'projectAdmin': new FormControl(),
         'activitiesAndUpdatesEnabled': new FormControl(),
         'contactFormEnabled': new FormControl(),
-        'contactFormEmails': new FormArray([new FormControl()])
+        'contactFormEmails': new FormArray([new FormControl()]),
+        'collectionNotice': new FormControl(),
       });
       // set a default colour
       this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
@@ -519,27 +520,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     return logosFormArray;
   }
 
-	/**
-   * Build an array of form controls to add as a form array to the main project form.
-   * 
-   *
-   * @param {Project} projectData The project data to build the project types form array with.
-   * @returns {FormGroup[]} The array of project type form controls.
-   */
-  buildProjectTypes(projectData: Project): FormControl[] {
-    let data = []
-    if (projectData.projectTypes) {
-      data = projectData.projectTypes.map(pt => {
-        return new FormControl(pt);
-      })
-    } else {
-      data = this.projectTypes.map(pt => {
-        return new FormControl(pt)
-      });
-    }
-    return data;
-  }
-
   /**
    * Take project data and build a form from it. Usually invoked when
    * a user is editing a project rather than creating a new one.
@@ -556,6 +536,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     if (projectData.shapeFileColour) {
       this.shapeFileColour = projectData.shapeFileColour;
       this.shapeFileTextColour = this.colourIsBright(this.shapeFileColour) ? '#000000' : '#ffffff';
+    }
+
+    if (projectData.projectTypes) {
+      this.projectTypes = projectData.projectTypes;
     }
 
     const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
@@ -578,12 +562,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementInfo': new FormControl(projectData.engagementInfo),
       'documentInfo': new FormControl(projectData.documentInfo),
       'projectPhase': new FormControl(projectData.projectPhase),
-      'projectTypes': new FormControl(this.buildProjectTypes(projectData)),
+      'projectTypes': new FormControl(projectData.projectTypes || this.projectTypes),
       'projectDirector': new FormControl(projectData.projectDirector),
       'projectLead': new FormControl(projectData.projectLead),
       'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled),
       'contactFormEnabled': new FormControl(projectData.contactFormEnabled),
-      'contactFormEmails': new FormArray(contactformEmailControls)
+      'contactFormEmails': new FormArray(contactformEmailControls),
+      'collectionNotice': new FormControl(projectData.collectionNotice),
     });
   }
 
@@ -630,7 +615,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'projectLead': this.projectLeadId,
       'activitiesAndUpdatesEnabled': form.controls.activitiesAndUpdatesEnabled.value,
       'contactFormEnabled': form.controls.contactFormEnabled.value,
-      'contactFormEmails': this.getContactFormEmailsFormValues()
+      'contactFormEmails': this.getContactFormEmailsFormValues(),
+      'collectionNotice': form.controls.collectionNotice.value,
     });
   }
 
@@ -784,10 +770,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @returns {Array} Array of project type strings.
    */
   private getTypesFormValues(): ProjectType[] {
-    return this.myForm.value.projectTypes.map((projectType: FormControl) => ({
-      name: projectType.value.name,
-      checked: projectType.value.checked,
-    }))
+    return this.myForm.value.projectTypes.map((projectType: ProjectType) => {
+      return {
+        name: projectType.name,
+        checked: projectType.checked,
+      }
+    })
   }
 
   /**
@@ -1257,10 +1245,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   public handleProjectTypesChange(eventData, index) {
-    const currentFormProjectTypes = this.myForm.value.projectTypes;
-    if (currentFormProjectTypes[index]) {
-      currentFormProjectTypes[index].setValue({...currentFormProjectTypes[index].value, checked: eventData.checked});
-    }
+    this.myForm.value.projectTypes[index].checked = eventData.checked;
   }
 
   /**
