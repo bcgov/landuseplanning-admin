@@ -47,7 +47,7 @@ export class Project {
   substitution: Boolean;
   updatedBy: String;
   isPublished: boolean;
-  collectionNotice: String;
+  collectionNotice: string;
 
   eaDecision: any;
 
