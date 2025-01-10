@@ -11,6 +11,7 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 import { Utils } from 'app/shared/utils/utils';
 import { isEmpty } from 'lodash';
 import { DocumentSection } from 'app/models/documentSection';
+import { ExternalLink } from 'app/models/externalLink';
 
 @Component({
   selector: 'app-detail',
@@ -19,7 +20,7 @@ import { DocumentSection } from 'app/models/documentSection';
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  public document: Document = null;
+  public document = null; // Document or ExternalLink
   public currentProject: Project = null;
   public publishText: string;
   public humanReadableSize: string;
@@ -60,18 +61,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.document = res.document.document;
         this.sections = res.document.sections;
-        this.selectedSection = this.sections.find((section) => section._id === this.document.section)
-
-        const safeName = this.document.documentFileName.replace(/ /g, '_');
-        this.documentUrl = `${this.pathAPI}/document/${this.document._id}/fetch/${safeName}`;
-        if (this.document.read.includes('public')) {
-          this.publishText = 'Unpublish';
-        } else {
-          this.publishText = 'Publish';
-        }
+        this.selectedSection = this.sections.find((section) => section._id === this.document.section);
+        const safeName = this.document?.documentFileName ? this.document.documentFileName.replace(/ /g, '_') : this.document.externalLink;
+        this.documentUrl = this.document?.externalLink ? safeName : `${this.pathAPI}/document/${this.document._id}/fetch/${safeName}`;
+				this.publishText = !this.document.read?.includes('public') ? 'Publish' : 'Unpublish';
+				
         this._changeDetectionRef.detectChanges();
       });
-      this.humanReadableSize = this.utils.formatBytes(this.document.internalSize);
+      this.humanReadableSize = this.utils.formatBytes(this.document?.internalSize) || '';
 
     this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
       .takeUntil(this.ngUnsubscribe)
@@ -107,6 +104,30 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+	/**
+	 * Maps row data to a format that is familiar to the edit form.
+	 * 
+	 * @param {any} file The file to be mapped, Document or ExternalLink
+	 * @returns {object}
+	 * 
+	 */
+	mapRowData(file) {
+		return {
+			displayName: file.displayName,
+			documentFileName: file.documentFileName || file.externalLink || '',
+			internalSize: file.internalSize || null,
+			internalExt: file.internalExt || 'external',
+			datePosted: file.datePosted || file.dateAdded,
+			status: file.read.includes('public') ? 'Published' : 'Not Published',
+			_id: file._id,
+			project: file.project,
+			read: file.read,
+			projectPhase: file.projectPhase,
+			description: file.description,
+			section: file.section,
+		}
+	}
+
   /**
    * When a project edit is initiated, get the associated documents
    * from local storage. Also add the router destination for the project
@@ -115,11 +136,27 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   onEdit() {
-    this.storageService.state.selectedDocs = [this.document];
-    this.storageService.state.labels = this.document.labels;
+    this.storageService.state.selectedDocs = [this.mapRowData(this.document)];
+    this.storageService.state.labels = this.document.labels || [];
     this.storageService.state.back = { url: ['/p', this.document.project, 'project-files', 'detail', this.document._id], label: 'View File' };
-    this.router.navigate(['p', this.document.project, 'project-files', 'edit']);
+		this.router.navigate(['p', this.document.project, 'project-files', (this.document.externalLink ? 'edit-link' : 'edit')]);
   }
+
+	onDownload() {
+		if (this.document.externalLink) {
+			window.open(this.document.externalLink, "_blank");
+		} else {
+			this.api.downloadDocument(this.document);
+		}
+	}
+
+	onOpen() {
+		if (this.document.externalLink) {
+			window.open(this.document.externalLink, "_blank");
+		} else {
+			this.api.openDocument(this.document);
+		}
+	}
 
   /**
    * Checks if a document is published.

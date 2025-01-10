@@ -22,6 +22,7 @@ import { Org } from 'app/models/org';
 import { RecentActivity } from 'app/models/recentActivity';
 import { CommentPeriodSummary } from 'app/models/commentPeriodSummary';
 import { EmailSubscribe } from 'app/models/emailSubscribe';
+import { ExternalLink } from 'app/models/externalLink';
 
 interface LocalLoginResponse {
   _id: string;
@@ -1065,6 +1066,135 @@ export class ApiService {
     ];
     const queryString = `document?fields=${this.buildValues(fields)}`;
     return this.http.post<Document>(`${this.pathAPI}/${queryString}`, formData, {});
+  }
+
+	/**
+   * Get mutliple individual external links by their respective IDs.
+   *
+   * @param {Array} ids The external link IDs to retrieve by.
+   * @returns {Observable}
+   */
+  getExternalLinksByMultiId(ids: Array<String>): Observable<ExternalLink[]> {
+    const fields = [
+      '_id',
+      'documentFileName',
+      'displayName',
+      'section',
+			'externalLink',
+      'dateAdded',
+      'dateUpdated',
+      'checkbox',
+      'project',
+      'projectPhase',
+      'description',
+      'read'
+    ];
+    const queryString = `link?exLinkIds=${this.buildValues(ids)}&fields=${this.buildValues(fields)}`;
+    return this.http.get<ExternalLink[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+	/**
+		 * Get external link by ID. Return a select set of fields.
+		 *
+		 * @param {string} exLinkId The link ID to get by.
+		 * @returns {Observable}
+		 */
+	getLink(exLinkId: string): Observable<ExternalLink> {
+		const fields = [
+			'_addedBy',
+			'displayName',
+			'dateAdded',
+			'dateUpdated',
+			'section',
+			'checkbox',
+			'project',
+			'projectPhase',
+			'externalLink',
+			'description',
+			'read'
+		];
+		const queryString = `link/${exLinkId}?fields=${this.buildValues(fields)}`;
+		return this.http.get<ExternalLink>(`${this.pathAPI}/${queryString}`, {});
+	}
+
+	/**
+   * Get all external links by project.
+   *
+   * @param {string} projectId The project ID to get external links for.
+   * @returns {Observable}
+   */
+  getLinks(projectId: string): Observable<ExternalLink[]> {
+    const fields = [
+      '_addedBy',
+			'displayName',
+			'dateAdded',
+			'dateUpdated',
+			'section',
+			'checkbox',
+			'project',
+			'projectPhase',
+			'externalLink',
+			'description',
+			'read'
+    ];
+    const queryString = `link/${projectId}?fields=${this.buildValues(fields)}`;
+    return this.http.get<ExternalLink[]>(`${this.pathAPI}/${queryString}`, {});
+  }
+
+	/**
+	 * Update a link with edited form data.
+	 *
+	 * @param {FormData} formData The form data to update the link with.
+	 * @param {string} _id The link to udpate.
+	 * @returns {Observable}
+	 */
+	updateLink(formData: FormData, exLinkId: any): Observable<ExternalLink> {
+		const queryString = `link/${exLinkId}`;
+		return this.http.put<ExternalLink>(`${this.pathAPI}/${queryString}`, formData, {});
+	}
+
+	/**
+	 * Delete an external link.
+	 *
+	 * @param {ExternalLink} link The link to delete.
+	 * @returns {Observable}
+	 */
+	deleteLink(link: ExternalLink): Observable<ExternalLink> {
+		const queryString = `link/${link._id}`;
+		return this.http.delete<ExternalLink>(`${this.pathAPI}/${queryString}`, {});
+	}
+
+	/**
+	 * Publish a link by toggling its visibility to "public" app users.
+	 *
+	 * @param {string} exLinkId The link ID to publish.
+	 * @returns {Observable}
+	 */
+	publishLink(exLinkId: String): Observable<ExternalLink> {
+		const queryString = `link/${exLinkId}/publish`;
+		return this.http.put<ExternalLink>(`${this.pathAPI}/${queryString}`, {}, {});
+	}
+
+	/**
+	 * Unpublish a link by toggling its visibility to "public" app users.
+	 *
+	 * @param {string} exLinkId The link ID to unpublish.
+	 * @returns {Observable}
+	 */
+	unPublishLink(exLinkId: String): Observable<ExternalLink> {
+		const queryString = `link/${exLinkId}/unpublish`;
+		return this.http.put<ExternalLink>(`${this.pathAPI}/${queryString}`, {}, {});
+	}
+
+	/**
+   * Add a new link.
+   *
+   * @param {FormData} formData The form data to upload the link with.
+   * @returns {Observable}
+   */
+  addLink(formData: FormData): Observable<ExternalLink> {
+    const queryString = `link/`;
+    return this.http.post<ExternalLink>(`${this.pathAPI}/${queryString}`, formData, {});
   }
 
   /**

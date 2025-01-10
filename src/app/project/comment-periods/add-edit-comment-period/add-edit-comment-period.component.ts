@@ -2,7 +2,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import * as moment from 'moment';
 import * as ClassicEditor from 'assets/ckeditor5/build/ckeditor';
 
@@ -16,6 +16,7 @@ import { DocumentService } from 'app/services/document.service';
 import { StorageService } from 'app/services/storage.service';
 
 import { Utils } from 'app/shared/utils/utils';
+import { LinkService } from 'app/services/link.service';
 
 @Component({
   selector: 'app-add-edit-comment-period',
@@ -50,6 +51,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     private commentPeriodService: CommentPeriodService,
     private config: ConfigService,
     private surveyService: SurveyService,
+		private externalLinkService: LinkService,
     private documentService: DocumentService,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -234,19 +236,21 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
    */
   private initSelectedDocs() {
     if (this.storageService.state.selectedDocumentsForCP == null) {
-      if (this.commentPeriod.relatedDocuments && this.commentPeriod.relatedDocuments.length > 0) {
-        this.documentService.getByMultiId(this.commentPeriod.relatedDocuments)
-          .takeUntil(this.ngUnsubscribe)
-          .subscribe(
-            data => {
-              this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: data };
-            }
-          );
+      if (this.commentPeriod.relatedDocuments.length > 0) {
+        forkJoin([this.documentService.getByMultiId(this.commentPeriod.relatedDocuments), this.externalLinkService.getByMultiId(this.commentPeriod.relatedDocuments)])
+					.takeUntil(this.ngUnsubscribe)
+					.subscribe(
+						data => {
+							console.log('made it here');
+							this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [...data[0] || [], ...data[1] || []] };
+						}
+					);
       } else {
         this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: this.commentPeriod.relatedDocuments };
       }
     }
   }
+		
 
   /**
    * On comment period form submit, prepare the CP data and submit to the

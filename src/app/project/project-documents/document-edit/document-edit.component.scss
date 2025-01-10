@@ -46,3 +46,14 @@ h1 {
   margin-top: 0.5rem;
   color: red;
 }
+
+.form-container-65 {
+  width: 65%;
+}
+
+@media (max-width: 1200px) {
+  .form-container-65 {
+    width: 100%;
+		flex-basis: 100%;
+  }
+}

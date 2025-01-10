@@ -47,6 +47,8 @@ import { AddEditProjectUpdateComponent } from './project-updates/add-edit-projec
 import { AddEditProjectUpdateResolver } from './project-updates/add-edit-project-update/add-edit-project-update-resolver';
 import { DocumentEditResolver } from './project-documents/document-edit/document-edit-resolver.services';
 import { UploadResolver } from './project-documents/upload/upload-resolver.services';
+import { ExternalLinkComponent } from './project-documents/external-link/external-link.component';
+import { ExternalLinkResolver } from './project-documents/external-link/link-resolver.services';
 
 const routes: Routes = [
   {
@@ -101,11 +103,25 @@ const routes: Routes = [
           sections: UploadResolver
         }
       },
+			{
+        path: 'project-files/link',
+        component: ExternalLinkComponent,
+        resolve: {
+          sections: ExternalLinkResolver
+        }
+      },
       {
         path: 'project-files/edit',
         component: DocumentEditComponent,
         resolve: {
           sections: DocumentEditResolver
+        }
+      },
+			{
+        path: 'project-files/edit-link',
+        component: ExternalLinkComponent,
+        resolve: {
+          sections: ExternalLinkResolver
         }
       },
       {
@@ -301,6 +317,7 @@ const routes: Routes = [
     CommentPeriodsResolver,
     DocumentDetailResolver,
     DocumentsResolver,
+		ExternalLinkResolver,
     ProjectUpdatesResolver,
     DocumentDetailResolver,
     ProjectResolver,

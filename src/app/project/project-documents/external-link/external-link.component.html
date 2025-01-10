@@ -9,14 +9,14 @@
     <li class="breadcrumb-item active" aria-current="page">
       <a [routerLink]="['/p', currentProject._id, 'project-files']">Files</a>
     </li>
-    <li class="breadcrumb-item">Upload Files(s)</li>
+    <li *ngIf="0 < documents?.length" class="breadcrumb-item">Edit External Link</li>
+		<li *ngIf="1 > documents?.length" class="breadcrumb-item">Create External Link</li>
   </ol>
 </nav>
 <div class="container-fluid-padding">
   <div class="spinner-container" *ngIf="loading">
     <div class="spinner-new rotating"></div>
   </div>
-
   <div class="form-group mb-0">
     <form [formGroup]="myForm" novalidate>
       <div class="form-row">
@@ -39,27 +39,40 @@
       </div>
       <div class="form-row">
         <div class="form-group form-container-65">
-          <label for="inputAddress">Document Date*</label>
+          <label for="inputAddress">File Date*</label>
           <div class="input-group">
             <input required type="text" class="form-control" placeholder="yyyy-mm-dd" name="docDate"
-              formControlName="datePosted" ngbDatepicker #datePostedPicker="ngbDatepicker" />
+              formControlName="dateAdded" ngbDatepicker #datePostedPicker="ngbDatepicker" />
             <div class="input-group-append">
               <button class="btn btn-outline-secondary calendar" (click)="datePostedPicker.toggle()"
                 type="button"></button>
             </div>
           </div>
-          <div class="invalid-notice" *ngIf="myForm.get('datePosted').invalid && myForm.get('datePosted').touched">File upload date is required</div>
+          <div class="invalid-notice" *ngIf="myForm.get('dateAdded').invalid && myForm.get('dateAdded').touched">File date is required</div>
+        </div>
+      </div>
+			<div class="form-row">
+        <div class="form-group form-container-65">
+          <label for="displayName">File Link*</label>
+          <div *ngIf="externalLinkInvalid" class="alert alert-danger" role="alert">
+            The file link must be a valid URL
+          </div>
+          <div>
+              <input *ngIf="externalLinks?.length > 1" disabled class="form-control" id="externalLink" name="externalLink" type="text" formControlName="externalLink">
+              <input *ngIf="!externalLinks?.length < 2" class="form-control" id="externalLink" name="externalLink" type="text" formControlName="externalLink" (ngModelChange)="validateLink()">
+          </div>
+          <div class="invalid-notice" *ngIf="myForm.get('externalLink').invalid && myForm.get('externalLink').touched">File link is required</div>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group form-container-65">
-          <label for="displayName">Document Name*</label>
+          <label for="displayName">File Name*</label>
           <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
             \ / | : * ? " < > are not accepted file name characters
           </div>
           <div>
-              <input *ngIf="documents && documents.length > 1" disabled class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName">
-              <input *ngIf="!documents || documents.length < 2" class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName" (ngModelChange)="validateChars()">
+              <input *ngIf="externalLinks?.length > 1" disabled class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName">
+              <input *ngIf="!externalLinks?.length < 2" class="form-control" id="displayName" name="displayName" type="text" formControlName="displayName" (ngModelChange)="validateChars()">
           </div>
           <div class="invalid-notice" *ngIf="myForm.get('displayName').invalid && myForm.get('displayName').touched">File name is required</div>
         </div>
@@ -72,31 +85,18 @@
             <div class="invalid-notice" *ngIf="myForm.get('description').invalid && myForm.get('description').touched">File description is required</div>
         </div>
       </div>
+			<div class="btn-group" role="group" aria-label="Action Buttons">
+				<div class="input-group-prepend">
+					<button class="btn btn-outline-primary mr-1" type="button" id="button-cl" (click)="goBack()"><i
+							class="material-icons">arrow_back</i>Back</button>
+				</div>
+				<div class="input-group-prepend">
+					<button *ngIf="1 > documents?.length" [disabled]="!myForm.valid || docNameInvalid || externalLinkInvalid" (click)="linkFile()" class="btn btn-outline-primary mr-1" type="submit"
+						id="button-cl"><i class="material-icons">link</i>Create Link</button>
+					<button *ngIf="0 < documents?.length" [disabled]="!myForm.valid || docNameInvalid || externalLinkInvalid" (click)="linkFile()" class="btn btn-outline-primary mr-1" type="submit"
+						id="button-cl"><i class="material-icons">link</i>Update Link</button>
+				</div>
+			</div>
     </form>
-  </div>
-
-  <div class="form-group mb-0 form-container-65">
-    <app-file-upload [maxFiles]="50" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
-      (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
-    <br>
-    <ul class="doc-list mb-3" *ngIf="documents?.length > 0">
-      <li *ngFor="let doc of documents">
-        <span class="cell icon">
-          <i class="material-icons" alt="">insert_drive_file</i>
-        </span>
-        <span class="cell name" [title]="doc.displayName || ''">
-          <span class="cell__txt-content">{{doc.documentFileName}}</span>
-        </span>
-        <span class="cell actions">
-          <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc)">
-            <i class="material-icons">delete</i>
-          </button>
-        </span>
-      </li>
-    </ul>
-  </div>
-  <div class="input-group-prepend">
-    <button [disabled]="!myForm.valid || documents?.length === 0 || docNameInvalid" (click)="uploadDocuments()" class="btn btn-outline-primary mr-1" type="submit"
-      id="button-cl"><i class="material-icons">arrow_upward</i>Upload</button>
   </div>
 </div>

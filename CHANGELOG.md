@@ -1,3 +1,10 @@
+### 1.12.0 Jan 9, 2025
+* Added the ability to add an external link as if it is an internal file. [DESENG-751](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-751)
+* Functionality works in all file views, including file list, file details, file add/edit, comment period view, comment period edit.
+* All file list functionality should work, including open/download, publish, unpublish, edit, and delete.
+* All upper-right context menu items are working from file list, file details, etc.
+* No multi-edit for external link files yet.
+
 ### 1.11.0 Nov 26, 2024
 * Made agreements optional when creating or editing projects, adjusted project overview display. [DESENG-742](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-742)
 * Fixed broken repository link for XLSX (Git has been disabled due to download traffic).
