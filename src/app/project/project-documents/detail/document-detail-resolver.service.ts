@@ -4,12 +4,14 @@ import { Observable, forkJoin, from } from 'rxjs';
 
 import { DocumentSectionService } from 'app/services/documentSection.service';
 import { DocumentService } from 'app/services/document.service';
+import { LinkService } from 'app/services/link.service';
 
 @Injectable()
 export class DocumentDetailResolver implements Resolve<Observable<object>> {
   constructor(
     private documentService: DocumentService,
-    private documentSectionService: DocumentSectionService
+    private documentSectionService: DocumentSectionService,
+		private externalLinkService: LinkService
   ) { }
 
   /**
@@ -25,9 +27,10 @@ export class DocumentDetailResolver implements Resolve<Observable<object>> {
 
     return forkJoin(
       from(this.documentService.getById(docId)),
-      from(this.documentSectionService.getAll(projectId))
-    ).map(([document, sections]) => {
-      return { document: document, sections: sections };
+			from(this.externalLinkService.getById(docId)),
+      from(this.documentSectionService.getAll(projectId)),
+    ).map(([document, link, sections]) => {
+      return { document: {...document, ...link}, sections: sections };
     })
   }
 }

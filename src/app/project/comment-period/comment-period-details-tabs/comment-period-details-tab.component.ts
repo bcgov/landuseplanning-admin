@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSmartModalService } from 'ngx-smart-modal';
@@ -13,6 +13,7 @@ import { ApiService } from 'app/services/api';
 import { CommentPeriodService } from 'app/services/commentperiod.service';
 import { StorageService } from 'app/services/storage.service';
 import { DocumentService } from 'app/services/document.service';
+import { LinkService } from 'app/services/link.service';
 
 @Component({
   selector: 'app-comment-period-details-tab',
@@ -41,6 +42,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   constructor(
     private api: ApiService,
     private surveyService: SurveyService,
+    private externalLinkService: LinkService,
     private commentPeriodService: CommentPeriodService,
     private documentService: DocumentService,
     private route: ActivatedRoute,
@@ -63,11 +65,11 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     this.projectId = this.storageService.state.currentProject.data._id;
 
     if (this.commentPeriod.relatedDocuments.length > 0) {
-      this.documentService.getByMultiId(this.commentPeriod.relatedDocuments)
+      forkJoin([this.documentService.getByMultiId(this.commentPeriod.relatedDocuments), this.externalLinkService.getByMultiId(this.commentPeriod.relatedDocuments)])
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           data => {
-            this.commentPeriodDocs = data;
+            this.commentPeriodDocs = [...data[0] || [], ...data[1] || []];
           }
         );
     }
@@ -272,7 +274,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
    * @returns {Promise<void>}
    */
   public downloadDocument(document) {
-    return this.api.downloadDocument(document);
+    return document.externalLink ? window.open(document.externalLink) : this.api.downloadDocument(document);
   }
 
   /**

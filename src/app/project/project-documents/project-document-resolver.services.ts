@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 import { SearchService } from 'app/services/search.service';
 import { StorageService } from 'app/services/storage.service';
@@ -13,6 +13,27 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
   ) { }
 
   /**
+   * Retrieves documents or external links
+   * 
+   * @param {ActivatedRouteSnapshot} route The route to get params from.
+   * @param {string} schema The schema type to use, either 'Document' or 'ExternalLink'
+   * @param {string} projectId The project ID of the documents you wish to retrieve
+   * @returns {Observable<Object>}
+   */
+  getFiles = (route: ActivatedRouteSnapshot, schema: string, projectId: string): Observable<Object> => {
+    const tableParams = this.storageService.state.projectDocumentTableParams || null;
+    const keys = tableParams?.keywords || route.params.keywords || '';
+    const dataset = schema;
+    const fields = [{ 'name': 'project', 'value': projectId }];
+    const pageNum = 1;
+    const pageSize = 1000;
+    const sortBy = tableParams?.sortBy || route.params.sortBy || '-datePosted';
+    const queryModifier = {};
+    const populate = true;
+    return this.searchService.getSearchResults(keys, dataset, fields, pageNum, pageSize, sortBy, queryModifier, populate);
+  } 
+
+  /**
    * Get route params and make a request to the API to get a set of
    * documents(files) that match the request params.
    *
@@ -21,30 +42,11 @@ export class DocumentsResolver implements Resolve<Observable<object>> {
    */
   resolve(route: ActivatedRouteSnapshot): Observable<object> {
     const projectId = route.parent.paramMap.get('projId');
-    if (this.storageService.state.projectDocumentTableParams == null) {
-      const pageNum = route.params.pageNum ? route.params.pageNum : 1;
-      const pageSize = route.params.pageSize ? route.params.pageSize : 10;
-      const sortBy = route.params.sortBy ? route.params.sortBy : '-datePosted';
-      const keywords = route.params.keywords || '';
-      return this.searchService.getSearchResults(
-        keywords,
-        'Document',
-        [{ 'name': 'project', 'value': projectId }],
-        pageNum,
-        pageSize,
-        sortBy,
-        {},
-        true);
-    } else {
-      return this.searchService.getSearchResults(
-        this.storageService.state.projectDocumentTableParams.keywords,
-        'Document',
-        [{ 'name': 'project', 'value': projectId }],
-        this.storageService.state.projectDocumentTableParams.pageNum,
-        this.storageService.state.projectDocumentTableParams.pageSize,
-        this.storageService.state.projectDocumentTableParams.sortBy,
-        {},
-        true);
-    }
+    const documents = this.getFiles(route, 'Document', projectId);
+    const externalLinks = this.getFiles(route, 'ExternalLink', projectId);
+    return forkJoin({
+      documents: documents,
+      externalLinks: externalLinks,
+    });
   }
 }

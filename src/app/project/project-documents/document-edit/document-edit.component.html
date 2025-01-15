@@ -17,7 +17,7 @@
     <div class="spinner-new rotating"></div>
   </div>
 
-  <ul class="list-group" *ngFor="let document of documents">
+  <ul class="list-group form-container-65" *ngFor="let document of documents">
     <li class="list-group-item">{{document.displayName || '-'}} ({{document.documentFileName}})</li>
   </ul>
 
@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-4">
+        <div class="form-group form-container-65">
           <label for="projectPhase">Project Phase*</label>
           <select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
             <option *ngFor="let projectPhase of PROJECT_PHASES" [ngValue]="projectPhase">{{projectPhase}}</option>
@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-4">
+        <div class="form-group form-container-65">
           <label for="section">Section</label>
           <select name="section" id="section" formControlName="section" class="form-control">
             <option [ngValue]="null">None</option>
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-4">
+        <div class="form-group form-container-65">
           <label *ngIf="!multiEdit" for="inputAddress">File Date*</label>
           <label *ngIf="multiEdit" for="labelsel">File Date</label>
           <div class="input-group">
@@ -70,7 +70,7 @@
         </div>
       </div>
       <div *ngIf="!multiEdit" class="form-row">
-        <div class="form-group col-md-12">
+        <div class="form-group form-container-65">
           <label for="displayName">File Name*</label>
           <div *ngIf="docNameInvalid" class="alert alert-danger" role="alert">
             \ / | : * ? " < > are not accepted file name characters
@@ -80,7 +80,7 @@
         </div>
       </div>
       <div *ngIf="!multiEdit" class="form-row">
-        <div class="form-group col-md-12">
+        <div class="form-group form-container-65">
           <label for="inputDescription">Description</label>
           <textarea class="form-control" id="inputDescription" name="description" rows="3" formControlName="description"></textarea>
           <div class="invalid-notice" *ngIf="myForm.get('description').invalid && myForm.get('description').touched">File description is required</div>

@@ -19,8 +19,8 @@
         <button class="btn btn-primary" id="actionDropdown" ngbDropdownToggle>Actions</button>
         <div class="dropdown-menu" aria-labelledby="actionDropdown" ngbDropdownMenu>
           <button class="dropdown-item" (click)="onEdit()">Edit</button>
-          <button class="dropdown-item" (click)="api.openDocument(document)">Open</button>
-          <button class="dropdown-item" (click)="api.downloadDocument(document)">Download</button>
+          <button class="dropdown-item" (click)="onOpen()">Open</button>
+          <button class="dropdown-item" (click)="onDownload()">Download</button>
           <button class="dropdown-item" (click)="togglePublish()">{{publishText}}</button>
         </div>
       </div>
@@ -45,7 +45,7 @@
     </div>
     <div class="label-pair">
       <h3 for="datePosted">Document Date: </h3>
-      <p id="datePosted" *ngIf="document.datePosted !== '1900-01-01T08:00:00.000Z'">{{document.datePosted | date}}</p>
+      <p id="datePosted" *ngIf="document.datePosted !== '1900-01-01T08:00:00.000Z'">{{document.datePosted || document.dateAdded || date}}</p>
     </div>
     <div class="label-pair">
       <h3 for="displayName">Display Name: </h3>
@@ -59,16 +59,16 @@
   <section>
     <div class="label-pair">
       <h3 for="documentFileName">Filename: </h3>
-      <p id="documentFileName">{{document.documentFileName || '-'}}</p>
+      <p id="documentFileName">{{document.documentFileName || document.externalLink || '-'}}</p>
     </div>
     <div class="label-pair">
       <h3 for="internalSize">Filesize: </h3>
-      <p id="internalSize">{{ (document && document.internalSize) ? humanReadableSize : '0' }}</p>
+      <p id="internalSize">{{ (document?.internalSize) ? humanReadableSize : 'N/A' }}</p>
     </div>
     <div class="label-pair">
       <h3 for="url">URL: </h3>
-      <a *ngIf="isPublished(document)" id="url" target="blank" href="{{documentUrl || '-'}}">{{documentUrl || '-'}}</a>
-      <span *ngIf="!isPublished(document)">-</span>
+      <a *ngIf="isPublished(document) && !document.externalLink" id="url" target="blank" href="{{documentUrl || '-'}}">{{documentUrl || '-'}}</a>
+      <a *ngIf="document.externalLink" id="url" target="blank" href="{{document.externalLink || '-'}}">{{document.externalLink || '-'}}</a>
     </div>
   </section>
 </main>

@@ -2,14 +2,10 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy, ChangeDetectionStrateg
 import { PlatformLocation } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-
-import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
-
 import { ApiService } from 'app/services/api';
 import { SearchService } from 'app/services/search.service';
 import { StorageService } from 'app/services/storage.service';
-
 import { AddDocumentTableRowsComponent } from './add-document-table-rows/add-document-table-rows.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
@@ -25,7 +21,8 @@ import { encode } from 'punycode';
 export class AddDocumentComponent implements OnInit, OnDestroy {
   public terms = new SearchTerms();
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  public documents: Document[] = null;
+  public documents = null;
+  public documentVault = null;
   public loading = true;
 
   public isEditing = false;
@@ -115,19 +112,18 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
           this.tableParams.keywords = params.keywords;
         });
 
-      this.originalSelectedDocs = Object.assign([], this.storageService.state.selectedDocumentsForCP.data);
+      this.originalSelectedDocs = Object.assign([], this.storageService.state.selectedDocumentsForCP?.data);
 
       this.route.data
         .takeUntil(this.ngUnsubscribe)
         .subscribe((res: any) => {
           if (res) {
-            if (res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-              this.tableParams.totalListItems = res.documents[0].data.meta[0].searchResultsTotal;
-              this.documents = res.documents[0].data.searchResults;
-            } else {
-              this.tableParams.totalListItems = 0;
-              this.documents = [];
-            }
+            const documents = res.documents?.documents?.at(0) || [];
+            const links = res.documents?.externalLinks?.at(0) || [];
+            const combinedResults = [...documents?.data?.searchResults, ...links?.data?.searchResults];
+            this.tableParams.totalListItems = combinedResults?.length || 0;
+            const sortedResults = this.sortDocuments(combinedResults);
+            this.documents = this.documentVault = sortedResults;
             this.setDocumentRowData();
             this.loading = false;
             this._changeDetectionRef.detectChanges();
@@ -137,6 +133,59 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
             this.router.navigate(['/search']);
           }
         });
+    }
+  }
+
+  /**
+   * Sorts documents based on the current sort selection.
+   * 
+   * @param {any} documents The combined documents, including actual documents and external links.
+   * @return {any}
+   * 
+   */
+  public sortDocuments = (documents: any[]) => {
+    const sortData = this.tableParams.sortBy || '-datePosted';
+    const sortDir = '-' === this.tableParams.sortBy.charAt(0) ? -1 : 1;
+    const sortBy = sortData.substring(1);
+    const mappedResults = documents.map(doc => this.mapRowData(doc));
+    if ('displayName' === sortBy || 'internalExt' === sortBy) {
+      // If sorting strings then convert to lower case.
+      mappedResults.sort((a, b) => {
+        if (a[sortBy].toLowerCase() < b[sortBy].toLowerCase()) return -1 * sortDir;
+        if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) return 1 * sortDir;
+        return 0;
+      });
+    } else {
+      mappedResults.sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return -1 * sortDir;
+        if (a[sortBy] > b[sortBy]) return 1 * sortDir;
+        return 0;
+      });
+    }
+    return mappedResults || [];
+  }
+
+  /**
+   * Maps row data to a format that is familiar for the table.
+   * 
+   * @param {any} file The file to be mapped. "Any" because it could be a Document or ExternalLink.
+   * @returns {object}
+   * 
+   */
+  mapRowData(file) {
+    return {
+      displayName: file.displayName,
+      documentFileName: file.documentFileName || file.externalLink || '',
+      internalSize: file.internalSize || null,
+      internalExt: file.internalExt || 'external',
+      datePosted: file.datePosted || file.dateAdded,
+      status: file.read.includes('public') ? 'Published' : 'Not Published',
+      _id: file._id,
+      project: file.project,
+      read: file.read,
+      projectPhase: file.projectPhase,
+      description: file.description,
+      section: file.section,
     }
   }
 
@@ -246,7 +295,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
    */
   setDocumentRowData() {
     let documentList = [];
-    if (this.documents && this.documents.length > 0) {
+    if (this.documents?.length > 0) {
       this.documents.forEach(document => {
         documentList.push(
           {
@@ -267,19 +316,23 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * When the user sorts the table by column, update the table params
-   * with the sort type and direction(+,-), then get a list of documents(files)
-   * sorted accordingly.
+   * Sort existing results by column (name, date, size, type, etc.)
    *
-   * @param {string} column What value to sort by.
-   * @return {void}
+   * @param {string} column The column to sort by.
    */
-  setColumnSort(column) {
+  setColumnSort(column: string): void {
     if (this.tableParams.sortBy.charAt(0) === '+') {
       this.tableParams.sortBy = '-' + column;
     } else {
       this.tableParams.sortBy = '+' + column;
     }
+    window.scrollTo(0, 0);
+    this.loading = true;
+    this.documentVault = this.sortDocuments(this.documentVault);
+    this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
+    this.setDocumentRowData();
+    this.loading = false;
+    this._changeDetectionRef.detectChanges();
     this.getPaginatedDocs(this.tableParams.currentPage);
   }
 
@@ -316,30 +369,19 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
    * @param {number} pageNumber The page number of documents to get.
    * @return {void}
    */
-  getPaginatedDocs(pageNumber) {
-    // Go to top of page after clicking to a different page.
+  public getPaginatedDocs(pageNumber: number): void {
     window.scrollTo(0, 0);
     this.loading = true;
-
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
-
-    this.searchService.getSearchResults(
-      this.tableParams.keywords || '',
-      'Document',
-      [{ 'name': 'project', 'value': this.currentProject._id }],
-      pageNumber,
-      this.tableParams.pageSize,
-      this.tableParams.sortBy,
-      { documentSource: 'PROJECT' })
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((res: any) => {
-        this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
-        this.documents = res[0].data.searchResults;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, null, this.tableParams.keywords || '');
-        this.setDocumentRowData();
-        this.loading = false;
-        this._changeDetectionRef.detectChanges();
-      });
+    const startIndex = (pageNumber - 1) * this.tableParams.pageSize;
+    const endIndex = startIndex + this.tableParams.pageSize;
+    if (endIndex && 0 < this.documentVault.length) {
+      this.documents = this.documentVault.slice(startIndex, endIndex);
+      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
+      this.setDocumentRowData();
+      this.loading = false;
+      this._changeDetectionRef.detectChanges();
+    }
   }
 
   /**

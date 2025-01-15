@@ -66,11 +66,9 @@ import { AddEditContactComponent } from './contacts/add-edit-contact/add-edit-co
 import { OrganizationsComponent } from './organizations/organizations.component';
 import { OrganizationsTableRowsComponent } from './organizations/organizations-table-rows/organizations-table-rows.component';
 import { AddEditOrganizationComponent } from './organizations/add-edit-organization/add-edit-organization.component';
-import { LinkOrganizationComponent } from './shared/components/link-organization/link-organization.component';
-import { LinkOrganizationTableRowsComponent } from './shared/components/link-organization/link-organization-table-rows/link-organization-table-rows.component';
-import { ContactSelectComponent } from './shared/components/contact-select/contact-select.component';
-import { ContactSelectTableRowsComponent } from './shared/components/contact-select/contact-select-table-rows/contact-select-table-rows.component';
 import { FileUploadModalComponent } from './file-upload-modal/file-upload-modal.component';
+import { LinkService } from './services/link.service';
+import { ExternalLinkComponent } from './project/project-documents/external-link/external-link.component';
 
 export function kcFactory(keycloakService: KeycloakService) {
   return () => keycloakService.init();
@@ -106,6 +104,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     UserTableRowsComponent,
     EnvBannerComponent,
     FileUploadModalComponent,
+		ExternalLinkComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -157,6 +156,7 @@ export function kcFactory(keycloakService: KeycloakService) {
     SurveyResponseService,
     SurveyBuilderService,
     UserService,
+		LinkService,
   ],
   bootstrap: [AppComponent]
 })

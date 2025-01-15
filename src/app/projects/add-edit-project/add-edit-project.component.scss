@@ -125,13 +125,13 @@ section .form-container-65 {
 }
 
 .flex-column {
-	flex-direction: column;
+  flex-direction: column;
 }
 
 @media (max-width: 1200px) {
   section .form-container-65 {
     width: 100%;
-		flex-basis: 100%;
+    flex-basis: 100%;
   }
 }
 
@@ -148,17 +148,17 @@ section .form-container-65 {
 }
 
 .no-margin-right {
-	margin-right: 0;
+  margin-right: 0;
 }
 
 @media (max-width: 799px) {
-	.small-margin-right, .medium-margin-right {
-		margin-right: 0;
-	  }
+  .small-margin-right, .medium-margin-right {
+    margin-right: 0;
+    }
   }
 
 .medium-margin-bottom {
-	margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .small-margin-bottom {
@@ -166,11 +166,11 @@ section .form-container-65 {
 }
 
 .no-margin-bottom {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .full-wide {
-	width: 100%;
+  width: 100%;
 }
 
 .half-wide {
@@ -182,18 +182,18 @@ section .form-container-65 {
 }
 
 .mobile-wrap {
-	display: flex;
-	flex-wrap: nowrap;
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 @media (max-width: 799px) {
-	.half-wide, .quarter-wide {
-		flex-basis: 100%;
-	}
-	.mobile-wrap {
-		flex-wrap: wrap;
-		flex-basis: 100%;
-	}
+  .half-wide, .quarter-wide {
+    flex-basis: 100%;
+  }
+  .mobile-wrap {
+    flex-wrap: wrap;
+    flex-basis: 100%;
+  }
 }
 
 .shape-file-colour-input {
@@ -209,23 +209,23 @@ section .form-container-65 {
 }
 
 .save-cancel-buttons {
-	position: fixed; 
-	z-index: 2000; 
-	right: 1rem; 
-	margin-top: -1.75rem; 
-	background-color: 
-	rgba(255, 255, 255, 0.65); 
-	padding: 1rem;
-	border-bottom-left-radius: 4px;
+  position: fixed; 
+  z-index: 2000; 
+  right: 1rem; 
+  margin-top: -1.75rem; 
+  background-color: 
+  rgba(255, 255, 255, 0.65); 
+  padding: 1rem;
+  border-bottom-left-radius: 4px;
 }
 
 .logos-button {
-	width: 100%; 
-	margin-right: 0; 
-	margin-top: 10px; 
-	height: 60px;
+  width: 100%; 
+  margin-right: 0; 
+  margin-top: 10px; 
+  height: 60px;
 }
 
 .z2001 {
-	z-index: 2001;
+  z-index: 2001;
 }

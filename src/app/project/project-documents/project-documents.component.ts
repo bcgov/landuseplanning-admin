@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NavBarButton, PageBreadcrumb } from 'app/shared/components/navbar/types';
-import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
 import { isEmpty } from 'lodash'
 
@@ -26,7 +25,8 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public terms = new SearchTerms();
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  public documents: Document[] = null;
+  public documents = null;
+  public documentVault = null;
   public loading = true;
   public navBarButtons: NavBarButton[];
   public pageBreadcrumbs: PageBreadcrumb[];
@@ -102,7 +102,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         .takeUntil(this.ngUnsubscribe)
         .subscribe(params => {
           this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-          if (this.tableParams.sortBy === '') {
+          if (!this.tableParams.sortBy) {
             this.tableParams.sortBy = '-datePosted';
           }
           if (params.keywords !== undefined) {
@@ -125,13 +125,12 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((res: any) => {
         if (res) {
-          if (res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-            this.tableParams.totalListItems = res.documents[0].data.meta[0].searchResultsTotal;
-            this.documents = res.documents[0].data.searchResults;
-          } else {
-            this.tableParams.totalListItems = 0;
-            this.documents = [];
-          }
+          const documents = res.documents?.documents[0] || [];
+          const links = res.documents?.externalLinks[0] || [];
+          const combinedResults = [...documents?.data?.searchResults, ...links?.data?.searchResults];
+          this.tableParams.totalListItems = combinedResults?.length || 0;
+          const sortedResults = this.sortDocuments(combinedResults);
+          this.documents = this.documentVault = sortedResults;
           this.setRowData();
           this.loading = false;
           this._changeDetectionRef.detectChanges();
@@ -156,11 +155,47 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         action: () => this.router.navigate(['p', this.currentProject._id, 'project-files', 'upload'])
       },
       {
+        label: 'Link External File',
+        action: () => {
+          this.storageService.state.selectedDocs = [];
+          this.router.navigate(['p', this.currentProject._id, 'project-files', 'link']);
+        }
+      },
+      {
         label: 'File Sections',
         action: () => this.router.navigate(['p', this.currentProject._id, 'project-files' , 'sections'])
       }
     ];
 
+  }
+
+  /**
+   * Sorts documents based on the current sort selection.
+   * 
+   * @param {any} documents The combined documents, including actual documents and external links.
+   * @return {any}
+   * 
+   */
+  public sortDocuments = (documents: any[]) => {
+    const sortData = this.tableParams.sortBy || '-datePosted';
+    const sortDir = '-' === Array.from(this.tableParams.sortBy)[0] ? -1 : 1;
+    const sortBy = sortData.substring(1);
+    const mappedResults = documents.map(doc => this.mapRowData(doc));
+    if ('displayName' === sortBy || 'internalExt' === sortBy) {
+      // If sorting strings then convert to lower case.
+      mappedResults.sort((a, b) => {
+        if (a[sortBy].toLowerCase() < b[sortBy].toLowerCase()) return -1 * sortDir;
+        if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) return 1 * sortDir;
+        return 0;
+      });
+    } else {
+      mappedResults.sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return -1 * sortDir;
+        if (a[sortBy] > b[sortBy]) return 1 * sortDir;
+        return 0;
+      });
+    }
+    return mappedResults || [];
   }
 
   /**
@@ -193,8 +228,13 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
             selBox.style.left = '0';
             selBox.style.top = '0';
             selBox.style.opacity = '0';
-            const safeName = item.documentFileName.replace(/ /g, '_');
-            selBox.value = `${this.pathAPI}/document/${item._id}/fetch/${safeName}`;
+            // Create a fetch link if it's an internal file, provide the link if it's an external file.
+            if (!item.documentFileName.includes('http')) {
+              const safeName = item.documentFileName.replace(/ /g, '_');
+              selBox.value = `${this.pathAPI}/document/${item._id}/fetch/${safeName}`;
+            } else {
+              selBox.value = item.documentFileName;
+            }
             document.body.appendChild(selBox);
             selBox.focus();
             selBox.select();
@@ -234,7 +274,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         if (selectedDocs.length === 1) {
           this.storageService.state.labels = selectedDocs[0].labels;
         }
-        this.router.navigate(['p', this.currentProject._id, 'project-files', 'edit']);
+        this.router.navigate(['p', this.currentProject._id, 'project-files', ('external' === selectedDocs[0].internalExt ? 'edit-link' : 'edit')]);
         break;
       case 'delete':
         this.onDeleteDocument();
@@ -242,7 +282,11 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       case 'download':
         this.documentTableData.data.map((item) => {
           if (item.checkbox === true) {
-            promises.push(this.api.downloadDocument(this.documents.filter(d => d._id === item._id)[0]));
+            if ('external' === item.internalExt) {
+              window.open(item.documentFileName);
+            } else {
+              promises.push(this.api.downloadDocument(this.documents.filter(d => d._id === item._id)[0]));
+            }
           }
         });
         Promise.all(promises).then(() => {
@@ -484,27 +528,43 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    */
   setRowData(): void {
     let documentList = [];
-    if (this.documents && this.documents.length > 0) {
+    // Process stored files/documents
+    if (this.documents?.length > 0) {
       this.documents.forEach(document => {
-        documentList.push(
-          {
-            displayName: document.displayName,
-            documentFileName: document.documentFileName,
-            internalSize: document.internalSize,
-            internalExt: document.internalExt,
-            datePosted: document.datePosted,
-            status: document.read.includes('public') ? 'Published' : 'Not Published',
-            _id: document._id,
-            project: document.project,
-            read: document.read
-          }
-        );
+        const mappedDoc = this.mapRowData(document);
+        documentList.push(mappedDoc);
       });
+    }
+    if (documentList.length > 0) {
       this.documentTableData = new TableObject(
         DocumentTableRowsComponent,
         documentList,
         this.tableParams
       );
+    }
+  }
+
+  /**
+   * Maps row data to a format that is familiar for the table.
+   * 
+   * @param {any} file The file to be mapped
+   * @returns {object}
+   * 
+   */
+  mapRowData(file) {
+    return {
+      displayName: file.displayName,
+      documentFileName: file.documentFileName || file.externalLink || '',
+      internalSize: file.internalSize || null,
+      internalExt: file.internalExt || 'external',
+      datePosted: file.datePosted || file.dateAdded,
+      status: file.read.includes('public') ? 'Published' : 'Not Published',
+      _id: file._id,
+      project: file.project,
+      read: file.read,
+      projectPhase: file.projectPhase,
+      description: file.description,
+      section: file.section,
     }
   }
 
@@ -519,6 +579,10 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     } else {
       this.tableParams.sortBy = '+' + column;
     }
+    window.scrollTo(0, 0);
+    this.loading = true;
+    this.documentVault = this.sortDocuments(this.documentVault);
+    this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
     this.getPaginatedDocs(this.tableParams.currentPage);
   }
 
@@ -624,30 +688,18 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public getPaginatedDocs(pageNumber: number): void {
-    // Go to top of page after clicking to a different page.
     window.scrollTo(0, 0);
     this.loading = true;
-
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
-
-    this.searchService.getSearchResults(
-      this.tableParams.keywords || '',
-      'Document',
-      [{ 'name': 'project', 'value': this.currentProject._id }],
-      pageNumber,
-      this.tableParams.pageSize,
-      this.tableParams.sortBy,
-      this.tableParams.filter,
-      true)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((res: any) => {
-        this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
-        this.documents = res[0].data.searchResults;
-        this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
-        this.setRowData();
-        this.loading = false;
-        this._changeDetectionRef.detectChanges();
-      });
+    const startIndex = (pageNumber - 1) * this.tableParams.pageSize;
+    const endIndex = startIndex + this.tableParams.pageSize;
+    if (endIndex && 0 < this.documentVault.length) {
+      this.documents = this.documentVault.slice(startIndex, endIndex);
+      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
+      this.setRowData();
+      this.loading = false;
+      this._changeDetectionRef.detectChanges();
+    }
   }
 
   /**

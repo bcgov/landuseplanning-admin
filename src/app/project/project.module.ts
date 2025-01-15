@@ -68,6 +68,7 @@ import { PermissionsTableRowsComponent } from './project-permissions/permissions
 import { FileSectionsResolver } from './project-documents/section/project-files-section-resolver.services';
 import { DocumentSectionService } from 'app/services/documentSection.service';
 import { UploadResolver } from './project-documents/upload/upload-resolver.services';
+import { LinkService } from 'app/services/link.service';
 
 @NgModule({
   imports: [
@@ -145,7 +146,8 @@ import { UploadResolver } from './project-documents/upload/upload-resolver.servi
     AddEditProjectUpdateResolver,
     FileSectionsResolver,
     DocumentEditResolver,
-    UploadResolver
+    UploadResolver,
+    LinkService,
   ]
 })
 
