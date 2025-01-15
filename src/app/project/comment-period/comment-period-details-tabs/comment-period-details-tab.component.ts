@@ -274,7 +274,6 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
    * @returns {Promise<void>}
    */
   public downloadDocument(document) {
-    console.log('ran download document code');
     return document.externalLink ? window.open(document.externalLink) : this.api.downloadDocument(document);
   }
 
