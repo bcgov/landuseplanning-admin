@@ -10,6 +10,8 @@ import { LinkService } from 'app/services/link.service';
 
 import { Utils } from 'app/shared/utils/utils';
 import { DocumentSection } from 'app/models/documentSection';
+import { Document } from 'app/models/document';
+import { ExternalLink } from 'app/models/externalLink';
 
 @Component({
   selector: 'app-external-link',
@@ -22,7 +24,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
   public currentProject;
   public projectFiles: Array<File> = [];
   public externalLink = [];
-	public documents = null;
+  public documents: any[] = null;
   public documentSections: DocumentSection[] = [];
   public dateAdded = null;
   public dateUpdated = null;
@@ -30,7 +32,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
   public myForm: FormGroup;
   public loading = true;
   public docNameInvalid = false;
-	public externalLinkInvalid = false;
+  public externalLinkInvalid = false;
   public PROJECT_PHASES: Array<Object> = [
     'Pre-Planning',
     'Plan Initiation',
@@ -43,7 +45,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
     private router: Router,
     private _changeDetectionRef: ChangeDetectorRef,
     private storageService: StorageService,
-		private linkService: LinkService,
+    private linkService: LinkService,
     private utils: Utils,
     private config: ConfigService,
     private route: ActivatedRoute
@@ -51,7 +53,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
 
   /**
    * Get the current project from local storage. Set up the form for adding
-	 * external links (files).
+   * external links (files).
    *
    * @return {void}
    */
@@ -76,47 +78,47 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
       }
     });
 
-		const today = new Date();
-		const todayObj = {
-			year: today.getFullYear(),
-			month: today.getMonth() + 1,
-			day: today.getDate()
-		};
+    const today = new Date();
+    const todayObj = {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1,
+      day: today.getDate()
+    };
 
-		if (this.documents?.length > 1) {
-			// If multiple documents were selected, navigate back to the file list. Not supported yet.
-			this.goBack();
-		} else if (this.storageService.state?.form?.values?.length > 0) {
-			// If there is an existing form in the storage service, populate our form with that data.
+    if (this.documents?.length > 1) {
+      // If multiple documents were selected, navigate back to the file list. Not supported yet.
+      this.router.navigate(['p', this.currentProject._id, 'project-files']);
+    } else if (this.storageService.state?.form?.values?.length > 0) {
+      // If there is an existing form in the storage service, populate our form with that data.
       this.myForm = this.storageService.state.form;
     } else if (this.documents?.length === 1) {
-			// If we are being passed a single document then we are editing. Populate with document data.
-			this.dateAdded = this.documents[0].datePosted || this.documents[0].dateAdded;
-			this.externalLink = this.documents[0].documentFileName || this.documents[0].externalLink;
-			this.myForm = new FormGroup({
-				'dateAdded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.dateAdded)), Validators.required),
-				'dateUpdated': new FormControl(),
-				'externalLink': new FormControl(this.externalLink, Validators.required),
-				'displayName': new FormControl(this.documents[0].displayName, Validators.required),
-				'description': new FormControl(this.documents[0].description),
-				'projectPhase': new FormControl(this.documents[0].projectPhase, Validators.required),
-				'section': new FormControl(this.documents[0].section || ''),
-				'read': new FormControl(this.documents[0].read || '')
-				});
-		} else {
-			// Create a new form.
-			this.myForm = new FormGroup({
-				'dateAdded': new FormControl('', [Validators.required]),
-				'dateUpdated': new FormControl(),
-				'externalLink': new FormControl('', [Validators.required]),
-				'displayName': new FormControl('', [Validators.required]),
-				'description': new FormControl(''),
-				'projectPhase': new FormControl('', [Validators.required]),
-				'section': new FormControl(''),
-				});
-			this.myForm.controls.dateAdded.setValue(todayObj);
-		}
-		this.myForm.controls.dateUpdated.setValue(todayObj);
+      // If we are being passed a single document then we are editing. Populate with document data.
+      this.dateAdded = this.documents[0].datePosted || this.documents[0].dateAdded;
+      this.externalLink = this.documents[0].documentFileName || this.documents[0].externalLink;
+      this.myForm = new FormGroup({
+        'dateAdded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.dateAdded)), Validators.required),
+        'dateUpdated': new FormControl(),
+        'externalLink': new FormControl(this.externalLink, Validators.required),
+        'displayName': new FormControl(this.documents[0].displayName, Validators.required),
+        'description': new FormControl(this.documents[0].description),
+        'projectPhase': new FormControl(this.documents[0].projectPhase, Validators.required),
+        'section': new FormControl(this.documents[0].section || ''),
+        'read': new FormControl(this.documents[0].read || '')
+        });
+    } else {
+      // Create a new form.
+      this.myForm = new FormGroup({
+        'dateAdded': new FormControl('', [Validators.required]),
+        'dateUpdated': new FormControl(),
+        'externalLink': new FormControl('', [Validators.required]),
+        'displayName': new FormControl('', [Validators.required]),
+        'description': new FormControl(''),
+        'projectPhase': new FormControl('', [Validators.required]),
+        'section': new FormControl(''),
+        });
+      this.myForm.controls.dateAdded.setValue(todayObj);
+    }
+    this.myForm.controls.dateUpdated.setValue(todayObj);
     this.loading = false;
     this._changeDetectionRef.detectChanges();
   }
@@ -131,57 +133,57 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     // Update the form data.
-		const formData = this.updateFormState();
-		if (this.documents[0]?._id) {
-			this.linkService.update(formData, this.documents[0]._id)
-				.takeUntil(this.ngUnsubscribe)
-				.subscribe(
-					exl => {this.storageService.state.selectedDocs = exl},
-					error => {
-						console.error(error);
-						alert('Uh-oh, couldn\'t update the external link');
-					},
-					() => { // onCompleted
-						this.router.navigate(['p', this.currentProject._id, 'project-files']);
-						this.loading = false;
-					}
-				)
-		} else {
-			this.linkService.add(formData)
-				.takeUntil(this.ngUnsubscribe)
-				.subscribe(
-					exl => {this.storageService.state.selectedDocs = exl},
-					error => {
-						console.error(error);
-						alert('Uh-oh, couldn\'t create the external link');
-					},
-					() => { // onCompleted
-						this.storageService.state = { type: 'documents', data: this.storageService.state.selectedDocs };
-						this.router.navigate(['p', this.currentProject._id, 'project-files']);
-						this.loading = false;
-					}
-				);
-		}
+    const formData = this.updateFormState();
+    if (this.documents[0]?._id) {
+      this.linkService.update(formData, this.documents[0]._id)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          exl => {this.storageService.state.selectedDocs = exl},
+          error => {
+            console.error(error);
+            alert('Uh-oh, couldn\'t update the external link');
+          },
+          () => { // onCompleted
+            this.router.navigate(['p', this.currentProject._id, 'project-files']);
+            this.loading = false;
+          }
+        )
+    } else {
+      this.linkService.add(formData)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          exl => {this.storageService.state.selectedDocs = exl},
+          error => {
+            console.error(error);
+            alert('Uh-oh, couldn\'t create the external link');
+          },
+          () => { // onCompleted
+            this.storageService.state = { type: 'documents', data: this.storageService.state.selectedDocs };
+            this.router.navigate(['p', this.currentProject._id, 'project-files']);
+            this.loading = false;
+          }
+        );
+    }
   }
 
-	/**
-	 * Update storage service from current form values.
-	 * 
-	 */
-	public updateFormState = () => {
-		const formData = new FormData();
-		formData.append('project', this.currentProject._id);
-		formData.append('externalLink', this.myForm.value.externalLink)
-		formData.append('displayName', this.myForm.value.displayName);
-		formData.append('dateAdded', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateAdded').value)))).toISOString());
-		formData.append('dateUpdated', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUpdated').value)))).toISOString());
-		formData.append('description', this.myForm.value.description);
-		formData.append('projectPhase', this.myForm.value.projectPhase);
-		formData.append('section', this.myForm.value.section);
-		formData.append('checkbox', 'false');
+  /**
+   * Update storage service from current form values.
+   * 
+   */
+  public updateFormState = () => {
+    const formData = new FormData();
+    formData.append('project', this.currentProject._id);
+    formData.append('externalLink', this.myForm.value.externalLink)
+    formData.append('displayName', this.myForm.value.displayName);
+    formData.append('dateAdded', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateAdded').value)))).toISOString());
+    formData.append('dateUpdated', new Date(Number(moment(this.utils.convertFormGroupNGBDateToJSDate(this.myForm.get('dateUpdated').value)))).toISOString());
+    formData.append('description', this.myForm.value.description);
+    formData.append('projectPhase', this.myForm.value.projectPhase);
+    formData.append('section', this.myForm.value.section);
+    formData.append('checkbox', 'false');
     this.storageService.state = { type: 'form', data: null };
-		return formData;
-	}
+    return formData;
+  }
 
   /**
    * Make sure the external link name doesn't include any invalid characters.
@@ -189,22 +191,22 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public validateChars() {
-		this.docNameInvalid = this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g) ? true : false;
+    this.docNameInvalid = this.myForm.value.displayName.match(/[\/|\\:*?"<>]/g) ? true : false;
   }
 
-	/**
+  /**
    * Make sure that the external link is a valid URL to a file.
    *
    * @return {void}
    */
   public validateLink() {
-		const link = this.myForm.value.externalLink.toLowerCase();
-		try {
-			const url = new URL(link);
-			this.externalLinkInvalid = false;
-		} catch {
-			this.externalLinkInvalid = true;
-		}
+    const link = this.myForm.value.externalLink;
+    try {
+      const url = new URL(link);
+      this.externalLinkInvalid = false;
+    } catch {
+      this.externalLinkInvalid = true;
+    }
   }
 
   /**
@@ -217,19 +219,19 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-	/**
+  /**
    * If local storage has a previous router location, navigate the user to it,
    * otherwise, navigate the user to the "project files" view.
    *
    * @return {void}
    */
-	goBack() {
-		if (this.storageService.state.back?.url) {
-			this.router.navigate(this.storageService.state.back.url);
-		} else {
-			this.router.navigate(['/p', this.currentProject._id, 'project-files']);
-		}
-	}
+  goBack() {
+    if (this.storageService.state.back?.url) {
+      this.router.navigate(this.storageService.state.back.url);
+    } else {
+      this.router.navigate(['/p', this.currentProject._id, 'project-files']);
+    }
+  }
 }
 
 

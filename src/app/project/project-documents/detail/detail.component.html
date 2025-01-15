@@ -68,7 +68,7 @@
     <div class="label-pair">
       <h3 for="url">URL: </h3>
       <a *ngIf="isPublished(document) && !document.externalLink" id="url" target="blank" href="{{documentUrl || '-'}}">{{documentUrl || '-'}}</a>
-			<a *ngIf="document.externalLink" id="url" target="blank" href="{{document.externalLink || '-'}}">{{document.externalLink || '-'}}</a>
+      <a *ngIf="document.externalLink" id="url" target="blank" href="{{document.externalLink || '-'}}">{{document.externalLink || '-'}}</a>
     </div>
   </section>
 </main>

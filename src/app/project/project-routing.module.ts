@@ -103,7 +103,7 @@ const routes: Routes = [
           sections: UploadResolver
         }
       },
-			{
+      {
         path: 'project-files/link',
         component: ExternalLinkComponent,
         resolve: {
@@ -117,7 +117,7 @@ const routes: Routes = [
           sections: DocumentEditResolver
         }
       },
-			{
+      {
         path: 'project-files/edit-link',
         component: ExternalLinkComponent,
         resolve: {
@@ -317,7 +317,7 @@ const routes: Routes = [
     CommentPeriodsResolver,
     DocumentDetailResolver,
     DocumentsResolver,
-		ExternalLinkResolver,
+    ExternalLinkResolver,
     ProjectUpdatesResolver,
     DocumentDetailResolver,
     ProjectResolver,

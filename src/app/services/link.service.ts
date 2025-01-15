@@ -9,26 +9,26 @@ import { ExternalLink } from 'app/models/externalLink';
 export class LinkService {
   constructor(private api: ApiService) { }
 
-	/**
-	 * Get multiple external links by their ids.
-	 *
-	 * @param {Array} ids The document IDs to get with.
-	 * @returns {Observable}
-	 */
-	getByMultiId(ids: Array<String>): Observable<Array<Document>> {
-		return this.api.getExternalLinksByMultiId(ids)
-			.map(res => {
-				if (res && res.length > 0) {
-					let exLinks = [];
-					res.forEach(exl => {
-						exLinks.push(new ExternalLink(exl));
-					});
-					return exLinks;
-				}
-				return null;
-			})
-			.catch(error => this.api.handleError(error));
-	}
+  /**
+   * Get multiple external links by their ids.
+   *
+   * @param {Array} ids The document IDs to get with.
+   * @returns {Observable}
+   */
+  getByMultiId(ids: Array<String>): Observable<Array<Document>> {
+    return this.api.getExternalLinksByMultiId(ids)
+      .map(res => {
+        if (res && res.length > 0) {
+          let exLinks = [];
+          res.forEach(exl => {
+            exLinks.push(new ExternalLink(exl));
+          });
+          return exLinks;
+        }
+        return null;
+      })
+      .catch(error => this.api.handleError(error));
+  }
 
   /**
    * Get a specific link by its id. Return only the first link if multiple somehow come back.
@@ -49,7 +49,7 @@ export class LinkService {
     );
   }
 
-	/**
+  /**
    * Get all links from a single project.
    *
    * @param {string} currentProjectId The project to get links for.
@@ -58,12 +58,12 @@ export class LinkService {
   public getAll(currentProjectId: string): Observable<ExternalLink[]> {
     return this.api.getLinks(currentProjectId)
       .map((res: any) => {
-				if (!res || res.length === 0) {
-					return [];
-				} else {
-					return res.map(link => new ExternalLink(link));
+        if (!res || res.length === 0) {
+          return [];
+        } else {
+          return res.map(link => new ExternalLink(link));
           }
-			})
+      })
       .catch(error => this.api.handleError(error));
   }
 

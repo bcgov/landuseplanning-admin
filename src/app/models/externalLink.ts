@@ -1,17 +1,14 @@
-import * as _ from 'lodash';
-
 export class ExternalLink {
   _id: string;
   project: string;
   displayName: string;
-	externalLink: string;
+  externalLink: string;
   section: string;
   dateAdded: Date;
   dateUpdated: Date;
   description: string;
   projectPhase: string;
   checkbox: boolean;
-  isPublished: boolean;
 
   constructor(obj?: any) {
     this._id = obj && obj._id || null;
@@ -23,7 +20,6 @@ export class ExternalLink {
     this.dateUpdated = obj && obj.dateUpdated || null;
     this.description = obj && obj.description || null;
     this.projectPhase = obj && obj.projectPhase || null;
-		this.checkbox = false || null;
-		this.isPublished = false || null;
+    this.checkbox = false || null;
   }
 }

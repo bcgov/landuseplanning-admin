@@ -42,7 +42,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
   constructor(
     private api: ApiService,
     private surveyService: SurveyService,
-		private externalLinkService: LinkService,
+    private externalLinkService: LinkService,
     private commentPeriodService: CommentPeriodService,
     private documentService: DocumentService,
     private route: ActivatedRoute,
@@ -65,7 +65,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     this.projectId = this.storageService.state.currentProject.data._id;
 
     if (this.commentPeriod.relatedDocuments.length > 0) {
-			forkJoin([this.documentService.getByMultiId(this.commentPeriod.relatedDocuments), this.externalLinkService.getByMultiId(this.commentPeriod.relatedDocuments)])
+      forkJoin([this.documentService.getByMultiId(this.commentPeriod.relatedDocuments), this.externalLinkService.getByMultiId(this.commentPeriod.relatedDocuments)])
         .takeUntil(this.ngUnsubscribe)
         .subscribe(
           data => {
@@ -274,6 +274,7 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
    * @returns {Promise<void>}
    */
   public downloadDocument(document) {
+    console.log('ran download document code');
     return document.externalLink ? window.open(document.externalLink) : this.api.downloadDocument(document);
   }
 

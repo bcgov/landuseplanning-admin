@@ -1,13 +1,13 @@
 .input-group-prepend {
-	flex-wrap: wrap;
+  flex-wrap: wrap;
 
-	button {
-		margin: 0px 10px 10px 0;
-	}
+  button {
+    margin: 0px 10px 10px 0;
+  }
 }
 
 .main-search-field {
-	margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 textarea,
@@ -44,8 +44,8 @@ input[type="text"] {
   color: #007bff;
   border-color: #007bff;
   i {
-  	margin-right: 4px;
-  	font-size: 20px;
+    margin-right: 4px;
+    font-size: 20px;
   }
   &:disabled {
     border-color: #6c757d;

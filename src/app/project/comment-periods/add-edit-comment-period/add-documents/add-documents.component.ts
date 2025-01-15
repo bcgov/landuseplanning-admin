@@ -2,20 +2,15 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy, ChangeDetectionStrateg
 import { PlatformLocation } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-
-import { Document } from 'app/models/document';
 import { SearchTerms } from 'app/models/search';
-
 import { ApiService } from 'app/services/api';
 import { SearchService } from 'app/services/search.service';
 import { StorageService } from 'app/services/storage.service';
-
 import { AddDocumentTableRowsComponent } from './add-document-table-rows/add-document-table-rows.component';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 import { encode } from 'punycode';
-import { ExternalLink } from 'app/models/externalLink';
 
 @Component({
   selector: 'app-add-documents',
@@ -27,7 +22,7 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
   public terms = new SearchTerms();
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public documents = null;
-	public documentVault = null;
+  public documentVault = null;
   public loading = true;
 
   public isEditing = false;
@@ -124,14 +119,14 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
         .subscribe((res: any) => {
           if (res) {
             const documents = res.documents?.documents?.at(0) || [];
-						const links = res.documents?.externalLinks?.at(0) || [];
-						const combinedResults = [...documents?.data?.searchResults, ...links?.data?.searchResults];
-						this.tableParams.totalListItems = combinedResults?.length || 0;
-						const sortedResults = this.sortDocuments(combinedResults);
-						this.documents = this.documentVault = sortedResults;
-						this.setDocumentRowData();
-						this.loading = false;
-						this._changeDetectionRef.detectChanges();
+            const links = res.documents?.externalLinks?.at(0) || [];
+            const combinedResults = [...documents?.data?.searchResults, ...links?.data?.searchResults];
+            this.tableParams.totalListItems = combinedResults?.length || 0;
+            const sortedResults = this.sortDocuments(combinedResults);
+            this.documents = this.documentVault = sortedResults;
+            this.setDocumentRowData();
+            this.loading = false;
+            this._changeDetectionRef.detectChanges();
           } else {
             alert('Uh-oh, couldn\'t load valued components');
             // project not found --> navigate back to search
@@ -141,58 +136,58 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
     }
   }
 
-	/**
-	 * Sorts documents based on the current sort selection.
-	 * 
-	 * @param {any} documents The combined documents, including actual documents and external links.
-	 * @return {any}
-	 * 
-	 */
-	public sortDocuments = (documents: any[]) => {
-		const sortData = this.tableParams.sortBy || '-datePosted';
-		const sortDir = '-' === this.tableParams.sortBy.charAt(0) ? -1 : 1;
-		const sortBy = sortData.substring(1);
-		const mappedResults = documents.map(doc => this.mapRowData(doc));
-		if ('displayName' === sortBy || 'internalExt' === sortBy) {
-			// If sorting strings then convert to lower case.
-			mappedResults.sort((a, b) => {
-				if (a[sortBy].toLowerCase() < b[sortBy].toLowerCase()) return -1 * sortDir;
-				if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) return 1 * sortDir;
-				return 0;
-			});
-		} else {
-			mappedResults.sort((a, b) => {
-				if (a[sortBy] < b[sortBy]) return -1 * sortDir;
-				if (a[sortBy] > b[sortBy]) return 1 * sortDir;
-				return 0;
-			});
-		}
-		return mappedResults || [];
-	}
+  /**
+   * Sorts documents based on the current sort selection.
+   * 
+   * @param {any} documents The combined documents, including actual documents and external links.
+   * @return {any}
+   * 
+   */
+  public sortDocuments = (documents: any[]) => {
+    const sortData = this.tableParams.sortBy || '-datePosted';
+    const sortDir = '-' === this.tableParams.sortBy.charAt(0) ? -1 : 1;
+    const sortBy = sortData.substring(1);
+    const mappedResults = documents.map(doc => this.mapRowData(doc));
+    if ('displayName' === sortBy || 'internalExt' === sortBy) {
+      // If sorting strings then convert to lower case.
+      mappedResults.sort((a, b) => {
+        if (a[sortBy].toLowerCase() < b[sortBy].toLowerCase()) return -1 * sortDir;
+        if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) return 1 * sortDir;
+        return 0;
+      });
+    } else {
+      mappedResults.sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return -1 * sortDir;
+        if (a[sortBy] > b[sortBy]) return 1 * sortDir;
+        return 0;
+      });
+    }
+    return mappedResults || [];
+  }
 
-	/**
-	 * Maps row data to a format that is familiar for the table.
-	 * 
-	 * @param {any} file The file to be mapped. "Any" because it could be a Document or ExternalLink.
-	 * @returns {object}
-	 * 
-	 */
-	mapRowData(file) {
-		return {
-			displayName: file.displayName,
-			documentFileName: file.documentFileName || file.externalLink || '',
-			internalSize: file.internalSize || null,
-			internalExt: file.internalExt || 'external',
-			datePosted: file.datePosted || file.dateAdded,
-			status: file.read.includes('public') ? 'Published' : 'Not Published',
-			_id: file._id,
-			project: file.project,
-			read: file.read,
-			projectPhase: file.projectPhase,
-			description: file.description,
-			section: file.section,
-		}
-	}
+  /**
+   * Maps row data to a format that is familiar for the table.
+   * 
+   * @param {any} file The file to be mapped. "Any" because it could be a Document or ExternalLink.
+   * @returns {object}
+   * 
+   */
+  mapRowData(file) {
+    return {
+      displayName: file.displayName,
+      documentFileName: file.documentFileName || file.externalLink || '',
+      internalSize: file.internalSize || null,
+      internalExt: file.internalExt || 'external',
+      datePosted: file.datePosted || file.dateAdded,
+      status: file.read.includes('public') ? 'Published' : 'Not Published',
+      _id: file._id,
+      project: file.project,
+      read: file.read,
+      projectPhase: file.projectPhase,
+      description: file.description,
+      section: file.section,
+    }
+  }
 
   /**
    * Handle various actions for modifying/working with documents(files).
@@ -331,13 +326,13 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
     } else {
       this.tableParams.sortBy = '+' + column;
     }
-		window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
     this.loading = true;
-		this.documentVault = this.sortDocuments(this.documentVault);
-		this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
-		this.setDocumentRowData();
-		this.loading = false;
-		this._changeDetectionRef.detectChanges();
+    this.documentVault = this.sortDocuments(this.documentVault);
+    this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
+    this.setDocumentRowData();
+    this.loading = false;
+    this._changeDetectionRef.detectChanges();
     this.getPaginatedDocs(this.tableParams.currentPage);
   }
 
@@ -375,18 +370,18 @@ export class AddDocumentComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public getPaginatedDocs(pageNumber: number): void {
-		window.scrollTo(0, 0);
-		this.loading = true;
-		this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
-		const startIndex = (pageNumber - 1) * this.tableParams.pageSize;
-		const endIndex = startIndex + this.tableParams.pageSize;
-		if (endIndex && 0 < this.documentVault.length) {
-			this.documents = this.documentVault.slice(startIndex, endIndex);
-			this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
-			this.setDocumentRowData();
-			this.loading = false;
-			this._changeDetectionRef.detectChanges();
-		}
+    window.scrollTo(0, 0);
+    this.loading = true;
+    this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, pageNumber, this.tableParams.sortBy);
+    const startIndex = (pageNumber - 1) * this.tableParams.pageSize;
+    const endIndex = startIndex + this.tableParams.pageSize;
+    if (endIndex && 0 < this.documentVault.length) {
+      this.documents = this.documentVault.slice(startIndex, endIndex);
+      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
+      this.setDocumentRowData();
+      this.loading = false;
+      this._changeDetectionRef.detectChanges();
+    }
   }
 
   /**

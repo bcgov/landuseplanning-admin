@@ -51,7 +51,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     private commentPeriodService: CommentPeriodService,
     private config: ConfigService,
     private surveyService: SurveyService,
-		private externalLinkService: LinkService,
+    private externalLinkService: LinkService,
     private documentService: DocumentService,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -238,19 +238,17 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     if (this.storageService.state.selectedDocumentsForCP == null) {
       if (this.commentPeriod.relatedDocuments.length > 0) {
         forkJoin([this.documentService.getByMultiId(this.commentPeriod.relatedDocuments), this.externalLinkService.getByMultiId(this.commentPeriod.relatedDocuments)])
-					.takeUntil(this.ngUnsubscribe)
-					.subscribe(
-						data => {
-							console.log('made it here');
-							this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [...data[0] || [], ...data[1] || []] };
-						}
-					);
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            data => {
+              this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: [...data[0] || [], ...data[1] || []] };
+            }
+          );
       } else {
         this.storageService.state.selectedDocumentsForCP = { type: 'selectedDocumentsForCP', data: this.commentPeriod.relatedDocuments };
       }
     }
   }
-		
 
   /**
    * On comment period form submit, prepare the CP data and submit to the

@@ -6,7 +6,7 @@ import { DocumentSectionService } from 'app/services/documentSection.service';
 @Injectable()
 export class ExternalLinkResolver implements Resolve<Observable<object>> {
   constructor(
-		private documentSectionService: DocumentSectionService
+    private documentSectionService: DocumentSectionService
   ) { }
 
   /**
@@ -17,7 +17,7 @@ export class ExternalLinkResolver implements Resolve<Observable<object>> {
    * @returns {Observable<Object>}
    */
   resolve(route: ActivatedRouteSnapshot): Observable<object> {
-		const projectId = route.parent.paramMap.get('projId');
-		return this.documentSectionService.getAll(projectId);;
+    const projectId = route.parent.paramMap.get('projId');
+    return this.documentSectionService.getAll(projectId);;
   }
 }

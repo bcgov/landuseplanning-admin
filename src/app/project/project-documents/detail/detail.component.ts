@@ -64,8 +64,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         this.selectedSection = this.sections.find((section) => section._id === this.document.section);
         const safeName = this.document?.documentFileName ? this.document.documentFileName.replace(/ /g, '_') : this.document.externalLink;
         this.documentUrl = this.document?.externalLink ? safeName : `${this.pathAPI}/document/${this.document._id}/fetch/${safeName}`;
-				this.publishText = !this.document.read?.includes('public') ? 'Publish' : 'Unpublish';
-				
+        this.publishText = !this.document.read?.includes('public') ? 'Publish' : 'Unpublish';
+        
         this._changeDetectionRef.detectChanges();
       });
       this.humanReadableSize = this.utils.formatBytes(this.document?.internalSize) || '';
@@ -104,29 +104,29 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-	/**
-	 * Maps row data to a format that is familiar to the edit form.
-	 * 
-	 * @param {any} file The file to be mapped, Document or ExternalLink
-	 * @returns {object}
-	 * 
-	 */
-	mapRowData(file) {
-		return {
-			displayName: file.displayName,
-			documentFileName: file.documentFileName || file.externalLink || '',
-			internalSize: file.internalSize || null,
-			internalExt: file.internalExt || 'external',
-			datePosted: file.datePosted || file.dateAdded,
-			status: file.read.includes('public') ? 'Published' : 'Not Published',
-			_id: file._id,
-			project: file.project,
-			read: file.read,
-			projectPhase: file.projectPhase,
-			description: file.description,
-			section: file.section,
-		}
-	}
+  /**
+   * Maps row data to a format that is familiar to the edit form.
+   * 
+   * @param {any} file The file to be mapped, Document or ExternalLink
+   * @returns {object}
+   * 
+   */
+  mapRowData(file) {
+    return {
+      displayName: file.displayName,
+      documentFileName: file.documentFileName || file.externalLink || '',
+      internalSize: file.internalSize || null,
+      internalExt: file.internalExt || 'external',
+      datePosted: file.datePosted || file.dateAdded,
+      status: file.read.includes('public') ? 'Published' : 'Not Published',
+      _id: file._id,
+      project: file.project,
+      read: file.read,
+      projectPhase: file.projectPhase,
+      description: file.description,
+      section: file.section,
+    }
+  }
 
   /**
    * When a project edit is initiated, get the associated documents
@@ -139,24 +139,24 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.storageService.state.selectedDocs = [this.mapRowData(this.document)];
     this.storageService.state.labels = this.document.labels || [];
     this.storageService.state.back = { url: ['/p', this.document.project, 'project-files', 'detail', this.document._id], label: 'View File' };
-		this.router.navigate(['p', this.document.project, 'project-files', (this.document.externalLink ? 'edit-link' : 'edit')]);
+    this.router.navigate(['p', this.document.project, 'project-files', (this.document.externalLink ? 'edit-link' : 'edit')]);
   }
 
-	onDownload() {
-		if (this.document.externalLink) {
-			window.open(this.document.externalLink, "_blank");
-		} else {
-			this.api.downloadDocument(this.document);
-		}
-	}
+  onDownload() {
+    if (this.document.externalLink) {
+      window.open(this.document.externalLink);
+    } else {
+      this.api.downloadDocument(this.document);
+    }
+  }
 
-	onOpen() {
-		if (this.document.externalLink) {
-			window.open(this.document.externalLink, "_blank");
-		} else {
-			this.api.openDocument(this.document);
-		}
-	}
+  onOpen() {
+    if (this.document.externalLink) {
+      window.open(this.document.externalLink);
+    } else {
+      this.api.openDocument(this.document);
+    }
+  }
 
   /**
    * Checks if a document is published.

@@ -147,7 +147,7 @@ import { LinkService } from 'app/services/link.service';
     FileSectionsResolver,
     DocumentEditResolver,
     UploadResolver,
-		LinkService,
+    LinkService,
   ]
 })
 
