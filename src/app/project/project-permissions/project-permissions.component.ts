@@ -84,7 +84,7 @@ export class ProjectPermissionsComponent implements OnInit {
         this.userVault = get(user, 'data');
         this.removeDuplicateUsers();
         this.tableParams.totalListItems = this.userVault.length || 0;
-        this.paginateUsers(this.tableParams.currentPage || 1);
+        this.paginateUsers(this.tableParams.currentPage);
       })
       .catch(error => {
         console.error(error);
@@ -150,8 +150,6 @@ export class ProjectPermissionsComponent implements OnInit {
   public paginateUsers(pageNumber: number): void {
     window.scrollTo(0, 0);
     this.loading = true;
-    this.tableParams.pageSize = 10;
-    this.tableParams.sortBy = 'User';
     this.tableParams.currentPage = pageNumber;
     const startIndex = (pageNumber - 1) * this.tableParams.pageSize;
     const endIndex = startIndex + this.tableParams.pageSize;
@@ -160,7 +158,7 @@ export class ProjectPermissionsComponent implements OnInit {
       this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
       this.setRowData();
       this.loading = false;
-      // this._changeDetectionRef.detectChanges();
+      this._changeDetectionRef.detectChanges();
     }
   }
 

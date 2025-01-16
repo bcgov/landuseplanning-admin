@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { get } from 'lodash';
 import { TableObject } from 'app/shared/components/table-template/table-object';
@@ -10,7 +10,6 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { User } from 'app/models/user'
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
-import { TableTemplateUtils } from 'app/shared/utils/table-template-utils';
 
 
 @Component({
@@ -22,8 +21,8 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
 
   @Input() data: TableObject;
 
-  public entries: any;
-  public entriesVault: any;
+  public entries: User[];
+  public entriesVault;
   public targetEmail: any;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   private currentProject;
@@ -31,13 +30,10 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
   public tableParams: TableParamsObject = new TableParamsObject();
 
   constructor(
-    private _changeDetectionRef: ChangeDetectorRef,
     private userService: UserService,
     private storageService: StorageService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private tableTemplateUtils: TableTemplateUtils,
-    private route: ActivatedRoute,
   ) { }
 
   /**
@@ -50,11 +46,6 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     this.currentProject = this.storageService.state.currentProject.data;
     this.entries = this.data.data;
     this.paginationData = this.data.paginationData;
-    this.route.params
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(params => {
-        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-      });
   }
 
   /**
@@ -87,7 +78,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
    * @returns {User[]}
    */
   removeDuplicateUsers(returnedUsers: User[]): User[] {
-    let userNames = [];
+    const userNames = [];
     let validatedUsers = [];
     if (Array.isArray(this.entries)) {
     returnedUsers.forEach(user => {
@@ -95,7 +86,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
         // If no duplicate name is found, validate the user
         userNames.push(user.displayName);
         validatedUsers.push(user);
-      } else if (user.projectPermissions?.includes(this.currentProject._id)) { 
+      } else if (user.projectPermissions.includes(this.currentProject._id)) { 
         // If a duplicate user is found and they have project permission, replace matching entry if it doesn't have permissions
         const matchingUserIndex = validatedUsers.findIndex((usr) => usr.displayName === user.displayName);
         validatedUsers[matchingUserIndex] = validatedUsers[matchingUserIndex]?.projectPermissions?.includes(this.currentProject._id) ? validatedUsers[matchingUserIndex] : user;
@@ -113,14 +104,10 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
    */
   paginateUsers(pageNumber: number): void {
     window.scrollTo(0, 0);
-    this.tableParams.pageSize = 10;
-    this.tableParams.sortBy = 'User';
-    this.tableParams.currentPage = pageNumber;
-    const startIndex = (pageNumber - 1) * this.tableParams.pageSize;
-    const endIndex = startIndex + this.tableParams.pageSize;
+    const startIndex = (pageNumber - 1) * this.paginationData.pageSize;
+    const endIndex = startIndex + this.paginationData.pageSize;
     if (endIndex && 0 < this.entriesVault.length) {
       this.entries = this.entriesVault.slice(startIndex, endIndex);
-      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
     }
   }
 
@@ -139,7 +126,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
         (returnedUsers) => {
           this.entriesVault = returnedUsers;
           this.entriesVault = this.removeDuplicateUsers(this.entriesVault);
-          this.paginateUsers(this.tableParams.currentPage || 1);
+          this.paginateUsers(this.paginationData.currentPage);
         },
         error => {
           console.error(error);
@@ -156,7 +143,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
         (returnedUsers) => {
           this.entriesVault = returnedUsers;
           this.entriesVault = this.removeDuplicateUsers(this.entriesVault);
-          this.paginateUsers(this.tableParams.currentPage || 1);
+          this.paginateUsers(this.paginationData.currentPage);
         },
         error => {
           console.error(error);
