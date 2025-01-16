@@ -1,3 +1,7 @@
+### 1.12.1 Jan 15, 2025
+* Fixed pagination and added duplicate filtering to permissions page/route. [DESENG-755](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-755)
+  * Also associated with [DESENG-757](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-757)
+
 ### 1.12.0 Jan 9, 2025
 * Added the ability to add an external link as if it is an internal file. [DESENG-751](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-751)
 * Functionality works in all file views, including file list, file details, file add/edit, comment period view, comment period edit.

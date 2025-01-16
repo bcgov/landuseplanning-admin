@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { get } from 'lodash';
@@ -20,6 +20,7 @@ import { PageBreadcrumb } from 'app/shared/components/navbar/types';
 export class ProjectPermissionsComponent implements OnInit {
 
   public users: User[] = null;
+  public userVault: User[] = null;
   public currentProject: Project;
   public loading = true;
   public pageBreadcrumbs: PageBreadcrumb[];
@@ -42,6 +43,7 @@ export class ProjectPermissionsComponent implements OnInit {
   ];
 
   constructor(
+    private _changeDetectionRef: ChangeDetectorRef,
     private userService: UserService,
     private route: ActivatedRoute,
     private storageService: StorageService,
@@ -67,19 +69,50 @@ export class ProjectPermissionsComponent implements OnInit {
       .subscribe(params => {
         this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
       });
+      this.getUsers();
+  }
 
+  /**
+   * Retrieve the user list, with permissions info, from the user service
+   * 
+   * @return {void}
+   */
+  getUsers(): void {
     this.userService.getAll()
       .toPromise()
       .then((user: User) => {
-        this.users = get(user, 'data');
-        this.tableParams.totalListItems = get(user, 'totalCount');
-        //return user;
-        this.setRowData();
-        this.loading = false;
+        this.userVault = get(user, 'data');
+        this.removeDuplicateUsers();
+        this.tableParams.totalListItems = this.userVault.length || 0;
+        this.paginateUsers(this.tableParams.currentPage || 1);
       })
       .catch(error => {
         console.error(error);
       });
+  }
+
+  /**
+   * Remove users that have duplicate names, favouring entries that have permissions.
+   * 
+   * @return {void}
+   */
+  removeDuplicateUsers(): void {
+    let userNames = [];
+    let validatedUsers = [];
+    if (Array.isArray(this.userVault)) {
+    this.userVault.forEach(user => {
+      if (!userNames.includes(user.displayName)) {
+        // If no duplicate name is found, validate the user
+        userNames.push(user.displayName);
+        validatedUsers.push(user);
+      } else if (user.projectPermissions?.includes(this.currentProject._id)) { 
+        // If a duplicate user is found and they have project permission, replace matching entry if it doesn't have permissions
+        const matchingUserIndex = validatedUsers.findIndex((usr) => usr.displayName === user.displayName);
+        validatedUsers[matchingUserIndex] = validatedUsers[matchingUserIndex].projectPermissions.includes(this.currentProject._id) ? validatedUsers[matchingUserIndex] : user;
+      }
+    })
+    }
+    this.userVault = validatedUsers;
   }
 
   /**
@@ -88,9 +121,9 @@ export class ProjectPermissionsComponent implements OnInit {
    * 
    * @return {void}
    */
-  setRowData() {
+  setRowData(): void {
     let list = [];
-    if (this.users && this.users.length > 0) {
+    if (this.users?.length > 0) {
       this.users.forEach(user => {
         list.push(
           {
@@ -108,4 +141,35 @@ export class ProjectPermissionsComponent implements OnInit {
     }
   }
 
+  /**
+   * Load a "page" of documents.
+   *
+   * @param {number} pageNumber The page number of documents to get.
+   * @return {void}
+   */
+  public paginateUsers(pageNumber: number): void {
+    window.scrollTo(0, 0);
+    this.loading = true;
+    this.tableParams.pageSize = 10;
+    this.tableParams.sortBy = 'User';
+    this.tableParams.currentPage = pageNumber;
+    const startIndex = (pageNumber - 1) * this.tableParams.pageSize;
+    const endIndex = startIndex + this.tableParams.pageSize;
+    if (endIndex && 0 < this.userVault.length) {
+      this.users = this.userVault.slice(startIndex, endIndex);
+      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
+      this.setRowData();
+      this.loading = false;
+      // this._changeDetectionRef.detectChanges();
+    }
+  }
+
+  /**
+   * Handle a page change
+   * 
+   */
+  public handlePageChange(event: number): void {
+    this.tableParams.currentPage = event;
+    this.getUsers();
+  }
 }
