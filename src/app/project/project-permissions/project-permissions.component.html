@@ -8,11 +8,12 @@
       <div class="spinner-new rotating"></div>
   </div>
   <app-table-template
-      *ngIf="tableParams.totalListItems > 0"
+      *ngIf="!loading && tableParams.totalListItems !== 0"
       [columns]="tableColumns"
-      [data]="tableData">
+      [data]="tableData"
+      (onPageNumUpdate)="handlePageChange($event)">
   </app-table-template>
-  <div *ngIf="tableParams.totalListItems == 0">
+  <div *ngIf="tableParams.totalListItems === 0">
       No users found.
   </div>
 </div>
