@@ -68,7 +68,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
    * @returns {boolean}
    */
   hasProjectPermission(user: User): boolean {
-    return user.projectPermissions.includes(this.currentProject._id);
+    return this.currentProject?._id && user.projectPermissions?.includes(this.currentProject._id);
   }
 
   /**
@@ -82,14 +82,14 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     let validatedUsers = [];
     if (Array.isArray(this.entries)) {
     returnedUsers.forEach(user => {
-      if (!userNames.includes(user.displayName)) {
+      if (user.displayName && !userNames.includes(user.displayName)) {
         // If no duplicate name is found, validate the user
         userNames.push(user.displayName);
         validatedUsers.push(user);
-      } else if (user.projectPermissions.includes(this.currentProject._id)) { 
+      } else if (user.displayName && this.currentProject?._id && user.projectPermissions.includes(this.currentProject._id)) { 
         // If a duplicate user is found and they have project permission, replace matching entry if it doesn't have permissions
         const matchingUserIndex = validatedUsers.findIndex((usr) => usr.displayName === user.displayName);
-        validatedUsers[matchingUserIndex] = validatedUsers[matchingUserIndex]?.projectPermissions?.includes(this.currentProject._id) ? validatedUsers[matchingUserIndex] : user;
+        validatedUsers[matchingUserIndex] = this.currentProject?._id && validatedUsers[matchingUserIndex]?.projectPermissions?.includes(this.currentProject._id) ? validatedUsers[matchingUserIndex] : user;
       }
     })
     }
