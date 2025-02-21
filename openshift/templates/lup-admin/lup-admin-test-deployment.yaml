@@ -1,0 +1,48 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: landuseplanning-admin-test
+  namespace: e8b9ad-test
+  labels:
+    app: landuseplanning-admin-test
+    app.kubernetes.io/component: landuseplanning-admin-test
+    app.kubernetes.io/instance: landuseplanning-admin-test
+    app.kubernetes.io/part-of: landuseplanning-admin-test
+spec:
+  strategy:
+    type: RollingUpdate
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: landuseplanning-admin-test
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: landuseplanning-admin-test
+    spec:
+      containers:
+        - name: landuseplanning-admin-test
+          image: image-registry.apps.silver.devops.gov.bc.ca/e8b9ad-tools/lup-admin-deploy-image
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: REMOTE_API_PATH
+              value: 'https://landuseplanning-test.apps.silver.devops.gov.bc.ca/api'
+            - name: REMOTE_PUBLIC_PATH
+              value: 'https://landuseplanning-test.apps.silver.devops.gov.bc.ca/'
+            - name: DEPLOYMENT_ENVIRONMENT
+              value: test
+            - name: API_URL
+              value: 'https://landuseplanning-test.apps.silver.devops.gov.bc.ca/api'
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler

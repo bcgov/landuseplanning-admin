@@ -1,5 +1,6 @@
 ### 1.12.2 Feb 13, 2025
-* Added old DeploymentConfig (OC) YAML and new Deployment (Kubernetes) YAML. [DESENG-761](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-761)
+* Added old DeploymentConfig (OC) YAML and new Deployment (Kubernetes) YAML (dev environment). [DESENG-761](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-761)
+* Added old DeploymentConfig (OC) YAML and new Deployment (Kubernetes) YAML (test environment). [DESENG-766](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-766)
 
 ### 1.12.1 Jan 15, 2025
 * Fixed pagination and added duplicate filtering to permissions page/route. [DESENG-755](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-755)
