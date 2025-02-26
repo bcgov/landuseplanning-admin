@@ -1,3 +1,6 @@
+### 1.12.3 Feb 26, 2025
+* Updated keycloak-js to version 25.0.6. [DESENG-772](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-772)
+
 ### 1.12.2 Feb 13, 2025
 * Added old DeploymentConfig (OC) YAML and new Deployment (Kubernetes) YAML (dev environment). [DESENG-761](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-761)
 * Added old DeploymentConfig (OC) YAML and new Deployment (Kubernetes) YAML (test environment). [DESENG-766](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-766)
