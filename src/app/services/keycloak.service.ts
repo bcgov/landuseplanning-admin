@@ -106,8 +106,8 @@ export class KeycloakService {
         // Try to get refresh tokens in the background
         self.keycloakAuth.onTokenExpired = () => {
           self.keycloakAuth.updateToken(180)
-            .success()
-            .error(() => {
+            .then()
+            .catch(() => {
               self.keycloakAuth.login({ idpHint: 'idir' });
             });
         };
@@ -119,7 +119,7 @@ export class KeycloakService {
           // Without this option, keycloak assumes we're logged out and dumps all tokens.
           checkLoginIframe: false
         })
-          .success((auth) => {
+          .then((auth) => {
             if (!auth) {
               if ('true' === this.loggedOut) {
                 // Don't do anything, they wanted to remain logged out.
@@ -174,7 +174,7 @@ export class KeycloakService {
               resolve();
             }
           })
-          .error((err) => {
+          .catch((err) => {
             console.error('Keycloak error. Error initializing', err);
             reject();
           });
