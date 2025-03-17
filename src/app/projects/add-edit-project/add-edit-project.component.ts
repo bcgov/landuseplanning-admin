@@ -609,7 +609,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementLabel': form.controls.engagementLabel.value,
       'engagementInfo': form.controls.engagementInfo.value,
       'documentInfo': form.controls.documentInfo.value,
-      'projectPhase': form.controls.projectPhase.value,
+      'projectPhase': form.controls.projectPhase.value || null,
       'projectTypes': this.getTypesFormValues(),
       'projectDirector': this.projectDirectorId,
       'projectLead': this.projectLeadId,
@@ -1252,10 +1252,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 		const forestTypeIsChecked = this.myForm.value.projectTypes?.[1]?.checked ? true : false;
 		if (forestTypeIsChecked && this.chosenPhases !== Constants.FOREST_PHASES) {
 			this.chosenPhases = Constants.FOREST_PHASES;
-			this.myForm.controls.projectPhase.setValue('Pre-Planning');
+			this.myForm.controls.projectPhase.setValue("");
 		} else if (!forestTypeIsChecked && this.chosenPhases !== Constants.DEFAULT_PHASES) { // Show default project phases.
 			this.chosenPhases = Constants.DEFAULT_PHASES;
-			this.myForm.controls.projectPhase.setValue('Initiate Planning');
+			this.myForm.controls.projectPhase.setValue("");
 		}
   }
 
