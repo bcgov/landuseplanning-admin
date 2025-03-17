@@ -12,6 +12,7 @@ import { Utils } from 'app/shared/utils/utils';
 import { DocumentSection } from 'app/models/documentSection';
 import { Document } from 'app/models/document';
 import { ExternalLink } from 'app/models/externalLink';
+import { Constants } from 'app/shared/utils/constants';
 
 @Component({
   selector: 'app-external-link',
@@ -33,13 +34,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
   public loading = true;
   public docNameInvalid = false;
   public externalLinkInvalid = false;
-  public PROJECT_PHASES: Array<Object> = [
-    'Pre-Planning',
-    'Plan Initiation',
-    'Plan Development',
-    'Plan Evaluation and Approval',
-    'Plan Implementation and Monitoring'
-  ];
+	public chosenPhases: Array<string>;
 
   constructor(
     private router: Router,
@@ -60,6 +55,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
+		this.chosenPhases = this.currentProject.projectTypes.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {

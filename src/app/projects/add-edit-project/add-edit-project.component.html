@@ -210,7 +210,7 @@
 				<div class="large-margin-right small-margin-bottom half-wide">
 					<label for="projectPhase">Project Phase </label>
 					<select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
-						<option *ngFor="let projectPhase of PROJECT_PHASES" [ngValue]="projectPhase">{{projectPhase}}</option>
+						<option *ngFor="let projectPhase of chosenPhases" [ngValue]="projectPhase">{{projectPhase}}</option>
 					</select>
 				</div>
 				<div class="half-wide flex-container flex-column">

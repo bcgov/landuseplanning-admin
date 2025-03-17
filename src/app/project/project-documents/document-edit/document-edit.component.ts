@@ -11,6 +11,7 @@ import { DocumentSection } from 'app/models/documentSection';
 import { ConfigService } from 'app/services/config.service';
 import { DocumentService } from 'app/services/document.service';
 import { StorageService } from 'app/services/storage.service';
+import { Constants } from 'app/shared/utils/constants';
 
 import { Utils } from 'app/shared/utils/utils';
 
@@ -32,13 +33,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   public loading = true;
   public multiEdit = false;
   public docNameInvalid = false;
-  public PROJECT_PHASES: Array<Object> = [
-    'Pre-Planning',
-    'Plan Initiation',
-    'Plan Development',
-    'Plan Evaluation and Approval',
-    'Plan Implementation and Monitoring'
-  ];
+	public chosenPhases: Array<string>;
 
   constructor(
     private config: ConfigService,
@@ -61,6 +56,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
+		this.chosenPhases = this.currentProject.projectTypes.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {
