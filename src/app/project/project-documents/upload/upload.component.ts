@@ -12,6 +12,7 @@ import { StorageService } from 'app/services/storage.service';
 import { Document } from 'app/models/document';
 import { Utils } from 'app/shared/utils/utils';
 import { DocumentSection } from 'app/models/documentSection';
+import { Constants } from 'app/shared/utils/constants';
 
 @Component({
   selector: 'app-upload',
@@ -31,13 +32,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   public myForm: FormGroup;
   public loading = true;
   public docNameInvalid = false;
-  public PROJECT_PHASES: Array<Object> = [
-    'Pre-Planning',
-    'Plan Initiation',
-    'Plan Development',
-    'Plan Evaluation and Approval',
-    'Plan Implementation and Monitoring'
-  ];
+	public chosenPhases: Array<string>;
 
   constructor(
     private router: Router,
@@ -58,6 +53,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
+		this.chosenPhases = this.currentProject.projectTypes.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {

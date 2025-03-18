@@ -23,7 +23,7 @@
         <div class="form-group form-container-65">
           <label for="projectPhase">Project Phase*</label>
           <select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
-            <option *ngFor="let projectPhase of PROJECT_PHASES" [ngValue]="projectPhase">{{projectPhase}}</option>
+            <option *ngFor="let projectPhase of chosenPhases" [ngValue]="projectPhase">{{projectPhase}}</option>
           </select>
           <div class="invalid-notice" *ngIf="myForm.get('projectPhase').invalid && myForm.get('projectPhase').touched">Project Phase is required</div>
         </div>

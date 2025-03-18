@@ -15,6 +15,7 @@ import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 import { ModalData } from 'app/shared/types/modal';
 import { Document } from 'app/models/document';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Constants } from 'app/shared/utils/constants';
 
 @Component({
   selector: 'app-add-edit-project',
@@ -74,14 +75,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     'Thompson - Nicola'
   ];
 
-  public PROJECT_PHASES: Array<Object> = [
-    'Pre-Planning',
-    'Plan Initiation',
-    'Plan Development',
-    'Plan Evaluation and Approval',
-    'Plan Implementation and Monitoring'
-  ];
 
+	public chosenPhases: Array<string>;
   public projectTypes: Array<ProjectType> = [
     {name: 'Land Use Planning', checked: false},
     {name: 'Forest Landscape Planning', checked: false},
@@ -245,7 +240,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
-      this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
     } else {
       this.myForm = new FormGroup({
         'name': new FormControl(),
@@ -258,7 +252,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'lat': new FormControl([]),
         'lon': new FormControl([]),
         'addFile': new FormControl(),
-        'shapeFileColour': new FormControl(),
+        'shapeFileColour': new FormControl(this.shapeFileColour),
         'existingLandUsePlans': new FormArray([]),
         'ea': new FormControl(),
         'capital': new FormControl(),
@@ -279,8 +273,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'contactFormEmails': new FormArray([new FormControl()]),
         'collectionNotice': new FormControl(),
       });
-      // set a default colour
-      this.myForm.controls.shapeFileColour.setValue(this.shapeFileColour);
+      // set default values
+			this.chosenPhases = Constants.DEFAULT_PHASES;
     }
   }
 
@@ -532,18 +526,24 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       projectData.centroid = [-123.3656, 48.4284];
     }
 
-	// Set the text background colour for the shape file colour picker.
+		// Set the text background colour for the shape file colour picker.
     if (projectData.shapeFileColour) {
       this.shapeFileColour = projectData.shapeFileColour;
       this.shapeFileTextColour = this.colourIsBright(this.shapeFileColour) ? '#000000' : '#ffffff';
     }
 
+		// Choose which project phase list is shown: regular phases or forest phases.
     if (projectData.projectTypes) {
       this.projectTypes = projectData.projectTypes;
-    }
+			this.chosenPhases = projectData.projectTypes.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
+    } else {
+			this.chosenPhases = Constants.DEFAULT_PHASES;
+		}
+
+		// Remove the project phase value from the project if it doesn't exist in the chosen list of phases
+		projectData.projectPhase = this.chosenPhases.includes(projectData.projectPhase?.toString()) ? projectData.projectPhase : '';
 
     const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
-
     return new FormGroup({
       'name': new FormControl(projectData.name),
       'partner': new FormControl(projectData.partner),
@@ -609,7 +609,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementLabel': form.controls.engagementLabel.value,
       'engagementInfo': form.controls.engagementInfo.value,
       'documentInfo': form.controls.documentInfo.value,
-      'projectPhase': form.controls.projectPhase.value,
+      'projectPhase': form.controls.projectPhase.value || null,
       'projectTypes': this.getTypesFormValues(),
       'projectDirector': this.projectDirectorId,
       'projectLead': this.projectLeadId,
@@ -1246,6 +1246,17 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   public handleProjectTypesChange(eventData, index) {
     this.myForm.value.projectTypes[index].checked = eventData.checked;
+
+		// If the form's project types have 'Forest Landscape Planning' checked, make sure we display forest project phases.
+		// Select value will be changed to first in new list but form value will be blank, so we need to manually update the form value.
+		const forestTypeIsChecked = this.myForm.value.projectTypes?.[1]?.checked ? true : false;
+		if (forestTypeIsChecked && this.chosenPhases !== Constants.FOREST_PHASES) {
+			this.chosenPhases = Constants.FOREST_PHASES;
+			this.myForm.controls.projectPhase.setValue("");
+		} else if (!forestTypeIsChecked && this.chosenPhases !== Constants.DEFAULT_PHASES) { // Show default project phases.
+			this.chosenPhases = Constants.DEFAULT_PHASES;
+			this.myForm.controls.projectPhase.setValue("");
+		}
   }
 
   /**
