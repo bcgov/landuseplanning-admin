@@ -1,5 +1,6 @@
-### 1.13.0 Mar 17, 2025
+### 1.13.0 Mar 25, 2025
 * Implemented dynamic project status options with project type change. [DESENG-768](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-768)
+* Added pipeline YAML and pipeline trigger YAMLs. [DESENG-777](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-777)
 
 ### 1.12.3 Feb 26, 2025
 * Updated keycloak-js to version 25.0.6. [DESENG-772](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-772)
