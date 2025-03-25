@@ -53,7 +53,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.currentProject = this.storageService.state.currentProject.data;
-		this.chosenPhases = this.currentProject.projectTypes.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
+		this.chosenPhases = this.currentProject.projectTypes?.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {
@@ -79,6 +79,9 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     if (this.storageService.state.form) {
       this.myForm = this.storageService.state.form;
+			if (!this.myForm.controls.projectPhase) {
+				this.myForm.addControl('projectPhase', new FormControl('', [Validators.required]));
+			}
     } else {
       this.myForm = new FormGroup({
         'datePosted': new FormControl('', [Validators.required]),

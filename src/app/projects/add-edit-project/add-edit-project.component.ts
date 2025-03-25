@@ -534,8 +534,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
 		// Choose which project phase list is shown: regular phases or forest phases.
     if (projectData.projectTypes) {
-      this.projectTypes = projectData.projectTypes;
-			this.chosenPhases = projectData.projectTypes.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
+      this.projectTypes = projectData.projectTypes || this.projectTypes;
+			this.chosenPhases = projectData.projectTypes?.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     } else {
 			this.chosenPhases = Constants.DEFAULT_PHASES;
 		}
@@ -561,7 +561,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementLabel': new FormControl(projectData.engagementLabel),
       'engagementInfo': new FormControl(projectData.engagementInfo),
       'documentInfo': new FormControl(projectData.documentInfo),
-      'projectPhase': new FormControl(projectData.projectPhase),
+      'projectPhase': new FormControl(projectData.projectPhase || ''),
       'projectTypes': new FormControl(projectData.projectTypes || this.projectTypes),
       'projectDirector': new FormControl(projectData.projectDirector),
       'projectLead': new FormControl(projectData.projectLead),

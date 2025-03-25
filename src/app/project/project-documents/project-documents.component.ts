@@ -562,7 +562,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       _id: file._id,
       project: file.project,
       read: file.read,
-      projectPhase: file.projectPhase,
+      projectPhase: file.projectPhase || null,
       description: file.description,
       section: file.section,
     }

@@ -42,7 +42,7 @@
           <select name="projectPhase" id="projectPhase" formControlName="projectPhase" class="form-control">
             <option *ngFor="let projectPhase of chosenPhases" [ngValue]="projectPhase">{{projectPhase}}</option>
           </select>
-          <div class="invalid-notice" *ngIf="myForm.get('projectPhase').invalid && myForm.get('projectPhase').touched">Project phase is required</div>
+          <div class="invalid-notice" *ngIf="myForm.get('projectPhase')?.invalid && myForm.get('projectPhase')?.touched">Project phase is required</div>
         </div>
       </div>
       <div class="form-row">
