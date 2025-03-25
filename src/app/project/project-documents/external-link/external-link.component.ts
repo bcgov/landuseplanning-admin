@@ -55,7 +55,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
-		this.chosenPhases = this.currentProject.projectTypes.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
+		this.chosenPhases = this.currentProject.projectTypes?.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {
@@ -87,6 +87,9 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
     } else if (this.storageService.state?.form?.values?.length > 0) {
       // If there is an existing form in the storage service, populate our form with that data.
       this.myForm = this.storageService.state.form;
+			if (!this.myForm.controls.projectPhase) {
+				this.myForm.addControl('projectPhase', new FormControl('', [Validators.required]));
+			}
     } else if (this.documents?.length === 1) {
       // If we are being passed a single document then we are editing. Populate with document data.
       this.dateAdded = this.documents[0].datePosted || this.documents[0].dateAdded;

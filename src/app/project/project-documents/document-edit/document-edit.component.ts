@@ -56,7 +56,7 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
-		this.chosenPhases = this.currentProject.projectTypes.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
+		this.chosenPhases = this.currentProject.projectTypes?.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {
@@ -87,6 +87,9 @@ export class DocumentEditComponent implements OnInit, OnDestroy {
     } else {
       if (this.storageService.state.form) {
         this.myForm = this.storageService.state.form;
+				if (!this.myForm.controls.projectPhase) {
+					this.myForm.addControl('projectPhase', new FormControl('', [Validators.required]));
+				}
       } else {
         if (this.documents.length === 1) {
           this.isPublished = this.documents[0].read.includes('public');
