@@ -209,7 +209,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         if (files[i]) {
           // ensure file is not already in the list
 
-          if (this.documents.find(x => x.documentFileName === files[i].name)) {
+          if (this.documents?.find(x => x.documentFileName === files[i].name)) {
             // this.snackBarRef = this.snackBar.open('Can\'t add duplicate file', null, { duration: 2000 });
             continue;
           }
