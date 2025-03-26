@@ -2,7 +2,7 @@
 kind: Pipeline
 metadata:
   creationTimestamp: '2022-02-10T19:07:02Z'
-  generation: 17
+  generation: 18
   labels:
     app: landuseplanning
     env: dev
@@ -33,10 +33,10 @@ metadata:
           'f:tasks': {}
       manager: Mozilla
       operation: Update
-      time: '2025-03-25T17:09:59Z'
+      time: '2025-03-26T21:48:12Z'
   name: lup-admin-build-deploy-dev
   namespace: e8b9ad-tools
-  resourceVersion: '13794435038'
+  resourceVersion: '13809070894'
   uid: 256b6dea-2c32-4a8e-9079-b0b647fe0db7
 spec:
   finally:
@@ -152,3 +152,16 @@ spec:
       taskRef:
         kind: ClusterTask
         name: openshift-client
+    - name: check-rollout-status
+      runAfter:
+        - trigger-deployment
+      taskSpec:
+        metadata: {}
+        spec: null
+        steps:
+          - computeResources: {}
+            image: 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest'
+            name: wait-for-rollout
+            script: |
+              #!/bin/sh
+              oc rollout status deployment/landuseplanning-admin-dev -n e8b9ad-dev --timeout="120s"
