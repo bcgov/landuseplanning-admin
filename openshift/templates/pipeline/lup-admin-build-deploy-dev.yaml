@@ -1,43 +1,12 @@
 ﻿apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  creationTimestamp: '2022-02-10T19:07:02Z'
-  generation: 17
   labels:
     app: landuseplanning
     env: dev
     name: lup-admin
-  managedFields:
-    - apiVersion: tekton.dev/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:labels':
-            .: {}
-            'f:app': {}
-            'f:env': {}
-            'f:name': {}
-        'f:spec':
-          .: {}
-          'f:params': {}
-          'f:resources': {}
-          'f:workspaces': {}
-      manager: Mozilla
-      operation: Update
-      time: '2022-02-11T19:28:01Z'
-    - apiVersion: tekton.dev/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:spec':
-          'f:finally': {}
-          'f:tasks': {}
-      manager: Mozilla
-      operation: Update
-      time: '2025-03-25T17:09:59Z'
   name: lup-admin-build-deploy-dev
   namespace: e8b9ad-tools
-  resourceVersion: '13794435038'
-  uid: 256b6dea-2c32-4a8e-9079-b0b647fe0db7
 spec:
   finally:
     - name: push-to-teams-success
@@ -152,3 +121,13 @@ spec:
       taskRef:
         kind: ClusterTask
         name: openshift-client
+    - name: check-rollout-status
+      runAfter:
+        - trigger-deployment
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+      params:
+        - name: SCRIPT
+          value: |
+            oc rollout status deployment/landuseplanning-admin-dev -n e8b9ad-dev --timeout="120s"
