@@ -3,16 +3,162 @@ apiVersion: apps/v1
 metadata:
   name: landuseplanning-admin-dev
   namespace: e8b9ad-dev
+  uid: be02aeaf-b055-4b53-8055-0540368d2752
+  resourceVersion: '13822126516'
+  generation: 11
+  creationTimestamp: '2025-02-13T23:16:47Z'
   labels:
     app: landuseplanning-admin-dev
     app.kubernetes.io/component: landuseplanning-admin-dev
     app.kubernetes.io/instance: landuseplanning-admin-dev
     app.kubernetes.io/part-of: landuseplanning-admin-dev
+  annotations:
+    deployment.kubernetes.io/revision: '10'
+  managedFields:
+    - manager: kubectl-patch
+      operation: Update
+      apiVersion: apps/v1
+      time: '2025-03-26T22:07:21Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:template':
+            'f:metadata':
+              'f:annotations':
+                'f:last-restart': {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: apps/v1
+      time: '2025-03-26T22:07:34Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:deployment.kubernetes.io/revision': {}
+        'f:status':
+          'f:availableReplicas': {}
+          'f:conditions':
+            .: {}
+            'k:{"type":"Available"}':
+              .: {}
+              'f:lastTransitionTime': {}
+              'f:lastUpdateTime': {}
+              'f:message': {}
+              'f:reason': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Progressing"}':
+              .: {}
+              'f:lastTransitionTime': {}
+              'f:lastUpdateTime': {}
+              'f:message': {}
+              'f:reason': {}
+              'f:status': {}
+              'f:type': {}
+          'f:observedGeneration': {}
+          'f:readyReplicas': {}
+          'f:replicas': {}
+          'f:updatedReplicas': {}
+      subresource: status
+    - manager: Mozilla
+      operation: Update
+      apiVersion: apps/v1
+      time: '2025-03-27T23:57:55Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:labels':
+            .: {}
+            'f:app': {}
+            'f:app.kubernetes.io/component': {}
+            'f:app.kubernetes.io/instance': {}
+            'f:app.kubernetes.io/part-of': {}
+        'f:spec':
+          'f:progressDeadlineSeconds': {}
+          'f:replicas': {}
+          'f:revisionHistoryLimit': {}
+          'f:selector': {}
+          'f:strategy':
+            'f:rollingUpdate':
+              .: {}
+              'f:maxSurge': {}
+              'f:maxUnavailable': {}
+            'f:type': {}
+          'f:template':
+            'f:metadata':
+              'f:annotations':
+                .: {}
+                'f:openshift.openshift.io/restartedAt': {}
+              'f:labels':
+                .: {}
+                'f:app': {}
+            'f:spec':
+              'f:containers':
+                'k:{"name":"landuseplanning-admin-dev"}':
+                  .: {}
+                  'f:env':
+                    .: {}
+                    'k:{"name":"API_URL"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"DEPLOYMENT_ENVIRONMENT"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"REMOTE_API_PATH"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"REMOTE_PUBLIC_PATH"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                  'f:image': {}
+                  'f:imagePullPolicy': {}
+                  'f:livenessProbe':
+                    .: {}
+                    'f:failureThreshold': {}
+                    'f:httpGet':
+                      .: {}
+                      'f:path': {}
+                      'f:port': {}
+                      'f:scheme': {}
+                    'f:initialDelaySeconds': {}
+                    'f:periodSeconds': {}
+                    'f:successThreshold': {}
+                    'f:timeoutSeconds': {}
+                  'f:name': {}
+                  'f:ports':
+                    .: {}
+                    'k:{"containerPort":8080,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:name': {}
+                      'f:protocol': {}
+                  'f:readinessProbe':
+                    .: {}
+                    'f:failureThreshold': {}
+                    'f:httpGet':
+                      .: {}
+                      'f:path': {}
+                      'f:port': {}
+                      'f:scheme': {}
+                    'f:initialDelaySeconds': {}
+                    'f:periodSeconds': {}
+                    'f:successThreshold': {}
+                    'f:timeoutSeconds': {}
+                  'f:resources': {}
+                  'f:terminationMessagePath': {}
+                  'f:terminationMessagePolicy': {}
+              'f:dnsPolicy': {}
+              'f:restartPolicy': {}
+              'f:schedulerName': {}
+              'f:securityContext': {}
+              'f:terminationGracePeriodSeconds': {}
 spec:
-  strategy:
-    type: RollingUpdate
   replicas: 2
-  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: landuseplanning-admin-dev
@@ -21,12 +167,16 @@ spec:
       creationTimestamp: null
       labels:
         app: landuseplanning-admin-dev
+      annotations:
+        last-restart: '2025-03-26 22:07:21'
+        openshift.openshift.io/restartedAt: '2025-03-26T01:15:30.103Z'
     spec:
       containers:
         - name: landuseplanning-admin-dev
           image: image-registry.apps.silver.devops.gov.bc.ca/e8b9ad-tools/lup-admin-deploy-image
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
               protocol: TCP
           env:
             - name: REMOTE_API_PATH
@@ -38,6 +188,26 @@ spec:
             - name: API_URL
               value: 'https://landuseplanning-dev.apps.silver.devops.gov.bc.ca/api'
           resources: {}
+          livenessProbe:
+            httpGet:
+              path: /assets/healthz.html
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 2
+            periodSeconds: 20
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /assets/healthz.html
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always
@@ -46,4 +216,29 @@ spec:
       dnsPolicy: ClusterFirst
       securityContext: {}
       schedulerName: default-scheduler
-      
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+status:
+  observedGeneration: 10
+  replicas: 2
+  updatedReplicas: 2
+  readyReplicas: 2
+  availableReplicas: 2
+  conditions:
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2025-03-24T22:57:23Z'
+      lastTransitionTime: '2025-03-24T22:57:23Z'
+      reason: MinimumReplicasAvailable
+      message: Deployment has minimum availability.
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2025-03-26T22:07:34Z'
+      lastTransitionTime: '2025-02-13T23:16:47Z'
+      reason: NewReplicaSetAvailable
+      message: ReplicaSet "landuseplanning-admin-dev-f47468c45" has successfully progressed.

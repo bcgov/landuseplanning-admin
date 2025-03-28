@@ -1,6 +1,7 @@
-### 1.13.0 Mar 26, 2025
+### 1.13.0 Mar 27, 2025
 * Implemented dynamic project status options with project type change. [DESENG-768](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-768)
 * Added, updated, and organized pipeline and listener YAMLs. [DESENG-777](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-777)
+* Added health check html asset. [DESENG-777](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-777)
 * Made stricter data checks to accomodate legacy projects for prod deployment. [DESENG-785](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-785)
 
 ### 1.12.3 Feb 26, 2025
