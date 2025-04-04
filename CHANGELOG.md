@@ -1,3 +1,6 @@
+### 1.13.1 Apr 4, 2025
+* Fixed date values and sorting for external links/files. [DESENG-787](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-787)
+
 ### 1.13.0 Mar 27, 2025
 * Implemented dynamic project status options with project type change. [DESENG-768](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-768)
 * Added, updated, and organized pipeline and listener YAMLs. [DESENG-777](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-777)

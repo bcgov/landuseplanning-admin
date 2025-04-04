@@ -557,7 +557,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       documentFileName: file.documentFileName || file.externalLink || '',
       internalSize: file.internalSize || null,
       internalExt: file.internalExt || 'external',
-      datePosted: file.datePosted || file.dateAdded,
+      datePosted: file.dateAdded || file.datePosted,
       status: file.read.includes('public') ? 'Published' : 'Not Published',
       _id: file._id,
       project: file.project,
