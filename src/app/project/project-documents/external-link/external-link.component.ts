@@ -92,7 +92,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
 			}
     } else if (this.documents?.length === 1) {
       // If we are being passed a single document then we are editing. Populate with document data.
-      this.dateAdded = this.documents[0].datePosted || this.documents[0].dateAdded;
+      this.dateAdded = this.documents[0].dateAdded || this.documents[0].datePosted;
       this.externalLink = this.documents[0].documentFileName || this.documents[0].externalLink;
       this.myForm = new FormGroup({
         'dateAdded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.dateAdded)), Validators.required),
