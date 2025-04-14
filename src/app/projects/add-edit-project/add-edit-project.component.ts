@@ -270,6 +270,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'projectAdmin': new FormControl(),
         'activitiesAndUpdatesEnabled': new FormControl(),
         'contactFormEnabled': new FormControl(),
+        'contactFormFilesEnabled': new FormControl(),
         'contactFormEmails': new FormArray([new FormControl()]),
         'collectionNotice': new FormControl(),
       });
@@ -567,6 +568,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'projectLead': new FormControl(projectData.projectLead),
       'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled),
       'contactFormEnabled': new FormControl(projectData.contactFormEnabled),
+      'contactFormFilesEnabled': new FormControl(projectData.contactFormFilesEnabled),
       'contactFormEmails': new FormArray(contactformEmailControls),
       'collectionNotice': new FormControl(projectData.collectionNotice),
     });
@@ -609,12 +611,13 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementLabel': form.controls.engagementLabel.value,
       'engagementInfo': form.controls.engagementInfo.value,
       'documentInfo': form.controls.documentInfo.value,
-      'projectPhase': form.controls.projectPhase.value || null,
+      'projectPhase': form.controls.projectPhase.value,
       'projectTypes': this.getTypesFormValues(),
       'projectDirector': this.projectDirectorId,
       'projectLead': this.projectLeadId,
       'activitiesAndUpdatesEnabled': form.controls.activitiesAndUpdatesEnabled.value,
       'contactFormEnabled': form.controls.contactFormEnabled.value,
+      'contactFormFilesEnabled': form.controls.contactFormFilesEnabled.value || false,
       'contactFormEmails': this.getContactFormEmailsFormValues(),
       'collectionNotice': form.controls.collectionNotice.value,
     });

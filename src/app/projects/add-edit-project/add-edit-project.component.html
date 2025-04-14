@@ -289,20 +289,20 @@
           <mat-checkbox id="activitiesAndUpdatesEnabled" formControlName="activitiesAndUpdatesEnabled">Enable Activities and Updates Section</mat-checkbox>
         </div>
         <div class="add-row med">
-          <mat-checkbox id="contactFormEnabled" formControlName="contactFormEnabled" >Enable Contact Form</mat-checkbox>
-          <label for="contactFormEnabled"> Use a <span class="contact-us-emphasis">Contact Us</span> form instead of displaying the Engagement Lead contact information</label>
-          <div *ngIf="myForm.value.contactFormEnabled">
+          <mat-checkbox id="contactFormEnabled" formControlName="contactFormEnabled" >Use a <strong>Contact Us</strong> form instead of displaying the Engagement Lead contact information</mat-checkbox>
+          <div *ngIf="myForm.value.contactFormEnabled" class="contact-form-options-container">
             <div formArrayName="contactFormEmails" *ngFor="let contactFormEmail of contactFormEmails.controls; let i=index">
               <div class="flex-container">
                 <div class="label-pair">
-                  <label for="contactFormEmail">Form Recipient</label>
-                  <input id="contactFormEmail" [formControlName]="i" type="email" class="form-control" />
+                  <label for="contactFormEmail" class="form-recipient">Form Recipient</label>
+                  <input id="contactFormEmail" [formControlName]="i" type="email" class="form-control form-recipient-email" />
                 </div>
-                <button class="btn" (click)="removeItemFromFormArray(contactFormEmails, i)"><i class="material-icons">delete</i></button>
+                <button class="btn recipient-garbage-button" (click)="removeItemFromFormArray(contactFormEmails, i)"><i class="material-icons">delete</i></button>
               </div>
               <div class="divider"></div>
             </div>
-            <button class="btn btn-primary" type="button" (click)="populateFormArray(contactFormEmails)">Add additional recipient</button>
+            <button class="btn btn-primary additional-recipient-button" type="button" (click)="populateFormArray(contactFormEmails)">Add additional recipient</button><br />
+            <mat-checkbox id="contactFormFilesEnabled" formControlName="contactFormFilesEnabled">Allow users to attach files to the contact form</mat-checkbox>
           </div>
         </div>
       </div>
