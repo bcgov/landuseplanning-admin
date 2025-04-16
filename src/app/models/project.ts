@@ -58,6 +58,7 @@ export class Project {
   // Options
   activitiesAndUpdatesEnabled: boolean;
   contactFormEnabled: boolean;
+  contactFormFilesEnabled: boolean;
   contactFormEmails: string[];
 
   // Permissions.
@@ -125,6 +126,7 @@ export class Project {
 
     this.activitiesAndUpdatesEnabled = obj && obj.activitiesAndUpdatesEnabled || undefined;
     this.contactFormEnabled = obj && obj.contactFormEnabled || undefined;
+    this.contactFormFilesEnabled = obj && obj.contactFormFilesEnabled || undefined;
     this.contactFormEmails = obj && obj.contactFormEmails || undefined;
     this.collectionNotice = obj && obj.collectionNotice || undefined;
 
