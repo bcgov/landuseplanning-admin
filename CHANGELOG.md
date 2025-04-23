@@ -1,3 +1,6 @@
+### Apr 23, 2025
+* Add ability to select multiple shapefiles. [DESENG-769](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-769)
+
 ### Apr 14, 2025
 * Added option to enable/disable contact form attachments. [DESENG-789](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-789)
 
