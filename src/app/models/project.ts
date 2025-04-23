@@ -10,6 +10,7 @@ export class Project {
   details: String;
   engagementStatus: String;
   logos: ProjectLogo[];
+  shapefiles: ProjectShapefile[];
   backgroundInfo: String;
   backgroundImage: string;
   engagementLabel: String;
@@ -81,6 +82,7 @@ export class Project {
     this.details         = obj && obj.details         || undefined;
     this.engagementStatus = obj && obj.engagementStatus || undefined;
     this.logos            = obj && obj.logos || undefined;
+    this.shapefiles            = obj && obj.shapefiles || undefined;
     this.backgroundInfo = obj && obj.backgroundInfo || undefined;
     this.backgroundImage = obj && obj.backgroundImage || undefined;
     this.engagementLabel = obj && obj.engagementLabel || undefined;
@@ -159,6 +161,14 @@ export class Project {
       });
     }
   }
+}
+
+export interface ProjectShapefile {
+  document: string;
+  documentFileName: string;
+  title: string;
+  colour: string;
+  order: number;
 }
 
 export interface ProjectLogo {

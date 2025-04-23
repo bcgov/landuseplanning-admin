@@ -1,4 +1,5 @@
 export interface ModalData {
+  slug?: string;
   projectID: string;
   title?: string;
   altRequired?: boolean;

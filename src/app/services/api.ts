@@ -182,6 +182,7 @@ export class ApiService {
       'details',
       'engagementStatus',
       'logos',
+      'shapefiles',
       'backgroundInfo',
       'backgroundImage',
       'engagementInfo',

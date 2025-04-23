@@ -74,10 +74,22 @@
                   <input type="text" id="logo-link" [formControl]="logo.controls.link" class="full-wide">
                 </div>
               </li>
-            </ul>
+            </ul>   
             <div class="logos-buttons flex-container half-wide">
-              <input type="button" id="logos" class="btn btn-primary small-margin-bottom logos-button" value="{{logos.length > 0 ? 'Reselect project logo(s)' : 'Select project logo(s)'}}" (click)="launchFilePicker()">
-              <input *ngIf="logos.controls.length > 0" type="button" class="btn btn-outline-primary small-margin-bottom full-wide no-margin-right" value="Clear selection" (click)="handleClearLogos()">
+              <input
+                type="button"
+                id="logos"
+                class="btn btn-primary small-margin-bottom logos-button"
+                value="{{logos.length > 0 ? 'Reselect project logo(s)' : 'Select project logo(s)'}}"
+                (click)="launchFilePicker('logos', 'Select project logo(s)', true, 'jpg, jpeg, png', ['image/jpeg', 'image/png'], 3)"
+              >
+              <input
+                *ngIf="logos.controls.length > 0"
+                type="button"
+                class="btn btn-outline-primary small-margin-bottom full-wide no-margin-right"
+                value="Clear selection"
+                (click)="handleClearLogos()"
+              >
             </div>
           </div>
         </div>
@@ -148,9 +160,9 @@
         </select>
       </div>
       <div class="flex-container-no-wrap form-container-65">
-        <div class="small-margin-right half-wide">
+        <!-- <div class="small-margin-right half-wide">
           <div class="form-group mb-0">
-            <label for="shapeFile">Upload Shape File </label>
+            <label for="shapeFile">Upload Shape File(s) </label>
             <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
               (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
             <br>
@@ -170,19 +182,64 @@
               </li>
             </ul>
           </div>
-        </div>
-	    <div class="small-margin-bottom half-wide">
-          <label for="shapeFileColour">Shape File Colour</label><br>
-		  <input 
-            class="shape-file-colour-input"
-            formControlName="shapeFileColour"
-            [colorPicker]="myForm.controls.shapeFileColour.value"
-            (colorPicker)="myForm.controls.shapeFileColour.setValue($event)"
-            [style.background]="myForm.controls.shapeFileColour.value"
-            [style.color]="shapeFileTextColour"
-            (colorPickerChange)="updateShapeFileColour($event)"
-        />
-        </div>
+        </div> -->
+
+      <div class="logos-buttons flex-container half-wide">
+        <input
+          type="button"
+          id="shapefiles"
+          class="btn btn-primary small-margin-bottom logos-button"
+          value="{{shapefiles?.length > 0 ? 'Reselect shapefiles(s)' : 'Select shapefiles(s)'}}"
+          (click)="launchFilePicker('shapefiles', 'Select project shapefiles(s)', false, 'zip', ['application/zip'], 6)"
+        >
+        <ul class="shapefile-list mb-3" *ngIf="shapefiles?.controls.length > 0">
+          <li class="shapefile-list-item" *ngFor="let shapefile of shapefiles?.controls; index as i">
+            <div class="shapefile-list-item-segment">
+              <span class="" [title]="">
+                <span class="">{{shapefile.controls.documentFileName.value}}</span>
+              </span>
+              <span class="cell actions">
+                <button class="btn btn-icon" type="button" title="Delete this shapefile" (click)="shapefiles.removeAt(i)">
+                  <i class="material-icons">delete</i>
+                </button>
+              </span>
+            </div>
+            <div class="shapefile-list-item-segment">
+              <div class="shapefile-input-container">
+                <label for="shapeFileOrder">Order</label>
+                <input
+                  type="text"
+                  id="shapeFileOrder"
+                  class="shape-file-order-input"
+                  [formControl]="shapefile.controls.order"
+                />
+              </div>
+              <div class="shapefile-input-container">
+                <label for="shapeFileTitle">Title</label>
+                <input
+                  type="text"
+                  id="shapeFileTitle"
+                  class="shape-file-title-input"
+                  [formControl]="shapefile.controls.title"
+                />
+              </div>
+              <div class="shapefile-input-container">
+                <label for="shapeFileColour">Colour</label><br>
+                <input 
+                  id="shapeFileColour"
+                  [ngStyle]="{'color': shapefile.controls.colour.value}"
+                  class="shape-file-colour-input"
+                  [formControl]="shapefile.controls.colour"
+                  (colorPicker)="shapefile.controls.colour.setValue($event)"
+                  [style.background]="shapefile.controls.colour.value"
+                  [style.color]="shapeFileTextColour"
+                  (colorPickerChange)="shapefile.controls.colour.setValue($event)"
+                  />
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
       </div>
     </section>
     <section formArrayName="existingLandUsePlans">
