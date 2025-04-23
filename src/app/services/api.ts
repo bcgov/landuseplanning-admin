@@ -226,6 +226,7 @@ export class ApiService {
       'delete',
       'activitiesAndUpdatesEnabled',
       'contactFormEnabled',
+      'contactFormFilesEnabled',
       'contactFormEmails',
       'collectionNotice',
     ];

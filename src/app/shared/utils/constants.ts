@@ -6,6 +6,20 @@ export class Constants {
     DEFAULT_KEYWORDS: ''
   };
 
+	public static readonly DEFAULT_PHASES: Array<string> = [
+    'Initiate Planning',
+    'Develop a Plan',
+    'Approve the Plan',
+    'Implement the Plan',
+  ];
+	public static readonly FOREST_PHASES: Array<string> = [
+    'Pre-Planning',
+    'Values Identification and Assessment',
+    'Plan Development',
+    'Plan Establishment',
+    'Plan Implementation and Monitoring'
+  ];
+
   public static readonly types = [
     'CERTIFICATE OF PURCHASE',
     'CROWN GRANT',

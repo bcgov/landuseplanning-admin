@@ -281,3 +281,35 @@ section .form-container-65 {
     }
   }
 }
+.contact-form-options-container {
+  border-left: 4px solid #ffd740; 
+  padding-left: 1rem;
+
+  .form-recipient {
+    font-size: 14px;
+  }
+
+  .form-recipient-email {
+    height: 30px; 
+    font-size: 14px;
+  }
+
+  .recipient-garbage-button {
+    margin-bottom: 1rem;
+  }
+
+  .additional-recipient-button {
+    height: 30px; 
+    font-size: 14px; 
+    line-height: 14px;
+    margin-bottom: 1rem;
+  }
+}
+
+::ng-deep .mat-checkbox-label, .mat-checkbox-layout {
+  white-space: wrap !important;
+}
+
+::ng-deep .mat-checkbox, label.mat-checkbox-layout {
+  max-width: 100%;
+}

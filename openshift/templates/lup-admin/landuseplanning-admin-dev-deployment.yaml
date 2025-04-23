@@ -1,0 +1,78 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: '17'
+  name: landuseplanning-admin-dev
+  namespace: e8b9ad-dev
+  labels:
+    app: landuseplanning-admin-dev
+    app.kubernetes.io/component: landuseplanning-admin-dev
+    app.kubernetes.io/instance: landuseplanning-admin-dev
+    app.kubernetes.io/part-of: landuseplanning-admin-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: landuseplanning-admin-dev
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: landuseplanning-admin-dev
+      annotations:
+        last-restart: '2025-03-28 22:51:51'
+        openshift.openshift.io/restartedAt: '2025-03-26T01:15:30.103Z'
+    spec:
+      containers:
+        - resources: {}
+          readinessProbe:
+            httpGet:
+              path: /assets/health-check/healthz.html
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: landuseplanning-admin-dev
+          livenessProbe:
+            httpGet:
+              path: /assets/health-check/healthz.html
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 2
+            periodSeconds: 20
+            successThreshold: 1
+            failureThreshold: 5
+          env:
+            - name: REMOTE_API_PATH
+              value: 'https://landuseplanning-dev.apps.silver.devops.gov.bc.ca/api'
+            - name: REMOTE_PUBLIC_PATH
+              value: 'https://landuseplanning-dev.apps.silver.devops.gov.bc.ca/'
+            - name: DEPLOYMENT_ENVIRONMENT
+              value: dev
+            - name: API_URL
+              value: 'https://landuseplanning-dev.apps.silver.devops.gov.bc.ca/api'
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          image: image-registry.apps.silver.devops.gov.bc.ca/e8b9ad-tools/lup-admin-deploy-image
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

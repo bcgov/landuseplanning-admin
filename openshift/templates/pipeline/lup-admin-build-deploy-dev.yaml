@@ -1,0 +1,133 @@
+﻿apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  labels:
+    app: landuseplanning
+    env: dev
+    name: lup-admin
+  name: lup-admin-build-deploy-dev
+  namespace: e8b9ad-tools
+spec:
+  finally:
+    - name: push-to-teams-success
+      params:
+        - name: webhook-url
+          value: 'https://bcgov.webhook.office.com/webhookb2/85d42a52-f637-43bb-af02-817e93e8cb6f@6fdb5200-3d0d-4a8a-b036-d3685e359adc/IncomingWebhook/fb6c473cce1c4be49b6b54fc89d3e7c9/2c1af31d-c876-40e0-b2e6-ca14006d7319/V2qzaDPI4OCXq2xUDTmNdOacE3Qwdgo3SATHKcquR8K841'
+        - name: webhook-payload
+          value: |-
+            {
+                "@type": "MessageCard",
+                "@context": "https://schema.org/extensions",
+                "summary": "Issue 176715375",
+                "themeColor": "33cc33",
+                "title": "[LUP] Land Use Planning Admin has been deployed to dev",
+                "sections": [
+                    {
+                        "text": "The latest version of Land Use Planning **Admin** has been built and deployed to **dev**."
+                    }
+                ],
+                "potentialAction": [
+                    {
+                        "@type": "OpenUri",
+                        "name": "View on OpenShift",
+                        "targets": [
+                            {
+                                "os": "default",
+                                "uri": "https://console.apps.silver.devops.gov.bc.ca/k8s/ns/e8b9ad-tools/tekton.dev~v1~Pipeline/lup-admin-build-deploy-dev/"
+                            }
+                        ]
+                    }
+                ]
+            }
+      taskRef:
+        kind: Task
+        name: push-to-teams
+      when:
+        - input: $(tasks.status)
+          operator: in
+          values:
+            - Succeeded
+    - name: push-to-teams-failure
+      params:
+        - name: webhook-url
+          value: 'https://bcgov.webhook.office.com/webhookb2/85d42a52-f637-43bb-af02-817e93e8cb6f@6fdb5200-3d0d-4a8a-b036-d3685e359adc/IncomingWebhook/fb6c473cce1c4be49b6b54fc89d3e7c9/2c1af31d-c876-40e0-b2e6-ca14006d7319/V2qzaDPI4OCXq2xUDTmNdOacE3Qwdgo3SATHKcquR8K841'
+        - name: webhook-payload
+          value: "{\n\t\"@type\": \"MessageCard\",\n\t\"@context\": \"https://schema.org/extensions\",\n\t\"summary\": \"Issue 176715375\",\n\t\"themeColor\": \"cc3333\",\n\t\"title\": \"[FAIL][LUP] Land Use Planning Admin dev pipeline failed\",\n\t\"sections\": [\n\t\t{\n\t\t\t\"text\": \"There was an issue with the latest **dev** pipeline run for Land Use Planning **Admin**.\"\n\t\t}\n\t],\n\t\"potentialAction\": [\n\t\t{\n\t\t\t\"@type\": \"OpenUri\",\n\t\t\t\"name\": \"View on OpenShift\",\n\t\t\t\"targets\": [\n\t\t\t\t{\n\t\t\t\t\t\"os\": \"default\",\n\t\t\t\t\t\"uri\": \"https://console.apps.silver.devops.gov.bc.ca/k8s/ns/e8b9ad-tools/tekton.dev~v1~Pipeline/lup-admin-build-deploy-dev/\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t]\n}"
+      taskRef:
+        kind: Task
+        name: push-to-teams
+      when:
+        - input: $(tasks.status)
+          operator: in
+          values:
+            - Failed
+  tasks:
+    - name: build-angular-builder
+      params:
+        - name: SCRIPT
+          value: |
+            oc start-build lup-admin-angular-builder --follow --wait
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: build-nginx
+      params:
+        - name: SCRIPT
+          value: |
+            oc start-build lup-admin-nginx-runtime --follow --wait
+      runAfter:
+        - build-angular-builder
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: build-angular-compiled
+      params:
+        - name: SCRIPT
+          value: |
+            oc start-build lup-admin-compiled --follow --wait
+      runAfter:
+        - build-nginx
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: build-deploy
+      params:
+        - name: SCRIPT
+          value: |
+            oc start-build lup-admin-deploy-image --follow --wait
+      runAfter:
+        - build-angular-compiled
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: tag-image
+      params:
+        - name: SCRIPT
+          value: |
+            oc tag lup-admin-deploy-image:latest lup-admin-deploy-image:dev
+      runAfter:
+        - build-deploy
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: trigger-deployment
+      params:
+        - name: SCRIPT
+          value: |
+            TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+            oc patch deployment/landuseplanning-admin-dev -n e8b9ad-dev --patch "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"last-restart\":\"$TIMESTAMP\"}}}}}"
+      runAfter:
+        - tag-image
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: check-rollout-status
+      runAfter:
+        - trigger-deployment
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+      params:
+        - name: SCRIPT
+          value: |
+            oc rollout status deployment/landuseplanning-admin-dev -n e8b9ad-dev --timeout="120s"

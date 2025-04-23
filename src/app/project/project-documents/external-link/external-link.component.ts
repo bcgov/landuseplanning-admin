@@ -12,6 +12,7 @@ import { Utils } from 'app/shared/utils/utils';
 import { DocumentSection } from 'app/models/documentSection';
 import { Document } from 'app/models/document';
 import { ExternalLink } from 'app/models/externalLink';
+import { Constants } from 'app/shared/utils/constants';
 
 @Component({
   selector: 'app-external-link',
@@ -33,13 +34,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
   public loading = true;
   public docNameInvalid = false;
   public externalLinkInvalid = false;
-  public PROJECT_PHASES: Array<Object> = [
-    'Pre-Planning',
-    'Plan Initiation',
-    'Plan Development',
-    'Plan Evaluation and Approval',
-    'Plan Implementation and Monitoring'
-  ];
+	public chosenPhases: Array<string>;
 
   constructor(
     private router: Router,
@@ -60,6 +55,7 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.documents = this.storageService.state.selectedDocs;
     this.currentProject = this.storageService.state.currentProject.data;
+		this.chosenPhases = this.currentProject.projectTypes?.find(type => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     this.route.data
     .takeUntil(this.ngUnsubscribe)
     .subscribe((res: any) => {
@@ -91,9 +87,12 @@ export class ExternalLinkComponent implements OnInit, OnDestroy {
     } else if (this.storageService.state?.form?.values?.length > 0) {
       // If there is an existing form in the storage service, populate our form with that data.
       this.myForm = this.storageService.state.form;
+			if (!this.myForm.controls.projectPhase) {
+				this.myForm.addControl('projectPhase', new FormControl('', [Validators.required]));
+			}
     } else if (this.documents?.length === 1) {
       // If we are being passed a single document then we are editing. Populate with document data.
-      this.dateAdded = this.documents[0].datePosted || this.documents[0].dateAdded;
+      this.dateAdded = this.documents[0].dateAdded || this.documents[0].datePosted;
       this.externalLink = this.documents[0].documentFileName || this.documents[0].externalLink;
       this.myForm = new FormGroup({
         'dateAdded': new FormControl(this.utils.convertJSDateToNGBDate(new Date(this.dateAdded)), Validators.required),
