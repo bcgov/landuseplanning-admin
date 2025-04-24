@@ -33,7 +33,6 @@ export class Project {
   dateAdded: String;
   dateUpdated: String;
   duration: String;
-  // TODO: directoryStructure.
   eaoMember: String;
   epicProjectID: Number;
   fedElecDist: String;
@@ -76,61 +75,58 @@ export class Project {
   isLoaded = false;
 
   constructor(obj?: any) {
-    this._id                 = obj && obj._id                 || null;
-    this.existingLandUsePlans = obj && obj.existingLandUsePlans     || undefined;
-    this.commentPeriodForBanner         = obj && obj.commentPeriodForBanner         || undefined;
-    this.description         = obj && obj.description         || undefined;
-    this.details         = obj && obj.details         || undefined;
+    this._id = obj && obj._id || null;
+    this.existingLandUsePlans = obj && obj.existingLandUsePlans || undefined;
+    this.commentPeriodForBanner = obj && obj.commentPeriodForBanner || undefined;
+    this.description = obj && obj.description || undefined;
+    this.details = obj && obj.details || undefined;
     this.engagementStatus = obj && obj.engagementStatus || undefined;
-    this.logos            = obj && obj.logos || undefined;
-    this.shapefiles            = obj && obj.shapefiles || undefined;
+    this.logos = obj && obj.logos || undefined;
+    this.shapefiles = obj && obj.shapefiles || undefined;
     this.backgroundInfo = obj && obj.backgroundInfo || undefined;
     this.backgroundImage = obj && obj.backgroundImage || undefined;
     this.engagementLabel = obj && obj.engagementLabel || undefined;
     this.engagementInfo = obj && obj.engagementInfo || undefined;
     this.documentInfo = obj && obj.documentInfo || undefined;
-    this.overlappingRegionalDistricts = obj && obj.overlappingRegionalDistricts            || undefined;
-    this.name                = obj && obj.name                || undefined;
+    this.overlappingRegionalDistricts = obj && obj.overlappingRegionalDistricts || undefined;
+    this.name = obj && obj.name || undefined;
     this.partner = obj && obj.partner || undefined;
-    this.region              = obj && obj.region              || undefined;
+    this.region = obj && obj.region || undefined;
     this.shapeFileColour = obj && obj.shapeFileColour || undefined;
-    this.agreements       = obj && obj.agreements                || undefined;
-    this.addedBy             = obj && obj.addedBy             || undefined;
-
-    this.eaDecision           = obj && obj.eaDecision               || undefined;
-
-    this.existingLandUsePlanURLs     = obj && obj.existingLandUsePlanURLs     || undefined;
-    this.code                        = obj && obj.code                        || undefined;
-    this.commodity                   = obj && obj.commodity                   || undefined;
-    this.currentPhaseName            = obj && obj.currentPhaseName            || undefined;
-    this.dateAdded                   = obj && obj.dateAdded                   || undefined;
-    this.dateUpdated                 = obj && obj.dateUpdated                 || undefined;
-    this.duration                    = obj && obj.duration                    || undefined;
-    this.eaoMember                   = obj && obj.eaoMember                   || undefined;
-    this.epicProjectID               = obj && obj.epicProjectID               || undefined;
-    this.fedElecDist                 = obj && obj.fedElecDist                 || undefined;
-    this.isTermsAgreed               = obj && obj.isTermsAgreed               || undefined;
-    this.overallProgress             = obj && obj.overallProgress             || undefined;
-    this.primaryContact              = obj && obj.primaryContact              || undefined;
-    this.proMember                   = obj && obj.proMember                   || undefined;
-    this.provElecDist                = obj && obj.provElecDist                || undefined;
-    this.shortName                   = obj && obj.shortName                   || undefined;
-    this.projectPhase                = obj && obj.projectPhase                || undefined;
-    this.projectTypes                = obj && obj.projectTypes                || undefined;
-    this.substitution                = obj && obj.substitution                || undefined;
-    this.updatedBy                   = obj && obj.updatedBy                   || undefined;
-    this.read                        = obj && obj.read                        || undefined;
-    this.write                       = obj && obj.write                       || undefined;
-    this.delete                      = obj && obj.delete                      || undefined;
-
-    this.projectLead                 = obj && obj.projectLead                 || undefined;
-    this.projectDirector             = obj && obj.projectDirector             || undefined;
-
+    this.agreements = obj && obj.agreements || undefined;
+    this.addedBy = obj && obj.addedBy || undefined;
     this.activitiesAndUpdatesEnabled = obj && obj.activitiesAndUpdatesEnabled || undefined;
     this.contactFormEnabled = obj && obj.contactFormEnabled || undefined;
     this.contactFormFilesEnabled = obj && obj.contactFormFilesEnabled || undefined;
     this.contactFormEmails = obj && obj.contactFormEmails || undefined;
     this.collectionNotice = obj && obj.collectionNotice || undefined;
+    this.eaDecision = obj && obj.eaDecision || undefined;
+    this.existingLandUsePlanURLs = obj && obj.existingLandUsePlanURLs || undefined;
+    this.code = obj && obj.code || undefined;
+    this.commodity = obj && obj.commodity || undefined;
+    this.currentPhaseName = obj && obj.currentPhaseName || undefined;
+    this.dateAdded = obj && obj.dateAdded || undefined;
+    this.dateUpdated = obj && obj.dateUpdated || undefined;
+    this.duration = obj && obj.duration || undefined;
+    this.eaoMember = obj && obj.eaoMember || undefined;
+    this.epicProjectID = obj && obj.epicProjectID || undefined;
+    this.fedElecDist = obj && obj.fedElecDist || undefined;
+    this.isTermsAgreed = obj && obj.isTermsAgreed || undefined;
+    this.overallProgress = obj && obj.overallProgress || undefined;
+    this.primaryContact = obj && obj.primaryContact || undefined;
+    this.proMember = obj && obj.proMember || undefined;
+    this.provElecDist = obj && obj.provElecDist || undefined;
+    this.shortName = obj && obj.shortName || undefined;
+    this.projectPhase = obj && obj.projectPhase || undefined;
+    this.projectTypes = obj && obj.projectTypes || undefined;
+    this.substitution = obj && obj.substitution || undefined;
+    this.updatedBy = obj && obj.updatedBy || undefined;
+    this.read = obj && obj.read || undefined;
+    this.write = obj && obj.write || undefined;
+    this.delete = obj && obj.delete || undefined;
+
+    this.projectLead = obj && obj.projectLead || undefined;
+    this.projectDirector = obj && obj.projectDirector || undefined;
 
     // copy pins
     if (obj && obj.pins) {

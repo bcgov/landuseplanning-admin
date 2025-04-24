@@ -575,16 +575,17 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     if (!projectData.centroid) {
       projectData.centroid = [-123.3656, 48.4284];
     }
-
+    
+		// Choose which project phase list is shown: regular phases or forest phases.
     if (projectData.projectTypes) {
       this.projectTypes = projectData.projectTypes || this.projectTypes;
-			this.chosenPhases = projectData.projectTypes?.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
+      this.chosenPhases = projectData.projectTypes?.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     } else {
-			this.chosenPhases = Constants.DEFAULT_PHASES;
-		}
+      this.chosenPhases = Constants.DEFAULT_PHASES;
+    }
 
-		// Remove the project phase value from the project if it doesn't exist in the chosen list of phases
-		projectData.projectPhase = this.chosenPhases.includes(projectData.projectPhase?.toString()) ? projectData.projectPhase : '';
+    // Remove the project phase value from the project if it doesn't exist in the chosen list of phases
+    projectData.projectPhase = this.chosenPhases.includes(projectData.projectPhase?.toString()) ? projectData.projectPhase : '';
 
     const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
     return new FormGroup({

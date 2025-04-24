@@ -160,30 +160,6 @@
         </select>
       </div>
       <div class="flex-container-no-wrap form-container-65">
-        <!-- <div class="small-margin-right half-wide">
-          <div class="form-group mb-0">
-            <label for="shapeFile">Upload Shape File(s) </label>
-            <app-file-upload [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
-              (filesChange)="addDocuments($event); projectFiles = []"></app-file-upload>
-            <br>
-            <ul class="doc-list mb-3" *ngIf="shapefileDocuments?.length > 0">
-              <li *ngFor="let doc of shapefileDocuments">
-                <span class="cell icon">
-                  <i class="material-icons">insert_drive_file</i>
-                </span>
-                <span class="cell name" [title]="doc.displayName || ''">
-                  <span class="cell__txt-content">{{doc.documentFileName}}</span>
-                </span>
-                <span class="cell actions">
-                  <button class="btn btn-icon" type="button" title="Delete this document" (click)="deleteDocument(doc)">
-                    <i class="material-icons">delete</i>
-                  </button>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div> -->
-
       <div class="logos-buttons flex-container half-wide">
         <input
           type="button"
