@@ -196,18 +196,6 @@ section .form-container-65 {
   }
 }
 
-.shape-file-colour-input {
-  width: 100%; 
-  cursor: pointer; 
-  margin-top: 0.5rem; 
-  border-radius: 0.4rem; 
-  text-align: center; 
-  border-width: 2px; 
-  border-color: #ddd; 
-  border-style: solid; 
-  height: 63px;
-}
-
 .save-cancel-buttons {
   position: fixed; 
   z-index: 2000; 
@@ -230,6 +218,69 @@ section .form-container-65 {
   z-index: 2001;
 }
 
+
+.shapefile-list {
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+
+  .shapefile-list-item {
+    display: flex;
+    flex-direction: column;
+    background: #96becb38;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+
+    .shapefile-list-item-segment {
+      display: flex;
+      justify-content: space-between;
+
+      &:last-of-type {
+        padding-top: 1rem;
+      }
+
+      .shapefile-input-container {
+        display: flex;
+        flex-direction: column;
+        padding-right: 0.5rem;
+
+        label {
+          margin-bottom: 0.25rem;
+          font-size: 1rem;
+          font-weight: 600;
+        }
+
+        input {
+          margin-top: 0.5rem;
+          border-radius: 0.4rem;
+
+          &.shape-file-colour-input {
+            width: 100%; 
+            cursor: pointer; 
+            margin-top: 0.5rem; 
+            border-radius: 0.4rem; 
+            text-align: center; 
+            border-width: 2px; 
+            border-color: #ddd; 
+            border-style: solid; 
+            height: 45px;
+          }
+
+          &#shapeFileOrder {
+            width: 3rem;
+          }
+        }
+      }
+
+      .actions > button {
+        padding: 0 0 0 2rem;
+      }
+    }
+  }
+}
 .contact-form-options-container {
   border-left: 4px solid #ffd740; 
   padding-left: 1rem;

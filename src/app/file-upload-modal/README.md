@@ -27,6 +27,8 @@ this.ngxSmartModalService.open('file-upload-modal');
 
 All options are optional except for projectID, which is needed to make sure files are saved to a particular project.
 
+#### __slug__ _String_
+A unique identifier if you're using the file modal multiple times on a single view. You may be using it for two different types of files that are saved differently, for example.
 #### __title__ _String_
 The title of the modal window. Example: "Select project logo(s)."
 ### __projectID__ _String_

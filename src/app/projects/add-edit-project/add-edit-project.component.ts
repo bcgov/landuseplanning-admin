@@ -95,12 +95,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   // Options
   public activitiesAndUpdatesEnabled = false;
 
-  // Shape file upload
   public projectFiles: Array<File> = [];
   public shapefileDocuments: Document[] = [];
   public shapefilesModified = false;
-  public shapeFileTextColour = '#ffffff';
-  public shapeFileColour = '#3388ff';
 
   public bannerImageDocument: Document | null;
   public allBannerImageDocuments: Document[] = [];
@@ -203,7 +200,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * After view init, listen for the file upload modal to close and check if it returned
    * files that can be saved in the Project. If files are returned, add their IDs to
-   * project logos.
+   * project logos or to the shapefile documents.
    *
    * @todo Get returned data into project form.
    * @returns {void}
@@ -212,17 +209,31 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     this.ngxSmartModalService.getModal('file-upload-modal').onAnyCloseEventFinished.subscribe((modal: NgxSmartModalComponent) => {
       const modalData = modal.getData();
       if (modalData?.returnedFiles) {
-        this.logos.clear();
-        modalData.returnedFiles.forEach(file => {
-          this.logos.push(new FormGroup({
-            'document': new FormControl(file._id),
-            'name': new FormControl(file.documentFileName),
-            'alt': new FormControl(file.alt),
-            'link': new FormControl('')
-          }));
-        });
+        if (modalData?.slug === 'logos') {
+          this.logos.clear();
+          modalData.returnedFiles.forEach(file => {
+            this.logos.push(new FormGroup({
+              'document': new FormControl(file._id),
+              'name': new FormControl(file.documentFileName),
+              'alt': new FormControl(file.alt),
+              'link': new FormControl('')
+            }));
+          });
+        }
+        if (modalData?.slug === 'shapefiles') {
+          modalData.returnedFiles.forEach(file => {
+            this.shapefiles.push(new FormGroup({
+              'document': new FormControl(file._id),
+              'documentFileName': new FormControl(file.documentFileName),
+              'title': new FormControl(''),
+              'order': new FormControl(''),
+              'colour': new FormControl('#2e86e4'),
+            }));
+          });
+        }
       }
     });
+
   }
 
   /**
@@ -240,6 +251,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
+      this.myForm.controls.shapeFileColour.setValue('#2e86e4');
     } else {
       this.myForm = new FormGroup({
         'name': new FormControl(),
@@ -252,13 +264,14 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'lat': new FormControl([]),
         'lon': new FormControl([]),
         'addFile': new FormControl(),
-        'shapeFileColour': new FormControl(this.shapeFileColour),
+        'shapeFileColour': new FormControl('#2e86e4'),
         'existingLandUsePlans': new FormArray([]),
         'ea': new FormControl(),
         'capital': new FormControl(),
         'notes': new FormControl(),
         'status': new FormControl(),
         'logos': new FormArray([]),
+        'shapefiles': new FormArray([]),
         'backgroundInfo': new FormControl(),
         'engagementLabel': new FormControl(),
         'engagementInfo': new FormControl(),
@@ -274,6 +287,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         'contactFormEmails': new FormArray([new FormControl()]),
         'collectionNotice': new FormControl(),
       });
+      // set a default colour
+      this.myForm.controls.shapeFileColour.setValue('#2e86e4');
       // set default values
 			this.chosenPhases = Constants.DEFAULT_PHASES;
     }
@@ -310,6 +325,16 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
+   * Getter to be able to access the shapefiles FormControl
+   * as a FormArray.
+   *
+   * @returns {FormArray}
+   */
+  get shapefiles(): FormArray {
+    return this.myForm.get('shapefiles') as FormArray;
+  }
+
+  /**
    * Getter to be able to access the contactFormEmails FormControl
    * as a FormArray.
    *
@@ -324,14 +349,15 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    *
    * @returns {void}
    */
-  launchFilePicker(): void {
+  launchFilePicker(slug: string, title: string, altRequired: boolean, fileExt: string, fileTypes: string[], fileNum: number): void {
     this.fileUploadModalData = {
-      title: "Select project logo(s).",
-      altRequired: true,
-      fileNum: 3,
-      fileExt: 'jpg, jpeg, png',
+      slug: slug,
+      title: title,
+      altRequired: altRequired,
+      fileNum: fileNum,
+      fileExt: fileExt,
       maxSize: 0.5,
-      fileTypes: [ 'image/jpeg', 'image/png' ],
+      fileTypes: fileTypes,
       projectID: this.projectId
     };
 
@@ -516,6 +542,29 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
+   * Build a an array of form groups to add as a form array to the main
+   * project form.
+   *
+   * @param {Project} projectData The project data to build the shapfile form array with.
+   * @returns {FormGroup[]} The array of shapefile form groups.
+   */
+    buildShapefilesFormArray(projectData: Project): FormGroup[] {
+      if (Array.isArray(projectData.shapefiles)) {
+        return projectData.shapefiles.map(shapefile => {
+          return new FormGroup({
+            'document': new FormControl(shapefile.document),
+            'documentFileName': new FormControl(shapefile.documentFileName),
+            'title': new FormControl(shapefile.title),
+            'colour': new FormControl(shapefile.colour),
+            'order': new FormControl(shapefile.order)
+          })
+        })
+      } else {
+        return [];
+      }
+    }
+
+  /**
    * Take project data and build a form from it. Usually invoked when
    * a user is editing a project rather than creating a new one.
    *
@@ -526,23 +575,17 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     if (!projectData.centroid) {
       projectData.centroid = [-123.3656, 48.4284];
     }
-
-		// Set the text background colour for the shape file colour picker.
-    if (projectData.shapeFileColour) {
-      this.shapeFileColour = projectData.shapeFileColour;
-      this.shapeFileTextColour = this.colourIsBright(this.shapeFileColour) ? '#000000' : '#ffffff';
-    }
-
+    
 		// Choose which project phase list is shown: regular phases or forest phases.
     if (projectData.projectTypes) {
       this.projectTypes = projectData.projectTypes || this.projectTypes;
-			this.chosenPhases = projectData.projectTypes?.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
+      this.chosenPhases = projectData.projectTypes?.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     } else {
-			this.chosenPhases = Constants.DEFAULT_PHASES;
-		}
+      this.chosenPhases = Constants.DEFAULT_PHASES;
+    }
 
-		// Remove the project phase value from the project if it doesn't exist in the chosen list of phases
-		projectData.projectPhase = this.chosenPhases.includes(projectData.projectPhase?.toString()) ? projectData.projectPhase : '';
+    // Remove the project phase value from the project if it doesn't exist in the chosen list of phases
+    projectData.projectPhase = this.chosenPhases.includes(projectData.projectPhase?.toString()) ? projectData.projectPhase : '';
 
     const contactformEmailControls = Array.isArray(projectData.contactFormEmails) ? projectData.contactFormEmails.map(email => new FormControl(email)) : [];
     return new FormGroup({
@@ -558,6 +601,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'lon': new FormControl(projectData.centroid[0]),
       'shapeFileColour': new FormControl(projectData.shapeFileColour),
       'logos': new FormArray(this.buildLogosFormArray(projectData)),
+      'shapefiles' : new FormArray(this.buildShapefilesFormArray(projectData)),
       'backgroundInfo': new FormControl(projectData.backgroundInfo),
       'engagementLabel': new FormControl(projectData.engagementLabel),
       'engagementInfo': new FormControl(projectData.engagementInfo),
@@ -607,6 +651,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'centroid': [form.get('lon').value, form.get('lat').value],
       'existingLandUsePlans': this.existingPlanFullFields(),
       'logos': this.getLogosFormValues(),
+      'shapefiles': this.getShapefilesFormValues(),
       'backgroundInfo': form.controls.backgroundInfo.value,
       'engagementLabel': form.controls.engagementLabel.value,
       'engagementInfo': form.controls.engagementInfo.value,
@@ -768,6 +813,21 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
+   * Takes the project shapefiles FormArray and gets the data from it.
+   *
+   * @returns {Array} Array of shapefiles objects.
+   */
+    private getShapefilesFormValues(): Project['shapefiles'] {
+      return this.shapefiles.controls.map((shapefile: FormGroup) => ({
+          document: shapefile.controls.document.value,
+          documentFileName: shapefile.controls.documentFileName.value,
+          title: shapefile.controls.title.value,
+          colour: shapefile.controls.colour.value,
+          order: shapefile.controls.order.value
+      }));
+    }
+
+  /**
    * Takes the project type form values and retrieves the data.
    *
    * @returns {Array} Array of project type strings.
@@ -791,24 +851,32 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * Publish the selected logos.
+   * Publish the selected logos or shapefiles. Logos and shapefiles are already saved to the DB
+   * when selected in the file picker.
    *
    * @returns {void}
    */
-  private publishSelectedLogos() {
+  private publishAttachedFiles() {
     const logoValues = this.getLogosFormValues();
-    const documentPublishRequests = logoValues.map(logo => {
-      return this.documentService.publish(logo.document);
+    const shapefileValues = this.getShapefilesFormValues();
+    // Filters down to the IDs of the documents/files to publish
+    const logoDocuments = logoValues.map(logo => logo.document);
+    const shapefileDocuments = shapefileValues.map(shapefile => shapefile.document);
+    const allDocuments = logoDocuments.concat(shapefileDocuments);
+    
+    const documentPublishRequests = allDocuments.map(doc => {
+      return this.documentService.publish(doc);
     });
+
     forkJoin(documentPublishRequests)
     .subscribe(
       aggregateResponse => {
         aggregateResponse.forEach((individualResponse: Document|HttpErrorResponse) => {
           if ("status" in individualResponse) {
-            // One or more of the responses is an error.
+            // If one or more of the responses is an error.
             if (500 === individualResponse.status || 400 === individualResponse.status) {
               console.error('Error publishing file', individualResponse);
-              alert('There was a problem publishing one or more of the selected logos.')
+              alert('There was a problem publishing one or more of the selected logos/shapefiles.')
               return;
             }
           }
@@ -816,54 +884,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       },
       error => {
         console.error('Error publishing files', error);
-        alert('There was a problem publishing one or more of the selected logos.')
+        alert('There was a problem publishing one or more of the selected logos/shapefiles.')
         return;
       },
       () => {} // On finished.
     )
-  }
-
-  /**
-   * Updates the shape file colour form value when a new selection is made.
-   * 
-   * @returns {void}
-   */
-  updateShapeFileColour(colour: string): void {
-    this.myForm.controls?.shapeFileColour?.setValue(colour);
-    this.shapeFileColour = colour;
-    this.shapeFileTextColour = this.colourIsBright(colour) ? '#000000' : '#ffffff';
-  }
-
-  /**
-   * Calculates if the colour is bright. This is useful for displaying text on top of an unknown colour.
-   * 
-   * @param {string} colour The colour to assess.
-   * @returns boolean
-   */
-  colourIsBright(colour: string): boolean {
-    let rgb: number[] = [0, 0, 0];
-    let opacity: number = 1;
-    if (/^rgba/.test(colour)) {
-      // If colour is in RGBA format, ex: 'rgba(0, 0, 0, 0)'
-      const rgba = colour.match(/\d+(\.\d+)?/g).map(Number);
-      rgb = [rgba[0], rgba[1], rgba[2]];
-      opacity = rgba[3];
-    } else if (/^rgb/.test(colour)) {
-      // If colour is in RGB format, ex: 'rgb(0, 0, 0)'
-      rgb = colour.match(/\d+/g).map(Number);
-    } else if (/^#?[0-9a-fA-F]{3,6}$/.test(colour)) {
-       // If colour is in hex format, ex: '#000000'
-      const hex = colour.replace('#', '');
-      const splitHex = [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)];
-      rgb = splitHex.map(clr => parseInt(clr, 16));
-    } else {
-      return false;
-    }
-    if (rgb.some(num => num > 255)) {
-      return false;
-    }
-    const brightness = ((rgb[0] / opacity * 299) + (rgb[1] / opacity * 587) + (rgb[2] / opacity * 114)) / 1000;
-    return brightness < 155 ? false : true;
   }
 
   /**
@@ -1005,8 +1030,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       }
 
       // Publish selected logo files.
-      if (this.logos) {
-        this.publishSelectedLogos();
+      if (this.logos || this.shapefiles) {
+        this.publishAttachedFiles();
       }
     } else { // If the user is editing an existing project.
       project._id = this.project._id;
@@ -1079,8 +1104,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       }
 
       // Publish selected logo files.
-      if (this.logos.dirty) {
-        this.publishSelectedLogos();
+      if (this.logos.dirty || this.shapefiles.dirty) {
+        this.publishAttachedFiles();
       }
 
       // Only save shapefiles if they are modified.
@@ -1195,6 +1220,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Makes a call to the delete document endpoint, then removes the document from the view.
    *
+   * @deprecated Once all projects save shapefiles to "shapefiles," we can remove this function.
    * @param {Document} doc The document to delete.
    * @returns {void}
    */

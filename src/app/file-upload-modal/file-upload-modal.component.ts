@@ -423,7 +423,7 @@ export class FileUploadModalComponent implements OnInit {
             }
           });
 
-          this.closeModal({ returnedFiles: aggregateResponse });
+          this.closeModal({ slug: this.modalData?.slug || null, returnedFiles: aggregateResponse });
         },
         error => {
           console.error('Error returning files', error);
