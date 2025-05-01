@@ -1,3 +1,5 @@
+import { DocumentSourceEnum } from "app/models/document";
+
 export interface ModalData {
   slug?: string;
   projectID: string;
@@ -6,7 +8,7 @@ export interface ModalData {
   fileExt?: string;
   fileTypes?: string[];
   fileNum?: number;
-  documentSource?: string;
+  documentSource?: DocumentSourceEnum;
   maxSize?: number;
   returnedFiles?: Document|unknown[];
 }

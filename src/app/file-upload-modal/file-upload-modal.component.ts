@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { SearchService } from 'app/services/search.service';
 import { DocumentService } from 'app/services/document.service';
-import { Document } from 'app/models/document';
+import { Document, DocumentSourceEnum } from 'app/models/document';
 import { Utils } from 'app/shared/utils/utils';
 import { uniqBy, truncate } from 'lodash';
 import { DocumentForm } from './types';
@@ -30,7 +30,7 @@ export class FileUploadModalComponent implements OnInit {
   showDeselectButton: boolean;
   projectID: string;
   showHelp: boolean;
-  documentSource = 'PROJECT';
+  documentSource: DocumentSourceEnum;
   truncate = truncate;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   @ViewChild("fileBrowser") fileBrowser: ElementRef;
@@ -55,6 +55,7 @@ export class FileUploadModalComponent implements OnInit {
     this.queuedFiles = [];
     this.modalData = this.ngxSmartModalService.getModalData('file-upload-modal');
     this.projectID = this.modalData.projectID;
+    this.documentSource = DocumentSourceEnum['PROJECT'];
 
     if (this.modalData.fileExt) {
       this.fileExt = this.modalData.fileExt;
@@ -376,7 +377,7 @@ export class FileUploadModalComponent implements OnInit {
         fileFormData.append('documentFileName', file.documentFileName);
         fileFormData.append('displayName',  file.documentFileName);
         fileFormData.append('upfile', file.upfile);
-        fileFormData.append('documentSource', file.documentSource);
+        fileFormData.append('documentSource', DocumentSourceEnum[file.documentSource]);
         fileFormData.append('alt', file.alt.value);
 
         observableThatReturnsDocument = this.documentService.add(fileFormData).pipe(catchError(error => of(error)));

@@ -11,7 +11,7 @@ export class Document {
   internalMime: string;
   internalSize: number;
   internalExt: string;
-  documentSource: string;
+  documentSource: DocumentSourceEnum;
   displayName: string;
   section: string;
   dateUploaded: string;
@@ -60,4 +60,11 @@ export class Document {
 
     this.read = obj && obj.read || null;
   }
+}
+
+export enum DocumentSourceEnum {
+  "PROJECT",
+  "SHAPEFILE",
+  "BANNER",
+  "COMMENT"
 }

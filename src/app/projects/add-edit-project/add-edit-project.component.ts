@@ -10,10 +10,10 @@ import { StorageService } from 'app/services/storage.service';
 import { ProjectService } from 'app/services/project.service';
 import { DocumentService } from 'app/services/document.service';
 import { CkUploadAdapter } from 'app/shared/utils/ck-upload-adapter';
-import { Project, ProjectShapefile, ProjectType, ProjectShapefileOrDocument } from 'app/models/project';
+import { Project, ProjectType, ProjectShapefileOrDocument } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 import { ModalData } from 'app/shared/types/modal';
-import { Document } from 'app/models/document';
+import { Document, DocumentSourceEnum } from 'app/models/document';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Constants } from 'app/shared/utils/constants';
 
@@ -358,7 +358,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       altRequired: altRequired,
       fileNum: fileNum,
       fileExt: fileExt,
-      documentSource: documentSource,
+      documentSource: DocumentSourceEnum[documentSource],
       maxSize: 0.5,
       fileTypes: fileTypes,
       projectID: this.projectId
