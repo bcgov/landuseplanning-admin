@@ -15,7 +15,7 @@ import { Comment } from 'app/models/comment';
 import { CommentPeriod } from 'app/models/commentPeriod';
 import { Survey } from 'app/models/survey';
 import { Decision } from 'app/models/decision';
-import { Document } from 'app/models/document';
+import { Document, DocumentSourceEnum } from 'app/models/document';
 import { SearchResults } from 'app/models/search';
 import { User } from 'app/models/user';
 import { Org } from 'app/models/org';
@@ -1220,7 +1220,7 @@ export class ApiService {
   public async downloadDocument(document: Document): Promise<void> {
     const blob = await this.downloadResource(document._id);
     let filename;
-    if (document.documentSource === 'COMMENT') {
+    if (document.documentSource === DocumentSourceEnum['COMMENT']) {
       filename = document.internalOriginalName;
     } else {
       filename = document.documentFileName;
@@ -1365,7 +1365,7 @@ export class ApiService {
    */
   public async openDocument(document: Document): Promise<void> {
     let filename;
-    if (document.documentSource === 'COMMENT') {
+    if (document.documentSource === DocumentSourceEnum['COMMENT']) {
       filename = document.internalOriginalName;
     } else {
       filename = document.documentFileName;

@@ -180,3 +180,7 @@ export interface ProjectType {
   name: string;
   checked: boolean;
 }
+
+export interface ProjectShapefileOrDocument extends ProjectShapefile {
+  id?: string
+}
