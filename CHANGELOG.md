@@ -1,3 +1,6 @@
+### May 1, 2025
+* Update multiple shapefile code to ensure complete backwards compatibility. [DESENG-769](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-769)
+
 ### Apr 23, 2025
 * Add ability to select multiple shapefiles. [DESENG-769](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-769)
 

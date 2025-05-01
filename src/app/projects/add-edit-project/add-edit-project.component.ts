@@ -10,7 +10,7 @@ import { StorageService } from 'app/services/storage.service';
 import { ProjectService } from 'app/services/project.service';
 import { DocumentService } from 'app/services/document.service';
 import { CkUploadAdapter } from 'app/shared/utils/ck-upload-adapter';
-import { Project, ProjectType } from 'app/models/project';
+import { Project, ProjectShapefile, ProjectType, ProjectShapefileOrDocument } from 'app/models/project';
 import { NavigationStackUtils } from 'app/shared/utils/navigation-stack-utils';
 import { ModalData } from 'app/shared/types/modal';
 import { Document } from 'app/models/document';
@@ -146,8 +146,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         this.project = data.project;
-        this.buildForm(data);
 
+        // Look for shapefiles and banner images.
         this.route.data.subscribe((res: any) => {
             if (res && res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
               const returnedDocuments = res.documents[0].data.searchResults;
@@ -160,6 +160,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
 
               this.bannerImageDocument = this.allBannerImageDocuments.find((doc) => doc._id === this.project.backgroundImage);
+
+              this.buildForm(data);
 
               try {
                 this._changeDetectorRef.detectChanges();
@@ -349,13 +351,14 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    *
    * @returns {void}
    */
-  launchFilePicker(slug: string, title: string, altRequired: boolean, fileExt: string, fileTypes: string[], fileNum: number): void {
+  launchFilePicker(slug: string, title: string, altRequired: boolean, fileExt: string, fileTypes: string[], fileNum: number, documentSource: string): void {
     this.fileUploadModalData = {
       slug: slug,
       title: title,
       altRequired: altRequired,
       fileNum: fileNum,
       fileExt: fileExt,
+      documentSource: documentSource,
       maxSize: 0.5,
       fileTypes: fileTypes,
       projectID: this.projectId
@@ -549,19 +552,21 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @returns {FormGroup[]} The array of shapefile form groups.
    */
     buildShapefilesFormArray(projectData: Project): FormGroup[] {
+      let shapefilesToFillFormWith = this.shapefileDocuments as unknown as ProjectShapefileOrDocument[];
+      
       if (Array.isArray(projectData.shapefiles)) {
-        return projectData.shapefiles.map(shapefile => {
-          return new FormGroup({
-            'document': new FormControl(shapefile.document),
-            'documentFileName': new FormControl(shapefile.documentFileName),
-            'title': new FormControl(shapefile.title),
-            'colour': new FormControl(shapefile.colour),
-            'order': new FormControl(shapefile.order)
-          })
-        })
-      } else {
-        return [];
+        shapefilesToFillFormWith = projectData.shapefiles;
       }
+
+      return shapefilesToFillFormWith.map(shapefile => {
+        return new FormGroup({
+          'document': new FormControl(shapefile?.document || shapefile?.id),
+          'documentFileName': new FormControl(shapefile.documentFileName),
+          'title': new FormControl(shapefile?.title || ''),
+          'colour': new FormControl(shapefile?.colour || ''),
+          'order': new FormControl(shapefile?.order || '')
+        })
+      })
     }
 
   /**

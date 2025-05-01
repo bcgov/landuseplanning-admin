@@ -25,11 +25,12 @@ export class FileUploadModalComponent implements OnInit {
   modalData: ModalData;
   queuedFiles: File[];
   fileList: DocumentForm[];
-  fileExt: string;
+  fileExt = 'jpg, jpeg, gif, png, bmp, doc, docx, xls, xlsx, ppt, pptx, pdf, txt, zip';
   selectedFiles: DocumentForm[];
   showDeselectButton: boolean;
   projectID: string;
   showHelp: boolean;
+  documentSource = 'PROJECT';
   truncate = truncate;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   @ViewChild("fileBrowser") fileBrowser: ElementRef;
@@ -54,11 +55,15 @@ export class FileUploadModalComponent implements OnInit {
     this.queuedFiles = [];
     this.modalData = this.ngxSmartModalService.getModalData('file-upload-modal');
     this.projectID = this.modalData.projectID;
+
     if (this.modalData.fileExt) {
       this.fileExt = this.modalData.fileExt;
-    } else {
-      this.fileExt = 'jpg, jpeg, gif, png, bmp, doc, docx, xls, xlsx, ppt, pptx, pdf, txt, zip';
     }
+    
+    if (this.modalData.documentSource) {
+      this.documentSource = this.modalData.documentSource;
+    }
+
     this.loadFileList();
   }
 
@@ -129,7 +134,7 @@ export class FileUploadModalComponent implements OnInit {
       1,
       10,
       '-datePosted',
-      { internalExt: fileExtensionsToLoad, documentSource: 'PROJECT' },
+      { internalExt: fileExtensionsToLoad, documentSource: this.documentSource },
       true
     ).subscribe(res => {
       this.loading = false;
@@ -166,7 +171,7 @@ export class FileUploadModalComponent implements OnInit {
       documentForm.internalSize = file.size;
       documentForm.mimeType = file.type;
       documentForm.documentFileName = file.name;
-      documentForm.documentSource = 'PROJECT';
+      documentForm.documentSource = this.documentSource;
       documentForm.queuedForUpload = true;
       documentForm.deselectHovered = false;
 

@@ -27,17 +27,19 @@ this.ngxSmartModalService.open('file-upload-modal');
 
 All options are optional except for projectID, which is needed to make sure files are saved to a particular project.
 
-#### __slug__ _String_
+#### __slug__ _string_
 A unique identifier if you're using the file modal multiple times on a single view. You may be using it for two different types of files that are saved differently, for example.
-#### __title__ _String_
+#### __title__ _string_
 The title of the modal window. Example: "Select project logo(s)."
-### __projectID__ _String_
+### __projectID__ _string_
 Should be the project the modal is being launched from. Files will be saved with this project ID.
-#### __fileExt__ _String_
+#### __fileExt__ _string_
 A string of accepted file types separated by commas. Example: 'jpg, jpeg, png'
+#### __documentSource__ _string_
+Can be used as an file type identifier. Some possible values are 'SHAPEFILE' and 'BANNER'. Defaults to the generic label 'PROJECT'.
 #### __altRequired__ _Boolean_
 Whether or not the selected files must each have alt tags specified. Used when specifying image files.
-#### __fileNum__ _Number_
+#### __fileNum__ _number_
 Maximum number of files the user can select. If -1 is entered, there is no limit.
 #### __returnedFiles__ _Document[]_
 An array of document objects returned from the files having been saved. It's not recommended that you set this manually. The File Upload Modal uses this to return files

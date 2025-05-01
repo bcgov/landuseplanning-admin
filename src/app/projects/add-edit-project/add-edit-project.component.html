@@ -81,7 +81,7 @@
                 id="logos"
                 class="btn btn-primary small-margin-bottom logos-button"
                 value="{{logos.length > 0 ? 'Reselect project logo(s)' : 'Select project logo(s)'}}"
-                (click)="launchFilePicker('logos', 'Select project logo(s)', true, 'jpg, jpeg, png', ['image/jpeg', 'image/png'], 3)"
+                (click)="launchFilePicker('logos', 'Select project logo(s)', true, 'jpg, jpeg, png', ['image/jpeg', 'image/png'], 3, 'PROJECT')"
               >
               <input
                 *ngIf="logos.controls.length > 0"
@@ -166,7 +166,7 @@
           id="shapefiles"
           class="btn btn-primary small-margin-bottom logos-button"
           value="{{shapefiles?.length > 0 ? 'Reselect shapefiles(s)' : 'Select shapefiles(s)'}}"
-          (click)="launchFilePicker('shapefiles', 'Select project shapefiles(s)', false, 'zip', ['application/zip'], 6)"
+          (click)="launchFilePicker('shapefiles', 'Select project shapefiles(s)', false, 'zip', ['application/zip'], 6, 'SHAPEFILE')"
         >
         <ul class="shapefile-list mb-3" *ngIf="shapefiles?.controls.length > 0">
           <li class="shapefile-list-item" *ngFor="let shapefile of shapefiles?.controls; index as i">
