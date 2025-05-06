@@ -1,3 +1,6 @@
+### May 5, 2025
+* Rearrange order of angular form building to prevent bug. [DESENG-769](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-769)
+
 ### May 1, 2025
 * Update multiple shapefile code to ensure complete backwards compatibility. [DESENG-769](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-769)
 

@@ -149,31 +149,31 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Look for shapefiles and banner images.
         this.route.data.subscribe((res: any) => {
-            if (res && res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
-              const returnedDocuments = res.documents[0].data.searchResults;
-              this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null );
-              this.allBannerImageDocuments = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null );
+          if (res && res.documents && res.documents[0].data.meta && res.documents[0].data.meta.length > 0) {
+            const returnedDocuments = res.documents[0].data.searchResults;
+            this.shapefileDocuments = returnedDocuments.filter((document) => document.documentSource === 'SHAPEFILE' ? document : null );
+            this.allBannerImageDocuments = returnedDocuments.filter((document) => document.documentSource === 'BANNER' ? document : null );
+            this.bannerImageDocument = this.allBannerImageDocuments.find((doc) => doc._id === this.project.backgroundImage);
 
-              // The following items are loaded by a file that is only present on cluster builds.
-              // Locally, this will be empty and local defaults will be used.
-              const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
-              this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
+            // The following items are loaded by a file that is only present on cluster builds.
+            // Locally, this will be empty and local defaults will be used.
+            const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+            this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
 
-              this.bannerImageDocument = this.allBannerImageDocuments.find((doc) => doc._id === this.project.backgroundImage);
+            this.loading = false;
+          } else {
+            this.loading = false;
+          }
+        });
 
-              this.buildForm(data);
+        this.buildForm(data);
 
-              try {
-                this._changeDetectorRef.detectChanges();
-              } catch (e) {
-                console.error('error:', e);
-              }
-
-              this.loading = false;
-            } else {
-              this.loading = false;
-            }
-          });
+        // After all data is fetched and form is built, check for changes and refresh view.
+        try {
+          this._changeDetectorRef.detectChanges();
+        } catch (e) {
+          console.error('Error checking for latest data:', e);
+        }
       } else {
         this.buildForm();
         this.shapefileDocuments = [];
@@ -253,7 +253,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       // First entry on resolver
       this.projectId = resolverData.project._id;
       this.myForm = this.buildFormFromData(resolverData.project);
-      this.myForm.controls.shapeFileColour.setValue('#2e86e4');
     } else {
       this.myForm = new FormGroup({
         'name': new FormControl(),
