@@ -1,3 +1,6 @@
+### May 9, 2025
+* Fix old shapefiles not appearing in admin view. [DESENG-821](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-821)
+
 ### May 5, 2025
 * Rearrange order of angular form building to prevent bug. [DESENG-769](https://apps.itsm.gov.bc.ca/jira/browse/DESENG-769)
 
