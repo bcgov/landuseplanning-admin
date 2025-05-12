@@ -553,7 +553,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     buildShapefilesFormArray(projectData: Project): FormGroup[] {
       let shapefilesToFillFormWith = this.shapefileDocuments as unknown as ProjectShapefileOrDocument[];
       
-      if (Array.isArray(projectData.shapefiles)) {
+      if (Array.isArray(projectData.shapefiles) && projectData.shapefiles.length > 0) {
         shapefilesToFillFormWith = projectData.shapefiles;
       }
 
@@ -562,7 +562,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           'document': new FormControl(shapefile?.document || shapefile?.id),
           'documentFileName': new FormControl(shapefile.documentFileName),
           'title': new FormControl(shapefile?.title || ''),
-          'colour': new FormControl(shapefile?.colour || ''),
+          'colour': new FormControl(shapefile?.colour || projectData?.shapeFileColour || '#2e86e4'),
           'order': new FormControl(shapefile?.order || '')
         })
       })

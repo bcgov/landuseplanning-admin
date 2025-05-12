@@ -63,8 +63,8 @@ export class Document {
 }
 
 export enum DocumentSourceEnum {
-  "PROJECT",
-  "SHAPEFILE",
-  "BANNER",
-  "COMMENT"
+  PROJECT = "PROJECT",
+  SHAPEFILE = "SHAPEFILE",
+  BANNER = "BANNER",
+  COMMENT = "COMMENT"
 }
