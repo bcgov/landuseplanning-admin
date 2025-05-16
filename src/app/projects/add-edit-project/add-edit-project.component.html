@@ -175,7 +175,8 @@
                 <span class="">{{shapefile.controls.documentFileName.value}}</span>
               </span>
               <span class="cell actions">
-                <button class="btn btn-icon" type="button" title="Delete this shapefile" (click)="shapefiles.removeAt(i)">
+                <!-- <button class="btn btn-icon" type="button" title="Delete this shapefile" (click)="shapefiles.removeAt(i)"> -->
+                <button class="btn btn-icon" type="button" title="Delete this shapefile" (click)="deleteDocument(shapefile.value.document)">
                   <i class="material-icons">delete</i>
                 </button>
               </span>

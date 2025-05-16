@@ -75,11 +75,11 @@ export class DocumentService {
   /**
    * Delete a document.
    *
-   * @param {Document} document The document to delete.
+   * @param docId The document to delete by ID.
    * @returns {Observable}
    */
-  delete(document: Document): Observable<Document> {
-    return this.api.deleteDocument(document).pipe(catchError(error => this.api.handleError(error)));
+  delete(docId: string): Observable<Document> {
+    return this.api.deleteDocument(docId).pipe(catchError(error => this.api.handleError(error)));
   }
 
   /**

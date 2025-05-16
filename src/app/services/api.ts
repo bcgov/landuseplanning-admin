@@ -1021,11 +1021,11 @@ export class ApiService {
   /**
    * Delete a document.
    *
-   * @param {Document} doc The document to delete.
+   * @param docId The document to delete by ID.
    * @returns {Observable}
    */
-  deleteDocument(doc: Document): Observable<Document> {
-    const queryString = `document/${doc._id}`;
+  deleteDocument(docId: string): Observable<Document> {
+    const queryString = `document/${docId}`;
     return this.http.delete<Document>(`${this.pathAPI}/${queryString}`, {});
   }
 
