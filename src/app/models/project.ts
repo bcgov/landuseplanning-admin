@@ -182,5 +182,5 @@ export interface ProjectType {
 }
 
 export interface ProjectShapefileOrDocument extends ProjectShapefile {
-  id?: string
+  _id?: string
 }

@@ -559,7 +559,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
       return shapefilesToFillFormWith.map(shapefile => {
         return new FormGroup({
-          'document': new FormControl(shapefile?.document || shapefile?.id),
+          'document': new FormControl(shapefile?.document || shapefile?._id),
           'documentFileName': new FormControl(shapefile.documentFileName),
           'title': new FormControl(shapefile?.title || ''),
           'colour': new FormControl(shapefile?.colour || projectData?.shapeFileColour || '#2e86e4'),
@@ -1061,13 +1061,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
          * If the current banner image doesn't match the originally-loaded one,
          * delete the original, then save the new one.
          */
-        const bannerImageToDelete = new Document();
         const bannerImageFormData = this.getBannerImageFormData();
-
-        bannerImageToDelete._id = this.project.backgroundImage;
         bannerImageFormData.append('project', this.project._id);
 
-        this.documentService.delete(bannerImageToDelete)
+        this.documentService.delete(this.project.backgroundImage)
           .subscribe(
             () => {
               this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
@@ -1087,10 +1084,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       } else if (!this.bannerImageDocument) {
         // Remove the banner image entirely.
         if (this.project.backgroundImage) {
-          const bannerImageToDelete = new Document();
-          bannerImageToDelete._id = this.project.backgroundImage;
-
-          this.documentService.delete(bannerImageToDelete)
+          this.documentService.delete(this.project.backgroundImage)
             .subscribe(
               (res) => {
                 // Remove the background image value now that it's been deleted.
@@ -1224,27 +1218,24 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Makes a call to the delete document endpoint, then removes the document from the view.
    *
-   * @deprecated Once all projects save shapefiles to "shapefiles," we can remove this function.
-   * @param {Document} doc The document to delete.
-   * @returns {void}
+   * @param docId The document to delete by ID.
+   * @param fileType The type of file to delete. Appears to the user once the delete call completes.
+   * @param formArrayIndex If the document is a part of a FormArray, the location to remove it at.
    */
-  public deleteDocument(doc: Document): void {
-    if (doc && this.shapefileDocuments) {
-      this.documentService.delete(doc)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-            res => {
-              // Remove doc from current list.
-              this.projectFiles = this.projectFiles.filter(item => (item.name !== doc.documentFileName));
-              this.shapefileDocuments = this.shapefileDocuments.filter(item => (item.documentFileName !== doc.documentFileName));
-              this.shapefilesModified = true;
-            },
-            error => {
-              console.error(error);
-              alert('Uh-oh, couldn\'t delete shapefile.');
-            }
-        );
-    }
+  public deleteDocument(docId: string, fileType: string, formArrayIndex?: number): void {
+    this.documentService.delete(docId)
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(
+          res => {
+            this.shapefiles.removeAt(formArrayIndex);
+            this.shapefilesModified = true;
+            this.openSnackBar(`The ${fileType} was deleted.`, 'Close');
+          },
+          error => {
+            console.error(`Error deleting ${fileType}`, error);
+            alert(`Uh-oh, couldn't delete ${fileType}. Please delete manually in Files.`);
+          }
+      );
   }
 
   /**

@@ -450,7 +450,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     let itemsToDelete = [];
     this.documentTableData.data.map((item) => {
       if (item.checkbox === true) {
-        itemsToDelete.push({ promise: this.documentService.delete(item).toPromise(), item: item });
+        itemsToDelete.push({ promise: this.documentService.delete(item._id).toPromise(), item: item });
       }
     });
     this.loading = false;
