@@ -212,6 +212,14 @@
                   (colorPickerChange)="shapefile.controls.colour.setValue($event)"
                   />
               </div>
+              <div class="shapefile-input-container">
+                <label for="shapeFileShowOnMapPage"> Hide on main map page</label>
+                <input
+                  id="shapeFileShowOnMapPage"
+                  class="hide-shapefile-checkbox"
+                  type="checkbox"
+                  [formControl]="shapefile.controls.showOnMapPage" />
+              </div>
             </div>
           </li>
         </ul>
