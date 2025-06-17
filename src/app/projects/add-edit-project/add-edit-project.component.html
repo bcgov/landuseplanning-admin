@@ -160,13 +160,13 @@
         </select>
       </div>
       <div class="flex-container-no-wrap form-container-65">
-      <div class="logos-buttons flex-container half-wide">
+      <div class="logos-buttons flex-container half-wide full-width-button">
         <input
           type="button"
           id="shapefiles"
           class="btn btn-primary small-margin-bottom logos-button"
-          value="{{shapefiles?.length > 0 ? 'Add shapefiles(s)' : 'Select shapefiles(s)'}}"
-          (click)="launchFilePicker('shapefiles', 'Select project shapefiles(s)', false, 'zip', ['application/zip'], 6, 'SHAPEFILE')"
+          value="{{shapefiles?.length > 0 ? 'Add shapefiles(s)' : 'Select shapefile(s)'}}"
+          (click)="launchFilePicker('shapefiles', 'Select project shapefile(s)', false, 'zip', ['application/zip'], 6, 'SHAPEFILE')"
         >
         <ul class="shapefile-list mb-3" *ngIf="shapefiles?.controls.length > 0">
           <li class="shapefile-list-item" *ngFor="let shapefile of shapefiles?.controls; index as i">
@@ -175,7 +175,7 @@
                 <span class="">{{shapefile.controls.documentFileName.value}}</span>
               </span>
               <span class="cell actions">
-                <button class="btn btn-icon" type="button" title="Delete this shapefile" (click)="deleteDocument(shapefile.value.document)">
+                <button class="btn btn-icon" type="button" title="Delete this shapefile" (click)="handleRemoveShapefile(i)">
                   <i class="material-icons">delete</i>
                 </button>
               </span>

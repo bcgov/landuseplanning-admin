@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import { Subject, forkJoin, Observable } from 'rxjs';
+import { Subject, forkJoin, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { NgxSmartModalComponent, NgxSmartModalService } from 'ngx-smart-modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as Editor from 'assets/ckeditor5/build/ckeditor';
@@ -204,7 +205,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * files that can be saved in the Project. If files are returned, add their IDs to
    * project logos or to the shapefile documents.
    *
-   * @todo Get returned data into project form.
    * @returns {void}
    */
   ngAfterViewInit(): void {
@@ -221,8 +221,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               'link': new FormControl('')
             }));
           });
-        }
-        if (modalData?.slug === 'shapefiles') {
+        } else if (modalData?.slug === 'shapefiles') {
           modalData.returnedFiles.forEach(file => {
             this.shapefiles.push(new FormGroup({
               'document': new FormControl(file._id),
@@ -241,7 +240,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Build project edit form either from local storage, from route
-   * resolver data, or a new empty form(if user is adding a new project).
+   * resolver data, or a new empty form (if user is adding a new project).
    *
    * @param {object} resolverData The route resolved data to build into a form.
    * @returns {void}
@@ -348,6 +347,14 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
   /**
    * Set the modal data and launch file upload modal.
+   * 
+   * @param slug The slug title for the modal dialog
+   * @param title The title for the modal dialog
+   * @param altRequired Is alt text required, true or false
+   * @param fileExt Accepted file extension
+   * @param fileTypes Accepted file types
+   * @param fileNum Maximum file count
+   * @param documentSource Where you're opening the file upload from
    *
    * @returns {void}
    */
@@ -399,6 +406,17 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    */
   handleClearLogos(): void {
     this.myForm.controls.logos = new FormArray([]);
+  }
+
+  /**
+   * Clear the selected shapefiles and the associated information.
+   * 
+   * @param formArrayIndex The index of the shapefile that you wish to remove
+   *
+   * @returns {void}
+   */
+  handleRemoveShapefile(formArrayIndex: number): void {
+    this.shapefiles.removeAt(formArrayIndex);
   }
 
   /**
@@ -858,44 +876,72 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * Publish the selected logos or shapefiles. Logos and shapefiles are already saved to the DB
-   * when selected in the file picker.
+   * Handle the selected logos or shapefiles. 
+   * Newly added files will be published.
+   * Newly removed files will be deleted.
+   * 
+   * @param source Shapefiles or logos
    *
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  private publishAttachedFiles() {
-    const logoValues = this.getLogosFormValues();
-    const shapefileValues = this.getShapefilesFormValues();
-    // Filters down to the IDs of the documents/files to publish
-    const logoDocuments = logoValues.map(logo => logo.document);
-    const shapefileDocuments = shapefileValues.map(shapefile => shapefile.document);
-    const allDocuments = logoDocuments.concat(shapefileDocuments);
-    
-    const documentPublishRequests = allDocuments.map(doc => {
-      return this.documentService.publish(doc);
-    });
+  private async handleImageFileChanges(source: string): Promise<void> {
 
-    forkJoin(documentPublishRequests)
-    .subscribe(
-      aggregateResponse => {
-        aggregateResponse.forEach((individualResponse: Document|HttpErrorResponse) => {
-          if ("status" in individualResponse) {
-            // If one or more of the responses is an error.
-            if (500 === individualResponse.status || 400 === individualResponse.status) {
-              console.error('Error publishing file', individualResponse);
-              alert('There was a problem publishing one or more of the selected logos/shapefiles.')
-              return;
+    const originalFiles: { document: string }[] = 'shapefiles' === source ? this.project.shapefiles : this.project.logos;
+    let newFiles: string[] = [];
+
+    if ('logos' === source) {
+      const logoValues = this.getLogosFormValues();
+      newFiles = logoValues.map(logo => logo.document);
+    } else if ('shapefiles' === source) {
+      const shapefileValues = this.getShapefilesFormValues();
+      newFiles = shapefileValues.map(shapefile => shapefile.document);
+    }
+
+    // Remove files from Minio that have been removed from the project
+    if (originalFiles?.some(file => !newFiles.includes(file.document))) {
+      try {
+        const removedFiles = originalFiles.filter(ogf => !newFiles.includes(ogf.document));
+        removedFiles.forEach(rf => {
+          this.documentService.delete(rf.document).subscribe({
+            next: () => {}, // No action on success
+            error: err => {
+              console.error('Failed to delete:', rf.document, err);
             }
-          }
+          });
         });
-      },
-      error => {
-        console.error('Error publishing files', error);
-        alert('There was a problem publishing one or more of the selected logos/shapefiles.')
-        return;
-      },
-      () => {} // On finished.
-    )
+      } catch (e) {
+        console.error('Unable to delete files', e);
+      }
+    }
+
+    // Publish only new files
+    const newFileIds = newFiles.filter(
+      fileId => !originalFiles.some(ogf => ogf.document === fileId)
+    );
+
+    if (newFileIds.length > 0) {
+      const publishRequests = newFileIds.map(id =>
+        this.documentService.publish(id).pipe(
+          catchError(err => of(err)) // catch individual errors and emit them
+        )
+      );
+
+      forkJoin(publishRequests).subscribe({
+        next: responses => {
+          const failed = responses.filter(
+            res => res instanceof HttpErrorResponse && (res.status === 400 || res.status === 500)
+          );
+          if (failed.length) {
+            console.error('One or more publish requests failed:', failed);
+            alert('There was a problem publishing one or more of the selected logos/shapefiles.');
+          }
+        },
+        error: err => {
+          console.error('Error during publishing:', err);
+          alert('There was a problem publishing files.');
+        }
+      });
+    }
   }
 
   /**
@@ -1036,10 +1082,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
             });
       }
 
-      // Publish selected logo files.
-      if (this.logos || this.shapefiles) {
-        this.publishAttachedFiles();
-      }
+      // Handle changes to logo files (publish or delete).
+      this.handleImageFileChanges('logos');
+
+      // Handle changes to shape files (publish or delete).
+      this.handleImageFileChanges('shapefiles');
+
     } else { // If the user is editing an existing project.
       project._id = this.project._id;
       // Save shapefiles.
@@ -1104,10 +1152,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         this.updateExistingProject(project);
       }
 
-      // Publish selected logo files.
-      if (this.logos.dirty || this.shapefiles.dirty) {
-        this.publishAttachedFiles();
-      }
+      // Handle changes to logo files (publish or delete).
+      this.handleImageFileChanges('logos');
+      
+      // Handle changes to shape files (publish or delete).
+      this.handleImageFileChanges('shapefiles');
 
       // Only save shapefiles if they are modified.
       if (this.shapefilesModified && saveShapefileObservables.length > 0) {
