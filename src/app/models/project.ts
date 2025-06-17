@@ -167,6 +167,7 @@ export interface ProjectShapefile {
   title: string;
   colour: string;
   order: number;
+  showOnMapPage: boolean;
 }
 
 export interface ProjectLogo {

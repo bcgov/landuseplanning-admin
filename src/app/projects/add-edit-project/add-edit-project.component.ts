@@ -227,6 +227,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               'document': new FormControl(file._id),
               'documentFileName': new FormControl(file.documentFileName),
               'title': new FormControl(''),
+              'showOnMapPage': new FormControl(false),
               'order': new FormControl(''),
               'colour': new FormControl('#2e86e4'),
             }));
@@ -580,6 +581,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           'document': new FormControl(shapefile?.document || shapefile?._id),
           'documentFileName': new FormControl(shapefile.documentFileName),
           'title': new FormControl(shapefile?.title || ''),
+          'showOnMapPage': new FormControl(shapefile?.showOnMapPage || false),
           'colour': new FormControl(shapefile?.colour || projectData?.shapeFileColour || '#2e86e4'),
           'order': new FormControl(shapefile?.order || '')
         })
@@ -844,6 +846,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           document: shapefile.controls.document.value,
           documentFileName: shapefile.controls.documentFileName.value,
           title: shapefile.controls.title.value,
+          showOnMapPage: shapefile.controls.showOnMapPage.value,
           colour: shapefile.controls.colour.value,
           order: shapefile.controls.order.value
       }));

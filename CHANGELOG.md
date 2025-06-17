@@ -1,3 +1,6 @@
+### Jun 17, 2025
+* Add option to hide shapefiles on the map page [DESENG-825](https://citz-gdx.atlassian.net/browse/DESENG-825)
+
 ### Jun 11, 2025
 * Fixed issues with synchronicity between shapefile deletion and project shapefiles. [DESENG-830](https://citz-gdx.atlassian.net/browse/DESENG-830)
 
