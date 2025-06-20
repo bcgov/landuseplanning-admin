@@ -1,3 +1,6 @@
+### Jun 19, 2025
+* Document the use of image tags in openshift Deployments. [DESENG-841](https://citz-gdx.atlassian.net/browse/DESENG-841)
+
 ### Jun 17, 2025
 * Add option to hide shapefiles on the map page [DESENG-825](https://citz-gdx.atlassian.net/browse/DESENG-825)
 

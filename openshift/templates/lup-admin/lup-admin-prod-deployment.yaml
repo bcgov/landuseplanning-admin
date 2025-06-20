@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: landuseplanning-admin-prod
-          image: image-registry.apps.silver.devops.gov.bc.ca/e8b9ad-tools/lup-admin-deploy-image
+          image: image-registry.apps.silver.devops.gov.bc.ca/e8b9ad-tools/lup-admin-deploy-image:prod
           ports:
             - containerPort: 8080
               protocol: TCP
