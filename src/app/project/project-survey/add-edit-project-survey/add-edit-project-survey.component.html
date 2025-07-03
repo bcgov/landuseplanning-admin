@@ -86,13 +86,12 @@
           <div *ngIf="question.value.questionText || question.value.questionText === null || question.value.questionText === ''" class="new-component-text">
             <strong>{{i + 1}}. </strong>
             <div class="new-component-text-form">
-              <!-- <textarea matInput mat-autosize="true" formControlName="questionText" name="questionText" class="component-text-box"></textarea> -->
               <ckeditor
                 name="questionText"
                 class="component-text-box"
                 #editorTest
                 formControlName="questionText"
-                (change)="onCKEditorChange($event)"
+                (ready)="editorOnReady($event)"
                 [config]="editorConfig"
                 [editor]="Editor"
                 [data]="question.value.questionText">
@@ -108,12 +107,11 @@
             name="infoText"
             class="component-text-box"
             formControlName="infoText"
-            (change)="onCKEditorChange($event)"
+            (ready)="editorOnReady($event)"
             [config]="editorConfig"
             [editor]="Editor"
             [data]="question.value.infoText">
           </ckeditor>
-            <!-- <textarea matInput mat-autosize="true" formControlName="infoText" name="infoText" class="component-text-box" placeholder="Placeholder text"></textarea> -->
             <mat-error *ngIf="question.get('infoText').touched && question.get('infoText').invalid">Info box text is required</mat-error>
         </div>
          </div>
@@ -125,6 +123,7 @@
               class="component-text-box"
               #editorTest
               formControlName="docPickerText"
+              (ready)="editorOnReady($event)"
               [config]="editorConfig"
               [editor]="Editor"
               [data]="question.value.docPickerText">

@@ -1,3 +1,7 @@
+### Jul 3, 2025
+* Restore use of the image picker in survey WYSIWYG editors [DESENG-866](https://citz-gdx.atlassian.net/browse/DESENG-866)
+* Remove some unused code
+
 ### Jun 19, 2025
 * Document the use of image tags in openshift Deployments. [DESENG-841](https://citz-gdx.atlassian.net/browse/DESENG-841)
 
