@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Renderer2, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, copyArrayItem } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,17 +6,15 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as ClassicEditor from 'assets/ckeditor5/build/ckeditor';
-import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
+import { CkUploadAdapter } from 'app/shared/utils/ck-upload-adapter';
 
 import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
-import { SurveyQuestion }    from 'app/models/surveyQuestion';
+import { DocumentService } from 'app/services/document.service';
 import { Survey }    from 'app/models/survey';
 
 import { StorageService } from 'app/services/storage.service';
 import { SurveyService } from 'app/services/survey.service';
-import { first } from 'rxjs/operators';
-import { values } from 'lodash';
-import { ModalData } from 'app/shared/types/modal';
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'app-add-edit-project-survey',
@@ -47,9 +44,11 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   public Editor = ClassicEditor;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public editorConfig: any;
+  public pathAPI: string;
 
   constructor(
     public surveyBuilderService: SurveyBuilderService,
+    public documentService: DocumentService,
     private surveyService: SurveyService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
@@ -92,6 +91,11 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
     })
 
     this.currentProject = this.storageService.state.currentProject.data;
+
+    // The following items are loaded by a file that is only present on openshift builds.
+    // Locally, this will be empty and local defaults will be used.
+    const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
+    this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
 
     this.surveyForm = new FormGroup({
       name: new FormControl('', Validators.required),
@@ -302,17 +306,22 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * If the CK Editor can't be retrieved, throw an error in the console.
+   * Uses the CK Editor (ready) to link a file upload handler to the
+   * CK Editor instance.
    *
-   * @param {ChangeEvent} editor The change event containing the CK Editor.
-   * @return {void}
+   * @param {CKEDITOR} eventData Object type added and used by CK Editor.
+   * @returns {Promise}
    */
-  public onCKEditorChange( { editor }: ChangeEvent ) {
-    const data = editor.getData();
-
-    if (data.length === 0) {
-      console.error('error!', this.surveyQuestionsForm);
-    }
+  public editorOnReady(eventData) {
+    // We need to grab our vars explicitely and pass them through to the CK Editor function.
+    eventData.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return new CkUploadAdapter(
+        loader,
+        this.currentProject._id,
+        this.documentService,
+        this.pathAPI
+      );
+    };
   }
 
   /**

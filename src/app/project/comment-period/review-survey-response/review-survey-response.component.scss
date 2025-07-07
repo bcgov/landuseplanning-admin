@@ -40,9 +40,20 @@
     display: flex;
   }
 
+  .question-text, .info-text {
+    // Access elements that have been inserted via innerHTML
+    ::ng-deep {
+      img {
+          display: block;
+          margin: 0 auto;
+          max-width: 100%;
+          min-width: 50px;
+      }
+    }
+  }
+
   .question-choice-list {
     list-style-type: none;
-    // color: grey;
     padding: 1rem 0;
     font-size: 1.1rem;
     margin: 0;

@@ -8,6 +8,8 @@
 
 }
 
+
+
 .survey-main {
   margin-top: 1rem;
   padding: 1.25rem;
@@ -16,14 +18,23 @@
     display: flex;
   }
 
-  .question-text {
+  .question-text, .info-text {
     font-size: 1.1rem;
-    // font-weight: bold;
     margin: 1.5rem 0 0 0;
     display: flex;
 
-    span {
-      padding-right: 0.3rem;
+    // Access elements that have been inserted via innerHTML
+    ::ng-deep {
+      img {
+          display: block;
+          margin: 0 auto;
+          max-width: 100%;
+          min-width: 50px;
+      }
+
+      span {
+        padding-right: 0.3rem;
+      }
     }
   }
 
@@ -121,15 +132,6 @@ div .likert li {
   text-align:center;
   vertical-align: top;
 }
-
-// div .likert li input[type=radio] {
-//   display:block;
-//   position:relative;
-//   top:0;
-//   left:50%;
-//   margin-left:-6px;
-
-// }
 
 div .likert li label {
   width:100%;
