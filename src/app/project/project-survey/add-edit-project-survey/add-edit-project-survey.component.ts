@@ -6,7 +6,6 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as ClassicEditor from 'assets/ckeditor5/build/ckeditor';
-import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import { CkUploadAdapter } from 'app/shared/utils/ck-upload-adapter';
 
 import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
@@ -315,11 +314,13 @@ export class AddEditProjectSurveyComponent implements OnInit, OnDestroy {
    */
   public editorOnReady(eventData) {
     // We need to grab our vars explicitely and pass them through to the CK Editor function.
-    const projectId = this.currentProject._id;
-    const documentService = this.documentService;
-    const pathAPI = this.pathAPI;
     eventData.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-      return new CkUploadAdapter(loader, projectId, documentService, pathAPI);
+      return new CkUploadAdapter(
+        loader,
+        this.currentProject._id,
+        this.documentService,
+        this.pathAPI
+      );
     };
   }
 
