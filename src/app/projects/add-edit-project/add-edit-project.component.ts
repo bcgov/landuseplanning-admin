@@ -160,11 +160,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
             // Locally, this will be empty and local defaults will be used.
             const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
             this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
-
-            this.loading = false;
-          } else {
-            this.loading = false;
           }
+          this.loading = false;
         });
 
         this.buildForm(data);
@@ -223,19 +220,22 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           });
         } else if (modalData?.slug === 'shapefiles') {
           modalData.returnedFiles.forEach(file => {
-            this.shapefiles.push(new FormGroup({
+            const newShapefile = new FormGroup({
               'document': new FormControl(file._id),
               'documentFileName': new FormControl(file.documentFileName),
               'title': new FormControl(''),
               'showOnMapPage': new FormControl(false),
               'order': new FormControl(''),
               'colour': new FormControl('#2e86e4'),
-            }));
+            })
+            // Check if shape file is already in project to avoid duplicates
+            if (!this.shapefiles.controls.some(control => control.get('document')?.value === file._id)) {
+              this.shapefiles.push(newShapefile);
+            }
           });
         }
       }
     });
-
   }
 
   /**
@@ -366,7 +366,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       fileNum: fileNum,
       fileExt: fileExt,
       documentSource: DocumentSourceEnum[documentSource],
-      maxSize: 0.5,
+      maxSize: 1,
       fileTypes: fileTypes,
       projectID: this.projectId
     };
@@ -563,30 +563,33 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * Build a an array of form groups to add as a form array to the main
+   * Build an array of form groups to add as a form array to the main
    * project form.
    *
    * @param {Project} projectData The project data to build the shapfile form array with.
    * @returns {FormGroup[]} The array of shapefile form groups.
    */
-    buildShapefilesFormArray(projectData: Project): FormGroup[] {
-      let shapefilesToFillFormWith = this.shapefileDocuments as unknown as ProjectShapefileOrDocument[];
-      
-      if (Array.isArray(projectData.shapefiles) && projectData.shapefiles.length > 0) {
-        shapefilesToFillFormWith = projectData.shapefiles;
-      }
-
-      return shapefilesToFillFormWith.map(shapefile => {
-        return new FormGroup({
-          'document': new FormControl(shapefile?.document || shapefile?._id),
-          'documentFileName': new FormControl(shapefile.documentFileName),
-          'title': new FormControl(shapefile?.title || ''),
-          'showOnMapPage': new FormControl(shapefile?.showOnMapPage || false),
-          'colour': new FormControl(shapefile?.colour || projectData?.shapeFileColour || '#2e86e4'),
-          'order': new FormControl(shapefile?.order || '')
-        })
-      })
+  buildShapefilesFormArray(projectData: Project): FormGroup[] {
+    let shapefilesToFillFormWith = this.shapefileDocuments as unknown as ProjectShapefileOrDocument[];
+    
+    if (Array.isArray(projectData.shapefiles) && projectData.shapefiles.length > 0) {
+      // Populate form with shapefiles from project if matching documents are found
+      shapefilesToFillFormWith = projectData.shapefiles.filter(sf =>
+        this.shapefileDocuments.some(doc => doc._id === sf.document)
+      );
     }
+
+    return shapefilesToFillFormWith.map(shapefile => {
+      return new FormGroup({
+        'document': new FormControl(shapefile?.document || shapefile?._id),
+        'documentFileName': new FormControl(shapefile.documentFileName),
+        'title': new FormControl(shapefile?.title || ''),
+        'showOnMapPage': new FormControl(shapefile?.showOnMapPage || false),
+        'colour': new FormControl(shapefile?.colour || projectData?.shapeFileColour || '#2e86e4'),
+        'order': new FormControl(shapefile?.order || '')
+      })
+    })
+  }
 
   /**
    * Take project data and build a form from it. Usually invoked when
@@ -676,6 +679,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'existingLandUsePlans': this.existingPlanFullFields(),
       'logos': this.getLogosFormValues(),
       'shapefiles': this.getShapefilesFormValues(),
+      'backgroundImage': this.bannerImageDocument?._id || null,
       'backgroundInfo': form.controls.backgroundInfo.value,
       'engagementLabel': form.controls.engagementLabel.value,
       'engagementInfo': form.controls.engagementInfo.value,
@@ -1130,7 +1134,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         const bannerImageFormData = this.getBannerImageFormData();
         bannerImageFormData.append('project', this.project._id);
 
-
         this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
       } else if (!this.bannerImageDocument) {
         // Remove the banner image entirely.
@@ -1171,7 +1174,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
                   },
                   error: (error) => {
                     console.error('Error publishing shapefiles', error);
-                    alert('Error publishing shapefiles. Please go into the project files section and publish shapfiles manually.');
+                    alert('Error publishing shape files. Please go into the project files section and publish shape files manually.');
                   },
                   complete: () => {}
                 });
