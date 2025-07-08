@@ -133,7 +133,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     .subscribe((data: { project: Project }) => {
       if (data.project) {
         this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
-
+        
         /**
          * When a user selects a project lead(and is taken to a new window),
          * make sure the project lead is brought over.
