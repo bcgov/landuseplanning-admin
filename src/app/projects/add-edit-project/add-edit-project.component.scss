@@ -132,6 +132,12 @@ section .form-container-65 {
   flex-direction: column;
 }
 
+.banner-disabled-msg {
+  margin-top: 10px;
+  color: $bright-link-color;
+  font-weight: bold;
+}
+
 @media (max-width: 1200px) {
   section .form-container-65 {
     width: 100%;
