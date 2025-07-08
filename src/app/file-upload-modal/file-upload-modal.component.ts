@@ -133,7 +133,7 @@ export class FileUploadModalComponent implements OnInit {
       'Document',
       [{ 'name': 'project', 'value': this.projectID }],
       1,
-      10,
+      20, // Keep this number higher than highest projected file collection size
       '-datePosted',
       { internalExt: fileExtensionsToLoad, documentSource: this.documentSource },
       true

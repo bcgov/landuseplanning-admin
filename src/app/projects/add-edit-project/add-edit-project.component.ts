@@ -160,11 +160,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
             // Locally, this will be empty and local defaults will be used.
             const remote_api_path = window.localStorage.getItem('from_admin_server--remote_api_path');
             this.pathAPI = (isEmpty(remote_api_path)) ? 'http://localhost:3000/api' : remote_api_path;
-
-            this.loading = false;
-          } else {
-            this.loading = false;
           }
+          this.loading = false;
         });
 
         this.buildForm(data);
@@ -223,19 +220,22 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           });
         } else if (modalData?.slug === 'shapefiles') {
           modalData.returnedFiles.forEach(file => {
-            this.shapefiles.push(new FormGroup({
+            const newShapefile = new FormGroup({
               'document': new FormControl(file._id),
               'documentFileName': new FormControl(file.documentFileName),
               'title': new FormControl(''),
               'showOnMapPage': new FormControl(false),
               'order': new FormControl(''),
               'colour': new FormControl('#2e86e4'),
-            }));
+            })
+            // Check if shape file is already in project to avoid duplicates
+            if (!this.shapefiles.controls.some(control => control.get('document')?.value === file._id)) {
+              this.shapefiles.push(newShapefile);
+            }
           });
         }
       }
     });
-
   }
 
   /**
@@ -366,9 +366,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       fileNum: fileNum,
       fileExt: fileExt,
       documentSource: DocumentSourceEnum[documentSource],
-      maxSize: 0.5,
+      maxSize: 1,
       fileTypes: fileTypes,
-      projectID: this.projectId
+      projectID: this.projectId || ''
     };
 
     this.ngxSmartModalService.setModalData( this.fileUploadModalData, 'file-upload-modal', true);
@@ -563,30 +563,33 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * Build a an array of form groups to add as a form array to the main
+   * Build an array of form groups to add as a form array to the main
    * project form.
    *
    * @param {Project} projectData The project data to build the shapfile form array with.
    * @returns {FormGroup[]} The array of shapefile form groups.
    */
-    buildShapefilesFormArray(projectData: Project): FormGroup[] {
-      let shapefilesToFillFormWith = this.shapefileDocuments as unknown as ProjectShapefileOrDocument[];
-      
-      if (Array.isArray(projectData.shapefiles) && projectData.shapefiles.length > 0) {
-        shapefilesToFillFormWith = projectData.shapefiles;
-      }
-
-      return shapefilesToFillFormWith.map(shapefile => {
-        return new FormGroup({
-          'document': new FormControl(shapefile?.document || shapefile?._id),
-          'documentFileName': new FormControl(shapefile.documentFileName),
-          'title': new FormControl(shapefile?.title || ''),
-          'showOnMapPage': new FormControl(shapefile?.showOnMapPage || false),
-          'colour': new FormControl(shapefile?.colour || projectData?.shapeFileColour || '#2e86e4'),
-          'order': new FormControl(shapefile?.order || '')
-        })
-      })
+  buildShapefilesFormArray(projectData: Project): FormGroup[] {
+    let shapefilesToFillFormWith = this.shapefileDocuments as unknown as ProjectShapefileOrDocument[];
+    
+    if (Array.isArray(projectData.shapefiles) && projectData.shapefiles.length > 0) {
+      // Populate form with shapefiles from project if a matching documents are found
+      shapefilesToFillFormWith = projectData.shapefiles.filter(sf =>
+        this.shapefileDocuments.some(doc => doc._id === sf.document)
+      );
     }
+
+    return shapefilesToFillFormWith.map(shapefile => {
+      return new FormGroup({
+        'document': new FormControl(shapefile?.document || shapefile?._id),
+        'documentFileName': new FormControl(shapefile.documentFileName),
+        'title': new FormControl(shapefile?.title || ''),
+        'showOnMapPage': new FormControl(shapefile?.showOnMapPage || false),
+        'colour': new FormControl(shapefile?.colour || projectData?.shapeFileColour || '#2e86e4'),
+        'order': new FormControl(shapefile?.order || '')
+      })
+    })
+  }
 
   /**
    * Take project data and build a form from it. Usually invoked when
@@ -663,6 +666,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @returns {Project} The project from the current form values.
    */
   convertFormToProject(form: FormGroup): Project {
+    console.log('converting form to project, backgroundImage:', form.controls.backgroundImage);
     return new Project({
       'name': form.controls.name.value,
       'partner': form.controls.partner.value,
@@ -676,6 +680,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'existingLandUsePlans': this.existingPlanFullFields(),
       'logos': this.getLogosFormValues(),
       'shapefiles': this.getShapefilesFormValues(),
+      'backgroundImage': this.bannerImageDocument?._id || null,
       'backgroundInfo': form.controls.backgroundInfo.value,
       'engagementLabel': form.controls.engagementLabel.value,
       'engagementInfo': form.controls.engagementInfo.value,
@@ -992,6 +997,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @return {void}
    */
   updateExistingProject(project: Project): void {
+    console.log('Updating an existing project', project);
     this.projectService.save(project)
     .takeUntil(this.ngUnsubscribe)
     .subscribe(
@@ -1025,6 +1031,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
           (publishedDocument) => {
             // Update the project with the saved and published background image document ID.
             project.backgroundImage = publishedDocument._id;
+            console.log('Added background image to project data, updating project', project);
             this.updateExistingProject(project);
           },
           error => {
@@ -1051,6 +1058,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
     // Get the project data from the form.
     const project = this.convertFormToProject(this.myForm);
+    console.log('Converted form data to project data', this.myForm, project);
 
     // If project is not being edited(i.e. a new project).
     if (!this.isEditing) {
@@ -1058,6 +1066,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
 
       if (this.bannerImageDocument) {
         const bannerImageFormData = this.getBannerImageFormData();
+        console.log('Saving project, bannerImageFormData: ', bannerImageFormData);
 
         // Add, publish, then save the published document's ID as the project's backgroundImage value.
         this.documentService.add(bannerImageFormData)
@@ -1068,7 +1077,9 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
             .takeUntil(this.ngUnsubscribe)
             .subscribe(
               (publishedDocument) => {
+                console.log('Added and published background image documen, publishedDocument:', publishedDocument)
                 project.backgroundImage = publishedDocument._id;
+                console.log('Project about to save', project);
                 this.updateExistingProject(project);
               },
               error => {
@@ -1108,6 +1119,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       if (this.bannerImageDocument &&
           this.project.backgroundImage &&
           this.bannerImageDocument._id !== this.project.backgroundImage) {
+        console.log('Changing background image to new image');
         /**
          * If the current banner image doesn't match the originally-loaded one,
          * delete the original, then save the new one.
@@ -1126,19 +1138,21 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
             });
       } else if (this.bannerImageDocument && !this.project.backgroundImage) {
+        console.log('Setting an image. No image was previously set.');
         // If the banner image document is being selected by the user for the first time.
         const bannerImageFormData = this.getBannerImageFormData();
         bannerImageFormData.append('project', this.project._id);
 
-
         this.addAndPublishBannerThenSaveProject(project, bannerImageFormData);
       } else if (!this.bannerImageDocument) {
+        console.log('Removing the banner image.');
         // Remove the banner image entirely.
         if (this.project.backgroundImage) {
           this.documentService.delete(this.project.backgroundImage)
             .subscribe(
               (res) => {
                 // Remove the background image value now that it's been deleted.
+                console.log('Background image deleted', res);
                 project.backgroundImage = null;
                 this.updateExistingProject(project);
               },
@@ -1146,9 +1160,12 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
                 alert('Could not delete banner image. Please delete manually in project documents section.');
               });
         } else {
+          console.log('Couldn\'t find an image to delete, just updating project');
           this.updateExistingProject(project);
         }
       } else {
+        console.log('There were no changes to the banner, just save the project.')
+        console.log(project.backgroundImage);
         this.updateExistingProject(project);
       }
 
@@ -1171,7 +1188,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
                   },
                   error: (error) => {
                     console.error('Error publishing shapefiles', error);
-                    alert('Error publishing shapefiles. Please go into the project files section and publish shapfiles manually.');
+                    alert('Error publishing shape files. Please go into the project files section and publish shape files manually.');
                   },
                   complete: () => {}
                 });

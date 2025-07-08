@@ -19,32 +19,17 @@ export class ShapeFileResolver implements Resolve<Observable<object>> {
    * @returns {Observable<Object>}
    */
   resolve(route: ActivatedRouteSnapshot): Observable<object> {
-    let pageNum = 1;
-    let pageSize = 10;
-    let sortBy = '-datePosted';
-    let keywords = '';
     const projectId = route.parent.paramMap.get('projId');
 
-    if (this.storageService.state.projectDocumentTableParams == null) {
-      pageNum = route.params.pageNum ? route.params.pageNum : 1;
-      pageSize = route.params.pageSize ? route.params.pageSize : 10;
-      sortBy = route.params.sortBy ? route.params.sortBy : '-datePosted';
-      keywords = route.params.keywords || '';
-    } else {
-      pageNum = this.storageService.state.projectDocumentTableParams.pageNum;
-      pageSize = this.storageService.state.projectDocumentTableParams.pageSize;
-      sortBy = this.storageService.state.projectDocumentTableParams.sortBy;
-      keywords = this.storageService.state.projectDocumentTableParams.keywords;
-    }
-
     return this.searchService.getSearchResults(
-      keywords,
-      'Document',
-      [{ 'name': 'project', 'value': projectId }],
-      pageNum,
-      pageSize,
-      sortBy,
-      {},
-      true);
+      '', // Keywords
+      'Document', // Model
+      [{ 'name': 'project', 'value': projectId }], // Fields: relevant to this project
+      1, // Page number
+      100, // Page size
+      '-datePosted', // Sort by
+      { eaoStatus: 'Published' }, // Modifier: Only retrieve published files
+      true // Populate?
+    );
   }
 }

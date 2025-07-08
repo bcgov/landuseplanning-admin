@@ -165,7 +165,7 @@
           type="button"
           id="shapefiles"
           class="btn btn-primary small-margin-bottom logos-button"
-          value="{{shapefiles?.length > 0 ? 'Add shapefiles(s)' : 'Select shapefile(s)'}}"
+          value="{{shapefiles?.length > 0 ? 'Add shapefile(s)' : 'Select shapefile(s)'}}"
           (click)="launchFilePicker('shapefiles', 'Select project shapefile(s)', false, 'zip', ['application/zip'], 6, 'SHAPEFILE')"
         >
         <ul class="shapefile-list mb-3" *ngIf="shapefiles?.controls.length > 0">

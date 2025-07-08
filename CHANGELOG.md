@@ -1,3 +1,6 @@
+### Jul 8, 2025
+* Improved strictness of shape file usage in the project create/edit form. [DESENG-867](https://citz-gdx.atlassian.net/browse/DESENG-867)
+
 ### Jun 19, 2025
 * Document the use of image tags in openshift Deployments. [DESENG-841](https://citz-gdx.atlassian.net/browse/DESENG-841)
 
