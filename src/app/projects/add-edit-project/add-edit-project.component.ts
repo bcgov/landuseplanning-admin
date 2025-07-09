@@ -817,16 +817,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       const el = this[rule.selector]?.nativeElement;
       if (rule.condition) {
         errorArray.push(`- ${rule.message}`);
-        // Add error highlighting to the relevant HTML element
-        if (el) {
-          el.innerHTML = rule.message;
-          formValid = false;
-        }
-      } else {
-        // Clear the error highlighting if the error has been fixed
-        if (el) {
-          el.innerHTML = '';
-        }
+        formValid = false;
+      }
+      if (el) {
+        // Add error highlighting if there is an error, remove error highlighting if it's been fixed.
+        el.innerHTML = rule.condition ? rule.message : '';
       }
     })
     if (!formValid) {
