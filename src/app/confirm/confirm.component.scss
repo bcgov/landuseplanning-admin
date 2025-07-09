@@ -1,5 +1,14 @@
 @import "assets/styles/components/add-edit.scss";
 
 .smart-modal-dialog {
-  padding: 1rem;
+  padding: 2rem;
+
+  .smart-modal-footer {
+    float: none !important;
+    display: flex;
+
+    button.btn.btn-primary {
+      margin-left: auto;
+    }
+  }
 }

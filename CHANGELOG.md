@@ -1,3 +1,10 @@
+### Jul 9, 2025
+* Added validation for latitude and longitude to the create/edit project form. [DESENG-839](https://citz-gdx.atlassian.net/browse/DESENG-839)
+* Refactored create/edit form error reporting system so it is more robust
+  - Added error highlighting to the form
+  - Switching alert() window to real modal component
+  - Improved error reporting so all errors are captured in modal message (not just one)
+
 ### Jul 8, 2025
 * Improved strictness of shape file usage in the project create/edit form. [DESENG-867](https://citz-gdx.atlassian.net/browse/DESENG-867)
 

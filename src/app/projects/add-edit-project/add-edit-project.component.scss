@@ -323,3 +323,13 @@ section .form-container-65 {
 ::ng-deep .mat-checkbox, label.mat-checkbox-layout {
   max-width: 100%;
 }
+
+label.validation-error-message {
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: #dc3545;
+
+  &.project-label {
+    width: 100%;
+  }
+}

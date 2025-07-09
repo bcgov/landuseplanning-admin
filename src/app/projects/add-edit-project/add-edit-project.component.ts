@@ -745,37 +745,83 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    *
    * @returns {boolean}
    */
-  private validateForm() {
-    if (this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null) {
-      alert('Name cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null) {
-      alert('Partner(s) cannot be empty.');
-      return false;
-    } else if (this.agreementFieldsError()) {
-      alert('Agreement name(s) cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null) {
-      alert('Description cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.lon.value === '') {
-      alert('Longitude cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.lat.value === '') {
-      alert('Latitude cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.lat.value >= 60.01 || this.myForm.controls.lat.value <= 48.20) {
-      alert('Latitude must be between 48.20 and 60.01');
-      return false;
-    } else if (this.myForm.controls.lon.value >= -114.01 || this.myForm.controls.lon.value <= -139.06) {
-      alert('Longitude must be between -114.01 and -139.06');
-      return;
-    } else if (this.projectLeadId === '') {
-      alert('Project Lead cannot be empty.');
-      return false;
-    } else {
-      return true;
+  private validateForm(): boolean {
+    let errorArray = [];
+    let formValid = true;
+    const rules = [
+      {
+        condition: this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null, // Conditional to check for error, true = error
+        message: 'Name cannot be empty', // Error message
+        selector: 'project-name', // CSS class selector for error highlighting label
+      },
+      {
+        condition: this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null,
+        message: 'Partner(s) cannot be empty',
+        selector: 'project-partner',
+      },
+      {
+        condition: this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null,
+        message: 'Description cannot be empty',
+        selector: 'project-description',
+      },
+      {
+        condition: this.agreementFieldsError(),
+        message: 'Agreement name(s) cannot be empty',
+        selector: 'project-agreements',
+      },
+      {
+        condition: this.myForm.controls.lat.value.length === 0,
+        message: 'Latitude cannot be empty',
+        selector: 'project-lat',
+      },
+      {
+        condition: isNaN(parseFloat(this.myForm.controls.lat.value)) || 48 > parseFloat(this.myForm.controls.lat.value) || 61 < parseFloat(this.myForm.controls.lat.value),
+        message: 'Latitude must be a number between 48 and 61',
+        selector: 'project-lat',
+      },
+      {
+        condition: this.myForm.controls.lon.value.length === 0,
+        message: 'Longitude cannot be empty',
+        selector: 'project-lon',
+      },
+      {
+        condition: isNaN(parseFloat(this.myForm.controls.lon.value)) || -139 > parseFloat(this.myForm.controls.lon.value) || -114 < parseFloat(this.myForm.controls.lon.value),
+        message: 'Longitude must be a number between -139 and -114',
+        selector: 'project-lon',
+      },
+      {
+        condition: this.myForm.controls.engagementLabel.value === '' || this.myForm.controls.engagementLabel.value == null,
+        message: 'Engagement label cannot be empty',
+        selector: 'project-label',
+      },
+      {
+        condition: this.projectLeadId === '',
+        message: 'Project lead must be selected',
+        selector: 'project-lead',
+      },
+    ];
+    rules.forEach((rule) => {
+      if (rule.condition) {
+        errorArray.push(`- ${rule.message}`);
+        // Find the HTML label element for the CSS selector and add error highlighting
+        document.querySelector(`.validation-error-message.${rule.selector}`).innerHTML = rule.message;
+        formValid = false;
+      } else {
+        // Clear the error highlighting if the error has been fixed
+        document.querySelector(`.validation-error-message.${rule.selector}`).innerHTML = '';
+      }
+    })
+    if (!formValid) {
+      // Open a modal that shows us all of our errors and counts them
+      const errorMessageString = `Please fix ${errorArray.length} error(s) before your project can be saved.<br><br>${errorArray.join('<br>')}`;
+      this.ngxSmartModalService.setModalData({
+        type: null,
+        title: 'Project Errors',
+        message: errorMessageString,
+      }, 'confirmation-modal');
+      this.ngxSmartModalService.open('confirmation-modal');
     }
+    return formValid;
   }
 
   /**
