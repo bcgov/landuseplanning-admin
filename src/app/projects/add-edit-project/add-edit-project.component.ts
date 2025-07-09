@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Subject, forkJoin, Observable, of } from 'rxjs';
@@ -24,6 +24,16 @@ import { Constants } from 'app/shared/utils/constants';
   styleUrls: ['./add-edit-project.component.scss']
 })
 export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy {
+  // Error highlighting HTML elements from the DOM
+  @ViewChild('pName') pName!: ElementRef;
+  @ViewChild('pPartner') pPartner!: ElementRef;
+  @ViewChild('pDescription') pDescription!: ElementRef;
+  @ViewChild('pAgreements') pAgreements!: ElementRef;
+  @ViewChild('pLat') pLat!: ElementRef;
+  @ViewChild('pLon') pLon!: ElementRef;
+  @ViewChild('pLabel') pLabel!: ElementRef;
+  @ViewChild('pLead') pLead!: ElementRef;
+
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fileUploadModalData: ModalData;
   public Editor = Editor;
@@ -229,7 +239,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               'colour': new FormControl('#2e86e4'),
             })
             // Check if shape file is already in project to avoid duplicates
-            if (!this.shapefiles.controls.some(control => control.get('document')?.value === file._id)) {
+            if (!this.shapefiles?.controls?.some(control => control.get('document')?.value === file._id)) {
               this.shapefiles.push(newShapefile);
             }
           });
@@ -748,67 +758,75 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   private validateForm(): boolean {
     let errorArray = [];
     let formValid = true;
+    const latitude = parseFloat(this.myForm.controls.lat.value);
+    const longitude = parseFloat(this.myForm.controls.lon.value);
+
     const rules = [
       {
         condition: this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null, // Conditional to check for error, true = error
         message: 'Name cannot be empty', // Error message
-        selector: 'project-name', // CSS class selector for error highlighting label
+        selector: 'pName', // CSS class selector for error highlighting label
       },
       {
         condition: this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null,
         message: 'Partner(s) cannot be empty',
-        selector: 'project-partner',
+        selector: 'pPartner',
       },
       {
         condition: this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null,
         message: 'Description cannot be empty',
-        selector: 'project-description',
+        selector: 'pDescription',
       },
       {
         condition: this.agreementFieldsError(),
         message: 'Agreement name(s) cannot be empty',
-        selector: 'project-agreements',
+        selector: 'pAgreements',
       },
       {
         condition: this.myForm.controls.lat.value.length === 0,
         message: 'Latitude cannot be empty',
-        selector: 'project-lat',
+        selector: 'pLat',
       },
       {
-        condition: isNaN(parseFloat(this.myForm.controls.lat.value)) || 48 > parseFloat(this.myForm.controls.lat.value) || 61 < parseFloat(this.myForm.controls.lat.value),
+        condition: isNaN(latitude) || latitude < 48 || latitude > 61,
         message: 'Latitude must be a number between 48 and 61',
-        selector: 'project-lat',
+        selector: 'pLat',
       },
       {
         condition: this.myForm.controls.lon.value.length === 0,
         message: 'Longitude cannot be empty',
-        selector: 'project-lon',
+        selector: 'pLon',
       },
       {
-        condition: isNaN(parseFloat(this.myForm.controls.lon.value)) || -139 > parseFloat(this.myForm.controls.lon.value) || -114 < parseFloat(this.myForm.controls.lon.value),
+        condition: isNaN(longitude) || longitude < -139 || longitude > -114,
         message: 'Longitude must be a number between -139 and -114',
-        selector: 'project-lon',
+        selector: 'pLon',
       },
       {
         condition: this.myForm.controls.engagementLabel.value === '' || this.myForm.controls.engagementLabel.value == null,
         message: 'Engagement label cannot be empty',
-        selector: 'project-label',
+        selector: 'pLabel',
       },
       {
         condition: this.projectLeadId === '',
         message: 'Project lead must be selected',
-        selector: 'project-lead',
+        selector: 'pLead',
       },
     ];
     rules.forEach((rule) => {
+      const el = this[rule.selector]?.nativeElement;
       if (rule.condition) {
         errorArray.push(`- ${rule.message}`);
-        // Find the HTML label element for the CSS selector and add error highlighting
-        document.querySelector(`.validation-error-message.${rule.selector}`).innerHTML = rule.message;
-        formValid = false;
+        // Add error highlighting to the relevant HTML element
+        if (el) {
+          el.innerHTML = rule.message;
+          formValid = false;
+        }
       } else {
         // Clear the error highlighting if the error has been fixed
-        document.querySelector(`.validation-error-message.${rule.selector}`).innerHTML = '';
+        if (el) {
+          el.innerHTML = '';
+        }
       }
     })
     if (!formValid) {

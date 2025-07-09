@@ -40,12 +40,12 @@
 					<div class="half-wide small-margin-right small-margin-bottom">
 						<label for="name">Project Name* </label>
 						<input name="name" id="name" formControlName="name" type="text" class="form-control" />
-            <label for="name" class="validation-error-message project-name"></label>
+            <label #pName for="name" class="validation-error-message"></label>
 					</div>
 					<div class="half-wide small-margin-bottom">
 						<label for="partner">Partner First Nation(s)* </label>
 						<input name="partner" id="partner" formControlName="partner" type="text" class="form-control" />
-            <label for="partner" class="validation-error-message project-partner"></label>
+            <label #pPartner for="partner" class="validation-error-message"></label>
 					</div>
 				</div>
         <div *ngIf="formValueType(myForm.value.agreements) === 'string'" class="flex-container form-container-65 small-margin-bottom">
@@ -55,7 +55,7 @@
         <div class="flex-container small-margin-bottom">
           <label for="description">Description* </label>
           <textarea name="description" id="description" formControlName="description" class="form-control full-wide"></textarea>
-          <label for="description" class="validation-error-message project-description"></label>
+          <label #pDescription for="description" class="validation-error-message"></label>
         </div>
         <div class="flex-container small-margin-bottom flex-column">
           <label for="details">Project Details </label>
@@ -144,7 +144,7 @@
 	  </div>
 	  <button class="btn btn-primary" type="button" (click)="populateFormArray(agreements)">Add agreement</button>
 	</div>
-  <label for="agreements" class="validation-error-message project-agreements"></label>
+  <label #pAgreements for="agreements" class="validation-error-message"></label>
     </section>
     <section>
       <h2>Location</h2>
@@ -158,12 +158,12 @@
         <div class="small-margin-right small-margin-bottom quarter-wide">
           <label for="lat">Latitude* </label>
           <input name="lat" id="lat" formControlName="lat" type="text" class="form-control" />
-          <label for="lat" class="validation-error-message project-lat"></label>
+          <label #pLat for="lat" class="validation-error-message"></label>
         </div>
         <div class="small-margin-bottom quarter-wide">
           <label for="lon">Longitude* </label>
           <input name="lon" id="lon" formControlName="lon" type="text" class="form-control" />
-          <label for="lon" class="validation-error-message project-lon"></label>
+          <label #pLon for="lon" class="validation-error-message"></label>
         </div>
       </div>
       <div class="flex-container form-container-65 small-margin-bottom">
@@ -294,7 +294,7 @@
           <label for="engagementLabel">Engagement Label* </label>
           <input name="engagementLabel" id="engagementLabel" formControlName="engagementLabel" type="text" class="form-control" />
           <label class="additional-label" for="engagementLabel">Appears in the header of the Comment Period and in the Comment Period box. e.g. "Public Comment Period".</label>
-          <label for="engagementLabel" class="validation-error-message project-label"></label>
+          <label #pLabel for="engagementLabel" class="validation-error-message"></label>
         </div>
         <div class="flex-container form-container-65 flex-column">
           <label for="enagementInfo">Engagement Tab Information </label>
@@ -339,7 +339,7 @@
           </div>
         </div>
       </div>
-      <label for="projectLead" class="validation-error-message project-lead"></label>
+      <label #pLead for="projectLead" class="validation-error-message"></label>
     </section>
     <section class="options">
       <h2>Options</h2>
