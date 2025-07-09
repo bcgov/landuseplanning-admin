@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Subject, forkJoin, Observable, of } from 'rxjs';
@@ -24,6 +24,16 @@ import { Constants } from 'app/shared/utils/constants';
   styleUrls: ['./add-edit-project.component.scss']
 })
 export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy {
+  // Error highlighting HTML elements from the DOM
+  @ViewChild('pName') pName!: ElementRef;
+  @ViewChild('pPartner') pPartner!: ElementRef;
+  @ViewChild('pDescription') pDescription!: ElementRef;
+  @ViewChild('pAgreements') pAgreements!: ElementRef;
+  @ViewChild('pLat') pLat!: ElementRef;
+  @ViewChild('pLon') pLon!: ElementRef;
+  @ViewChild('pLabel') pLabel!: ElementRef;
+  @ViewChild('pLead') pLead!: ElementRef;
+
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fileUploadModalData: ModalData;
   public Editor = Editor;
@@ -229,7 +239,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
               'colour': new FormControl('#2e86e4'),
             })
             // Check if shape file is already in project to avoid duplicates
-            if (!this.shapefiles.controls.some(control => control.get('document')?.value === file._id)) {
+            if (!this.shapefiles?.controls?.some(control => control.get('document')?.value === file._id)) {
               this.shapefiles.push(newShapefile);
             }
           });
@@ -745,37 +755,86 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    *
    * @returns {boolean}
    */
-  private validateForm() {
-    if (this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null) {
-      alert('Name cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null) {
-      alert('Partner(s) cannot be empty.');
-      return false;
-    } else if (this.agreementFieldsError()) {
-      alert('Agreement name(s) cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null) {
-      alert('Description cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.lon.value === '') {
-      alert('Longitude cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.lat.value === '') {
-      alert('Latitude cannot be empty.');
-      return false;
-    } else if (this.myForm.controls.lat.value >= 60.01 || this.myForm.controls.lat.value <= 48.20) {
-      alert('Latitude must be between 48.20 and 60.01');
-      return false;
-    } else if (this.myForm.controls.lon.value >= -114.01 || this.myForm.controls.lon.value <= -139.06) {
-      alert('Longitude must be between -114.01 and -139.06');
-      return;
-    } else if (this.projectLeadId === '') {
-      alert('Project Lead cannot be empty.');
-      return false;
-    } else {
-      return true;
+  private validateForm(): boolean {
+    let errorArray = [];
+    let formValid = true;
+    const latitude = parseFloat(this.myForm.controls.lat.value);
+    const longitude = parseFloat(this.myForm.controls.lon.value);
+
+    const rules = [
+      {
+        condition: this.myForm.controls.name.value === '' || this.myForm.controls.name.value == null, // Conditional to check for error, true = error
+        message: 'Name cannot be empty', // Error message
+        selector: 'pName', // CSS class selector for error highlighting label
+      },
+      {
+        condition: this.myForm.controls.partner.value === '' || this.myForm.controls.partner.value == null,
+        message: 'Partner(s) cannot be empty',
+        selector: 'pPartner',
+      },
+      {
+        condition: this.myForm.controls.description.value === '' || this.myForm.controls.description.value == null,
+        message: 'Description cannot be empty',
+        selector: 'pDescription',
+      },
+      {
+        condition: this.agreementFieldsError(),
+        message: 'Agreement name(s) cannot be empty',
+        selector: 'pAgreements',
+      },
+      {
+        condition: this.myForm.controls.lat.value.length === 0,
+        message: 'Latitude cannot be empty',
+        selector: 'pLat',
+      },
+      {
+        condition: isNaN(latitude) || latitude < 48 || latitude > 61,
+        message: 'Latitude must be a number between 48 and 61',
+        selector: 'pLat',
+      },
+      {
+        condition: this.myForm.controls.lon.value.length === 0,
+        message: 'Longitude cannot be empty',
+        selector: 'pLon',
+      },
+      {
+        condition: isNaN(longitude) || longitude < -139 || longitude > -114,
+        message: 'Longitude must be a number between -139 and -114',
+        selector: 'pLon',
+      },
+      {
+        condition: this.myForm.controls.engagementLabel.value === '' || this.myForm.controls.engagementLabel.value == null,
+        message: 'Engagement label cannot be empty',
+        selector: 'pLabel',
+      },
+      {
+        condition: this.projectLeadId === '',
+        message: 'Project lead must be selected',
+        selector: 'pLead',
+      },
+    ];
+    rules.forEach((rule) => {
+      const el = this[rule.selector]?.nativeElement;
+      if (rule.condition) {
+        errorArray.push(`- ${rule.message}`);
+        formValid = false;
+      }
+      if (el) {
+        // Add error highlighting if there is an error, remove error highlighting if it's been fixed.
+        el.innerHTML = rule.condition ? rule.message : '';
+      }
+    })
+    if (!formValid) {
+      // Open a modal that shows us all of our errors and counts them
+      const errorMessageString = `Please fix ${errorArray.length} error(s) before your project can be saved.<br><br>${errorArray.join('<br>')}`;
+      this.ngxSmartModalService.setModalData({
+        type: null,
+        title: 'Project Errors',
+        message: errorMessageString,
+      }, 'confirmation-modal');
+      this.ngxSmartModalService.open('confirmation-modal');
     }
+    return formValid;
   }
 
   /**
