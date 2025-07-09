@@ -132,8 +132,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     .takeUntil(this.ngUnsubscribe)
     .subscribe((data: { project: Project }) => {
       if (data.project) {
-        this.isEditing = Object.keys(data).length === 0 && data.constructor === Object ? false : true;
-
+        this.isEditing = data.constructor === Object ? true : false;
+        
         /**
          * When a user selects a project lead(and is taken to a new window),
          * make sure the project lead is brought over.

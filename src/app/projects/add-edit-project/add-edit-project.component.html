@@ -82,8 +82,9 @@
               <input
                 type="button"
                 id="logos"
+                [attr.disabled]="isEditing ? null : true"
                 class="btn btn-primary small-margin-bottom logos-button"
-                value="{{logos.length > 0 ? 'Reselect project logo(s)' : 'Select project logo(s)'}}"
+                value="{{!isEditing ? 'Please save project before selecting logo(s)' : 'Select project logo(s)'}}"
                 (click)="launchFilePicker('logos', 'Select project logo(s)', true, 'jpg, jpeg, png', ['image/jpeg', 'image/png'], 3, 'PROJECT')"
               >
               <input
@@ -98,8 +99,16 @@
         </div>
 				<div class="form-group mb-0 half-wide">
 					<label for="shapeFile">Upload Project Banner Image</label>
-					<app-file-upload *ngIf="!bannerImageDocument" [maxFiles]="1" [maxSize]="300" [showInfo]="false" [showList]="false" [files]="projectFiles"
-						(filesChange)="updateBannerDocument($event); projectFiles = []"></app-file-upload>
+          <div class="banner-disabled-msg" *ngIf="!isEditing">Please save project before selecting banner image</div>
+					<app-file-upload
+            *ngIf="!bannerImageDocument && isEditing"
+            [maxFiles]="1"
+            [maxSize]="300"
+            [showInfo]="false"
+            [showList]="false"
+            [files]="projectFiles"
+						(filesChange)="updateBannerDocument($event); projectFiles = []"
+          ></app-file-upload>
 					<br>
 					<div class="doc-list mb-3" *ngIf="bannerImageDocument">
 						<span class="cell name" [title]="bannerImageDocument.displayName || ''">
@@ -170,8 +179,9 @@
         <input
           type="button"
           id="shapefiles"
+          [attr.disabled]="isEditing ? null : true"
           class="btn btn-primary small-margin-bottom logos-button"
-          value="{{shapefiles?.length > 0 ? 'Add shapefile(s)' : 'Select shapefile(s)'}}"
+          value="{{!isEditing ? 'Please save project before selecting shapefile(s)' : 'Select project shapefile(s)'}}"
           (click)="launchFilePicker('shapefiles', 'Select project shapefile(s)', false, 'zip', ['application/zip'], 6, 'SHAPEFILE')"
         >
         <ul class="shapefile-list mb-3" *ngIf="shapefiles?.controls.length > 0">

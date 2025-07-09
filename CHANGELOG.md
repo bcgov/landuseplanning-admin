@@ -7,6 +7,8 @@
 
 ### Jul 8, 2025
 * Improved strictness of shape file usage in the project create/edit form. [DESENG-867](https://citz-gdx.atlassian.net/browse/DESENG-867)
+* Work around file upload issue that leads to API crashing [DESENG-869](https://citz-gdx.atlassian.net/browse/DESENG-869)
+  * Users now instructed to save project first before uploading any shapefiles or images
 
 ### Jul 3, 2025
 * Restore use of the image picker in survey WYSIWYG editors [DESENG-866](https://citz-gdx.atlassian.net/browse/DESENG-866)
