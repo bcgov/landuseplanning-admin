@@ -335,7 +335,7 @@ label.validation-error-message {
   font-size: 0.875rem;
   color: #dc3545;
 
-  &#pLabel {
+  &.project-label {
     width: 100%;
   }
 }
