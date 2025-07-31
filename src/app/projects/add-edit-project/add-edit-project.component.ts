@@ -17,6 +17,7 @@ import { ModalData } from 'app/shared/types/modal';
 import { Document, DocumentSourceEnum } from 'app/models/document';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Constants } from 'app/shared/utils/constants';
+import * as ckeditor from 'assets/ckeditor5/build/ckeditor';
 
 @Component({
   selector: 'app-add-edit-project',
@@ -54,7 +55,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public projectLeadId = '';
   public projectDirector = '';
   public projectDirectorId = '';
-
   public OVERLAPPING_REGIONAL_DISTRICTS: Array<Object> = [
     'Alberni - Clayoquot',
     'Bulkley - Nechako',
@@ -114,6 +114,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public allBannerImageDocuments: Document[] = [];
   public bannerImageModified = false;
   public removeBannerImage: boolean;
+  @ViewChild('ckeditor') ckeditor: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -215,6 +216,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @returns {void}
    */
   ngAfterViewInit(): void {
+    this.disableCkeditorImagePicker();
+
     this.ngxSmartModalService.getModal('file-upload-modal').onAnyCloseEventFinished.subscribe((modal: NgxSmartModalComponent) => {
       const modalData = modal.getData();
       if (modalData?.returnedFiles) {
@@ -246,6 +249,10 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         }
       }
     });
+  }
+
+  private disableCkeditorImagePicker(): void {
+    console.log('element', this.ckeditor);
   }
 
   /**
