@@ -1,3 +1,6 @@
+### Aug 1, 2025
+* Fix comment approval feature, remove "add a comment" button, disable image picker WYSIWYG button on the add project view. [DESENG-888](https://citz-gdx.atlassian.net/browse/DESENG-888)
+
 ### Jul 9, 2025
 * Added validation for latitude and longitude to the create/edit project form. [DESENG-839](https://citz-gdx.atlassian.net/browse/DESENG-839)
 * Refactored create/edit form error reporting system so it is more robust

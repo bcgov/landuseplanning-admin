@@ -17,7 +17,6 @@ import { ModalData } from 'app/shared/types/modal';
 import { Document, DocumentSourceEnum } from 'app/models/document';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Constants } from 'app/shared/utils/constants';
-import * as ckeditor from 'assets/ckeditor5/build/ckeditor';
 
 @Component({
   selector: 'app-add-edit-project',
@@ -38,6 +37,24 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fileUploadModalData: ModalData;
   public Editor = Editor;
+  public noImageToolbarConfig = {
+    toolbar:
+        {
+            items: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'underline',
+                'link',
+                'bulletedList',
+                'numberedList',
+                'blockQuote',
+                'undo',
+                'redo'
+        ]
+    }
+}
   public myForm: FormGroup;
   public back: any = {};
   public REGIONS: Array<Object> = [
@@ -114,7 +131,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public allBannerImageDocuments: Document[] = [];
   public bannerImageModified = false;
   public removeBannerImage: boolean;
-  @ViewChild('ckeditor') ckeditor: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -216,8 +232,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    * @returns {void}
    */
   ngAfterViewInit(): void {
-    this.disableCkeditorImagePicker();
-
     this.ngxSmartModalService.getModal('file-upload-modal').onAnyCloseEventFinished.subscribe((modal: NgxSmartModalComponent) => {
       const modalData = modal.getData();
       if (modalData?.returnedFiles) {
@@ -249,10 +263,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
         }
       }
     });
-  }
-
-  private disableCkeditorImagePicker(): void {
-    console.log('element', this.ckeditor);
   }
 
   /**

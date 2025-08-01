@@ -60,12 +60,12 @@
         <div class="flex-container small-margin-bottom flex-column">
           <label for="details">Project Details </label>
           <ckeditor
-            #ckeditor
             name="details"
             id="details"
             formControlName="details"
             [editor]="Editor"
             [data]="project?.details"
+            [config]=" isEditing ? {} : noImageToolbarConfig"
             (ready)="editorOnReady($event)"
           ></ckeditor>
           <label class="additional-label" for="details">Appears on the Project Details tab under the map.</label>
@@ -292,12 +292,12 @@
       <div class="flex-container form-container-65">
         <div class="add-row med full-wide">
           <ckeditor
-            #ckeditor
             name="backgroundInfo"
             id="backgroundInfo"
             formControlName="backgroundInfo"
             [editor]="Editor"
             [data]="project?.backgroundInfo"
+            [config]=" isEditing ? {} : noImageToolbarConfig"
             (ready)="editorOnReady($event)"
           ></ckeditor>
         </div>
@@ -315,12 +315,12 @@
         <div class="flex-container form-container-65 flex-column">
           <label for="enagementInfo">Engagement Tab Information </label>
           <ckeditor
-            #ckeditor
             name="engagementInfo"
             id="engagementInfo" 
             formControlName="engagementInfo"
             [editor]="Editor"
             [data]="project?.engagementInfo"
+            [config]=" isEditing ? {} : noImageToolbarConfig"
             (ready)="editorOnReady($event)"
           ></ckeditor>
           <label class="additional-label" for="engagementInfo">Appears at the top of the Engagement tab.</label>
@@ -333,10 +333,10 @@
         <div class="add-row med full-wide">
           <p>Additional information for the Documents tab</p>
           <ckeditor
-            #ckeditor
             name="documentInfo"
             id="documentInfo"
             formControlName="documentInfo"
+            [config]=" isEditing ? {} : noImageToolbarConfig"
             [editor]="Editor"
             [data]="project?.documentInfo"
             (ready)="editorOnReady($event)"
@@ -400,12 +400,12 @@
           <label for="collectionNotice"><strong>Project Collection Notice</strong></label>
           <p>Create a custom project collection notice or leave this field blank to display the default collection notice.</p>
           <ckeditor
-            #ckeditor
             name="collectionNotice"
             id="collectionNotice"
             formControlName="collectionNotice"
             [editor]="Editor"
             [data]="project?.collectionNotice"
+            [config]=" isEditing ? {} : noImageToolbarConfig"
             (ready)="editorOnReady($event)"
           ></ckeditor>
         </div>
