@@ -21,6 +21,12 @@ import { StorageService } from 'app/services/storage.service';
   styleUrls: ['./add-comment.component.scss']
 })
 
+/**
+ * A not oft used component for adding comments from the backend. This may be removed
+ * at some point. Unsure if it still works since it's used so little.
+ * 
+ * @todo Remove or fix this component.
+ */
 export class AddCommentComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();

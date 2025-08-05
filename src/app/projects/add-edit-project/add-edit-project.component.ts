@@ -37,6 +37,24 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
   public fileUploadModalData: ModalData;
   public Editor = Editor;
+  public noImageToolbarConfig = {
+    toolbar:
+        {
+            items: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'underline',
+                'link',
+                'bulletedList',
+                'numberedList',
+                'blockQuote',
+                'undo',
+                'redo'
+        ]
+    }
+}
   public myForm: FormGroup;
   public back: any = {};
   public REGIONS: Array<Object> = [
@@ -54,7 +72,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public projectLeadId = '';
   public projectDirector = '';
   public projectDirectorId = '';
-
   public OVERLAPPING_REGIONAL_DISTRICTS: Array<Object> = [
     'Alberni - Clayoquot',
     'Bulkley - Nechako',

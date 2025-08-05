@@ -147,6 +147,7 @@ export class ReviewCommentComponent implements OnInit, OnDestroy {
       this.comment.eaoStatus = 'Reset';
     }
     this.comment.proponentNotes = this.commentReviewForm.get('proponentResponseText').value;
+    this.comment.rejectedNotes = this.commentReviewForm.get('rejectionNotesText').value;
 
     let previousCommentId = this.comment.commentId;
     this.commentService.save(this.comment)
