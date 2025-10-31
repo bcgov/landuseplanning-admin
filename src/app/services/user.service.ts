@@ -102,4 +102,16 @@ export class UserService {
     return this.api.removeProjectFromUser(user, proj)
       .catch(error => this.api.handleError(error));
   }
+
+  /**
+   * Remove a user from the admin area. 
+   * They will still be able to log in to create a new user entry.
+   *
+   * @param {User} user The user to remove the permission from.
+   * @returns {Observable}
+   */
+  removeUser(user: User): Observable<User> {
+    return this.api.removeUser(user)
+      .catch(error => this.api.handleError(error));
+  }
 }

@@ -37,7 +37,14 @@ export class ProjectPermissionsComponent implements OnInit {
     {
       name: 'Access',
       value: 'access',
-      width: 'col-4',
+      width: 'col-2',
+      nosort: true
+    }
+    ,
+    {
+      name: 'Remove',
+      value: 'remove',
+      width: 'col-2',
       nosort: true
     }
   ];

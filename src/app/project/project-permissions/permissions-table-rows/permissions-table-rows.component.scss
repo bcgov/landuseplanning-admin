@@ -1,0 +1,15 @@
+@import "~assets/styles/base/base.scss";
+
+.remove-user-button {
+  border: none;
+  background: transparent;
+  display: flex;
+  padding: 0;
+  height: 1.625rem;
+
+  .material-icons.permissions-remove {
+    color: $red;
+    cursor: pointer;
+    font-size: 1.375rem;
+  }
+}

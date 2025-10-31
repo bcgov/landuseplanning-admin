@@ -1,9 +1,14 @@
 <tr *ngFor="let entry of entries | paginate: { id: 'table-template-pagination', itemsPerPage: paginationData.pageSize, currentPage: paginationData.currentPage, totalItems: paginationData.totalListItems }"
     class="clickable-row">
     <td data-label="User" scope="row" class="col-8">{{entry.displayName}}</td>
-    <td data-label="Access" scope="row" class="col-4">
+    <td data-label="Access" scope="row" class="col-2">
       <mat-checkbox (change)="handlePermissionCheckboxChange($event, entry)"
                     [checked]="hasProjectPermission(entry)">
       </mat-checkbox>
+    </td>
+    <td class="col-2">
+      <button class="remove-user-button">
+        <i class="material-icons permissions-remove" (click)="handleDeleteUser(entry)">delete</i>
+      </button>
     </td>
 </tr>

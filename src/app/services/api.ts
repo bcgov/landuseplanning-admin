@@ -1416,14 +1416,14 @@ export class ApiService {
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (populate !== null) { queryString += `&populate=${populate}`; }
-    if (queryModifier !== {}) {
+    if (Object.keys(queryModifier).length > 0) {
       Object.keys(queryModifier).forEach(key => {
         queryModifier[key].split(',').map(item => {
           queryString += `&and[${key}]=${item}`;
         });
       });
     }
-    if (filter !== {}) {
+    if (Object.keys(filter).length > 0) {
       Object.keys(filter).forEach(key => {
         filter[key].split(',').map(item => {
           queryString += `&or[${key}]=${item}`;
@@ -1626,6 +1626,18 @@ export class ApiService {
   removeProjectFromUser(user: User, proj: Project): Observable<User> {
     const queryString = `user/removePermission/${user._id}/${proj._id}`;
     return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
+  }
+
+  /**
+   * Remove a user from the admin area. 
+   * They can log in again to be re-added to the list of users.
+   *
+   * @param {User} user The user to remove.
+   * @returns {Observable}
+   */
+  removeUser(user: User): Observable<User> {
+    const queryString = `user/remove/${user._id}`;
+    return this.http.delete<User>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //

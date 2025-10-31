@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { get } from 'lodash';
 import { TableObject } from 'app/shared/components/table-template/table-object';
 import { TableComponent } from 'app/shared/components/table-template/table.component';
 import { StorageService } from 'app/services/storage.service';
@@ -10,12 +9,13 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { User } from 'app/models/user'
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 
 @Component({
   selector: 'app-permissions-table-rows',
   templateUrl: './permissions-table-rows.component.html',
-  styleUrls: ['./permissions-table-rows.component.css']
+  styleUrls: ['./permissions-table-rows.component.scss']
 })
 export class PermissionsTableRowsComponent implements OnInit, TableComponent {
 
@@ -34,6 +34,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     private storageService: StorageService,
     private snackBar: MatSnackBar,
     private router: Router,
+    private ngxSmartModalService: NgxSmartModalService,
   ) { }
 
   /**
@@ -46,6 +47,33 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     this.currentProject = this.storageService.state.currentProject.data;
     this.entries = this.data.data;
     this.paginationData = this.data.paginationData;
+
+    this.ngxSmartModalService.getModal('confirmation-modal').onClose.subscribe(() => {
+      const modalData = this.ngxSmartModalService.getModalData('confirmation-modal');
+      if (modalData.deleteConfirm && modalData.user._id) {
+        // If the admin selected "OK" and a valid user ID is found, remove user from project
+        this.userService.removeUser(modalData.user)
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(
+          (returnedUsers) => {
+            this.entriesVault = returnedUsers;
+            this.entriesVault = this.removeDuplicateUsers(this.entriesVault);
+            this.paginateUsers(this.paginationData.currentPage);
+          },
+          error => {
+            console.error(error);
+            alert('Uh-oh, couldn\'t remove user.');
+            this.router.navigate(['/p', this.currentProject._id ]);
+          },
+          () => { // onCompleted
+            this.openSnackBar(`${modalData.user.displayName || 'User'} has been removed from the permissions list.`, 'close')
+          })
+      } else if (modalData.deleteConfirm && !modalData.user._id) {
+        // If the admin selected "OK" but a valid user ID isn't found, trigger a console error
+        console.error('Unable to delete user. The user entry is malformed.');
+      }
+    });
+
   }
 
   /**
@@ -153,6 +181,31 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
         () => { // onCompleted
           this.openSnackBar(`User added to ${this.currentProject.name}`, 'close')
         })
+    }
+  }
+
+  /**
+   * Handles a request to delete a user from the permissions list.
+   *
+   * @param {User} user The user that needs to be deleted.
+   * @return {void}
+   */
+  handleDeleteUser(user: User): void {
+    if (user._id && user.displayName) {
+      this.ngxSmartModalService.setModalData(
+        {
+          type: 'delete',
+          title: 'Delete User',
+          message: `Are you sure you want to remove ${user.displayName} from the permissions user list?`,
+          user: user,
+        }, 
+        'confirmation-modal', 
+        true
+      );
+
+      this.ngxSmartModalService.open('confirmation-modal');
+    } else {
+      console.error('The user entry is malformed. Unable to remove user.')
     }
   }
 }
