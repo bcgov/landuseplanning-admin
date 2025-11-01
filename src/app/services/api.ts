@@ -1611,9 +1611,9 @@ export class ApiService {
    * @param {Project} proj The project to give the user permission to access.
    * @returns {Observable}
    */
-  addProjectToUser(user: User, proj: Project): Observable<User> {
+  addProjectToUser(user: User, proj: Project): Observable<User[]> {
     const queryString = `user/addPermission/${user._id}/${proj._id}`;
-    return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
+    return this.http.put<User[]>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
   /**
@@ -1623,9 +1623,9 @@ export class ApiService {
    * @param {Project} proj The project to remove access for.
    * @returns {Observable}
    */
-  removeProjectFromUser(user: User, proj: Project): Observable<User> {
+  removeProjectFromUser(user: User, proj: Project): Observable<User[]> {
     const queryString = `user/removePermission/${user._id}/${proj._id}`;
-    return this.http.put<User>(`${this.pathAPI}/${queryString}`, user, {});
+    return this.http.put<User[]>(`${this.pathAPI}/${queryString}`, user, {});
   }
 
   /**
@@ -1635,9 +1635,9 @@ export class ApiService {
    * @param {User} user The user to remove.
    * @returns {Observable}
    */
-  removeUser(user: User): Observable<User> {
+  removeUser(user: User): Observable<User[]> {
     const queryString = `user/remove/${user._id}`;
-    return this.http.delete<User>(`${this.pathAPI}/${queryString}`, {});
+    return this.http.delete<User[]>(`${this.pathAPI}/${queryString}`, {});
   }
 
   //

@@ -86,7 +86,7 @@ export class UserService {
    * @param {Project} proj The project to give the user permission to access.
    * @returns {Observable}
    */
-  addProjectPermission(user: User, proj: Project): Observable<User> {
+  addProjectPermission(user: User, proj: Project): Observable<User[]> {
     return this.api.addProjectToUser(user, proj)
       .catch(error => this.api.handleError(error));
   }
@@ -98,7 +98,7 @@ export class UserService {
    * @param {Project} proj The project to remove access for.
    * @returns {Observable}
    */
-  removeProjectPermission(user: User, proj: Project): Observable<User> {
+  removeProjectPermission(user: User, proj: Project): Observable<User[]> {
     return this.api.removeProjectFromUser(user, proj)
       .catch(error => this.api.handleError(error));
   }
@@ -110,7 +110,7 @@ export class UserService {
    * @param {User} user The user to remove the permission from.
    * @returns {Observable}
    */
-  removeUser(user: User): Observable<User> {
+  removeUser(user: User): Observable<User[]> {
     return this.api.removeUser(user)
       .catch(error => this.api.handleError(error));
   }

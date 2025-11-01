@@ -87,8 +87,8 @@ export class ProjectPermissionsComponent implements OnInit {
   getUsers(): void {
     this.userService.getAll()
       .toPromise()
-      .then((user: User) => {
-        this.userVault = get(user, 'data');
+      .then((users: User[]) => {
+        this.userVault = get(users, 'data');
         this.removeDuplicateUsers();
         this.tableParams.totalListItems = this.userVault.length || 0;
         this.paginateUsers(this.tableParams.currentPage);
@@ -135,6 +135,7 @@ export class ProjectPermissionsComponent implements OnInit {
         list.push(
           {
             _id: user._id,
+            idirUserGuid: user.idirUserGuid,
             displayName: user.displayName,
             projectPermissions: user.projectPermissions
           }

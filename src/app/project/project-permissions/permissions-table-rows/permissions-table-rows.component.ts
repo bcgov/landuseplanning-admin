@@ -10,7 +10,39 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import { User } from 'app/models/user'
 import { TableParamsObject } from 'app/shared/components/table-template/table-params-object';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { Project } from 'app/models/project';
+import { KeycloakService } from 'app/services/keycloak.service';
+import { JwtUtil } from 'app/jwt-util';
 
+
+/**
+ * Interface representing the decoded Keycloak JWT token.
+ * Fields based on observed token structure from KeycloakService.getToken().
+ */
+interface DecodedToken {
+  idir_user_guid: string;
+  display_name?: string;
+  aud?: string;
+  auth_time?: number;
+  azp?: string;
+  client_roles?: string[];
+  email?: string;
+  email_verified?: boolean;
+  exp?: number;
+  family_name?: string;
+  given_name?: string;
+  iat?: number;
+  identity_provider?: string;
+  idir_username?: string;
+  iss?: string;
+  jti?: string;
+  name?: string;
+  nonce?: string;
+  preferred_username?: string;
+  sid?: string;
+  sub?: string;
+  typ?: string;
+}
 
 @Component({
   selector: 'app-permissions-table-rows',
@@ -22,10 +54,11 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
   @Input() data: TableObject;
 
   public entries: User[];
-  public entriesVault;
+  public entriesVault: User[];
   public targetEmail: any;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
-  private currentProject;
+  private currentProject: Project;
+  private currentUser: DecodedToken;
   public paginationData: any;
   public tableParams: TableParamsObject = new TableParamsObject();
 
@@ -35,6 +68,7 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     private snackBar: MatSnackBar,
     private router: Router,
     private ngxSmartModalService: NgxSmartModalService,
+    private keycloakService: KeycloakService,
   ) { }
 
   /**
@@ -48,8 +82,15 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     this.entries = this.data.data;
     this.paginationData = this.data.paginationData;
 
+    const token = this.keycloakService.getToken();
+    this.currentUser = token ? new JwtUtil().decodeToken(token) : null;
+
     this.ngxSmartModalService.getModal('confirmation-modal').onClose.subscribe(() => {
       const modalData = this.ngxSmartModalService.getModalData('confirmation-modal');
+      if (modalData.deleteConfirm && modalData.user?.idirUserGuid === this.currentUser?.idir_user_guid) {
+        this.openSnackBar(`Sorry, you are not allowed to delete yourself.`, 'close');
+        return;
+      }
       if (modalData.deleteConfirm && modalData.user._id) {
         // If the admin selected "OK" and a valid user ID is found, remove user from project
         this.userService.removeUser(modalData.user)
@@ -207,5 +248,10 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     } else {
       console.error('The user entry is malformed. Unable to remove user.')
     }
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next(true);
+    this.ngUnsubscribe.complete();
   }
 }
