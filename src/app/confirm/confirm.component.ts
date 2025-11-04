@@ -62,7 +62,12 @@ export class ConfirmComponent implements AfterViewInit {
         this.confirmActions.select['selection'] = this.itemSelected;
       }
 
-      this.ngxSmartModalService.setModalData(this.confirmActions[this.modalData.type], 'confirmation-modal', true);
+      const updatedData = {
+        ...this.modalData,
+        ...this.confirmActions[this.modalData.type],
+      }
+
+      this.ngxSmartModalService.setModalData(updatedData, 'confirmation-modal', true);
 
       this.ngxSmartModalService.close('confirmation-modal');
     }

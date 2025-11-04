@@ -1,3 +1,8 @@
+### Oct 31, 2025
+* Added the ability to remove a user from the permissions list. [DESENG-881](https://citz-gdx.atlassian.net/browse/DESENG-881)
+  - Included safety check to prevent users from deleting their own user account
+* Updated observable types in the API and user service.
+
 ### Aug 1, 2025
 * Fix comment approval feature, remove "add a comment" button, disable image picker WYSIWYG button on the add project view. [DESENG-888](https://citz-gdx.atlassian.net/browse/DESENG-888)
 
