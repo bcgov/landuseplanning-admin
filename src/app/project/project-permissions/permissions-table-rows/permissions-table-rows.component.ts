@@ -61,6 +61,8 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
   private currentUser: DecodedToken;
   public paginationData: any;
   public tableParams: TableParamsObject = new TableParamsObject();
+  public idirToDelete: string;
+  public deleteAttempted = false;
 
   constructor(
     private userService: UserService,
@@ -85,36 +87,46 @@ export class PermissionsTableRowsComponent implements OnInit, TableComponent {
     const token = this.keycloakService.getToken();
     this.currentUser = token ? new JwtUtil().decodeToken(token) : null;
 
-    this.ngxSmartModalService.getModal('confirmation-modal').onClose.subscribe(() => {
+    this.ngxSmartModalService.getModal('confirmation-modal').onClose
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe(() => {
       const modalData = this.ngxSmartModalService.getModalData('confirmation-modal');
-      if (modalData.deleteConfirm && modalData.user?.idirUserGuid === this.currentUser?.idir_user_guid) {
-        this.openSnackBar(`Sorry, you are not allowed to delete yourself.`, 'close');
-        return;
-      }
-      if (modalData.deleteConfirm && modalData.user._id) {
-        // If the admin selected "OK" and a valid user ID is found, remove user from project
-        this.userService.removeUser(modalData.user)
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          (returnedUsers) => {
-            this.entriesVault = returnedUsers;
-            this.entriesVault = this.removeDuplicateUsers(this.entriesVault);
-            this.paginateUsers(this.paginationData.currentPage);
-          },
-          error => {
-            console.error(error);
-            alert('Uh-oh, couldn\'t remove user.');
-            this.router.navigate(['/p', this.currentProject._id ]);
-          },
-          () => { // onCompleted
-            this.openSnackBar(`${modalData.user.displayName || 'User'} has been removed from the permissions list.`, 'close')
-          })
-      } else if (modalData.deleteConfirm && !modalData.user._id) {
-        // If the admin selected "OK" but a valid user ID isn't found, trigger a console error
-        console.error('Unable to delete user. The user entry is malformed.');
+      if (modalData.deleteConfirm) {
+        // Handle duplicate requests and self-deletion requests
+        if (modalData.user?.idirUserGuid === this.idirToDelete && this.deleteAttempted) {
+          return;
+        } else if (modalData.user?.idirUserGuid === this.currentUser?.idir_user_guid) {
+          this.openSnackBar(`Sorry, you are not allowed to delete yourself.`, 'close');
+          return;
+        }
+
+        if (modalData.user?._id && modalData.user?.idirUserGuid) {
+          // If the admin selected "OK" and a valid user is found, remove user from project
+          this.idirToDelete = modalData.user?.idirUserGuid;
+          this.deleteAttempted = true;
+          this.userService.removeUser(modalData.user)
+          .takeUntil(this.ngUnsubscribe)
+          .subscribe(
+            (returnedUsers) => {
+              this.entriesVault = returnedUsers;
+              this.entriesVault = this.removeDuplicateUsers(this.entriesVault);
+              this.paginateUsers(this.paginationData.currentPage);
+            },
+            error => {
+              console.error(error);
+              alert('Uh-oh, couldn\'t remove user.');
+              this.router.navigate(['/p', this.currentProject._id ]);
+            },
+            () => { // onCompleted
+              this.deleteAttempted = false;
+              this.openSnackBar(`${modalData.user.displayName || 'User'} has been removed from the permissions list.`, 'close')
+            })
+        } else {
+          // If the admin selected "OK" but a valid user isn't found, trigger a console error
+          console.error('Unable to delete user. The user entry is malformed.');
+        }
       }
     });
-
   }
 
   /**
