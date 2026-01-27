@@ -1184,7 +1184,6 @@ export class ApiService {
    * @returns {Observable}
    */
   unPublishLink(exLinkId: string): Observable<ExternalLink> {
-    // const queryString = `link/${exLinkId}/unpublish`;
     const url = `${this.pathAPI}/link/${exLinkId}/unpublish`;
     return this.http.put<ExternalLink>(url, {}, {});
   }
