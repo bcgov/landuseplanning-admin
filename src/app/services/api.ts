@@ -1172,9 +1172,9 @@ export class ApiService {
    * @param {string} exLinkId The link ID to publish.
    * @returns {Observable}
    */
-  publishLink(exLinkId: String): Observable<ExternalLink> {
-    const queryString = `link/${exLinkId}/publish`;
-    return this.http.put<ExternalLink>(`${this.pathAPI}/${queryString}`, {}, {});
+  publishLink(exLinkId: string): Observable<ExternalLink> {
+    const url = `${this.pathAPI}/link/${exLinkId}/publish`;
+    return this.http.put<ExternalLink>(url, {}, {});
   }
 
   /**
@@ -1183,9 +1183,10 @@ export class ApiService {
    * @param {string} exLinkId The link ID to unpublish.
    * @returns {Observable}
    */
-  unPublishLink(exLinkId: String): Observable<ExternalLink> {
-    const queryString = `link/${exLinkId}/unpublish`;
-    return this.http.put<ExternalLink>(`${this.pathAPI}/${queryString}`, {}, {});
+  unPublishLink(exLinkId: string): Observable<ExternalLink> {
+    // const queryString = `link/${exLinkId}/unpublish`;
+    const url = `${this.pathAPI}/link/${exLinkId}/unpublish`;
+    return this.http.put<ExternalLink>(url, {}, {});
   }
 
   /**
@@ -1225,8 +1226,9 @@ export class ApiService {
     } else {
       filename = document.documentFileName;
     }
-    filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
-
+    if (filename) {
+      filename = filename.replace(/\\/g, '_').replace(/\//g, '_');
+    };
     this.createDownloadFile(blob, filename);
   }
 

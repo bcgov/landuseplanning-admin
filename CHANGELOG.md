@@ -1,3 +1,10 @@
+### Jan 27, 2026
+* Tested admin UI and fixed any issues found [DESENG-800](https://citz-gdx.atlassian.net/browse/DESENG-800)
+  - Added missing unsubscribes to Email Subscribe components
+  - Added missing break in document list component
+  - Fixed publish/unpublish in document list and document detail components
+  - Cleaned up comment period resolver and ngOnInit code
+
 ### Oct 31, 2025
 * Added the ability to remove a user from the permissions list. [DESENG-881](https://citz-gdx.atlassian.net/browse/DESENG-881)
   - Included safety check to prevent users from deleting their own user account

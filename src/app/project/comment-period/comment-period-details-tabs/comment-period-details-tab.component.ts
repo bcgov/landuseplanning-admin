@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, from, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSmartModalService } from 'ngx-smart-modal';
@@ -65,13 +65,15 @@ export class CommentPeriodDetailsTabComponent implements OnInit, OnChanges, OnDe
     this.projectId = this.storageService.state.currentProject.data._id;
 
     if (this.commentPeriod.relatedDocuments.length > 0) {
-      forkJoin([this.documentService.getByMultiId(this.commentPeriod.relatedDocuments), this.externalLinkService.getByMultiId(this.commentPeriod.relatedDocuments)])
-        .takeUntil(this.ngUnsubscribe)
-        .subscribe(
-          data => {
-            this.commentPeriodDocs = [...data[0] || [], ...data[1] || []];
-          }
-        );
+      forkJoin([
+        this.documentService.getByMultiId(this.commentPeriod.relatedDocuments),
+        this.externalLinkService.getByMultiId(this.commentPeriod.relatedDocuments),
+      ])
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(([docs, links]) => {
+          this.commentPeriodDocs = [...docs ?? [], ...links ?? []];
+        }
+      );
     }
 
     if (!this.surveys) {

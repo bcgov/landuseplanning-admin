@@ -138,4 +138,13 @@ export class ProjectEmailSubscribeComponent implements OnInit {
     this.api.exportSubscribers(this.currentProject._id);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }
