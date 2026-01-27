@@ -158,9 +158,9 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
       })
 
     confirmationModal.onAnyCloseEventFinished
-      // Perform document actions on close.
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
+        // Perform document actions on close.
         const data = this.ngxSmartModalService.getModalData('confirmation-modal');
         this.documentActions(data);
       });
