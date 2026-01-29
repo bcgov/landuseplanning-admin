@@ -71,6 +71,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
   public canUnpublish;
   public pathAPI: string;
   public tableParams: TableParamsObject = new TableParamsObject();
+  public focusRef: HTMLElement | null;
 
   constructor(
     private _changeDetectionRef: ChangeDetectorRef,
@@ -141,11 +142,27 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
+    const confirmationModal = this.ngxSmartModalService.getModal('confirmation-modal');
+    confirmationModal.onOpen
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((modal) => {
-      const data = this.ngxSmartModalService.getModalData('confirmation-modal');
-      this.documentActions(data);
+      .subscribe(() => {
+        // Save the active element so we can return focus.
+        this.focusRef = document.activeElement as HTMLElement | null;
+      })
+
+    confirmationModal.onAnyCloseEvent
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        // Return focus to the previously-active element.
+        if (this.focusRef) this.focusRef.focus();
+      })
+
+    confirmationModal.onAnyCloseEventFinished
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        // Perform document actions on close.
+        const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+        this.documentActions(data);
       });
 
     this.pageBreadcrumbs = [{ pageTitle: this.currentProject.name, routerLink: [ '/p', this.currentProject._id ]}];
@@ -292,6 +309,7 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
         Promise.all(promises).then(() => {
           this.openSnackBar('Download initiated.', 'Close');
         });
+        break;
       case 'publish':
         this.onPublishDocument();
         break;
@@ -657,28 +675,38 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.tableParams.filter = { internalExt: fileTypes[fileTypeToLoad] };
 
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, 1, this.tableParams.sortBy);
-    this.searchService.getSearchResults(
-      '',
-      'Document',
-      [{ 'name': 'project', 'value': this.currentProject._id }],
-      1,
-      10,
-      '-datePosted',
-      this.tableParams.filter,
-      true
-    ).subscribe(res => {
-      this.tableParams.totalListItems = 0;
-      this.documents = [];
+    this.searchService
+      .getSearchResults(
+        '',
+        'Document',
+        [{ name: 'project', value: this.currentProject._id }],
+        1,
+        10,
+        '-datePosted',
+        this.tableParams.filter,
+        true
+      )
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res) => {
+        this.tableParams.totalListItems = 0;
+        this.documents = [];
 
-      if (res[0]?.data?.meta[0]?.searchResultsTotal) {
-        this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
-        this.documents = res[0].data.searchResults;
-      }
+        if (res[0]?.data?.meta[0]?.searchResultsTotal) {
+          this.tableParams.totalListItems =
+            res[0].data.meta[0].searchResultsTotal;
+          this.documents = res[0].data.searchResults;
+        }
 
-      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
-      this.setRowData();
-      this._changeDetectionRef.detectChanges();
-    })
+        this.tableTemplateUtils.updateUrl(
+          this.tableParams.sortBy,
+          this.tableParams.currentPage,
+          this.tableParams.pageSize,
+          this.tableParams.filter,
+          this.tableParams.keywords || '',
+        );
+        this.setRowData();
+        this._changeDetectionRef.detectChanges();
+      });
   }
 
   /**

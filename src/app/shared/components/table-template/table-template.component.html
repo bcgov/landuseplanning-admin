@@ -17,7 +17,7 @@
     <div (selectedCount)="updateSelectedCount($event)"></div>
   </ng-template>
 </table>
-<div class="page-controls text-center pt-3">
+<div class="page-controls text-center pt-3" *ngIf="data?.paginationData?.totalListItems > data.paginationData.pageSize">
   <pagination-controls (pageChange)="updatePageNumber($event)" id="table-template-pagination" autoHide="true">
   </pagination-controls>
 </div>

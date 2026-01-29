@@ -51,6 +51,7 @@ import { SurveyService } from 'app/services/survey.service';
 import { SurveyResponseService } from 'app/services/surveyResponse.service';
 import { SurveyBuilderService } from 'app/services/surveyBuilder.service';
 import { UserService } from 'app/services/user.service';
+import { LinkService } from './services/link.service';
 
 // feature modules
 import { TokenInterceptor } from 'app/shared/utils/token-interceptor';
@@ -67,7 +68,6 @@ import { OrganizationsComponent } from './organizations/organizations.component'
 import { OrganizationsTableRowsComponent } from './organizations/organizations-table-rows/organizations-table-rows.component';
 import { AddEditOrganizationComponent } from './organizations/add-edit-organization/add-edit-organization.component';
 import { FileUploadModalComponent } from './file-upload-modal/file-upload-modal.component';
-import { LinkService } from './services/link.service';
 import { ExternalLinkComponent } from './project/project-documents/external-link/external-link.component';
 
 export function kcFactory(keycloakService: KeycloakService) {

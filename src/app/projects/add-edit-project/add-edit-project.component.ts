@@ -966,7 +966,11 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
    */
   private async handleImageFileChanges(source: string): Promise<void> {
 
-    const originalFiles: { document: string }[] = 'shapefiles' === source ? this.project.shapefiles : this.project.logos;
+    let originalFiles: { document: string }[];
+    if (this.project?.shapefiles || this.project?.logos) {
+      originalFiles = 'shapefiles' === source ? (this.project?.shapefiles || null) : (this.project?.logos || null);
+    }
+    
     let newFiles: string[] = [];
 
     if ('logos' === source) {

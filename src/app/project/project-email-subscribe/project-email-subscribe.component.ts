@@ -41,7 +41,6 @@ export class ProjectEmailSubscribeComponent implements OnInit {
     },
     {
       name: 'Delete',
-      //value: 'emailConfirmed',
       width: 'col-2',
       nosort: true
     }
@@ -66,22 +65,20 @@ export class ProjectEmailSubscribeComponent implements OnInit {
   ngOnInit(): void {
     this.currentProject = this.storageService.state.currentProject.data;
 
-    this.route.params
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(params => {
-        this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
-      });
+    this.route.params.takeUntil(this.ngUnsubscribe).subscribe((params) => {
+      this.tableParams = this.tableTemplateUtils.getParamsFromUrl(params);
+    });
 
-    this.emailSubscribeService.getAll(this.currentProject._id)
+    this.emailSubscribeService
+      .getAll(this.currentProject._id)
       .toPromise()
       .then((emailSubscribe: EmailSubscribe) => {
         this.emailSubscribe = get(emailSubscribe, 'data');
         this.tableParams.totalListItems = get(emailSubscribe, 'totalCount');
-        //return emailSubscribe;
         this.setRowData();
         this.loading = false;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
         // alert('Uh-oh, error getting email address');
       });
@@ -96,19 +93,17 @@ export class ProjectEmailSubscribeComponent implements OnInit {
   setRowData() {
     let list = [];
     if (this.emailSubscribe && this.emailSubscribe.length > 0) {
-      this.emailSubscribe.forEach(email => {
-        list.push(
-          {
-            emailAddress: email.email,
-            dateSubscribed: email.dateSubscribed,
-            confirmed: email.confirmed
-          }
-        );
+      this.emailSubscribe.forEach((email) => {
+        list.push({
+          emailAddress: email.email,
+          dateSubscribed: email.dateSubscribed,
+          confirmed: email.confirmed,
+        });
       });
       this.tableData = new TableObject(
         EmailSubscribeTableRowsComponent,
         list,
-        this.tableParams
+        this.tableParams,
       );
     }
   }
@@ -120,7 +115,7 @@ export class ProjectEmailSubscribeComponent implements OnInit {
    * @param {string} action A snack bar notification action.
    * @returns {void}
    */
-   public openSnackBar(message: string, action: string): void {
+  public openSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
@@ -138,4 +133,13 @@ export class ProjectEmailSubscribeComponent implements OnInit {
     this.api.exportSubscribers(this.currentProject._id);
   }
 
+  /**
+   * Terminate subscriptions when component is unmounted.
+   *
+   * @return {void}
+   */
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

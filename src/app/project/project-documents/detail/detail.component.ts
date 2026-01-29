@@ -11,7 +11,6 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 import { Utils } from 'app/shared/utils/utils';
 import { isEmpty } from 'lodash';
 import { DocumentSection } from 'app/models/documentSection';
-import { ExternalLink } from 'app/models/externalLink';
 
 @Component({
   selector: 'app-detail',
@@ -28,6 +27,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   public documentUrl: string;
   public sections: DocumentSection[];
   public selectedSection: DocumentSection = null;
+  public focusRef: HTMLElement | null;
 
   constructor(
     public utils: Utils,
@@ -70,38 +70,25 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       });
       this.humanReadableSize = this.utils.formatBytes(this.document?.internalSize) || '';
 
-    this.ngxSmartModalService.getModal('confirmation-modal').onAnyCloseEventFinished
+    const confirmModal = this.ngxSmartModalService.getModal('confirmation-modal');
+
+    confirmModal.onAnyCloseEventFinished
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((modal) => {
-      const data = this.ngxSmartModalService.getModalData('confirmation-modal');
-        if (this.publishText === 'Publish') {
-          if (data.publishConfirm) {
-            this.documentService.publish(this.document._id).subscribe(
-              res => { },
-              error => {
-                console.error('error =', error);
-                alert('Uh-oh, couldn\'t update document');
-              },
-              () => {
-                this.openSnackBar('This document has been published.', 'Close');
-              }
-            );
-            this.publishText = 'Unpublish';
-          }
-        } else {
-          this.documentService.unPublish(this.document._id).subscribe(
-            res => { },
-            error => {
-              console.error('error =', error);
-              alert('Uh-oh, couldn\'t update document');
-            },
-            () => {
-              this.openSnackBar('This document has been unpublished.', 'Close');
-            }
-          );
-          this.publishText = 'Publish';
-        }
+      .subscribe(() => {
+        const data = this.ngxSmartModalService.getModalData('confirmation-modal');
+        const publishAction = data.publishConfirm && this.publishText === 'Publish' ? 'publish' : 'unpublish';
+        const dataType = this.document.externalLink ? 'external' : 'document';
+        this.onPublish(dataType, publishAction);
       });
+    
+    confirmModal.onAnyCloseEvent
+    .takeUntil(this.ngUnsubscribe)
+    .subscribe(() => {
+      if (this.focusRef) {
+        // Focus on a visible element before aria-invisible is applied to modal
+        this.focusRef.focus();
+      }
+    })
   }
 
   /**
@@ -159,6 +146,31 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handles an internal publish or unpublish request.
+   * 
+   * @param source External link or document
+   * @param action Publish or unpublish
+   */
+  onPublish(source: string, action: string) {
+    const isExternalLink = source === 'external';
+    const isPublish = action === 'publish';
+    const id = this.document._id;
+
+    const request = isPublish ? this.documentService.publish(id) : this.documentService.unPublish(id);
+    request.subscribe({
+      next: () => {
+        this.publishText = isPublish ? 'Unpublish' : 'Publish';
+        this.openSnackBar(`This ${isExternalLink ? 'external link' : 'document'} has been ${!isPublish ? 'un' : ''}published.`, 'Close');
+      },
+      error: (err) => {
+        const error = `Uh-oh, couldn't ${!isPublish ? 'un' : ''}publish ${isExternalLink ? 'external link' : 'document'}.`;
+        console.error(error, err);
+        alert(error);
+      }
+    });
+  }
+
+  /**
    * Checks if a document is published.
    *
    * @param {Document} file The document to check the publish status of.
@@ -172,15 +184,24 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
    * Update the modal service to prompt the user to confirm the publishing
    * of a project. Then update the modal to display to the user.
    *
+   * @param value publish or unpublish.
    * @return {void}
    */
-  public togglePublish() {
-      this.ngxSmartModalService.setModalData({
-        type: 'publish',
-        title: 'Confirm Publish',
-        message: 'Publishing this document will make it visible to the public. <br><br> Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content? <br><br> Are you sure you want to proceed?'
+  public togglePublish(value: string) {
+    const isExternalLink = Boolean(this.document.externalLink);
+    const message = 
+      value === 'publish' 
+        ? `Publishing this ${isExternalLink ? 'external link' : 'document'} will make it visible to the public.<br><br>` +
+          `Do you have Ministry Government Communications and Public Engagement (GCPE) approvals on all content?<br><br>` +
+          `Are you sure you want to proceed?`
+        : `Unpublishing this ${isExternalLink ? 'external link' : 'document'} will make it invisible to the public.<br><br>` +
+          `Are you sure you want to proceed?`;
+    this.ngxSmartModalService.setModalData({
+        type: value,
+        title: `Confirm ${value}`,
+        message: message,
       }, 'confirmation-modal', true);
-
+      this.focusRef = document.activeElement?.parentElement?.parentElement?.querySelector('button') as HTMLElement | null;
       this.ngxSmartModalService.open('confirmation-modal');
   }
 
