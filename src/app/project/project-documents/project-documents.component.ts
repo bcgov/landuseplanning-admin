@@ -675,28 +675,38 @@ export class ProjectDocumentsComponent implements OnInit, OnDestroy {
     this.tableParams.filter = { internalExt: fileTypes[fileTypeToLoad] };
 
     this.tableParams = this.tableTemplateUtils.updateTableParams(this.tableParams, 1, this.tableParams.sortBy);
-    this.searchService.getSearchResults(
-      '',
-      'Document',
-      [{ 'name': 'project', 'value': this.currentProject._id }],
-      1,
-      10,
-      '-datePosted',
-      this.tableParams.filter,
-      true
-    ).subscribe(res => {
-      this.tableParams.totalListItems = 0;
-      this.documents = [];
+    this.searchService
+      .getSearchResults(
+        '',
+        'Document',
+        [{ name: 'project', value: this.currentProject._id }],
+        1,
+        10,
+        '-datePosted',
+        this.tableParams.filter,
+        true
+      )
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((res) => {
+        this.tableParams.totalListItems = 0;
+        this.documents = [];
 
-      if (res[0]?.data?.meta[0]?.searchResultsTotal) {
-        this.tableParams.totalListItems = res[0].data.meta[0].searchResultsTotal;
-        this.documents = res[0].data.searchResults;
-      }
+        if (res[0]?.data?.meta[0]?.searchResultsTotal) {
+          this.tableParams.totalListItems =
+            res[0].data.meta[0].searchResultsTotal;
+          this.documents = res[0].data.searchResults;
+        }
 
-      this.tableTemplateUtils.updateUrl(this.tableParams.sortBy, this.tableParams.currentPage, this.tableParams.pageSize, this.tableParams.filter, this.tableParams.keywords || '');
-      this.setRowData();
-      this._changeDetectionRef.detectChanges();
-    })
+        this.tableTemplateUtils.updateUrl(
+          this.tableParams.sortBy,
+          this.tableParams.currentPage,
+          this.tableParams.pageSize,
+          this.tableParams.filter,
+          this.tableParams.keywords || '',
+        );
+        this.setRowData();
+        this._changeDetectionRef.detectChanges();
+      });
   }
 
   /**
