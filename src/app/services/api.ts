@@ -46,7 +46,6 @@ window['encodeURIComponent'] = (component: string) => {
 export class ApiService {
 
   public token: string;
-  public isMS: boolean; // IE, Edge, etc
   // private jwtHelper: JwtHelperService;
   pathAPI: string;
   params: Params;
@@ -59,7 +58,6 @@ export class ApiService {
     // this.jwtHelper = new JwtHelperService();
     const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
-    this.isMS = window.navigator.msSaveOrOpenBlob ? true : false;
 
     // The following items are loaded by a file that is only present on cluster builds.
     // Locally, this will be empty and local defaults will be used.
@@ -609,7 +607,8 @@ export class ApiService {
       'dateStarted',
       'dateCompleted',
       'externalEngagementTool',
-      'externalToolPopupText'
+      'externalToolPopupText',
+      'externalToolPopupURL',
     ];
 
     let queryString = `commentperiod?&project=${projId}&`;
@@ -657,6 +656,7 @@ export class ApiService {
       'isVetted',
       'commentingMethod',
       'externalToolPopupText',
+      'externalToolPopupURL',
       'surveySelected',
       'milestone',
       'openCommentPeriod',
@@ -713,6 +713,7 @@ export class ApiService {
       'isVetted',
       'commentingMethod',
       'externalToolPopupText',
+      'externalToolPopupURL',
       'surveySelected',
       'milestone',
       'openCommentPeriod',
@@ -841,7 +842,7 @@ export class ApiService {
     if (pageSize !== null) { queryString += `&pageSize=${pageSize}`; }
     if (sortBy !== '' && sortBy !== null) { queryString += `&sortBy=${sortBy}`; }
     if (count !== null) { queryString += `&count=${count}`; }
-    if (filter !== {}) {
+    if (Object.keys(filter).length > 0) {
       Object.keys(filter).forEach(key => {
         queryString += `&${key}=${filter[key]}`;
       });
@@ -1342,19 +1343,15 @@ export class ApiService {
     }
 
 
-    if (this.isMS) {
-      window.navigator.msSaveBlob(blob, filename);
-    } else {
-      const url = window.URL.createObjectURL(blob);
-      const a = window.document.createElement('a');
-      window.document.body.appendChild(a);
-      a.setAttribute('style', 'display: none');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    }
+    const url = window.URL.createObjectURL(blob);
+    const a = window.document.createElement('a');
+    window.document.body.appendChild(a);
+    a.setAttribute('style', 'display: none');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   }
 
   /**

@@ -28,6 +28,7 @@ export class CommentPeriod {
   commentingMethod: string;
   surveySelected: string;
   externalToolPopupText: string;
+  externalToolPopupURL: string;
   openCommentPeriod: String;
   openHouses: Array<Object>;
   periodType: String;
@@ -84,6 +85,7 @@ export class CommentPeriod {
     this.commentingMethod = obj && obj.commentingMethod || null;
     this.surveySelected = obj && obj.surveySelected || null;
     this.externalToolPopupText = obj && obj.externalToolPopupText || null;
+    this.externalToolPopupURL = obj && obj.externalToolPopupURL || null;
     this.openHouses = obj && obj.openHouses || null;
     this.periodType = obj && obj.periodType || null;
     this.phase = obj && obj.phase || null;

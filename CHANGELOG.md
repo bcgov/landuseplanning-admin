@@ -1,3 +1,11 @@
+### Apr 24, 2026
+* Fixed form input for external survey tool [DESENG-959](https://citz-gdx.atlassian.net/browse/DESENG-959)
+  - Removed WYSIWYG editor for text input value
+  - External tool text and URL input are now separate fields
+  - Removed unused add-comment component
+- Fixed misc api.ts errors
+- Fixed misplaced label for survey in comment period form
+
 ### Jan 28, 2026
 * Tested admin UI and fixed any issues found [DESENG-800](https://citz-gdx.atlassian.net/browse/DESENG-800)
   - Added missing unsubscribes to Email Subscribe components

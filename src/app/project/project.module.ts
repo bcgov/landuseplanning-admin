@@ -48,7 +48,6 @@ import { DocumentEditComponent } from './project-documents/document-edit/documen
 import { ReviewCommentComponent } from './comment-period/review-comment/review-comment.component';
 import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
 import { AddDocumentTableRowsComponent } from './comment-periods/add-edit-comment-period/add-documents/add-document-table-rows/add-document-table-rows.component';
-import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
 import { CommentPeriodBannerComponent } from './comment-period-banner/comment-period-banner.component';
 import { ProjectSurveyComponent } from './project-survey/project-survey.component';
 import { AddEditProjectSurveyComponent } from './project-survey/add-edit-project-survey/add-edit-project-survey.component';
@@ -89,7 +88,6 @@ import { LinkService } from 'app/services/link.service';
     MatButtonModule
   ],
   declarations: [
-    AddCommentComponent,
     AddDocumentComponent,
     AddDocumentTableRowsComponent,
     AddEditCommentPeriodComponent,
