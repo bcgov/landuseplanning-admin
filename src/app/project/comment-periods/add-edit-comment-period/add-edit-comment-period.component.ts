@@ -163,6 +163,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
         'commentingMethod' : new FormControl(),
         'surveySelected' : new FormControl(),
         'externalToolPopupText' : new FormControl(),
+        'externalToolPopupURL' : new FormControl(),
         'infoForCommentText': new FormControl(),
         'commentPeriodInfo': new FormControl(),
         openHouses: this.formBuilder.array([])
@@ -205,6 +206,7 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
 
     // External Comments form
     this.commentPeriodForm.controls.externalToolPopupText.setValue(this.commentPeriod.externalToolPopupText);
+    this.commentPeriodForm.controls.externalToolPopupURL.setValue(this.commentPeriod.externalToolPopupURL);
 
     // Description
     this.commentPeriodForm.controls.infoForCommentText.setValue(this.commentPeriod.instructions);
@@ -285,8 +287,10 @@ export class AddEditCommentPeriodComponent implements OnInit, OnDestroy {
     // Only save external popup text if external engagement tool is selected
     if (this.commentPeriodForm.get('commentingMethod').value !== "externalEngagementTool") {
       this.commentPeriod.externalToolPopupText = null;
+      this.commentPeriod.externalToolPopupURL = null;
     } else {
       this.commentPeriod.externalToolPopupText = this.commentPeriodForm.get('externalToolPopupText').value;
+      this.commentPeriod.externalToolPopupURL = this.commentPeriodForm.get('externalToolPopupURL').value;
     }
 
     // Only save Survey Selected if surveyTool is selected

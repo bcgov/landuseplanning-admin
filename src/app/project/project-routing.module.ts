@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AddCommentComponent } from './comment-period/add-comment/add-comment.component';
 import { AddDocumentComponent } from './comment-periods/add-edit-comment-period/add-documents/add-documents.component';
 import { AddEditCommentPeriodComponent } from './comment-periods/add-edit-comment-period/add-edit-comment-period.component';
 import { AddEditProjectComponent } from 'app/projects/add-edit-project/add-edit-project.component';
@@ -240,10 +239,6 @@ const routes: Routes = [
             path: '',
             redirectTo: 'comment-period-details',
             pathMatch: 'full'
-          },
-          {
-            path: 'add-comment',
-            component: AddCommentComponent
           },
           {
             path: 'comment-period-details',

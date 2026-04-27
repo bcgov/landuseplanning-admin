@@ -128,22 +128,35 @@
 
         <div [hidden]="commentPeriodForm.value.commentingMethod !== 'surveyTool'" class="form-row">
           <div class="form-group col-md-6">
+            <label for="surveySelect">Select a survey for this comment period</label>
             <select formControlName="surveySelected" id="surveySelect" class="form-control">
               <option>(None Selected)</option>
               <option *ngFor="let survey of availableSurveys" [value]=survey._id>{{survey.name}}</option>
             </select>
-            <label for="surveySelect"> Select survey for this comment period.</label>
-            <!-- <button class="btn btn-outline-primary">Create new survey</button> -->
           </div>
         </div>
 
         <div [hidden]="commentPeriodForm.value.commentingMethod !== 'externalEngagementTool'" class="form-row">
           <div class="form-group col-md-6">
-            <label for="externalToolPopupText">External Tool Popup Text*</label>
-                <ckeditor name="externalToolPopupText" id="externalToolPopupText"
-                  formControlName="externalToolPopupText" [editor]="Editor"
-                  [required]="commentPeriodForm.value.externalEngagementTool"
-                  [data]="commentPeriod.externalToolPopupText"></ckeditor>
+            <label for="externalToolPopupURL">External Tool Popup URL</label>
+            <input
+                type="text" 
+                id="externalToolPopupURL" 
+                name="externalToolPopupURL" 
+                formControlName="externalToolPopupURL" 
+                class="form-control external-tool-input" 
+                [required]="commentPeriodForm.value.commentingMethod === 'externalEngagementTool'" 
+            />
+            <label for="externalToolPopupText">External Tool Popup Text</label>
+            <input
+                placeholder="Leave empty to show the URL address"
+                type="text" 
+                id="externalToolPopupText" 
+                name="externalToolPopupText" 
+                formControlName="externalToolPopupText" 
+                class="form-control external-tool-input" 
+                [required]="commentPeriodForm.value.commentingMethod === 'externalEngagementTool'" 
+            />
           </div>
         </div>
 
