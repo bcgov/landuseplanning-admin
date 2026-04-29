@@ -1,3 +1,6 @@
+### Apr 29, 2026
+* Made external link text optional for comment period form external tool option. When empty, URL will be displayed. [DESENG-959](https://citz-gdx.atlassian.net/browse/DESENG-959)
+
 ### Apr 24, 2026
 * Fixed form input for external survey tool [DESENG-959](https://citz-gdx.atlassian.net/browse/DESENG-959)
   - Removed WYSIWYG editor for text input value
