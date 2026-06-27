@@ -1,3 +1,9 @@
+### Jun 26, 2026
+* Fixed document publish behaviour
+    - Fixed: Editing a document was automatically unpublishing it
+    - Fixed: If document publish status was updated from details view, app state was not updated
+* Removed app state document list hydration on new document upload (not necessary)
+
 ### Apr 29, 2026
 * Made external link text optional for comment period form external tool option. When empty, URL will be displayed. [DESENG-959](https://citz-gdx.atlassian.net/browse/DESENG-959)
 
@@ -6,8 +12,8 @@
   - Removed WYSIWYG editor for text input value
   - External tool text and URL input are now separate fields
   - Removed unused add-comment component
-- Fixed misc api.ts errors
-- Fixed misplaced label for survey in comment period form
+* Fixed misc api.ts errors
+* Fixed misplaced label for survey in comment period form
 
 ### Jan 28, 2026
 * Tested admin UI and fixed any issues found [DESENG-800](https://citz-gdx.atlassian.net/browse/DESENG-800)
