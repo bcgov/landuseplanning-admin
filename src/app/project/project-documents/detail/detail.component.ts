@@ -105,7 +105,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       internalSize: file.internalSize || null,
       internalExt: file.internalExt || 'external',
       datePosted: file.datePosted || file.dateAdded,
-      status: file.read.includes('public') ? 'Published' : 'Not Published',
+      eaoStatus: file.read.includes('public') ? 'Published' : 'Not Published',
       _id: file._id,
       project: file.project,
       read: file.read,
@@ -160,6 +160,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     request.subscribe({
       next: () => {
         this.publishText = isPublish ? 'Unpublish' : 'Publish';
+        if (this.document) {
+          this.document.read = isPublish ? ['staff', 'sysadmin', 'public'] : ['staff', 'sysadmin'];
+        }
         this.openSnackBar(`This ${isExternalLink ? 'external link' : 'document'} has been ${!isPublish ? 'un' : ''}published.`, 'Close');
       },
       error: (err) => {

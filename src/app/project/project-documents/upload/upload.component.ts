@@ -101,10 +101,6 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.myForm.controls.dateUploaded.setValue(todayObj);
     }
 
-    if (this.storageService.state.documents) {
-      this.documents = this.storageService.state.documents;
-    }
-
     if (this.storageService.state.labels) {
       this.labels = this.storageService.state.labels;
     }
