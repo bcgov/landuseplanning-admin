@@ -108,7 +108,8 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
   public projectTypes: Array<ProjectType> = [
     {name: 'Land Use Planning', checked: false},
     {name: 'Forest Landscape Planning', checked: false},
-    {name: 'Water Planning and Governance', checked: false}
+    {name: 'Water Planning and Governance', checked: false},
+    {name: 'Conservation Planning', checked: false}
   ];
 
   public projectName: string;
@@ -632,7 +633,6 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
     
 		// Choose which project phase list is shown: regular phases or forest phases.
     if (projectData.projectTypes) {
-      this.projectTypes = projectData.projectTypes || this.projectTypes;
       this.chosenPhases = projectData.projectTypes?.find((type) => 'Forest Landscape Planning' === type.name)?.checked ? Constants.FOREST_PHASES : Constants.DEFAULT_PHASES;
     } else {
       this.chosenPhases = Constants.DEFAULT_PHASES;
@@ -661,7 +661,7 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'engagementInfo': new FormControl(projectData.engagementInfo),
       'documentInfo': new FormControl(projectData.documentInfo),
       'projectPhase': new FormControl(projectData.projectPhase || ''),
-      'projectTypes': new FormControl(projectData.projectTypes || this.projectTypes),
+      'projectTypes': this.getActiveProjectTypes(projectData),
       'projectDirector': new FormControl(projectData.projectDirector),
       'projectLead': new FormControl(projectData.projectLead),
       'activitiesAndUpdatesEnabled': new FormControl(projectData.activitiesAndUpdatesEnabled),
@@ -670,6 +670,22 @@ export class AddEditProjectComponent implements OnInit, AfterViewInit, OnDestroy
       'contactFormEmails': new FormArray(contactformEmailControls),
       'collectionNotice': new FormControl(projectData.collectionNotice),
     });
+  }
+
+  /**
+   * Retrieve the checked states from the existing project data or return the default (all unchecked)
+   * 
+   * @param projectData The project data that is currently being loaded
+   * @returns {FormControl} The form control that is generated from the loaded data
+   */
+  getActiveProjectTypes(projectData: Project): FormControl {
+    const savedTypes = projectData.projectTypes;
+    if (!savedTypes) return new FormControl(this.projectTypes);
+    const newTypes = this.projectTypes.map((type) => {
+      type.checked = savedTypes.find(st => st.name === type.name)?.checked || false;
+      return type;
+    })
+    return new FormControl(newTypes);
   }
 
   /**

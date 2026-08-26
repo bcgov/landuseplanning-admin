@@ -1,3 +1,6 @@
+### Aug 26, 2026
+* Added a fourth project type, conservation planning, to the add/edit project form [DESENG-968](https://citz-gdx.atlassian.net/browse/DESENG-968)
+
 ### Jun 26, 2026
 * Fixed document publish behaviour
     - Fixed: Editing a document was automatically unpublishing it
